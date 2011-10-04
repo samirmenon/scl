@@ -1,0 +1,3 @@
+[submodule "3rdparty/sUtil"]
+	path = 3rdparty/sUtil
+	url = git@github.com:samirmenon/sUtil.git
