@@ -1,4 +1,6 @@
-cd ../../3rdparty/chai3d-graphics/lib/ &&
+cd ../../ &&
+git submodule init && git submodule update &&
+cd 3rdparty/chai3d-graphics/lib/ &&
 #rm build_* -rf &&
 sh make_debug.sh &&
 sh make_release.sh &&
