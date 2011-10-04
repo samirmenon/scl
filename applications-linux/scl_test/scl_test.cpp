@@ -1,0 +1,195 @@
+/* This file is part of Busylizzy, a control and simulation library
+for robots and biomechanical models.
+
+Busylizzy is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3 of the License, or (at your option) any later version.
+
+Alternatively, you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of
+the License, or (at your option) any later version.
+
+Busylizzy is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License and a copy of the GNU General Public License along with
+Busylizzy. If not, see <http://www.gnu.org/licenses/>.
+*/
+/* \file main.cpp
+ *
+ *  Copyright (C) 2010
+ *
+ *  Author: Samir Menon <smenon@stanford.edu>
+ */
+
+#include <iostream>
+#include <stdlib.h>
+
+#include <sutil/CSystemClock.hpp>
+
+#include <scl/Singletons.hpp>
+
+//Random system queries
+#include "test_random_stuff.hpp"
+//Robot parser base tests
+#include "test_lotus_parser.hpp"
+//Databse and mem-cpy tests
+#include "test_database.hpp"
+//Matrix and lin-alg test
+#include "test_math.hpp"
+//Controller tests
+#include "test_controller.hpp"
+#include "test_robot_controller.hpp"
+//Test tao dynamics engine
+#include "test_dynamics.hpp"
+//Test chai graphic rendering
+#include "test_graphics.hpp"
+
+#include <sutil/CRegisteredDynamicTypes.hpp>
+
+using namespace std;
+using namespace scl_test;
+
+int main(int argc, char** argv)
+{
+  int tid, id = 1;
+  if(argc != 2)
+  {
+    cout<<"\nThe command line input is: ./<executable> <test_id>"
+        <<"\n0 : Run all tests";
+  }
+  else
+  {
+    tid = atoi(argv[1]);
+    cout<<"\nRunning scl tests for case: "<<tid;
+    if(false == sutil::CSystemClock::start()) { throw(std::runtime_error("Could not start clock"));  }
+    cout<<"\nStarting tests. Time:"<<sutil::CSystemClock::getSysTime()<<"\n";
+
+    if((tid==0)||(tid==id))
+    {//Test Random stuff
+      std::cout<<"\n\nTest #"<<id<<". Random system tests [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_random_stuff(id);
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Lotus XML Parser
+      std::cout<<"\n\nTest #"<<id<<". Lotus XML Parser [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_lotus_parser(id);
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Matrix speeds
+      std::cout<<"\n\nTest #"<<id<<". Matrix Speeds [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_matrix_libs(id);
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Control Servo
+      std::cout<<"\n\nTest #"<<id<<". Controller [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_control_servo(id);
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Dynamics
+      std::cout<<"\n\nTest #"<<id<<". Tao Dynamics [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_dynamics(id,"../../specs/Puma/PumaCfg.xml");
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Controller for robots : Puma
+      std::cout<<"\n\nTest #"<<id<<". Controller [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime() <<" "
+          <<sutil::CSystemClock::getSimTime() <<"]";
+      scl_test::test_task_controller(id,argc,argv,"../../specs/Puma/PumaCfg.xml",
+          "PumaBot","opc","hand","null");
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Controller for robots : Pr2
+      std::cout<<"\n\nTest #"<<id<<". Controller [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime() <<" "
+          <<sutil::CSystemClock::getSimTime() <<"]";
+      scl_test::test_task_controller(id,argc,argv,"../../specs/Pr2/Pr2Cfg.xml",
+          "Pr2Bot","opc","hand","hand2");
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Controller for robots : Pr2 (faster integration timestep+damping)
+      std::cout<<"\n\nTest #"<<id<<". Controller [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime() <<" "
+          <<sutil::CSystemClock::getSimTime() <<"]";
+      scl_test::test_task_controller(id,argc,argv,"../../specs/Pr2/Pr2Cfg.xml",
+          "Pr2Bot","opc","hand","hand2",0.001,true);
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Graphics
+      std::cout<<"\n\nTest #"<<id<<". Chai graphics [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      std::string file = "../../specs/Pr2/Pr2Cfg.xml";
+      scl_test::test_graphics(id,file,argc, argv);
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+
+    /**** Under development
+    if((tid==0)||(tid==id))
+    {//Test Database
+      std::cout<<"\n\nTest #"<<id<<". SCL Database [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()
+          <<" "
+          <<sutil::CSystemClock::getSimTime()
+          <<"]";
+      scl_test::test_database(id);
+    }
+    ++id;
+
+    if((tid==0)||(tid==99))
+    {//Test Haptics
+      std::cout<<"\n\nTest #"<<id<<". Chai haptics [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()
+          <<" "
+          <<sutil::CSystemClock::getSimTime()
+          <<"]";
+      std::string file = "../../specs/Puma/PumaCfg.xml";
+      scl_test::test_haptics(id,file,argc, argv);
+    }
+    ++id;*/
+  }
+
+  printf("\n\nEnding SCL Tests\n\n");
+  return 0;
+}
