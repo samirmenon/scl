@@ -1,0 +1,164 @@
+/* This file is part of Busylizzy, a control and simulation library
+for robots and biomechanical models.
+
+Busylizzy is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3 of the License, or (at your option) any later version.
+
+Alternatively, you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of
+the License, or (at your option) any later version.
+
+Busylizzy is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License and a copy of the GNU General Public License along with
+Busylizzy. If not, see <http://www.gnu.org/licenses/>.
+*/
+/* \file CTaskController.hpp
+ *
+ *  Created on: Jul 21, 2010
+ *
+ *  Copyright (C) 2010
+ *
+ *  Author: Samir Menon <smenon@stanford.edu>
+ */
+
+#ifndef CTASKCONTROLLER_HPP_
+#define CTASKCONTROLLER_HPP_
+
+#include <scl/control/CControllerBase.hpp>
+#include <scl/control/task/data_structs/STaskController.hpp>
+
+#include <scl/control/task/CTaskBase.hpp>
+#include <scl/control/task/CServo.hpp>
+
+#include <sutil/CMappedMultiLevelList.hpp>
+
+#include <string>
+#include <vector>
+
+namespace scl
+{
+  //Forward declare the dynamics API.
+  class CDynamicsBase;
+
+  /** A generic task space controller:
+   *
+   * Contains:
+   *
+   * 1. A servo which computes torques for a
+   *    set of tasks, and applies the torques
+   *    after filtering them through
+   *    the range spaces. (Uses the task-level null space
+   *    decomposition for a multi-level task hierarchy [cite])
+   *
+   * 2. Contains a set of tasks and their priorities.
+   *    Tasks contain:
+   *    (a) A task servo to compute torques
+   *    (b) A task model to compute dynamics
+   *
+   * 3. Contains a Joint space model for computing the robot's
+   *    joint space dynamics
+   *
+   * Usage :
+   *
+   * 1000Hz : computeControlForces //This is a servo tick.
+   *          {//Executes:
+   *            computeControlForces();
+   *            computeTaskTorques();
+   *          }
+   *
+   * 50-100 Hz : computeDynamics   //This is a model update
+   *          {//Executes:
+   *            computeModel();
+   *            computeTaskModels();
+   *          }
+   */
+  class CTaskController : public CControllerBase
+  {
+  public:
+    /**********************************************
+     *               CControllerBase API
+     * ********************************************/
+    /** Default constructor : just sets pointers to NULL */
+    CTaskController();
+
+    /** Default destructor : does nothing */
+    virtual ~CTaskController(){}
+
+    /** Equal to task forces or generalized coordinate forces
+     * depending on the type of controller that implements this API */
+    virtual sBool computeControlForces();
+
+    /** Computes the dynamic model   : Mass, MassInv, centrifugal/coriolis, gravity */
+    virtual sBool computeDynamics();
+
+    /** Returns the current control forces */
+    virtual const Eigen::VectorXd* getControlForces()
+    { return static_cast<const Eigen::VectorXd*>(&(data_->servo_.force_gc_));  }
+
+    /** Whether the controller has been initialized to a particular robot */
+    virtual sBool init(SControllerBase* arg_data,
+            scl::CDynamicsBase* arg_dynamics);
+
+    /** Resets to default. Can then re-initialize and reuse. */
+    virtual sBool reset();
+
+
+    /**********************************************
+     *     Task-controller specific functions
+     *     Use these for finer grained control!
+     ***********************************************/
+  public:
+    /** Adds a task to the controller with a priority level.
+     * Priority levels start at 0 (highest priority) > 1 > 2 ...
+     *
+     * If a higher level than max is supplied, new levels
+     * are created. */
+    bool addTask(const std::string &arg_task_name,
+        CTaskBase* arg_task, sUInt arg_level);
+
+    /** Removes a task from the controller. */
+    bool removeTask(const std::string &arg_task_name);
+
+    /** Returns the task by this name */
+    CTaskBase * getTask(const std::string& arg_name);
+
+  protected:
+    /** Computes range spaces for all its tasks according to
+     * their priorities. Starts with task level i and goes
+     * down.
+     * NOTE : It must be called after tasks at level i-1 undergo
+     * a model update (because the null-spaces change). */
+    bool computeRangeSpaces();
+
+    /** All the data for this task-space controller */
+    STaskController * data_;
+
+    /** The servo reads the task data and computes gc torques to be applied */
+    CServo servo_;
+
+    /** The list of tasks that this controller will execute
+     * Outer vector : Specifies all tasks at a priority level.
+     * Inner vector : Contains tasks */
+    sutil::CMappedMultiLevelList<std::string, CTaskBase*> tasks_;
+
+    /** The number of tasks */
+    sUInt task_count_;
+
+  public:
+    /** When only one task is to be executed
+     * Speeds up this special (but fairly common) case.
+     * Default behavior : Set to first added task. */
+    CTaskBase * active_task_;
+  };
+
+}
+
+#endif /* CTASKCONTROLLER_HPP_ */
