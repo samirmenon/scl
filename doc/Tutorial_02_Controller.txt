@@ -1,0 +1,15 @@
+The CControllerBase API. All controllers must subclass it.
+
+1. data_structs : The generic data structures for the CControllerBase API.
+
+2. gc           : A generic generalized coordinate (or joint space, for robotics) 
+                controller. This should work with every model in wbc.
+                
+3. task         : A generic multi-task controller + A set of generic tasks. These
+                should work with every model in wbc.
+                
+4. trajectory   : An online trajectory generation library. Use this in control
+                implementations.
+                
+5. mtrack       : A subclass of the generic task controller, specifically for marker 
+                tracking 
