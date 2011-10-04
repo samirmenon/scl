@@ -6,11 +6,11 @@ Author: Samir Menon <smenon@stanford.edu>
 
 Installation instructions:
 
-1. Download Eigen 3.0.1
-$ wget http://bitbucket.org/eigen/eigen/get/3.0.1.tar.gz 3rdparty/
+1. Download Eigen 3.0.2
+$ wget http://bitbucket.org/eigen/eigen/get/3.0.2.tar.gz 3rdparty/
 $ cd 3rdparty
-$ tar -xvzf 3.0.1.tar.gz 
-$ move eigen* eigen3.0.1
+$ tar -xvzf 3.0.2.tar.gz 
+$ move eigen* eigen3.0.2
 $ cd ..
 
 2. Compile Chai-graphics
