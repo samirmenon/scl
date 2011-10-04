@@ -1,0 +1,325 @@
+<?xml version="1.0" ?>
+<lotus>
+  <robot spec_name="PumaP4">
+    <link>
+      <link_name>base</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>shoulder-yaw</joint_name>
+      <parent_link_name>ground</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>upper_arm</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0.068  0.006  -0.016</center_of_mass>
+      <position_in_parent>0  0.2435  0</position_in_parent>
+      <orientation_in_parent>-0.707107  -0  -0  0.707107</orientation_in_parent>
+      <joint_name>shoulder-pitch</joint_name>
+      <parent_link_name>base</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>lower_arm</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  -0.143  0.014</center_of_mass>
+      <position_in_parent>0.4318  0  -0.0934</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>elbow</joint_name>
+      <parent_link_name>upper_arm</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>wrist-hand</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  -0.019</center_of_mass>
+      <position_in_parent>-0.0203  -0.4331  0</position_in_parent>
+      <orientation_in_parent>0.707107  0  0  0.707107</orientation_in_parent>
+      <joint_name>wrist-roll1</joint_name>
+      <parent_link_name>lower_arm</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>wrist-finger</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>-0.707107  -0  -0  0.707107</orientation_in_parent>
+      <joint_name>wrist-pitch</joint_name>
+      <parent_link_name>wrist-hand</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>end-effector1</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0.032</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>0.707107  0  0  0.707107</orientation_in_parent>
+      <joint_name>wrist-roll2</joint_name>
+      <parent_link_name>wrist-finger</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+
+    <!--X2-->
+    <link>
+      <link_name>base2</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>shoulder-yaw2</joint_name>
+      <parent_link_name>upper_arm</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>upper_arm2</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0.068  0.006  -0.016</center_of_mass>
+      <position_in_parent>0  0.2435  0</position_in_parent>
+      <orientation_in_parent>-0.707107  -0  -0  0.707107</orientation_in_parent>
+      <joint_name>shoulder-pitch2</joint_name>
+      <parent_link_name>base2</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>lower_arm2</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  -0.143  0.014</center_of_mass>
+      <position_in_parent>0.4318  0  -0.0934</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>elbow2</joint_name>
+      <parent_link_name>upper_arm2</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>wrist-hand2</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  -0.019</center_of_mass>
+      <position_in_parent>-0.0203  -0.4331  0</position_in_parent>
+      <orientation_in_parent>0.707107  0  0  0.707107</orientation_in_parent>
+      <joint_name>wrist-roll12</joint_name>
+      <parent_link_name>lower_arm2</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>wrist-finger2</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>-0.707107  -0  -0  0.707107</orientation_in_parent>
+      <joint_name>wrist-pitch2</joint_name>
+      <parent_link_name>wrist-hand2</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>end-effector2</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0.032</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>0.707107  0  0  0.707107</orientation_in_parent>
+      <joint_name>wrist-roll22</joint_name>
+      <parent_link_name>wrist-finger2</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+
+
+
+
+    <!--X4-->
+    <link>
+      <link_name>base4</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0</center_of_mass>
+      <position_in_parent>0.1  0.1  0.1</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>shoulder-yaw4</joint_name>
+      <parent_link_name>upper_arm</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>upper_arm4</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0.068  0.006  -0.016</center_of_mass>
+      <position_in_parent>0  0.2435  0</position_in_parent>
+      <orientation_in_parent>-0.707107  -0  -0  0.707107</orientation_in_parent>
+      <joint_name>shoulder-pitch4</joint_name>
+      <parent_link_name>base4</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>lower_arm4</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  -0.143  0.014</center_of_mass>
+      <position_in_parent>0.4318  0  -0.0934</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>elbow4</joint_name>
+      <parent_link_name>upper_arm4</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>wrist-hand4</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  -0.019</center_of_mass>
+      <position_in_parent>-0.0203  -0.4331  0</position_in_parent>
+      <orientation_in_parent>0.707107  0  0  0.707107</orientation_in_parent>
+      <joint_name>wrist-roll14</joint_name>
+      <parent_link_name>lower_arm4</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>wrist-finger4</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>-0.707107  -0  -0  0.707107</orientation_in_parent>
+      <joint_name>wrist-pitch4</joint_name>
+      <parent_link_name>wrist-hand4</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>end-effector14</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0.032</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>0.707107  0  0  0.707107</orientation_in_parent>
+      <joint_name>wrist-roll24</joint_name>
+      <parent_link_name>wrist-finger4</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>base24</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0</center_of_mass>
+      <position_in_parent>0  0  0.1</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>shoulder-yaw24</joint_name>
+      <parent_link_name>upper_arm</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>upper_arm24</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0.068  0.006  -0.016</center_of_mass>
+      <position_in_parent>0  0.2435  0</position_in_parent>
+      <orientation_in_parent>-0.707107  -0  -0  0.707107</orientation_in_parent>
+      <joint_name>shoulder-pitch24</joint_name>
+      <parent_link_name>base24</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>lower_arm24</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  -0.143  0.014</center_of_mass>
+      <position_in_parent>0.4318  0  -0.0934</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>elbow24</joint_name>
+      <parent_link_name>upper_arm24</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>wrist-hand24</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  -0.019</center_of_mass>
+      <position_in_parent>-0.0203  -0.4331  0</position_in_parent>
+      <orientation_in_parent>0.707107  0  0  0.707107</orientation_in_parent>
+      <joint_name>wrist-roll124</joint_name>
+      <parent_link_name>lower_arm24</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>wrist-finger24</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>-0.707107  -0  -0  0.707107</orientation_in_parent>
+      <joint_name>wrist-pitch24</joint_name>
+      <parent_link_name>wrist-hand24</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+    <link>
+      <link_name>end-effector</link_name>
+      <mass>1.0</mass>
+      <inertia>1.0  1.0  1.0</inertia>
+      <center_of_mass>0  0  0.032</center_of_mass>
+      <position_in_parent>0  0  0</position_in_parent>
+      <orientation_in_parent>0.707107  0  0  0.707107</orientation_in_parent>
+      <joint_name>wrist-roll224</joint_name>
+      <parent_link_name>wrist-finger24</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rz</joint_type>
+    </link>
+
+  </robot>
+</lotus>

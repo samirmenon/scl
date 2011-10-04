@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+
+<!-- Units are in Std International System -->
+<lotus>
+    <globals>
+        <gravity>0.000   0.000   -9.81</gravity> 
+    </globals>
+
+    <robot name="Pr2Bot"> 
+        <spec>Pr2</spec>
+        <file>../../specs/Pr2/Pr2.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>-0.300   0.000   -1.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+		        <graphics>
+			        <obj_file>
+				        <name>GraphicObjects/plane.obj</name>
+				        <position_in_parent>0.000000 0.00000 -0.0100000</position_in_parent>
+				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				        <scaling>10.000000 10.000000 0.100000</scaling>
+				        <collision_type>0</collision_type>
+			        </obj_file>
+		        </graphics>
+        </root_link>
+    </robot>
+
+    <graphics name="Pr2StdView">
+        <camera>
+            <pos>3.0   0.0   -0.5</pos>
+            <lookat>0.0   0.0   -0.5</lookat>
+            <up>0   0   1</up>
+            <clip>0 10</clip>
+            <background>0 0 0</background>
+        </camera>
+        <light>
+            <pos>2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.5</lookat>
+        </light>
+        <light>
+            <pos>-2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.0</lookat>
+        </light>
+    </graphics>
+
+    <controller name="Pr2GcCtrl">
+        <type>gc</type>
+        <must_use_robot>Pr2Bot</must_use_robot>
+        <kp>2000</kp>
+        <kv>75</kv>
+        <ki>0</ki>
+        <force_max>1000</force_max>
+        <force_min>-1000</force_min>
+    </controller>
+
+    <controller name="opc">
+        <type>task</type>
+        <must_use_robot>Pr2Bot</must_use_robot>
+        <task name="hand">
+            <type>OpPointTask</type>
+            <parent_link>l_wrist_roll_link</parent_link>
+            <pos_in_parent>0.0 0.0 0.0</pos_in_parent>
+            <priority>0</priority>
+            <task_dof>3</task_dof>
+            <kp>100</kp>
+            <kv>21</kv>
+            <ki>0</ki>
+            <force_max>3000</force_max>
+            <force_min>-3000</force_min>
+        </task>
+
+        <!--Activate this by passing its name as a second argument on 
+            the command line -->
+        <task name="hand2">
+            <type>OpPointTask</type>
+            <parent_link>r_wrist_roll_link</parent_link>
+            <pos_in_parent>0.0 0.0 0.0</pos_in_parent>
+            <priority>0</priority>
+            <task_dof>3</task_dof>
+            <kp>100</kp>
+            <kv>21</kv>
+            <ki>0</ki>
+            <force_max>3000</force_max>
+            <force_min>-3000</force_min>
+        </task>
+
+        <task name="GcTask">
+            <type>TaskGc</type>
+            <priority>1</priority>
+            <task_dof>0</task_dof> 
+            <kp>40</kp>
+            <kv>7</kv>
+            <ki>0</ki>
+            <force_max>3000</force_max>
+            <force_min>-3000</force_min>
+        </task>
+
+        <!-- 0 task_dof means a gc task, ie full dofs -->
+        <task name="NullSpaceDampingTask">
+            <type>TaskNullSpaceDamping</type>
+            <priority>1</priority>
+            <task_dof>0</task_dof> 
+            <kp>0</kp>
+            <kv>10</kv>
+            <ki>0</ki>
+            <force_max>3000</force_max>
+            <force_min>-3000</force_min>
+        </task>
+    </controller>
+</lotus>

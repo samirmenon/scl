@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+
+<!-- Units are in Std International System -->
+<lotus>
+    <globals>
+        <gravity>0.000   0.000   -9.81</gravity> 
+    </globals>
+
+    <robot name="PumaBot"> 
+        <spec>Puma</spec>
+        <file>../../specs/Puma/Puma.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>-0.300   0.000   -1.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+			        <obj_file>
+				        <name>Puma/graphics/base_bl.obj</name>
+				        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				        <collision_type>0</collision_type>
+			        </obj_file>
+            </graphics>
+        </root_link>
+    </robot>
+
+    <graphics name="PumaBotStdView">
+        <camera>
+            <pos>4.0   0.0   -0.3</pos>
+            <lookat>0.0   0.0   -0.1</lookat>
+            <up>0   0   1</up>
+            <clip>0 10</clip>
+            <background>0 0 0</background>
+        </camera>
+        <light>
+            <pos>2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.5</lookat>
+        </light>
+        <light>
+            <pos>-2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.0</lookat>
+        </light>
+    </graphics>
+
+    <controller name="PumaGcCtrl">
+        <type>gc</type>
+        <must_use_robot>PumaBot</must_use_robot>
+        <kp>100</kp>
+        <kv>10</kv>
+        <ki>0</ki>
+        <force_max>10</force_max>
+        <force_min>-10</force_min>
+    </controller>
+
+    <controller name="opc">
+        <type>task</type>
+        <must_use_robot>PumaBot</must_use_robot>
+
+        <task name="hand">
+            <type>OpPointTask</type>
+            <parent_link>end-effector</parent_link>
+            <pos_in_parent>0.01 0.01 0.01</pos_in_parent>
+            <priority>0</priority>
+            <task_dof>3</task_dof>
+            <kp>10</kp>
+            <kv>4</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+        </task>
+
+        <task name="JointAngleTask">
+            <type>TaskGc</type>
+            <priority>1</priority>
+            <task_dof>0</task_dof> 
+            <kp>10</kp>
+            <kv>4</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+        </task>
+
+        <!-- 0 task_dof means a gc task, ie full dofs -->
+        <task name="NullSpaceDampingTask">
+            <type>TaskNullSpaceDamping</type>
+            <priority>1</priority>
+            <task_dof>0</task_dof> 
+            <kp>0</kp>
+            <kv>4</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+        </task>
+
+        <!-- This task removes some range space
+             from the lower pri tasks
+             Note: Task dofs should match the gc set's size
+        <task name="JointAngleSetTask">
+            <type>TaskGcSet</type>
+            <priority>0</priority>
+            <task_dof>2</task_dof> 
+            <kp>10</kp>
+            <kv>4</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+            <gc_set_names>end-effector wrist-finger</gc_set_names>
+            <gc_set_pos_des>0.0 0.0</gc_set_pos_des>
+        </task> -->
+    </controller>
+</lotus>

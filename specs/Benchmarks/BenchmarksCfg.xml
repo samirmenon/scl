@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+
+<!-- Units are in Std International System -->
+<lotus>
+    <globals>
+        <gravity>0.000   0.000   -9.81</gravity> 
+    </globals>
+
+    <graphics name="StanbotStdView">
+        <camera>
+            <pos>4.0   0.0   2.0</pos>
+            <lookat>0.0   0.0   0.5</lookat>
+            <up>0   0   1</up>
+            <clip>0 10</clip>
+            <background>0 0 0</background>
+        </camera>
+        <light>
+            <pos>2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.5</lookat>
+        </light>
+        <light>
+            <pos>-2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.0</lookat>
+        </light>
+    </graphics>
+
+    <!-- A variety of Puma based robot models to test wbc
+         XN = N Pumas attached in series
+         PN = N Pumas attached in parallel
+         XMPN = N <M-Serial-Pumas> attached in parallel 
+         Total dofs = M*N*6
+    -->
+    <robot name="PumaBot"> 
+        <spec>Puma</spec>
+        <file>../../specs/Benchmarks/Puma.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotP2"> 
+        <spec>PumaP2</spec>
+        <file>../../specs/Benchmarks/PumaP2.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotP4"> 
+        <spec>PumaP4</spec>
+        <file>../../specs/Benchmarks/PumaP4.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotP8"> 
+        <spec>PumaP8</spec>
+        <file>../../specs/Benchmarks/PumaP8.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotP16"> 
+        <spec>PumaP16</spec>
+        <file>../../specs/Benchmarks/PumaP16.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotP64"> 
+        <spec>PumaP64</spec>
+        <file>../../specs/Benchmarks/PumaP64.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotX2"> 
+        <spec>PumaX2</spec>
+        <file>../../specs/Benchmarks/PumaX2.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotX2P2"> 
+        <spec>PumaX2P2</spec>
+        <file>../../specs/Benchmarks/PumaX2P2.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotX4"> 
+        <spec>PumaX4</spec>
+        <file>../../specs/Benchmarks/PumaX4.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotX4P4"> 
+        <spec>PumaX4P4</spec>
+        <file>../../specs/Benchmarks/PumaX4P4.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotX8"> 
+        <spec>PumaX8</spec>
+        <file>../../specs/Benchmarks/PumaX8.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <robot name="PumaBotX16"> 
+        <spec>PumaX16</spec>
+        <file>../../specs/Benchmarks/PumaX16.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <controller name="PumaGcCtrl">
+        <type>gc</type>
+        <must_use_robot>PumaBotP64</must_use_robot>
+        <kp>100</kp>
+        <kv>10</kv>
+        <ki>0</ki>
+        <force_max>10</force_max>
+        <force_min>-10</force_min>
+    </controller>
+</lotus>

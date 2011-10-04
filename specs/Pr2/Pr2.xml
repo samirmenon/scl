@@ -1,0 +1,474 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+<lotus>
+<robot spec_name="Pr2">
+	<link>
+		<link_name>head_tilt_link</link_name>
+		<position_in_parent>0.068000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>4.919000</mass>
+		<inertia>0.057200 0.086413 0.117964</inertia>
+		<center_of_mass>0.003638 -0.015977 0.057832</center_of_mass>
+		<joint_name>head_tilt_joint</joint_name>
+		<parent_link_name>head_pan_link</parent_link_name>
+		<joint_type>ry</joint_type>
+		<joint_limits>1.396260 3.140000</joint_limits>
+		<default_joint_position>3.140000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/head/head_tilt.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>head_pan_link</link_name>
+		<position_in_parent>-0.017070 0.000000 0.381450</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>6.339000</mass>
+		<inertia>0.032498 0.046546 0.057653</inertia>
+		<center_of_mass>0.010907 0.031693 0.090507</center_of_mass>
+		<joint_name>head_pan_joint</joint_name>
+		<parent_link_name>torso_lift_link</parent_link_name>
+		<joint_type>rz</joint_type>
+		<joint_limits>3.007000 3.140000</joint_limits>
+		<default_joint_position>3.140000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/head/head_pan.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>l_wrist_roll_link</link_name>
+		<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>1.114600</mass>
+		<inertia>0.011810 0.013966 0.014418</inertia>
+		<center_of_mass>0.083070 0.000202 -0.001020</center_of_mass>
+		<joint_name>l_wrist_roll_joint</joint_name>
+		<parent_link_name>l_wrist_flex_link</parent_link_name>
+		<joint_type>rx</joint_type>
+		<joint_limits>-3.14 3.140000</joint_limits>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/forearm/wrist_roll.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>Pr2/graphics/gripper/gripper_palm.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>l_wrist_flex_link</link_name>
+		<position_in_parent>0.321000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>0.614020</mass>
+		<inertia>0.000652 0.000198 0.000645</inertia>
+		<center_of_mass>-0.001570 0.000000 -0.000750</center_of_mass>
+		<joint_name>l_wrist_flex_joint</joint_name>
+		<parent_link_name>l_forearm_roll_link</parent_link_name>
+		<joint_type>ry</joint_type>
+		<joint_limits>0.000000 3.140000</joint_limits>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/forearm/wrist_flex.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>l_forearm_roll_link</link_name>
+		<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>2.689680</mass>
+		<inertia>0.014684 0.029533 0.031013</inertia>
+		<center_of_mass>0.180727 -0.000163 -0.008583</center_of_mass>
+		<joint_name>l_forearm_roll_joint</joint_name>
+		<parent_link_name>l_elbow_flex_link</parent_link_name>
+		<joint_type>rx</joint_type>
+		<joint_limits>-3.14 3.140000</joint_limits>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/upperarm/forearm_roll.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>Pr2/graphics/forearm/forearm.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>l_elbow_flex_link</link_name>
+		<position_in_parent>0.400000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>1.903270</mass>
+		<inertia>0.003465 0.004416 0.003592</inertia>
+		<center_of_mass>0.010140 0.000320 -0.012110</center_of_mass>
+		<joint_name>l_elbow_flex_joint</joint_name>
+		<parent_link_name>l_upper_arm_roll_link</parent_link_name>
+		<joint_type>ry</joint_type>
+		<joint_limits>0.000000 3.140000</joint_limits>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/upperarm/elbow_flex.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>l_upper_arm_roll_link</link_name>
+		<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>6.117690</mass>
+		<inertia>0.025333 0.089244 0.090550</inertia>
+		<center_of_mass>0.210551 0.016309 -0.000561</center_of_mass>
+		<joint_name>l_upper_arm_roll_joint</joint_name>
+		<parent_link_name>l_shoulder_lift_link</parent_link_name>
+		<joint_type>rx</joint_type>
+		<joint_limits>3.900000 3.140000</joint_limits>
+		<default_joint_position>3.140000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/shoulder/upper_arm_roll.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>Pr2/graphics/upperarm/upper_arm.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>l_shoulder_lift_link</link_name>
+		<position_in_parent>0.100000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>2.749880</mass>
+		<inertia>0.021056 0.021272 0.019758</inertia>
+		<center_of_mass>0.021950 -0.026640 -0.031270</center_of_mass>
+		<joint_name>l_shoulder_lift_joint</joint_name>
+		<parent_link_name>l_shoulder_pan_link</parent_link_name>
+		<joint_type>ry</joint_type>
+		<joint_limits>1.396300 3.140000</joint_limits>
+		<default_joint_position>3.140000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/shoulder/shoulder_lift.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>l_shoulder_pan_link</link_name>
+		<position_in_parent>0.000000 0.188000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>25.799300</mass>
+		<inertia>0.866179 0.874217 0.273538</inertia>
+		<center_of_mass>-0.001201 0.024513 -0.098231</center_of_mass>
+		<joint_name>l_shoulder_pan_joint</joint_name>
+		<parent_link_name>torso_lift_link</parent_link_name>
+		<joint_type>rz</joint_type>
+		<joint_limits>2.285400 3.140000</joint_limits>
+		<default_joint_position>3.140000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/shoulder/shoulder_pan.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>r_wrist_roll_link</link_name>
+		<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>1.114600</mass>
+		<inertia>0.011810 0.013966 0.014418</inertia>
+		<center_of_mass>0.083070 0.000202 -0.001020</center_of_mass>
+		<joint_name>r_wrist_roll_joint</joint_name>
+		<parent_link_name>r_wrist_flex_link</parent_link_name>
+		<joint_type>rx</joint_type>
+		<joint_limits>-3.14 3.140000</joint_limits>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/forearm/wrist_roll.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>Pr2/graphics/gripper/gripper_palm.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>r_wrist_flex_link</link_name>
+		<position_in_parent>0.321000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>0.614020</mass>
+		<inertia>0.000652 0.000198 0.000645</inertia>
+		<center_of_mass>-0.001570 0.000000 -0.000750</center_of_mass>
+		<joint_name>r_wrist_flex_joint</joint_name>
+		<parent_link_name>r_forearm_roll_link</parent_link_name>
+		<joint_type>ry</joint_type>
+		<joint_limits>0.000000 3.140000</joint_limits>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/forearm/wrist_flex.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>r_forearm_roll_link</link_name>
+		<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>2.689680</mass>
+		<inertia>0.014684 0.029533 0.031013</inertia>
+		<center_of_mass>0.180727 -0.000163 -0.008583</center_of_mass>
+		<joint_name>r_forearm_roll_joint</joint_name>
+		<parent_link_name>r_elbow_flex_link</parent_link_name>
+		<joint_type>rx</joint_type>
+		<joint_limits>-3.14 3.140000</joint_limits>
+		<default_joint_position>0.0</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/upperarm/forearm_roll.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>Pr2/graphics/forearm/forearm.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>r_elbow_flex_link</link_name>
+		<position_in_parent>0.400000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>1.903270</mass>
+		<inertia>0.003465 0.004416 0.003592</inertia>
+		<center_of_mass>0.010140 0.000320 -0.012110</center_of_mass>
+		<joint_name>r_elbow_flex_joint</joint_name>
+		<parent_link_name>r_upper_arm_roll_link</parent_link_name>
+		<joint_type>ry</joint_type>
+		<joint_limits>0.000000 3.140000</joint_limits>
+		<default_joint_position>0.00</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/upperarm/elbow_flex.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>r_upper_arm_roll_link</link_name>
+		<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>6.117690</mass>
+		<inertia>0.025403 0.089241 0.090617</inertia>
+		<center_of_mass>0.210482 -0.015945 -0.000197</center_of_mass>
+		<joint_name>r_upper_arm_roll_joint</joint_name>
+		<parent_link_name>r_shoulder_lift_link</parent_link_name>
+		<joint_type>rx</joint_type>
+		<joint_limits>0.800000 3.140000</joint_limits>
+		<default_joint_position>3.140000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/shoulder/upper_arm_roll.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>Pr2/graphics/upperarm/upper_arm.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>r_shoulder_lift_link</link_name>
+		<position_in_parent>0.100000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>2.749880</mass>
+		<inertia>0.021056 0.021272 0.019758</inertia>
+		<center_of_mass>0.021950 -0.026640 -0.031270</center_of_mass>
+		<joint_name>r_shoulder_lift_joint</joint_name>
+		<parent_link_name>r_shoulder_pan_link</parent_link_name>
+		<joint_type>ry</joint_type>
+		<joint_limits>1.396300 3.140000</joint_limits>
+		<default_joint_position>3.140000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/shoulder/shoulder_lift.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>r_shoulder_pan_link</link_name>
+		<position_in_parent>0.00000 -0.188000 0.0</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>25.799300</mass>
+		<inertia>0.866179 0.874217 0.273538</inertia>
+		<center_of_mass>-0.001201 0.024513 -0.098231</center_of_mass>
+		<joint_name>r_shoulder_pan_joint</joint_name>
+		<parent_link_name>torso_lift_link</parent_link_name>
+		<joint_type>rz</joint_type>
+		<joint_limits>0.714602 3.140000</joint_limits>
+		<default_joint_position>3.140000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/shoulder/shoulder_pan.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>torso_lift_link</link_name>
+		<position_in_parent>-0.050000 0.000000 0.790675</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>36.300000</mass>
+		<inertia>3.057910 3.158700 0.889483</inertia>
+		<center_of_mass>-0.099760 -0.000004 -0.088090</center_of_mass>
+		<joint_name>torso_lift_joint</joint_name>
+		<parent_link_name>base_rotation_link</parent_link_name>
+		<joint_type>pz</joint_type>
+		<joint_limits>0.310000 3.140000</joint_limits>
+		<default_joint_position>3.140000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/torso/torso_lift.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>base_rotation_link</link_name>
+		<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>116.000000</mass>
+		<inertia>5.652233 5.669473 3.683196</inertia>
+		<center_of_mass>-0.061000 0.000000 0.293000</center_of_mass>
+		<joint_name>base_rotatuion_joint</joint_name>
+		<parent_link_name>base_translation_y_link</parent_link_name>
+		<joint_type>rz</joint_type>
+		<joint_limits>-3.140000 3.140000</joint_limits>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>Pr2/graphics/base/base.obj</name>
+				<position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>1.000000 1.000000 1.000000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>base_translation_y_link</link_name>
+		<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>10.010000</mass>
+		<inertia>0.01000 10.001000 0.01000</inertia>
+		<center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+		<joint_name>base_translation_y_joint</joint_name>
+		<parent_link_name>base_translation_x_link</parent_link_name>
+		<joint_type>py</joint_type>
+		<joint_limits>-100.0000 100.0000</joint_limits>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+		</graphics>
+	</link>
+	<link>
+		<link_name>base_translation_x_link</link_name>
+		<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<mass>10.10000</mass>
+		<inertia>10.001000 0.01000 0.01000</inertia>
+		<center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+		<joint_name>base_translation_x_joint</joint_name>
+		<parent_link_name>ground</parent_link_name>
+		<joint_type>px</joint_type>
+		<joint_limits>-100.0000 100.0000</joint_limits>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+		</graphics>
+	</link>
+</robot>
+</lotus>

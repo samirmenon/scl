@@ -1,0 +1,471 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+<lotus>
+<robot spec_name="Stanbot">
+  <link>
+    <link_name>left-foot-dummay</link_name>
+    <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 -0.050000 0.000000</center_of_mass>
+    <joint_name>left-ankle-lateral</joint_name>
+    <parent_link_name>left-ankle</parent_link_name>
+    <joint_type>ry</joint_type>
+    <joint_limits>0.650000 3.140000</joint_limits>
+    <default_joint_position>0.000000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/foot.obj</name>
+        <position_in_parent>0.000000 -0.050000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>left-ankle</link_name>
+    <position_in_parent>0.000000 0.000000 -0.410000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.120000 0.147660 0.040060</inertia>
+    <center_of_mass>0.000000 0.000000 0.210000</center_of_mass>
+    <joint_name>left-ankle-straightward</joint_name>
+    <parent_link_name>left-lower-leg</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>0.650000 3.140000</joint_limits>
+    <default_joint_position>-0.500000</default_joint_position>
+    <graphics>
+    </graphics>
+  </link>
+  <link>
+    <link_name>left-lower-leg</link_name>
+    <position_in_parent>0.000000 0.000000 -0.380000</position_in_parent>
+    <orientation_in_parent>0.4794 0 0 0.8776</orientation_in_parent>
+    <mass>3.860000</mass>
+    <inertia>0.108000 0.134840 0.042740</inertia>
+    <center_of_mass>0.000000 0.000000 0.195000</center_of_mass>
+    <joint_name>left-knee</joint_name>
+    <parent_link_name>left-upper-leg-bending</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>-0.600000 3.140000</joint_limits>
+    <default_joint_position>0.150000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/calf.obj</name>
+        <position_in_parent>0.000000 0.000000 -0.180000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>left-upper-leg-bending</link_name>
+    <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>3.940000</mass>
+    <inertia>0.065580 0.068340 0.056500</inertia>
+    <center_of_mass>0.000000 0.000000 0.120000</center_of_mass>
+    <joint_name>left-upper-leg-bending</joint_name>
+    <parent_link_name>left-upper-leg-rolling</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>2.300000 3.140000</joint_limits>
+    <default_joint_position>0.000000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/thigh.obj</name>
+        <position_in_parent>0.000000 0.000000 -0.180000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>left-upper-leg-rolling</link_name>
+    <position_in_parent>0.120000 0.000000 0.000000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+    <joint_name>left-upper-leg-rolling</joint_name>
+    <parent_link_name>hip</parent_link_name>
+    <joint_type>ry</joint_type>
+    <joint_limits>0.400000 3.140000</joint_limits>
+    <default_joint_position>0.000000</default_joint_position>
+    <graphics>
+    </graphics>
+  </link>
+  <link>
+    <link_name>right-hand</link_name>
+    <position_in_parent>0.000000 0.000000 -0.280000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>0.300000</mass>
+    <inertia>0.001340 0.001340 0.000480</inertia>
+    <center_of_mass>0.000000 0.000000 -0.075000</center_of_mass>
+    <joint_name>right-wrist-rolling</joint_name>
+    <parent_link_name>right-lower-arm</parent_link_name>
+    <joint_type>rz</joint_type>
+    <joint_limits>0.900000 3.140000</joint_limits>
+    <default_joint_position>0.300000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/hand_ascii.obj</name>
+        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>right-lower-arm</link_name>
+    <position_in_parent>0.000000 0.000000 -0.320000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.180000</mass>
+    <inertia>0.009300 0.009300 0.000960</inertia>
+    <center_of_mass>0.000000 0.000000 -0.150000</center_of_mass>
+    <joint_name>right-elbow</joint_name>
+    <parent_link_name>right-upper-arm</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>-0.600000 3.140000</joint_limits>
+    <default_joint_position>-1.800000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/lowerArm_ascii.obj</name>
+        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>right-upper-arm</link_name>
+    <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>2.040000</mass>
+    <inertia>0.190800 0.190800 0.028000</inertia>
+    <center_of_mass>0.000000 0.000000 -0.160000</center_of_mass>
+    <joint_name>right-shoulder-rolling</joint_name>
+    <parent_link_name>right-shoulder-lateral</parent_link_name>
+    <joint_type>rz</joint_type>
+    <joint_limits>1.300000 3.140000</joint_limits>
+    <default_joint_position>-0.100000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/upperArm_ascii.obj</name>
+        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>right-shoulder-lateral</link_name>
+    <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+    <joint_name>right-shoulder-lateral</joint_name>
+    <parent_link_name>right-shoulder-straightward</parent_link_name>
+    <joint_type>ry</joint_type>
+    <joint_limits>0.790000 3.140000</joint_limits>
+    <default_joint_position>0.400000</default_joint_position>
+    <graphics>
+    </graphics>
+  </link>
+  <link>
+    <link_name>right-shoulder-straightward</link_name>
+    <position_in_parent>-0.140000 0.000000 0.320000</position_in_parent>
+    <orientation_in_parent>-0.4794 -0 -0 0.8776</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+    <joint_name>right-shoulder-straightward</joint_name>
+    <parent_link_name>chest</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>1.800000 3.140000</joint_limits>
+    <default_joint_position>1.800000</default_joint_position>
+    <graphics>
+    </graphics>
+  </link>
+  <link>
+    <link_name>left-hand</link_name>
+    <position_in_parent>0.000000 0.000000 -0.280000</position_in_parent>
+    <orientation_in_parent>0 0 0.9975 0.07074</orientation_in_parent>
+    <mass>0.300000</mass>
+    <inertia>0.001340 0.001340 0.000480</inertia>
+    <center_of_mass>0.000000 0.000000 -0.075000</center_of_mass>
+    <joint_name>left-wrist-rolling</joint_name>
+    <parent_link_name>left-lower-arm</parent_link_name>
+    <joint_type>rz</joint_type>
+    <joint_limits>1.100000 3.140000</joint_limits>
+    <default_joint_position>-0.300000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/hand_ascii.obj</name>
+        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>left-lower-arm</link_name>
+    <position_in_parent>0.000000 0.000000 -0.320000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.180000</mass>
+    <inertia>0.009300 0.009300 0.000960</inertia>
+    <center_of_mass>0.000000 0.000000 -0.150000</center_of_mass>
+    <joint_name>left-elbow</joint_name>
+    <parent_link_name>left-upper-arm</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>-0.600000 3.140000</joint_limits>
+    <default_joint_position>-1.800000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/lowerArm_ascii.obj</name>
+        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>left-upper-arm</link_name>
+    <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>2.040000</mass>
+    <inertia>0.190800 0.190800 0.028000</inertia>
+    <center_of_mass>0.000000 0.000000 -0.160000</center_of_mass>
+    <joint_name>left-shoulder-rolling</joint_name>
+    <parent_link_name>left-shoulder-lateral</parent_link_name>
+    <joint_type>rz</joint_type>
+    <joint_limits>0.200000 3.140000</joint_limits>
+    <default_joint_position>0.100000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/upperArm_ascii.obj</name>
+        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>left-shoulder-lateral</link_name>
+    <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+    <joint_name>left-shoulder-lateral</joint_name>
+    <parent_link_name>left-shoulder-straightward</parent_link_name>
+    <joint_type>ry</joint_type>
+    <joint_limits>0.000000 3.140000</joint_limits>
+    <default_joint_position>-0.400000</default_joint_position>
+    <graphics>
+    </graphics>
+  </link>
+  <link>
+    <link_name>left-shoulder-straightward</link_name>
+    <position_in_parent>0.140000 0.000000 0.320000</position_in_parent>
+    <orientation_in_parent>-0.4794 -0 -0 0.8776</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+    <joint_name>left-shoulder-straightward</joint_name>
+    <parent_link_name>chest</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>1.800000 3.140000</joint_limits>
+    <default_joint_position>1.800000</default_joint_position>
+    <graphics>
+    </graphics>
+  </link>
+  <link>
+    <link_name>head</link_name>
+    <position_in_parent>0.000000 0.000000 -0.007000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>10.780000</mass>
+    <inertia>0.118260 0.118260 0.077800</inertia>
+    <center_of_mass>0.000000 0.000000 0.120000</center_of_mass>
+    <joint_name>head-lateral-turn</joint_name>
+    <parent_link_name>head-straightward</parent_link_name>
+    <joint_type>rz</joint_type>
+    <joint_limits>1.700000 3.140000</joint_limits>
+    <default_joint_position>0.000000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/head_ascii.obj</name>
+        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>head-straightward</link_name>
+    <position_in_parent>0.000000 0.000000 0.340000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+    <joint_name>head-straightward-bending</joint_name>
+    <parent_link_name>chest</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>0.790000 3.140000</joint_limits>
+    <default_joint_position>0.300000</default_joint_position>
+    <graphics>
+    </graphics>
+  </link>
+  <link>
+    <link_name>chest</link_name>
+    <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>18.480000</mass>
+    <inertia>0.787500 0.327260 0.213140</inertia>
+    <center_of_mass>0.000000 0.000000 0.175000</center_of_mass>
+    <joint_name>chest-twisting</joint_name>
+    <parent_link_name>waist</parent_link_name>
+    <joint_type>rz</joint_type>
+    <joint_limits>0.830000 3.140000</joint_limits>
+    <default_joint_position>0.000000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/chest_ascii.obj</name>
+        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>waist</link_name>
+    <position_in_parent>0.060000 0.000000 0.220000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+    <joint_name>waist-rolling</joint_name>
+    <parent_link_name>hip</parent_link_name>
+    <joint_type>ry</joint_type>
+    <joint_limits>1.100000 3.140000</joint_limits>
+    <default_joint_position>0.000000</default_joint_position>
+    <graphics>
+    </graphics>
+  </link>
+  <link>
+    <link_name>hip</link_name>
+    <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>8.160000</mass>
+    <inertia>0.065580 0.068340 0.056500</inertia>
+    <center_of_mass>0.000000 0.000000 0.120000</center_of_mass>
+    <joint_name>right-upper-leg-rolling</joint_name>
+    <parent_link_name>right-upper-leg-bending</parent_link_name>
+    <joint_type>ry</joint_type>
+    <joint_limits>0.400000 3.140000</joint_limits>
+    <default_joint_position>0.000000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/hip_ascii.obj</name>
+        <position_in_parent>0.060000 0.000000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>right-upper-leg-bending</link_name>
+    <position_in_parent>0.000000 0.000000 0.380000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
+    <joint_name>right-upper-leg-bending</joint_name>
+    <parent_link_name>right-upper-leg</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>2.300000 3.140000</joint_limits>
+    <default_joint_position>0.630000</default_joint_position>
+    <graphics>
+    </graphics>
+  </link>
+  <link>
+    <link_name>right-upper-leg</link_name>
+    <position_in_parent>0.000000 0.000000 0.400000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>3.940000</mass>
+    <inertia>0.108000 0.134840 0.042740</inertia>
+    <center_of_mass>0.000000 0.000000 0.195000</center_of_mass>
+    <joint_name>right-knee</joint_name>
+    <parent_link_name>right-lower-leg</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>-0.600000 3.140000</joint_limits>
+    <default_joint_position>-1.000000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/thigh.obj</name>
+        <position_in_parent>0.000000 0.000000 0.200000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>right-lower-leg</link_name>
+    <position_in_parent>0.000000 0.000000 0.020000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>3.860000</mass>
+    <inertia>0.120000 0.147660 0.040060</inertia>
+    <center_of_mass>0.000000 0.000000 0.210000</center_of_mass>
+    <joint_name>right-ankle-straightward</joint_name>
+    <parent_link_name>fixed-foot</parent_link_name>
+    <joint_type>rx</joint_type>
+    <joint_limits>0.650000 3.140000</joint_limits>
+    <default_joint_position>0.450000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/calf.obj</name>
+        <position_in_parent>0.000000 0.000000 0.220000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+  <link>
+    <link_name>fixed-foot</link_name>
+    <position_in_parent>-0.060000 0.000000 -0.800000</position_in_parent>
+    <orientation_in_parent>0 0 0 1</orientation_in_parent>
+    <mass>1.000000</mass>
+    <inertia>0.010000 0.010000 0.010000</inertia>
+    <center_of_mass>0.000000 -0.050000 0.000000</center_of_mass>
+    <joint_name>right-ankle-lateral</joint_name>
+    <parent_link_name>ground</parent_link_name>
+    <joint_type>ry</joint_type>
+    <joint_limits>0.650000 3.140000</joint_limits>
+    <default_joint_position>0.000000</default_joint_position>
+    <graphics>
+      <obj_file>
+        <name>Stanbot/graphics/foot.obj</name>
+        <position_in_parent>0.000000 0.00000 0.000000</position_in_parent>
+        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+        <scaling>1.000000 1.000000 1.000000</scaling>
+        <collision_type>0</collision_type>
+      </obj_file>
+    </graphics>
+  </link>
+</robot>
+</lotus>

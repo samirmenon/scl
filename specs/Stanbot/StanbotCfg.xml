@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+
+<!-- Units are in Std International System -->
+<lotus>
+    <globals>
+        <gravity>0.000   0.000   -9.81</gravity> 
+    </globals>
+
+    <robot name="Stanbot"> 
+        <spec>Stanbot</spec>
+        <file>../../specs/Stanbot/Stanbot.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>-0.500   0.200   -0.50</position_in_parent> 
+            <orientation_in_parent>0.0 0.0 0.7071 0.7071</orientation_in_parent>
+        </root_link>
+    </robot>
+
+    <graphics name="StanbotStdView">
+        <camera>
+            <pos>3.0   0.0   -0.7</pos>
+            <lookat>0.0   0.0   -0.2</lookat>
+            <up>0   0   1</up>
+            <clip>0 10</clip>
+            <background>0 0 0</background>
+        </camera>
+        <light>
+            <pos>2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.5</lookat>
+        </light>
+        <light>
+            <pos>-2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.0</lookat>
+        </light>
+    </graphics>
+
+    <controller name="StanbotGcCtrl">
+        <type>gc</type>
+        <must_use_robot>Stanbot</must_use_robot>
+        <kp>1600</kp>
+        <kv>50</kv>
+        <ki>0</ki>
+        <force_max>1000</force_max>
+        <force_min>-1000</force_min>
+    </controller>
+
+    <controller name="opc">
+        <type>task</type>
+        <must_use_robot>Stanbot</must_use_robot>
+        <task name="hand">
+            <type>OpPointTask</type>
+            <parent_link>right-hand</parent_link>
+            <pos_in_parent>0.01 0.01 0.01</pos_in_parent>
+            <priority>0</priority>
+            <task_dof>3</task_dof>
+            <kp>100</kp>
+            <kv>20</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+        </task>
+
+        <task name="hand2">
+            <type>OpPointTask</type>
+            <parent_link>left-hand</parent_link>
+            <pos_in_parent>0.01 0.01 0.01</pos_in_parent>
+            <priority>0</priority>
+            <task_dof>3</task_dof>
+            <kp>100</kp>
+            <kv>20</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+        </task>
+
+        <task name="GcTask">
+            <type>TaskGc</type>
+            <priority>1</priority>
+            <task_dof>0</task_dof> 
+            <kp>100</kp>
+            <kv>20</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+        </task>
+
+        <!-- 0 task_dof means a gc task, ie full dofs -->
+        <task name="NullSpaceDampingTask">
+            <type>TaskNullSpaceDamping</type>
+            <priority>1</priority>
+            <task_dof>0</task_dof> 
+            <kp>0</kp>
+            <kv>50</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+        </task>
+    </controller>
+</lotus>
