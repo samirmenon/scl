@@ -232,7 +232,7 @@ namespace scl
     else
     {
 #ifdef GRAPHICS_ON
-      //Thread 2 : Run the graphics and gui
+      //Thread 0 : Run the graphics and gui
       while(true == scl::CDatabase::getData()->running_)
       {
         if(scl::CDatabase::getData()->pause_graphics_)
