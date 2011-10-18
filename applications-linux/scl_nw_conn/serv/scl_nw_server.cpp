@@ -14,16 +14,21 @@
 
 #include <sutil/CSystemClock.hpp>
 
-#define N_TRAN 10
-#define N_RECV 300
+//Client:
+//#define N_TRAN 10
+//#define N_RECV 300
+
+//Server:
+#define N_TRAN 300
+#define N_RECV 10
 
 
-/** A sample network communication app */
+/** A sample network server app */
 int main(int argc, char** argv)
 {
   if(argc != 1)
   {
-    std::cout<<"\nscl_nw_conn : Sample network communication\n";
+    std::cout<<"\nscl_nw_server : Sample network server\n";
     return 0;
   }
   else
@@ -33,31 +38,33 @@ int main(int argc, char** argv)
       std::cout<<"\nStart Time:"<<sutil::CSystemClock::getSysTime()<<"\n";
 
       //Set up a client socket:
-      TCPSocket cli_sock("127.0.0.1",8081);
+      TCPServerSocket cli_serv("127.0.0.1",8081);
 
-      std::cout<<"\nConnected to server";
+      double t[N_TRAN]; //Transmit 300 values
+      double r[N_RECV]; //Recv 10 values
 
-      double t[N_TRAN]; //Transmit 10 values
-      double r[N_RECV]; //Recv 300 values
+      //Wait to accept the other person's socket.
+      TCPSocket* conn_sock = cli_serv.accept();
+      std::cout<<"\nscl_nw_server : Client connected.";
 
       //Then send/recv the stuff: 10 values, 10 times
       for(unsigned int i=0;i<10;++i)
       {
+        r[0] = N_RECV;
+        conn_sock->recv(r,N_RECV*sizeof(double));
+        std::cout<<"\nServ : Recv ["<<N_RECV<<" doubles] : ";
+        for(unsigned int j=0;j<N_RECV;++j)
+          std::cout<<r[j]<<", ";
+
         //First set the 10 values to the time stamps
         t[0] = N_TRAN;
         for(unsigned int j=1;j<N_TRAN;++j)
         { t[j] = sutil::CSystemClock::getSysTime(); }
 
-        cli_sock.send(t,N_TRAN*sizeof(double));
-        std::cout<<"\nClient : Sent ["<<N_TRAN<<" doubles] : ";
+        conn_sock->send(t,N_TRAN*sizeof(double));
+        std::cout<<"\nServ : Sent ["<<N_TRAN<<" doubles] : ";
         for(unsigned int j=0;j<N_TRAN;++j)
           std::cout<<t[j]<<", ";
-
-        r[0] = N_RECV;
-        cli_sock.recv(r,N_RECV*sizeof(double));
-        std::cout<<"\nClient : Recv ["<<N_RECV<<" doubles] : ";
-        for(unsigned int j=0;j<N_RECV;++j)
-          std::cout<<r[j]<<", ";
       }
 
       std::cout<<"\nEnd Time:"<<sutil::CSystemClock::getSysTime()<<"\n";

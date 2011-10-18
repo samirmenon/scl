@@ -1,4 +1,4 @@
-# $Author : Samir Menon
+# $Author : Samir Meno
 # Stanford University. 
 # $Date May 7, 2010
 
@@ -8,13 +8,13 @@ SYS_ARCH = $(shell echo `uname -m`)
 
 ############################# SPECIFY ALL LIBS ############################
 #3rd party lib : Eigen (local install)
-EIGEN_INC_DIR = ../../3rdparty/eigen3.0.2/
+EIGEN_INC_DIR = ../../../3rdparty/eigen3.0.2/
 
 #3rd party lib : sUtil (local install)
-SUTIL_INC_DIR = ../../3rdparty/sUtil/src/
+SUTIL_INC_DIR = ../../../3rdparty/sUtil/src/
 
 #3rd party lib : Socket (local install)
-SOCK_INC_DIR = ../../3rdparty/practical-socket/
+SOCK_INC_DIR = ../../../3rdparty/practical-socket/
 					  
 ############################# INCLUDE AND LINK OPTIONS ############################
 #Collate all the include directiories
@@ -32,10 +32,10 @@ FINALFLAGS = -Wall -O3 $(INCLUDEDIRS) \
            $(DEFS_FIN) 
 
 ############################ SOURCE FILES ############################
-ALLSRC = scl_nw_conn.cpp $(SOCK_INC_DIR)PracticalSocket.cpp
+ALLSRC = scl_nw_server.cpp $(SOCK_INC_DIR)PracticalSocket.cpp
 
 ############################ BUILD SPECIFICATIONS ############################
-TARGET = nw_conn
+TARGET = nw_serv
 
 #Build all simulations
 .PHONY: all
