@@ -40,11 +40,11 @@ TARGET = nw_conn
 #Build all simulations
 .PHONY: all
 all:
-	$(CXX) $(DBGFLAGS) -o $(TARGET) $(ALLSRC)
+	$(CXX) $(ALLSRC) -o $(TARGET) $(DBGFLAGS)
 
-.PHONY: release 
-release: 
-	$(CXX) $(FINALFLAGS) -o $(TARGET) $(ALLSRC)
+.PHONY: release
+release:
+	$(CXX) $(ALLSRC) -o $(TARGET) $(FINALFLAGS)
 
 #Clean up options
 .PHONY : clean
