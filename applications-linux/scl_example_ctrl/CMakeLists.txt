@@ -58,8 +58,6 @@ SET(ALL_SRC ${EG_BASE_DIR}scl_example_main.cpp
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(scl_eg_ctrl ${ALL_SRC})
 
-target_link_libraries(scl_eg_ctrl gomp GL GLU glut ncurses)
-
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
 find_library( SCL_LIBRARY_DEBUG NAMES scl
             PATHS   ${SCL_BASE_DIR}/applications-linux/scl_lib/
@@ -87,3 +85,7 @@ SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
               optimized ${CHAI_LIBRARY_RELEASE} )
 
 target_link_libraries(scl_eg_ctrl ${CHAI_LIBRARY})
+
+
+###############CODE TO FIND AND LINK REMANING LIBS ######################
+target_link_libraries(scl_eg_ctrl gomp GL GLU glut ncurses)
