@@ -184,7 +184,7 @@ namespace scl_test
       // OPEN GL - WINDOW DISPLAY
       //-----------------------------------------------------------------------
       // initialize GLUT
-      if(!db->s_gui_.glut_initialized_)
+      if(1!=glutGet(GLUT_INIT_STATE))
       {
         glutInit(&argc, argv);
         db->s_gui_.glut_initialized_ = true;

@@ -211,7 +211,7 @@ namespace scl_test
 
       /******************************ChaiGlut Graphics************************************/
       //Check if glut has already been initialized.
-      if(!db->s_gui_.glut_initialized_)
+      if(1!=glutGet(GLUT_INIT_STATE))
       {
         glutInit(&argc, argv);
         db->s_gui_.glut_initialized_ = true;
