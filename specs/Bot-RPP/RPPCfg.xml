@@ -11,7 +11,7 @@
         <spec>RPP</spec>
         <file>../../specs/Bot-RPP/RPP.xml</file>
         <root_link>
-            <link_name>ground</link_name>
+            <link_name>ground</link_name> <!-- The ground link has id -1 -->
             <position_in_parent>-0.300   0.000   -1.000</position_in_parent> 
             <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
             <graphics>
