@@ -156,14 +156,14 @@ namespace scl_chai_glut_interface
       CChaiGlobals::getData()->chai_glut_running = false;
     }
 
-    // option 1:
+    // option 1: Enable/Disable textures
     if (CChaiGlobals::getData()->keys_active[static_cast<int>('1')])
     {
       bool useTexture = CChaiGlobals::getData()->GLOB_chaiDbptr->chai_world_->getUseTexture();
       CChaiGlobals::getData()->GLOB_chaiDbptr->chai_world_->setUseTexture(!useTexture,true);
     }
 
-    // option 2:
+    // option 2: Enable/Disable wireframe mode
     if (CChaiGlobals::getData()->keys_active[static_cast<int>('2')])
     {
       bool useWireMode = CChaiGlobals::getData()->GLOB_chaiDbptr->chai_world_->getWireMode();
@@ -318,6 +318,29 @@ namespace scl_chai_glut_interface
           scl::CDatabase::getData()->s_gui_.ui_point_2_.transpose();
     }
 
+    //Pause the controller
+    if (CChaiGlobals::getData()->keys_active[static_cast<int>('p')])
+    {
+      scl::CDatabase::getData()->pause_ctrl_dyn_ = true;
+      std::cout<<"\nController and Simulation Paused. Press 'P' to unpause or ';' to step. "<<std::flush;
+      CChaiGlobals::getData()->keys_active[static_cast<int>('p')] = false;
+    }
+
+    //Unpause the controller
+    if (CChaiGlobals::getData()->keys_active[static_cast<int>('P')])
+    {
+      scl::CDatabase::getData()->pause_ctrl_dyn_ = false;
+      std::cout<<"\nController and Simulation Unpaused.";
+      CChaiGlobals::getData()->keys_active[static_cast<int>('P')] = false;
+    }
+
+    //Step the controller
+    if (CChaiGlobals::getData()->keys_active[static_cast<int>(';')])
+    {
+      scl::CDatabase::getData()->step_ctrl_dyn_ = true;
+      std::cout<<"+1"<<std::flush;
+    }
+
     //Modulate a robot's links
     static int link_idx = 0;
     if (CChaiGlobals::getData()->keys_active[static_cast<int>('+')])
@@ -343,7 +366,7 @@ namespace scl_chai_glut_interface
     }
 
     // Position keyboard shortcuts.
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('p')])
+    if (CChaiGlobals::getData()->keys_active[static_cast<int>('o')])
     {
       scl::SDatabase* db = scl::CDatabase::getData();
       scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
@@ -351,7 +374,7 @@ namespace scl_chai_glut_interface
       { link_idx = io->sensors_.q_.size()-1;  }
       io->sensors_.q_(link_idx) += 0.1;
     }
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('P')])
+    if (CChaiGlobals::getData()->keys_active[static_cast<int>('O')])
     {
       scl::SDatabase* db = scl::CDatabase::getData();
       scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
