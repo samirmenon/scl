@@ -81,6 +81,9 @@ public:
   /** The number of degrees of freedom of the robot */
   sUInt dof_;
 
+  /** The log file */
+  std::string log_file_;
+
   /** ---------------------------------------------- */
   /** Flags to control the simulation     | Defaults */
   /** ---------------------------------------------- */
@@ -91,6 +94,7 @@ public:
   sBool flag_apply_actuator_vel_limits_;     //true
   sBool flag_apply_actuator_acc_limits_;     //true
   sBool flag_controller_on_;                 //true
+  sBool flag_logging_on_;                    //false
   /** ---------------------------------------------- */
 
   //std::string name_; //Inherited
@@ -106,6 +110,7 @@ public:
     flag_apply_actuator_vel_limits_   = true;
     flag_apply_actuator_acc_limits_   = true;
     flag_controller_on_               = true;
+    flag_logging_on_                  = false;
   }
 };
 
