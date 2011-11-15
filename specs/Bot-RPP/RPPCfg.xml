@@ -20,6 +20,7 @@
 				        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
 				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
 				        <collision_type>0</collision_type>
+					<scaling>0.5 0.5 0.5</scaling>
 			        </obj_file>
             </graphics>
         </root_link>
