@@ -6,6 +6,9 @@ Author: Samir Menon <smenon@stanford.edu>
 
 Installation instructions:
 
+Install additional dependencies: 
+build-essential cmake libusb-dev freeglut3-dev libncurses5-dev git-core gitk 
+
 1. Download Eigen 3.0.2
 $ wget http://bitbucket.org/eigen/eigen/get/3.0.2.tar.gz 3rdparty/
 $ cd 3rdparty
