@@ -222,13 +222,13 @@ namespace scl {
         data_ = S_NULL;
       }
       has_been_init_ = false;
-      return true;
     }
     catch(std::exception& ee)
     {
       std::cerr<<"\nCChaiGraphics::destroyGraphics() : "<<ee.what();
       return false;
     }
+    return true;
   }
 
   sBool CChaiGraphics::addRobotToRender(const std::string& arg_robot)
@@ -933,13 +933,13 @@ namespace scl {
 
         //Advance to the next muscle
       }
-      return true;
     }
     catch(std::exception& ee)
     {
       std::cerr<<"\nCChaiGraphics::updateGraphicsForMuscles() : "<<ee.what();
       return false;
     }
+    return true;
   }
 
 }
