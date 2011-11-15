@@ -274,7 +274,19 @@ namespace scl_app
         //Thread 1 : Run the simulation
         while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
         {
-          stepMySimulation();
+          if(!scl::CDatabase::getData()->pause_ctrl_dyn_)
+          { stepMySimulation(); }
+          //If paused, but step required, step it and set step flag to false.
+          else if(scl::CDatabase::getData()->step_ctrl_dyn_)
+          {
+            scl::CDatabase::getData()->step_ctrl_dyn_ = false;
+            stepMySimulation();
+          }
+          else
+          {//Paused and no step required. Sleep for a bit.
+            const timespec ts = {0, 15000000};//Sleep for 15ms
+            nanosleep(&ts,NULL);
+          }
         }
       }
       else
@@ -295,7 +307,15 @@ namespace scl_app
   {
     while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
     {
-      stepMySimulation();
+      //If not paused, step the simulation.
+      if(!scl::CDatabase::getData()->pause_ctrl_dyn_)
+      { stepMySimulation(); }
+      //If paused, but step required, step it and set step flag to false.
+      else if(scl::CDatabase::getData()->step_ctrl_dyn_)
+      {
+        scl::CDatabase::getData()->step_ctrl_dyn_ = false;
+        stepMySimulation();
+      }
 
       static int gr_skip_ctr=0;
       if(gr_skip_ctr<=500)
