@@ -283,6 +283,9 @@ public:
   /** Whether the controller+dynamics are paused or not */
   sBool pause_ctrl_dyn_;
 
+  /** Whether the dynamics should pause after the next iteration */
+  sBool step_ctrl_dyn_;
+
   /** Whether the graphics updates are paused or not */
   sBool pause_graphics_;
 
