@@ -578,7 +578,7 @@ namespace scl {
       if(S_NULL == tmp_mesh_ds)
       { throw(std::runtime_error("Could not find the named mesh data structure."));  }
 
-      cMesh* tmp_chai_mesh = tmp_mesh_ds->graphics_obj_;
+      cGenericObject* tmp_chai_mesh = tmp_mesh_ds->graphics_obj_;
       flag = tmp_chai_mesh->removeFromGraph();
       if(false == flag)
       { throw(std::runtime_error("Could not remove mesh from the chai graphics world. Invalid data state, chai data might be corrupted."));  }
