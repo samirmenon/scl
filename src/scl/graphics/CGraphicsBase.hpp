@@ -81,6 +81,14 @@ public:
    virtual sBool addRobotToRender(
        const std::string& arg_robot)=0;
 
+   /** Removes a robot's meshes from the graphics rendering environment.
+    *
+    * A robot is defined as:
+    * 1. Anything whose dynamics are integrated by the physics simulator
+    * 2. Any real world entity subject to the laws of physics */
+   virtual sBool removeRobotFromRender(
+       const std::string& arg_robot)=0;
+
    /** Adds a static mesh to render. Indexed by its name.
     *
     * A mesh is defined as anything that DOESN"T obey the laws of
@@ -91,6 +99,12 @@ public:
        const Eigen::Vector3d& arg_pos,
        const Eigen::Matrix3d& arg_rot)=0;
 
+   /** Removes a static mesh from the rendered scene. Indexed by its name.
+    *
+    * A mesh is defined as anything that DOESN"T obey the laws of
+    * physics. It is merely rendered (possibly with collision etc). */
+   virtual sBool removeMeshFromRender(const std::string& arg_mesh_name)=0;
+
    /** Adds a muscle system to the graphics rendering environment
     *
     * A muscle system is defined as:
@@ -100,6 +114,15 @@ public:
        const std::string& arg_robot,
        const std::string& arg_msys,
        const sBool add_musc_via_points)=0;
+
+   /** Removes a muscle system from the graphics rendering environment
+    *
+    * A muscle system is defined as:
+    * 1. A set of line segments, with connection points on a robot links certain links.
+    * 2. A parent robot to whose links the muscles attach. */
+   virtual sBool removeMusclesFromRender(
+       const std::string& arg_robot,
+       const std::string& arg_msys)=0;
 
 
    /********************************************************
