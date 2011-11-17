@@ -237,6 +237,8 @@ namespace scl {
     SGraphicsPhysicalLink* robot_brrep_root = S_NULL;
     try
     {
+      if(!has_been_init_) { return false; }
+
       //1. Get the robot
       SDatabase* db = CDatabase::getData();
       if(S_NULL == db)
@@ -322,9 +324,7 @@ namespace scl {
     bool flag;
     try
     {
-      //0. Check if the graphics have been initialized
-      if(S_NULL == data_)
-      { throw(std::runtime_error("Chai graphics not initialized"));  }
+      if(!has_been_init_) { return false; }
 
       //1. Get the robot tree on the graphics robot pile
       sutil::CMappedTree<std::string, SGraphicsPhysicalLink>* rob_gr_brrep;
@@ -363,6 +363,8 @@ namespace scl {
   {
     try
     {
+      if(!has_been_init_) { return false; }
+
       //0.a. Check whether the passed argument is consist with what we expect
       if(S_NULL != arg_link->graphics_obj_)
       { throw(std::runtime_error("Error. Graphics object already initialized"));  }
@@ -516,9 +518,7 @@ namespace scl {
     SGraphicsMesh* tmp_mesh_ds = S_NULL;
     try
     {
-      //0. Preliminary error checks
-      if(S_NULL == data_->chai_world_)
-      { throw(std::runtime_error("Chai world not initialized. Can't add a mesh."));  }
+      if(!has_been_init_) { return false; }
 
       //1. Create a new chai mesh
       tmp_chai_mesh = new cMesh(data_->chai_world_);
@@ -561,6 +561,40 @@ namespace scl {
     return true;
   }
 
+  /** Removes a static mesh from the rendered scene. Indexed by its name.
+   *
+   * A mesh is defined as anything that DOESN"T obey the laws of
+   * physics. It is merely rendered (possibly with collision etc). */
+  sBool CChaiGraphics::removeMeshFromRender(const std::string& arg_mesh_name)
+  {
+    bool flag;
+    try
+    {
+      if(!has_been_init_) { return false; }
+
+      //1. Get mesh data structure pointing to the chai object
+      SGraphicsMesh* tmp_mesh_ds = S_NULL;
+      tmp_mesh_ds = data_->meshes_rendered_.at(arg_mesh_name);
+      if(S_NULL == tmp_mesh_ds)
+      { throw(std::runtime_error("Could not find the named mesh data structure."));  }
+
+      cMesh* tmp_chai_mesh = tmp_mesh_ds->graphics_obj_;
+      flag = tmp_chai_mesh->removeFromGraph();
+      if(false == flag)
+      { throw(std::runtime_error("Could not remove mesh from the chai graphics world. Invalid data state, chai data might be corrupted."));  }
+
+      flag = data_->meshes_rendered_.erase(arg_mesh_name);
+      if(false == flag)
+      { throw(std::runtime_error("Could not remove mesh's data from the mapped tree. Invalid data state, scl graphics data might be corrupted."));  }
+    }
+    catch(std::exception& ee)
+    {
+      std::cerr<<"\nCChaiGraphics::removeMeshFromRender() : "<<ee.what();
+      return false;
+    }
+    return true;
+  }
+
 
 
   sBool CChaiGraphics::addMusclesToRender(
@@ -571,6 +605,8 @@ namespace scl {
     std::string musc_name("");
     try
     {
+      if(!has_been_init_) { return false; }
+
       //1. Get the robot
       SDatabase* db = CDatabase::getData();
       if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
@@ -691,6 +727,8 @@ namespace scl {
   {
     try
     {
+      if(!has_been_init_) { return false; }
+
       /** Render a sphere at the link's position */
       sutil::CMappedTree<std::string, scl::SGraphicsPhysicalLink> * rob_br = S_NULL;
       rob_br = data_->robots_rendered_.at(arg_robot);//Shortcut
@@ -734,6 +772,8 @@ namespace scl {
   {
     try
     {
+      if(!has_been_init_) { return false; }
+
       //Create a new sphere and add it to the robot.
       cGenericObject *new_op_gr = new cShapeSphere(arg_size);
       if(S_NULL == new_op_gr)
