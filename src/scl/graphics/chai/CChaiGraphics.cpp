@@ -312,6 +312,53 @@ namespace scl {
     return true;
   }
 
+  /** Removes a robot's meshes from the graphics rendering environment.
+   *
+   * A robot is defined as:
+   * 1. Anything whose dynamics are integrated by the physics simulator
+   * 2. Any real world entity subject to the laws of physics */
+  sBool CChaiGraphics::removeRobotFromRender(const std::string& arg_robot)
+  {
+    bool flag;
+    try
+    {
+      //0. Check if the graphics have been initialized
+      if(S_NULL == data_)
+      { throw(std::runtime_error("Chai graphics not initialized"));  }
+
+      //1. Get the robot tree on the graphics robot pile
+      sutil::CMappedTree<std::string, SGraphicsPhysicalLink>* rob_gr_brrep;
+      rob_gr_brrep = data_->robots_rendered_.at(arg_robot);
+      if(S_NULL==rob_gr_brrep)
+      { throw(std::runtime_error("Couldn't find a graphics representation for the robot"));  }
+
+      //2. Remove it from the chai graphics.
+      SGraphicsPhysicalLink* gr_root = rob_gr_brrep->getRootNode();
+      if(S_NULL == gr_root)
+      { throw(std::runtime_error("Robot's graphics rendering root is NULL. Invalid data state, chai data might be corrupted."));  }
+
+      flag = gr_root->graphics_obj_->removeFromGraph();
+      if(false == flag)
+      { throw(std::runtime_error("Could not remove robot's graphics from the chai graphics world. Invalid data state, chai data might be corrupted."));  }
+
+      flag = data_->robots_rendered_.erase(arg_robot);
+      if(false == flag)
+      { throw(std::runtime_error("Could not remove robot's graphics from the mapped tree. Invalid data state, scl graphics data might be corrupted."));  }
+
+#ifdef W_TESTING
+      // Print some info
+      printf("\nRemoved a robot <%s> from graphics specification <%s>",
+          arg_robot.c_str(), data_->name_.c_str());
+#endif
+    }
+    catch(std::exception& ee)
+    {
+      std::cerr<<"\nCChaiGraphics::removeRobotFromRender() : "<<ee.what();
+      return false;
+    }
+    return true;
+  }
+
   sBool CChaiGraphics::addRobotLink(SGraphicsPhysicalLink* arg_link)
   {
     try
