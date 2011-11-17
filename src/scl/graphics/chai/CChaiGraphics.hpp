@@ -140,10 +140,13 @@ public:
    *
    * A muscle system is defined as:
    * 1. A set of line segments, with connection points on a robot links certain links.
-   * 2. A parent robot to whose links the muscles attach. */
+   * 2. A parent robot to whose links the muscles attach.
+   *
+   * NOTE TODO: Implement this.*/
   virtual sBool removeMusclesFromRender(
       const std::string& arg_robot,
-      const std::string& arg_msys);
+      const std::string& arg_msys)
+  { return false; }
 
   /** Adds a sphere to a link on a robot in the rendering environment */
   sBool addSphereToRender(
