@@ -595,7 +595,33 @@ namespace scl {
     return true;
   }
 
+  sBool CChaiGraphics::scaleMesh(const std::string& arg_mesh_name,
+      sFloat arg_x, sFloat arg_y, sFloat arg_z)
+  {
+    bool flag;
+    try
+    {
+      if(!has_been_init_) { return false; }
 
+      if( (arg_x <= 0.0) || (arg_y <= 0.0) || (arg_z <= 0.0) )
+      { throw(std::runtime_error("Scale factors must be positive."));  }
+
+      //1. Get mesh data structure pointing to the chai object
+      SGraphicsMesh* tmp_mesh_ds = S_NULL;
+      tmp_mesh_ds = data_->meshes_rendered_.at(arg_mesh_name);
+      if(S_NULL == tmp_mesh_ds)
+      { throw(std::runtime_error("Could not find the named mesh data structure."));  }
+
+      cGenericObject* tmp_chai_mesh = tmp_mesh_ds->graphics_obj_;
+      tmp_chai_mesh->scale(cVector3d(arg_x, arg_y, arg_z));
+    }
+    catch(std::exception& ee)
+    {
+      std::cerr<<"\nCChaiGraphics::scaleMesh() : "<<ee.what();
+      return false;
+    }
+    return true;
+  }
 
   sBool CChaiGraphics::addMusclesToRender(
       const std::string& arg_robot,

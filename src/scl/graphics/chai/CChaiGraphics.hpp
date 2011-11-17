@@ -126,6 +126,11 @@ public:
    * physics. It is merely rendered (possibly with collision etc). */
   virtual sBool removeMeshFromRender(const std::string& arg_mesh_name);
 
+  /** Scales a mesh along the x, y and z axes if it has been added
+   * to the rendering environment */
+  sBool scaleMesh(const std::string& arg_mesh_name,
+      sFloat arg_x, sFloat arg_y, sFloat arg_z);
+
   /** Adds a muscle system to the graphics rendering environment
    *
    * A muscle system contains:
