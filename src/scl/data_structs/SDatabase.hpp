@@ -109,48 +109,47 @@ public:
   /** Enables string access for controller data.
    * NOTE : Each controller is stored along with it's name
    * in a pilemap.
+   *
+   * A mapped pointer list so that it can manage memory for
+   * subclasses as well (by storing and later deleting their
+   * pointers, instead of allocating and storing objects
+   * themselves).
    * */
-  sutil::CMappedList<std::string,SControllerBase*> controllers_;
+  sutil::CMappedPointerList<std::string,SControllerBase, true> controllers_;
 
   /** Enables string access for controller task data. Each task
-   * is stored along with its type as a std::pair. */
-  sutil::CMappedList<std::string,STaskBase*> tasks_;
-
-  ~SControllerData()
-  {
-    sutil::CMappedList<std::basic_string<char>, scl::SControllerBase*>::iterator it, ite;
-    for(it = controllers_.begin(), ite = controllers_.end(); it!=ite; ++it)
-    {
-      delete *it;
-      *it = NULL;
-    }
-
-    sutil::CMappedList<std::basic_string<char>, scl::STaskBase*>::iterator it2, it2e;
-    for(it2 = tasks_.begin(), it2e = tasks_.end(); it2!=it2e; ++it2)
-    {
-      delete *it2;
-      *it2 = NULL;
-    }
-  }
+   * is stored along with its type as a std::pair.
+   * A mapped pointer list so that it can manage memory for
+   * subclasses as well (by storing and later deleting their
+   * pointers, instead of allocating and storing objects
+   * themselves).
+   * */
+  sutil::CMappedPointerList<std::string,STaskBase, true> tasks_;
 
   /** Returns all the controllers initialized for a specific robot */
   sBool getControllersForRobot(const std::string & arg_robot,
       std::vector<SControllerBase*>& ret_controllers)
   {
-    sutil::CMappedList<std::basic_string<char>, scl::SControllerBase*>::iterator it, ite;
+    ret_controllers.clear();
+    sutil::CMappedPointerList<std::string, scl::SControllerBase, true>::iterator it, ite;
     for(it = controllers_.begin(), ite = controllers_.end(); it!=ite; ++it)
     {
       SControllerBase* tmp = *it;
 
       if(S_NULL == tmp->robot_)
       {
-        std::cout<<"SControllerData::getControllersForRobot() WARNING : Found NULL robot controller ds in the pile.";
+        std::cout<<"SControllerData::getControllersForRobot()"
+            <<"WARNING : Found NULL robot controller ds in the pile.";
+        return false;
       }
 
       if(tmp->robot_->name_ == arg_robot)
       { ret_controllers.push_back(tmp); }
     }
-    return true;
+    if(0 < ret_controllers.size())
+    { return true;  }
+    else
+    { return false; }
   }
 };
 

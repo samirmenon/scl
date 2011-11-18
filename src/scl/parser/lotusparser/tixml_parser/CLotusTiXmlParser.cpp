@@ -49,7 +49,6 @@ namespace scl_parser {
       scl::SRobotLink& arg_link_ds,
       bool arg_is_root)
   {
-    bool flag = true;
     try
     {
       //Read in the information into arg_link_ds
@@ -79,10 +78,7 @@ namespace scl_parser {
         ss>>arg_link_ds.pos_in_parent_[2];
       }
       else
-      {
-        flag = false;
-        throw(std::runtime_error("No position in parent information."));
-      }
+      { throw(std::runtime_error("No position in parent information.")); }
 
       //Orientation in parent.
       link_data = arg_link_txml.FirstChildElement( "orientation_in_parent" ).Element();
@@ -100,10 +96,7 @@ namespace scl_parser {
         { throw(std::runtime_error("Specified quaternion (0,0,0,0) is invalid. Specify (0,0,0,1) instead.")); }
       }
       else
-      {
-        flag = false;
-        throw(std::runtime_error("No orientation in parent information."));
-      }
+      { throw(std::runtime_error("No orientation in parent information.")); }
 
       //******************************** Child link specific stuff ******************************
       if(!arg_is_root)
