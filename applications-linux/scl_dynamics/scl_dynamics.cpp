@@ -125,7 +125,7 @@ int main(int argc, char** argv)
 
       /******************************TaoDynamics************************************/
       scl::CTaoDynamics tao_dyn;
-      flag = tao_dyn.init(robot_name);
+      flag = tao_dyn.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize dynamic simulator"));  }
 
       /******************************ChaiGlut Graphics************************************/
@@ -151,7 +151,7 @@ int main(int argc, char** argv)
       std::cout<<std::flush;
       //Initialize some useful statistics
       scl::sFloat ke[2], pe[2];
-      flag = tao_dyn.integrate((*rob_io_ds)); //Need to integrate once to flush the state
+      flag = tao_dyn.integrate((*rob_io_ds),scl::CDatabase::getData()->sim_dt_); //Need to integrate once to flush the state
       if(false == flag)
       { throw(std::runtime_error("Could not integrate with the dynamics engine"));  }
       ke[0] = tao_dyn.getKineticEnergy(); //Now you can get the energies
@@ -179,7 +179,7 @@ int main(int argc, char** argv)
           while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
           {
             sutil::CSystemClock::tick(db->sim_dt_);
-            flag = tao_dyn.integrate((*rob_io_ds));
+            flag = tao_dyn.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
             //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_/100000;
           }
         }
