@@ -77,7 +77,7 @@ namespace scl
      * Accesses the database.
      *
      * \return True if everything went according to plan. */
-    virtual bool init(std::string const & robot_name);
+    virtual bool init(const SRobotParsedData& arg_robot_data);
 
     virtual bool updateModelMatrices(/**
 				This is where there current robot state is read when
@@ -156,7 +156,13 @@ namespace scl
         /** The existing generalized coordinates, velocities and
          * accelerations + The generalized forces + task (euclidean)
          * forces and the list of contact points and links. */
-        SRobotIOData& arg_inputs);
+        SRobotIOData& arg_inputs,
+        /** The time across which the system should integrate the
+         * dynamics.
+         *
+         * Tao uses a forward euler integrator and uses this as the
+         * dt so set it to a small value. */
+        const sFloat arg_time_interval);
 
     /** Gets the robot's kinetic energy */
     virtual sFloat getKineticEnergy();

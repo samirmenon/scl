@@ -32,11 +32,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>
 
 #include <scl/data_structs/SRobotParsedData.hpp>
-#include <sutil/CMappedTree.hpp>
 
 #include <scl/dynamics/tao/tao/dynamics/taoDynamics.h>
 #include <scl/dynamics/tao/tao/dynamics/taoJoint.h>
 #include <scl/dynamics/tao/tao/utility/TaoDeMassProp.h>
+
+#include <sutil/CMappedTree.hpp>
 
 #include <vector>
 #include <stdexcept>
@@ -60,8 +61,7 @@ namespace scl {
    *
    * NOTE : Remember to dereference the vectors in taoNodeRoot
    */
-taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const std::string arg_robot_name,
-    const SRobotParsedData* arg_robot)
+taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const SRobotParsedData& arg_robot)
 {
   const SRobotLink* tmp_root; // For parsing the database
   taoNodeRoot * ret_tao_root;  // Returns a root node
@@ -72,14 +72,14 @@ taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const std::string arg_robot_name,
     //*******Step 1***********
     //Check if a valid representation was passed.
     //************************
-    if (NULL == arg_robot)
-    { throw(std::runtime_error("Passed null robot pointer"));  }
+    if (false == arg_robot.has_been_init_)
+    { throw(std::runtime_error("Passed an uninitialized robot data structure"));  }
 
     //*******Step 2***********
     //Traverse the robotRoot's tree and construct a tao tree structure
     //************************
     //Step 2a: Find the desired robot root.
-    const sutil::CMappedTree<std::string, SRobotLink> & br = arg_robot->robot_br_rep_;
+    const sutil::CMappedTree<std::string, SRobotLink> & br = arg_robot.robot_br_rep_;
     tmp_root = br.getRootNodeConst();//The root node.
     if (tmp_root == NULL)
     { throw(std::runtime_error("Robot doesn't have valid root node"));}

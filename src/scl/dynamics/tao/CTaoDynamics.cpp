@@ -31,7 +31,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CTaoDynamics.hpp"
 
-#include <scl/Singletons.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>
@@ -124,31 +123,37 @@ namespace scl
 
 
   bool CTaoDynamics::
-  init(std::string const & robot_name)
+  init(const SRobotParsedData& arg_robot_data)
   {
     if (model_) {
       fprintf(stderr, "scl::CTaoDynamics::init(): already initialized\n");
       return false;
     }
 
-    taoNodeRoot * kgm_root(scl::CTaoRepCreator::taoRootRepCreator(robot_name,
-        CDatabase::getData()->s_parser_.robots_.at(robot_name)));
+    if(false == arg_robot_data.has_been_init_){
+      fprintf(stderr, "scl::CTaoDynamics::init(): Passed an uninitialized robot\n");
+      return false;
+    }
+
+    robot_name_ = arg_robot_data.name_;
+
+    taoNodeRoot * kgm_root(scl::CTaoRepCreator::taoRootRepCreator(arg_robot_data));
     if ( ! kgm_root) {
-      std::cout << "scl::CTaoDynamics::init(`" << robot_name
+      std::cout << "scl::CTaoDynamics::init(`" << robot_name_
           << "'): scl::CTaoRepCreator::taoRootRepCreator() failed [invalid robot name?]\n";
       return false;
     }
 #ifdef W_TESTING
     else
     {
-      std::cout << "\nscl::CTaoDynamics::init(`" << robot_name
+      std::cout << "\nscl::CTaoDynamics::init(`" << robot_name_
           << "'): scl::CTaoRepCreator::taoRootRepCreator() created a kgm tree";
     }
     std::cout<<std::flush;
 #endif
 
     if ( ! tao_consistency_check(kgm_root)) {
-      std::cout << "scl::CTaoDynamics::init(`" << robot_name
+      std::cout << "scl::CTaoDynamics::init(`" << robot_name_
           << "'): consistency check failed on TAO tree\n";
       return false;
     }
@@ -157,17 +162,16 @@ namespace scl
     // at init time, so that should be acceptable, although it would
     // be cleaner to have TAO tree deep copy functionality somewhere.
     taoNodeRoot * cc_root;
-    cc_root = scl::CTaoRepCreator::taoRootRepCreator(robot_name,
-        CDatabase::getData()->s_parser_.robots_.at(robot_name));
+    cc_root = scl::CTaoRepCreator::taoRootRepCreator(arg_robot_data);
     if ( ! cc_root) {
-      std::cout << "scl::CTaoDynamics::init(`" << robot_name
+      std::cout << "scl::CTaoDynamics::init(`" << robot_name_
           << "'): scl::CTaoRepCreator::taoRootRepCreator(cc) failed [invalid robot name?]\n";
       return false;
     }
 #ifdef W_TESTING
     else
     {
-      std::cout << "\nscl::CTaoDynamics::init(`" << robot_name
+      std::cout << "\nscl::CTaoDynamics::init(`" << robot_name_
           << "'): scl::CTaoRepCreator::taoRootRepCreator() created a cc tree";
     }
     std::cout<<std::flush;
@@ -176,23 +180,11 @@ namespace scl
     jspace::tao_tree_info_s * kgm_tree(jspace::create_bare_tao_tree_info(kgm_root));
     jspace::tao_tree_info_s * cc_tree(jspace::create_bare_tao_tree_info(cc_root));
 
-    //NOTE TODO : Remove this. Tao should just accept an SRobotParsedData* pointer instead of the name.
-    scl::SDatabase* db(scl::CDatabase::getData());
-    if ( ! db) {
-      std::cout << "scl::CTaoDynamics::init(`" << robot_name << "'): database not initialized\n";
-      return false;
-    }
-
-    scl::SRobotParsedData /*const*/ * robot(db->s_parser_.robots_.at(robot_name));
-    if ( ! robot) {
-      std::cout << "scl::CTaoDynamics::init(`" << robot_name << "'): no such robot\n";
-      return false;
-    }
-
-
     //NOTE TODO Perhaps this was what TRY_TO_CONVERT_NAMES achieved
-    sutil::CMappedTree<std::basic_string<char>, scl::SRobotLink>::iterator itbr, itbre;
-    for(itbr = robot->robot_br_rep_.begin(), itbre = robot->robot_br_rep_.end(); itbr!=itbre; ++itbr)
+    sutil::CMappedTree<std::basic_string<char>, scl::SRobotLink>::const_iterator itbr, itbre;
+    for(itbr = arg_robot_data.robot_br_rep_.begin(),
+        itbre = arg_robot_data.robot_br_rep_.end();
+        itbr!=itbre; ++itbr)
     {
       std::vector<jspace::tao_node_info_s>::iterator it, ite, icc;
 
@@ -202,7 +194,7 @@ namespace scl
       ite = kgm_tree->info.end();
       for (/**/; it != ite; ++it, ++icc)
       {
-        SRobotLink& l_ds = *itbr;
+        const SRobotLink& l_ds = *itbr;
         if (l_ds.name_ == it->node->name_)
         {
           it->link_name =
@@ -316,7 +308,7 @@ namespace scl
     return flag;
   }
 
-  sBool CTaoDynamics::integrate(SRobotIOData& arg_inputs)
+  sBool CTaoDynamics::integrate(SRobotIOData& arg_inputs, const sFloat arg_time_interval)
   {
     //NOTE TODO : Implement this for applying external contact forces.
 
@@ -356,17 +348,12 @@ namespace scl
 
     // Hard coded for now.
     //NOTE TODO : Fix this later.
-    SDatabase *db = CDatabase::getData();
-#ifdef W_TESTING
-    if(S_NULL == db){ std::cerr<<"\nCTaoDynamics::integrate() : Database uninitialized."; return false;  }
-#endif
-
     deVector3 gravity;
-    gravity[0] = db->s_parser_.world_.gravity_[0];
-    gravity[1] = db->s_parser_.world_.gravity_[1];
-    gravity[2] = db->s_parser_.world_.gravity_[2];
+    gravity[0] = 0.0;
+    gravity[1] = 0.0;
+    gravity[2] = 9.8;// m/s^2
 
-    sFloat tstep = db->sim_dt_;
+    sFloat tstep = arg_time_interval;
 
     taoDynamics::fwdDynamics(tao_tree->root, &gravity);
     taoDynamics::integrate(tao_tree->root, tstep);
