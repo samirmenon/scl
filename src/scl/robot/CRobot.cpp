@@ -322,7 +322,7 @@ namespace scl
     if((S_NULL != integrator_)
         && data_.has_been_init_)
     {
-      flag = integrator_->integrate(*(data_.io_data_));
+      flag = integrator_->integrate(*(data_.io_data_), CDatabase::getData()->sim_dt_);
 
       //NOTE TODO : DESIGN DECISION : Consider moving these into the integrator instead.
       if(data_.parsed_robot_data_->flag_apply_damping_)
