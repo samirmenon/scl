@@ -150,7 +150,6 @@ namespace scl_test
    */
   void test_random_stuff(int id)
   {
-    bool flag=true;
     int r_id=0;
     double t1,t2;
 #ifndef SCL_RANDOM_SLIM_TEST
@@ -331,7 +330,7 @@ namespace scl_test
 #ifndef SCL_RANDOM_SLIM_TEST
         ss>>str;
 #endif
-        flag = o1.uselessNonVirtFunc(str);
+        o1.uselessNonVirtFunc(str);
       }
       t2 = sutil::CSystemClock::getSysTime();
       std::cout<<"\nTest Result ("<<r_id++<<")  : Super keep returned type (bool).       Time taken : "<<t2-t1<<"sec";
@@ -339,11 +338,10 @@ namespace scl_test
       t1 = sutil::CSystemClock::getSysTime();
       for(long long i=0;i<test_ctr;++i)
       {
-        double arg; const double *arg2;
+        double arg;
 #ifndef SCL_RANDOM_SLIM_TEST
         arg = static_cast<double>(rand()/static_cast<double>(RAND_MAX));
 #endif
-        arg2 = & arg;
         o1.pointer0Redirect(arg);
       }
       t2 = sutil::CSystemClock::getSysTime();
@@ -352,11 +350,10 @@ namespace scl_test
       t1 = sutil::CSystemClock::getSysTime();
       for(long long i=0;i<test_ctr;++i)
       {
-        double arg; const double *arg2;
+        double arg;
 #ifndef SCL_RANDOM_SLIM_TEST
         arg = static_cast<double>(rand()/static_cast<double>(RAND_MAX));
 #endif
-        arg2 = & arg;
         o1.pointer1Redirect(&arg);
       }
       t2 = sutil::CSystemClock::getSysTime();

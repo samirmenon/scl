@@ -129,7 +129,7 @@ using namespace std;
       if (S_NULL==dynamics)
       { throw(std::runtime_error("Failed to allocate memory for tao dynamics."));  }
 
-      flag = dynamics->init(robot_name);
+      flag = dynamics->init(* db->s_parser_.robots_.at(robot_name));
       if (false==flag) { throw(std::runtime_error("Failed to initialize tao dynamics."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized tao dynamics for the robot.";  }
 
@@ -139,7 +139,7 @@ using namespace std;
       { throw(std::runtime_error("Could not find the robot's I/O data structure in the database"));  }
 
       scl::sFloat ke[2], pe[2];
-      flag = dynamics->integrate((*io_ds)); //Need to integrate once to flush the state
+      flag = dynamics->integrate((*io_ds), scl::CDatabase::getData()->sim_dt_); //Need to integrate once to flush the state
       if(false == flag)
       { throw(std::runtime_error("Could not integrate with the dynamics engine"));  }
 
@@ -153,7 +153,7 @@ using namespace std;
       t1 = sutil::CSystemClock::getSysTime();
       for(i=0; i<imax; ++i)
       {
-        flag = dynamics->integrate((*io_ds));
+        flag = dynamics->integrate((*io_ds), scl::CDatabase::getData()->sim_dt_);
       }
       t2 = sutil::CSystemClock::getSysTime();
 
@@ -180,7 +180,7 @@ using namespace std;
       t1 = sutil::CSystemClock::getSysTime();
       for(i=0; i<imax; ++i)
       {
-        flag = dynamics->integrate((*io_ds));
+        flag = dynamics->integrate((*io_ds), scl::CDatabase::getData()->sim_dt_);
       }
       t2 = sutil::CSystemClock::getSysTime();
 

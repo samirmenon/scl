@@ -206,7 +206,7 @@ namespace scl_test
 
       /******************************TaoDynamics************************************/
       tao_dyn = new scl::CTaoDynamics();
-      flag = tao_dyn->init(robot_name);
+      flag = tao_dyn->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
       /******************************ChaiGlut Graphics************************************/
