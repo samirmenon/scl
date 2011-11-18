@@ -598,7 +598,6 @@ namespace scl {
   sBool CChaiGraphics::scaleMesh(const std::string& arg_mesh_name,
       sFloat arg_x, sFloat arg_y, sFloat arg_z)
   {
-    bool flag;
     try
     {
       if(!has_been_init_) { return false; }
@@ -899,7 +898,6 @@ namespace scl {
           if(S_NULL == lnk_robdata) { throw(std::runtime_error("Found an uninitialized pointer to a robot link in the graphics pile"));  }
 #endif
 
-
           cGenericObject* lnk_grdata = lnk.graphics_obj_;
 #ifdef W_TESTING
           if(S_NULL == lnk_grdata) { throw(std::runtime_error("Found an uninitialized pointer to a chai generic object in the graphics pile"));  }
@@ -907,19 +905,20 @@ namespace scl {
 
           //1.b.ii. Obtain the joint angle/translation etc..
           sInt link_id = lnk_robdata->link_id_;
-          sFloat q, dq, tau_measured;
 
-          if(-1 == link_id)
-          {//Ground node. Do not change.
-            continue;
-          }
+          if(-1 == link_id)//Ground node. Do not change.
+          { continue; }
 #ifdef W_TESTING
           if(-1 > link_id) { throw(std::runtime_error("Found a link with an id less than 0"));  }
           if(link_id >= rob_io->sensors_.q_.size()) { throw(std::runtime_error("Found a link with an id greater than the max for this robot"));  }
 #endif
+          sFloat q;
           q = rob_io->sensors_.q_(link_id);
-          dq = rob_io->sensors_.dq_(link_id);
-          tau_measured = rob_io->sensors_.force_gc_measured_(link_id);
+
+          /** Uncomment this if required: */
+          //sFloat dq, tau_measured;
+          //dq = rob_io->sensors_.dq_(link_id);
+          //tau_measured = rob_io->sensors_.force_gc_measured_(link_id);
 
           //Compute the local translation and rotation for the link (from its parent).
           cVector3d tr;
