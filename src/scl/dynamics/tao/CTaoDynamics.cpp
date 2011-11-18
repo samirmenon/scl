@@ -45,17 +45,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 #include <iostream>
+#include <stdexcept>
 
 #ifdef W_QNX
 extern "C" {
 #include <string.h> // for qnx
 }
 #endif
-
-extern "C" {
-#include <stdio.h>
-}
-
 
 namespace scl
 {
@@ -351,7 +347,7 @@ namespace scl
     deVector3 gravity;
     gravity[0] = 0.0;
     gravity[1] = 0.0;
-    gravity[2] = 9.8;// m/s^2
+    gravity[2] = -9.8;// m/s^2
 
     sFloat tstep = arg_time_interval;
 
