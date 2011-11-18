@@ -42,11 +42,16 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl {
 
-/**
- * A base class for different dynamics implementations.
+/** A base class for different dynamics implementations.
  *
  * Using any controller requires supporting this api with
  * a dynamics engine implementation.
+ *
+ * All dynamics implementations must try to be stateless.
+ * Ie. After one initial configuration that specifies the
+ * dynamic model's parameters, they must not store any more
+ * data. Pass in the model configuration as an argument
+ * and return the new state and/or dynamics matrices.
  */
 class CDynamicsBase {
 public:
@@ -59,8 +64,6 @@ public:
   /** Initializes the dynamics to be computed for a
    * specific robot.
    *
-   * Queries the robot's information from the database.
-   *
    * Returns,
    * true : Succeeds in creating a dynamics object
    *
@@ -68,7 +71,7 @@ public:
    * is inconsistent with what the implementation requires,
    * it returns false
    */
-  virtual sBool init(std::string const & robot_name)=0;
+  virtual sBool init(const SRobotParsedData& arg_robot_data)=0;
 
   /** Initialization state */
   virtual sBool hasBeenInit() {  return has_been_init_;  }
@@ -154,7 +157,11 @@ public:
       /** The existing generalized coordinates, velocities and
        * accelerations + The generalized forces + task (euclidean)
        * forces and the list of contact points and links. */
-      SRobotIOData& arg_inputs_)=0;
+      SRobotIOData& arg_inputs_,
+      /** The time across which the system should integrate the
+       * dynamics. Could take fixed steps or dynamic ones in between.
+       * Up to the integrator implementation. */
+      const sFloat arg_time_interval)=0;
 
   /** Gets the robot's kinetic energy */
   virtual sFloat getKineticEnergy()=0;
