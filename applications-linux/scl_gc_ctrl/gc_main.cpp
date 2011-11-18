@@ -139,33 +139,29 @@ int main(int argc, char** argv)
 
       /******************************TaoDynamics************************************/
       scl::CTaoDynamics tao_dyn_int;
-      flag = tao_dyn_int.init(robot_name);
+      flag = tao_dyn_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
 #ifdef W_TESTING
       std::cout<<"\nTesting Tao And Robot Ids "<<robot_name;
 
-      scl_util::CBranchingStructure<std::string, scl::SRobotLink>* br = &(scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)->robot_br_rep_);
-      br->resetIterator();
-      while(S_NULL!=br->iterator_)
+      sutil::CMappedTree<std::string, scl::SRobotLink> br = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)->robot_br_rep_;
+      sutil::CMappedTree<std::string, scl::SRobotLink>::iterator it,ite;
+      for(it = br.begin(), ite = br.end(); it!=ite; ++it)
       {
-        taoDNode * tmp = (taoDNode *)tao_dyn_int.getIdForLink(br->iterator_->data_->name_);
+        taoDNode * tmp = (taoDNode *)tao_dyn_int.getIdForLink(it->name_);
         if(S_NULL == tmp)
         {
           std::stringstream ss;
-          ss<<"No tao node found for (or id lookup not working for) link name : "<<br->iterator_->data_->name_
-              <<" Id : "<<br->iterator_->data_->link_id_;
+          ss<<"No tao node found for (or id lookup not working for) link name : "<<it->name_
+              <<" Id : "<<it->link_id_;
           std::string s; s = ss.str();
-          //throw(std::runtime_error(s.c_str()));
           std::cout<<"\n*******WARNING : "<<s;
         }
         else
         {
-        std::cout<<"\n Link "<<br->iterator_->data_->link_id_<<" : "<<br->iterator_->data_->name_
-            <<"     Tao : "<<tmp->name_;
+        std::cout<<"\n Link "<<it->link_id_<<" : "<<it->name_<<"     Tao : "<<tmp->name_;
         }
-
-        br->iterator_ = br->iterator_->next_;
       }
 #endif
 
@@ -194,7 +190,7 @@ int main(int argc, char** argv)
 //      scl::Srobot robot_ds;
 
       scl::CTaoDynamics tao_dyn; //Use for model updates.
-      flag = tao_dyn.init(robot_name); //Reads stuff from the database.
+      flag = tao_dyn.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)); //Reads stuff from the database.
       if(false == flag) { throw(std::runtime_error("Could not initialize dynamics object"));  }
 
       scl::SGcController * gc_ctrl_ds;
@@ -230,7 +226,7 @@ int main(int argc, char** argv)
             sutil::CSystemClock::tick(db->sim_dt_);
 
             //1. Simulation Dynamics
-            flag = tao_dyn_int.integrate((*rob_io_ds));
+            flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
             //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
             //2. Update the controller
@@ -274,7 +270,7 @@ int main(int argc, char** argv)
 #endif
 
         //1. Simulation Dynamics
-        flag = tao_dyn_int.integrate((*rob_io_ds));
+        flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
 //        rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
         //2. Update the controller
