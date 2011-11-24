@@ -24,13 +24,15 @@ this file. If not, see <http://www.gnu.org/licenses/>.
  *  Copyright (C) 2010, Samir Menon <smenon@stanford.edu>
  */
 
-#include <iostream>
-#include <fstream>
-#include <stdexcept>
-
 #include "FileFunctions.hpp"
 
 #include <scl/DataTypes.hpp>
+
+#include <iostream>
+#include <fstream>
+#include <stdexcept>
+#include <vector>
+#include <list>
 
 using namespace std;
 using namespace scl;
@@ -47,20 +49,22 @@ namespace scl_util
     if(!ipfile)
     { return false; }
 
-    std::vector<sInt> vec;
+    std::list<sInt> lst;
     while (!ipfile.eof())
     {
       sInt tmp;
       ipfile>>tmp;
-      vec.push_back(tmp);
+      lst.push_back(tmp);
     }
 
     //Set the eigen vector's size to be equal to the
-    //loaded std::vector. And then copy over the elements.
-    sInt sz = vec.size();
+    //loaded std::list. And then copy over the elements.
+    sInt sz = lst.size();
     arg_vec.resize(sz);
-    for(int i=0;i<sz;i++)
-    { arg_vec[i] = vec.at(i); }
+
+    std::list<sInt>::iterator it = lst.begin();
+    for(int i=0;i<sz;i++, ++it)
+    { arg_vec[i] = *it; }
 
     ipfile.close();
     return true;
@@ -75,14 +79,6 @@ namespace scl_util
 
     if(!ipfile)
     { return false; }
-
-    //  std::vector<sFloat> vec;
-    //  while (!ipfile.eof())
-    //  {
-    //    sFloat tmp;
-    //    ipfile>>tmp;
-    //    vec.push_back(tmp);
-    //  }
 
     //Set the eigen vector's size to be equal to the
     //loaded std::vector. And then copy over the elements.

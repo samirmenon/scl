@@ -27,7 +27,6 @@ this file. If not, see <http://www.gnu.org/licenses/>.
 #ifndef FILEFUNCTIONS_HPP_
 #define FILEFUNCTIONS_HPP_
 
-#include <vector>
 #include <string>
 
 #include <Eigen/Core>
