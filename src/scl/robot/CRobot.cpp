@@ -38,6 +38,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/gc/CGcController.hpp>
 #include <scl/control/task/CTaskController.hpp>
 
+#include <sutil/CSystemClock.hpp>
+
 namespace scl
 {
 
@@ -61,6 +63,10 @@ namespace scl
       if(S_NULL!=dynamics_){  delete dynamics_; dynamics_ = S_NULL; }
       if(S_NULL!=integrator_) {  delete integrator_; integrator_ = S_NULL; }
     }
+
+    //Close the log file if it is open.
+    if(log_file_.is_open())
+    { log_file_.close();  }
   }
 
   sBool CRobot::initFromDb(std::string arg_robot_name,
@@ -483,5 +489,74 @@ namespace scl
   /** Returns a pointer to the robot's data structure */
   SRobot* CRobot::getData()
   { return &data_;  }
+
+  /** Sets up logging to a file */
+  sBool CRobot::setLogFile(const std::string &arg_file)
+  {
+    if(log_file_name_ == arg_file)
+    {//If it tries to open the same file, do nothing.
+      if(log_file_.is_open())
+      { return true;  }
+    }
+    else
+    {
+      log_file_name_ = arg_file;
+      //Close the file if it is open
+      if(log_file_.is_open())
+      { log_file_.close();  }
+    }
+
+    //Open the file in append mode
+    log_file_.open(arg_file.c_str(), std::ios::out | std::ios::app);
+
+    //Quick error check.
+    if(log_file_.is_open())
+    { return true;  }
+    else
+    { return false; }
+  }
+
+  /** Logs data to the file */
+  sBool CRobot::logState(bool arg_log_gc,  bool arg_log_gc_matrices,
+      bool arg_log_task_matrices)
+  {
+    //Logs the time at the very least
+    log_file_<<sutil::CSystemClock::getSysTime()
+          <<" "<<sutil::CSystemClock::getSimTime();
+    if(arg_log_gc)
+    {
+      log_file_<<" "<<data_.io_data_->sensors_.q_
+          <<" "<<data_.io_data_->sensors_.dq_
+          <<" "<<data_.io_data_->sensors_.ddq_
+          <<" "<<data_.io_data_->actuators_.force_gc_commanded_;
+    }
+    if(arg_log_gc_matrices)
+    {
+      log_file_<<" "<<data_.controller_current_->gc_model_.A_
+          <<" "<<data_.controller_current_->gc_model_.Ainv_
+          <<" "<<data_.controller_current_->gc_model_.b_
+          <<" "<<data_.controller_current_->gc_model_.g_;
+    }
+    if(arg_log_task_matrices)
+    {
+      //Well be careful to ask for task logging only when you use a task
+      //controller! Else the dynamic cast won't work.
+      STaskController* ds = dynamic_cast<STaskController*>(data_.controller_current_);
+      sutil::CMappedMultiLevelList<std::string, STaskBase*>::const_iterator it,ite;
+      for(it = ds->servo_.task_data_->begin(), ite = ds->servo_.task_data_->end();
+          it != ite; ++it)
+      {
+        log_file_<<" "<<(*it)->priority_
+            <<" "<<(*it)->force_task_
+            <<" "<<(*it)->force_gc_
+            <<" "<<(*it)->jacobian_
+            <<" "<<(*it)->jacobian_dyn_inv_
+            <<" "<<(*it)->lambda_
+            <<" "<<(*it)->lambda_inv_
+            <<" "<<(*it)->mu_
+            <<" "<<(*it)->p_;
+      }
+    }
+  }
 
 }

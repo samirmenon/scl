@@ -32,9 +32,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CROBOT_HPP_
 #define CROBOT_HPP_
 
-#include <string>
-#include <vector>
-
 #include <scl/DataTypes.hpp>
 
 #include <scl/Singletons.hpp>
@@ -43,6 +40,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/CControllerBase.hpp>
 
 #include <sutil/CMappedList.hpp>
+
+#include <string>
+#include <vector>
+#include <fstream>
 
 namespace scl
 {
@@ -156,6 +157,16 @@ namespace scl
     /** Returns a pointer to the robot's data structure */
     SRobot* getData();
 
+    /** Sets up logging to a file. The files are opened
+     * in append+text mode and the state is written to them
+     * every time the logState() function is called. */
+    sBool setLogFile(const std::string &arg_file);
+
+    /** Logs data to the file. Pass flags to control the data
+     * written to the file. */
+    sBool logState(bool arg_log_gc=true, bool arg_log_gc_matrices=true,
+        bool arg_log_task_matrices=false);
+
   private:
     /** The data is available in the database for other parts of the
      * program to see.
@@ -173,6 +184,9 @@ namespace scl
     CDynamicsBase* integrator_;
     sutil::CMappedList<std::string,CControllerBase*> ctrl_;
     CControllerBase* ctrl_current_;
+
+    std::string log_file_name_;
+    std::fstream log_file_;
   };
 
 }
