@@ -347,9 +347,9 @@ namespace scl
         for(int i=0; i< data_.io_data_->dof_;++i)
         {
           //NOTE TODO : Implement the joint limit parsing and fix q at the joint limits
-          if(data_.io_data_->sensors_.q_(i) > data_.parsed_robot_data_->joint_limit_max_(i)+0.1)
+          if(data_.io_data_->sensors_.q_(i) > data_.parsed_robot_data_->joint_limit_max_(i))
           { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_max_(i); }
-          if(data_.io_data_->sensors_.q_(i) < data_.parsed_robot_data_->joint_limit_min_(i)-0.1)
+          if(data_.io_data_->sensors_.q_(i) < data_.parsed_robot_data_->joint_limit_min_(i))
           { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_min_(i); }
           else
           { continue; }
@@ -525,17 +525,17 @@ namespace scl
           <<" "<<sutil::CSystemClock::getSimTime();
     if(arg_log_gc)
     {
-      log_file_<<" "<<data_.io_data_->sensors_.q_
-          <<" "<<data_.io_data_->sensors_.dq_
-          <<" "<<data_.io_data_->sensors_.ddq_
-          <<" "<<data_.io_data_->actuators_.force_gc_commanded_;
+      log_file_<<"\nq "<<data_.io_data_->sensors_.q_.transpose()
+          <<" "<<data_.io_data_->sensors_.dq_.transpose()
+          <<" "<<data_.io_data_->sensors_.ddq_.transpose()
+          <<" "<<data_.io_data_->actuators_.force_gc_commanded_.transpose();
     }
     if(arg_log_gc_matrices)
     {
-      log_file_<<" "<<data_.controller_current_->gc_model_.A_
-          <<" "<<data_.controller_current_->gc_model_.Ainv_
-          <<" "<<data_.controller_current_->gc_model_.b_
-          <<" "<<data_.controller_current_->gc_model_.g_;
+      log_file_<<"\nA "<<data_.controller_current_->gc_model_.A_
+          <<"\nAinv "<<data_.controller_current_->gc_model_.Ainv_
+          <<"\n"<<data_.controller_current_->gc_model_.b_.transpose()
+          <<" "<<data_.controller_current_->gc_model_.g_.transpose();
     }
     if(arg_log_task_matrices)
     {
@@ -546,14 +546,14 @@ namespace scl
       for(it = ds->servo_.task_data_->begin(), ite = ds->servo_.task_data_->end();
           it != ite; ++it)
       {
-        log_file_<<" "<<(*it)->priority_
-            <<" "<<(*it)->force_task_
-            <<" "<<(*it)->force_gc_
-            <<" "<<(*it)->jacobian_
-            <<" "<<(*it)->jacobian_dyn_inv_
-            <<" "<<(*it)->lambda_
-            <<" "<<(*it)->lambda_inv_
-            <<" "<<(*it)->mu_
+        log_file_<<"\nPri "<<(*it)->priority_
+            <<" "<<(*it)->force_task_.transpose()
+            <<" "<<(*it)->force_gc_.transpose()
+            <<"\nJ "<<(*it)->jacobian_
+            <<"\nJinv "<<(*it)->jacobian_dyn_inv_
+            <<"\n L "<<(*it)->lambda_
+            <<"\n Linv "<<(*it)->lambda_inv_
+            <<"\n "<<(*it)->mu_
             <<" "<<(*it)->p_;
       }
     }
