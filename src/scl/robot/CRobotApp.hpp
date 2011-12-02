@@ -43,7 +43,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-  /** Generic code required to run a scl simulation
+  /** Generic code to run a scl simulation.
+   *
    * A simulation requires running 3 things. This example uses:
    * 1. A dynamics/physics engine                  :  Tao
    * 2. A controller                               :  Wbc
@@ -51,18 +52,32 @@ namespace scl
    *
    * It allows a single threaded mode (good for debugging) and a multi-threaded
    * mode (good for optimized binaries).
+   *
+   * NOTE : You DO NOT have to use this class. As with everything else in
+   * scl/robot, this class is merely a set of helper functions that wrap
+   * around the core controller, dynamics and rendering. It is meant to
+   * simplify your programs so feel free to build your own API if this doesn't
+   * suit you...
    */
   class CRobotApp
   {
   public:
     /***********************************************************************
      * NOTE : You must subclass and implement these to suit your application
+     *        Keep in mind that the CRobotApp does most things for you already.
      ************************************************************************/
     /** Implement this function. */
     virtual void stepMySimulation()=0;
 
-    /** Implement this function. */
-    virtual scl::sBool initMyController(const std::vector<std::string>&)=0;
+    /** Implement this function.
+     *
+     * NOTE : The init() function initializes most things for you and then
+     * automatically calls this function. */
+    virtual scl::sBool initMyController(const std::vector<std::string>& argv,
+        /** The CRobotApp's init function already parses some command line
+         * arguments. This counter tells your controller implementation what
+         * is already parsed. */
+        sUInt args_parsed)=0;
 
     /** Register any custom dynamic types that you have. */
     virtual scl::sBool registerCustomDynamicTypes()
