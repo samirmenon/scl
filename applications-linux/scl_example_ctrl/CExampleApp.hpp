@@ -56,8 +56,9 @@ namespace scl_app
     /** Default destructor. Does nothing. */
     virtual ~CExampleApp(){}
 
-    /** Setups up the task controller. */
-    virtual scl::sBool initMyController(const std::vector<std::string>&);
+    /** Sets up the task controller. */
+    virtual scl::sBool initMyController(const std::vector<std::string>& argv,
+        scl::sUInt args_parsed);
 
     /** Register any custom dynamic types that you have. */
     virtual scl::sBool registerCustomDynamicTypes();
