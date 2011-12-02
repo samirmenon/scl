@@ -8,7 +8,7 @@ SET(WBC_INC_DIR ../../src/scl)
 
 #Set 3rd party dependencies
 #Eigen Includes
-SET(EIGEN_INC_DIR ../../3rdparty/eigen3.0.2)
+SET(EIGEN_INC_DIR ../../3rdparty/eigen3.0.3)
 
 #sUtil Includes
 SET(SUTIL_INC_DIR ../../3rdparty/sUtil/src)
