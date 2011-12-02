@@ -130,6 +130,14 @@ namespace scl
     /** Returns the task by this name */
     CTaskBase * getTask(const std::string& arg_name);
 
+    /** Returns the number of tasks that this controller
+     * executes simultaneously */
+    sUInt getNumTasks() const { return data_->tasks_.size(); }
+
+    /** Returns the number of tasks of a given type
+     * that this controller executes simultaneously */
+    sUInt getNumTasks(const std::string& arg_type) const;
+
   protected:
     /** Computes range spaces for all its tasks according to
      * their priorities. Starts with task level i and goes

@@ -268,6 +268,23 @@ namespace scl
     }
   }
 
+  sUInt CTaskController::getNumTasks(const std::string& arg_type)
+  {
+    sutil::CMappedMultiLevelList<std::string, STaskBase*>::const_iterator it,ite;
+
+    //Loop over all the tasks.
+    sUInt ctr = 0;
+    for(it = data_->tasks_.begin(), ite = data_->tasks_.end();
+        it!=ite;++it)
+    {
+      STaskBase* t = *it;
+      if(arg_type == t->type_task_)
+      { ctr++;  }
+    }
+
+    return ctr;
+  }
+
   /**********************************************
    *               COMPUTATION
    ***********************************************/
