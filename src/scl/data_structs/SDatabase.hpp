@@ -288,6 +288,9 @@ public:
   /** Whether the graphics updates are paused or not */
   sBool pause_graphics_;
 
+  /** Whether the logging is on or not */
+  sBool param_logging_on_;
+
   SDatabase()
   {
     sim_ticks_ = 0;
@@ -298,6 +301,7 @@ public:
     running_ = true;
     pause_ctrl_dyn_ = false;
     pause_graphics_ = false;
+    param_logging_on_ = false;
   }
 };
 

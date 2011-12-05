@@ -340,6 +340,17 @@ namespace scl_chai_glut_interface
       std::cout<<"+1"<<std::flush;
     }
 
+    //Toggle logging
+    if (CChaiGlobals::getData()->keys_active[static_cast<int>('/')])
+    {
+      scl::CDatabase::getData()->param_logging_on_ = ~scl::CDatabase::getData()->param_logging_on_;
+      if(scl::CDatabase::getData()->param_logging_on_)
+      { std::cout<<"\nStarting logging"<<std::flush;  }
+      else
+      { std::cout<<"\nStopping logging"<<std::flush;  }
+      CChaiGlobals::getData()->keys_active[static_cast<int>('/')] = false;
+    }
+
     //Modulate a robot's links
     static int link_idx = 0;
     if (CChaiGlobals::getData()->keys_active[static_cast<int>('+')])
