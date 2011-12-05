@@ -44,15 +44,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <Eigen/Dense>
 
-#ifdef W_USE_SVD_TO_INVERT_LAMBDA
 //Don't always use it. Read comments in the model update function
 #include <Eigen/SVD>
-#endif
 
 namespace scl
 {
 
-  COpPointTask::COpPointTask() : CTaskBase(), data_(S_NULL)
+  COpPointTask::COpPointTask() : CTaskBase(), data_(S_NULL), lambda_inv_singular_(false)
   { }
 
   //************************
@@ -82,9 +80,13 @@ namespace scl
       if(S_NULL == data_->link_dynamic_id_)
       { throw(std::runtime_error("Couldn't find link in dynamics object")); }
 
-#ifdef W_USE_SVD_TO_INVERT_LAMBDA
+      //Defaults
       singular_values_.setZero();
-#endif
+
+      //Try to use the householder qr instead of the svd in general
+      //Computing this once here initializes memory and resizes qr_
+      //It will be used later.
+      qr_.compute(data_->lambda_);
 
       has_been_init_ = true;
     }
@@ -180,40 +182,57 @@ bool COpPointTask::computeModel()
     //Lambda = (J * Ainv * J')^-1
     data_->lambda_inv_ = data_->jacobian_ * gcm->Ainv_ * data_->jacobian_.transpose();
 
-#ifndef W_USE_SVD_TO_INVERT_LAMBDA
-    //The general inverse function works very well for op-point controllers.
-    //3x3 matrix inversion behaves quite well. Even near singularities where
-    //singular values go down to ~0.001. If the model is coarse, use a n-k rank
-    //approximation with the SVD for a k rank loss in a singularity.
-    data_->lambda_ = data_->lambda_inv_.inverse();
-#else
-    //Use a Jacobi svd. No preconditioner is required coz lambda inv is square.
-    //NOTE : This is slower and generally performs worse than the simple inversion
-    //for small (3x3) matrices that are usually used in op-space controllers.
-    svd_.compute(data_->lambda_inv_,
-        Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::NoQRPreconditioner);
+    if(!lambda_inv_singular_)
+    {
+      //The general inverse function works very well for op-point controllers.
+      //3x3 matrix inversion behaves quite well. Even near singularities where
+      //singular values go down to ~0.001. If the model is coarse, use a n-k rank
+      //approximation with the SVD for a k rank loss in a singularity.
+      qr_.compute(data_->lambda_inv_);
+      if(qr_.isInvertible())
+      { data_->lambda_ = qr_.inverse();  }
+      else
+      {
+        std::cout<<"\nCOpPointTask::computeModel() : Warning. Lambda_inv is rank deficient. Using svd. Rank = "<<qr_.rank();
+        lambda_inv_singular_ = true;
+      }
+    }
 
-    //NOTE : A threshold of .005 works quite well for most robots.
-    //Experimentally determined: Take the robot to a singularity
-    //and observe the response as you allow the min singular values
-    //to decrease. Stop when the robot starts to go unstable.
-    //NOTE : This also strongly depends on how good your model is
-    //and how fast you update it. A bad model will require higher
-    //thresholds and will result in coarse motions. A better model
-    //will allow much lower thresholds and will result in smooth
-    //motions.
-    if(svd_.singularValues()(0) > 0.005)
-    { singular_values_(0,0) = 1.0/svd_.singularValues()(0);  }
-    else { singular_values_(0,0) = 0.0; }
-    if(svd_.singularValues()(1) > 0.005)
-    { singular_values_(1,1) = 1.0/svd_.singularValues()(1);  }
-    else { singular_values_(1,1) = 0.0; }
-    if(svd_.singularValues()(2) > 0.005)
-    { singular_values_(2,2) = 1.0/svd_.singularValues()(2);  }
-    else { singular_values_(2,2) = 0.0; }
+    if(lambda_inv_singular_)
+    {
+      //Use a Jacobi svd. No preconditioner is required coz lambda inv is square.
+      //NOTE : This is slower and generally performs worse than the simple inversion
+      //for small (3x3) matrices that are usually used in op-space controllers.
+      svd_.compute(data_->lambda_inv_,
+          Eigen::ComputeThinU | Eigen::ComputeThinV | Eigen::ColPivHouseholderQRPreconditioner);
 
-    data_->lambda_ = svd_.matrixU() * singular_values_ * svd_.matrixV().transpose();
-#endif
+      //NOTE : A threshold of .005 works quite well for most robots.
+      //Experimentally determined: Take the robot to a singularity
+      //and observe the response as you allow the min singular values
+      //to decrease. Stop when the robot starts to go unstable.
+      //NOTE : This also strongly depends on how good your model is
+      //and how fast you update it. A bad model will require higher
+      //thresholds and will result in coarse motions. A better model
+      //will allow much lower thresholds and will result in smooth
+      //motions.
+      if(svd_.singularValues()(0) > 0.005)
+      { singular_values_(0,0) = 1.0/svd_.singularValues()(0);  }
+      else { singular_values_(0,0) = 0.0; }
+      if(svd_.singularValues()(1) > 0.005)
+      { singular_values_(1,1) = 1.0/svd_.singularValues()(1);  }
+      else { singular_values_(1,1) = 0.0; }
+      if(svd_.singularValues()(2) > 0.005)
+      { singular_values_(2,2) = 1.0/svd_.singularValues()(2);  }
+      else { singular_values_(2,2) = 0.0; }
+
+      data_->lambda_ = svd_.matrixU() * singular_values_ * svd_.matrixV().transpose();
+
+      //Turn off the svd after 20 iterations
+      //Don't worry, the qr will pop back to svd if it is still singular
+      static sInt svd_ctr = 0; svd_ctr++;
+      if(20>=svd_ctr)
+      { svd_ctr = 0; lambda_inv_singular_ = false;  }
+    }
 
     //Compute the Jacobian dynamically consistent generalized inverse :
     //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
