@@ -49,10 +49,13 @@ The robot is connected to a ground frame (-1). Its base frame (frame$_0$) is com
 from the ground frame after a rotation about $q_0$ and a translation up to the
 point where link$_0$ connects to link$_1$. Thus, frame$_0$ rotates with link$_0$.
 Next, link$_1$ moves along the y-axis, and link$_2$ moves along the z-axis (Fig. \ref{fig:rppframes}).
-Offsets for frames 0, 1 and 2 are given by $l_0$, $l_1$ and $l_2$ respectively. Frame$_2$ is at the
-end-effector.
+Offsets for frames 0, 1 and 2 are given by $l_0$, $l_1$ and $l_2$ respectively. 
+Frame$_2$ is at the end-effector.
 
-The transformation matrices are given by:
+The transformation matrices
+\footnote{{\em Notation:} The subscript represents the frame of the vector to be multiplied, 
+while the superscript represents the final (transformed) frame.}
+ are given by:
 \begin{equation}
   ^{-1} T_{0} = 
   \begin{bmatrix} 
@@ -94,7 +97,8 @@ One may similarly construct the inverse transformations from the ground to the e
 
 \section{Jacobian}
 The Jacobian relates the velocity at the a given cartesian point (the operational point)
- to the velocity of the joints.
+ to the velocity of the joints
+\footnote{{\em Notation:} A dot on top of any variable represents the time derivative.}.
 \begin{equation}
   \dot x = J * \dot q
 \end{equation}
@@ -173,8 +177,10 @@ rotating joints:
    | \bar{\epsilon} * ^{ground}R_0 \hat{r_0} | ... | \bar{\epsilon} * ^{ground}R_n \hat{r_n} |
   \end{bmatrix},
 \end{equation}
-Where $\bar{\epsilon}$ is zero for prismatic joints and one for revolute joints, $^0R_i$ is the
-rotation matrix from link$_i$'s frame to the ground frame.
+
+{\bf Notation:} $\epsilon$ is zero for revolute joints and one for prismatic joints. 
+$\bar{\epsilon} = \neg \epsilon$. Finally, $^0R_i$ is the rotation matrix from 
+link$_i$'s frame to the ground frame.
 
 For the RPP, we get:
 \begin{equation}
@@ -204,11 +210,11 @@ which satisfies:
     \omega_y \\
     \omega_z
   \end{bmatrix}_{end-effector}
-   = J_{ee} 
+   = J_{ee}
   \begin{bmatrix} 
-    q_0 \\
-    q_1 \\
-    q_2
+    \dot q_0 \\
+    \dot q_1 \\
+    \dot q_2
   \end{bmatrix}
    =   
   \begin{bmatrix} 
@@ -220,14 +226,14 @@ which satisfies:
     1 & 0 & 0 \\
   \end{bmatrix}
   \begin{bmatrix} 
-    q_0 \\
-    q_1 \\
-    q_2
+    \dot q_0 \\
+    \dot q_1 \\
+    \dot q_2
   \end{bmatrix}
 \end{equation}
 
 
-\subsubsection{Geometric Method: Computing a Center of Mass Jacobian}
+\subsubsection{Geometric Method: Eg. Computing a Center of Mass Jacobian}
 
 Being able to compute various Jacobians is necessary for dynamic operational space control.
 One important computation is relating the velocity of the link centers of mass to the 
@@ -235,8 +241,20 @@ generalized coordinate velocities, which we shall now do.
 \footnote{Doing so allows projecting masses and inertias from cartesian coordinates into
  generalized coordinates. How? Try using the equivalence of kinectic energy in both coordinate
 frames to answer the question. Else, read the Dynamics section.}
+The method differs from the analytic method in that it doesn't require differentiating
+the end-effector position. 
 
-
+To geometrically compute the Jacobian at a point on a link, we use the fact that a link's 
+velocity can only be influenced by joints in the chain from the given link to the ground. Ie.
+For the RPP, the revolute joint's velocity influences the prismatic links, but not vice versa.
+Next, we compute how each successive joint from the ground to the given link influences its
+velocity by using the relation $v = \omega\, *\, r$:
+\begin{equation}
+  J_v = 
+  \begin{bmatrix} 
+   | \bar{\epsilon} * ^{ground}R_0 \hat{r_0} | ... | \bar{\epsilon} * ^{ground}R_n \hat{r_n} |
+  \end{bmatrix},
+\end{equation}
 
 \section{Dynamics}
 The robot's dynamics describe the robot's motion characteristics due to its mass and inertia. 
