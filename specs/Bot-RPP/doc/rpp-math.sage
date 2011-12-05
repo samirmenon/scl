@@ -84,12 +84,42 @@ print "x = " + str(ee[0])
 print "y = " + str(ee[1])
 print "z = " + str(ee[2])
 
+# NOTE : The Jacobian may be computed either by direct
+# differentiation or computing how each link's motion
+# affects the motion at a point. The latter may be done
+# using a series of v_ee = r_ee_frame_i x w_i operations
+# for revolute and v_ee += v_i operations for prismatics
+# (along with frame transformations for coordinates)
+
 # Differentiating the position in the ground frame with 
 # respect to the generalized coordinates gives the Jacobian,
 # which relates changes in the gen coords to changes in the
 # end-effector frame's velocity.
-J = ee.function(q0,q1,q2).diff()
+Jee_v = ee.function(q0,q1,q2).diff()
 #Weird sage seems to append one extra col (from the affine part)
-J = J.submatrix(0,0,3,3)
-print "Jacobian:"
-print J
+Jee_v = Jee_v.submatrix(0,0,3,3)
+print "Velocity Jacobian: dx_ee = Jee_v dq"
+print Jee_v
+
+# To compute the rotational part of the Jacobian, we need
+# to see how the rotating joints add to the angular velocity
+# = For all links i: e_i R0i z_i
+# e_i = 0 for a prismatic joint
+#       1 for a revolute joint
+# R0i = Rotation matrix from frame i to zero
+# z_i = Axis of rotation in frame i
+
+# For the RPP, the latter two joints don't add to the angular
+# velocity, so Jw is quite simple.
+Jee_w = Matrix([[0, 0, 1], [0, 0, 0],[0, 0, 0]]).transpose()
+print "Angular Velocity Jacobian: w_ee = Jee_w dq"
+print Jee_w
+
+# Clean up if you figure out how to augment at the bottom instead
+# of at the right.
+Jee = Jee_v.transpose().augment(Jee_w.transpose()).transpose()
+
+
+
+# Now computing the dynamics.
+# 1. The Inertia Matrix
