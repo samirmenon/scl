@@ -99,6 +99,10 @@ namespace scl_app
       op_link_set = false; op_link2_set = false;
     }
 
+    /** Destructor: Cleans up */
+    ~CSclAppTask()
+    { log_file_.close(); log_file_J_.close(); }
+
     /************************************************************************/
     /****************NOTE : You should NOT need to modify this **************/
     /****************       But feel free to use the objects   **************/
@@ -138,6 +142,9 @@ namespace scl_app
     scl::sLongLong ctrl_ctr;            //Controller computation counter
     scl::sLongLong gr_ctr;              //Controller computation counter
     scl::sFloat t_start, t_end;         //Start and end times
+
+    std::fstream log_file_;             //Logs vectors of [q, dq, x]
+    std::fstream log_file_J_;           //Logs J
   };
 
 
@@ -229,6 +236,18 @@ namespace scl_app
         if(false == flag)
         { throw(std::runtime_error("Could not initialize user's custom controller"));  }
 
+        /******************************Initialize Log File **********************/
+        std::string tmp_name = robot_name + std::string(".log");
+        log_file_.open(tmp_name.c_str(),std::fstream::out);
+        if(!log_file_.is_open())
+        { throw(std::runtime_error(std::string("Could not open log file: ") + tmp_name));  }
+
+        tmp_name = robot_name + std::string("_J.log");
+        log_file_J_.open(tmp_name.c_str(),std::fstream::out);
+        if(!log_file_J_.is_open())
+        { throw(std::runtime_error(std::string("Could not open log file for Jacobian: ") + tmp_name));  }
+
+
         ctrl_ctr=0;//Controller computation counter
         gr_ctr=0;//Controller computation counter
 
@@ -286,6 +305,15 @@ namespace scl_app
           {//Paused and no step required. Sleep for a bit.
             const timespec ts = {0, 15000000};//Sleep for 15ms
             nanosleep(&ts,NULL);
+          }
+
+          if(scl::CDatabase::getData()->param_logging_on_)
+          {//Logs vectors of [q, dq, x, J]
+            log_file_<<rob_io_ds->sensors_.q_.transpose()<<" "
+                  <<rob_io_ds->sensors_.dq_.transpose()<<" "
+                  <<scl::CDatabase::getData()->s_gui_.ui_point_1_.transpose()
+                  <<std::endl;
+            log_file_J_<<tsk_ds->jacobian_<<std::endl;
           }
         }
       }
