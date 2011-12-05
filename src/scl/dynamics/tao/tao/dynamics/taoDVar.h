@@ -24,6 +24,8 @@
 #define _taoDVar_h
 
 /*!
+ * The guy who wrote this was a complete dumbass!
+ *
  *	\brief abstract joint variable class for articulated body
  *	\ingroup taoDynamics
  *

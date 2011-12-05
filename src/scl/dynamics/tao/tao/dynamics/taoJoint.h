@@ -133,6 +133,13 @@ private:
 	deFloat _inertia;
 
 	taoDVar* _var;
+	/** The above var uses a blank super class to create
+	 * v-table entries for the follwing types:
+	 * taoVarSpherical* _var_s;
+	 * taoVarDOF1* _var_dof1;
+	 *
+	 * NOTE TODO: Just remove the _var and use two vars instead.
+   */
 	taoJoint* _next;
 };
 
