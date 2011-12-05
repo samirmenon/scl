@@ -16,9 +16,11 @@
 
 \begin{figure}[ht!]
 \begin{center}
-\includegraphics[width=4in]{figs/rpp.pdf}
-\caption{RPP Bot schematic}
-\label{fig:rppbot}
+\includegraphics[width=3.5in]{figs/rpp2.pdf}
+\caption{RPP Bot Frames: Frame$_0$ rotates with $q_0$ about the z-axis, frame$_1$ moves along the y-axis 
+with $q_1$ and frame$_2$ moves along the z-axis with $q_2$. The x, y and z axes are colored red, green 
+and blue respectively. Each frame has an offset given in the transformation equations.}
+\label{fig:rppframes}
 \end{center}
 \end{figure}
 
@@ -27,16 +29,6 @@
 RPP is a revolute-prismatic-prismatic robot (Fig. \ref{fig:rppbot}) built to
 demonstrate control and dynamics. It is a simple robot whose dynamics can be
 computed analytically.
-
-\begin{figure}[ht!]
-\begin{center}
-\includegraphics[width=4in]{figs/rpp-bot-frames.png}
-\caption{RPP Bot Frames: Frame$_0$ rotates with $q_0$ about the z-axis, frame$_1$ moves along the y-axis 
-with $q_1$ and frame$_2$ moves along the z-axis with $q_2$. The x, y and z axes are colored red, green 
-and blue respectively. Each frame has an offset given in the transformation equations.}
-\label{fig:rppframes}
-\end{center}
-\end{figure}
 
 \section{Kinematic Transformations}
 The kinematic transformations are useful to transform the motion of a point on the robot
@@ -248,12 +240,22 @@ To geometrically compute the Jacobian at a point on a link, we use the fact that
 velocity can only be influenced by joints in the chain from the given link to the ground. Ie.
 For the RPP, the revolute joint's velocity influences the prismatic links, but not vice versa.
 Next, we compute how each successive joint from the ground to the given link influences its
-velocity by using the relation $v = \omega\, *\, r$:
+velocity by using the relation $v = \omega \times r$.
+
+The velocity of the center of mass (com) of the k'th link is then:
 \begin{equation}
-  J_v = 
-  \begin{bmatrix} 
-   | \bar{\epsilon} * ^{ground}R_0 \hat{r_0} | ... | \bar{\epsilon} * ^{ground}R_n \hat{r_n} |
-  \end{bmatrix},
+  \begin{bmatrix}
+    v \\
+    \omega
+  \end{bmatrix}_{com}
+  = 
+  \begin{bmatrix}
+    \sum_{i=0}^{k}
+    [ \epsilon_i\, (^{i}R_k\, ^{i}v_{joint}) + 
+        \bar{\epsilon_i}\, \omega_{i} \times (^{i}T_k\, ^{i}p_{com})] \\
+    \sum_{i=0}^{k}
+        \bar{\epsilon_i}\, \omega_{i}
+  \end{bmatrix}
 \end{equation}
 
 \section{Dynamics}
