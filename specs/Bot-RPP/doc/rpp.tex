@@ -123,22 +123,38 @@ For this RPP robot we have:
   \end{bmatrix} 
 \end{equation}
 
-The end-effector is a natural operational point since the robot must move it around to do 
-tasks. Computing its Jacobian, however, requires moving to ground coordinates first (that's
-where the trajectory is specified). For this simple robot, we can get the Jacobian analytically by 
-computing\\ $^{ground-frame}$x$_{end-effector-frame}$
+\subsection{Algorithms for Computing the Jacobian}
+The Jacobian may be computed in numerous ways using some nifty algorithms. I shall focus
+on two of the commonly used ones, and also give you some examples. Note that although both
+are useful, it is often easier (but possibly less efficient) to use the geometric method 
+because writing out the analytical expression to differentiate is usually tedious.
+
+\subsubsection{Analytical Differentiation: Eg. Computing the Basic Jacobian}
+The ``basic Jacobian'', or the Jacobian at the end-effector, is an important special case.
+It gives us the change in the end-effector's velocity (in the ground frame 
+\footnote{While the task velocities may be specified in any frame, the ground frame is usually
+a convenient choice.}) 
+for a small change in the joint angles.
+For serial robots (like RPP), the end-effector is a natural operational point since 
+the robot must move it around to do most tasks and the Jacobian's pseudoinverse translates
+task velocities into joint velocities, which can then be controlled by controlling the motors.
+
+We can get the translational velocity Jacobian analytically by taking the gradient of the
+end effector expressed in the ground frame. The position\\
 \begin{equation}
-  x = -(q_1 + l_1) * sin(q_0)
+  ^{ground-frame}pos_{end-effector}
+  =
+  \begin{bmatrix} x \\ y \\ z \\ \end{bmatrix} 
+  = 
+  \begin{bmatrix} 
+    -(q_1 + l_1) * sin(q_0) \\
+    (q_1 + l_1) * cos(q_0) \\
+    (l_0+q_2 + l_2)
+  \end{bmatrix},
 \end{equation}
+when partially differentiated with respect to the generalized coordinates gives:
 \begin{equation}
-  y = (q_1 + l_1) * cos(q_0)
-\end{equation}
-\begin{equation}
-  z = (l_0+q_2 + l_2),
-\end{equation}
- and partially differentiating it with respect to q
-\begin{equation}
-  J = 
+  J_v = 
   \begin{bmatrix} 
     -(q_1 + l_1) * cos(q_0) & -sin(q_0) & 0 \\
     \\
@@ -148,9 +164,79 @@ computing\\ $^{ground-frame}$x$_{end-effector-frame}$
   \end{bmatrix}
 \end{equation}
 
-The Jacobian gives us the change in the end-effector's position (in global coordinates) for a small
-change in the joint angles. Being able to compute the Jacobian is necessary for dynamic operational
-space control. Read on to find out why.
+The angular velocity Jacobian is more straightforward. Since translating joints don't
+contribute to the angular velocity, this simply sums the contribution of the
+rotating joints:
+\begin{equation}
+  J_\omega = 
+  \begin{bmatrix} 
+   | \bar{\epsilon} * ^{ground}R_0 \hat{r_0} | ... | \bar{\epsilon} * ^{ground}R_n \hat{r_n} |
+  \end{bmatrix},
+\end{equation}
+Where $\bar{\epsilon}$ is zero for prismatic joints and one for revolute joints, $^0R_i$ is the
+rotation matrix from link$_i$'s frame to the ground frame.
+
+For the RPP, we get:
+\begin{equation}
+  J_\omega = 
+  \begin{bmatrix} 
+    0 & 0 & 0 \\
+    0 & 0 & 0 \\
+    1 & 0 & 0 \\
+  \end{bmatrix},
+\end{equation}
+
+Combining both, components of the Jacobian gives us the basic Jacobian
+\begin{equation}
+  J_{ee} = 
+  \begin{bmatrix} 
+    J_v \\
+    J_\omega
+  \end{bmatrix},
+\end{equation}
+which satisfies:
+\begin{equation}
+  \begin{bmatrix} 
+    \dot x \\
+    \dot y \\
+    \dot z \\
+    \omega_x \\
+    \omega_y \\
+    \omega_z
+  \end{bmatrix}_{end-effector}
+   = J_{ee} 
+  \begin{bmatrix} 
+    q_0 \\
+    q_1 \\
+    q_2
+  \end{bmatrix}
+   =   
+  \begin{bmatrix} 
+    -(q_1 + l_1) * cos(q_0) & -sin(q_0) & 0 \\
+    -(q_1 + l_1) * sin(q_0) & cos(q_0) & 0 \\ 
+    0 & 0 & 1 \\
+    0 & 0 & 0 \\
+    0 & 0 & 0 \\
+    1 & 0 & 0 \\
+  \end{bmatrix}
+  \begin{bmatrix} 
+    q_0 \\
+    q_1 \\
+    q_2
+  \end{bmatrix}
+\end{equation}
+
+
+\subsubsection{Geometric Method: Computing a Center of Mass Jacobian}
+
+Being able to compute various Jacobians is necessary for dynamic operational space control.
+One important computation is relating the velocity of the link centers of mass to the 
+generalized coordinate velocities, which we shall now do.
+\footnote{Doing so allows projecting masses and inertias from cartesian coordinates into
+ generalized coordinates. How? Try using the equivalence of kinectic energy in both coordinate
+frames to answer the question. Else, read the Dynamics section.}
+
+
 
 \section{Dynamics}
 The robot's dynamics describe the robot's motion characteristics due to its mass and inertia. 
