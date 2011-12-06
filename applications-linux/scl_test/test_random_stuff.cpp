@@ -26,10 +26,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
-
-#ifndef TEST_RANDOM_STUFF_HPP_
-#define TEST_RANDOM_STUFF_HPP_
-
 #include "test_random_stuff.hpp"
 
 #include <sutil/CSystemClock.hpp>
@@ -387,5 +383,3 @@ namespace scl_test
     }
   }
 }
-
-#endif /* TEST_RANDOM_STUFF_HPP_ */

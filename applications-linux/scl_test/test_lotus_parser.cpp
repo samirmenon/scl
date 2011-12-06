@@ -27,9 +27,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef TEST_LOTUS_PARSER_HPP_
-#define TEST_LOTUS_PARSER_HPP_
-
 #include "test_lotus_parser.hpp"
 
 #include <string>
@@ -192,5 +189,3 @@ void test_tao_rep_creator(int id)
 }
 
 }
-
-#endif /* TEST_LOTUS_PARSER_HPP_ */
