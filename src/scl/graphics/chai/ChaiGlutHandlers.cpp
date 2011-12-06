@@ -523,10 +523,13 @@ namespace scl_chai_glut_interface
     //Update the IO
     keyHandler();
 
+#ifdef W_TESTING
     bool flag;
     flag = CChaiGlobals::getData()->chai_glut->updateGraphics();
-#ifdef W_TESTING
     if (false == flag) { printf("\nChai-Glut Error: Could not update graphics successfully.");  }
+#else
+    //NOTE : No checks in release mode
+    CChaiGlobals::getData()->chai_glut->updateGraphics();
 #endif
 
     /**
