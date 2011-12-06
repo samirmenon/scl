@@ -288,18 +288,18 @@ namespace scl_test
       if(thread_id==1)
       {
         //Thread 1 : Run the simulation
-        while(true == CDatabase::getData()->running_)
+        while(true == scl::CDatabase::getData()->running_)
         {
           stepMySimulation();
 
           if(arg_exec_sim_time<sutil::CSystemClock::getSimTime() - start_sim_time)
-          { CDatabase::getData()->running_ = false; }
+          { scl::CDatabase::getData()->running_ = false; }
         }
       }
       else
       {
         //Thread 2 : Run the graphics and gui
-        while(true == CDatabase::getData()->running_)
+        while(true == scl::CDatabase::getData()->running_)
         {
           const timespec ts = {0, 15000000};//Sleep for 15ms
           nanosleep(&ts,NULL);
@@ -308,19 +308,19 @@ namespace scl_test
         }
       }
     }//End of threaded region
-    CDatabase::getData()->running_ = true;
+    scl::CDatabase::getData()->running_ = true;
   }
 
   void CSclAppTestTask::runMainLoop(double arg_exec_sim_time)
   {
     double start_sim_time = sutil::CSystemClock::getSimTime();
 
-    while(true == CDatabase::getData()->running_)
+    while(true == scl::CDatabase::getData()->running_)
     {
       stepMySimulation();
 
       if(arg_exec_sim_time<sutil::CSystemClock::getSimTime() - start_sim_time)
-      { CDatabase::getData()->running_ = false; }
+      { scl::CDatabase::getData()->running_ = false; }
 
       static int gr_skip_ctr=0;
       if(gr_skip_ctr<=500)
@@ -329,7 +329,7 @@ namespace scl_test
       glutMainLoopEvent(); //Update the graphics
       gr_ctr++;
     }
-    CDatabase::getData()->running_ = true;
+    scl::CDatabase::getData()->running_ = true;
   }
 
   void CSclAppTestTask::runSimulation(double arg_exec_sim_time)

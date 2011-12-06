@@ -27,19 +27,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <iostream>
-#include <stdlib.h>
-
-#include <sutil/CSystemClock.hpp>
-
-#include <scl/Singletons.hpp>
-
 //Random system queries
 #include "test_random_stuff.hpp"
 //Robot parser base tests
 #include "test_lotus_parser.hpp"
-//Databse and mem-cpy tests
-#include "test_database.hpp"
 //Matrix and lin-alg test
 #include "test_math.hpp"
 //Controller tests
@@ -50,7 +41,14 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Test chai graphic rendering
 #include "test_graphics.hpp"
 
+#include <scl/Singletons.hpp>
+
 #include <sutil/CRegisteredDynamicTypes.hpp>
+#include <sutil/CSystemClock.hpp>
+
+#include <stdexcept>
+#include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 using namespace scl_test;
@@ -166,17 +164,6 @@ int main(int argc, char** argv)
 
 
     /**** Under development
-    if((tid==0)||(tid==id))
-    {//Test Database
-      std::cout<<"\n\nTest #"<<id<<". SCL Database [Sys time, Sim time :"
-          <<sutil::CSystemClock::getSysTime()
-          <<" "
-          <<sutil::CSystemClock::getSimTime()
-          <<"]";
-      scl_test::test_database(id);
-    }
-    ++id;
-
     if((tid==0)||(tid==99))
     {//Test Haptics
       std::cout<<"\n\nTest #"<<id<<". Chai haptics [Sys time, Sim time :"

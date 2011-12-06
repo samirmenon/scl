@@ -19,8 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
-/* \file test_robot_controller.hpp
+ */
+/* \file test_robot_controller.cpp
  *
  *  Created on: Jul 25, 2011
  *
@@ -29,8 +29,25 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef TEST_ROBOT_CONTROLLER_HPP_
-#define TEST_ROBOT_CONTROLLER_HPP_
+#include "test_robot_controller.hpp"
+
+
+#include <scl/DataTypes.hpp>
+#include <scl/Singletons.hpp>
+#include <scl/robot/DbRegisterFunctions.hpp>
+#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/control/data_structs/SControllerBase.hpp>
+#include <scl/control/task/CServo.hpp>
+#include <scl/control/task/CTaskController.hpp>
+#include <scl/control/task/tasks/CTaskNULL.hpp>
+#include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/util/DatabaseUtils.hpp>
+
+//Tao Dynamics
+#include "CSclAppTestTask.hpp"
+
+#include <sutil/CSystemClock.hpp>
+#include <Eigen/Dense>
 
 #include <iostream>
 #include <stdexcept>
@@ -39,28 +56,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <cmath>
 #include <stdio.h>
 #include <math.h>
-
-#include <Eigen/Dense>
-
-#include <sutil/CSystemClock.hpp>
-
-#include <scl/DataTypes.hpp>
-
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-
-#include <scl/parser/lotusparser/CLotusParser.hpp>
-
-#include <scl/control/data_structs/SControllerBase.hpp>
-#include <scl/control/task/CServo.hpp>
-#include <scl/control/task/CTaskController.hpp>
-#include <scl/control/task/tasks/CTaskNULL.hpp>
-#include <scl/control/task/tasks/COpPointTask.hpp>
-
-#include <scl/util/DatabaseUtils.hpp>
-
-//Tao Dynamics
-#include "CSclAppTestTask.hpp"
 
 namespace scl_test
 {
@@ -74,8 +69,8 @@ namespace scl_test
       const std::string & arg_controller_name,
       const std::string & arg_op_link_name1,
       const std::string & arg_op_link_name2,
-      const double arg_sim_dt=0.0001,
-      const bool arg_damping = false)
+      const double arg_sim_dt,
+      const bool arg_damping)
   {
     scl::sUInt r_id=0;
     bool flag;
@@ -163,4 +158,3 @@ namespace scl_test
   }
 
 }
-#endif /* TEST_CONTROLLER_HPP_ */

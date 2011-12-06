@@ -19,46 +19,37 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
-/* \file test_graphics.hpp
+ */
+/* \file test_graphics.cpp
  *
  *  Copyright (C) 2010
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef TEST_GRAPHICS_HPP_
-#define TEST_GRAPHICS_HPP_
+#include "test_graphics.hpp"
 
+#include <scl/DataTypes.hpp>
+#include <scl/Singletons.hpp>
+#include <scl/robot/DbRegisterFunctions.hpp>
+#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/graphics/chai/CChaiGraphics.hpp>
+#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
+#include <scl/util/DatabaseUtils.hpp>
+
+#include <sutil/CSystemClock.hpp>
+#include <Eigen/Dense>
 
 #include <iostream>
 #include <stdexcept>
 #include <stdio.h>
 #include <math.h>
 
-#include <Eigen/Dense>
-
-#include <sutil/CSystemClock.hpp>
-
-#include <scl/DataTypes.hpp>
-
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-
-#include <scl/parser/lotusparser/CLotusParser.hpp>
-
-#include <scl/graphics/chai/CChaiGraphics.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-
-#include <scl/util/DatabaseUtils.hpp>
-
+using namespace scl;
+using namespace std;
 
 namespace scl_test
 {
-
-  using namespace scl;
-  using namespace std;
-
   /**
    * Tests the (chai) graphics subsystem
    *
@@ -224,5 +215,3 @@ namespace scl_test
     }
   }
 }
-
-#endif /* TEST_GRAPHICS_HPP_ */

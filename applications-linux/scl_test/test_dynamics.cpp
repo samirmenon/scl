@@ -19,17 +19,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
-/* \file test_dynamics.hpp
+ */
+/* \file test_dynamics.cpp
  *
  *  Copyright (C) 2010
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef TEST_DYNAMICS_HPP_
-#define TEST_DYNAMICS_HPP_
+#include "test_dynamics.hpp"
 
+#include <sutil/CSystemClock.hpp>
+
+#include <scl/DataTypes.hpp>
+#include <scl/Singletons.hpp>
+#include <scl/robot/DbRegisterFunctions.hpp>
+#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/util/DatabaseUtils.hpp>
+
+//Tao Dynamics
+#include <scl/dynamics/tao/CTaoDynamics.hpp>
+#include <scl/dynamics/tao/CTaoRepCreator.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -41,28 +51,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <Eigen/Dense>
 
-#include <sutil/CSystemClock.hpp>
-
-#include <scl/DataTypes.hpp>
-
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-
-#include <scl/parser/lotusparser/CLotusParser.hpp>
-
-#include <scl/util/DatabaseUtils.hpp>
-
-//Tao Dynamics
-#include <scl/dynamics/tao/CTaoDynamics.hpp>
-#include <scl/dynamics/tao/CTaoRepCreator.hpp>
+using namespace scl;
+using namespace std;
 
 namespace scl_test
 {
 
-using namespace scl;
-using namespace std;
-
-/**
+  /**
    * Tests the performance of the tao dynamics engine:
    *
    * Reads in a toy robot specification and lets it fall under gravity
@@ -120,7 +115,7 @@ using namespace std;
 
 #ifdef W_TESTING
       std::cout<<"\nPrinting parsed robot "
-            <<db->s_parser_.robots_.at(robot_name)->name_;
+          <<db->s_parser_.robots_.at(robot_name)->name_;
       scl_util::printRobotLinkTree(*( db->s_parser_.robots_.at(robot_name)->robot_br_rep_.getRootNode()),0);
 #endif
 
@@ -166,7 +161,7 @@ using namespace std;
 
       scl::sFloat energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
       std::cout<<"\nTest Result ("<<r_id++<<") Initial Energy : "<<(ke[0]+pe[0])
-                         <<". Final Energy : "<<(ke[1]+pe[1])<<". Error : "<<energy_err;
+                             <<". Final Energy : "<<(ke[1]+pe[1])<<". Error : "<<energy_err;
       std::cout<<"\nTest Result ("<<r_id++<<") Total Simulated Time : "<<((double)imax)*tstep <<" sec";
       std::cout<<"\nTest Result ("<<r_id++<<") Simulation Took Time : "<<t2-t1 <<" sec";
 
@@ -188,7 +183,7 @@ using namespace std;
       pe[1] = dynamics->getPotentialEnergy();
       energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
       std::cout<<"\nTest Result ("<<r_id++<<") Initial Energy : "<<(ke[0]+pe[0])
-                                   <<". Final Energy : "<<(ke[1]+pe[1])<<". Error : "<<energy_err;
+                                       <<". Final Energy : "<<(ke[1]+pe[1])<<". Error : "<<energy_err;
       std::cout<<"\nTest Result ("<<r_id++<<") Total Simulated Time : "<<((double)imax)*tstep <<" sec";
       std::cout<<"\nTest Result ("<<r_id++<<") Simulation Took Time : "<<t2-t1 <<" sec";
 #endif
@@ -207,5 +202,4 @@ using namespace std;
     }
   }
 }
-#endif /* TEST_DYNAMICS_HPP_ */
 

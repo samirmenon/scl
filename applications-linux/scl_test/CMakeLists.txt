@@ -51,13 +51,17 @@ SET(TEST_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_test/)
 SET(ALL_SRC ${TEST_BASE_DIR}scl_test.cpp 
             ${TEST_BASE_DIR}test_random_stuff.cpp 
             ${TEST_BASE_DIR}test_lotus_parser.cpp 
-            ${TEST_BASE_DIR}test_math.cpp
+            ${TEST_BASE_DIR}test_math.cpp 
+            ${TEST_BASE_DIR}test_controller.cpp 
+            ${TEST_BASE_DIR}test_dynamics.cpp 
+            ${TEST_BASE_DIR}test_robot_controller.cpp 
+            ${TEST_BASE_DIR}test_graphics.cpp
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
             ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
-add_executable(scl_eg_ctrl ${ALL_SRC})
+add_executable(scl_test ${ALL_SRC})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
 find_library( SCL_LIBRARY_DEBUG NAMES scl
@@ -71,7 +75,7 @@ find_library( SCL_LIBRARY_RELEASE NAMES scl
 SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
               optimized ${SCL_LIBRARY_RELEASE} )
 
-target_link_libraries(scl_eg_ctrl ${SCL_LIBRARY})
+target_link_libraries(scl_test ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
 find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
@@ -85,8 +89,8 @@ find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
 SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
               optimized ${CHAI_LIBRARY_RELEASE} )
 
-target_link_libraries(scl_eg_ctrl ${CHAI_LIBRARY})
+target_link_libraries(scl_test ${CHAI_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_eg_ctrl gomp GL GLU glut ncurses)
+target_link_libraries(scl_test gomp GL GLU glut ncurses)

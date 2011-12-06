@@ -19,24 +19,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
-/* \file test_controller.hpp
+ */
+/* \file test_controller.cpp
  *
  *  Copyright (C) 2010
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef TEST_CONTROLLER_HPP_
-#define TEST_CONTROLLER_HPP_
-
-#include <iostream>
-#include <stdexcept>
-#include <vector>
-#include <string>
-#include <cmath>
-#include <stdio.h>
-#include <math.h>
+#include "test_controller.hpp"
 
 #include <Eigen/Dense>
 
@@ -61,7 +52,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>
 
-
+#include <iostream>
+#include <stdexcept>
+#include <vector>
+#include <string>
+#include <cmath>
+#include <stdio.h>
+#include <math.h>
 
 namespace scl_test
 {
@@ -82,10 +79,10 @@ namespace scl_test
     try
     {
       //0. Create vars
-//      long long i; //Counters
-//      long long imax; //Counter limits
-//      sClock t1,t2; //Clocks: pre and post
-//      bool flag;
+      //      long long i; //Counters
+      //      long long imax; //Counter limits
+      //      sClock t1,t2; //Clocks: pre and post
+      //      bool flag;
 
       scl::CServo servo;
 
@@ -275,13 +272,13 @@ namespace scl_test
   {
     scl::CTaoDynamics * dynamics = S_NULL;
     scl::sUInt r_id=0;
-//    bool flag;
+    //    bool flag;
     try
     {
       //0. Create vars
-//      long long i; //Counters
-//      long long imax; //Counter limits
-//      sClock t1,t2; //Clocks: pre and post
+      //      long long i; //Counters
+      //      long long imax; //Counter limits
+      //      sClock t1,t2; //Clocks: pre and post
 
       scl::CServo servo;
 
@@ -516,4 +513,3 @@ namespace scl_test
   }
 
 }
-#endif /* TEST_CONTROLLER_HPP_ */
