@@ -64,6 +64,8 @@ namespace scl
       dynamics_ = arg_dynamics;
 
       //Leaves nothing for other tasks. Uses up the entire remaining range space.
+      data_->jacobian_.setIdentity(data_->robot_->dof_,data_->robot_->dof_);
+      data_->jacobian_dyn_inv_.setIdentity(data_->robot_->dof_,data_->robot_->dof_);
       data_->null_space_.setZero(data_->robot_->dof_,data_->robot_->dof_);
 
       has_been_init_ = true;

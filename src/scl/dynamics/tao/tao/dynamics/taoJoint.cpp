@@ -49,6 +49,18 @@ void taoJointSpherical::addQdelta()
 	deVector3 dq0;
 	deQuaternion dq;
 
+	//NOTE TODO: The code after this can be simplified this way.
+  //static_cast<taoVarSpherical*> (
+  //   static_cast<taoDVar*>(_var)
+  //   );
+  //taoVarSpherical* t = static_cast<taoVarSpherical*>(_var);
+  //dq0.multiply(t->_Q, t->_ddQ);
+  //dq.velocity(t->_Q, dq0);
+  //t->_Q += dq;    // YYY: consistentSign(); ?
+  //t->_Q.normalize();
+
+	/** Another example of obfuscated code.
+	 * The one above code probably does the same thing. */
 	dq0.multiply(getVarSpherical()->_Q, getVarSpherical()->_ddQ);
 	dq.velocity(getVarSpherical()->_Q, dq0);
 	getVarSpherical()->_Q += dq;		// YYY: consistentSign(); ?

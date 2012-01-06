@@ -64,6 +64,10 @@ namespace scl
       dynamics_ = arg_dynamics;
 
       //Uses up the range space for its generalized coordinates. Ie. NS = 0 for them
+      data_->jacobian_.setZero(data_->dof_task_,data_->robot_->dof_);
+      for(sUInt i=0; i<data_->dof_task_; ++i)
+      { data_->jacobian_(i,data_->q_sel_[i]) = 1;  }
+
       data_->null_space_.setIdentity(data_->robot_->dof_,data_->robot_->dof_);
       for(sUInt i=0; i<data_->dof_task_; ++i)
       { data_->null_space_(data_->q_sel_[i],data_->q_sel_[i]) = 0;  }

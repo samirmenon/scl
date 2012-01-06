@@ -42,9 +42,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/CTaskBase.hpp>
 
 #include <Eigen/Dense>
-#ifdef W_USE_SVD_TO_INVERT_LAMBDA
 #include <Eigen/SVD>
-#endif
+
 
 namespace scl
 {
@@ -110,17 +109,22 @@ public:
   sBool achievedGoalPos();
 
 private:
+  /** The actual data structure for this computational object */
   SOpPointTask* data_;
 
   /** Temporary variables */
   Eigen::VectorXd tmp1, tmp2;
 
-#ifdef W_USE_SVD_TO_INVERT_LAMBDA
+  /** For inverting the lambda matrix (when it gets singular) */
+  Eigen::ColPivHouseholderQR<Eigen::MatrixXd> qr_;
+
+  /** True when the lambda_inv matrix turns singular. */
+  sBool lambda_inv_singular_;
+
   /** For inverting the operational space inertia matrix
    * near singularities. 3x3 for operational point tasks. */
   Eigen::JacobiSVD<Eigen::Matrix3d > svd_;
   Eigen::Matrix3d singular_values_;
-#endif
 };
 
 }
