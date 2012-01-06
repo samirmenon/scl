@@ -330,10 +330,8 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    {
-      std::cout<<"\nCLotusTiXmlParser::readGlobalData() : "<< e.what();
-      return false;
-    }
+    { std::cout<<"\nCLotusTiXmlParser::readGlobalData() : "<< e.what();  }
+    return false;
   }
 
   bool CLotusTiXmlParser::readGraphics(
@@ -405,9 +403,7 @@ namespace scl_parser {
         return true;
       }
       catch(std::exception& e)
-      {
-        std::cout<<"\nCLotusTiXmlParser::readGraphicsData() : "<< e.what();
-        return false;
-      }
+      { std::cout<<"\nCLotusTiXmlParser::readGraphicsData() : "<< e.what(); }
+      return false;
     }
 }

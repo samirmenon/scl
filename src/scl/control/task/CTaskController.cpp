@@ -211,10 +211,8 @@ namespace scl
       return true;
     }
     catch(std::exception& e)
-    {
-      std::cout<<"\nCTaskController::addTask() : Failed. "<<e.what();
-      return false;
-    }
+    { std::cout<<"\nCTaskController::addTask() : Failed. "<<e.what(); }
+    return false;
   }
 
   sBool CTaskController::removeTask(const std::string &arg_task_name)
@@ -262,13 +260,11 @@ namespace scl
       return *ret;
     }
     catch(std::exception& e)
-    {
-      std::cout<<"\nCTaskController::getTask() : Failed. "<<e.what();
-      return S_NULL;
-    }
+    { std::cout<<"\nCTaskController::getTask() : Failed. "<<e.what(); }
+    return S_NULL;
   }
 
-  sUInt CTaskController::getNumTasks(const std::string& arg_type)
+  sUInt CTaskController::getNumTasks(const std::string& arg_type) const
   {
     sutil::CMappedMultiLevelList<std::string, STaskBase*>::const_iterator it,ite;
 

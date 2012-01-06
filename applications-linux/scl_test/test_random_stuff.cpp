@@ -52,6 +52,8 @@ namespace scl_random_tests
     std::string mystr;
     double mydbl;
   public:
+    virtual ~CSuper(){}
+
     virtual bool uselessVirtFunc(const std::string& arg)
     {
 #ifndef SCL_RANDOM_SLIM_TEST
@@ -101,6 +103,8 @@ namespace scl_random_tests
   class CSub : public CSuper
   {
   public:
+    virtual ~CSub(){}
+
     virtual bool uselessVirtFunc(const std::string& arg)
     {
 #ifndef SCL_RANDOM_SLIM_TEST

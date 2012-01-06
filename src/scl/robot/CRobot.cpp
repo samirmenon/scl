@@ -274,8 +274,8 @@ namespace scl
       std::cout<<"\nCRobot::addController() WARNING : "<< e.what();
       if(S_NULL!=tmp_ctrl)
       { delete tmp_ctrl;  }
-      return false;
     }
+    return false;
   }
 
   void CRobot::computeServo()
@@ -441,10 +441,8 @@ namespace scl
       return true;
     }
     catch(std::exception & e)
-    {
-      std::cout<<"\nCRobot::selectController() Error : "<< e.what();
-      return false;
-    }
+    { std::cout<<"\nCRobot::selectController() Error : "<< e.what();  }
+    return false;
   }
 
   /** Gets access to the current controller data structure */
@@ -457,10 +455,8 @@ namespace scl
       return ctrl_current_;
     }
     catch(std::exception & e)
-    {
-      std::cout<<"\nCRobot::getCurrentController() Error : "<< e.what();
-      return S_NULL;
-    }
+    { std::cout<<"\nCRobot::getCurrentController() Error : "<< e.what();  }
+    return S_NULL;
   }
 
   /** Gets access to the current controller data structure */
@@ -480,10 +476,8 @@ namespace scl
       return tmp_ds;
     }
     catch(std::exception & e)
-    {
-      std::cout<<"\nCRobot::getController("<<arg_ctrl_name<<") Error : "<< e.what();
-      return S_NULL;
-    }
+    { std::cout<<"\nCRobot::getController("<<arg_ctrl_name<<") Error : "<< e.what();  }
+    return S_NULL;
   }
 
   /** Returns a pointer to the robot's data structure */
@@ -520,6 +514,7 @@ namespace scl
   sBool CRobot::logState(bool arg_log_gc,  bool arg_log_gc_matrices,
       bool arg_log_task_matrices)
   {
+    bool logged_something=false;
     //Logs the time at the very least
     log_file_<<sutil::CSystemClock::getSysTime()
           <<" "<<sutil::CSystemClock::getSimTime();
@@ -529,6 +524,7 @@ namespace scl
           <<" "<<data_.io_data_->sensors_.dq_.transpose()
           <<" "<<data_.io_data_->sensors_.ddq_.transpose()
           <<" "<<data_.io_data_->actuators_.force_gc_commanded_.transpose();
+      logged_something = true;
     }
     if(arg_log_gc_matrices)
     {
@@ -536,6 +532,7 @@ namespace scl
           <<"\nAinv "<<data_.controller_current_->gc_model_.Ainv_
           <<"\n"<<data_.controller_current_->gc_model_.b_.transpose()
           <<" "<<data_.controller_current_->gc_model_.g_.transpose();
+      logged_something = true;
     }
     if(arg_log_task_matrices)
     {
@@ -555,8 +552,10 @@ namespace scl
             <<"\n Linv "<<(*it)->lambda_inv_
             <<"\n "<<(*it)->mu_
             <<" "<<(*it)->p_;
+        logged_something = true;
       }
     }
+    return logged_something;
   }
 
 }
