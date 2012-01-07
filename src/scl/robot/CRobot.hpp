@@ -58,8 +58,8 @@ namespace scl
    * NOTE : This class manages its memory. Add pointers and forget
    *        about em!
    *
-   * NOTE : You will, however, have to initialize (call the init function)
-   *        the individual objects yourself. */
+   * NOTE : You will, however, have to initialize (by calling the init
+   *        function) the individual objects yourself. */
   class CRobot
   {
   public:
@@ -296,11 +296,25 @@ namespace scl
 
     SDatabase *db_;
 
+    /** A dynamics object, which implements all the dynamics
+     * matrix computation algorithms.
+     *
+     * NOTE : CRobot will deallocate this pointer later. */
     CDynamicsBase* dynamics_;
+
+    /** A dynamics object, which implements a dynamics integrator.
+     *
+     * NOTE : CRobot will deallocate this pointer later.
+     * NOTE : This may be the same as the dynamics_ object. */
     CDynamicsBase* integrator_;
+
+    /** A mapped list of controllers that can control this robot. */
     sutil::CMappedList<std::string,CControllerBase*> ctrl_;
+
+    /** The current controllers controlling this robot. */
     CControllerBase* ctrl_current_;
 
+    /** For logging stuff to a file. */
     std::string log_file_name_;
     std::fstream log_file_;
     sBool logging_on_;
