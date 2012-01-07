@@ -558,4 +558,274 @@ namespace scl
     return logged_something;
   }
 
+  /** Returns the proportional gain of a given task in a controller.
+   *
+   * @param[out] ret_gains The variable into which the gains will be copied
+   * @param[in]  ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+   * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers.
+   *
+   * Note: If you modify code here, you will probably also
+   * need to modify the same code in the other get gain functions. */
+  sBool CRobot::getProportionalGain(
+      Eigen::VectorXd& ret_gains,
+      const std::string& arg_ctrl_name,
+      const std::string& arg_task_name)
+  {
+    SControllerBase* ctrl;
+    if("" == arg_ctrl_name)
+    { ctrl = data_.controller_current_; }
+    else
+    { ctrl = *data_.controllers_.at(arg_ctrl_name); }
+
+    if(NULL == ctrl)
+    { return false; }
+
+    //Controllers may either be gc, in which case they have
+    //only one set of gains.
+    if("SGcController" == ctrl->getType())
+    {
+      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      ret_gains = ctrlgc->kp_;
+      return true;
+    }
+    //Or they may be task controllers, in which case they have
+    //multiple sets of gains, one for each task.
+    else if("STaskController" == ctrl->getType())
+    {
+      //Task name is required for task controllers
+      if(""==arg_task_name)
+      { return false; }
+      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
+      ret_gains = task->kp_;
+      return true;
+    }
+
+    //Unidentified type.
+    return false;
+  }
+
+  /** Returns the derivative gain of a given task in a controller.
+   *
+   * @param[out] ret_gains The variable into which the gains will be copied
+   * @param[in]  arg_ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+   * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers.
+   *
+   * Note: If you modify code here, you will probably also
+   * need to modify the same code in the other get gain functions. */
+  sBool CRobot::getDerivativeGain(
+      Eigen::VectorXd& ret_gains,
+      const std::string& arg_ctrl_name,
+      const std::string& arg_task_name)
+  {
+    SControllerBase* ctrl;
+    if("" == arg_ctrl_name)
+    { ctrl = data_.controller_current_; }
+    else
+    { ctrl = *data_.controllers_.at(arg_ctrl_name); }
+
+    if(NULL == ctrl)
+    { return false; }
+
+    //Controllers may either be gc, in which case they have
+    //only one set of gains.
+    if("SGcController" == ctrl->getType())
+    {
+      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      ret_gains = ctrlgc->kv_;
+      return true;
+    }
+    //Or they may be task controllers, in which case they have
+    //multiple sets of gains, one for each task.
+    else if("STaskController" == ctrl->getType())
+    {
+      //Task name is required for task controllers
+      if(""==arg_task_name)
+      { return false; }
+      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
+      ret_gains = task->kv_;
+      return true;
+    }
+
+    //Unidentified type.
+    return false;
+  }
+
+  /** Returns the integral gain of a given task in a controller.
+   *
+   * @param[out] ret_gains The variable into which the gains will be copied
+   * @param[in]  arg_ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+   * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers.
+   *
+   * Note: If you modify code here, you will probably also
+   * need to modify the same code in the other get gain functions. */
+  sBool CRobot::getIntegralGain(
+      Eigen::VectorXd& ret_gains,
+      const std::string& arg_ctrl_name,
+      const std::string& arg_task_name)
+  {
+    SControllerBase* ctrl;
+    if("" == arg_ctrl_name)
+    { ctrl = data_.controller_current_; }
+    else
+    { ctrl = *data_.controllers_.at(arg_ctrl_name); }
+
+    if(NULL == ctrl)
+    { return false; }
+
+    //Controllers may either be gc, in which case they have
+    //only one set of gains.
+    if("SGcController" == ctrl->getType())
+    {
+      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      ret_gains = ctrlgc->ki_;
+      return true;
+    }
+    //Or they may be task controllers, in which case they have
+    //multiple sets of gains, one for each task.
+    else if("STaskController" == ctrl->getType())
+    {
+      //Task name is required for task controllers
+      if(""==arg_task_name)
+      { return false; }
+      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
+      ret_gains = task->ki_;
+      return true;
+    }
+
+    //Unidentified type.
+    return false;
+  }
+
+
+  /** Sets the proportional gain of a given task in a controller.
+   *
+   * @param[in]  arg_gains The gains to be set
+   * @param[in]  arg_ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+   * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers. */
+  sBool CRobot::setProportionalGain(const Eigen::VectorXd& arg_kp,
+      const std::string& arg_ctrl_name,
+      const std::string& arg_task_name)
+  {
+    SControllerBase* ctrl;
+    if("" == arg_ctrl_name)
+    { ctrl = data_.controller_current_; }
+    else
+    { ctrl = *data_.controllers_.at(arg_ctrl_name); }
+
+    if(NULL == ctrl)
+    { return false; }
+
+    //Controllers may either be gc, in which case they have
+    //only one set of gains.
+    if("SGcController" == ctrl->getType())
+    {
+      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      ctrlgc->kp_ = arg_kp;
+      return true;
+    }
+    //Or they may be task controllers, in which case they have
+    //multiple sets of gains, one for each task.
+    else if("STaskController" == ctrl->getType())
+    {
+      //Task name is required for task controllers
+      if(""==arg_task_name)
+      { return false; }
+      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
+      task->kp_ = arg_kp;
+      return true;
+    }
+
+    //Unidentified type.
+    return false;
+  }
+
+  /** Sets the derivative gain of a given task in a controller.
+   *
+   * @param[in]  arg_kv The gains to be set
+   * @param[in]  arg_ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+   * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers. */
+  sBool CRobot::setDerivativeGain(const Eigen::VectorXd& arg_kv,
+      const std::string& arg_ctrl_name,
+      const std::string& arg_task_name)
+  {
+    SControllerBase* ctrl;
+    if("" == arg_ctrl_name)
+    { ctrl = data_.controller_current_; }
+    else
+    { ctrl = *data_.controllers_.at(arg_ctrl_name); }
+
+    if(NULL == ctrl)
+    { return false; }
+
+    //Controllers may either be gc, in which case they have
+    //only one set of gains.
+    if("SGcController" == ctrl->getType())
+    {
+      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      ctrlgc->kv_ = arg_kv;
+      return true;
+    }
+    //Or they may be task controllers, in which case they have
+    //multiple sets of gains, one for each task.
+    else if("STaskController" == ctrl->getType())
+    {
+      //Task name is required for task controllers
+      if(""==arg_task_name)
+      { return false; }
+      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
+      task->kv_ = arg_kv;
+      return true;
+    }
+
+    //Unidentified type.
+    return false;
+  }
+
+  /** Sets the derivative gain of a given task in a controller.
+   *
+   * @param[in]  arg_kv The gains to be set
+   * @param[in]  arg_ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+   * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers. */
+  sBool CRobot::setIntegralGain(const Eigen::VectorXd& arg_ki,
+      const std::string& arg_ctrl_name,
+      const std::string& arg_task_name)
+  {
+    SControllerBase* ctrl;
+    if("" == arg_ctrl_name)
+    { ctrl = data_.controller_current_; }
+    else
+    { ctrl = *data_.controllers_.at(arg_ctrl_name); }
+
+    if(NULL == ctrl)
+    { return false; }
+
+    //Controllers may either be gc, in which case they have
+    //only one set of gains.
+    if("SGcController" == ctrl->getType())
+    {
+      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      ctrlgc->ki_ = arg_ki;
+      return true;
+    }
+    //Or they may be task controllers, in which case they have
+    //multiple sets of gains, one for each task.
+    else if("STaskController" == ctrl->getType())
+    {
+      //Task name is required for task controllers
+      if(""==arg_task_name)
+      { return false; }
+      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
+      task->ki_ = arg_ki;
+      return true;
+    }
+
+    //Unidentified type.
+    return false;
+  }
 }

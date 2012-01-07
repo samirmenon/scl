@@ -167,6 +167,94 @@ namespace scl
     sBool logState(bool arg_log_gc=true, bool arg_log_gc_matrices=true,
         bool arg_log_task_matrices=false);
 
+
+    /** Helper/accessor functions to simplify setting various robot
+     * properties. They do what their name says. */
+
+    const Eigen::VectorXd& getGeneralizedCoordinates()
+    { return data_.io_data_->sensors_.q_; }
+
+    const Eigen::VectorXd& getGeneralizedVelocities()
+    { return data_.io_data_->sensors_.dq_; }
+
+    const Eigen::VectorXd& getGeneralizedAccelerations()
+    { return data_.io_data_->sensors_.ddq_; }
+
+    const Eigen::VectorXd& getGeneralizedForcesMeasured()
+    { return data_.io_data_->sensors_.force_gc_measured_; }
+
+    const Eigen::VectorXd& getGeneralizedForcesCommanded()
+    { return data_.io_data_->actuators_.force_gc_commanded_; }
+
+    /** Returns the proportional gain of a given task in a controller.
+     *
+     * @param[out] ret_gains The variable into which the gains will be copied
+     * @param[in]  ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+     * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers. */
+    sBool getProportionalGain(Eigen::VectorXd& ret_gains,
+        const std::string& arg_ctrl_name="",
+        const std::string& arg_task_name="");
+
+    /** Returns the derivative gain of a given task in a controller.
+     *
+     * @param[out] ret_gains The variable into which the gains will be copied
+     * @param[in]  ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+     * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers. */
+    sBool getDerivativeGain(Eigen::VectorXd& ret_gains,
+        const std::string& arg_ctrl_name="",
+        const std::string& arg_task_name="");
+
+    /** Returns the integral gain of a given task in a controller.
+     *
+     * @param[out] ret_gains The variable into which the gains will be copied
+     * @param[in]  ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+     * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers. */
+    sBool getIntegralGain(Eigen::VectorXd& ret_gains,
+        const std::string& arg_ctrl_name="",
+        const std::string& arg_task_name="");
+
+    void setGeneralizedCoordinates(const Eigen::VectorXd& arg_q)
+    {  data_.io_data_->sensors_.q_ = arg_q; }
+
+    void setGeneralizedVelocities(const Eigen::VectorXd& arg_dq)
+    {  data_.io_data_->sensors_.dq_ = arg_dq; }
+
+    void setGeneralizedAccelerations(const Eigen::VectorXd& arg_ddq)
+    {  data_.io_data_->sensors_.ddq_ = arg_ddq; }
+
+    void setGeneralizedForcesMeasured(const Eigen::VectorXd& arg_f)
+    {  data_.io_data_->sensors_.force_gc_measured_ = arg_f; }
+
+    void setGeneralizedForcesCommanded(const Eigen::VectorXd& arg_f)
+    {  data_.io_data_->actuators_.force_gc_commanded_ = arg_f; }
+
+    /** Sets the proportional gain of a given task in a controller.
+     *
+     * @param[in]  arg_gains The gains to be set
+     * @param[in]  ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+     * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers. */
+    sBool setProportionalGain(const Eigen::VectorXd& arg_kp,
+        const std::string& arg_ctrl_name="",
+        const std::string& arg_task_name="");
+
+    /** Sets the derivative gain of a given task in a controller.
+     *
+     * @param[in]  arg_kv The gains to be set
+     * @param[in]  ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+     * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers. */
+    sBool setDerivativeGain(const Eigen::VectorXd& arg_kv,
+        const std::string& arg_ctrl_name="",
+        const std::string& arg_task_name="");
+
+    /** Sets the integral gain of a given task in a controller.
+     *
+     * @param[in]  arg_ki The gains to be set
+     * @param[in]  ctrl_name The controller's name. If no controller name is specified, it picks the current controller by default.
+     * @param[in]  task_name The task for which the gains will be selected. Not reqd for gen coord controllers. */
+    sBool setIntegralGain(const Eigen::VectorXd& arg_ki,
+        const std::string& arg_ctrl_name="",
+        const std::string& arg_task_name="");
+
   private:
     /** The data is available in the database for other parts of the
      * program to see.
