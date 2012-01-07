@@ -75,7 +75,10 @@ namespace scl
      * Asserts false in debug mode if something bad happens */
     void computeDynamics();
 
-    /** Integrates the robot's dynamics (physics model)
+    /** Integrates the robot's dynamics (physics model).
+     * By default, it integrates for a time period dt specifiecd
+     * in the database
+     *
      * Asserts false in debug mode if something bad happens */
     void integrateDynamics();
 
@@ -85,16 +88,7 @@ namespace scl
     // **********************************************************************
 
     /** Convenience function. Pulls all the data from the database and calls
-     * the other init function.
-     *
-     * Initializes the robot:
-     * 1. Verifies that the robot's data in the database is consistent
-     * 2. DELETES all its existing data! (NOTE this carefully!)
-     * 3. Reads the list of available controllers from the database,
-     *    finds the controllers that match this robot, and initializes them.
-     *    (a) Creates a controller object for each new controller
-     *    (b) Adds the controller data-structure to this robot's database data structure
-     *    (c) Sets the last controller as the current controller (default, can be changed) */
+     * the other init function. */
     sBool initFromDb(std::string arg_robot_name,
         CDynamicsBase* arg_dynamics,
         CDynamicsBase* arg_integrator);
@@ -117,33 +111,36 @@ namespace scl
         std::vector<SControllerBase*>& arg_ctrls);
 
     /** Initialization state */
-    sBool hasBeenInit();
+    sBool hasBeenInit() { return data_.has_been_init_;  }
 
     // **********************************************************************
     //                       Robot helper functions
     // **********************************************************************
 
     /** Returns a pointer to the robot's data structure */
-    SRobot* getData();
+    SRobot* getData() { return &data_;  }
 
     /** Turn velocity damping on or off. Turning it on will
      * make the robot lose some (1% default) velocity each
      * second */
-    void setFlagApplyDamping(sBool arg_flag);
+    void setFlagApplyDamping(sBool arg_flag)
+    { data_.parsed_robot_data_->flag_apply_damping_ = arg_flag;  }
 
     /** Sets the velocity damping for each joint */
     sBool setDamping(Eigen::VectorXd arg_d);
 
     /** Turn the actuator limits on or off. Simulates physical
      * force limits of the actuators */
-    void setFlagApplyActuatorForceLimits(sBool arg_flag);
+    void setFlagApplyActuatorForceLimits(sBool arg_flag)
+    { data_.parsed_robot_data_->flag_apply_actuator_force_limits_ = arg_flag;  }
 
     /** Sets the actuator limits for each joint */
     sBool setActuatorForceLimits(Eigen::VectorXd arg_max,Eigen::VectorXd arg_min);
 
     /** Turn the controller on or off. Controller sends zero
      * command gc forces if off. */
-    void setFlagControllerOn(sBool arg_flag);
+    void setFlagControllerOn(sBool arg_flag)
+    { data_.parsed_robot_data_->flag_controller_on_ = arg_flag;  }
 
     // **********************************************************************
     //                       Robot state helper functions
@@ -306,6 +303,7 @@ namespace scl
 
     std::string log_file_name_;
     std::fstream log_file_;
+    sBool logging_on_;
   };
 
 }

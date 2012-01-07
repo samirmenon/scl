@@ -42,33 +42,116 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
+  // **********************************************************************
+  //                    Primary Computation functions
+  // **********************************************************************
 
-  CRobot::CRobot()
+  /** Computes the robot's command torques.
+   * Asserts false in debug mode if something bad happens */
+  void CRobot::computeServo()
   {
-    dynamics_ = S_NULL;
-    integrator_ = S_NULL;
-    ctrl_current_ = S_NULL;
+    bool flag=true;
+    if((S_NULL != ctrl_current_) && data_.has_been_init_)
+    {
+      if(data_.parsed_robot_data_->flag_controller_on_)
+      {
+        //Computes the command torques for the simulator to the controller's computed torques
+        //Also stores the output in the io_data_->actuator data structure
+        flag = ctrl_current_->computeControlForces();
+
+        if(data_.parsed_robot_data_->flag_apply_actuator_force_limits_) //Force limits controlled by a flag
+        {
+          for(sUInt i=0; i<data_.io_data_->dof_; i++)
+          {
+            if(data_.io_data_->actuators_.force_gc_commanded_(i) < data_.parsed_robot_data_->min_actuator_forces_(i))
+              data_.io_data_->actuators_.force_gc_commanded_(i) = data_.parsed_robot_data_->min_actuator_forces_(i);
+            else if(data_.io_data_->actuators_.force_gc_commanded_(i) > data_.parsed_robot_data_->max_actuator_forces_(i))
+              data_.io_data_->actuators_.force_gc_commanded_(i) = data_.parsed_robot_data_->max_actuator_forces_(i);
+          }
+        }
+      }
+      else
+      {//Controller off
+        data_.io_data_->actuators_.force_gc_commanded_.setZero(data_.io_data_->dof_);
+      }
+    }
+#ifdef W_TESTING
+    assert(flag);
+#endif
   }
 
-  //NOTE TODO : This guy shouldn't really do anything. Fix this sometime when
-  //the application API is stable.
-  CRobot::~CRobot()
+  /** Computes the robot's dynamic model.
+   * Asserts false in debug mode if something bad happens */
+  void CRobot::computeDynamics()
   {
-    if(dynamics_==integrator_)
+    bool flag = true;
+    if((S_NULL != ctrl_current_)
+        && data_.has_been_init_
+        && data_.parsed_robot_data_->flag_controller_on_)
     {
-      if(S_NULL!=dynamics_){  delete dynamics_; dynamics_ = S_NULL; }
+      flag = flag && ctrl_current_->computeDynamics();
     }
-    else
-    {
-      if(S_NULL!=dynamics_){  delete dynamics_; dynamics_ = S_NULL; }
-      if(S_NULL!=integrator_) {  delete integrator_; integrator_ = S_NULL; }
-    }
-
-    //Close the log file if it is open.
-    if(log_file_.is_open())
-    { log_file_.close();  }
+#ifdef W_TESTING
+    assert(flag);
+#endif
   }
 
+  /** Integrates the robot's dynamics (physics model).
+   * By default, it integrates for a time period dt specifiecd
+   * in the database
+   *
+   * Asserts false in debug mode if something bad happens */
+  void CRobot::integrateDynamics()
+  {
+    bool flag=true;
+    if((S_NULL != integrator_)
+        && data_.has_been_init_)
+    {
+      flag = integrator_->integrate(*(data_.io_data_), CDatabase::getData()->sim_dt_);
+
+      //NOTE TODO : DESIGN DECISION : Consider moving these into the integrator instead.
+      if(data_.parsed_robot_data_->flag_apply_damping_)
+      {
+        data_.io_data_->sensors_.dq_.array() -=
+            data_.io_data_->sensors_.dq_.array() * data_.parsed_robot_data_->damping_.array(); //1% Velocity damping.
+      }
+
+      /* Note: Most models' joint limits are not correct right now. Uncomment this after
+       * fixing them:
+        //Apply joint limits and collision.
+        if(data_.parsed_robot_data_->flag_apply_joint_limits_)
+        {
+          for(int i=0; i< data_.io_data_->dof_;++i)
+          {
+            //NOTE TODO : Implement the joint limit parsing and fix q at the joint limits
+            if(data_.io_data_->sensors_.q_(i) > data_.parsed_robot_data_->joint_limit_max_(i))
+            { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_max_(i); }
+            if(data_.io_data_->sensors_.q_(i) < data_.parsed_robot_data_->joint_limit_min_(i))
+            { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_min_(i); }
+            else
+            { continue; }
+            //Collision
+            data_.io_data_->sensors_.dq_(i) = data_.io_data_->sensors_.dq_(i) * 0.01;//99% energy loss
+            data_.io_data_->sensors_.ddq_(i) = 0;
+            #ifdef S_TESTING
+            //std::cout<<"\nCollided with joint limits: "<<data_.io_data_->sensors_.q_.transpose();
+            #endif
+          }
+        }*/
+
+    }
+
+#ifdef W_TESTING
+    assert(flag);
+#endif
+  }
+
+  // **********************************************************************
+  //                       Initialization helper functions
+  // **********************************************************************
+
+  /** Convenience function. Pulls all the data from the database and calls
+   * the other init function. */
   sBool CRobot::initFromDb(std::string arg_robot_name,
       CDynamicsBase* arg_dynamics,
       CDynamicsBase* arg_integrator)
@@ -111,6 +194,15 @@ namespace scl
   }
 
 
+  /** The actual data required to initialize a robot.
+   * Initializes the robot:
+   * 1. Verifies that the robot's data in the database is consistent
+   * 2. DELETES all its existing data! (NOTE this carefully!)
+   * 3. Reads the list of available controllers from the database,
+   *    finds the controllers that match this robot, and initializes them.
+   *    (a) Creates a controller object for each new controller
+   *    (b) Adds the controller data-structure to this robot's database data structure
+   *    (c) Sets the last controller as the current controller (default, can be changed) */
   sBool CRobot::init(std::string arg_robot_name,
       CDynamicsBase* arg_dynamics,
       CDynamicsBase* arg_integrator,
@@ -200,6 +292,39 @@ namespace scl
     return data_.has_been_init_;
   }
 
+  // **********************************************************************
+  //                       Robot helper functions
+  // **********************************************************************
+
+  /** Sets the velocity damping for each joint */
+  sBool CRobot::setDamping(Eigen::VectorXd arg_d)
+  {
+    sBool flag;
+    if(static_cast<sUInt>(arg_d.size()) == data_.io_data_->dof_)
+    { data_.parsed_robot_data_->damping_ = arg_d; flag = true;  }
+    else { flag = false; }
+    return flag;
+  }
+
+  /** Sets the actuator limits for each joint */
+  sBool CRobot::setActuatorForceLimits(Eigen::VectorXd arg_max,Eigen::VectorXd arg_min)
+  {
+    sBool flag;
+    if((static_cast<sUInt>(arg_max.size()) == data_.io_data_->dof_) &&
+        (static_cast<sUInt>(arg_min.size()) == data_.io_data_->dof_))
+    {
+      data_.parsed_robot_data_->max_actuator_forces_ = arg_max;
+      data_.parsed_robot_data_->min_actuator_forces_ = arg_min;
+      flag = true;
+    }
+    else { flag = false; }
+    return flag;
+  }
+
+  // **********************************************************************
+  //                       Controller helper functions
+  // **********************************************************************
+
   sBool CRobot::addController(SControllerBase* arg_ctrl_ds)
   {
     bool flag;
@@ -278,138 +403,18 @@ namespace scl
     return false;
   }
 
-  void CRobot::computeServo()
+  /** Gets access to the current controller data structure */
+  CControllerBase* CRobot::getControllerCurrent()
   {
-    bool flag=true;
-    if((S_NULL != ctrl_current_) && data_.has_been_init_)
+    try
     {
-      if(data_.parsed_robot_data_->flag_controller_on_)
-      {
-        //Computes the command torques for the simulator to the controller's computed torques
-        //Also stores the output in the io_data_->actuator data structure
-        flag = ctrl_current_->computeControlForces();
-
-        if(data_.parsed_robot_data_->flag_apply_actuator_force_limits_) //Force limits controlled by a flag
-        {
-          for(sUInt i=0; i<data_.io_data_->dof_; i++)
-          {
-            if(data_.io_data_->actuators_.force_gc_commanded_(i) < data_.parsed_robot_data_->min_actuator_forces_(i))
-              data_.io_data_->actuators_.force_gc_commanded_(i) = data_.parsed_robot_data_->min_actuator_forces_(i);
-            else if(data_.io_data_->actuators_.force_gc_commanded_(i) > data_.parsed_robot_data_->max_actuator_forces_(i))
-              data_.io_data_->actuators_.force_gc_commanded_(i) = data_.parsed_robot_data_->max_actuator_forces_(i);
-          }
-        }
-      }
-      else
-      {//Controller off
-        data_.io_data_->actuators_.force_gc_commanded_.setZero(data_.io_data_->dof_);
-      }
+      if(false == data_.has_been_init_)
+      { throw(std::runtime_error("Robot not initialized"));}
+      return ctrl_current_;
     }
-#ifdef W_TESTING
-    assert(flag);
-#endif
-  }
-
-  void CRobot::computeDynamics()
-  {
-    bool flag = true;
-    if((S_NULL != ctrl_current_)
-        && data_.has_been_init_
-        && data_.parsed_robot_data_->flag_controller_on_)
-    {
-      flag = flag && ctrl_current_->computeDynamics();
-    }
-#ifdef W_TESTING
-    assert(flag);
-#endif
-  }
-
-  void CRobot::integrateDynamics()
-  {
-    bool flag=true;
-    if((S_NULL != integrator_)
-        && data_.has_been_init_)
-    {
-      flag = integrator_->integrate(*(data_.io_data_), CDatabase::getData()->sim_dt_);
-
-      //NOTE TODO : DESIGN DECISION : Consider moving these into the integrator instead.
-      if(data_.parsed_robot_data_->flag_apply_damping_)
-      {
-        data_.io_data_->sensors_.dq_.array() -=
-            data_.io_data_->sensors_.dq_.array() * data_.parsed_robot_data_->damping_.array(); //1% Velocity damping.
-      }
-
-      /* Note: Most models' joint limits are not correct right now. Uncomment this after
-       * fixing them:
-      //Apply joint limits and collision.
-      if(data_.parsed_robot_data_->flag_apply_joint_limits_)
-      {
-        for(int i=0; i< data_.io_data_->dof_;++i)
-        {
-          //NOTE TODO : Implement the joint limit parsing and fix q at the joint limits
-          if(data_.io_data_->sensors_.q_(i) > data_.parsed_robot_data_->joint_limit_max_(i))
-          { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_max_(i); }
-          if(data_.io_data_->sensors_.q_(i) < data_.parsed_robot_data_->joint_limit_min_(i))
-          { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_min_(i); }
-          else
-          { continue; }
-          //Collision
-          data_.io_data_->sensors_.dq_(i) = -data_.io_data_->sensors_.dq_(i) / 100;//99% energy loss
-          data_.io_data_->sensors_.ddq_(i) = 0;
-          //std::cout<<"\nCollided with joint limits: "<<data_.io_data_->sensors_.q_.transpose();
-        }
-      }*/
-
-    }
-
-#ifdef W_TESTING
-    assert(flag);
-#endif
-  }
-
-  sBool CRobot::hasBeenInit()
-  { return data_.has_been_init_;  }
-
-
-  /** Turn velocity damping on or off. Turning it on will
-   * make the robot lose some (1% default) velocity each
-   * second */
-  void CRobot::setFlagApplyDamping(sBool arg_flag)
-  { data_.parsed_robot_data_->flag_apply_damping_ = arg_flag;  }
-
-  /** Turn the actuator limits on or off. Simulates physical
-   * force limits of the actuators */
-  void CRobot::setFlagApplyActuatorForceLimits(sBool arg_flag)
-  { data_.parsed_robot_data_->flag_apply_actuator_force_limits_ = arg_flag;  }
-
-  /** Turn the controller on or off. Controller sends zero
-   * command gc forces if off. */
-  void CRobot::setFlagControllerOn(sBool arg_flag)
-  { data_.parsed_robot_data_->flag_controller_on_ = arg_flag;  }
-
-  /** Sets the velocity damping for each joint */
-  sBool CRobot::setDamping(Eigen::VectorXd arg_d)
-  {
-    sBool flag;
-    if(static_cast<sUInt>(arg_d.size()) == data_.io_data_->dof_)
-    { data_.parsed_robot_data_->damping_ = arg_d; flag = true;  }
-    else { flag = false; }
-    return flag;
-  }
-
-  /** Sets the actuator limits for each joint */
-  sBool CRobot::setActuatorForceLimits(Eigen::VectorXd arg_max,Eigen::VectorXd arg_min)
-  {
-    sBool flag;
-    if((static_cast<sUInt>(arg_max.size()) == data_.io_data_->dof_) &&
-        (static_cast<sUInt>(arg_min.size()) == data_.io_data_->dof_))
-    {
-      data_.parsed_robot_data_->max_actuator_forces_ = arg_max;
-      data_.parsed_robot_data_->min_actuator_forces_ = arg_min;
-      flag = true;
-    }
-    else { flag = false; }
-    return flag;
+    catch(std::exception & e)
+    { std::cout<<"\nCRobot::getCurrentController() Error : "<< e.what();  }
+    return S_NULL;
   }
 
   /** Selects the passed controller if it exists and has been initialized
@@ -446,20 +451,6 @@ namespace scl
   }
 
   /** Gets access to the current controller data structure */
-  CControllerBase* CRobot::getControllerCurrent()
-  {
-    try
-    {
-      if(false == data_.has_been_init_)
-      { throw(std::runtime_error("Robot not initialized"));}
-      return ctrl_current_;
-    }
-    catch(std::exception & e)
-    { std::cout<<"\nCRobot::getCurrentController() Error : "<< e.what();  }
-    return S_NULL;
-  }
-
-  /** Gets access to the current controller data structure */
   SControllerBase* CRobot::getControllerDataStruct(const std::string& arg_ctrl_name)
   {
     try
@@ -478,84 +469,6 @@ namespace scl
     catch(std::exception & e)
     { std::cout<<"\nCRobot::getController("<<arg_ctrl_name<<") Error : "<< e.what();  }
     return S_NULL;
-  }
-
-  /** Returns a pointer to the robot's data structure */
-  SRobot* CRobot::getData()
-  { return &data_;  }
-
-  /** Sets up logging to a file */
-  sBool CRobot::setLogFile(const std::string &arg_file)
-  {
-    if(log_file_name_ == arg_file)
-    {//If it tries to open the same file, do nothing.
-      if(log_file_.is_open())
-      { return true;  }
-    }
-    else
-    {
-      log_file_name_ = arg_file;
-      //Close the file if it is open
-      if(log_file_.is_open())
-      { log_file_.close();  }
-    }
-
-    //Open the file in append mode
-    log_file_.open(arg_file.c_str(), std::ios::out | std::ios::app);
-
-    //Quick error check.
-    if(log_file_.is_open())
-    { return true;  }
-    else
-    { return false; }
-  }
-
-  /** Logs data to the file */
-  sBool CRobot::logState(bool arg_log_gc,  bool arg_log_gc_matrices,
-      bool arg_log_task_matrices)
-  {
-    bool logged_something=false;
-    //Logs the time at the very least
-    log_file_<<sutil::CSystemClock::getSysTime()
-          <<" "<<sutil::CSystemClock::getSimTime();
-    if(arg_log_gc)
-    {
-      log_file_<<"\nq "<<data_.io_data_->sensors_.q_.transpose()
-          <<" "<<data_.io_data_->sensors_.dq_.transpose()
-          <<" "<<data_.io_data_->sensors_.ddq_.transpose()
-          <<" "<<data_.io_data_->actuators_.force_gc_commanded_.transpose();
-      logged_something = true;
-    }
-    if(arg_log_gc_matrices)
-    {
-      log_file_<<"\nA "<<data_.controller_current_->gc_model_.A_
-          <<"\nAinv "<<data_.controller_current_->gc_model_.Ainv_
-          <<"\n"<<data_.controller_current_->gc_model_.b_.transpose()
-          <<" "<<data_.controller_current_->gc_model_.g_.transpose();
-      logged_something = true;
-    }
-    if(arg_log_task_matrices)
-    {
-      //Well be careful to ask for task logging only when you use a task
-      //controller! Else the dynamic cast won't work.
-      STaskController* ds = dynamic_cast<STaskController*>(data_.controller_current_);
-      sutil::CMappedMultiLevelList<std::string, STaskBase*>::const_iterator it,ite;
-      for(it = ds->servo_.task_data_->begin(), ite = ds->servo_.task_data_->end();
-          it != ite; ++it)
-      {
-        log_file_<<"\nPri "<<(*it)->priority_
-            <<" "<<(*it)->force_task_.transpose()
-            <<" "<<(*it)->force_gc_.transpose()
-            <<"\nJ "<<(*it)->jacobian_
-            <<"\nJinv "<<(*it)->jacobian_dyn_inv_
-            <<"\n L "<<(*it)->lambda_
-            <<"\n Linv "<<(*it)->lambda_inv_
-            <<"\n "<<(*it)->mu_
-            <<" "<<(*it)->p_;
-        logged_something = true;
-      }
-    }
-    return logged_something;
   }
 
   /** Returns the proportional gain of a given task in a controller.
@@ -827,5 +740,121 @@ namespace scl
 
     //Unidentified type.
     return false;
+  }
+
+  // **********************************************************************
+  //                       Logging functions
+  // **********************************************************************
+  /** Sets up logging to a file */
+  sBool CRobot::setLogFile(const std::string &arg_file)
+  {
+    if(log_file_name_ == arg_file)
+    {//If it tries to open the same file, do nothing.
+      if(log_file_.is_open())
+      { return true;  }
+    }
+    else
+    {
+      //Once we open a new file, the logging must be reinitalized before it
+      //can be turned on.
+      logging_on_ = false;
+      log_file_name_ = arg_file;
+      //Close the file if it is open
+      if(log_file_.is_open())
+      { log_file_.close();  }
+    }
+
+    //Open the file in append mode
+    log_file_.open(arg_file.c_str(), std::ios::out | std::ios::app);
+
+    //Quick error check.
+    if(log_file_.is_open())
+    {
+      return true;
+      logging_on_ = true;
+    }
+    else
+    { return false; }
+  }
+
+  /** Logs data to the file */
+  sBool CRobot::logState(bool arg_log_gc,  bool arg_log_gc_matrices,
+      bool arg_log_task_matrices)
+  {
+    if(!logging_on_)  { return false; }
+
+    bool logged_something=false;
+    //Logs the time at the very least
+    log_file_<<sutil::CSystemClock::getSysTime()
+    <<" "<<sutil::CSystemClock::getSimTime();
+    if(arg_log_gc)
+    {
+      log_file_<<"\nq "<<data_.io_data_->sensors_.q_.transpose()
+                <<" "<<data_.io_data_->sensors_.dq_.transpose()
+                <<" "<<data_.io_data_->sensors_.ddq_.transpose()
+                <<" "<<data_.io_data_->actuators_.force_gc_commanded_.transpose();
+      logged_something = true;
+    }
+    if(arg_log_gc_matrices)
+    {
+      log_file_<<"\nA "<<data_.controller_current_->gc_model_.A_
+          <<"\nAinv "<<data_.controller_current_->gc_model_.Ainv_
+          <<"\n"<<data_.controller_current_->gc_model_.b_.transpose()
+          <<" "<<data_.controller_current_->gc_model_.g_.transpose();
+      logged_something = true;
+    }
+    if(arg_log_task_matrices)
+    {
+      //Well be careful to ask for task logging only when you use a task
+      //controller! Else the dynamic cast won't work.
+      STaskController* ds = dynamic_cast<STaskController*>(data_.controller_current_);
+      sutil::CMappedMultiLevelList<std::string, STaskBase*>::const_iterator it,ite;
+      for(it = ds->servo_.task_data_->begin(), ite = ds->servo_.task_data_->end();
+          it != ite; ++it)
+      {
+        log_file_<<"\nPri "<<(*it)->priority_
+            <<" "<<(*it)->force_task_.transpose()
+            <<" "<<(*it)->force_gc_.transpose()
+            <<"\nJ "<<(*it)->jacobian_
+            <<"\nJinv "<<(*it)->jacobian_dyn_inv_
+            <<"\n L "<<(*it)->lambda_
+            <<"\n Linv "<<(*it)->lambda_inv_
+            <<"\n "<<(*it)->mu_
+            <<" "<<(*it)->p_;
+        logged_something = true;
+      }
+    }
+    return logged_something;
+  }
+
+  // **********************************************************************
+  //                        Constructors etc.
+  // **********************************************************************
+
+  CRobot::CRobot()
+  {
+    dynamics_ = S_NULL;
+    integrator_ = S_NULL;
+    ctrl_current_ = S_NULL;
+    logging_on_ = false;
+  }
+
+  //NOTE TODO : This guy shouldn't really do anything. Fix this sometime when
+  //the application API is stable.
+  CRobot::~CRobot()
+  {
+    if(dynamics_==integrator_)
+    {
+      if(S_NULL!=dynamics_){  delete dynamics_; dynamics_ = S_NULL; }
+    }
+    else
+    {
+      if(S_NULL!=dynamics_){  delete dynamics_; dynamics_ = S_NULL; }
+      if(S_NULL!=integrator_) {  delete integrator_; integrator_ = S_NULL; }
+    }
+
+    //Close the log file if it is open.
+    if(log_file_.is_open())
+    { log_file_.close();  }
   }
 }
