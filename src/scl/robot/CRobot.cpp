@@ -70,6 +70,7 @@ namespace scl
     bool flag;
     try
     {
+      //Just pulls data from the database
       db_ = CDatabase::getData();
       if(S_NULL == db_) { throw(std::runtime_error("Database not initialized"));  }
 
@@ -92,6 +93,7 @@ namespace scl
       if(false == flag)
       { throw(std::runtime_error("Could not read controller(s) for robot from the database."));  }
 
+      //Calls the init function to do the actual work.
       flag = init(arg_robot_name, arg_dynamics, arg_integrator,
                   world, robot, io_data, ctrls);
       if(false == flag) { throw(std::runtime_error("Could not initialize robot.")); }
