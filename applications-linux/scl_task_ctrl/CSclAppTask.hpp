@@ -228,7 +228,7 @@ namespace scl_app
         if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
 
         ctrl_name = argv[3];
-        flag = robot.setController(ctrl_name);
+        flag = robot.setControllerCurrent(ctrl_name);
         if(false == flag) { throw(std::runtime_error("Could not initialize robot's controller"));  }
 
         /**********************Initialize Single Control Task *******************/

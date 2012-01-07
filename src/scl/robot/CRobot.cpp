@@ -414,7 +414,7 @@ namespace scl
 
   /** Selects the passed controller if it exists and has been initialized
    * Returns false if the controller doesn't exist*/
-  sBool CRobot::setController(std::string arg_ctrl_name)
+  sBool CRobot::setControllerCurrent(std::string arg_ctrl_name)
   {
     try
     {
@@ -446,7 +446,7 @@ namespace scl
   }
 
   /** Gets access to the current controller data structure */
-  CControllerBase* CRobot::getCurrentController()
+  CControllerBase* CRobot::getControllerCurrent()
   {
     try
     {
@@ -460,7 +460,7 @@ namespace scl
   }
 
   /** Gets access to the current controller data structure */
-  SControllerBase* CRobot::getController(std::string arg_ctrl_name)
+  SControllerBase* CRobot::getControllerDataStruct(const std::string& arg_ctrl_name)
   {
     try
     {

@@ -51,21 +51,42 @@ namespace scl
    * The one-stop-do-it-all class that encapsulates dynamics,
    * and a controller for a single robot.
    *
+   * Also provides an interface into the underlying shared data
+   * structure, the database, which facilitates communication
+   * between different modules.
+   *
    * NOTE : This class manages its memory. Add pointers and forget
    *        about em!
    *
-   * NOTE : You will, however, have to initialize the individual
-   *        components yourself. */
+   * NOTE : You will, however, have to initialize (call the init function)
+   *        the individual objects yourself. */
   class CRobot
   {
   public:
-    /** Constructor sets pointers to NULL */
-    CRobot();
+    // **********************************************************************
+    //                    Primary Computation functions
+    // **********************************************************************
 
-    /** Destructor does nothing */
-    virtual ~CRobot();
+    /** Computes the robot's command torques.
+     * Asserts false in debug mode if something bad happens */
+    void computeServo();
 
-    /** Convenience function. Pulls all the data from the database.
+    /** Computes the robot's dynamic model.
+     * Asserts false in debug mode if something bad happens */
+    void computeDynamics();
+
+    /** Integrates the robot's dynamics (physics model)
+     * Asserts false in debug mode if something bad happens */
+    void integrateDynamics();
+
+
+    // **********************************************************************
+    //                       Initialization helper functions
+    // **********************************************************************
+
+    /** Convenience function. Pulls all the data from the database and calls
+     * the other init function.
+     *
      * Initializes the robot:
      * 1. Verifies that the robot's data in the database is consistent
      * 2. DELETES all its existing data! (NOTE this carefully!)
@@ -95,35 +116,15 @@ namespace scl
         SRobotIOData *arg_io_data,
         std::vector<SControllerBase*>& arg_ctrls);
 
-    /** Adds a controller based on the initialization information passed
-     * in a data structure.
-     * Does type-checking (the data structure has a type) and initializes
-     * an appropriate controller (controllers are derived from the CControllerBase
-     * API).
-     * Prints a warning if the passed data structure is invalid.
-     *
-     * NOTE : init() adds all the specified robot's controllers from
-     * the database by default. Ie. It automatically loads controllers defined
-     * in the xml file!!
-     *
-     * Only use this function for controllers defined "in code"
-     * */
-    sBool addController(SControllerBase* arg_ctrl_ds);
-
-    /** Computes the robot's command torques.
-     * Asserts false in debug mode if something bad happens */
-    void computeServo();
-
-    /** Computes the robot's dynamic model.
-     * Asserts false in debug mode if something bad happens */
-    void computeDynamics();
-
-    /** Integrates the robot's dynamics (physics model)
-     * Asserts false in debug mode if something bad happens */
-    void integrateDynamics();
-
     /** Initialization state */
     sBool hasBeenInit();
+
+    // **********************************************************************
+    //                       Robot helper functions
+    // **********************************************************************
+
+    /** Returns a pointer to the robot's data structure */
+    SRobot* getData();
 
     /** Turn velocity damping on or off. Turning it on will
      * make the robot lose some (1% default) velocity each
@@ -144,32 +145,9 @@ namespace scl
      * command gc forces if off. */
     void setFlagControllerOn(sBool arg_flag);
 
-    /** Selects the passed controller if it exists and has been initialized
-     * Returns false if the controller doesn't exist*/
-    sBool setController(std::string arg_ctrl_name);
-
-    /** Gets access to the current controller data structure */
-    CControllerBase* getCurrentController();
-
-    /** Gets access to the current controller data structure */
-    SControllerBase* getController(std::string arg_ctrl_name);
-
-    /** Returns a pointer to the robot's data structure */
-    SRobot* getData();
-
-    /** Sets up logging to a file. The files are opened
-     * in append+text mode and the state is written to them
-     * every time the logState() function is called. */
-    sBool setLogFile(const std::string &arg_file);
-
-    /** Logs data to the file. Pass flags to control the data
-     * written to the file. */
-    sBool logState(bool arg_log_gc=true, bool arg_log_gc_matrices=true,
-        bool arg_log_task_matrices=false);
-
-
-    /** Helper/accessor functions to simplify setting various robot
-     * properties. They do what their name says. */
+    // **********************************************************************
+    //                       Robot state helper functions
+    // **********************************************************************
 
     const Eigen::VectorXd& getGeneralizedCoordinates()
     { return data_.io_data_->sensors_.q_; }
@@ -185,6 +163,50 @@ namespace scl
 
     const Eigen::VectorXd& getGeneralizedForcesCommanded()
     { return data_.io_data_->actuators_.force_gc_commanded_; }
+
+    void setGeneralizedCoordinates(const Eigen::VectorXd& arg_q)
+    {  data_.io_data_->sensors_.q_ = arg_q; }
+
+    void setGeneralizedVelocities(const Eigen::VectorXd& arg_dq)
+    {  data_.io_data_->sensors_.dq_ = arg_dq; }
+
+    void setGeneralizedAccelerations(const Eigen::VectorXd& arg_ddq)
+    {  data_.io_data_->sensors_.ddq_ = arg_ddq; }
+
+    void setGeneralizedForcesMeasured(const Eigen::VectorXd& arg_f)
+    {  data_.io_data_->sensors_.force_gc_measured_ = arg_f; }
+
+    void setGeneralizedForcesCommanded(const Eigen::VectorXd& arg_f)
+    {  data_.io_data_->actuators_.force_gc_commanded_ = arg_f; }
+
+    // **********************************************************************
+    //                       Controller helper functions
+    // **********************************************************************
+
+    /** Adds a controller based on the initialization information passed
+     * in a data structure.
+     * Does type-checking (the data structure has a type) and initializes
+     * an appropriate controller (controllers are derived from the CControllerBase
+     * API).
+     * Prints a warning if the passed data structure is invalid.
+     *
+     * NOTE : init() adds all the specified robot's controllers from
+     * the database by default. Ie. It automatically loads controllers defined
+     * in the xml file!!
+     *
+     * Only use this function for controllers defined "in code"
+     * */
+    sBool addController(SControllerBase* arg_ctrl_ds);
+
+    /** Gets access to the current controller data structure */
+    CControllerBase* getControllerCurrent();
+
+    /** Selects the passed controller if it exists and has been initialized
+     * Returns false if the controller doesn't exist*/
+    sBool setControllerCurrent(std::string arg_ctrl_name);
+
+    /** Gets access to the current controller data structure */
+    SControllerBase* getControllerDataStruct(const std::string& arg_ctrl_name);
 
     /** Returns the proportional gain of a given task in a controller.
      *
@@ -213,21 +235,6 @@ namespace scl
         const std::string& arg_ctrl_name="",
         const std::string& arg_task_name="");
 
-    void setGeneralizedCoordinates(const Eigen::VectorXd& arg_q)
-    {  data_.io_data_->sensors_.q_ = arg_q; }
-
-    void setGeneralizedVelocities(const Eigen::VectorXd& arg_dq)
-    {  data_.io_data_->sensors_.dq_ = arg_dq; }
-
-    void setGeneralizedAccelerations(const Eigen::VectorXd& arg_ddq)
-    {  data_.io_data_->sensors_.ddq_ = arg_ddq; }
-
-    void setGeneralizedForcesMeasured(const Eigen::VectorXd& arg_f)
-    {  data_.io_data_->sensors_.force_gc_measured_ = arg_f; }
-
-    void setGeneralizedForcesCommanded(const Eigen::VectorXd& arg_f)
-    {  data_.io_data_->actuators_.force_gc_commanded_ = arg_f; }
-
     /** Sets the proportional gain of a given task in a controller.
      *
      * @param[in]  arg_gains The gains to be set
@@ -254,6 +261,30 @@ namespace scl
     sBool setIntegralGain(const Eigen::VectorXd& arg_ki,
         const std::string& arg_ctrl_name="",
         const std::string& arg_task_name="");
+
+    // **********************************************************************
+    //                       Logging functions
+    // **********************************************************************
+
+    /** Sets up logging to a file. The files are opened
+     * in append+text mode and the state is written to them
+     * every time the logState() function is called. */
+    sBool setLogFile(const std::string &arg_file);
+
+    /** Logs data to the file. Pass flags to control the data
+     * written to the file. */
+    sBool logState(bool arg_log_gc=true, bool arg_log_gc_matrices=true,
+        bool arg_log_task_matrices=false);
+
+    // **********************************************************************
+    //                       Constructors etc.
+    // **********************************************************************
+
+    /** Constructor sets pointers to NULL */
+    CRobot();
+
+    /** Destructor does nothing */
+    virtual ~CRobot();
 
   private:
     /** The data is available in the database for other parts of the

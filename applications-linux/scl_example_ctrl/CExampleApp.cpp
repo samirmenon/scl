@@ -64,7 +64,7 @@ namespace scl_app
       scl::sUInt args_ctr = args_parsed;
 
       /** Initialize Single Control Task */
-      ctrl = (scl::CTaskController*) robot.getCurrentController();
+      ctrl = (scl::CTaskController*) robot.getControllerCurrent();
       if(S_NULL == ctrl)
       { throw(std::runtime_error("Could not get current controller"));  }
 
