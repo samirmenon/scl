@@ -159,7 +159,7 @@ namespace scl
         if(false == flag) { throw(std::runtime_error("Could not initialize robot's controller"));  }
 
         /**********************Initialize Single Control Task *******************/
-        flag = initMyController(argv);
+        flag = initMyController(argv,4);
         if(false == flag)
         { throw(std::runtime_error("Could not initialize user's custom controller"));  }
 

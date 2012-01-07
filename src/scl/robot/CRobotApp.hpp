@@ -76,8 +76,9 @@ namespace scl
     virtual scl::sBool initMyController(const std::vector<std::string>& argv,
         /** The CRobotApp's init function already parses some command line
          * arguments. This counter tells your controller implementation what
-         * is already parsed. */
-        sUInt args_parsed)=0;
+         * is already parsed. The implementation assumes that this function
+         * will parse the remaining args. */
+        sUInt args_already_parsed)=0;
 
     /** Register any custom dynamic types that you have. */
     virtual scl::sBool registerCustomDynamicTypes()
