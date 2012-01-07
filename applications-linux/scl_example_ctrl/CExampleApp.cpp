@@ -69,7 +69,7 @@ namespace scl_app
       { throw(std::runtime_error("Could not get current controller"));  }
 
       // Check that we haven't finished parsing everything
-      while(args_ctr <= argv.size())
+      while(args_ctr < argv.size())
       {
         if ("-l" == argv[args_ctr])
         {// We know the next argument *should* be the log file's name
