@@ -34,25 +34,23 @@ this file. If not, see <http://www.gnu.org/licenses/>.
 namespace scl_util
 {
 
-/** Function reads an unsigned integer vector from a file.
+/** Function reads a vector from a file.
  * The file should have a val in each line:
  * x1
  * x2
  * x3 ...
- * Eigen Vector Version : Rather slow because arg_vec is resized
- * and initialized in a 2 step procedure. */
-bool readEigenVecFromFile(Eigen::VectorXi & arg_vec,
+ */
+bool readEigenVecFromFile(Eigen::VectorXd & arg_vec,
     const std::string & arg_file);
 
-/** Function reads an unsigned integer vector from a file.
+/** Function reads a vector from a file.
  * The file should have a val in each line:
  * x1
  * x2
  * x3 ...
- * Eigen Vector Version : Rather slow because arg_vec is resized
- * and initialized in a 2 step procedure. */
-bool readEigenVecFromFile(Eigen::VectorXd & arg_vec, const int len,
-    const std::string & arg_file);
+ */
+bool readEigenVecFromFile(Eigen::VectorXd & arg_vec,
+    const int len, const std::string & arg_file);
 
 /** Writes an eigen vector of doubles to a file
  * @param arg_vec : The data to be written to disk

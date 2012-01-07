@@ -40,7 +40,7 @@ using namespace scl;
 namespace scl_util
 {
 
-  bool readEigenVecFromFile(Eigen::VectorXi & arg_vec,
+  bool readEigenVecFromFile(Eigen::VectorXd & arg_vec,
       const std::string & arg_file)
   {
     ifstream ipfile;
@@ -49,22 +49,25 @@ namespace scl_util
     if(!ipfile)
     { return false; }
 
-    std::list<sInt> lst;
+    //Read the file's numbers into a temporary list (to avoid
+    //resizing the vector over and over again).
+    std::list<sFloat> lst;
     while (!ipfile.eof())
     {
-      sInt tmp;
+      sFloat tmp;
       ipfile>>tmp;
       lst.push_back(tmp);
     }
 
-    //Set the eigen vector's size to be equal to the
+    //Set the Eigen vector's size to be equal to the
     //loaded std::list. And then copy over the elements.
     sInt sz = lst.size();
     arg_vec.resize(sz);
 
-    std::list<sInt>::iterator it = lst.begin();
+    //Copy the list into the vector.
+    std::list<sFloat>::iterator it = lst.begin();
     for(int i=0;i<sz;i++, ++it)
-    { arg_vec[i] = *it; }
+    { arg_vec[i] = *it; it++; }
 
     ipfile.close();
     return true;
@@ -81,9 +84,8 @@ namespace scl_util
     { return false; }
 
     //Set the eigen vector's size to be equal to the
-    //loaded std::vector. And then copy over the elements.
-    //  sInt sz = vec.size();
-    //  arg_vec.resize(sz);
+    //passed argument. And then copy over the elements.
+    arg_vec.resize(len);
     for(int i=0;i<len;i++)
     { ipfile>>arg_vec(i); }
 
