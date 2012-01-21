@@ -131,8 +131,11 @@ namespace scl
       return false;
     }
 
+    //Set all the robot parameters
     robot_name_ = arg_robot_data.name_;
+    gravity_ = arg_robot_data.gravity_;
 
+    //Initialize the tao tree
     taoNodeRoot * kgm_root(scl::CTaoRepCreator::taoRootRepCreator(arg_robot_data));
     if ( ! kgm_root) {
       std::cout << "scl::CTaoDynamics::init(`" << robot_name_
@@ -342,12 +345,11 @@ namespace scl
       joint->setTau(&tau);//Set the joint torques to be applied.
     }
 
-    // Hard coded for now.
-    //NOTE TODO : Fix this later.
+    //NOTE TODO: Inefficiency due to tao.
     deVector3 gravity;
-    gravity[0] = 0.0;
-    gravity[1] = 0.0;
-    gravity[2] = -9.8;// m/s^2
+    gravity[0] = gravity_(0);
+    gravity[1] = gravity_(1);
+    gravity[2] = gravity_(2);// m/s^2
 
     sFloat tstep = arg_time_interval;
 

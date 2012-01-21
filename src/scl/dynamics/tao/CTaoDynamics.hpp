@@ -61,12 +61,6 @@ namespace scl
    * using the TAO dynamics engine */
   class CTaoDynamics : public CDynamicsBase
   {
-  protected:
-    std::string robot_name_;
-    jspace::Model * model_;
-    size_t ndof_;
-    jspace::State state_;
-
   public:
     CTaoDynamics();
     virtual ~CTaoDynamics();
@@ -169,6 +163,23 @@ namespace scl
 
     /** Gets the robot's potential energy */
     virtual sFloat getPotentialEnergy();
+
+  private:
+    /** The robot's name */
+    std::string robot_name_;
+
+    /** The joint space model, a helper class that wraps around tao
+     * and computes the robot's dynamics. */
+    jspace::Model * model_;
+
+    /** The robot's degrees of freedom */
+    size_t ndof_;
+
+    /** The current state of the robot */
+    jspace::State state_;
+
+    /** The gravity acting on the robot */
+    Eigen::Vector3d gravity_;
   };
 
 }
