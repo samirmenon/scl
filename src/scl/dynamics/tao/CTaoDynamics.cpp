@@ -196,22 +196,14 @@ namespace scl
         const SRobotLink& l_ds = *itbr;
         if (l_ds.name_ == it->node->name_)
         {
-          it->link_name =
-              itbr->name_;
-          it->joint_name =
-              itbr->joint_name_;
-          it->limit_lower =
-              itbr->joint_limit_lower_;
-          it->limit_upper =
-              itbr->joint_limit_upper_;
-          icc->link_name =
-              itbr->name_;
-          icc->joint_name =
-              itbr->joint_name_;
-          icc->limit_lower =
-              itbr->joint_limit_lower_;
-          icc->limit_upper =
-              itbr->joint_limit_upper_;
+          it->link_name   = itbr->name_;
+          it->joint_name  = itbr->joint_name_;
+          it->limit_lower = itbr->joint_limit_lower_;
+          it->limit_upper = itbr->joint_limit_upper_;
+          icc->link_name  = itbr->name_;
+          icc->joint_name = itbr->joint_name_;
+          icc->limit_lower = itbr->joint_limit_lower_;
+          icc->limit_upper = itbr->joint_limit_upper_;
           break;
         }
       }
