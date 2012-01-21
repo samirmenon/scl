@@ -81,6 +81,9 @@ public:
   /** The number of degrees of freedom of the robot */
   sUInt dof_;
 
+  /** The acceleration due to gravity for the robot */
+  Eigen::Vector3d gravity_;
+
   /** The log file */
   std::string log_file_;
 
