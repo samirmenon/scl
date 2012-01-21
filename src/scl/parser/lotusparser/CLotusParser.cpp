@@ -194,6 +194,19 @@ bool CLotusParser::readRobotFromFile(const std::string& arg_file,
         break; //In release mode, we ignore the extra robots. Move on.
       }
 
+      //Read in the gravity that will apply to the robot
+      TiXmlElement* grav_data;
+      grav_data = _robot_handle.FirstChildElement( "gravity" ).Element();
+      if ( grav_data )
+      {
+        std::stringstream ss(grav_data->FirstChild()->Value());
+        ss>>arg_robot.gravity_(0);
+        ss>>arg_robot.gravity_(1);
+        ss>>arg_robot.gravity_(2);
+      }
+      else
+      {throw(std::runtime_error("Error reading joint gravity"));}
+
       TiXmlElement* link_data;
       std::string spec, spec_file;
 
