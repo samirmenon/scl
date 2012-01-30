@@ -10,6 +10,7 @@
     <robot name="Pr2Bot"> 
         <spec>Pr2</spec>
         <file>../../specs/Pr2/Pr2.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
         <root_link>
             <link_name>ground</link_name>
             <position_in_parent>-0.300   0.000   -1.000</position_in_parent> 
