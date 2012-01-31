@@ -107,9 +107,6 @@ int main(int argc, char** argv)
       }
       else { robot_name = argv[2];}//If robot name was passed, use it.
 
-      if(S_NULL == scl_registry::parseWorld(tmp_infile, &tmp_lparser))
-      { throw(std::runtime_error("Could not register world with the database"));  }
-
       if(S_NULL == scl_registry::parseRobot(tmp_infile, robot_name, &tmp_lparser))
       { throw(std::runtime_error("Could not register robot with the database"));  }
 
