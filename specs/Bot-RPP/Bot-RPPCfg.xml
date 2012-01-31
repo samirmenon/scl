@@ -3,10 +3,6 @@
 
 <!-- Units are in Std International System -->
 <lotus>
-    <globals>
-        <gravity>0.000   0.000   -9.81</gravity> 
-    </globals>
-
     <robot name="rppbot"> 
         <gravity>0.000   0.000   -9.81</gravity> 
         <spec>RPP</spec>

@@ -3,10 +3,6 @@
 
 <!-- Units are in Std International System -->
 <lotus>
-    <globals>
-        <gravity>0.000   0.000   -9.81</gravity> 
-    </globals>
-
     <robot name="Stanbot"> 
         <spec>Stanbot</spec>
         <file>../../specs/Stanbot/Stanbot.xml</file>
