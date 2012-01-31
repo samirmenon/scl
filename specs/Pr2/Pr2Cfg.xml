@@ -3,10 +3,6 @@
 
 <!-- Units are in Std International System -->
 <lotus>
-    <globals>
-        <gravity>0.000   0.000   -9.81</gravity> 
-    </globals>
-
     <robot name="Pr2Bot"> 
         <spec>Pr2</spec>
         <file>../../specs/Pr2/Pr2.xml</file>
@@ -90,23 +86,23 @@
             <type>TaskGc</type>
             <priority>1</priority>
             <task_dof>0</task_dof> 
-            <kp>40</kp>
-            <kv>7</kv>
+            <kp>400</kp>
+            <kv>40</kv>
             <ki>0</ki>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
         </task>
 
-        <!-- 0 task_dof means a gc task, ie full dofs -->
+        <!-- 0 task_dof means a gc task, ie full dofs
         <task name="NullSpaceDampingTask">
             <type>TaskNullSpaceDamping</type>
             <priority>1</priority>
             <task_dof>0</task_dof> 
             <kp>0</kp>
-            <kv>10</kv>
+            <kv>30</kv>
             <ki>0</ki>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
-        </task>
+        </task> -->
     </controller>
 </lotus>
