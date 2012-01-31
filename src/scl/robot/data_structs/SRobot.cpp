@@ -36,7 +36,6 @@ namespace scl
 
   SRobot::SRobot() : SObject("SRobot")
   {
-    parsed_world_data_  = S_NULL;
     parsed_robot_data_  = S_NULL;
     io_data_            = S_NULL;
     controller_current_ = S_NULL;

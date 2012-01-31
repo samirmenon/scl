@@ -102,25 +102,6 @@ namespace scl_registry
                 const std::string &arg_robot_name,
                 scl_parser::CParserBase *arg_parser);
 
-  /** Loads a world from a file and registers
-   * it with the database.
-   *
-   * Requires the parser implementation to include:
-   * virtual bool readWorldFromFile(const std::string &arg_file,
-   *                                scl::SRobotParsedData * arg_robot)
-   *
-   * @param file_ : The file containing the world definition
-   *
-   * @param name_ : A parser implementation
-   *
-   * @return :
-   *    success : A const pointer to the database entry
-   *    failure : NULL */
-  const scl::SWorldParsedData*
-  parseWorld(const std::string &arg_file,
-                scl_parser::CParserBase *arg_parser);
-
-
   /** Loads a graphics specification from a file and registers
    * it with the database.
    *

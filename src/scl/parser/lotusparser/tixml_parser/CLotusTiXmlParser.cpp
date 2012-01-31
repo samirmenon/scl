@@ -306,34 +306,6 @@ namespace scl_parser {
     return true;
   }
 
-  bool CLotusTiXmlParser::readGlobalData(
-      const TiXmlHandle &arg_glob_data_txml,
-      scl::SWorldParsedData& arg_glob_ds)
-  {
-    try
-    {
-      //Read in the information into arg_glob_ds
-      TiXmlElement* glob_data;
-
-      //Gravity
-      glob_data = arg_glob_data_txml.FirstChildElement( "gravity" ).Element();
-      if ( glob_data )
-      {
-        std::stringstream ss(glob_data->FirstChild()->Value());
-        ss>>arg_glob_ds.gravity_[0];
-        ss>>arg_glob_ds.gravity_[1];
-        ss>>arg_glob_ds.gravity_[2];
-      }
-      else
-      {throw(std::runtime_error("Error reading joint gravity"));}
-
-      return true;
-    }
-    catch(std::exception& e)
-    { std::cout<<"\nCLotusTiXmlParser::readGlobalData() : "<< e.what();  }
-    return false;
-  }
-
   bool CLotusTiXmlParser::readGraphics(
         const TiXmlHandle &arg_graphics_data_txml,
         scl::SGraphicsParsedData& arg_graphics_ds)

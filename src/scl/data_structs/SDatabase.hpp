@@ -41,7 +41,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Parser data --> Static information about the robot
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/data_structs/SGraphicsParsedData.hpp>
-#include <scl/data_structs/SWorldParsedData.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 #include <scl/data_structs/SMuscleSystem.hpp>
 
@@ -72,9 +71,6 @@ namespace scl {
  * Supports name based robot data lookup. */
 struct SParserData
 {
-  /** Contains the parsed world : Global properties like Gravity etc.*/
-  SWorldParsedData world_;
-
   /** Contains all the parsed graphics views. */
   sutil::CMappedList<std::string,SGraphicsParsedData> graphics_worlds_;
 

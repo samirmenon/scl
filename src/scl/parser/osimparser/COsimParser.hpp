@@ -96,10 +96,6 @@ namespace scl_parser
         const std::string& arg_robot_name,
         scl::SRobotParsedData& arg_robot);
 
-    virtual bool readGlobalsFromFile(const std::string &arg_file,
-        scl::SWorldParsedData& arg_world)
-    { return false;}
-
     virtual bool listRobotsInFile(const std::string& arg_file,
         std::vector<std::string>& arg_robot_names)
     { return false; }

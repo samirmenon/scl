@@ -163,9 +163,6 @@ namespace scl
       db_ = CDatabase::getData();
       if(S_NULL == db_) { throw(std::runtime_error("Database not initialized"));  }
 
-      SWorldParsedData* world = &(db_->s_parser_.world_);
-      if(false == world->has_been_init_)
-      { throw(std::runtime_error("World properties (gravity) not initialized"));  }
       SRobotParsedData *robot = db_->s_parser_.robots_.at(arg_robot_name);
       if(S_NULL == robot) { throw(std::runtime_error("Robot not parsed from file"));  }
       SRobotIOData* io_data = db_->s_io_.io_data_.at(arg_robot_name);
@@ -184,7 +181,7 @@ namespace scl
 
       //Calls the init function to do the actual work.
       flag = init(arg_robot_name, arg_dynamics, arg_integrator,
-                  world, robot, io_data, ctrls);
+                  robot, io_data, ctrls);
       if(false == flag) { throw(std::runtime_error("Could not initialize robot.")); }
     }
     catch(std::exception & e)
@@ -206,7 +203,6 @@ namespace scl
   sBool CRobot::init(std::string arg_robot_name,
       CDynamicsBase* arg_dynamics,
       CDynamicsBase* arg_integrator,
-      SWorldParsedData *arg_world,
       SRobotParsedData *arg_robot,
       SRobotIOData *arg_io_data,
       std::vector<SControllerBase*>& arg_ctrls)
@@ -219,7 +215,6 @@ namespace scl
       //Error checks.
       if(S_NULL == arg_dynamics) { throw(std::runtime_error("Passed NULL dynamics"));  }
       if(S_NULL == arg_integrator) { throw(std::runtime_error("Passed NULL integrator"));  }
-      if(S_NULL == arg_world) { throw(std::runtime_error("Passed NULL world"));  }
       if(S_NULL == arg_robot) { throw(std::runtime_error("Passed NULL robot"));  }
       if(S_NULL == arg_io_data) { throw(std::runtime_error("Passed NULL io_data"));  }
 
@@ -227,8 +222,6 @@ namespace scl
       { throw(std::runtime_error("Passed unintialized dynamics"));  }
       if(false == arg_integrator->hasBeenInit())
       { throw(std::runtime_error("Passed unintialized integrator"));  }
-      if(false == arg_world->has_been_init_)
-      { throw(std::runtime_error("World properties (gravity) not initialized"));  }
       if(false == arg_robot->has_been_init_)
       { throw(std::runtime_error("Passed uninitialized robot data structure"));  }
       if(false == arg_io_data->has_been_init_)
@@ -248,7 +241,6 @@ namespace scl
       dynamics_ = arg_dynamics;
       integrator_ = arg_integrator;
 
-      data_.parsed_world_data_ = arg_world;
       data_.name_ = arg_robot_name;
       data_.parsed_robot_data_ = arg_robot;
       data_.io_data_ = arg_io_data;

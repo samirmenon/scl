@@ -34,7 +34,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //The required data structures
 #include <scl/Singletons.hpp>
-#include <scl/data_structs/SWorldParsedData.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/data_structs/SRobotLink.hpp>
 

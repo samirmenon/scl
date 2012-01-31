@@ -35,7 +35,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 
 #include <scl/data_structs/SObject.hpp>
-#include <scl/data_structs/SWorldParsedData.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 
@@ -55,7 +54,6 @@ namespace scl
   class SRobot : public SObject
   {
   public:
-    const SWorldParsedData* parsed_world_data_;
     SRobotParsedData * parsed_robot_data_;
     SRobotIOData* io_data_;
 

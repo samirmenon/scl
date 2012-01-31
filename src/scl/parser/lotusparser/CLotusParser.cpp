@@ -40,7 +40,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //The required data structures
 #include <scl/Singletons.hpp>
-#include <scl/data_structs/SWorldParsedData.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/data_structs/SRobotLink.hpp>
 
@@ -54,40 +53,6 @@ using namespace scl_tinyxml; //Tinyxml parser implementation is in a separate na
 using namespace scl;
 
 namespace scl_parser {
-
-bool CLotusParser::readGlobalsFromFile(const std::string &arg_file,
-      scl::SWorldParsedData& arg_world)
-{
-  bool flag;
-  try
-  {
-    //Set up the parser.
-    TiXmlHandle tiHndl_glob_settings(NULL), tiHndl_file_handle(NULL), tiHndl_world(NULL);
-
-    TiXmlDocument tiDoc_file(arg_file.c_str());//Initialize the tinyxml object
-
-    flag = tiDoc_file.LoadFile(scl_tinyxml::TIXML_ENCODING_UNKNOWN); //Load file
-    if(false == flag)
-    { throw std::runtime_error("Could not open xml file to read globals."); }
-
-    //Get handles to the tinyxml loaded ds
-    tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
-    tiHndl_world = tiHndl_file_handle.FirstChildElement( "lotus" );
-
-    //1. Read the global data using the tinyxml parser implementation.
-    tiHndl_glob_settings = tiHndl_world.FirstChildElement( "globals" );
-    flag = CLotusTiXmlParser::readGlobalData(tiHndl_glob_settings, arg_world);
-    if(false == flag)
-    { throw std::runtime_error("No world globals found.");  }
-
-    return true;
-  }
-  catch(std::exception& e)
-  {
-    std::cerr<<"\nCLotusParser::readRobotFromFile(): "<<e.what();
-    return false;
-  }
-}
 
 bool CLotusParser::listRobotsInFile(const std::string& arg_file,
     std::vector<std::string>& arg_robot_names)

@@ -82,12 +82,9 @@ namespace scl_registry
     bool flag;
     try
     {
-      if(NULL == scl::CDatabase::getData()) //Verify that the database exists
+      //1. Verify that the database exists
+      if(NULL == scl::CDatabase::getData())
       { throw(std::runtime_error("Database not initialized.")); }
-
-      //1. Parse in the global settings (that apply to all robots. Eg.Physics).
-      if(S_NULL == scl_registry::parseWorld(arg_file, arg_parser))
-      { throw(std::runtime_error("Could not register world with the database"));  }
 
       //2. List the robot specifications in the file and parse them into the database
       std::vector<std::string> robot_names;
@@ -216,33 +213,6 @@ namespace scl_registry
     }
     return rob;
   }
-
-
-  const scl::SWorldParsedData* parseWorld(const std::string &arg_file,
-      scl_parser::CParserBase *arg_parser)
-  {
-    bool flag;
-    try
-    {
-      if(NULL == scl::CDatabase::getData())
-      { throw(std::runtime_error("Failed. Database not initialized.")); }
-
-      //Fill in the ds entry from the file
-      flag = arg_parser->readGlobalsFromFile(arg_file,
-          scl::CDatabase::getData()->s_parser_.world_);
-      if(false==flag)
-      { throw(std::runtime_error("Failed. Could not read globals from a file.")); }
-
-      scl::CDatabase::getData()->s_parser_.world_.has_been_init_ = true;
-    }
-    catch (std::exception& e)
-    {
-      std::cerr<<"\nscl_registry::parseWorld() : "<<e.what();
-      return NULL;
-    }
-    return (const scl::SWorldParsedData *) &(scl::CDatabase::getData()->s_parser_.world_);
-  }
-
 
   const scl::SGraphicsParsedData* parseGraphics(const std::string &arg_file,
       std::string & arg_graphics_name,

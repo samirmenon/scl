@@ -60,12 +60,6 @@ namespace scl_parser
 
 	  /** Default destructor. Does nothing. */
 		virtual ~CParserBase(){}
-		
-    /** Reads in a world from the given file
-     *  Note: There should only be one world in a file. */
-		virtual bool readGlobalsFromFile(const std::string &arg_file,
-		    /** The world's data will be filled into this data structure */
-		    scl::SWorldParsedData& arg_world)=0;
 
     /** Returns a list of robots and the files in which their
      * specifications reside. */

@@ -37,7 +37,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/scl_tinyxml/scl_tinyxml.h>
 
 //Include the data structures
-#include <scl/data_structs/SWorldParsedData.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/data_structs/SGraphicsParsedData.hpp>
 #include <scl/data_structs/SRobotLink.hpp>
@@ -65,13 +64,6 @@ public:
    */
   static bool readLink(const scl_tinyxml::TiXmlHandle& arg_link_txml,
       scl::SRobotLink& arg_link_ds, bool arg_is_root);
-
-  /**
-   * Reads the global data
-   */
-  static bool readGlobalData(
-      const scl_tinyxml::TiXmlHandle &arg_glob_data_txml,
-      scl::SWorldParsedData& arg_glob_ds);
   
   /**
    * Reads in graphics data
