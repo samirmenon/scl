@@ -13,7 +13,7 @@
 		<parent_link_name>head_pan_link</parent_link_name>
 		<joint_type>ry</joint_type>
 		<joint_limits>1.396260 3.140000</joint_limits>
-		<default_joint_position>3.140000</default_joint_position>
+		<default_joint_position>0.0</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Pr2/graphics/head/head_tilt.obj</name>
@@ -35,7 +35,7 @@
 		<parent_link_name>torso_lift_link</parent_link_name>
 		<joint_type>rz</joint_type>
 		<joint_limits>3.007000 3.140000</joint_limits>
-		<default_joint_position>3.140000</default_joint_position>
+		<default_joint_position>0.0</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Pr2/graphics/head/head_pan.obj</name>
@@ -159,7 +159,7 @@
 		<parent_link_name>l_shoulder_lift_link</parent_link_name>
 		<joint_type>rx</joint_type>
 		<joint_limits>3.900000 3.140000</joint_limits>
-		<default_joint_position>3.140000</default_joint_position>
+		<default_joint_position>0.0</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Pr2/graphics/shoulder/upper_arm_roll.obj</name>
@@ -188,7 +188,7 @@
 		<parent_link_name>l_shoulder_pan_link</parent_link_name>
 		<joint_type>ry</joint_type>
 		<joint_limits>1.396300 3.140000</joint_limits>
-		<default_joint_position>3.140000</default_joint_position>
+		<default_joint_position>0.0</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Pr2/graphics/shoulder/shoulder_lift.obj</name>
@@ -210,7 +210,7 @@
 		<parent_link_name>torso_lift_link</parent_link_name>
 		<joint_type>rz</joint_type>
 		<joint_limits>2.285400 3.140000</joint_limits>
-		<default_joint_position>3.140000</default_joint_position>
+		<default_joint_position>0.0</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Pr2/graphics/shoulder/shoulder_pan.obj</name>
@@ -334,7 +334,7 @@
 		<parent_link_name>r_shoulder_lift_link</parent_link_name>
 		<joint_type>rx</joint_type>
 		<joint_limits>0.800000 3.140000</joint_limits>
-		<default_joint_position>3.140000</default_joint_position>
+		<default_joint_position>0.0</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Pr2/graphics/shoulder/upper_arm_roll.obj</name>
@@ -363,7 +363,7 @@
 		<parent_link_name>r_shoulder_pan_link</parent_link_name>
 		<joint_type>ry</joint_type>
 		<joint_limits>1.396300 3.140000</joint_limits>
-		<default_joint_position>3.140000</default_joint_position>
+		<default_joint_position>0.0</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Pr2/graphics/shoulder/shoulder_lift.obj</name>
@@ -385,7 +385,7 @@
 		<parent_link_name>torso_lift_link</parent_link_name>
 		<joint_type>rz</joint_type>
 		<joint_limits>0.714602 3.140000</joint_limits>
-		<default_joint_position>3.140000</default_joint_position>
+		<default_joint_position>0.0</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Pr2/graphics/shoulder/shoulder_pan.obj</name>
@@ -407,7 +407,7 @@
 		<parent_link_name>base_rotation_link</parent_link_name>
 		<joint_type>pz</joint_type>
 		<joint_limits>0.310000 3.140000</joint_limits>
-		<default_joint_position>3.140000</default_joint_position>
+		<default_joint_position>0.0</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Pr2/graphics/torso/torso_lift.obj</name>
