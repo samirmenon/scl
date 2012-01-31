@@ -134,7 +134,7 @@ namespace scl_test
         {  std::cout<<c_m3.m[i1][j1]<<" ";  }
       }
 
-      std::cout<<"\nTest #"<<id<<" Succeeded.";
+      std::cout<<"\nTest #"<<id<<" : Succeeded.";
     }
     catch (std::exception& ee)
     {

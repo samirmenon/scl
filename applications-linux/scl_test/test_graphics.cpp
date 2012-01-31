@@ -88,10 +88,6 @@ namespace scl_test
         <<robot_names[0]<<" on the pile"<<std::flush;}
 
 
-      flag = scl_registry::parseWorld(file_name, &tmp_lparser);
-      if(false == flag)
-      { throw(std::runtime_error("Could not register world with the database"));  }
-
       flag = scl_registry::parseRobot(file_name,
           robot_names[0], &tmp_lparser);
 
@@ -206,7 +202,7 @@ namespace scl_test
       std::cout<<"\nTest Result ("<<r_id++<<") "<<imax<<" graphics+glut updates."
           <<" Time: "<<t2-t1<<std::flush;
 
-      std::cout<<"\nTest #"<<id<<" Succeeded.";
+      std::cout<<"\nTest #"<<id<<" : Succeeded.";
     }
     catch(std::exception & e)
     {

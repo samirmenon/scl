@@ -148,12 +148,12 @@ namespace scl_test
       }
 
       app.terminate();
-      std::cout<<"\nTest #"<<id<<" (Task Controller: "<<arg_robot_name<<", "<<arg_controller_name<<") Succeeded.";
+      std::cout<<"\nTest #"<<id<<" (Task Controller: "<<arg_robot_name<<", "<<arg_controller_name<<") : Succeeded.";
     }
     catch (std::exception& ee)
     {
       std::cout<<"\nTest Result ("<<r_id++<<") : "<<ee.what();
-      std::cout<<"\nTest #"<<id<<" (Task Controller: "<<arg_robot_name<<", "<<arg_controller_name<<") Failed.";
+      std::cout<<"\nTest #"<<id<<" (Task Controller: "<<arg_robot_name<<", "<<arg_controller_name<<") : Failed.";
     }
   }
 

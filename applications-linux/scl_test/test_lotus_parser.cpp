@@ -41,7 +41,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/CParserBase.hpp>
 
 #include <scl/data_structs/SRobotParsedData.hpp>
-#include <scl/data_structs/SWorldParsedData.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 
 #include <scl/parser/lotusparser/CLotusParser.hpp>
@@ -66,7 +65,6 @@ void test_lotus_parser(int id)
     scl_parser::CLotusParser tmp_parser;
 
     scl::SRobotParsedData tmp_robot;
-    scl::SWorldParsedData tmp_world;
     scl::SGraphicsParsedData tmp_graphics;
 
     //1. Read in a file

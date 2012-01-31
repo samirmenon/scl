@@ -92,12 +92,7 @@ namespace scl_test
 
       scl_parser::CLotusParser tmp_lparser;
 
-      //1.a Read in a world
-      flag = scl_registry::parseWorld(tmp_infile, &tmp_lparser);
-      if(false == flag)
-      { throw(std::runtime_error("Could not register world with the database"));  }
-
-      //1.b Create robot from a file specification (And register it with the db)
+      //1 Create robot from a file specification (And register it with the db)
       std::vector<std::string> rob_names;
       flag = tmp_lparser.listRobotsInFile(tmp_infile,rob_names);
       if(false == flag)
