@@ -50,8 +50,10 @@ namespace scl
   public:
     /** xyz coordinates of an attachment point */
     Eigen::Vector3d point_;
+
     /** The link to which this muscle point attaches */
     std::string parent_link_;
+
     /** The point's position on the muscle.
      * 0 = the muscle's start point
      * 1 = the next point
@@ -60,6 +62,7 @@ namespace scl
 
     /** Default constructor. Sets defaults. */
     SMusclePoint();
+
     /** Default destructor. Does nothing. */
     ~SMusclePoint();
 
