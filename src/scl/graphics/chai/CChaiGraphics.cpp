@@ -406,6 +406,13 @@ namespace scl {
               lnk_gr.pos_in_parent_[1],
               lnk_gr.pos_in_parent_[2]);
 
+          //Use display lists : Uses the graphics card for faster rendering
+          // NOTE : Possibly corrputs the rendering. Disable if required.
+#ifndef S_TESTING
+          tmp->useDisplayList(true, true);
+          tmp->invalidateDisplayList(true);
+#endif
+
           //Set the rotation in its parent
           Eigen::Matrix3d tmp_eigmat;
           cMatrix3d tmp_chaimat;
