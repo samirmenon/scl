@@ -68,7 +68,13 @@ public:
   /** The joint default positions */
   Eigen::VectorXd joint_default_pos_;
 
-  /** The damping (different for each dof) */
+  /** The damping (different for each dof)
+   *
+   * NOTE TODO : Update the friction mode. This could
+   * require a more sophisticated data structure than
+   * a simple vector.
+   *
+   * NOTE TODO : Rename this to joint damping. */
   Eigen::VectorXd damping_;
 
   /** The actuators' max force limits */
