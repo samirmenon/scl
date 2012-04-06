@@ -210,7 +210,7 @@ namespace scl
     }
 
     model_ = new jspace::Model();
-    model_->init(kgm_tree, cc_tree,0);
+    model_->init(kgm_tree, cc_tree, gravity_(0), gravity_(1), gravity_(2), 0);
     ndof_ = model_->getNDOF();
     state_.init(ndof_, ndof_, 0);
 

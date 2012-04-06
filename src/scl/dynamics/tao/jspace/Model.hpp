@@ -38,6 +38,7 @@
 // behind TAO, they can treat this as an opaque pointer type.
 class taoDNode;
 class taoJoint;
+class deVector3;
 
 namespace jspace {
   
@@ -85,6 +86,12 @@ namespace jspace {
 		 computed. This tree will be deleted in the
 		 jspace::Model destructor. */
 	     tao_tree_info_s * cc_tree,
+	     /** Gravity x **/
+	     double grav_x_,
+       /** Gravity y **/
+       double grav_y_,
+       /** Gravity z **/
+       double grav_z_,
 	     /** Optional stream that will receive error messages from
 		 the consistency checks. */
 	     std::ostream * msg);
@@ -299,7 +306,7 @@ namespace jspace {
     
     /** Compute the gravity joint-torque vector. */
     void computeGravity();
-    
+
     /** Disable (or enable) gravity compensation for a given DOF
 	(specified using its index). If you set \c disable to \c true,
 	then getGravity() will knock out (set to zero) the
@@ -367,11 +374,13 @@ namespace jspace {
     
   private:
     typedef std::set<size_t> dof_set_t;
-    dof_set_t gravity_disabled_;
     
     std::size_t ndof_;
     tao_tree_info_s * kgm_tree_;
     tao_tree_info_s * cc_tree_;
+
+    dof_set_t gravity_disabled_;
+    deVector3* gravity_;
     
     State state_;
     Vector g_torque_;

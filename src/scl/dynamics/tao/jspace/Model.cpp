@@ -34,7 +34,6 @@
 
 
 static deVector3 const zero_gravity(0, 0, 0);
-static deVector3 const earth_gravity(0, 0, -9.81);
 
 
 // Beware: no bound checks!
@@ -61,7 +60,8 @@ namespace jspace {
   Model()
     : ndof_(0),
       kgm_tree_(0),
-      cc_tree_(0)
+      cc_tree_(0),
+      gravity_(0)
   {
   }
   
@@ -69,6 +69,9 @@ namespace jspace {
   int Model::
   init(tao_tree_info_s * kgm_tree,
        tao_tree_info_s * cc_tree,
+       double grav_x_,
+       double grav_y_,
+       double grav_z_,
        std::ostream * msg)
   {
     int const status(tao_consistency_check(kgm_tree->root, msg));
@@ -97,6 +100,9 @@ namespace jspace {
       return -3;
     }
     
+    //Set the gravity
+    gravity_ = new deVector3(grav_x_,grav_y_,grav_z_);
+
     // Create ancestry table of all nodes in the KGM tree, for correct
     // (and slightly more efficient) computation of the Jacobian.
     ancestry_table_.clear();	// just paranoid...
@@ -143,6 +149,8 @@ namespace jspace {
   {
     delete kgm_tree_;
     delete cc_tree_;
+    if(gravity_ != 0)
+    { delete gravity_; }
   }
   
   
@@ -487,12 +495,11 @@ namespace jspace {
   computeGravity()
   {
     g_torque_.resize(ndof_);
-    taoDynamics::invDynamics(kgm_tree_->root, &earth_gravity);
+    taoDynamics::invDynamics(kgm_tree_->root, gravity_);
     for (size_t ii(0); ii < ndof_; ++ii) {
       kgm_tree_->info[ii].joint->getTau(&g_torque_[ii]);
     }
   }
-  
   
   bool Model::
   disableGravityCompensation(size_t index, bool disable)
