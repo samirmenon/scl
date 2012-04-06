@@ -79,6 +79,11 @@ struct SParserData
 
   /** Contains all the parsed muscle systems */
   sutil::CMappedList<std::string,SMuscleSystem> muscle_systems_;
+
+  /** The config file in which the robot and muscle system is specified.
+   * This is typically set by a database registration function.
+   * NOTE : It is not set in the parser. */
+  std::string file_name_;
 };
 
 /** All the data updated by the controller

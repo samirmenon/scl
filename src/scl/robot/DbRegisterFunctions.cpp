@@ -147,6 +147,9 @@ namespace scl_registry
           { throw(std::runtime_error("Could not register a task controller with the database"));  }
         }
       }//End of for loop over controllers
+
+      //Set the file name in the database.
+      scl::CDatabase::getData()->s_parser_.file_name_ = arg_file;
     }//end of try{}
     catch (std::exception& e)
     {
