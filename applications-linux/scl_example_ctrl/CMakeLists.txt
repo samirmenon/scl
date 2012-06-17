@@ -24,7 +24,7 @@ SET(TAO_INC_DIR ${SCL_INC_DIR}dynamics/tao/)
 ADD_DEFINITIONS(-DTIXML_USE_STL)
 
 ###(b) Eigen
-SET(EIGEN_INC_DIR ${SCL_BASE_DIR}3rdparty/eigen3.0.3/)
+SET(EIGEN_INC_DIR ${SCL_BASE_DIR}3rdparty/eigen3.0.5/)
 
 ###(c) Chai3D scenegraph
 SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-graphics/chai/)

@@ -18,7 +18,7 @@ WBC_DEFS_DBG = -fopenmp -lgomp -DTIXML_USE_STL -DASSERT=assert -DDEBUG=1 -DTESTI
 WBC_DEFS_FIN = -fopenmp -lgomp -DTIXML_USE_STL
 
 #3rd party lib : Eigen (local install)
-EIGEN_INC_DIR = ../../3rdparty/eigen3.0.3/
+EIGEN_INC_DIR = ../../3rdparty/eigen3.0.5/
 
 #3rd party lib : sUtil (local install)
 SUTIL_INC_DIR = ../../3rdparty/sUtil/src/
