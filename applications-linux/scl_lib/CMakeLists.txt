@@ -134,7 +134,7 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 #Define the library to be built
-add_library(scl SHARED ${ALLSRC})
+add_library(scl STATIC ${ALLSRC})
 
 #Link the library with the 3rd party libs
 target_link_libraries(scl ${SCL_3PARTY_LIBS})
