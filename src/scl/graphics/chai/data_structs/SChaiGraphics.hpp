@@ -177,6 +177,7 @@ public:
   /** Container for all the mesh objects to be rendered */
   sutil::CMappedList<std::string, SGraphicsMesh> meshes_rendered_;
 
+  /** Container for all the muscle objects to be rendered */
   sutil::CMappedList<std::string, SGraphicsMsys> muscles_rendered_;
 
   /** Camera translation/rotation coordinates (spherical) */

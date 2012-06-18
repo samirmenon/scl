@@ -83,8 +83,7 @@ namespace scl
     Eigen::VectorXd force_gc_commanded_;
   };
 
-  /** Wraps input (sensor) and output (actuator)
-   * data for a robot.
+  /** Wraps input (sensor) and output (actuator) data for a robot.
    *
    * NOTE : Objects of this struct have the same name as their
    *        parent robot. */

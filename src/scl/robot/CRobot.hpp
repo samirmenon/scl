@@ -56,7 +56,7 @@ namespace scl
    * between different modules.
    *
    * NOTE : This class manages its memory. Add pointers and forget
-   *        about em!
+   *        about them!
    *
    * NOTE : You will, however, have to initialize (by calling the init
    *        function) the individual objects yourself. */
