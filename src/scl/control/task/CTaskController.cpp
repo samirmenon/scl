@@ -199,8 +199,8 @@ namespace scl
       flag = arg_task->hasBeenInit();
       if(false == flag) { throw(std::runtime_error("Passed an un-initialized task."));  }
 
-      flag = tasks_.create(arg_task_name, arg_task, arg_level);
-      if(false == flag) { throw(std::runtime_error("Could not create a task computational object."));  }
+      scl::CTaskBase** ret = tasks_.create(arg_task_name, arg_task, arg_level);
+      if(NULL == ret) { throw(std::runtime_error("Could not create a task computational object."));  }
 
       //Works best for only one task
       if(0 == task_count_)
