@@ -32,7 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CTASKGCSET_HPP_
 #define CTASKGCSET_HPP_
 
-#include <DataTypes.hpp>
+#include <scl/DataTypes.hpp>
 
 #include <scl/control/task/CTaskBase.hpp>
 #include <scl/control/task/tasks/data_structs/STaskGcSet.hpp>
