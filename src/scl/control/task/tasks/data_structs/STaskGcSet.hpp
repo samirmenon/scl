@@ -45,7 +45,7 @@ namespace scl
   public:
     std::vector<std::string> q_sel_names_; //The selected generalized coordinates (joint names)
 
-    Eigen::VectorXd q_sel_;         //The selected generalized coordinates to be controlled
+    Eigen::VectorXi q_sel_;         //The selected generalized coordinates to be controlled
     Eigen::VectorXd q_goal_;        //Goal Position in the global frame
     Eigen::VectorXd dq_goal_;       //Goal Velocity in the global frame
     Eigen::VectorXd ddq_goal_;      //Goal Acceleration in the global frame
