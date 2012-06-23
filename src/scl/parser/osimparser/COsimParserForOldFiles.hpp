@@ -114,6 +114,9 @@ namespace scl_parser
         scl::SRobotParsedData& arg_robot,
         const std::string& arg_joint_type);
 
+#ifdef _WINDOWS
+  public:
+#endif
     /** To read in the opensim full body format */
     struct SOsimJoint{
       struct SOsimCoordinate{
@@ -133,7 +136,9 @@ namespace scl_parser
       Eigen::Quaternion<scl::sFloat> ori_in_parent_;
       EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };
-
+#ifdef _WINDOWS
+  private:
+#endif
     /** Reads a joint for a body.
      * Will be converted into multiple joints/links for scl. */
     bool readJoint(
