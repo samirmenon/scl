@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CHAIGLUTHANDLERS_HPP_
 #define CHAIGLUTHANDLERS_HPP_
 
-#include <DataTypes.hpp>
+#include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <sutil/CSingleton.hpp>
 
