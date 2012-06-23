@@ -29,7 +29,7 @@ distribution.
 
 #ifndef TIXML_USE_STL
 
-#include "tinystr.h"
+#include "scl_tinystr.h"
 
 namespace scl_tinyxml {
 
