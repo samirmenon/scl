@@ -54,7 +54,7 @@ namespace jspace {
 namespace scl
 {
 
-  struct SGcModel;
+  class SGcModel;
   struct SRobotSensorData;
 
   /** Computes the dynamics of a robot model
