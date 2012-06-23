@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "DbRegisterFunctions.hpp"
 
-#include <DataTypes.hpp>
+#include <scl/DataTypes.hpp>
 
 #include <scl/Singletons.hpp>
 
@@ -298,8 +298,8 @@ namespace scl_registry
       //Now register the data structure with the database
       ret_ctrl->type_ctrl_ds_ = "SGcController";
 
-      flag = db->s_controller_.controllers_.create(ret_ctrl->name_,ret_ctrl);
-      if(false == flag)
+      scl::SControllerBase** ret = db->s_controller_.controllers_.create(ret_ctrl->name_,ret_ctrl);
+      if(NULL == ret)
       {
         throw (std::runtime_error(
             "Could not create controller data structure pointer on the database pile."));
@@ -438,8 +438,8 @@ namespace scl_registry
       //Now register the data structure with the database
       ret_ctrl->type_ctrl_ds_ = "STaskController";
 
-      flag = db->s_controller_.controllers_.create(ret_ctrl->name_,ret_ctrl);
-      if(false == flag)
+      scl::SControllerBase** ret = db->s_controller_.controllers_.create(ret_ctrl->name_,ret_ctrl);
+      if(NULL == ret)
       {
         throw (std::runtime_error(
             "Could not create controller data structure pointer on the database pile."));
