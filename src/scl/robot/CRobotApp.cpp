@@ -36,6 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/robot/DbRegisterFunctions.hpp>
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
+#include <GL/freeglut.h>
 #endif
 #include <scl/parser/lotusparser/CLotusParser.hpp>
 #include <scl/util/DatabaseUtils.hpp>
