@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //The Class definition.
 #include <scl/parser/lotusparser/CLotusParser.hpp>
 
-#include <DataTypes.hpp>
+#include <scl/DataTypes.hpp>
 
 //The required data structures
 #include <scl/Singletons.hpp>
