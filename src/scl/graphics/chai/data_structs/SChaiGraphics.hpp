@@ -54,7 +54,7 @@ class cWorld;
 class cCamera;
 class cGenericObject;
 class cMesh;
-class cVector3d;
+struct cVector3d;
 
 namespace scl
 {
