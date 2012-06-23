@@ -110,7 +110,7 @@ namespace jspace {
   init(Model const & model)
   {
     Status status;
-    ssize_t const ndof(model.getNDOF());
+    unsigned int const ndof(model.getNDOF());
     
     if (model.getState().position_.size() != ndof) {
       status.ok = false;
@@ -221,7 +221,7 @@ namespace jspace {
   Status JointGoalController::
   computeCommand(Model const & model, Vector & tau)
   {
-    ssize_t const ndof(model.getNDOF());
+    unsigned int const ndof(model.getNDOF());
     Status status;
     if (ndof != goal_.size()) {
       status.ok = false;
@@ -233,7 +233,7 @@ namespace jspace {
     actual_ = state.position_;
 
     Vector etau(ndof);
-    for (ssize_t ii(0); ii < ndof; ++ii) {
+    for (unsigned int ii(0); ii < ndof; ++ii) {
       etau[ii] = - kp_[ii] * (actual_[ii] - goal_[ii]) - kd_[ii] * state.velocity_[ii];
     }
     
