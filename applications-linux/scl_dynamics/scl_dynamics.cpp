@@ -52,6 +52,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Openmp
 #include <omp.h>
 
+//Freeglut windowing environment
+#include <GL/freeglut.h>
+
 /***
  * A sample application to demonstrate scl running one or more robots.
  *
