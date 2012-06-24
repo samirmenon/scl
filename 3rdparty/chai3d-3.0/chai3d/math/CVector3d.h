@@ -74,7 +74,7 @@
     operations.
 */
 //===========================================================================
-struct cVector3d : public Vector3d
+struct cVector3d : public Eigen::Vector3d
 {
     public:
 
@@ -99,7 +99,7 @@ struct cVector3d : public Vector3d
         string formats.
     */
     //-----------------------------------------------------------------------
-    cVector3d():Vector3d()
+    cVector3d():Eigen::Vector3d()
     {
     }
 
@@ -112,7 +112,7 @@ struct cVector3d : public Vector3d
     }
 
     //! Constructor by passing a cVector3d vector to initialize vector.
-    cVector3d (const cVector3d &other) : Vector3d(other)
+    cVector3d (const cVector3d &other) : Eigen::Vector3d(other)
     {
         (*this)(0) = other(0) ;
         (*this)(1) = other(1) ;
@@ -120,7 +120,7 @@ struct cVector3d : public Vector3d
     }
 
     //! Constructor by passing an Eigen Vector3d vector to initialize vector.
-    cVector3d (const Vector3d &other)
+    cVector3d (const Eigen::Vector3d &other)
     {
         (*this)(0) = other(0);
         (*this)(1) = other(1);
@@ -1151,9 +1151,9 @@ inline double operator*(const cVector3d& v1, const cVector3d& v2)
     An overloaded = operator for Eigen vectors.
 */
 //---------------------------------------------------------------------------
-inline Vector3d operator-(const cVector3d& v)
+inline Eigen::Vector3d operator-(const cVector3d& v)
 {
-    return (Vector3d(v(0), v(1), v(2)));
+    return (Eigen::Vector3d(v(0), v(1), v(2)));
 }
 
 

@@ -86,7 +86,7 @@ enum cEulerOrder
     to handle floating point arithmetic operations.
 */
 //===========================================================================
-struct cMatrix3d : public Matrix3d
+struct cMatrix3d : public Eigen::Matrix3d
 {
 public:
 
@@ -106,7 +106,7 @@ public:
         \param  a_matrix  Eigen 3x3 Matrix.
     */
     //-----------------------------------------------------------------------
-    cMatrix3d(const Matrix3d& a_matrix)
+    cMatrix3d(const Eigen::Matrix3d& a_matrix)
     { 
         (*this) = a_matrix; 
     }
@@ -168,9 +168,9 @@ public:
         \param  a_colVector2  Column vector.
     */
     //-----------------------------------------------------------------------
-    cMatrix3d(const Vector3d& a_colVector0, 
-              const Vector3d& a_colVector1, 
-              const Vector3d& a_colVector2)
+    cMatrix3d(const Eigen::Vector3d& a_colVector0,
+              const Eigen::Vector3d& a_colVector1,
+              const Eigen::Vector3d& a_colVector2)
     { 
         (*this)(0,0) = a_colVector0(0);  (*this)(0,1) = a_colVector1(0);  (*this)(0,2) = a_colVector2(0);
         (*this)(1,0) = a_colVector0(1);  (*this)(1,1) = a_colVector1(1);  (*this)(1,2) = a_colVector2(1);
@@ -484,7 +484,7 @@ public:
         \param      a_destination  Destination matrix.
     */
     //-----------------------------------------------------------------------
-    inline void copyto(Matrix3d& a_destination) const
+    inline void copyto(Eigen::Matrix3d& a_destination) const
     {
         a_destination(0,0) = (*this)(0,0);	a_destination(0,1) = (*this)(0,1);	a_destination(0,2) = (*this)(0,2);
         a_destination(1,0) = (*this)(1,0);	a_destination(1,1) = (*this)(1,1);	a_destination(1,2) = (*this)(1,2);
@@ -514,7 +514,7 @@ public:
         \param    a_source  Source matrix.
     */
     //-----------------------------------------------------------------------
-    inline void copyfrom(const Matrix3d& a_source)
+    inline void copyfrom(const Eigen::Matrix3d& a_source)
     {
         (*this)(0,0) = a_source(0,0);	(*this)(0,1) = a_source(0,1);	(*this)(0,2) = a_source(0,2);
         (*this)(1,0) = a_source(1,0);	(*this)(1,1) = a_source(1,1);	(*this)(1,2) = a_source(1,2);

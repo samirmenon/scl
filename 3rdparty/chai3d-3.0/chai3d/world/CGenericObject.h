@@ -153,7 +153,7 @@ class cGenericObject : public cGenericType
     }
 
     //! Set the local position of this object.
-    inline void setLocalPos(const Vector3d& a_localPos)
+    inline void setLocalPos(const Eigen::Vector3d& a_localPos)
     {
         m_localPos.copyfrom(a_localPos);
     }
@@ -179,7 +179,7 @@ class cGenericObject : public cGenericType
     }
 
     //! Set the local rotation matrix for this object.
-    inline void setLocalRot(const Matrix3d a_localRot)
+    inline void setLocalRot(const Eigen::Matrix3d a_localRot)
     {
         m_localRot.copyfrom(a_localRot);
     }

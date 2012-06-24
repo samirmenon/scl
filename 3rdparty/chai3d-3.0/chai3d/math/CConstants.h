@@ -63,7 +63,6 @@
 
 //! Eigen Math Library
 #include "Eigen/Eigen"
-using namespace Eigen;
 
 //---------------------------------------------------------------------------
 // SCALARS
