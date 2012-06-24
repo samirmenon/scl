@@ -45,6 +45,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <math.h>
 
+#include <GL/freeglut.h>
+
 using namespace scl;
 using namespace std;
 
