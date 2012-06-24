@@ -24,12 +24,12 @@ EIGEN_INC_DIR = ../../3rdparty/eigen3.0.5/
 SUTIL_INC_DIR = ../../3rdparty/sUtil/src/
 
 #3rd party lib : chai (local install)
-CHAI_INC_DIR = ../../3rdparty/chai3d-graphics/chai/
+CHAI_INC_DIR = ../../3rdparty/chai3d-3.0/chai3d/
 CHAI_DBG_LIB_DIR = -L$(CHAI_INC_DIR)../lib/debug/ -Wl,--rpath=$(CHAI_INC_DIR)../lib/debug/
 CHAI_FIN_LIB_DIR = -L$(CHAI_INC_DIR)../lib/release/ -Wl,--rpath=$(CHAI_INC_DIR)../lib/release/
 CHAI_LIB_DBG = -lchai3d
 CHAI_LIB_FIN = -lchai3d
-CHAI_DEFS = -D_LINUX \
+CHAI_DEFS = -D_LINUX -DLINUX \
 					  -lpthread -lrt -lGL -lGLU -lglut
 					  
 ############################# INCLUDE AND LINK OPTIONS ############################

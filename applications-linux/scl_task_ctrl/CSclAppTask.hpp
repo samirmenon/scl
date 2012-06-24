@@ -51,6 +51,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/util/HelperFunctions.hpp>
 
 #include <omp.h>
+#include <GL/freeglut.h>
 
 #include <sstream>
 #include <fstream>

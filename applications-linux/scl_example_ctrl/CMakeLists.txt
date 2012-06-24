@@ -27,8 +27,8 @@ ADD_DEFINITIONS(-DTIXML_USE_STL)
 SET(EIGEN_INC_DIR ${SCL_BASE_DIR}3rdparty/eigen3.0.5/)
 
 ###(c) Chai3D scenegraph
-SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-graphics/chai/)
-ADD_DEFINITIONS(-D_LINUX)
+SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/chai3d/)
+ADD_DEFINITIONS(-D_LINUX -DLINUX)
 
 ### (d) sUtil code
 SET(SUTIL_INC_DIR ${SCL_BASE_DIR}3rdparty/sUtil/src/)

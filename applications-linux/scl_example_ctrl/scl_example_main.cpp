@@ -41,6 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <sutil/CSystemClock.hpp>
 
 #include <omp.h>
+#include <GL/freeglut.h>
 
 using namespace scl;
 using namespace scl_app;

@@ -54,6 +54,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/tao/tao/dynamics/taoDNode.h>
 
 #include <omp.h>
+#include <GL/freeglut.h>
 
 /***
  * A sample application to demonstrate scl running one or more robots.
