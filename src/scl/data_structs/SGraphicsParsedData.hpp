@@ -36,6 +36,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
 
+#include <Eigen/Core>
+
 namespace scl
 {
   /**
@@ -53,9 +55,9 @@ namespace scl
     };
 
     /** Camera settings for this world. */
-    sFloat cam_pos_[3];//The camera's position.
-    sFloat cam_lookat_[3];//Position the camera looks at.
-    sFloat cam_up_[3];//The direction of the up-vector.
+    Eigen::Vector3d cam_pos_;//The camera's position.
+    Eigen::Vector3d cam_lookat_;//Position the camera looks at.
+    Eigen::Vector3d  cam_up_;//The direction of the up-vector.
     sFloat cam_clipping_dist_[2];//Defines rendering limits along cam's line of sight (meters)
 
     sFloat background_color_[3];//RGB.

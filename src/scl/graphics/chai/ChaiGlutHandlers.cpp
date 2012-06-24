@@ -38,6 +38,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 
+#include <GL/freeglut.h>
+
 namespace scl_chai_glut_interface
 {
   //---------------------------------------------------------------------------
@@ -630,7 +632,7 @@ namespace scl_chai_glut_interface
     );
 
     // set new position to camera
-    CChaiGlobals::getData()->GLOB_chaiDbptr->chai_cam_->set(pos, gr_ds->cam_lookat_, gr_ds->cam_up_);
+    CChaiGlobals::getData()->GLOB_chaiDbptr->chai_cam_->set(pos,gr_ds->cam_lookat_,gr_ds->cam_up_);
 
     // recompute global positions
     CChaiGlobals::getData()->GLOB_chaiDbptr->chai_world_->computeGlobalPositions(true);

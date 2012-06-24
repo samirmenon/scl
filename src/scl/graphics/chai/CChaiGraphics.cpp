@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "chai3d.h"
 
-#include "GL/freeglut.h"
+#include <GL/freeglut.h>
 
 namespace scl {
 
@@ -106,13 +106,12 @@ namespace scl {
         data_->chai_cam_->setClippingPlanes(0.01, 10);
 
         // create a light source and attach it to the camera
-        cLight* light = new cLight(data_->chai_world_);
+        cDirectionalLight* light = new cDirectionalLight(data_->chai_world_);
         if(S_NULL==light)
         { throw(std::runtime_error("Couldn't add a light to the world")); }
 
         data_->chai_cam_->addChild(light);                   // attach light to camera
         light->setEnabled(true);                   // enable light source
-        light->setPos(cVector3d( 2.0, 0.5, 1.0));  // position the light source
         light->setDir(cVector3d(-2.0, 0.5, 1.0));  // define the direction of the light beam
       }
       else
@@ -149,7 +148,7 @@ namespace scl {
         for(it = data_parsed_->lights_.begin();
             it!=ite; ++it)
         {
-          cLight* light = new cLight(data_->chai_world_);
+          cDirectionalLight* light = new cDirectionalLight(data_->chai_world_);
           if(S_NULL==light)
           { throw(std::runtime_error("Couldn't add a light to the world")); }
 
@@ -167,7 +166,7 @@ namespace scl {
           std::cout<<std::endl;
 #endif
 
-          light->setPos(pos);  // position the light source
+          light->setLocalPos(pos);  // position the light source
           light->setDir(dir);  // define the direction of the light beam
         }
       }
@@ -284,8 +283,7 @@ namespace scl {
 
       //7. Set random rendering options (Defaults. Override later if you want.)
       robot_brrep_root->graphics_obj_->setShowFrame(false, false);
-      robot_brrep_root->graphics_obj_->setFrameSize(0.15,0.4,true);
-      robot_brrep_root->graphics_obj_->setShowTree(false,false);
+      robot_brrep_root->graphics_obj_->setFrameSize(0.15,true);
 
       //7. Check for errors.
       if(S_NULL==robot_brrep_root->graphics_obj_)
@@ -379,7 +377,8 @@ namespace scl {
         //NOTE : Chai deletes its own data. So don't worry about the memory (leak).
         //1.a) Since we have meshes for this link, we will initialize a cMesh object
         //     to represent this link in chai's scenegraph
-        arg_link->graphics_obj_ = new cMesh(data_->chai_world_);
+        arg_link->graphics_obj_ = new cMesh();
+        data_->chai_world_->addChild(arg_link->graphics_obj_);
         if(S_NULL == arg_link->graphics_obj_)
         { throw(std::runtime_error("Could not allocate a graphics object"));  }
         arg_link->graphics_obj_->setUseCulling(false,false);
@@ -392,42 +391,39 @@ namespace scl {
             it!=ite; ++it)
         {
           const SRobotLinkGraphics& lnk_gr = (*it);
-          cMesh* tmp = new cMesh(data_->chai_world_);
-          if(false == tmp->loadFromFile(lnk_gr.file_name_))
-          {
-            std::string err_str;
-            err_str = "Couldn't find obj file: "+ lnk_gr.file_name_;
-            throw(std::runtime_error(err_str.c_str()));
-          }
+          cMultiMesh* tmp = new cMultiMesh();
+          if(false == cLoadFileOBJ(tmp,lnk_gr.file_name_))
+            if(false == cLoadFile3DS(tmp,lnk_gr.file_name_))
+            {
+              std::string err_str;
+              err_str = "Couldn't load obj/3ds robot link file: "+ lnk_gr.file_name_;
+              throw(std::runtime_error(err_str.c_str()));
+            }
           arg_link->graphics_obj_->addChild(tmp);
 
           // Set the object's position and orientation in its parent (fixed)
-          tmp->setPos(lnk_gr.pos_in_parent_[0],
+          tmp->setLocalPos(lnk_gr.pos_in_parent_[0],
               lnk_gr.pos_in_parent_[1],
               lnk_gr.pos_in_parent_[2]);
 
           //Use display lists : Uses the graphics card for faster rendering
           // NOTE : Possibly corrputs the rendering. Disable if required.
 #ifndef S_TESTING
-          tmp->useDisplayList(true, true);
+          tmp->setUseDisplayList(true, true);
           tmp->invalidateDisplayList(true);
 #endif
 
           //Set the rotation in its parent
-          Eigen::Matrix3d tmp_eigmat;
-          cMatrix3d tmp_chaimat;
           Eigen::Quaternion<sFloat> tmp_quat(lnk_gr.ori_parent_quat_(3), lnk_gr.ori_parent_quat_(0),
               lnk_gr.ori_parent_quat_(1),lnk_gr.ori_parent_quat_(2));
-          tmp_eigmat = tmp_quat.toRotationMatrix();
+          tmp->setLocalRot(tmp_quat.toRotationMatrix());
 
-          tmp_chaimat.m[0][0] = tmp_eigmat(0,0);  tmp_chaimat.m[0][1] = tmp_eigmat(0,1);  tmp_chaimat.m[0][2] = tmp_eigmat(0,2);
-          tmp_chaimat.m[1][0] = tmp_eigmat(1,0);  tmp_chaimat.m[1][1] = tmp_eigmat(1,1);  tmp_chaimat.m[1][2] = tmp_eigmat(1,2);
-          tmp_chaimat.m[2][0] = tmp_eigmat(2,0);  tmp_chaimat.m[2][1] = tmp_eigmat(2,1);  tmp_chaimat.m[2][2] = tmp_eigmat(2,2);
-          tmp->setRot(tmp_chaimat);
-
-          cVector3d tmp_scale;
-          tmp_scale[0] = lnk_gr.scaling_(0); tmp_scale[1] = lnk_gr.scaling_(1); tmp_scale[2] = lnk_gr.scaling_(2);
-          tmp->scale(tmp_scale,true);
+          // NOTE TODO : Chai mesh scaling is now isotropic. Bug #27 as of v3.0.
+          // Only using X-scaling. Fix later
+          tmp->scale(lnk_gr.scaling_(0),true);
+          //cVector3d tmp_scale;
+          //tmp_scale[0] = lnk_gr.scaling_(0); tmp_scale[1] = lnk_gr.scaling_(1); tmp_scale[2] = lnk_gr.scaling_(2);
+          //tmp->scale(tmp_scale,true);
         }
       }
       else
@@ -439,23 +435,16 @@ namespace scl {
 
       //2. Now that the chai object's meshes (or lack thereof) have been parsed,
       //   we will set the object's position and orientation in its parent
-      arg_link->graphics_obj_->setPos(arg_link->robot_link_->pos_in_parent_[0],
+      arg_link->graphics_obj_->setLocalPos(arg_link->robot_link_->pos_in_parent_[0],
           arg_link->robot_link_->pos_in_parent_[1],
           arg_link->robot_link_->pos_in_parent_[2]);
 
       //Set the rotation in its parent
-      Eigen::Matrix3d tmp_eigmat;
-      cMatrix3d tmp_chaimat;
-      tmp_eigmat = arg_link->robot_link_->ori_parent_quat_.toRotationMatrix();
-
-      tmp_chaimat.m[0][0] = tmp_eigmat(0,0);  tmp_chaimat.m[0][1] = tmp_eigmat(0,1);  tmp_chaimat.m[0][2] = tmp_eigmat(0,2);
-      tmp_chaimat.m[1][0] = tmp_eigmat(1,0);  tmp_chaimat.m[1][1] = tmp_eigmat(1,1);  tmp_chaimat.m[1][2] = tmp_eigmat(1,2);
-      tmp_chaimat.m[2][0] = tmp_eigmat(2,0);  tmp_chaimat.m[2][1] = tmp_eigmat(2,1);  tmp_chaimat.m[2][2] = tmp_eigmat(2,2);
-      arg_link->graphics_obj_->setRot(tmp_chaimat);
+      arg_link->graphics_obj_->setLocalRot(arg_link->robot_link_->ori_parent_quat_.toRotationMatrix());
 
 #ifdef W_TESTING
       //When testing, show the frames as well (gives a good idea of how things work).
-      arg_link->graphics_obj_->setFrameSize(0.15,0.3,true);
+      arg_link->graphics_obj_->setFrameSize(0.15,true);
       arg_link->graphics_obj_->setShowFrame(true,true);
 #endif
 
@@ -496,11 +485,6 @@ namespace scl {
           arg_link->robot_link_->ori_parent_quat_.x(),
           arg_link->robot_link_->ori_parent_quat_.y(),
           arg_link->robot_link_->ori_parent_quat_.z());
-
-      printf("\nQuaternion to Eigen rotation matrix:\n%lf %lf %lf \n%lf %lf %lf \n%lf %lf %lf ",
-          tmp_eigmat(0,0),  tmp_eigmat(0,1),  tmp_eigmat(0,2),
-          tmp_eigmat(1,0),  tmp_eigmat(1,1),  tmp_eigmat(1,2),
-          tmp_eigmat(2,0),  tmp_eigmat(2,1),  tmp_eigmat(2,2));
 #endif
     }
     catch(std::exception& ee)
@@ -521,33 +505,29 @@ namespace scl {
       const std::string& arg_mesh_file, const Eigen::Vector3d& arg_pos,
       const Eigen::Matrix3d& arg_rot)
   {
-    cMesh* tmp_chai_mesh = S_NULL;
+    cMultiMesh* tmp_chai_mesh = S_NULL;
     SGraphicsMesh* tmp_mesh_ds = S_NULL;
     try
     {
       if(!has_been_init_) { return false; }
 
       //1. Create a new chai mesh
-      tmp_chai_mesh = new cMesh(data_->chai_world_);
+      tmp_chai_mesh = new cMultiMesh();
       if(S_NULL == tmp_chai_mesh)
       { throw(std::runtime_error("Could not create a chai mesh."));  }
 
       //2. Load the mesh's graphics from a file.
-      if(false == tmp_chai_mesh->loadFromFile(arg_mesh_file))
-      {
-        std::string err_str;
-        err_str = "Couldn't load mesh graphics file: "+ arg_mesh_file;
-        throw(std::runtime_error(err_str.c_str()));
-      }
+      if(false == cLoadFileOBJ(tmp_chai_mesh,arg_mesh_file))
+        if(false == cLoadFile3DS(tmp_chai_mesh,arg_mesh_file))
+        {
+          std::string err_str;
+          err_str = "Couldn't load obj/3ds graphics mesh file: "+ arg_mesh_file;
+          throw(std::runtime_error(err_str.c_str()));
+        }
 
       //3. Initialize the mesh's position and orientation (relative to the origin)
-      tmp_chai_mesh->setPos(arg_pos(0), arg_pos(1), arg_pos(2)); //Set position
-
-      cMatrix3d tmp_chaimat;
-      tmp_chaimat.m[0][0] = arg_rot(0,0);  tmp_chaimat.m[0][1] = arg_rot(0,1);  tmp_chaimat.m[0][2] = arg_rot(0,2);
-      tmp_chaimat.m[1][0] = arg_rot(1,0);  tmp_chaimat.m[1][1] = arg_rot(1,1);  tmp_chaimat.m[1][2] = arg_rot(1,2);
-      tmp_chaimat.m[2][0] = arg_rot(2,0);  tmp_chaimat.m[2][1] = arg_rot(2,1);  tmp_chaimat.m[2][2] = arg_rot(2,2);
-      tmp_chai_mesh->setRot(tmp_chaimat); //Set rotation
+      tmp_chai_mesh->setLocalPos(arg_pos(0), arg_pos(1), arg_pos(2)); //Set position
+      tmp_chai_mesh->setLocalRot(arg_rot); //Set rotation
 
       //4. Add the mesh to the world.
       data_->chai_world_->addChild(tmp_chai_mesh);
@@ -619,7 +599,10 @@ namespace scl {
       { throw(std::runtime_error("Could not find the named mesh data structure."));  }
 
       cGenericObject* tmp_chai_mesh = tmp_mesh_ds->graphics_obj_;
-      tmp_chai_mesh->scale(cVector3d(arg_x, arg_y, arg_z));
+      // NOTE TODO : Chai mesh scaling is now isotropic. Bug #27 as of v3.0.
+      // Only using X-scaling. Fix later
+      //tmp_chai_mesh->scale(cVector3d(arg_x, arg_y, arg_z));
+      tmp_chai_mesh->scale(arg_x);
     }
     catch(std::exception& ee)
     {
@@ -684,9 +667,7 @@ namespace scl {
           gr_mpt.graphics_parent_ = gr_lnk;
 
           gr_mpt.pos_ = new cVector3d();
-          gr_mpt.pos_->x = (*it).point_(0);
-          gr_mpt.pos_->y = (*it).point_(1);
-          gr_mpt.pos_->z = (*it).point_(2);
+          *(gr_mpt.pos_) = it->point_;
 
           if(it2!=ite)
           {
@@ -700,9 +681,7 @@ namespace scl {
             gr_mpt.graphics_parent_next_ = gr_lnk2;
 
             gr_mpt.pos_next_ = new cVector3d();
-            gr_mpt.pos_next_->x = (*it2).point_(0);
-            gr_mpt.pos_next_->y = (*it2).point_(1);
-            gr_mpt.pos_next_->z = (*it2).point_(2);
+            *(gr_mpt.pos_next_) = it2->point_;
 
             //Set up a line : The initial coordinates don't matter and will be immediately
             //updated with global coordinates of the skeletonwhile rendering.
@@ -710,8 +689,8 @@ namespace scl {
 
             //Set the color
             cColorf muscleColor(1,0,0,0.5);        //R,G,B,Alpha
-            tmp_l->m_ColorPointA = muscleColor;
-            tmp_l->m_ColorPointB = muscleColor;
+            tmp_l->m_colorPointA = muscleColor;
+            tmp_l->m_colorPointB = muscleColor;
             tmp_l->setShowEnabled(true,true);
 
             //Save the line's graphics object
@@ -726,7 +705,7 @@ namespace scl {
           if(add_musc_via_points)//Add via point rendering if required
           {
             gr_mpt.graphics_via_point_ = new cShapeSphere(CHAI_SPHERE_MUSC_VIA_RADIUS);
-            gr_mpt.graphics_via_point_->setPos(*(gr_mpt.pos_));
+            gr_mpt.graphics_via_point_->setLocalPos(*(gr_mpt.pos_));
 
             gr_mpt.graphics_parent_->graphics_obj_->addChild(gr_mpt.graphics_via_point_);
           }
@@ -781,7 +760,7 @@ namespace scl {
       { throw(std::runtime_error("Could not allocate new rendering object"));  }
 
       //Set its position in the parent frame
-      new_op_gr->setPos(arg_pos(0),arg_pos(1),arg_pos(2));
+      new_op_gr->setLocalPos(arg_pos);
 
       //Add it to the parent frame as a child
       op_gr->addChild(new_op_gr);
@@ -812,7 +791,7 @@ namespace scl {
       { throw(std::runtime_error("Could not allocate new rendering object"));  }
 
       //Set its position in the parent frame
-      new_op_gr->setPos(arg_pos(0),arg_pos(1),arg_pos(2));
+      new_op_gr->setLocalPos(arg_pos);
 
       //Add it to the parent frame as a child
       data_->chai_world_->addChild(new_op_gr);
@@ -982,13 +961,9 @@ namespace scl {
               break; //JOINT_TYPE_NOTASSIGNED
           }
 
-          rot.m[0][0] = tmp_rot(0,0);  rot.m[0][1] = tmp_rot(0,1);  rot.m[0][2] = tmp_rot(0,2);
-          rot.m[1][0] = tmp_rot(1,0);  rot.m[1][1] = tmp_rot(1,1);  rot.m[1][2] = tmp_rot(1,2);
-          rot.m[2][0] = tmp_rot(2,0);  rot.m[2][1] = tmp_rot(2,1);  rot.m[2][2] = tmp_rot(2,2);
-
           //3. Initialize the mesh's position and orientation (relative to the parent)
-          lnk_grdata->setPos(tr); //Set position
-          lnk_grdata->setRot(rot); //Set rotation
+          lnk_grdata->setLocalPos(tr); //Set position
+          lnk_grdata->setLocalRot(tmp_rot); //Set rotation
 
           //Advance to the next link in the robot
         }

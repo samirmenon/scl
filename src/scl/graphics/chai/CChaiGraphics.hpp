@@ -28,15 +28,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
-
-/** NOTE TODO : Remove this #define and add it to the makefile.  */
-#ifndef SCL_USE_CHAI_GRAPHICS
-#define SCL_USE_CHAI_GRAPHICS 1
-#endif
-
-#ifdef SCL_USE_CHAI_GRAPHICS
-
-
 #ifndef CCHAIGRAPHICS_HPP_
 #define CCHAIGRAPHICS_HPP_
 
@@ -220,5 +211,3 @@ protected:
 }
 
 #endif /* CGRAPHICS_HPP_ */
-
-#endif
