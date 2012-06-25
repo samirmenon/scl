@@ -378,7 +378,6 @@ namespace scl {
         //1.a) Since we have meshes for this link, we will initialize a cMesh object
         //     to represent this link in chai's scenegraph
         arg_link->graphics_obj_ = new cMesh();
-        data_->chai_world_->addChild(arg_link->graphics_obj_);
         if(S_NULL == arg_link->graphics_obj_)
         { throw(std::runtime_error("Could not allocate a graphics object"));  }
         arg_link->graphics_obj_->setUseCulling(false,false);
@@ -406,13 +405,6 @@ namespace scl {
               lnk_gr.pos_in_parent_[1],
               lnk_gr.pos_in_parent_[2]);
 
-          //Use display lists : Uses the graphics card for faster rendering
-          // NOTE : Possibly corrputs the rendering. Disable if required.
-#ifndef S_TESTING
-          tmp->setUseDisplayList(true, true);
-          tmp->invalidateDisplayList(true);
-#endif
-
           //Set the rotation in its parent
           Eigen::Quaternion<sFloat> tmp_quat(lnk_gr.ori_parent_quat_(3), lnk_gr.ori_parent_quat_(0),
               lnk_gr.ori_parent_quat_(1),lnk_gr.ori_parent_quat_(2));
@@ -424,6 +416,14 @@ namespace scl {
           //cVector3d tmp_scale;
           //tmp_scale[0] = lnk_gr.scaling_(0); tmp_scale[1] = lnk_gr.scaling_(1); tmp_scale[2] = lnk_gr.scaling_(2);
           //tmp->scale(tmp_scale,true);
+
+          //Use display lists : Uses the graphics card for faster rendering
+          // NOTE : Possibly corrputs the rendering. Disable if required.
+#ifndef S_TESTING
+          tmp->setUseDisplayList(true, true);
+          tmp->invalidateDisplayList(true);
+#endif
+
         }
       }
       else
