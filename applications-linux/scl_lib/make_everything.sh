@@ -1,6 +1,6 @@
 cd ../../ &&
 git submodule init && git submodule update &&
-cd 3rdparty/chai3d-graphics/lib/ &&
+cd 3rdparty/chai3d-3.0/lib/ &&
 #rm build_* -rf &&
 sh make_debug.sh &&
 sh make_release.sh &&
