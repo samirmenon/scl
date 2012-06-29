@@ -822,7 +822,7 @@ namespace scl {
       { throw(std::runtime_error("Could not allocate new rendering object"));  }
 
       //Set its position in the parent frame
-      new_op_gr->setPos(arg_pos(0),arg_pos(1),arg_pos(2));
+      new_op_gr->setLocalPos(arg_pos(0),arg_pos(1),arg_pos(2));
 
       //Add it to the parent frame as a child
       data_->chai_world_->addChild(new_op_gr);

@@ -140,6 +140,7 @@
 #include "world/CShapeLine.h"
 #include "world/CShapeSphere.h"
 #include "world/CShapeTorus.h"
+#include "world/CShapeBeltedEllipsoid.h"
 #include "world/CWorld.h"
 
 
