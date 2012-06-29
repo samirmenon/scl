@@ -51,6 +51,7 @@ SET(CHAI_SRC ${CHAI_INC_DIR}/graphics/CFont.cpp
              ${CHAI_INC_DIR}/world/CMultiMesh.cpp
              ${CHAI_INC_DIR}/world/CShapeBox.cpp
              ${CHAI_INC_DIR}/world/CShapeTorus.cpp
+						 ${CHAI_INC_DIR}/world/CShapeBeltedEllipsoid.cpp
              ${CHAI_INC_DIR}/world/CShapeCylinder.cpp
              ${CHAI_INC_DIR}/world/CShapeLine.cpp
              ${CHAI_INC_DIR}/system/CGlobals.cpp
