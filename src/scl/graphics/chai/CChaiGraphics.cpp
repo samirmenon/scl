@@ -807,8 +807,36 @@ namespace scl {
     return true;
   }
 
+  sBool CChaiGraphics::addBeltedEllipsoidToRender(
+      const Eigen::Vector3d& arg_pos,
+      cGenericObject*& arg_ret_ptr,
+      const sFloat arg_size)
+  {
+    try
+    {
+      if(!has_been_init_) { return false; }
 
+      //Create a new sphere and add it to the robot.
+      cGenericObject *new_op_gr = new cShapeBeltedEllipsoid();
+      if(S_NULL == new_op_gr)
+      { throw(std::runtime_error("Could not allocate new rendering object"));  }
 
+      //Set its position in the parent frame
+      new_op_gr->setPos(arg_pos(0),arg_pos(1),arg_pos(2));
+
+      //Add it to the parent frame as a child
+      data_->chai_world_->addChild(new_op_gr);
+
+      //Set the return pointer if passed, so that the caller can manipulate the sphere.
+      arg_ret_ptr = new_op_gr;
+    }
+    catch(std::exception& ee)
+    {
+      std::cerr<<"\nCChaiGraphics::addSphereToRender(no-robot) : global-frame : "<<ee.what();
+      return false;
+    }
+    return true;
+  }
 
   sBool CChaiGraphics::updateGraphics()
   {

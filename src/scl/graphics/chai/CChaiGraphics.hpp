@@ -160,6 +160,14 @@ public:
       cGenericObject*& arg_ret_ptr,
       const sFloat arg_size=0.01);
 
+  /** Adds a belted ellipsoid (representing the inertia at an operational point)
+   * to the rendering environment wrt the global frame */
+  sBool addBeltedEllipsoidToRender(
+      const Eigen::Vector3d& arg_pos,
+      /** Reference to a pointer, pass a pointer and get the object for your use */
+      cGenericObject*& arg_ret_ptr,
+      const sFloat arg_size=0.01);
+
   /** Deallocates the chai world. */
   virtual sBool destroyGraphics();
 
