@@ -4,23 +4,38 @@ A control and interactive simulation library
 
 Author: Samir Menon <smenon@stanford.edu>
 
-Installation instructions:
+Wiki: https://bitbucket.org/samirmenon/scl-manips-group/wiki
 
-1. Install additional dependencies. Open a terminal (ctrl+shift+t) and type:
+==================================================================================================
+== Getting started ==
+
+=== 1.Install additional dependencies. ===
+Open a terminal (ctrl+alt+t) and type:
 $ sudo apt-get install build-essential cmake libusb-dev freeglut3-dev libncurses5-dev git-core gitk 
 
-2. Get the code. I will assume you will get this on to your desktop. Again, on the terminal:
-$ cd ~/Desktop
-$ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-dev.git scl-dev.git
 
-3. Compile the scl library and related 3rdparty libraries (Chai-graphics, yaml):
-$ cd scl-dev.git/applications-linux/scl_lib
+===  2. Get the code. ===
+I will assume you will get this on to your documents folder. Again, on the terminal:
+
+$ cd ~/Documents
+$ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-manips-group.git scl-manips-group.git
+
+=== 3. Compile all the libraries.  ===
+Compile the scl library and related 3rdparty libraries (Chai-graphics, yaml) all in one step
+
+$ cd scl-manips-group.git/applications-linux/scl_lib
 $ sh make_everything.sh
 
-4. Explore the applications. This will open the Pr2 robot with operational space control
+=== 4. Explore the applications. ===
+This will open the Pr2 robot with operational space control:
+
 $ cd ../scl_example_ctrl
 $ sh make_rel.sh
 $ ./scl_eg_ctrl ../../specs/Pr2/Pr2Cfg.xml Pr2Bot opc hand hand2
+
+
+Up-to-date installation instructions - see Getting started in our wiki:
+https://bitbucket.org/samirmenon/scl-manips-group/wiki/install/getting_started
 
 ==========================================================================================
 
@@ -41,5 +56,9 @@ $ cd ~/scl-dev.git/specs
 - Look at the applications-linux directory and copy paste the example controller
 - Some applications use cmake. and for them use `mkdir build && cd build && cmake .. && make`
 - Others use a makefile and you can build each one using `make release` or `make` (debug mode)
+
+
+Up-to date documentation you can find also in our wiki:
+https://bitbucket.org/samirmenon/scl-manips-group/wiki/
 
 ==========================================================================================
