@@ -8,7 +8,7 @@ SYS_ARCH = $(shell echo `uname -m`)
 
 ############################# SPECIFY ALL LIBS ############################
 #3rd party lib : Eigen (local install)
-EIGEN_INC_DIR = ../../3rdparty/eigen3.0.5/
+EIGEN_INC_DIR = ../../3rdparty/eigen3.1.0/
 
 #3rd party lib : sUtil (local install)
 SUTIL_INC_DIR = ../../3rdparty/sUtil/src/
