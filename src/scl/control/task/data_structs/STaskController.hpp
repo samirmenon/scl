@@ -41,6 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/task/data_structs/SServo.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
+#include <scl/control/task/data_structs/SNonControlTaskBase.hpp>
 
 #include <sutil/CMappedList.hpp>
 #include <sutil/CMappedMultiLevelList.hpp>
@@ -62,6 +63,11 @@ namespace scl
      * Tasks can be accessed either by name (map access), pointer (iterator_)
      * in the multi level pilemap or via the vector (std::vector access)*/
     sutil::CMappedMultiLevelList<std::string, STaskBase*> tasks_;
+
+    /** Pointers to the non-control Task data structures.
+     *
+     * Tasks can be accessed either by name (map access) or pointer (iterator_) */
+    sutil::CMappedList<std::string, SNonControlTaskBase*> tasks_non_ctrl_;
 
     /** Inherited stuff:
     std::string robot_name_;
