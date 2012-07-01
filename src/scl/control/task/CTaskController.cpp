@@ -182,7 +182,7 @@ namespace scl
   }
 
   sBool CTaskController::addTask(const std::string &arg_task_name,
-      CTaskBase* arg_task, sUInt arg_level)
+      CTaskBase* arg_task, const sUInt arg_level)
   {
     sBool flag;
     try
@@ -192,9 +192,6 @@ namespace scl
 
       if(NULL==arg_task)
       { throw(std::runtime_error("Passed  a NULL task pointer. Can't do anything with it."));  }
-
-      if(arg_level < 0)
-      { throw(std::runtime_error("Can't add a task at a level less than 0"));  }
 
       //Initialize the task's data structure.
       flag = arg_task->hasBeenInit();

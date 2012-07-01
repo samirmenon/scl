@@ -43,14 +43,12 @@ namespace scl
   class STaskGcSet : public scl::STaskBase
   {
   public:
-    std::vector<std::string> q_sel_names_; //The selected generalized coordinates (joint names)
-
-    Eigen::VectorXi q_sel_;         //The selected generalized coordinates to be controlled
-    Eigen::VectorXd q_goal_;        //Goal Position in the global frame
-    Eigen::VectorXd dq_goal_;       //Goal Velocity in the global frame
-    Eigen::VectorXd ddq_goal_;      //Goal Acceleration in the global frame
-
-    sFloat spatial_resolution_;     //Meters
+    std::vector<std::string> q_sel_names_;          //The selected generalized coordinates (joint names)
+    Eigen::Matrix<sUInt, Eigen::Dynamic, 1> q_sel_; //The selected generalized coordinates to be controlled
+    Eigen::VectorXd q_goal_;                        //Goal Position in the global frame
+    Eigen::VectorXd dq_goal_;                       //Goal Velocity in the global frame
+    Eigen::VectorXd ddq_goal_;                      //Goal Acceleration in the global frame
+    sFloat spatial_resolution_;                     //Meters
 
     /** Default constructor sets stuff to S_NULL */
     STaskGcSet();

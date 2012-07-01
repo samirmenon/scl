@@ -135,7 +135,7 @@ namespace scl
      * If a higher level than max is supplied, new levels
      * are created. */
     bool addTask(const std::string &arg_task_name,
-        CTaskBase* arg_task, sUInt arg_level);
+        CTaskBase* arg_task, const sUInt arg_level);
 
     /** Removes a task from the controller.
      * NOTE : This only removes the task from the controller. The data
