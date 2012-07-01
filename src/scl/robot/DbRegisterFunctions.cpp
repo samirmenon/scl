@@ -330,6 +330,7 @@ namespace scl_registry
     //completely initialized.
     scl::STaskController tmp_ctrl;
     std::vector<scl::STaskBase> taskvec;
+    std::vector<scl::SNonControlTaskBase> taskvec_non_ctrl;
 
     //Will be initialized (with the init function) and will be returned.
     //The STaskController ds contains a multi-level pile map, which manages
@@ -346,7 +347,7 @@ namespace scl_registry
       //Read in the generic controller information from the file
       std::string must_use_robot, use_dynamics;
       flag = arg_parser->readTaskControllerFromFile(arg_file,arg_ctrl_name,
-          must_use_robot,tmp_ctrl,taskvec);
+          must_use_robot,tmp_ctrl,taskvec, taskvec_non_ctrl);
       if(false == flag) { throw (std::runtime_error("Could not read the controller."));  }
 
       if(arg_robot_name != must_use_robot)
@@ -369,8 +370,8 @@ namespace scl_registry
 
       //Now add the tasks to the controller sutil::CMappedMultiLevelList
       scl::sUInt tasks_parsed=0;
-      std::vector<scl::STaskBase>::iterator it,ite;
-      for(it = taskvec.begin(), ite = taskvec.end(); it!=ite; ++it)
+      for(std::vector<scl::STaskBase>::iterator it = taskvec.begin(),
+          ite = taskvec.end(); it!=ite; ++it)
       {
         scl::STaskBase& tmp_task = *it;
 
@@ -434,6 +435,71 @@ namespace scl_registry
 
       if(0==tasks_parsed)
       {  throw (std::runtime_error("Found zero tasks in a task controller."));  }
+
+      //Now parse the non-control tasks
+      //Now add the tasks to the controller sutil::CMappedList
+      tasks_parsed=0;
+      for(std::vector<scl::SNonControlTaskBase>::iterator it = taskvec_non_ctrl.begin(),
+          ite = taskvec_non_ctrl.end(); it!=ite; ++it)
+      {
+        scl::SNonControlTaskBase& tmp_task = *it;
+
+        //Use dynamic typing to get the correct task type.
+        void *get_task_type=S_NULL;
+        flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(std::string("S")+tmp_task.type_task_,get_task_type);
+        if(false == flag)
+        { throw (std::runtime_error(std::string("S")+tmp_task.type_task_+
+            std::string(" -- Unrecognized task type requested.\n * Did you register the task type with the database?\n * If not, see applications-linux/scl_skeleton_code/*.cpp to find out how.")));  }
+
+        //Convert the pointer into a STaskBase*
+        scl::SNonControlTaskBase* tmp_task2add = reinterpret_cast<scl::SNonControlTaskBase*>(get_task_type);
+
+        flag = tmp_task2add->init(tmp_task.name_, tmp_task.type_task_,
+            tmp_task.task_nonstd_params_);
+        if(false == flag)
+        {
+          std::string serr;
+          serr = "Could not initialize non-control task : ";
+          serr = serr + tmp_task.type_task_+ std::string(" : ") + tmp_task.name_;
+          if(S_NULL!=tmp_task2add)
+          { delete tmp_task2add;  }
+          throw (std::runtime_error(serr.c_str()));
+        }
+
+
+        //THE JUICE : Add all the tasks into the mapped list!!
+        if(S_NULL!=tmp_task2add)
+        {
+          //NOTE : We have to store a double pointer for tasks because the pilemap
+          //creates its own memory.
+          scl::SNonControlTaskBase** tmp = ret_ctrl->tasks_non_ctrl_.create(tmp_task2add->name_, tmp_task2add);
+
+          //Detailed error reporting.
+          if(S_NULL == tmp)
+          {
+            std::string serr;
+            serr = "Could not create task data structure for : ";
+            if(S_NULL!=tmp_task2add)
+            {
+              serr = serr + tmp_task2add->name_;
+              delete tmp_task2add;
+            }
+            else
+            {
+              serr = serr + "NULL task pointer (should not be NULL)";
+            }
+            throw (std::runtime_error(serr.c_str()));
+          }
+          //NOTE: SOMEONE HAS TO DELETE THE TASKS LATER!!!
+        }
+
+        tasks_parsed++;
+      }
+
+#ifdef DEBUG
+      if(0==tasks_parsed)
+      {  std::cout<<"\nparseTaskController() WARNING : Found zero non-control tasks in a task controller.";  }
+#endif
 
       //Now register the data structure with the database
       ret_ctrl->type_ctrl_ds_ = "STaskController";
