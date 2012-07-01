@@ -67,10 +67,8 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    {
-      std::cerr<<"\nCOsimParserForOldFiles::readOsimBiomechFromFile() : "<<e.what();
-      return false;
-    }
+    { std::cerr<<"\nCOsimParserForOldFiles::readOsimBiomechFromFile() : "<<e.what();  }
+    return false;
   }
 
   bool COsimParserForOldFiles::readMuscleSysFromFile(
@@ -254,10 +252,8 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    {
-      std::cerr<<"\nCOsimParserForOldFiles::readMuscleSysFromFile() : "<<e.what();
-      return false;
-    }
+    { std::cerr<<"\nCOsimParserForOldFiles::readMuscleSysFromFile() : "<<e.what();  }
+    return false;
   }
 
   /* Since the Osim format only has one robot in a file, the "arg_robot_name"
@@ -492,10 +488,8 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    {
-      std::cerr<<"\nCOsimParserForOldFiles::readRobotFromFile("<<arg_file<<") : "<<e.what();
-      return false;
-    }
+    { std::cerr<<"\nCOsimParserForOldFiles::readRobotFromFile("<<arg_file<<") : "<<e.what();  }
+    return false;
   }
 
 
@@ -789,10 +783,8 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    {
-      std::cerr<<"\nCOsimParserForOldFiles::readBody("<<body_name<<") : "<<e.what();
-      return false;
-    }
+    { std::cerr<<"\nCOsimParserForOldFiles::readBody("<<body_name<<") : "<<e.what();  }
+    return false;
   }
 
   /** Reads a joint for a body.
@@ -939,10 +931,8 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    {
-      std::cerr<<"\nCOsimParserForOldFiles::readJoint() : "<<e.what();
-      return false;
-    }
+    { std::cerr<<"\nCOsimParserForOldFiles::readJoint() : "<<e.what();  }
+    return false;
   }
 
 }
