@@ -83,7 +83,8 @@ public:
       /** Returns a vector of tasks that this task controller can execute.
        * Typically, the task controller will execute all of them simultaneously
        * with a priority order.*/
-      std::vector<scl::STaskBase> &arg_taskvec);
+      std::vector<scl::STaskBase> &arg_taskvec,
+      std::vector<scl::SNonControlTaskBase> &arg_task_non_ctrl_vec);
 
 private:
   bool readRobotSpecFromFile(const std::string& arg_spec_file,

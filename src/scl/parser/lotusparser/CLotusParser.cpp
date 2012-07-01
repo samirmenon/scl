@@ -264,7 +264,6 @@ bool CLotusParser::readRobotFromFile(const std::string& arg_file,
 }
 
 
-
 bool CLotusParser::readRobotSpecFromFile(const std::string& arg_spec_file,
     const std::string& arg_robot_spec_name,
     scl::SRobotParsedData& arg_robot)
@@ -976,7 +975,8 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
       std::string &arg_must_use_robot,
       scl::STaskController& arg_ctrl,
-      std::vector<STaskBase> &arg_taskvec)
+      std::vector<STaskBase> &arg_taskvec,
+      std::vector<SNonControlTaskBase> &arg_task_non_ctrl_vec)
 {
   bool flag;
   try
@@ -1040,6 +1040,9 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
       else
       { arg_must_use_robot=""; }
 
+      /** ***********************************************
+       *    PARSE ALL THE CONTROL TASKS HERE
+       * ************************************************ */
       tiElem_task_ctrl = _cr_handle.FirstChildElement( "task" ).ToElement();
       //Iterating with TiXmlElement is faster than TiXmlHandle
       for(; tiElem_task_ctrl; tiElem_task_ctrl=tiElem_task_ctrl->NextSiblingElement("task") )
@@ -1248,6 +1251,90 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
 #endif
 
       }//End of loop over tasks in the xml file.
+
+      /** ***********************************************
+       *    END PARSING ALL THE CONTROL TASKS HERE
+       * ************************************************ */
+
+      /** ***********************************************
+       *    PARSE ALL THE NON-CONTROL TASKS HERE
+       * ************************************************ */
+      tiElem_task_ctrl = _cr_handle.FirstChildElement( "task_non_ctrl" ).ToElement();
+      //Iterating with TiXmlElement is faster than TiXmlHandle
+      for(; tiElem_task_ctrl; tiElem_task_ctrl=tiElem_task_ctrl->NextSiblingElement("task_non_ctrl") )
+      {
+        /** *********************************************
+         *  PARSE ALL THE STANDARD CONTROLLER OPTIONS
+         *
+         *  These are contained in the STaskBase data
+         *  structure
+         *  *********************************************/
+        SNonControlTaskBase tmp_task;
+
+        tmp_task.name_ = tiElem_task_ctrl->Attribute("name");
+
+        TiXmlHandle _task_handle(tiElem_task_ctrl); //Back to handles
+
+        cr_data = _task_handle.FirstChildElement("type").Element();
+        if ( cr_data )
+        {
+          std::string type(cr_data->FirstChild()->Value());
+          tmp_task.type_task_ = type;
+        }
+        else
+        { throw(std::runtime_error("No task type."));  }
+
+        /** *********************************************
+         *  PARSE ALL THE NON STANDARD CONTROLLER OPTIONS
+         *
+         *  These are not contained in the SNonControlTaskBase data
+         *  structure. Each task should know what to do with
+         *  them (in its init function).
+         *  *********************************************/
+
+        //Each task has some non-standard arguments
+        //Save these into the vector of strings and then
+        //insert them into the passed task's vector at the end
+        //of the for loop
+        TiXmlElement* tiElem_task_options = _task_handle.FirstChildElement().ToElement();
+
+        //Iterating with TiXmlElement is faster than TiXmlHandle (But handles are "pointer safe" so we
+        //use them anyway. Thank you TiXml..)
+        for(; tiElem_task_options; tiElem_task_options=tiElem_task_options->NextSiblingElement() )
+        {
+          //Ignore the standard options.
+          if(strcmp(tiElem_task_options->Value(),"type")==0)
+          { continue;  }
+
+          scl::sString2 nonstd_param;//The name of the param and its value
+
+          if(S_NULL == tiElem_task_options->FirstChild())
+          { throw(std::runtime_error(std::string(tiElem_task_options->Value()) +
+              std::string(" -- A non-standard task parameter's value is not specified."))); }
+
+          nonstd_param.data_[0] = tiElem_task_options->Value();
+          nonstd_param.data_[1] = tiElem_task_options->FirstChild()->Value();
+
+#ifdef W_TESTING
+          std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Read a non standard param: "
+              <<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
+#endif
+          //Store the nonstandard param
+          tmp_task.task_nonstd_params_.push_back(nonstd_param);
+        }
+        //Add the parsed task to the controller' task vector
+        arg_task_non_ctrl_vec.push_back(tmp_task);
+
+#ifdef W_TESTING
+        std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Parsed non-control task: "<<tmp_task.name_<<". Type: "<<tmp_task.type_task_;
+#endif
+
+      }//End of loop over tasks in the xml file.
+
+      /** ***********************************************
+       *    END PARSING ALL THE NON-CONTROL TASKS HERE
+       * ************************************************ */
+
 
 #ifdef W_TESTING
           std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Parsed controller: "<<arg_ctrl_name<<". Type: "<<arg_ctrl.type_ctrl_ds_;
