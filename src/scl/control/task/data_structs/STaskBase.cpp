@@ -190,7 +190,7 @@ namespace scl
 
       flag = initTaskParams();
       if(false == flag)
-      { throw(std::runtime_error("Could not initialize the non standard task parameters.")); }
+      { throw(std::runtime_error("Could not initialize the non standard task parameters. \nTODO : Subclass STaskBase, implement your task data structure, and make the function return true.")); }
 
       has_been_init_ = true;
       has_been_activated_ = true;

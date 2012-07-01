@@ -62,6 +62,9 @@ namespace scl
    * stored in
    *    task_nonstd_params_.
    * The function must then return true
+   *
+   * NOTE TODO : ^^^ Why in the world wouldn't we set the func to 0
+   * then
    */
   class STaskBase : public SObject
   {
@@ -165,7 +168,9 @@ namespace scl
     /** Constructor */
     STaskBase();
 
-    /** Initialization function */
+    /** Initialization function
+     *
+     * NOTE : This function also activates the task. */
     bool init(const std::string & arg_name,
         const std::string & arg_type,
         const sUInt arg_priority,
