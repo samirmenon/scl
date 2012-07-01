@@ -78,6 +78,12 @@ namespace scl
      */
     virtual sBool computeDynamics();
 
+    /** Support for non control computations in the controller.
+     * This is really basic controller and does nothing here. Subclasses might
+     * consider adding stuff to this function.. */
+    virtual sBool computeNonControlOperations()
+    { return true;  }
+
     /** Returns the current control forces */
     virtual const Eigen::VectorXd* getControlForces();
 
