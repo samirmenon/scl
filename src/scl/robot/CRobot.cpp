@@ -778,11 +778,10 @@ namespace scl
     //Quick error check.
     if(log_file_.is_open())
     {
-      return true;
       logging_on_ = true;
+      return true;
     }
-    else
-    { return false; }
+    return false;
   }
 
   /** Logs data to the file */
