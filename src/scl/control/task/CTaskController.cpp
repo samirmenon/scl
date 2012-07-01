@@ -225,10 +225,16 @@ namespace scl
       if(S_NULL == tmp)
       { throw(std::runtime_error("Could not find task to delete."));  }
 
+      flag = deactivateTask(arg_task_name);
+      if(false == flag)
+      { throw(std::runtime_error("Could not deactivate the task. Required before removal."));  }
+
       flag = tasks_.erase(arg_task_name);
       if(false == flag)
       { throw(std::runtime_error("Could not delete a task computational object."));  }
 
+      //NOTE : Even though the computational object is deleted here, its data is still
+      //alive in the database. You can always resurrect this task using the data. It is immortal! ;-)
       delete *tmp; tmp = S_NULL;
 
       task_count_--;
@@ -267,14 +273,18 @@ namespace scl
 
   sUInt CTaskController::getNumTasks(const std::string& arg_type) const
   {
-    sutil::CMappedMultiLevelList<std::string, STaskBase*>::const_iterator it,ite;
+    //Since the database is static but the task computational objects might be
+    //removed and re-added on the fly, we count the tasks in the computational
+    //object map. (Still need to get the ds, coz that's there the task type is
+    //stored).
+    sutil::CMappedMultiLevelList<std::string, CTaskBase*>::const_iterator it,ite;
 
     //Loop over all the tasks.
     sUInt ctr = 0;
-    for(it = data_->tasks_.begin(), ite = data_->tasks_.end();
+    for(it = tasks_.begin(), ite = tasks_.end();
         it!=ite;++it)
     {
-      STaskBase* t = *it;
+      STaskBase* t = (*it)->getTaskData();
       if(arg_type == t->type_task_)
       { ctr++;  }
     }
@@ -342,15 +352,21 @@ namespace scl
     sBool flag;
     try
     {
+      if(NULL==data_)
+      { throw(std::runtime_error("CTaskController not initialized. Can't add task."));  }
+
       if(NULL==arg_task)
-      { throw(std::runtime_error("Passed a NULL task pointer. Can't do anything with it."));  }
+      { throw(std::runtime_error("Passed  a NULL task pointer. Can't do anything with it."));  }
 
       //Initialize the task's data structure.
       flag = arg_task->hasBeenInit();
       if(false == flag) { throw(std::runtime_error("Passed an un-initialized task."));  }
 
+      //Yes, we add a pointer to the mapped list. It deletes the double pointer later.
+      //Look at the destructor of CMappedList (if in doubt).
+      //If you didn't understand the above comment, don't worry (or read about memory management).
       scl::CNonControlTaskBase** ret = tasks_non_ctrl_.create(arg_task_name, arg_task);
-      if(NULL == ret) { throw(std::runtime_error("Could not create a non-control task computational object."));  }
+      if(NULL == ret) { throw(std::runtime_error("Could not create a task computational object."));  }
 
       task_non_ctrl_count_++;
 
