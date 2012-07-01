@@ -259,8 +259,8 @@ bool CLotusParser::readRobotFromFile(const std::string& arg_file,
     if(S_NULL!=tmp_link_ds) { delete tmp_link_ds; } //Clear out memory
     std::cerr<<"\nCLotusParser::readRobotFromFile("<<arg_file<<", "
         <<arg_robot_name<<") : "<<e.what();
-    return false;
   }
+  return false;
 }
 
 
@@ -362,8 +362,8 @@ bool CLotusParser::readRobotSpecFromFile(const std::string& arg_spec_file,
     if(S_NULL!=tmp_link_ds) { delete tmp_link_ds; } //Clear out memory
     std::cerr<<"\nCLotusParser::readRobotSpecFromFile("
         <<arg_spec_file<<"): "<<e.what();
-    return false;
   }
+  return false;
 }
 
 bool CLotusParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
@@ -673,10 +673,8 @@ bool CLotusParser::readGraphicsFromFile(const std::string &arg_file,
     return true;
   }
   catch(std::exception& e)
-  {
-    std::cerr<<"\nCLotusParser::readGraphicsFromFile(): "<<e.what();
-    return false;
-  }
+  { std::cerr<<"\nCLotusParser::readGraphicsFromFile(): "<<e.what();  }
+  return false;
 }
 
 bool CLotusParser::listGraphicsInFile(const std::string& arg_file,
