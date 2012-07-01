@@ -75,6 +75,10 @@ namespace scl
      * Asserts false in debug mode if something bad happens */
     void computeDynamics();
 
+    /** Computes the robot's non-control related operations
+     * Asserts false in debug mode if something bad happens */
+    void computeNonControlOperations();
+
     /** Integrates the robot's dynamics (physics model).
      * By default, it integrates for a time period dt specifiecd
      * in the database

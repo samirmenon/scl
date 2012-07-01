@@ -96,6 +96,22 @@ namespace scl
 #endif
   }
 
+  /** Computes the robot's non-control related operations
+   * Asserts false in debug mode if something bad happens */
+  void CRobot::computeNonControlOperations()
+  {
+    bool flag = true;
+    if((S_NULL != ctrl_current_)
+        && data_.has_been_init_
+        && data_.parsed_robot_data_->flag_controller_on_)
+    {
+      flag = flag && ctrl_current_->computeNonControlOperations();
+    }
+#ifdef W_TESTING
+    assert(flag);
+#endif
+  }
+
   /** Integrates the robot's dynamics (physics model).
    * By default, it integrates for a time period dt specifiecd
    * in the database
