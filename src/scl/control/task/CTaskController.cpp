@@ -408,7 +408,6 @@ namespace scl
   /** Enables a task within the controller */
   sBool CTaskController::activateNonControlTask(const std::string& arg_task_name)
   {
-    bool flag;
     try
     {
       CNonControlTaskBase** tmp = tasks_non_ctrl_.at(arg_task_name);
@@ -431,7 +430,6 @@ namespace scl
   /** Disables a control task within the controller */
   sBool CTaskController::deactivateNonControlTask(const std::string& arg_task_name)
   {
-    bool flag;
     try
     {
       CNonControlTaskBase** tmp = tasks_non_ctrl_.at(arg_task_name);
