@@ -521,7 +521,7 @@ namespace scl
   }
 
   /** Computes the non-control tasks : I/O etc..     */
-  sBool CTaskController::computeNonControlTasks()
+  sBool CTaskController::computeNonControlOperations()
   {
     sBool flag=true;
 

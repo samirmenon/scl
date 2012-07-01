@@ -105,8 +105,13 @@ namespace scl
     /** Computes the dynamic model   : Mass, MassInv, centrifugal/coriolis, gravity */
     virtual sBool computeDynamics();
 
-    /** Computes the non-control tasks : I/O etc..     */
-    virtual sBool computeNonControlTasks();
+    /** Support for non control computations in the controller.
+     * Iterates over the mapped list of non-control tasks and executes them one by one.
+     *
+     * Such tasks typically include detailed error checks, logging, communication etc.
+     * Add anything that doesn't require hard real-time and high-performance
+     * constratints. */
+    virtual sBool computeNonControlOperations();
 
     /** Returns the current control forces */
     virtual const Eigen::VectorXd* getControlForces()
