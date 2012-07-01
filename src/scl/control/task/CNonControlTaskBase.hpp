@@ -35,6 +35,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 
+#include <scl/control/task/data_structs/SNonControlTaskBase.hpp>
+
 namespace scl {
 
 /**
@@ -56,32 +58,38 @@ public:
    * This function should set has_been_init_ to true
    *
    * NOTE : This is typically a one time operation, unlike activation. */
-  virtual bool init()=0;
+  virtual bool init(SNonControlTaskBase* arg_task_data)=0;
+
+  /** Return this task controller's task data structure.
+   *   Use it responsibly!
+   * NOTE : Use dynamic casts whenever you downcast the data.
+   *        And try not to downcast very often. Perf hit. */
+  virtual SNonControlTaskBase* getTaskData()=0;
 
   /** Resets the task to pre-init. */
   virtual void reset()=0;
 
   // ***************** Accessor functions *****************
   /** NOTE : This is typically a dynamic operation that happens multiple times during runtime. */
-  virtual void setActivation(sBool arg_act) { has_been_activated_ = arg_act; }
+  virtual void setActivation(sBool arg_act) { getTaskData()->has_been_activated_ = arg_act; }
 
   /** Present initialization state */
   virtual sBool hasBeenInit() { return has_been_init_;  }
 
   /** Present activation state */
-  virtual bool hasBeenActivated() { return has_been_activated_; }
+  virtual bool hasBeenActivated() { return getTaskData()->has_been_activated_; }
 
   // ***************** Constructor/Destructor functions *****************
   /** Constructor does nothing */
-  CNonControlTaskBase(): has_been_init_(false), has_been_activated_(false), name_(""){}
+  CNonControlTaskBase(): has_been_init_(false) {}
 
   /** Destructor does nothing */
   virtual ~CNonControlTaskBase(){}
 
 protected:
+  /** The independent initialization of the computational object from the
+   * data structure */
   sBool has_been_init_;
-  sBool has_been_activated_;
-  std::string name_;
 };
 
 }
