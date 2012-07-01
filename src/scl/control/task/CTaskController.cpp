@@ -525,9 +525,9 @@ namespace scl
   {
     sBool flag=true;
 
-    // Compute the task space dynamics
+    // Compute the non control tasks. If none exist, just return true.
     if(0==task_non_ctrl_count_)
-    { return false; }
+    { return true; }
     else
     {
       sutil::CMappedList<std::string, CNonControlTaskBase*>::iterator it, ite;
