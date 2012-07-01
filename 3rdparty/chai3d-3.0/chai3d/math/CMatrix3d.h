@@ -1447,7 +1447,7 @@ public:
                 } 
                 else 
                 {
-                    x = sqrt(xx);
+                    x = std::sqrt(xx);
                     y = xy/x;
                     z = xz/x;
                 }
@@ -1463,7 +1463,7 @@ public:
                 } 
                 else 
                 {
-                    y = sqrt(yy);
+                    y = std::sqrt(yy);
                     x = xy/y;
                     z = yz/y;
                 }	
@@ -1479,7 +1479,7 @@ public:
                 } 
                 else 
                 {
-                    z = sqrt(zz);
+                    z = std::sqrt(zz);
                     x = xz/z;
                     y = yz/z;
                 }
@@ -1491,7 +1491,7 @@ public:
         }
 
         // as we have reached here there are no singularities so we can handle normally
-        double s = sqrt(((*this)(2,1) - (*this)(1,2))*((*this)(2,1) - (*this)(1,2)) + 
+        double s = std::sqrt(((*this)(2,1) - (*this)(1,2))*((*this)(2,1) - (*this)(1,2)) +
                         ((*this)(0,2) - (*this)(2,0))*((*this)(0,2) - (*this)(2,0)) + 
                         ((*this)(1,0) - (*this)(0,1))*((*this)(1,0) - (*this)(0,1))); 
 

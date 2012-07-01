@@ -776,7 +776,7 @@ struct cVector3d : public Eigen::Vector3d
     //-----------------------------------------------------------------------
     inline double length() const
     {
-        return(sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2))));
+        return(std::sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2))));
     }
 
 
@@ -805,7 +805,7 @@ struct cVector3d : public Eigen::Vector3d
     inline void normalize()
     {
         // compute length of vector
-        double length = sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
+        double length = std::sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
         if (length == 0.0) { return; }
         double factor = 1.0 / length;
 
@@ -826,7 +826,7 @@ struct cVector3d : public Eigen::Vector3d
     //-----------------------------------------------------------------------
     inline void clamp(const double& a_maxLength)
     {
-        double length = sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
+        double length = std::sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
         if (a_maxLength == 0)
         {
             (*this)(0) = 0.0;
@@ -856,7 +856,7 @@ struct cVector3d : public Eigen::Vector3d
     inline void normalizer(cVector3d& a_result) const
     {
         // compute length of vector
-        double length = sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
+        double length = std::sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
         double factor = 1.0 / length;
 
         // divide current vector by its length
@@ -884,7 +884,7 @@ struct cVector3d : public Eigen::Vector3d
         double dz = (*this)(2) - a_vector(2) ;
 
         // return result
-        return(sqrt( dx * dx + dy * dy + dz * dz ));
+        return(std::sqrt( dx * dx + dy * dy + dz * dz ));
     }
 
 
@@ -1030,7 +1030,7 @@ struct cVector3d : public Eigen::Vector3d
             this->mul(1.0-a_level);
             a_vector2.mul(a_level);
             this->operator +=(a_vector2);
-            this->mul(sqrt(a_vec1lensq/this->lengthsq()));
+            this->mul(std::sqrt(a_vec1lensq/this->lengthsq()));
         } else {
             if (cosomega < 0.0) {
                 cosomega = -cosomega;
@@ -1057,7 +1057,7 @@ struct cVector3d : public Eigen::Vector3d
                     a_vector2(2)  = 0;
                 }
                 // scale it so it is the same length as before
-                a_vector2.mul(sqrt(a_vec1lensq/a_vector2.lengthsq()));
+                a_vector2.mul(std::sqrt(a_vec1lensq/a_vector2.lengthsq()));
 
                 ratio1 = ::sin(C_PI*(0.5-a_level));
                 ratio2 = ::sin(C_PI*a_level);
