@@ -36,6 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/data_structs/STaskController.hpp>
 
 #include <scl/control/task/CTaskBase.hpp>
+#include <scl/control/task/CNonControlTaskBase.hpp>
 #include <scl/control/task/CServo.hpp>
 
 #include <sutil/CMappedMultiLevelList.hpp>
@@ -66,7 +67,7 @@ namespace scl
    * 3. Contains a Joint space model for computing the robot's
    *    joint space dynamics
    *
-   * Usage :
+   * Suggested usage :
    *
    * 1000Hz : computeControlForces //This is a servo tick.
    *          {//Executes:
@@ -78,6 +79,11 @@ namespace scl
    *          {//Executes:
    *            computeModel();
    *            computeTaskModels();
+   *          }
+   *
+   * 50-100Hz : computeNonControlTasks   //This is a non-control update
+   *          {//Executes:
+   *            computeNonControlTasks();
    *          }
    */
   class CTaskController : public CControllerBase
@@ -99,6 +105,9 @@ namespace scl
     /** Computes the dynamic model   : Mass, MassInv, centrifugal/coriolis, gravity */
     virtual sBool computeDynamics();
 
+    /** Computes the non-control tasks : I/O etc..     */
+    virtual sBool computeNonControlTasks();
+
     /** Returns the current control forces */
     virtual const Eigen::VectorXd* getControlForces()
     { return static_cast<const Eigen::VectorXd*>(&(data_->servo_.force_gc_));  }
@@ -115,7 +124,6 @@ namespace scl
      *     Task-controller specific functions
      *     Use these for finer grained control!
      ***********************************************/
-  public:
     /** Adds a task to the controller with a priority level.
      * Priority levels start at 0 (highest priority) > 1 > 2 ...
      *
@@ -138,6 +146,36 @@ namespace scl
      * that this controller executes simultaneously */
     sUInt getNumTasks(const std::string& arg_type) const;
 
+    /** Enables a task within the controller */
+    sBool activateTask(const std::string& arg_task_name);
+
+    /** Disables a control task within the controller */
+    sBool deactivateTask(const std::string& arg_task_name);
+
+    /**********************************************
+     *     Non Control Task specific functions
+     *     Use these for finer grained control!
+     ***********************************************/
+    /** Adds a task to the controller */
+    bool addNonControlTask(const std::string &arg_task_name,
+        CNonControlTaskBase* arg_task);
+
+    /** Removes a task from the controller. */
+    bool removeNonControlTask(const std::string &arg_task_name);
+
+    /** Returns the task by this name */
+    CNonControlTaskBase* getNonControlTask(const std::string& arg_name);
+
+    /** Returns the number of tasks that this controller
+     * executes simultaneously */
+    sUInt getNumNonControlTasks() const { return tasks_non_ctrl_.size(); }
+
+    /** Activates a non control task */
+    sBool activateNonControlTask(const std::string& arg_type);
+
+    /** Deactivates a task within the controller */
+    sBool deactivateNonControlTask(const std::string& arg_type);
+
   protected:
     /** Computes range spaces for all its tasks according to
      * their priorities. Starts with task level i and goes
@@ -159,6 +197,12 @@ namespace scl
 
     /** The number of tasks */
     sUInt task_count_;
+
+    /** The list of tasks that this controller will execute */
+    sutil::CMappedList<std::string, CNonControlTaskBase*> tasks_non_ctrl_;
+
+    /** The number of tasks */
+    sUInt task_non_ctrl_count_;
 
   public:
     /** When only one task is to be executed

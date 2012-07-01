@@ -173,6 +173,7 @@ namespace scl
      * For now we'll just do (1)
      */
     tasks_.clear();
+    tasks_non_ctrl_.clear();
     task_count_ = 0;
 
     active_task_ = S_NULL;
@@ -190,7 +191,7 @@ namespace scl
       { throw(std::runtime_error("CTaskController not initialized. Can't add task."));  }
 
       if(NULL==arg_task)
-      { throw(std::runtime_error("Passed an empty task. Can't do anything with it."));  }
+      { throw(std::runtime_error("Passed  a NULL task pointer. Can't do anything with it."));  }
 
       if(arg_level < 0)
       { throw(std::runtime_error("Can't add a task at a level less than 0"));  }
@@ -281,6 +282,174 @@ namespace scl
     return ctr;
   }
 
+  /** Enables a task within the controller */
+  sBool CTaskController::activateTask(const std::string& arg_task_name)
+  {
+    try
+    {
+      CTaskBase** tmp = tasks_.at(arg_task_name);
+      if(S_NULL == tmp)
+      { throw(std::runtime_error("Could not find task to activate."));  }
+
+      STaskBase* t_ds = (*tmp)->getTaskData();
+      if(S_NULL == t_ds)
+      { throw(std::runtime_error("Task data structure is NULL."));  }
+
+      if(!t_ds->has_been_init_)
+      { throw(std::runtime_error("Task data structure not intialized. Can't activate."));  }
+
+      t_ds->has_been_activated_ = true;
+
+      return true;
+    }
+    catch(std::exception& e)
+    { std::cout<<"\nCTaskController::activateTask() : Failed. "<<e.what();  }
+    return false;
+  }
+
+  /** Disables a control task within the controller */
+  sBool CTaskController::deactivateTask(const std::string& arg_task_name)
+  {
+    try
+    {
+      CTaskBase** tmp = tasks_.at(arg_task_name);
+      if(S_NULL == tmp)
+      { throw(std::runtime_error("Could not find task to deactivate."));  }
+
+      STaskBase* t_ds = (*tmp)->getTaskData();
+      if(S_NULL == t_ds)
+      { throw(std::runtime_error("Task data structure is NULL."));  }
+
+      if(!t_ds->has_been_init_)
+      { throw(std::runtime_error("Task data structure not intialized. Can't deactivate."));  }
+
+      t_ds->has_been_activated_ = false;
+
+      return true;
+    }
+    catch(std::exception& e)
+    { std::cout<<"\nCTaskController::deactivateTask() : Failed. "<<e.what();  }
+    return false;
+  }
+
+
+  /**********************************************
+   *               NON CONTROL TASKS
+   ***********************************************/
+  sBool CTaskController::addNonControlTask(const std::string &arg_task_name,
+      CNonControlTaskBase* arg_task)
+  {
+    sBool flag;
+    try
+    {
+      if(NULL==arg_task)
+      { throw(std::runtime_error("Passed a NULL task pointer. Can't do anything with it."));  }
+
+      //Initialize the task's data structure.
+      flag = arg_task->hasBeenInit();
+      if(false == flag) { throw(std::runtime_error("Passed an un-initialized task."));  }
+
+      scl::CNonControlTaskBase** ret = tasks_non_ctrl_.create(arg_task_name, arg_task);
+      if(NULL == ret) { throw(std::runtime_error("Could not create a non-control task computational object."));  }
+
+      task_non_ctrl_count_++;
+
+      return true;
+    }
+    catch(std::exception& e)
+    { std::cout<<"\nCTaskController::addNonControlTask() : Failed. "<<e.what(); }
+    return false;
+  }
+
+  sBool CTaskController::removeNonControlTask(const std::string &arg_task_name)
+  {
+    bool flag;
+    try
+    {
+      CNonControlTaskBase** tmp = tasks_non_ctrl_.at(arg_task_name);
+      if(S_NULL == tmp)
+      { throw(std::runtime_error("Could not find task to delete."));  }
+
+      flag = tasks_non_ctrl_.erase(arg_task_name);
+      if(false == flag)
+      { throw(std::runtime_error("Could not delete a task computational object."));  }
+
+      delete *tmp; tmp = S_NULL;
+
+      task_non_ctrl_count_--;
+
+      return true;
+    }
+    catch(std::exception& e)
+    { std::cout<<"\nCTaskController::removeNonControlTask() : Failed. "<<e.what();  }
+    return false;
+  }
+
+  /** Returns the task by this name */
+  CNonControlTaskBase* CTaskController::getNonControlTask(const std::string& arg_name)
+  {
+    try
+    {
+      CNonControlTaskBase ** ret;
+      ret = tasks_non_ctrl_.at(arg_name);
+      if(S_NULL == ret)
+      { throw(std::runtime_error("Task not found in the pile"));  }
+
+      if(S_NULL == *ret)
+      { throw(std::runtime_error("NULL task found in the pile"));  }
+
+      return *ret;
+    }
+    catch(std::exception& e)
+    { std::cout<<"\nCTaskController::getNonControlTask() : Failed. "<<e.what(); }
+    return S_NULL;
+  }
+
+  /** Enables a task within the controller */
+  sBool CTaskController::activateNonControlTask(const std::string& arg_task_name)
+  {
+    bool flag;
+    try
+    {
+      CNonControlTaskBase** tmp = tasks_non_ctrl_.at(arg_task_name);
+      if(S_NULL == tmp)
+      { throw(std::runtime_error("Could not find task to activate."));  }
+
+      if(!(*tmp)->hasBeenInit())
+      { throw(std::runtime_error("Task not intialized. Can't activate."));  }
+
+      (*tmp)->setActivation(true);
+
+      return true;
+    }
+    catch(std::exception& e)
+    { std::cout<<"\nCTaskController::activateNonControlTask() : Failed. "<<e.what();  }
+    return false;
+  }
+
+
+  /** Disables a control task within the controller */
+  sBool CTaskController::deactivateNonControlTask(const std::string& arg_task_name)
+  {
+    bool flag;
+    try
+    {
+      CNonControlTaskBase** tmp = tasks_non_ctrl_.at(arg_task_name);
+      if(S_NULL == tmp)
+      { throw(std::runtime_error("Could not find task to deactivate."));  }
+
+      if(!(*tmp)->hasBeenInit())
+      { throw(std::runtime_error("Task not intialized. Can't deactivate."));  }
+
+      (*tmp)->setActivation(false);
+
+      return true;
+    }
+    catch(std::exception& e)
+    { std::cout<<"\nCTaskController::deactivateNonControlTask() : Failed. "<<e.what();  }
+    return false;
+  }
+
   /**********************************************
    *               COMPUTATION
    ***********************************************/
@@ -302,7 +471,12 @@ namespace scl
       for(it = tasks_.begin(), ite = tasks_.end(); it!=ite; ++it)
       {
         CTaskBase* task = *it;
-        flag = flag && task->computeServo(&(data_->io_data_->sensors_));
+        //Check if the task has been activated
+#ifdef DEBUG
+        assert(task->getTaskData()->has_been_init_); //Must have been initialized by now
+#endif
+        if(task->getTaskData()->has_been_activated_)
+        { flag = flag && task->computeServo(&(data_->io_data_->sensors_));  }
       }
 
       //Compute the command torques by filtering the
@@ -333,12 +507,43 @@ namespace scl
       for(it = tasks_.begin(), ite = tasks_.end(); it!=ite; ++it)
       {
         CTaskBase* task = *it;
-        flag = flag && task->computeModel();
+        //Check if the task has been activated
+#ifdef DEBUG
+        assert(task->getTaskData()->has_been_init_); //Must have been initialized by now
+#endif
+        if(task->getTaskData()->has_been_activated_)
+        { flag = flag && task->computeModel();  }
       }
     }
 
     //Compute the range spaces for all the tasks.
     flag = flag && computeRangeSpaces();
+
+    return flag;
+  }
+
+  /** Computes the non-control tasks : I/O etc..     */
+  sBool CTaskController::computeNonControlTasks()
+  {
+    sBool flag=true;
+
+    // Compute the task space dynamics
+    if(0==task_non_ctrl_count_)
+    { return false; }
+    else
+    {
+      sutil::CMappedList<std::string, CNonControlTaskBase*>::iterator it, ite;
+      for(it = tasks_non_ctrl_.begin(), ite = tasks_non_ctrl_.end(); it!=ite; ++it)
+      {
+        CNonControlTaskBase* task = *it;
+        //Check if the task has been activated
+#ifdef DEBUG
+        assert(task->hasBeenInit()); //Must have been initialized by now
+#endif
+        if(task->hasBeenActivated())
+        { flag = flag && task->computeTask();  }
+      }
+    }
 
     return flag;
   }
@@ -371,8 +576,14 @@ namespace scl
         for(it = taskvec->begin(),ite = taskvec->end();it!=ite;++it)
         {
           STaskBase *task_ds = *(*it);
-          task_ds->range_space_ = null_space;//Set this task's range space to the higher level's null_space
-          lvl_null_space *= task_ds->null_space_;//Reduce this level's null space
+#ifdef DEBUG
+          assert(task_ds->has_been_init_); //Must have been initialized by now
+#endif
+          if(task_ds->has_been_activated_)
+          {
+            task_ds->range_space_ = null_space;//Set this task's range space to the higher level's null_space
+            lvl_null_space *= task_ds->null_space_;//Reduce this level's null space
+          }
         }
         //The next level's range space is filtered through this level's null space
         null_space *= lvl_null_space;
