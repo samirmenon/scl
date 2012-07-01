@@ -92,6 +92,7 @@ namespace scl
      *
      * NOTE : This function also activates the task. */
     bool init(const std::string & arg_name,
+        const std::string & arg_type,
         /** These are ignored during SNonControlTaskBase initialization.
          * However, subclasses may choose to use them and/or
          * require various values */

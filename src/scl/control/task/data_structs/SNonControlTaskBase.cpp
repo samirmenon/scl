@@ -47,6 +47,7 @@ namespace scl
   }
 
   bool SNonControlTaskBase::init(const std::string & arg_name,
+      const std::string & arg_type,
       /** These are ignored during SNonControlTaskBase initialization.
        * However, subclasses may choose to use them and/or
        * require various values to be set. */
@@ -57,6 +58,11 @@ namespace scl
     {
       if(1>arg_name.size())
       { throw(std::runtime_error("Task name is too short")); }
+      if(1>arg_type.size())
+      { throw(std::runtime_error("Task type is too short")); }
+
+      name_ = arg_name;
+      type_task_ = arg_type;
 
       //Store the nonstandard params
       task_nonstd_params_ = arg_nonstd_params;
