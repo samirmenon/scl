@@ -204,6 +204,10 @@ namespace scl
     /** Gets access to the current controller data structure */
     SControllerBase* getControllerDataStruct(const std::string& arg_ctrl_name);
 
+    /** Gets access to the current controller's dynamics */
+    const CDynamicsBase* getControllerDynamics()
+    { return static_cast<const CDynamicsBase*>(dynamics_);  }
+
     /** Returns the proportional gain of a given task in a controller.
      *
      * @param[out] ret_gains The variable into which the gains will be copied
