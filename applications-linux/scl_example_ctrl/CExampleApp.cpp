@@ -147,6 +147,7 @@ namespace scl_app
     if(ctrl_ctr%100 == 0)           //Update dynamics at a slower rate
     {
       robot.computeDynamics();
+      robot.computeNonControlOperations();
 
       robot.logState(true,true,true);
     }
