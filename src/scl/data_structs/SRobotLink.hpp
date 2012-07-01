@@ -32,16 +32,16 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef SROBOTLINK_HPP_
 #define SROBOTLINK_HPP_
 
-#include <string>
-#include <vector>
-
 #include <scl/DataTypes.hpp>
-
 #include <scl/data_structs/SObject.hpp>
 
-#include <Eigen/Dense>
-
 #include <sutil/CMappedList.hpp>
+
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+
+#include <string>
+#include <vector>
 
 namespace scl
 {
