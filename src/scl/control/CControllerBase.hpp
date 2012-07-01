@@ -72,6 +72,12 @@ namespace scl
     /** Computes the dynamic model : Mass, MassInv, centrifugal/coriolis, gravity, null spaces etc. */
     virtual sBool computeDynamics()=0;
 
+    /** Support for non control computations in the controller.
+     * This is a good place to add error checks, logging, communication etc.
+     * Basically anything that doesn't require hard real-time and high-performance
+     * constratints. */
+    virtual sBool computeNonControlOperations()=0;
+
     /** Whether the controller has been initialized to a particular robot
      *
      * The controllers must implement their choice of "public" init function, which
