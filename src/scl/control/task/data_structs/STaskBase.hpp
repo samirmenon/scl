@@ -44,7 +44,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-
   /**
    * Contains all the data required to compute a task
    *
@@ -69,6 +68,21 @@ namespace scl
   public:
     /** The type of the task */
     std::string type_task_;
+
+    /** Whether the task is active or inactive
+     * Default = false.
+     * True after init() */
+    scl::sBool has_been_activated_;
+
+    /** Is control task. This variable controls whether the controller
+     * computes remaining null spaces for lower level tasks or not. If
+     * it is true, the lower level task null spaces are not computed,
+     * potentially improving performance substantially.
+     *
+     * Settings:
+     * True  : Task dof < Robot dof       [Default]
+     * False : Task dof == Robot dof      [Must enable manually in init] */
+    scl::sBool has_control_null_space_;
 
     /** The task's priority. Important to determine its range space.
      * Lower is better. 0 is best. -1 is NULL. */

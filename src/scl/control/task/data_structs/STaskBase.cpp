@@ -45,6 +45,8 @@ namespace scl
     dof_task_ = 0;
     robot_ = S_NULL;
     has_been_init_ = false;
+    has_been_activated_ = false;
+    has_control_null_space_ = true;
   }
 
   bool STaskBase::init(const std::string & arg_name,
@@ -191,6 +193,7 @@ namespace scl
       { throw(std::runtime_error("Could not initialize the non standard task parameters.")); }
 
       has_been_init_ = true;
+      has_been_activated_ = true;
     }
     catch(std::exception& e)
     {
