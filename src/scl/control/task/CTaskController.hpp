@@ -137,7 +137,9 @@ namespace scl
     bool addTask(const std::string &arg_task_name,
         CTaskBase* arg_task, sUInt arg_level);
 
-    /** Removes a task from the controller. */
+    /** Removes a task from the controller.
+     * NOTE : This only removes the task from the controller. The data
+     * structure is still conserved in the Database (for possible use later). */
     bool removeTask(const std::string &arg_task_name);
 
     /** Returns the task by this name */
@@ -165,7 +167,9 @@ namespace scl
     bool addNonControlTask(const std::string &arg_task_name,
         CNonControlTaskBase* arg_task);
 
-    /** Removes a task from the controller. */
+    /** Removes a task from the controller.
+     * NOTE : This only removes the task from the controller. The data
+     * structure is still conserved in the Database (for possible use later). */
     bool removeNonControlTask(const std::string &arg_task_name);
 
     /** Returns the task by this name */
