@@ -88,7 +88,8 @@ struct SParserData
 
 /** All the data updated by the controller
  *
- * Controller robots - One controller for each robot.
+ * Controller robots - Atleast one controller for each robot.
+ *                     Multiple tasks for each controller (in a hierarchy)
  *
  * No controller can exist unless its robot is defined by
  * the parser.
@@ -126,6 +127,15 @@ public:
    * themselves).
    * */
   sutil::CMappedPointerList<std::string,STaskBase, true> tasks_;
+
+  /** Enables string access for non-controller task data. Each task
+   * is stored along with its type as a std::pair.
+   * A mapped pointer list so that it can manage memory for
+   * subclasses as well (by storing and later deleting their
+   * pointers, instead of allocating and storing objects
+   * themselves).
+   * */
+  sutil::CMappedPointerList<std::string,SNonControlTaskBase, true> tasks_non_ctrl_;
 
   /** Returns all the controllers initialized for a specific robot */
   sBool getControllersForRobot(const std::string & arg_robot,
