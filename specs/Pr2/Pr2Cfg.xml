@@ -14,7 +14,7 @@
 		        <graphics>
 			        <obj_file>
 				        <name>GraphicObjects/plane.obj</name>
-				        <position_in_parent>0.000000 0.00000 -0.0100000</position_in_parent>
+				        <position_in_parent>0.000000 0.00000 -1.0100000</position_in_parent>
 				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
 				        <scaling>10.000000 10.000000 0.100000</scaling>
 				        <collision_type>0</collision_type>
