@@ -16,10 +16,28 @@
         </root_link>
     </robot>
 
-    <controller name="opc">
+    <graphics name="Pr2BStdView">
+        <camera>
+            <pos>3.0   0.0   -0.5</pos>
+            <lookat>0.0   0.0   -0.5</lookat>
+            <up>0   0   1</up>
+            <clip>0 10</clip>
+            <background>0 0 0</background>
+        </camera>
+        <light>
+            <pos>2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.5</lookat>
+        </light>
+        <light>
+            <pos>-2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.0</lookat>
+        </light>
+    </graphics>
+
+    <controller name="opcB">
         <type>task</type>
         <must_use_robot>Pr2BotB</must_use_robot>
-        <task name="hand">
+        <task name="handB">
             <type>OpPointTask</type>
             <parent_link>l_wrist_roll_link</parent_link>
             <pos_in_parent>0.0 0.0 0.0</pos_in_parent>
@@ -34,7 +52,7 @@
 
         <!--Activate this by passing its name as a second argument on 
             the command line -->
-        <task name="hand2">
+        <task name="hand2B">
             <type>OpPointTask</type>
             <parent_link>r_wrist_roll_link</parent_link>
             <pos_in_parent>0.0 0.0 0.0</pos_in_parent>
@@ -47,7 +65,7 @@
             <force_min>-3000</force_min>
         </task>
 
-        <task name="GcTask">
+        <task name="GcTaskB">
             <type>TaskGc</type>
             <priority>1</priority>
             <task_dof>0</task_dof> 
@@ -59,7 +77,7 @@
         </task>
 
         <!-- 0 task_dof means a gc task, ie full dofs
-        <task name="NullSpaceDampingTask">
+        <task name="NullSpaceDampingTaskB">
             <type>TaskNullSpaceDamping</type>
             <priority>1</priority>
             <task_dof>0</task_dof> 
