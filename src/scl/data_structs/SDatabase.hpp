@@ -305,7 +305,7 @@ public:
   SDatabase()
   {
     sim_ticks_ = 0;
-    sim_dt_ = 0.0001;//0.1ms
+    sim_dt_ = 0.0005;//0.5ms
     time_ = 0.0;
     cwd_ = "";
     dir_specs_ = "";
