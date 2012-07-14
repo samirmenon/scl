@@ -438,6 +438,7 @@ namespace scl_chai_glut_interface
       { link_idx = io->sensors_.q_.size()-1;  }
 
       std::cout<<"\n"<<io->name_<<" : Link : "<<link_idx<<std::flush;
+      CChaiGlobals::getData()->keys_active[static_cast<int>('+')] = false;
     }
     if (CChaiGlobals::getData()->keys_active[static_cast<int>('-')])
     {
@@ -448,6 +449,7 @@ namespace scl_chai_glut_interface
       scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
 
       std::cout<<"\n"<<io->name_<<" : Link : "<<link_idx<<std::flush;
+      CChaiGlobals::getData()->keys_active[static_cast<int>('-')] = false;
     }
 
     // Position keyboard shortcuts.
