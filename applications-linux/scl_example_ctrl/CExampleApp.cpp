@@ -144,11 +144,14 @@ namespace scl_app
     if(op_link2_set)//Use only if the second task was also initialized.
     { tsk2->setGoal(db->s_gui_.ui_point_[1]); }
 
-    if(ctrl_ctr%100 == 0)           //Update dynamics at a slower rate
+    if(ctrl_ctr%5 == 0)           //Update dynamics at a slower rate
     {
       robot.computeDynamics();
       robot.computeNonControlOperations();
+    }
 
+    if(ctrl_ctr%100 == 0)           //Log at a slower rate
+    {
       robot.logState(true,true,true);
     }
     robot.computeServo();           //Run the servo loop
