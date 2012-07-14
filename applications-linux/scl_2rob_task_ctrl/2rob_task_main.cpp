@@ -92,7 +92,7 @@ namespace scl_app
       tsk[i]->setGoal(db->s_gui_.ui_point_[2*i+0]); //Interact with the gui
       tsk2[i]->setGoal(db->s_gui_.ui_point_[2*i+1]);
 
-      if(ctrl_ctr%25 == 0)           //Update dynamics at a slower rate
+      if(ctrl_ctr%5 == 0)           //Update dynamics at a slower rate
       { robot[i].computeDynamics();  }
       robot[i].computeServo();           //Run the servo loop
       robot[i].integrateDynamics();      //Integrate system
