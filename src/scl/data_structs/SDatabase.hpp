@@ -305,7 +305,11 @@ public:
   SDatabase()
   {
     sim_ticks_ = 0;
+#ifdef SCL_HIGH_QUALITY_SIMULATION
+    sim_dt_ = 0.00005;//0.05ms
+#else
     sim_dt_ = 0.0005;//0.5ms
+#endif
     time_ = 0.0;
     cwd_ = "";
     dir_specs_ = "";
