@@ -90,7 +90,7 @@ namespace scl_app
           //Initialize the first op point controller
           op_link_name = argv[args_ctr]; args_ctr++;
           op_link_set = true;
-          db->s_gui_.ui_point_1_<<0,0.1,0; //Ctrl tracks this control point.
+          db->s_gui_.ui_point_[0]<<0,0.1,0; //Ctrl tracks this control point.
           tsk = (scl::COpPointTask*)(ctrl->getTask(op_link_name));
           if(S_NULL == tsk)
           { throw(std::runtime_error("Must specify at least one valid op-point task. Could not find specified task"));  }
@@ -109,7 +109,7 @@ namespace scl_app
             {//Should have atleast two op point tasks to connect the second to keyboard commands.
               op_link2_name = argv[5]; args_ctr++;
               op_link2_set = true;
-              db->s_gui_.ui_point_2_<<0,-0.1,0; //Ctrl2 tracks this control point.
+              db->s_gui_.ui_point_[1]<<0,-0.1,0; //Ctrl2 tracks this control point.
               tsk2 = (scl::COpPointTask*)(ctrl->getTask(op_link2_name));
               if(S_NULL == tsk2)
               { throw(std::runtime_error("There are atleast two op-point tasks. Specify the second task's name to connect it to a keyboard handler."));  }
@@ -139,10 +139,10 @@ namespace scl_app
   {
     sutil::CSystemClock::tick(db->sim_dt_);//Tick the clock.
 
-    tsk->setGoal(db->s_gui_.ui_point_1_); //Interact with the gui
+    tsk->setGoal(db->s_gui_.ui_point_[0]); //Interact with the gui
 
     if(op_link2_set)//Use only if the second task was also initialized.
-    { tsk2->setGoal(db->s_gui_.ui_point_2_); }
+    { tsk2->setGoal(db->s_gui_.ui_point_[1]); }
 
     if(ctrl_ctr%100 == 0)           //Update dynamics at a slower rate
     {

@@ -61,30 +61,30 @@ namespace scl_app
        * stuff (like controlling an operational point)
        * ************************************************************************ */
       flag = sutil::callbacks::add<scl::CCallbackDecrement,char,bool,double>(
-          'w', &(scl::CDatabase::getData()->s_gui_.ui_point_1_(0)) );
+          'w', &(scl::CDatabase::getData()->s_gui_.ui_point_[0](0)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackIncrement,char,bool,double>(
-          's', &(scl::CDatabase::getData()->s_gui_.ui_point_1_(0)) );
+          's', &(scl::CDatabase::getData()->s_gui_.ui_point_[0](0)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackDecrement,char,bool,double>(
-          'a', &(scl::CDatabase::getData()->s_gui_.ui_point_1_(1)) );
+          'a', &(scl::CDatabase::getData()->s_gui_.ui_point_[0](1)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackIncrement,char,bool,double>(
-          'd', &(scl::CDatabase::getData()->s_gui_.ui_point_1_(1)) );
+          'd', &(scl::CDatabase::getData()->s_gui_.ui_point_[0](1)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackDecrement,char,bool,double>(
-          'q', &(scl::CDatabase::getData()->s_gui_.ui_point_1_(2)) );
+          'q', &(scl::CDatabase::getData()->s_gui_.ui_point_[0](2)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackIncrement,char,bool,double>(
-          'e', &(scl::CDatabase::getData()->s_gui_.ui_point_1_(2)) );
+          'e', &(scl::CDatabase::getData()->s_gui_.ui_point_[0](2)) );
 
       flag = flag && sutil::callbacks::add<scl::CCallbackDecrement,char,bool,double>(
-          'u', &(scl::CDatabase::getData()->s_gui_.ui_point_2_(0)) );
+          'u', &(scl::CDatabase::getData()->s_gui_.ui_point_[1](0)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackIncrement,char,bool,double>(
-          'j', &(scl::CDatabase::getData()->s_gui_.ui_point_2_(0)) );
+          'j', &(scl::CDatabase::getData()->s_gui_.ui_point_[1](0)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackDecrement,char,bool,double>(
-          'h', &(scl::CDatabase::getData()->s_gui_.ui_point_2_(1)) );
+          'h', &(scl::CDatabase::getData()->s_gui_.ui_point_[1](1)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackIncrement,char,bool,double>(
-          'k', &(scl::CDatabase::getData()->s_gui_.ui_point_2_(1)) );
+          'k', &(scl::CDatabase::getData()->s_gui_.ui_point_[1](1)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackDecrement,char,bool,double>(
-          'y', &(scl::CDatabase::getData()->s_gui_.ui_point_2_(2)) );
+          'y', &(scl::CDatabase::getData()->s_gui_.ui_point_[1](2)) );
       flag = flag && sutil::callbacks::add<scl::CCallbackIncrement,char,bool,double>(
-          'i', &(scl::CDatabase::getData()->s_gui_.ui_point_2_(2)) );
+          'i', &(scl::CDatabase::getData()->s_gui_.ui_point_[1](2)) );
       if(false == flag){throw(std::runtime_error("Could not add a keyboard callback"));  }
 
       /** ************************************************************************

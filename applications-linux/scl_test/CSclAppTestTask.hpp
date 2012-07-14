@@ -375,7 +375,7 @@ namespace scl_test
       //Initialize the first op point controller
       op_link_name = arg_op_link_name1;
       op_link_set = true;
-      db->s_gui_.ui_point_1_<<0,0.1,0; //Ctrl tracks this control point.
+      db->s_gui_.ui_point_[0]<<0,0.1,0; //Ctrl tracks this control point.
       tsk = (scl::COpPointTask*)(ctrl->getTask(op_link_name));
       if(S_NULL == tsk)
       { throw(std::runtime_error("Could not get specified task"));  }
@@ -390,7 +390,7 @@ namespace scl_test
       {
         op_link2_name = arg_op_link_name2;
         op_link2_set = true;
-        db->s_gui_.ui_point_2_<<0,-0.1,0; //Ctrl2 tracks this control point.
+        db->s_gui_.ui_point_[1]<<0,-0.1,0; //Ctrl2 tracks this control point.
         tsk2 = (scl::COpPointTask*)(ctrl->getTask(op_link2_name));
         if(S_NULL == tsk2)
         { throw(std::runtime_error("Could not get specified task"));  }
@@ -414,13 +414,13 @@ namespace scl_test
     double t = sutil::CSystemClock::getSimTime();
     t = (t - static_cast<int>(t))/2.0;//Between 0 and 0.1
 
-    db->s_gui_.ui_point_1_(0) = t; //Keep the robot moving
-    tsk->setGoal(db->s_gui_.ui_point_1_); //Interact with the gui
+    db->s_gui_.ui_point_[0](0) = t; //Keep the robot moving
+    tsk->setGoal(db->s_gui_.ui_point_[0]); //Interact with the gui
 
     if(op_link2_set)//Use only if the second task was also initialized.
     {
-      db->s_gui_.ui_point_2_(0) = -t; //Keep the robot moving
-      tsk2->setGoal(db->s_gui_.ui_point_2_);
+      db->s_gui_.ui_point_[1](0) = -t; //Keep the robot moving
+      tsk2->setGoal(db->s_gui_.ui_point_[1]);
     }
 
     if(ctrl_ctr%100 == 0)           //Update dynamics at a slower rate
@@ -439,13 +439,13 @@ namespace scl_test
     double t = sutil::CSystemClock::getSimTime();
     t = (t - static_cast<int>(t))/2.0;//Between 0 and 0.1
 
-    db->s_gui_.ui_point_1_(0) = t; //Keep the robot moving
-    tsk->setGoal(db->s_gui_.ui_point_1_); //Interact with the gui
+    db->s_gui_.ui_point_[0](0) = t; //Keep the robot moving
+    tsk->setGoal(db->s_gui_.ui_point_[0]); //Interact with the gui
 
     if(op_link2_set)//Use only if the second task was also initialized.
     {
-      db->s_gui_.ui_point_2_(0) = -t; //Keep the robot moving
-      tsk2->setGoal(db->s_gui_.ui_point_2_);
+      db->s_gui_.ui_point_[1](0) = -t; //Keep the robot moving
+      tsk2->setGoal(db->s_gui_.ui_point_[1]);
     }
 
     double tinit = sutil::CSystemClock::getSysTime();

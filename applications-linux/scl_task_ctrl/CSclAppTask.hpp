@@ -312,7 +312,7 @@ namespace scl_app
           {//Logs vectors of [q, dq, x, J]
             log_file_<<rob_io_ds->sensors_.q_.transpose()<<" "
                   <<rob_io_ds->sensors_.dq_.transpose()<<" "
-                  <<scl::CDatabase::getData()->s_gui_.ui_point_1_.transpose()
+                  <<scl::CDatabase::getData()->s_gui_.ui_point_[0].transpose()
                   <<std::endl;
             log_file_J_<<tsk_ds->jacobian_<<std::endl;
           }

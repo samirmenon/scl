@@ -194,7 +194,7 @@ struct SGuiData
   sutil::CMappedList<std::string,scl::SChaiGraphics> chai_data_;
 #endif
 
-  Eigen::Vector3d ui_point_1_,ui_point_2_, ui_point_[12];
+  Eigen::Vector3d ui_point_[12];
 
   /** 0 = All points by themselves.
    *  1 = All points together*/
