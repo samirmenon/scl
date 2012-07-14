@@ -9,15 +9,22 @@
         <file>../../specs/Bot-RPP/RPP.xml</file>
         <root_link>
             <link_name>ground</link_name> <!-- The ground link has id -1 -->
-            <position_in_parent>-0.300   0.000   -1.000</position_in_parent> 
+            <position_in_parent>-0.300   0.000   -0.700</position_in_parent> 
             <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
             <graphics>
 			        <obj_file>
 				        <name>GraphicObjects/plane.obj</name>
+				        <position_in_parent>0.000000 0.000000 -0.050000</position_in_parent>
+				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				        <collision_type>0</collision_type>
+				        <scaling>0.75 0.75 0.75</scaling>
+			        </obj_file>
+			        <obj_file>
+				        <name>/Bot-RPP/graphics/0_base.obj</name>
 				        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
 				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
 				        <collision_type>0</collision_type>
-					<scaling>0.5 0.5 0.5</scaling>
+      					<scaling>0.001 0.001 0.001</scaling>
 			        </obj_file>
             </graphics>
         </root_link>

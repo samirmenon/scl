@@ -19,10 +19,10 @@
 		<default_joint_position>0.000000</default_joint_position> <!-- Initial configuration -->
 		<graphics> <!-- Can contain more than one obj file -->
 			<obj_file>
-				<name>Bot-RPP/graphics/shaft2_bl.obj</name> <!-- obj file format is best. 3ds is possible -->
-				<position_in_parent>0.000000 0.000000 -0.500000</position_in_parent>
-				<orientation_in_parent>0.7071067811865476 0.000000 0.000000 0.7071067811865476</orientation_in_parent>
-				<scaling>3 1.3 3</scaling> <!-- Graphics only scaling, along x y and z -->
+				<name>Bot-RPP/graphics/1_link01.obj</name> <!-- obj file format is best. 3ds is possible -->
+				<position_in_parent>0.000000 0.000000 -0.800000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>.001 .001 .001</scaling> <!-- Graphics only scaling, along x y and z -->
 				<collision_type>0</collision_type> <!-- 0 = no collision, 1 = convex hull collision, 2 = polygon collision. -->
 			</obj_file>
 		</graphics>
@@ -41,17 +41,17 @@
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
-				<name>Bot-RPP/graphics/shaft2_bl.obj</name>
-				<position_in_parent>0.000000 -0.330000 0.000000</position_in_parent>
-				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<name>Bot-RPP/graphics/1_link01.obj</name>
+				<position_in_parent>0.000000 -0.0700 -0.0750000</position_in_parent>
+				<orientation_in_parent>-0.7071067811865476 0.000000 0.000000 0.7071067811865476</orientation_in_parent>
 				<collision_type>0</collision_type>
-				<scaling>2 1 2</scaling>
+				<scaling>.001 .001 .001</scaling>
 			</obj_file>
 		</graphics>
 	</link>
 	<link>
 		<link_name>link2</link_name>
-		<position_in_parent>0.0 0.0 -0.34</position_in_parent>
+		<position_in_parent>0.0 0.650 -0.2</position_in_parent>
 		<orientation_in_parent>0.0 0.0 0.0 1.0</orientation_in_parent>
 		<mass>3.00000</mass>
 		<inertia>2.0 0.5 2.0</inertia>
@@ -63,17 +63,10 @@
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
-				<name>Bot-RPP/graphics/shaft2_bl.obj</name>
-				<position_in_parent>0.000000 0.000000 0.340000</position_in_parent>
-				<orientation_in_parent>0.7071067811865476 0.000000 0.000000 0.7071067811865476</orientation_in_parent>
-				<scaling>1.5 1 1.5</scaling>
-				<collision_type>0</collision_type>
-			</obj_file>
-			<obj_file>
-				<name>Bot-RPP/graphics/shaft2_bl.obj</name>
-				<position_in_parent>0.000000 0.000000 0.0000</position_in_parent>
-				<orientation_in_parent>0.7071067811865476 0.000000 0.000000 0.7071067811865476</orientation_in_parent>
-				<scaling>3 0.1 3</scaling>
+				<name>Bot-RPP/graphics/2_link2.obj</name>
+				<position_in_parent>0.000000 0.000000 0.0100</position_in_parent>
+				<orientation_in_parent>0.00000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<scaling>.001 .001 .001</scaling>
 				<collision_type>0</collision_type>
 			</obj_file>
 		</graphics>
