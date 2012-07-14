@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /* \file ChaiGlutHandlers.cpp
  *
  *  Created on: Oct 27, 2010
@@ -110,7 +110,7 @@ namespace scl_chai_glut_interface
       glutAddMenuEntry("window display",
           scl_chai_glut_interface::SChaiGlobals::OPTION_WINDOWDISPLAY);
       glutAddMenuEntry("toggle mouse cam",
-                scl_chai_glut_interface::SChaiGlobals::OPTION_TOGGLE_MOUSE_CAM_SELECT);
+          scl_chai_glut_interface::SChaiGlobals::OPTION_TOGGLE_MOUSE_CAM_SELECT);
       glutAttachMenu(GLUT_MIDDLE_BUTTON);
     }
     catch(std::exception & e)
@@ -183,63 +183,136 @@ namespace scl_chai_glut_interface
     {
       //Op point 1 : X - axis
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('s')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(0) += opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(0) += opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('s')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('S')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(0) += opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(0) += opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('S')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('w')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(0) -= opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(0) -= opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('w')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('W')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(0) -= opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(0) -= opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('W')] = false;
+      }
 
       //Op point 1 : Y - axis
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('d')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(1) += opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(1) += opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('d')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('D')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(1) += opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(1) += opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('D')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('a')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(1) -= opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(1) -= opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('W')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('A')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(1) -= opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(1) -= opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('W')] = false;
+      }
+
 
       //Op point 1 : Z - axis
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('e')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(2) += opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(2) += opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('e')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('E')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(2) += opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(2) += opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('E')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('q')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(2) -= opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(2) -= opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('q')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('Q')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_1_(2) -= opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_1_(2) -= opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('Q')] = false;
+      }
 
       //Op point 2 : X - axis
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('j')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(0) += opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(0) += opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('j')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('J')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(0) += opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(0) += opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('J')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('u')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(0) -= opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(0) -= opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('u')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('U')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(0) -= opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(0) -= opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('U')] = false;
+      }
 
       //Op point 2 : Y - axis
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('k')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(1) += opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(1) += opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('k')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('K')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(1) += opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(1) += opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('K')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('h')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(1) -= opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(1) -= opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('h')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('H')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(1) -= opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(1) -= opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('H')] = false;
+      }
 
       //Op point 2 : Z - axis
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('i')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(2) += opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(2) += opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('i')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('I')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(2) += opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(2) += opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('I')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('y')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(2) -= opt_mult*0.01; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(2) -= opt_mult*0.01;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('y')] = false;
+      }
       if (CChaiGlobals::getData()->keys_active[static_cast<int>('Y')])
-      { scl::CDatabase::getData()->s_gui_.ui_point_2_(2) -= opt_mult*0.05; }
+      {
+        scl::CDatabase::getData()->s_gui_.ui_point_2_(2) -= opt_mult*0.05;
+        CChaiGlobals::getData()->keys_active[static_cast<int>('y')] = false;
+      }
     }
     else
     {
@@ -542,7 +615,7 @@ namespace scl_chai_glut_interface
     std::string tmp;
     ss >> tmp;
     glutBitmapString(GLUT_BITMAP_HELVETICA_10,(const unsigned char*) tmp.c_str());
-    */
+     */
 
     // Swap buffers
     glutSwapBuffers();
