@@ -198,11 +198,11 @@ struct SGuiData
 
   /** 0 = All points by themselves.
    *  1 = All points together*/
-  sUInt ui_point_selector_1_;
+  sUInt ui_point_selector_;
 
   sBool glut_initialized_;
 
-  SGuiData() : glut_initialized_(false) {ui_point_selector_1_=0;}
+  SGuiData() : glut_initialized_(false) {ui_point_selector_=0;}
 };
 
 /** Contains all the dynamically updated input output data.

@@ -177,13 +177,13 @@ namespace scl_chai_glut_interface
     if (CChaiGlobals::getData()->keys_active[static_cast<int>('9')])
     {
       std::cout<<"\nGLUT: Moving all operational points simultaneously with 's', 'w', 'd', 'a', 'e', 'q'";
-      scl::CDatabase::getData()->s_gui_.ui_point_selector_1_ = 1;
+      scl::CDatabase::getData()->s_gui_.ui_point_selector_ = 1;
       CChaiGlobals::getData()->keys_active[static_cast<int>('9')] = false;
     }
     if (CChaiGlobals::getData()->keys_active[static_cast<int>('0')])
     {
       std::cout<<"\nGLUT: Moving all operational points independently";
-      scl::CDatabase::getData()->s_gui_.ui_point_selector_1_ = 0;
+      scl::CDatabase::getData()->s_gui_.ui_point_selector_ = 0;
       CChaiGlobals::getData()->keys_active[static_cast<int>('0')] = false;
     }
 
@@ -192,7 +192,7 @@ namespace scl_chai_glut_interface
         'S', 'W', 'D', 'A', 'E', 'Q', 'J', 'U', 'K', 'H', 'I', 'Y', 'V', 'T', 'G', 'F', 'Y', 'R'};
     //Can set this multiplier to modulate the motion of the operational points
     const scl::sFloat opt_mult=1;
-    if(scl::CDatabase::getData()->s_gui_.ui_point_selector_1_ == 0)
+    if(scl::CDatabase::getData()->s_gui_.ui_point_selector_ == 0)
     {//Control each point independently
       for(unsigned int i=0; i<6; ++i)
       {//Loop over 6 operational points
