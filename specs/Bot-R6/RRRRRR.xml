@@ -73,7 +73,7 @@
 	  </link>
 	  <link>
 		  <link_name>link3</link_name> <!--unique link name -->
-		  <position_in_parent>0.013 0.0 0.0</position_in_parent> <!--xyz in parent frame -->
+		  <position_in_parent>0.013 0.00 -0.006</position_in_parent> <!--xyz in parent frame -->
 		  <orientation_in_parent>0 0 0 1</orientation_in_parent> <!-- xyz w quaternion in parent frame -->
 		  <mass>0.250000</mass> <!-- Of the link, in kgs. -->
 		  <inertia>0.070000 0.070000 0.07500</inertia> <!-- Ixx Iyy Izz at the center of mass -->
@@ -86,7 +86,7 @@
 		  <graphics> <!-- Can contain more than one obj file -->
 			  <obj_file>
 				  <name>Bot-R6/graphics/4_link3_reach.obj</name> <!-- obj file format is best. 3ds is possible -->
-				  <position_in_parent>0.000 -0.015 -0.020</position_in_parent>
+				  <position_in_parent>0.000 -0.0125 -0.020</position_in_parent>
 				  <orientation_in_parent>0.0000 0.000000 0.000000 1.000</orientation_in_parent>
 				  <scaling>.001 .001 .001</scaling> <!-- Graphics only scaling, along x y and z -->
 				  <collision_type>0</collision_type> <!-- 0 = no collision, 1 = convex hull collision, 2 = polygon collision. -->
@@ -110,6 +110,28 @@
 				  <name>Bot-R6/graphics/3or5_link2or4_elbow.obj</name> <!-- obj file format is best. 3ds is possible -->
 				  <position_in_parent>0.0 -0.0145 0.0</position_in_parent>
 				  <orientation_in_parent>-0.7071067811865475 0.000000 0.000000 0.7071067811865475</orientation_in_parent>
+				  <scaling>.001 .001 .001</scaling> <!-- Graphics only scaling, along x y and z -->
+				  <collision_type>0</collision_type> <!-- 0 = no collision, 1 = convex hull collision, 2 = polygon collision. -->
+			  </obj_file>
+		  </graphics>
+	  </link>
+	  <link>
+		  <link_name>hand</link_name> <!--unique link name -->
+		  <position_in_parent>0.013 0.0 -0.006</position_in_parent> <!--xyz in parent frame -->
+		  <orientation_in_parent>0 0 0 1</orientation_in_parent> <!-- xyz w quaternion in parent frame -->
+		  <mass>0.250000</mass> <!-- Of the link, in kgs. -->
+		  <inertia>0.070000 0.070000 0.07500</inertia> <!-- Ixx Iyy Izz at the center of mass -->
+		  <center_of_mass>0.065000 0.025000 0.006000</center_of_mass> <!-- xyz -->
+		  <joint_name>q5-rot-x</joint_name> <!-- unique joint name. -->
+		  <parent_link_name>link4</parent_link_name> <!-- The parent link. Ground is fixed. -->
+		  <joint_type>rx</joint_type> <!-- The type of joint. (p)rismatic/(r)evolute + x/y/z (axis) -->
+		  <joint_limits>-3.141590 3.141590</joint_limits> <!-- Minimum and maximum joint coordinate values -->
+		  <default_joint_position>0.000000</default_joint_position> <!-- Initial configuration -->
+		  <graphics> <!-- Can contain more than one obj file -->
+			  <obj_file>
+				  <name>Bot-R6/graphics/6_link5_hand.obj</name> <!-- obj file format is best. 3ds is possible -->
+				  <position_in_parent>0.000 -0.0125 -0.0225</position_in_parent>
+				  <orientation_in_parent>0.0000 0.000000 0.000000 1.0000</orientation_in_parent>
 				  <scaling>.001 .001 .001</scaling> <!-- Graphics only scaling, along x y and z -->
 				  <collision_type>0</collision_type> <!-- 0 = no collision, 1 = convex hull collision, 2 = polygon collision. -->
 			  </obj_file>
