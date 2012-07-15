@@ -116,7 +116,7 @@
 		  </graphics>
 	  </link>
 	  <link>
-		  <link_name>hand</link_name> <!--unique link name -->
+		  <link_name>link5</link_name> <!--unique link name -->
 		  <position_in_parent>0.013 0.0 -0.006</position_in_parent> <!--xyz in parent frame -->
 		  <orientation_in_parent>0 0 0 1</orientation_in_parent> <!-- xyz w quaternion in parent frame -->
 		  <mass>0.250000</mass> <!-- Of the link, in kgs. -->
