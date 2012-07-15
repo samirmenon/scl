@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+
+<!-- Units are in Std International System -->
+<lotus>
+    <robot name="r6bot"> 
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <spec>RRRRRR</spec>
+        <file>../../specs/Bot-R6/RRRRRR.xml</file>
+        <root_link>
+            <link_name>ground</link_name> <!-- The ground link has id -1 -->
+            <position_in_parent>-0.100   0.000   -0.400</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+			        <obj_file>
+				        <name>GraphicObjects/plane.obj</name>
+				        <position_in_parent>0.000000 0.000000 -0.0050000</position_in_parent>
+				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				        <collision_type>0</collision_type>
+				        <scaling>0.25 0.25 0.25</scaling>
+			        </obj_file>
+			        <obj_file>
+				        <name>/Bot-RPP/graphics/0_base.obj</name>
+				        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				        <collision_type>0</collision_type>
+      					<scaling>0.0005 0.0005 0.0005</scaling>
+			        </obj_file>
+            </graphics>
+        </root_link>
+    </robot>
+
+    <graphics name="RPPStdView">
+        <camera>
+            <pos>1.0   0.0   -0.1</pos>
+            <lookat>0.0   0.0   -0.1</lookat>
+            <up>0   0   1</up>
+            <clip>0 2</clip>
+            <background>0 0 0</background>
+        </camera>
+        <light>
+            <pos>1.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.5</lookat>
+        </light>
+        <light>
+            <pos>0.0   1.0   0.0</pos>
+            <lookat>0.0   0.0   -0.5</lookat>
+        </light>
+        <light>
+            <pos>-1.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.0</lookat>
+        </light>
+    </graphics>
+
+    <controller name="gc">
+        <type>gc</type>
+        <must_use_robot>r6bot</must_use_robot>
+        <kp>100</kp>
+        <kv>15</kv>
+        <ki>0</ki>
+        <force_max>100</force_max>
+        <force_min>-100</force_min>
+    </controller>
+</lotus>
