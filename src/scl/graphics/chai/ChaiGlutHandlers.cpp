@@ -208,12 +208,12 @@ namespace scl_chai_glut_interface
           if (CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j] )])
           {//Increment op point
             scl::CDatabase::getData()->s_gui_.ui_point_[i](j) += opt_mult*0.01;
-            CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j] )] = false;
+            //CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j] )] = false;
           }
           if (CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j+1] )])
           {//Decrement op point
             scl::CDatabase::getData()->s_gui_.ui_point_[i](j) -= opt_mult*0.01;
-            CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j+1] )] = false;
+            //CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j+1] )] = false;
           }
         }
       }
