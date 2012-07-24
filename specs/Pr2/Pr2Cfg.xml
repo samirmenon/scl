@@ -39,6 +39,7 @@
             <pos>-2.0   0.0   0.0</pos>
             <lookat>0.0   0.0   0.0</lookat>
         </light>
+        <background_color>0.0 0.0 0.0</background_color>
     </graphics>
 
     <controller name="Pr2GcCtrl">
