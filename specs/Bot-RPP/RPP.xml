@@ -10,7 +10,7 @@
 		<position_in_parent>0.0 0.0 1.0</position_in_parent> <!--xyz in parent frame -->
 		<orientation_in_parent>0 0 0 1</orientation_in_parent> <!-- xyz w quaternion in parent frame -->
 		<mass>10.000000</mass> <!-- Of the link, in kgs. -->
-		<inertia>0.000000 0.000000 3.0000</inertia> <!-- Ixx Iyy Izz at the center of mass -->
+		<inertia>5.000000 5.000000 2.0000</inertia> <!-- Ixx Iyy Izz at the center of mass -->
 		<center_of_mass>0.000000 0.000000 -0.500000</center_of_mass> <!-- xyz -->
 		<joint_name>q0-rot-z</joint_name> <!-- unique joint name. -->
 		<parent_link_name>ground</parent_link_name> <!-- The parent link. Ground is fixed. -->
