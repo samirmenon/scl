@@ -73,6 +73,13 @@ namespace scl_chai_glut_interface
 
       CChaiGlobals::getData()->GLOB_chaiDbptr = db->s_gui_.chai_data_.at(arg_graphics_name);
 
+      scl::SGraphicsParsedData* gr_parsed_ds = db->s_parser_.graphics_worlds_.at(arg_graphics_name);
+      if(NULL == gr_parsed_ds)
+      { throw(std::runtime_error("Could not find parsed graphics data structre in the database.")); }
+      CChaiGlobals::getData()->cam_lookat_x_ = gr_parsed_ds->cam_lookat_(0);
+      CChaiGlobals::getData()->cam_lookat_y_ = gr_parsed_ds->cam_lookat_(1);
+      CChaiGlobals::getData()->cam_lookat_z_ = gr_parsed_ds->cam_lookat_(2);
+
       if(S_NULL == CChaiGlobals::getData()->GLOB_chaiDbptr)
       { throw(std::runtime_error("Couldn't find the specified graphics instance")); }
 
@@ -441,11 +448,22 @@ namespace scl_chai_glut_interface
     {
       if(CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_pressed_)
       {
-        if (CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ == GLUT_RIGHT_BUTTON)
-        { CChaiGlobals::getData()->cam_sph_x_ = CChaiGlobals::getData()->cam_sph_x_ - 0.01 * (y - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_y_);  }
-
+        int mod = glutGetModifiers();
+        if ((mod == GLUT_ACTIVE_CTRL) && (CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ == GLUT_LEFT_BUTTON))
+        {//Adjust camera lookat euclidean position x and y
+          CChaiGlobals::getData()->cam_lookat_y_ = CChaiGlobals::getData()->cam_lookat_y_ - 0.01 * (x - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_x_);
+          CChaiGlobals::getData()->cam_lookat_z_ = CChaiGlobals::getData()->cam_lookat_z_ + 0.01 * (y - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_y_);
+        }
+        else if ((mod == GLUT_ACTIVE_CTRL) && (CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ == GLUT_RIGHT_BUTTON))
+        {//Adjust camera lookat euclidean position z
+          CChaiGlobals::getData()->cam_lookat_x_ = CChaiGlobals::getData()->cam_lookat_x_ + 0.01 * (x - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_x_);
+        }
+        else if (CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ == GLUT_RIGHT_BUTTON)
+        {//Adjust camera cylindrical position radius
+          CChaiGlobals::getData()->cam_sph_x_ = CChaiGlobals::getData()->cam_sph_x_ - 0.01 * (y - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_y_);
+        }
         else if (CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ == GLUT_LEFT_BUTTON)
-        {
+        {//Adjust camera cylindrical position horizontal and vertical angles
           CChaiGlobals::getData()->cam_sph_h_ = CChaiGlobals::getData()->cam_sph_h_ - (x - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_x_);
           CChaiGlobals::getData()->cam_sph_v_ = CChaiGlobals::getData()->cam_sph_v_ + (y - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_y_);
         }
@@ -471,6 +489,11 @@ namespace scl_chai_glut_interface
     if (CChaiGlobals::getData()->cam_sph_x_ < 0.1) { CChaiGlobals::getData()->cam_sph_x_ = 0.1; }
     if (CChaiGlobals::getData()->cam_sph_v_ > 89) { CChaiGlobals::getData()->cam_sph_v_ = 89; }
     if (CChaiGlobals::getData()->cam_sph_v_ < -89) { CChaiGlobals::getData()->cam_sph_v_ = -89; }
+
+    //Update the position the camera looks at
+    gr_ds->cam_lookat_(0) = CChaiGlobals::getData()->cam_lookat_x_;
+    gr_ds->cam_lookat_(1) = CChaiGlobals::getData()->cam_lookat_y_;
+    gr_ds->cam_lookat_(2) = CChaiGlobals::getData()->cam_lookat_z_;
 
     // compute position of camera in space
     cVector3d pos = cAdd(

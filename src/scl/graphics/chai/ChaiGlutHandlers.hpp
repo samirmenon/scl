@@ -74,6 +74,9 @@ namespace scl_chai_glut_interface
      * Position, horizontal angle, vertical angle */
     scl::sFloat cam_sph_x_,cam_sph_h_,cam_sph_v_;
 
+    /** Dynamic positioning for the camera lookat */
+    scl::sFloat cam_lookat_x_, cam_lookat_y_, cam_lookat_z_;
+
     scl::CChaiGraphics *chai_glut;
 
     scl::sBool chai_glut_running;
