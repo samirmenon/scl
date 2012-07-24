@@ -48,9 +48,14 @@ namespace scl_chai_glut_interface
     for(int i=0; i<256; ++i)
       keys_active[i] = false;
     GLOB_chaiDbptr = S_NULL;
+    GLOB_windowPosX = 0;
+    GLOB_windowPosY = 0;
     cam_sph_x_=3.0;
     cam_sph_h_= 0.0;
     cam_sph_v_=0.0;
+    cam_lookat_x_ = 0.0;
+    cam_lookat_y_ = 0.0;
+    cam_lookat_z_ = 0.0;
     chai_glut = S_NULL;
     chai_glut_running=true;
   }
@@ -67,20 +72,24 @@ namespace scl_chai_glut_interface
       if(S_NULL == db)
       { throw(std::runtime_error("Database not intialized")); }
 
+      SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
+      if(S_NULL == db)
+      { throw(std::runtime_error("Chai shared data singleton not intialized")); }
+
       if(S_NULL == arg_chai_glut)
       { throw(std::runtime_error("Passed invalid chai object")); }
-      CChaiGlobals::getData()->chai_glut = arg_chai_glut;
+      chai_glob_ds->chai_glut = arg_chai_glut;
 
-      CChaiGlobals::getData()->GLOB_chaiDbptr = db->s_gui_.chai_data_.at(arg_graphics_name);
+      chai_glob_ds->GLOB_chaiDbptr = db->s_gui_.chai_data_.at(arg_graphics_name);
 
       scl::SGraphicsParsedData* gr_parsed_ds = db->s_parser_.graphics_worlds_.at(arg_graphics_name);
       if(NULL == gr_parsed_ds)
       { throw(std::runtime_error("Could not find parsed graphics data structre in the database.")); }
-      CChaiGlobals::getData()->cam_lookat_x_ = gr_parsed_ds->cam_lookat_(0);
-      CChaiGlobals::getData()->cam_lookat_y_ = gr_parsed_ds->cam_lookat_(1);
-      CChaiGlobals::getData()->cam_lookat_z_ = gr_parsed_ds->cam_lookat_(2);
+      chai_glob_ds->cam_lookat_x_ = gr_parsed_ds->cam_lookat_(0);
+      chai_glob_ds->cam_lookat_y_ = gr_parsed_ds->cam_lookat_(1);
+      chai_glob_ds->cam_lookat_z_ = gr_parsed_ds->cam_lookat_(2);
 
-      if(S_NULL == CChaiGlobals::getData()->GLOB_chaiDbptr)
+      if(S_NULL == chai_glob_ds->GLOB_chaiDbptr)
       { throw(std::runtime_error("Couldn't find the specified graphics instance")); }
 
       // retrieve the resolution of the computer display and estimate the position
@@ -88,16 +97,14 @@ namespace scl_chai_glut_interface
       int screenW = glutGet(GLUT_SCREEN_WIDTH);
       int screenH = glutGet(GLUT_SCREEN_HEIGHT);
 
-      CChaiGlobals::getData()->GLOB_windowPosX = (screenW - CChaiGlobals::getData()->GLOB_chaiDbptr->gl_width_) / 2;
-      CChaiGlobals::getData()->GLOB_windowPosY = (screenH - CChaiGlobals::getData()->GLOB_chaiDbptr->gl_height_) / 2;
+      chai_glob_ds->GLOB_windowPosX = (screenW - chai_glob_ds->GLOB_chaiDbptr->gl_width_) / 2;
+      chai_glob_ds->GLOB_windowPosY = (screenH - chai_glob_ds->GLOB_chaiDbptr->gl_height_) / 2;
 
-      CChaiGlobals::getData()->GLOB_chaiDbptr->running_ = true;
+      chai_glob_ds->GLOB_chaiDbptr->running_ = true;
 
       // initialize the OpenGL GLUT window
-      glutInitWindowPosition(scl_chai_glut_interface::CChaiGlobals::getData()->GLOB_windowPosX,
-          scl_chai_glut_interface::CChaiGlobals::getData()->GLOB_windowPosX);
-      glutInitWindowSize(scl_chai_glut_interface::CChaiGlobals::getData()->GLOB_chaiDbptr->gl_width_,
-          scl_chai_glut_interface::CChaiGlobals::getData()->GLOB_chaiDbptr->gl_height_);
+      glutInitWindowPosition(chai_glob_ds->GLOB_windowPosX, chai_glob_ds->GLOB_windowPosX);
+      glutInitWindowSize(chai_glob_ds->GLOB_chaiDbptr->gl_width_, chai_glob_ds->GLOB_chaiDbptr->gl_height_);
       glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
       glutCreateWindow("scl_busylizzy");
 
@@ -132,12 +139,13 @@ namespace scl_chai_glut_interface
 
   void resizeWindow(int w, int h)
   {
+    SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     // update the size of the viewport
-    CChaiGlobals::getData()->GLOB_chaiDbptr->gl_width_ = w;
-    CChaiGlobals::getData()->GLOB_chaiDbptr->gl_height_ = h;
+    chai_glob_ds->GLOB_chaiDbptr->gl_width_ = w;
+    chai_glob_ds->GLOB_chaiDbptr->gl_height_ = h;
     glViewport(0, 0,
-        CChaiGlobals::getData()->GLOB_chaiDbptr->gl_width_,
-        CChaiGlobals::getData()->GLOB_chaiDbptr->gl_height_);
+        chai_glob_ds->GLOB_chaiDbptr->gl_width_,
+        chai_glob_ds->GLOB_chaiDbptr->gl_height_);
   }
 
   //---------------------------------------------------------------------------
@@ -150,48 +158,50 @@ namespace scl_chai_glut_interface
   // callback when a keyboard key is released
   void keyReleased(unsigned char key, int x, int y)
   {
+
     CChaiGlobals::getData()->keys_active[key] = false;
   }
 
 
   void keyHandler()
   {
+    SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     // escape key
-    if ((CChaiGlobals::getData()->keys_active[27]) || (CChaiGlobals::getData()->keys_active[static_cast<int>('x')]))
+    if ((chai_glob_ds->keys_active[27]) || (chai_glob_ds->keys_active[static_cast<int>('x')]))
     {
       // close everything
       closeChaiGlut();
       // set running flag to false
-      CChaiGlobals::getData()->chai_glut_running = false;
+      chai_glob_ds->chai_glut_running = false;
     }
 
     // option 1: Enable/Disable textures
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('1')])
+    if (chai_glob_ds->keys_active[static_cast<int>('1')])
     {
-      bool useTexture = CChaiGlobals::getData()->GLOB_chaiDbptr->chai_world_->getUseTexture();
-      CChaiGlobals::getData()->GLOB_chaiDbptr->chai_world_->setUseTexture(!useTexture,true);
-      CChaiGlobals::getData()->keys_active[static_cast<int>('1')] = false;
+      bool useTexture = chai_glob_ds->GLOB_chaiDbptr->chai_world_->getUseTexture();
+      chai_glob_ds->GLOB_chaiDbptr->chai_world_->setUseTexture(!useTexture,true);
+      chai_glob_ds->keys_active[static_cast<int>('1')] = false;
     }
 
     // option 2: Enable/Disable wireframe mode
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('2')])
+    if (chai_glob_ds->keys_active[static_cast<int>('2')])
     {
-      bool useWireMode = CChaiGlobals::getData()->GLOB_chaiDbptr->chai_world_->getWireMode();
-      CChaiGlobals::getData()->GLOB_chaiDbptr->chai_world_->setWireMode(!useWireMode, true);
-      CChaiGlobals::getData()->keys_active[static_cast<int>('2')] = false;
+      bool useWireMode = chai_glob_ds->GLOB_chaiDbptr->chai_world_->getWireMode();
+      chai_glob_ds->GLOB_chaiDbptr->chai_world_->setWireMode(!useWireMode, true);
+      chai_glob_ds->keys_active[static_cast<int>('2')] = false;
     }
 
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('9')])
+    if (chai_glob_ds->keys_active[static_cast<int>('9')])
     {
       std::cout<<"\nGLUT: Moving all operational points simultaneously with 's', 'w', 'd', 'a', 'e', 'q'";
       scl::CDatabase::getData()->s_gui_.ui_point_selector_ = 1;
-      CChaiGlobals::getData()->keys_active[static_cast<int>('9')] = false;
+      chai_glob_ds->keys_active[static_cast<int>('9')] = false;
     }
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('0')])
+    if (chai_glob_ds->keys_active[static_cast<int>('0')])
     {
       std::cout<<"\nGLUT: Moving all operational points independently";
       scl::CDatabase::getData()->s_gui_.ui_point_selector_ = 0;
-      CChaiGlobals::getData()->keys_active[static_cast<int>('0')] = false;
+      chai_glob_ds->keys_active[static_cast<int>('0')] = false;
     }
 
     /** Control the gui 3D points. Can control 6 points total using the glut buttons */
@@ -205,15 +215,15 @@ namespace scl_chai_glut_interface
       {//Loop over 6 operational points
         for(unsigned int j=0; j<3; ++j)
         {//Loop over 3 orthogonal directionss
-          if (CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j] )])
+          if (chai_glob_ds->keys_active[static_cast<int>( arr[6*i+2*j] )])
           {//Increment op point
             scl::CDatabase::getData()->s_gui_.ui_point_[i](j) += opt_mult*0.01;
-            //CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j] )] = false;
+            //chai_glob_ds->keys_active[static_cast<int>( arr[6*i+2*j] )] = false;
           }
-          if (CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j+1] )])
+          if (chai_glob_ds->keys_active[static_cast<int>( arr[6*i+2*j+1] )])
           {//Decrement op point
             scl::CDatabase::getData()->s_gui_.ui_point_[i](j) -= opt_mult*0.01;
-            //CChaiGlobals::getData()->keys_active[static_cast<int>( arr[6*i+2*j+1] )] = false;
+            //chai_glob_ds->keys_active[static_cast<int>( arr[6*i+2*j+1] )] = false;
           }
         }
       }
@@ -222,73 +232,73 @@ namespace scl_chai_glut_interface
     {//Control all points simultaneously
       for(unsigned int j=0; j<3; ++j)
       {//Loop over 3 orthogonal directions
-        if (CChaiGlobals::getData()->keys_active[static_cast<int>( arr[2*j] )])
+        if (chai_glob_ds->keys_active[static_cast<int>( arr[2*j] )])
         {//Increment op point
           for(unsigned int i=0; i<12; ++i)
           {//Loop over all operational points
             scl::CDatabase::getData()->s_gui_.ui_point_[i](j) += opt_mult*0.01;
           }
         }
-        CChaiGlobals::getData()->keys_active[static_cast<int>( arr[2*j] )] = false;
-        if (CChaiGlobals::getData()->keys_active[static_cast<int>( arr[2*j+1] )])
+        chai_glob_ds->keys_active[static_cast<int>( arr[2*j] )] = false;
+        if (chai_glob_ds->keys_active[static_cast<int>( arr[2*j+1] )])
         {//Decrement op point
           for(unsigned int i=0; i<12; ++i)
           {//Loop over all operational points
             scl::CDatabase::getData()->s_gui_.ui_point_[i](j) -= opt_mult*0.01;
           }
-          CChaiGlobals::getData()->keys_active[static_cast<int>( arr[2*j+1] )] = false;
+          chai_glob_ds->keys_active[static_cast<int>( arr[2*j+1] )] = false;
         }
       }
     }
 
     //Print debug info:
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('b')])
+    if (chai_glob_ds->keys_active[static_cast<int>('b')])
     {
       std::cout<<"\nGLUT: Operational Point Pos : "<<
           scl::CDatabase::getData()->s_gui_.ui_point_[0].transpose();
       std::cout<<"\nGLUT: Operational Point 2 Pos : "<<
           scl::CDatabase::getData()->s_gui_.ui_point_[1].transpose();
-      CChaiGlobals::getData()->keys_active[static_cast<int>('b')] = false;
+      chai_glob_ds->keys_active[static_cast<int>('b')] = false;
     }
 
     //Pause the controller
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('p')])
+    if (chai_glob_ds->keys_active[static_cast<int>('p')])
     {
       scl::CDatabase::getData()->pause_ctrl_dyn_ = true;
       std::cout<<"\nGLUT: Controller and Simulation Paused. Press 'P' to unpause or ';' to step. "<<std::flush;
-      CChaiGlobals::getData()->keys_active[static_cast<int>('p')] = false;
+      chai_glob_ds->keys_active[static_cast<int>('p')] = false;
     }
 
     //Unpause the controller
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('P')])
+    if (chai_glob_ds->keys_active[static_cast<int>('P')])
     {
       scl::CDatabase::getData()->pause_ctrl_dyn_ = false;
       std::cout<<"\nGLUT: Controller and Simulation Unpaused.";
-      CChaiGlobals::getData()->keys_active[static_cast<int>('P')] = false;
+      chai_glob_ds->keys_active[static_cast<int>('P')] = false;
     }
 
     //Step the controller
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>(';')])
+    if (chai_glob_ds->keys_active[static_cast<int>(';')])
     {
       scl::CDatabase::getData()->step_ctrl_dyn_ = true;
       std::cout<<"+1"<<std::flush;
-      CChaiGlobals::getData()->keys_active[static_cast<int>(';')] = false;
+      chai_glob_ds->keys_active[static_cast<int>(';')] = false;
     }
 
     //Toggle logging
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('/')])
+    if (chai_glob_ds->keys_active[static_cast<int>('/')])
     {
       scl::CDatabase::getData()->param_logging_on_ = ~scl::CDatabase::getData()->param_logging_on_;
       if(scl::CDatabase::getData()->param_logging_on_)
       { std::cout<<"\nGLUT: Starting logging"<<std::flush;  }
       else
       { std::cout<<"\nGLUT: Stopping logging"<<std::flush;  }
-      CChaiGlobals::getData()->keys_active[static_cast<int>('/')] = false;
+      chai_glob_ds->keys_active[static_cast<int>('/')] = false;
     }
 
     //Modulate a robot's links
     static int link_idx = 0;
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('+')])
+    if (chai_glob_ds->keys_active[static_cast<int>('+')])
     {
       link_idx++;
 
@@ -298,9 +308,9 @@ namespace scl_chai_glut_interface
       { link_idx = io->sensors_.q_.size()-1;  }
 
       std::cout<<"\nGLUT: "<<io->name_<<" : Link : "<<link_idx<<std::flush;
-      CChaiGlobals::getData()->keys_active[static_cast<int>('+')] = false;
+      chai_glob_ds->keys_active[static_cast<int>('+')] = false;
     }
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('-')])
+    if (chai_glob_ds->keys_active[static_cast<int>('-')])
     {
       link_idx--;
       if(0>link_idx) link_idx = 0;
@@ -309,11 +319,11 @@ namespace scl_chai_glut_interface
       scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
 
       std::cout<<"\nGLUT: "<<io->name_<<" : Link : "<<link_idx<<std::flush;
-      CChaiGlobals::getData()->keys_active[static_cast<int>('-')] = false;
+      chai_glob_ds->keys_active[static_cast<int>('-')] = false;
     }
 
     // Position keyboard shortcuts.
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('o')])
+    if (chai_glob_ds->keys_active[static_cast<int>('o')])
     {
       scl::SDatabase* db = scl::CDatabase::getData();
       scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
@@ -321,7 +331,7 @@ namespace scl_chai_glut_interface
       { link_idx = io->sensors_.q_.size()-1;  }
       io->sensors_.q_(link_idx) += 0.1;
     }
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('O')])
+    if (chai_glob_ds->keys_active[static_cast<int>('O')])
     {
       scl::SDatabase* db = scl::CDatabase::getData();
       scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
@@ -330,7 +340,7 @@ namespace scl_chai_glut_interface
       io->sensors_.q_(link_idx) += 0.3;
     }
 
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('l')])
+    if (chai_glob_ds->keys_active[static_cast<int>('l')])
     {
       scl::SDatabase* db = scl::CDatabase::getData();
       scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
@@ -338,7 +348,7 @@ namespace scl_chai_glut_interface
       { link_idx = io->sensors_.q_.size()-1;  }
       io->sensors_.q_(link_idx) -= 0.1;
     }
-    if (CChaiGlobals::getData()->keys_active[static_cast<int>('L')])
+    if (chai_glob_ds->keys_active[static_cast<int>('L')])
     {
       scl::SDatabase* db = scl::CDatabase::getData();
       scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
@@ -352,6 +362,7 @@ namespace scl_chai_glut_interface
 
   void menuSelect(int value)
   {
+    SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     switch (value)
     {
       // enable full screen display
@@ -361,13 +372,13 @@ namespace scl_chai_glut_interface
 
         // reshape window to original size
       case SChaiGlobals::OPTION_WINDOWDISPLAY:
-        glutReshapeWindow(CChaiGlobals::getData()->GLOB_chaiDbptr->gl_width_
-            , CChaiGlobals::getData()->GLOB_chaiDbptr->gl_height_);
+        glutReshapeWindow(chai_glob_ds->GLOB_chaiDbptr->gl_width_
+            , chai_glob_ds->GLOB_chaiDbptr->gl_height_);
         break;
 
         //Whether click-drag rotates the camera or adds a force.
       case SChaiGlobals::OPTION_TOGGLE_MOUSE_CAM_SELECT:
-        CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_mode_cam_ = ~(CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_mode_cam_);
+        chai_glob_ds->GLOB_chaiDbptr->mouse_mode_cam_ = ~(chai_glob_ds->GLOB_chaiDbptr->mouse_mode_cam_);
         break;
     }
   }
@@ -380,16 +391,17 @@ namespace scl_chai_glut_interface
   //---------------------------------------------------------------------------
   void updateGraphics(void)
   {
+    SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     //Update the IO
     keyHandler();
 
 #ifdef W_TESTING
     bool flag;
-    flag = CChaiGlobals::getData()->chai_glut->updateGraphics();
+    flag = chai_glob_ds->chai_glut->updateGraphics();
     if (false == flag) { printf("\nChai-Glut Error: Could not update graphics successfully.");  }
 #else
     //NOTE : No checks in release mode
-    CChaiGlobals::getData()->chai_glut->updateGraphics();
+    chai_glob_ds->chai_glut->updateGraphics();
 #endif
 
     /**
@@ -414,7 +426,7 @@ namespace scl_chai_glut_interface
 #endif
 
     // inform the GLUT window to call updateGraphics again (next frame)
-    if (CChaiGlobals::getData()->GLOB_chaiDbptr->running_)
+    if (chai_glob_ds->GLOB_chaiDbptr->running_)
     { glutPostRedisplay();  }
   }
 
@@ -424,19 +436,20 @@ namespace scl_chai_glut_interface
 
   void mouseClick(int button, int state, int x, int y)
   {
+    SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     // mouse button down
     if (state == GLUT_DOWN)
     {
-      CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_pressed_ = true;
-      CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_x_ = x;
-      CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_y_ = y;
-      CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ = button;
+      chai_glob_ds->GLOB_chaiDbptr->mouse_button_pressed_ = true;
+      chai_glob_ds->GLOB_chaiDbptr->mouse_x_ = x;
+      chai_glob_ds->GLOB_chaiDbptr->mouse_y_ = y;
+      chai_glob_ds->GLOB_chaiDbptr->mouse_button_ = button;
     }
 
     // mouse button up
     else if (state == GLUT_UP)
     {
-      CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_pressed_ = false;
+      chai_glob_ds->GLOB_chaiDbptr->mouse_button_pressed_ = false;
     }
   }
 
@@ -444,28 +457,29 @@ namespace scl_chai_glut_interface
 
   void mouseMove(int x, int y)
   {
-    if(true==CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_mode_cam_)
+    SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
+    if(true==chai_glob_ds->GLOB_chaiDbptr->mouse_mode_cam_)
     {
-      if(CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_pressed_)
+      if(chai_glob_ds->GLOB_chaiDbptr->mouse_button_pressed_)
       {
         int mod = glutGetModifiers();
-        if ((mod == GLUT_ACTIVE_CTRL) && (CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ == GLUT_LEFT_BUTTON))
+        if ((mod == GLUT_ACTIVE_CTRL) && (chai_glob_ds->GLOB_chaiDbptr->mouse_button_ == GLUT_LEFT_BUTTON))
         {//Adjust camera lookat euclidean position x and y
-          CChaiGlobals::getData()->cam_lookat_y_ = CChaiGlobals::getData()->cam_lookat_y_ - 0.01 * (x - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_x_);
-          CChaiGlobals::getData()->cam_lookat_z_ = CChaiGlobals::getData()->cam_lookat_z_ + 0.01 * (y - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_y_);
+          chai_glob_ds->cam_lookat_y_ = chai_glob_ds->cam_lookat_y_ - 0.01 * (x - chai_glob_ds->GLOB_chaiDbptr->mouse_x_);
+          chai_glob_ds->cam_lookat_z_ = chai_glob_ds->cam_lookat_z_ + 0.01 * (y - chai_glob_ds->GLOB_chaiDbptr->mouse_y_);
         }
-        else if ((mod == GLUT_ACTIVE_CTRL) && (CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ == GLUT_RIGHT_BUTTON))
+        else if ((mod == GLUT_ACTIVE_CTRL) && (chai_glob_ds->GLOB_chaiDbptr->mouse_button_ == GLUT_RIGHT_BUTTON))
         {//Adjust camera lookat euclidean position z
-          CChaiGlobals::getData()->cam_lookat_x_ = CChaiGlobals::getData()->cam_lookat_x_ + 0.01 * (x - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_x_);
+          chai_glob_ds->cam_lookat_x_ = chai_glob_ds->cam_lookat_x_ + 0.01 * (x - chai_glob_ds->GLOB_chaiDbptr->mouse_x_);
         }
-        else if (CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ == GLUT_RIGHT_BUTTON)
+        else if (chai_glob_ds->GLOB_chaiDbptr->mouse_button_ == GLUT_RIGHT_BUTTON)
         {//Adjust camera cylindrical position radius
-          CChaiGlobals::getData()->cam_sph_x_ = CChaiGlobals::getData()->cam_sph_x_ - 0.01 * (y - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_y_);
+          chai_glob_ds->cam_sph_x_ = chai_glob_ds->cam_sph_x_ - 0.01 * (y - chai_glob_ds->GLOB_chaiDbptr->mouse_y_);
         }
-        else if (CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_button_ == GLUT_LEFT_BUTTON)
+        else if (chai_glob_ds->GLOB_chaiDbptr->mouse_button_ == GLUT_LEFT_BUTTON)
         {//Adjust camera cylindrical position horizontal and vertical angles
-          CChaiGlobals::getData()->cam_sph_h_ = CChaiGlobals::getData()->cam_sph_h_ - (x - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_x_);
-          CChaiGlobals::getData()->cam_sph_v_ = CChaiGlobals::getData()->cam_sph_v_ + (y - CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_y_);
+          chai_glob_ds->cam_sph_h_ = chai_glob_ds->cam_sph_h_ - (x - chai_glob_ds->GLOB_chaiDbptr->mouse_x_);
+          chai_glob_ds->cam_sph_v_ = chai_glob_ds->cam_sph_v_ + (y - chai_glob_ds->GLOB_chaiDbptr->mouse_y_);
         }
         updateCameraPosition();
       }
@@ -475,41 +489,42 @@ namespace scl_chai_glut_interface
 
     }
 
-    CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_x_ = x;
-    CChaiGlobals::getData()->GLOB_chaiDbptr->mouse_y_ = y;
+    chai_glob_ds->GLOB_chaiDbptr->mouse_x_ = x;
+    chai_glob_ds->GLOB_chaiDbptr->mouse_y_ = y;
   }
 
   //---------------------------------------------------------------------------
 
   void updateCameraPosition()
   {
+    SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     // check values
-    static scl::SGraphicsParsedData* gr_ds = scl::CDatabase::getData()->s_parser_.graphics_worlds_.at(CChaiGlobals::getData()->GLOB_chaiDbptr->name_);
+    static scl::SGraphicsParsedData* gr_ds = scl::CDatabase::getData()->s_parser_.graphics_worlds_.at(chai_glob_ds->GLOB_chaiDbptr->name_);
 
-    if (CChaiGlobals::getData()->cam_sph_x_ < 0.1) { CChaiGlobals::getData()->cam_sph_x_ = 0.1; }
-    if (CChaiGlobals::getData()->cam_sph_v_ > 89) { CChaiGlobals::getData()->cam_sph_v_ = 89; }
-    if (CChaiGlobals::getData()->cam_sph_v_ < -89) { CChaiGlobals::getData()->cam_sph_v_ = -89; }
+    if (chai_glob_ds->cam_sph_x_ < 0.1) { chai_glob_ds->cam_sph_x_ = 0.1; }
+    if (chai_glob_ds->cam_sph_v_ > 89) { chai_glob_ds->cam_sph_v_ = 89; }
+    if (chai_glob_ds->cam_sph_v_ < -89) { chai_glob_ds->cam_sph_v_ = -89; }
 
     //Update the position the camera looks at
-    gr_ds->cam_lookat_(0) = CChaiGlobals::getData()->cam_lookat_x_;
-    gr_ds->cam_lookat_(1) = CChaiGlobals::getData()->cam_lookat_y_;
-    gr_ds->cam_lookat_(2) = CChaiGlobals::getData()->cam_lookat_z_;
+    gr_ds->cam_lookat_(0) = chai_glob_ds->cam_lookat_x_;
+    gr_ds->cam_lookat_(1) = chai_glob_ds->cam_lookat_y_;
+    gr_ds->cam_lookat_(2) = chai_glob_ds->cam_lookat_z_;
 
     // compute position of camera in space
     cVector3d pos = cAdd(
         gr_ds->cam_lookat_,
         cVector3d(
-            CChaiGlobals::getData()->cam_sph_x_ * cCosDeg(CChaiGlobals::getData()->cam_sph_h_) * cCosDeg(CChaiGlobals::getData()->cam_sph_v_),
-            CChaiGlobals::getData()->cam_sph_x_ * cSinDeg(CChaiGlobals::getData()->cam_sph_h_) * cCosDeg(CChaiGlobals::getData()->cam_sph_v_),
-            CChaiGlobals::getData()->cam_sph_x_ * cSinDeg(CChaiGlobals::getData()->cam_sph_v_)
+            chai_glob_ds->cam_sph_x_ * cCosDeg(chai_glob_ds->cam_sph_h_) * cCosDeg(chai_glob_ds->cam_sph_v_),
+            chai_glob_ds->cam_sph_x_ * cSinDeg(chai_glob_ds->cam_sph_h_) * cCosDeg(chai_glob_ds->cam_sph_v_),
+            chai_glob_ds->cam_sph_x_ * cSinDeg(chai_glob_ds->cam_sph_v_)
         )
     );
 
     // set new position to camera
-    CChaiGlobals::getData()->GLOB_chaiDbptr->chai_cam_->set(pos,gr_ds->cam_lookat_,gr_ds->cam_up_);
+    chai_glob_ds->GLOB_chaiDbptr->chai_cam_->set(pos,gr_ds->cam_lookat_,gr_ds->cam_up_);
 
     // recompute global positions
-    CChaiGlobals::getData()->GLOB_chaiDbptr->chai_world_->computeGlobalPositions(true);
+    chai_glob_ds->GLOB_chaiDbptr->chai_world_->computeGlobalPositions(true);
   }
 
 }
