@@ -545,7 +545,7 @@ bool CLotusParser::readGraphicsFromFile(const std::string &arg_file,
   try
   {
     //Set up the parser.
-    TiXmlElement* tiElem_graphics, *tiElem_lights;
+    TiXmlElement* tiElem_graphics, *tiElem_lights, *tiElem_bkg_color;
     TiXmlHandle tiHndl_glob_settings(NULL), tiHndl_file_handle(NULL), tiHndl_world(NULL);
 
     TiXmlDocument tiDoc_file(arg_file.c_str());
@@ -661,6 +661,23 @@ bool CLotusParser::readGraphicsFromFile(const std::string &arg_file,
         { throw(std::runtime_error("No light-lookat information."));  }
 
         arg_graphics.lights_.push_back(tmp_light);
+      }
+
+      //Read in the background color
+      tiElem_bkg_color = _gr_handle.FirstChildElement( "background_color" ).ToElement();
+      if(NULL!=tiElem_bkg_color)
+      {
+        std::stringstream ss(tiElem_bkg_color->FirstChild()->Value());
+        ss>>arg_graphics.background_color_[0];
+        ss>>arg_graphics.background_color_[1];
+        ss>>arg_graphics.background_color_[2];
+      }
+      else
+      {
+        std::cout<<"\nCLotusParser::readGraphicsFromFile() : No background color. Setting to black {0.0, 0.0, 0.0}";
+        arg_graphics.background_color_[0] = 0.0;
+        arg_graphics.background_color_[1] = 0.0;
+        arg_graphics.background_color_[2] = 0.0;
       }
 
       flag = true;

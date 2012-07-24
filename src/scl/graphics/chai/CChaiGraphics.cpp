@@ -115,9 +115,9 @@ namespace scl {
         light->setDir(cVector3d(-2.0, 0.5, 1.0));  // define the direction of the light beam
       }
       else
-      {//NOTE TODO: Populate from the database.
-        //Set the background color (R,G,B) to black.
-        data_->chai_world_->setBackgroundColor(0.0, 0.0, 0.0);
+      {
+        //Set the background color (R,G,B)
+        data_->chai_world_->setBackgroundColor(data_parsed_->background_color_[0],data_parsed_->background_color_[1], data_parsed_->background_color_[2]);
 
         cVector3d tmp1(data_parsed_->cam_pos_[0], data_parsed_->cam_pos_[1], data_parsed_->cam_pos_[2]);
         cVector3d tmp2(data_parsed_->cam_lookat_[0], data_parsed_->cam_lookat_[1], data_parsed_->cam_lookat_[2]);
@@ -125,11 +125,14 @@ namespace scl {
 
 #ifdef W_TESTING
         std::cout<<"\nCam Pos:"<<data_parsed_->cam_pos_[0]
-                                                        <<" "<<data_parsed_->cam_pos_[1]<<" "<<data_parsed_->cam_pos_[2]<<std::flush;
+          <<" "<<data_parsed_->cam_pos_[1]<<" "<<data_parsed_->cam_pos_[2]<<std::flush;
         std::cout<<"\nCam Lookat:"<<data_parsed_->cam_lookat_[0]
-                                                              <<" "<<data_parsed_->cam_lookat_[1]<<" "<< data_parsed_->cam_lookat_[2];
+          <<" "<<data_parsed_->cam_lookat_[1]<<" "<< data_parsed_->cam_lookat_[2];
         std::cout<<"\nCam Up:"<<data_parsed_->cam_up_[0]
-                                                      <<" "<<data_parsed_->cam_up_[1]<<" "<< data_parsed_->cam_up_[2];
+          <<" "<<data_parsed_->cam_up_[1]<<" "<< data_parsed_->cam_up_[2];
+        std::cout<<"\nRead background color for graphics: "<<data_parsed_->background_color_[0]<<", "
+                    <<data_parsed_->background_color_[1]<<", "
+                    <<data_parsed_->background_color_[2];
         std::cout<<std::endl;
 #endif
 
