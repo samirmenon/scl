@@ -29,11 +29,11 @@
 	</link>
 	<link>
 		<link_name>link1</link_name>
-		<position_in_parent>0.0 0.43 0.0</position_in_parent>
+		<position_in_parent>0.0 0.5 0.0</position_in_parent>
 		<orientation_in_parent>0.0 0.0 0.0 1.0</orientation_in_parent>
 		<mass>5.00000</mass>
-		<inertia>5.0 1.0 5.0</inertia>
-		<center_of_mass>0.0 0.0 0.0</center_of_mass>
+		<inertia>3.0 3.0 1.0</inertia>
+		<center_of_mass>0.0 -0.3625 0.0</center_of_mass>
 		<joint_name>q1-py</joint_name>
 		<parent_link_name>link0</parent_link_name>
 		<joint_type>py</joint_type>
@@ -42,7 +42,7 @@
 		<graphics>
 			<obj_file>
 				<name>Bot-RPP/graphics/1_link01.obj</name>
-				<position_in_parent>0.000000 -0.0700 -0.0750000</position_in_parent>
+				<position_in_parent>0.000000 -0.72500 -0.0750000</position_in_parent>
 				<orientation_in_parent>-0.7071067811865476 0.000000 0.000000 0.7071067811865476</orientation_in_parent>
 				<collision_type>0</collision_type>
 				<scaling>.001 .001 .001</scaling>
@@ -51,11 +51,11 @@
 	</link>
 	<link>
 		<link_name>link2</link_name>
-		<position_in_parent>0.0 0.650 -0.2</position_in_parent>
+		<position_in_parent>0.0 0.00 -0.2</position_in_parent>
 		<orientation_in_parent>0.0 0.0 0.0 1.0</orientation_in_parent>
 		<mass>3.00000</mass>
-		<inertia>2.0 0.5 2.0</inertia>
-		<center_of_mass>0.0 0.0 0.0</center_of_mass>
+		<inertia>2.0 2.0 0.5</inertia>
+		<center_of_mass>0.0 0.0 0.325</center_of_mass>
 		<joint_name>q2-pz</joint_name>
 		<parent_link_name>link1</parent_link_name>
 		<joint_type>pz</joint_type>
@@ -64,7 +64,7 @@
 		<graphics>
 			<obj_file>
 				<name>Bot-RPP/graphics/2_link2.obj</name>
-				<position_in_parent>0.000000 0.000000 0.0100</position_in_parent>
+				<position_in_parent>0.000000 0.000000 0.000</position_in_parent>
 				<orientation_in_parent>0.00000 0.000000 0.000000 1.000000</orientation_in_parent>
 				<scaling>.001 .001 .001</scaling>
 				<collision_type>0</collision_type>
