@@ -170,6 +170,7 @@ namespace scl
     /** Simbody's classes */
     SimTK::MultibodySystem simbody_system_;
     SimTK::SimbodyMatterSubsystem simbody_matter_;
+    SimTK::GeneralForceSubsystem simbody_forces_;
     SimTK::RungeKuttaMersonIntegrator* simbody_rkm_integ_;
     SimTK::TimeStepper* simbody_ts_;
     SimTK::State simbody_state_;

@@ -41,6 +41,8 @@ namespace scl
   CSimbodyDynamics::CSimbodyDynamics() :
           robot_name_("(no robot yet)"),
           ndof_(0),
+          simbody_matter_(simbody_system_),
+          simbody_forces_(simbody_system_),
           simbody_rkm_integ_(NULL),
           simbody_ts_(NULL)
   { }
@@ -71,8 +73,8 @@ namespace scl
       robot_name_ = arg_robot_data.name_;
       gravity_ = arg_robot_data.gravity_;
 
-      //Before we can start using Simbody
-      simbody_system_.setMatterSubsystem(simbody_matter_);
+      SimTK::Force::Gravity gravity(simbody_forces_, simbody_matter_,
+          SimTK::Vec3(gravity_(0),gravity_(1),gravity_(2))); // up! (weird)
 
       //*******Step 2***********
       //Set up the root node
@@ -128,6 +130,8 @@ namespace scl
       simbody_ts_ = new SimTK::TimeStepper(simbody_system_, *simbody_rkm_integ_);
       simbody_rkm_integ_->setAccuracy(1e-5); // ask for *lots* of accuracy here (default is 1e-3)
       simbody_ts_->initialize(simbody_state_);
+
+      has_been_init_ = true;
       return true;
     }
     catch(std::exception& e)
@@ -306,10 +310,24 @@ namespace scl
        * dt so set it to a small value. */
       const sFloat arg_time_interval)
   {
+    //Set the commanded torque:
+
+    //Integrate
+    if(arg_inputs.dof_ != simbody_state_.getNQ())
+    { return false; }
     SimTK::Integrator::SuccessfulStepStatus retval;
     retval = simbody_ts_->stepTo(simbody_ts_->getTime()+arg_time_interval);
     if(SimTK::Integrator::InvalidSuccessfulStepStatus == retval)
     { return false; }
+
+    //Copy the updated state to the sensors.
+    int i=0;
+    arg_inputs.sensors_.q_(i) = simbody_state_.getQ()[i]; ++i;
+    arg_inputs.sensors_.q_(i) = simbody_state_.getQ()[i]; ++i;
+    arg_inputs.sensors_.q_(i) = simbody_state_.getQ()[i]; ++i;
+    arg_inputs.sensors_.q_(i) = simbody_state_.getQ()[i]; ++i;
+    arg_inputs.sensors_.q_(i) = simbody_state_.getQ()[i]; ++i;
+    arg_inputs.sensors_.q_(i) = simbody_state_.getQ()[i]; ++i;
   }
 
   /** Gets the robot's kinetic energy */
