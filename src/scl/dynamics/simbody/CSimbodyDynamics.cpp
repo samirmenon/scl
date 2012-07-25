@@ -41,7 +41,8 @@ namespace scl
   CSimbodyDynamics::CSimbodyDynamics() :
           robot_name_("(no robot yet)"),
           ndof_(0),
-          simbody_matter_(simbody_system_)
+          simbody_rkm_integ_(NULL),
+          simbody_ts_(NULL)
   { }
 
   /** Destructor : Deletes stuff */
@@ -70,6 +71,9 @@ namespace scl
       robot_name_ = arg_robot_data.name_;
       gravity_ = arg_robot_data.gravity_;
 
+      //Before we can start using Simbody
+      simbody_system_.setMatterSubsystem(simbody_matter_);
+
       //*******Step 2***********
       //Set up the root node
       //************************
@@ -92,7 +96,7 @@ namespace scl
           tmp_root->ori_parent_quat_.y(),
           tmp_root->ori_parent_quat_.z());
       SimTK::Vec3 tmp_pos_parent(tmp_root->pos_in_parent_(0), tmp_root->pos_in_parent_(1), tmp_root->pos_in_parent_(2) );
-      SimTK::Rotation_<SimTK::P> tmp_ori_parent_rotmat(tmp_ori_parent_quat);
+      SimTK::Rotation_<SimTK::Real> tmp_ori_parent_rotmat(tmp_ori_parent_quat);
       SimTK::Transform_<SimTK::Real> tmp_trf_in_parent(tmp_ori_parent_rotmat,tmp_pos_parent);
 
       //Potentially superfluous (or atleast non-intuitive) syntax requires this. Used later
@@ -103,7 +107,7 @@ namespace scl
       //Traverse the robotRoot's tree and construct a Simbody tree structure
       //************************
       std::vector<SRobotLink*>::const_iterator it, ite;
-      for(it= tmp_root->child_addrs_.begin(), ite = tmp_root->child_addrs_.end;
+      for(it= tmp_root->child_addrs_.begin(), ite = tmp_root->child_addrs_.end();
           it!=ite; ++it)
       {
         flag = addNonRootLink(ground,**it);
@@ -115,13 +119,13 @@ namespace scl
       //Set up Simbody's topology
       //************************
       //Call this after changing the structure of the robot
-      simbody_system_.realizeTopology();
+      simbody_state_ = simbody_system_.realizeTopology();
 
       //*******Step 5***********
       //Set up Simbody's integrator
       //************************
       simbody_rkm_integ_ = new SimTK::RungeKuttaMersonIntegrator(simbody_system_);
-      simbody_ts_ = new SimTK::TimeStepper(simbody_system_, simbody_rkm_integ_);
+      simbody_ts_ = new SimTK::TimeStepper(simbody_system_, *simbody_rkm_integ_);
       simbody_rkm_integ_->setAccuracy(1e-5); // ask for *lots* of accuracy here (default is 1e-3)
       simbody_ts_->initialize(simbody_state_);
       return true;
@@ -152,60 +156,37 @@ namespace scl
           arg_child_lnk.ori_parent_quat_.y(),
           arg_child_lnk.ori_parent_quat_.z());
       SimTK::Vec3 tmp_pos_parent(arg_child_lnk.pos_in_parent_(0), arg_child_lnk.pos_in_parent_(1), arg_child_lnk.pos_in_parent_(2) );
-      SimTK::Rotation_<SimTK::P> tmp_ori_parent_rotmat(tmp_ori_parent_quat);
+      SimTK::Rotation_<SimTK::Real> tmp_ori_parent_rotmat(tmp_ori_parent_quat);
       SimTK::Transform_<SimTK::Real> tmp_trf_in_parent(tmp_ori_parent_rotmat,tmp_pos_parent);
 
       //Set the joint type
-      switch(arg_child_lnk.joint_type_)
+      if(scl::JOINT_TYPE_PRISMATIC_X == arg_child_lnk.joint_type_)
       {
-        case scl::JOINT_TYPE_PRISMATIC_X:
-          SimTK::MobilizedBody::Slider child_lnk(arg_parent, tmp_trf_in_parent, body, SimTK::Vec3(0));
+        SimTK::MobilizedBody::Slider child_lnk(arg_parent, tmp_trf_in_parent, body, SimTK::Transform_<SimTK::Real>());
           arg_parent = child_lnk;
-          break;
-
-        case scl::JOINT_TYPE_PRISMATIC_Y:
-          throw(std::runtime_error(std::string("Simbody only supports Prismatic X joints. At link: ")+arg_child_lnk.name_));
-          break;
-
-        case scl::JOINT_TYPE_PRISMATIC_Z:
-          throw(std::runtime_error(std::string("Simbody only supports Prismatic X joints. At link: ")+arg_child_lnk.name_));
-          break;
-
-        case scl::JOINT_TYPE_REVOLUTE_X:
-          throw(std::runtime_error("Simbody only supports Revolute Z joints. At link: ")+arg_child_lnk.name_);
-          break;
-
-        case scl::JOINT_TYPE_REVOLUTE_Y:
-          throw(std::runtime_error("Simbody only supports Revolute Z joints. At link: ")+arg_child_lnk.name_);
-          break;
-
-        case scl::JOINT_TYPE_REVOLUTE_Z:
-          SimTK::MobilizedBody::Pin child_lnk(arg_parent, tmp_trf_in_parent, body, SimTK::Vec3(0));
-          arg_parent = child_lnk;
-          break;
-
-        case scl::JOINT_TYPE_SPHERICAL:
-          SimTK::MobilizedBody::Ball child_lnk(arg_parent, tmp_trf_in_parent, body, SimTK::Vec3(0));
-          arg_parent = child_lnk;
-          break;
-
-        case scl::JOINT_TYPE_SPLINE:
-          throw(std::runtime_error("Spline joints not yet implemented in scl' Simbody interface"));
-          break;
-
-        default:
-          throw(std::runtime_error("Found unknown joint type for robot"));
-          break;
       }
+      else if(scl::JOINT_TYPE_REVOLUTE_Z == arg_child_lnk.joint_type_)
+      {
+        SimTK::MobilizedBody::Pin child_lnk(arg_parent, tmp_trf_in_parent, body, SimTK::Transform_<SimTK::Real>());
+        arg_parent = child_lnk;
+      }
+      else if(scl::JOINT_TYPE_SPHERICAL == arg_child_lnk.joint_type_)
+      {
+        SimTK::MobilizedBody::Ball child_lnk(arg_parent, tmp_trf_in_parent, body, SimTK::Transform_<SimTK::Real>());
+        arg_parent = child_lnk;
+      }
+      else
+      { throw(std::runtime_error(std::string("Simbody only supports Prismatic X, Revolute Z, and Spherical joints. At link: ")+arg_child_lnk.name_));  }
+
       //Now set the mass parameters
-      SimTK::P m(arg_child_lnk.mass_);
-      SimTK::Vec<3,SimTK::P> com(arg_child_lnk.com_(0),arg_child_lnk.com_(1),arg_child_lnk.com_(2));
-      SimTK::Inertia_<SimTK::P> inertia(arg_child_lnk.inertia_(0),arg_child_lnk.inertia_(1),arg_child_lnk.inertia_(2));
+      SimTK::Real m(arg_child_lnk.mass_);
+      SimTK::Vec<3,SimTK::Real> com(arg_child_lnk.com_(0),arg_child_lnk.com_(1),arg_child_lnk.com_(2));
+      SimTK::Inertia_<SimTK::Real> inertia(arg_child_lnk.inertia_(0),arg_child_lnk.inertia_(1),arg_child_lnk.inertia_(2));
       SimTK::MassProperties_<SimTK::Real> tmp_mass(m,com,inertia);
       arg_parent.setDefaultMassProperties(tmp_mass);
 
       std::vector<SRobotLink*>::const_iterator it, ite;
-      for(it= arg_child_lnk.child_addrs_.begin(), ite = arg_child_lnk.child_addrs_.end;
+      for(it= arg_child_lnk.child_addrs_.begin(), ite = arg_child_lnk.child_addrs_.end();
           it!=ite; ++it)
       {
         if(NULL == *it)
@@ -284,7 +265,7 @@ namespace scl
    * Uses id based link lookup. The dynamics implementation should
    * support this (maintain a map or something).
    */
-  sBool calculateJacobian(
+  sBool CSimbodyDynamics::calculateJacobian(
       /** The link at which the Jacobian is to be calculated */
       const void* arg_link_id,
       /** The offset from the link's frame. */
@@ -325,9 +306,9 @@ namespace scl
        * dt so set it to a small value. */
       const sFloat arg_time_interval)
   {
-    SimTK::SuccessfulStepStatus retval;
+    SimTK::Integrator::SuccessfulStepStatus retval;
     retval = simbody_ts_->stepTo(simbody_ts_->getTime()+arg_time_interval);
-    if(SimTK::InvalidSuccessfulStepStatus == retval)
+    if(SimTK::Integrator::InvalidSuccessfulStepStatus == retval)
     { return false; }
   }
 

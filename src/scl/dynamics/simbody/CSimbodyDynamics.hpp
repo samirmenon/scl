@@ -37,18 +37,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/data_structs/SGcModel.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
 
+#include <Simbody.h>
+
 #include <string>
 #include <Eigen/Dense>
-
-//Forward declare classes so we don't have to include the Simbody header here
-namespace SimTK
-{
-class MultibodySystem;
-class SimbodyMatterSubsystem;
-class MobilizedBody;
-class TimeStepper;
-class State;
-}
 
 namespace scl
 {
@@ -180,10 +172,8 @@ namespace scl
     SimTK::SimbodyMatterSubsystem simbody_matter_;
     SimTK::RungeKuttaMersonIntegrator* simbody_rkm_integ_;
     SimTK::TimeStepper* simbody_ts_;
-    SimTK::State* simbody_state_;
+    SimTK::State simbody_state_;
   };
-
-}
 
 } /* namespace scl */
 #endif /* CSIMBODYDYNAMICS_HPP_ */
