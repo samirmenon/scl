@@ -201,7 +201,7 @@ namespace scl
       if(false == flag) { throw(std::runtime_error("Could not initialize robot.")); }
     }
     catch(std::exception & e)
-    { std::cout<<"\nCRobot::init("<<arg_robot_name<<") Error: "<< e.what(); }
+    { std::cout<<"\nCRobot::initFromDb("<<arg_robot_name<<") Error: "<< e.what(); }
 
     return data_.has_been_init_;
   }
