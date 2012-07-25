@@ -40,11 +40,14 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <Eigen/Dense>
 
+//Forward declare classes so we don't have to include the Simbody header here
 namespace SimTK
 {
 class MultibodySystem;
 class SimbodyMatterSubsystem;
 class MobilizedBody;
+class TimeStepper;
+class State;
 }
 
 namespace scl
@@ -172,9 +175,12 @@ namespace scl
     /** The gravity acting on the robot */
     Eigen::Vector3d gravity_;
 
-    /** Simbody's representation */
+    /** Simbody's classes */
     SimTK::MultibodySystem simbody_system_;
     SimTK::SimbodyMatterSubsystem simbody_matter_;
+    SimTK::RungeKuttaMersonIntegrator* simbody_rkm_integ_;
+    SimTK::TimeStepper* simbody_ts_;
+    SimTK::State* simbody_state_;
   };
 
 }

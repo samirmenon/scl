@@ -42,7 +42,7 @@ namespace scl
           robot_name_("(no robot yet)"),
           ndof_(0),
           simbody_matter_(simbody_system_)
-  {}
+  { }
 
   /** Destructor : Deletes stuff */
   CSimbodyDynamics::~CSimbodyDynamics()
@@ -116,6 +116,14 @@ namespace scl
       //************************
       //Call this after changing the structure of the robot
       simbody_system_.realizeTopology();
+
+      //*******Step 5***********
+      //Set up Simbody's integrator
+      //************************
+      simbody_rkm_integ_ = new SimTK::RungeKuttaMersonIntegrator(simbody_system_);
+      simbody_ts_ = new SimTK::TimeStepper(simbody_system_, simbody_rkm_integ_);
+      simbody_rkm_integ_->setAccuracy(1e-5); // ask for *lots* of accuracy here (default is 1e-3)
+      simbody_ts_->initialize(simbody_state_);
       return true;
     }
     catch(std::exception& e)
@@ -227,7 +235,8 @@ namespace scl
       updateModelMatrices(). */
       SGcModel * js_model)
   {
-
+    //NOTE TODO : Implement this later.
+    return false;
   }
 
   /** Gives an id for a link name.
@@ -240,6 +249,8 @@ namespace scl
    */
   const void* CSimbodyDynamics::getIdForLink(std::string arg_link_name)
   {
+    //NOTE TODO : Implement this later
+    return NULL;
   }
 
   /** Calculates the Transformation Matrix for the robot to which
@@ -260,7 +271,8 @@ namespace scl
       /** The transformation matrix will be saved here. */
       Eigen::Affine3d& arg_T)
   {
-
+    //NOTE TODO : Implement this later.
+    return false;
   }
 
   /** Calculates the Jacobian for the robot to which this dynamics
@@ -280,7 +292,8 @@ namespace scl
       /** The Jacobain will be saved here. */
       Eigen::MatrixXd& arg_J)
   {
-
+    //NOTE TODO : Implement this later.
+    return false;
   }
 
   /** Integrates the robot's state.
@@ -312,19 +325,24 @@ namespace scl
        * dt so set it to a small value. */
       const sFloat arg_time_interval)
   {
-
+    SimTK::SuccessfulStepStatus retval;
+    retval = simbody_ts_->stepTo(simbody_ts_->getTime()+arg_time_interval);
+    if(SimTK::InvalidSuccessfulStepStatus == retval)
+    { return false; }
   }
 
   /** Gets the robot's kinetic energy */
   sFloat CSimbodyDynamics::getKineticEnergy()
   {
-
+    //NOTE TODO : Implement this later.
+    return false;
   }
 
   /** Gets the robot's potential energy */
   sFloat CSimbodyDynamics::getPotentialEnergy()
   {
-
+    //NOTE TODO : Implement this later.
+    return false;
   }
 
 } /* namespace scl */
