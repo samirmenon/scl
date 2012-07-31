@@ -96,7 +96,8 @@ namespace scl {
       for(it = data_->task_data_->begin(), ite = data_->task_data_->end(); it!=ite; ++it)
       {
         STaskBase* ds = *it;
-        data_->force_gc_ += ds->range_space_ * ds->force_gc_;
+        if(ds->has_been_activated_)
+        { data_->force_gc_ += ds->range_space_ * ds->force_gc_; }
       }
     }
     return true;
