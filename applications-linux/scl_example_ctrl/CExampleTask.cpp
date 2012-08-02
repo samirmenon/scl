@@ -95,7 +95,7 @@ namespace scl_app
 
       link_dynamic_id_ = dynamics_->getIdForLink("end-effector");
       if(S_NULL == link_dynamic_id_)
-      { throw(std::runtime_error("The weather is bad today!")); }
+      { throw(std::runtime_error("The link dynamic id for this operational point's parent link is NULL. Probably due to un-initialized dynamics.")); }
 
       has_been_init_ = true;
     }
