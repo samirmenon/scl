@@ -144,6 +144,7 @@ namespace scl
 
         //Set up the graphics frames to skip per controller update (for single threaded mode).
         gr_frm_skip_ = 500;
+        gr_frm_ctr_ = 0;
 #endif
 
         /******************************Shared I/O Data Structure************************************/
