@@ -95,6 +95,8 @@ namespace scl_app
           if(S_NULL == tsk)
           { throw(std::runtime_error("Must specify at least one valid op-point task. Could not find specified task"));  }
           tsk_ds = dynamic_cast<scl::SOpPointTask*>(tsk->getTaskData());
+          if(S_NULL == tsk_ds)
+          { throw(std::runtime_error(std::string("Error. A task's data structure is NULL. At task: ")+op_link_name));  }
 
 #ifdef GRAPHICS_ON
           /** Render a sphere at the op-point task's position */
@@ -114,6 +116,8 @@ namespace scl_app
               if(S_NULL == tsk2)
               { throw(std::runtime_error("There are atleast two op-point tasks. Specify the second task's name to connect it to a keyboard handler."));  }
               tsk2_ds = dynamic_cast<scl::SOpPointTask*>(tsk2->getTaskData());
+              if(S_NULL == tsk2_ds)
+              { throw(std::runtime_error(std::string("Error. A task's data structure is NULL. At task: ")+op_link_name));  }
 
 #ifdef GRAPHICS_ON
               /** Render a sphere at the op-point task's position */
