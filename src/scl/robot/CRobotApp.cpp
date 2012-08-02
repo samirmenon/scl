@@ -72,7 +72,7 @@ namespace scl
     if(4 > argv.size())
     {
       std::cout<<"\nApplication requires the following command line input:"
-          <<"\n./<executable> <file_name.xml> <robot_name.xml> <controller_name> <app-specific-arguments>";
+          <<"\n./<executable> <robot_config_file_name.xml> <robot_name> <controller_name> <app-specific-arguments>";
       return false;
     }
     else
