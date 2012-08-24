@@ -112,11 +112,11 @@ namespace scl
     /* *****************************************************************
      *                        Actuation Model
      * ***************************************************************** */
-    /** Applies the actuator model to the current input commands */
-    virtual sBool applyActuatorModel()=0;
-
     /** Sets the actuator's command */
     virtual sBool setActuatorCommand(const Eigen::VectorXd& arg_input)=0;
+
+    /** Applies the actuator model to the current input commands */
+    virtual sBool applyActuatorModel()=0;
 
     /** Gets the output of the actuator. Returned in the passed variable. */
     virtual sBool getActuatorOutput(Eigen::VectorXd& ret_output)=0;
