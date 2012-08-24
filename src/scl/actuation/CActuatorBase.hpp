@@ -101,7 +101,7 @@ namespace scl
    * { Robot-aware/agnostic Math } -> { Robot-specific Physical Properties } -> { Robot-agnostic Physics Laws }
    *
    * NOTE : Please don't be confused. This is an actuator "model", and
-   *        as these flags make sense for a simulated actuator. It is
+   *        as these functions make sense for a simulated actuator. It is
    *        "NOT" meant as an interface to a real actuator.
    *
    * __DO NOT__ subclass this base and start writing a driver in it.
