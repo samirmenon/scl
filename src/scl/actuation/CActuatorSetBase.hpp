@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /*
  * \file CActuatorSetBase.hpp
  *
@@ -46,23 +46,24 @@ namespace scl
    * Subclasses of this class will simply organize actuators into a
    * coherent interface, abstracting all physical details and exposing
    * a mathematical interface for the controller.
+   *
+   * NOTE for "Real Robots": While working with a real robot, subclass
+   *  this base class and implement your driver in it.
    */
   class CActuatorSetBase
   {
   public:
     /* *****************************************************************
-     *                        Initialization
+     *                        Actuator Modeling
      * ***************************************************************** */
     /** Set the actuator commands. These will be translated into individual
      * actuator commands */
-    virtual sBool setActuatorCommand(const Eigen::VectorXd& arg_input)=0;
+    virtual sBool actuate(const Eigen::VectorXd& arg_input)=0;
 
-    /** Gets the output of the actuator. Returned in the passed variable. */
-    virtual sBool getActuatorOutput(Eigen::VectorXd& ret_output)=0;
-
-    /** Has this actuator been initialized */
-    virtual sBool hasBeenInit()
-    { return has_been_init_; }
+    /** Gets the output of the actuator. Returned in the passed variable.
+     * Typically used for logging, validation etc.
+     * Should "NOT" be used by a controller. */
+    virtual sBool getActuatorOutputs(Eigen::VectorXd& ret_output)=0;
 
     /* *****************************************************************
      *                        Initialization
@@ -70,8 +71,12 @@ namespace scl
     /** Initialize the actuator set */
     virtual sBool init()=0;
 
+    /** Has this actuator been initialized */
+    virtual sBool hasBeenInit()
+    { return has_been_init_; }
+
     /** Default constructor. Sets stuff to NULL */
-    CActuatorSetBase(): actuator_state_(S_NULL), has_been_init_(false) {}
+    CActuatorSetBase(): has_been_init_(false) {}
 
     /** Default destructor. Does nothing. */
     virtual ~CActuatorSetBase() {}
