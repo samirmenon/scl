@@ -36,7 +36,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
   /** Some defaults that allow controlling a sensor model's behavior.
-   * All sensor models should support these. */
+   * All sensor models should support these.
+   *
+   * NOTE : Please don't be confused. This is an actuator "model", and
+   *        as these flags make sense for a simulated actuator. It is
+   *        "NOT" meant as an interface to a real actuator. */
   class SSensorBase : SObject
   {
   public:
@@ -100,7 +104,14 @@ namespace scl
   };
 
   /** This class models a generic sensor such as an encoder or a camera.
-   * It presents a high level interface to the sensor */
+   * It presents a high level interface to the simulated sensor.
+   *
+   * NOTE : Please don't be confused. This is a sensor "model", and
+   *        as these functions make sense for a simulated sensor. It is
+   *        "NOT" meant as an interface to a real sensor.
+   *
+   * __DO NOT__ subclass this base and start writing a driver in it.
+    */
   class CSensorBase
   {
   public:
