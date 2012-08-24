@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /*
  * \file CSensorBase.hpp
  *
@@ -32,6 +32,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CSENSORBASE_HPP_
 
 #include <scl/data_structs/SObject.hpp>
+
+#include <Eigen/Eigen>
 
 namespace scl
 {
@@ -111,7 +113,7 @@ namespace scl
    *        "NOT" meant as an interface to a real sensor.
    *
    * __DO NOT__ subclass this base and start writing a driver in it.
-    */
+   */
   class CSensorBase
   {
   public:
@@ -141,18 +143,18 @@ namespace scl
       return flag;
     }
 
+    /* *****************************************************************
+     *                        Initialization
+     * ***************************************************************** */
+    /** All actutors must be initialized */
+    virtual sBool init(SSensorBase* arg_state)=0;
+
     /** Has this sensor been initialized */
     virtual sBool hasBeenInit()
     {
       if(S_NULL == state_) {  return false; }
       return state_->has_been_init_;
     }
-
-    /* *****************************************************************
-     *                        Initialization
-     * ***************************************************************** */
-    /** All actutors must be initialized */
-    virtual sBool init(SSensorBase* arg_state)=0;
 
     /** Default constructor. Sets stuff to NULL */
     CSensorBase() : state_(S_NULL) {}
