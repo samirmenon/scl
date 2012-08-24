@@ -164,6 +164,8 @@ public:
   }
 };
 
+#define SCL_NUM_UI_POINTS 12
+
 /** All the data updated by the gui
  *
  * NOTE :
@@ -194,7 +196,7 @@ struct SGuiData
   sutil::CMappedList<std::string,scl::SChaiGraphics> chai_data_;
 #endif
 
-  Eigen::Vector3d ui_point_[12];
+  Eigen::Vector3d ui_point_[SCL_NUM_UI_POINTS];
 
   /** 0 = All points by themselves.
    *  1 = All points together*/

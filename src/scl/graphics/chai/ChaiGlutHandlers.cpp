@@ -72,6 +72,14 @@ namespace scl_chai_glut_interface
       if(S_NULL == db)
       { throw(std::runtime_error("Database not intialized")); }
 
+      //Set all the UI points to zero.
+      for(int i=0;i<SCL_NUM_UI_POINTS;++i)
+      {
+        db->s_gui_.ui_point_[i](0) = 0.0;
+        db->s_gui_.ui_point_[i](1) = 0.0;
+        db->s_gui_.ui_point_[i](2) = 0.0;
+      }
+
       SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
       if(S_NULL == db)
       { throw(std::runtime_error("Chai shared data singleton not intialized")); }
