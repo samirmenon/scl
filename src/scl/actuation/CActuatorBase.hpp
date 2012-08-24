@@ -132,18 +132,18 @@ namespace scl
       return flag;
     }
 
+    /* *****************************************************************
+     *                        Initialization
+     * ***************************************************************** */
+    /** All actutors must be initialized */
+    virtual sBool init(SActuatorBase* arg_state)=0;
+
     /** Has this actuator been initialized */
     virtual sBool hasBeenInit()
     {
       if(S_NULL == state_) {  return false; }
       return state_->has_been_init_;
     }
-
-    /* *****************************************************************
-     *                        Initialization
-     * ***************************************************************** */
-    /** All actutors must be initialized */
-    virtual sBool init(SActuatorBase* arg_state)=0;
 
     /** Default constructor. Sets stuff to NULL */
     CActuatorBase() : state_(S_NULL) {}
