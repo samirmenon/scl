@@ -42,7 +42,7 @@ class taoDNode;
 
 namespace jspace {
   
-  struct tao_tree_info_s;
+  struct STaoTreeInfo;
   
   std::string inertia_matrix_to_string(deMatrix3 const & mx);
   
@@ -67,13 +67,13 @@ namespace jspace {
   /**
      Similar to dump_tao_tree() but uses the more recent tao_tree_info_s structure.
   */
-  void dump_tao_tree_info(std::ostream & os, tao_tree_info_s * tree, std::string prefix, bool detailed);
+  void dump_tao_tree_info(std::ostream & os, STaoTreeInfo * tree, std::string prefix, bool detailed);
   
   /**
      Similar to dump_tao_tree_info(), but attempts to spew it out in a
      format that can be read back into a SAI XML parser.
   */
-  void dump_tao_tree_info_saixml(std::ostream & os, tao_tree_info_s * tree) throw(std::runtime_error);
+  void dump_tao_tree_info_saixml(std::ostream & os, STaoTreeInfo * tree) throw(std::runtime_error);
   
   /**
      Similar to dump_tao_tree_info(), but attempts to spew it out in a
@@ -82,7 +82,7 @@ namespace jspace {
   void dump_tao_tree_info_lotusxml(std::ostream & os,
 				   std::string const & robot_name,
 				   std::string const & root_link_name,
-				   tao_tree_info_s * tree) throw(std::runtime_error);
+				   STaoTreeInfo * tree) throw(std::runtime_error);
   
 }
 

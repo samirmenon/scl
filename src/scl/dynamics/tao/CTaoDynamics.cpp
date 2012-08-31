@@ -176,8 +176,8 @@ namespace scl
     std::cout<<std::flush;
 #endif
 
-    jspace::tao_tree_info_s * kgm_tree(jspace::create_bare_tao_tree_info(kgm_root));
-    jspace::tao_tree_info_s * cc_tree(jspace::create_bare_tao_tree_info(cc_root));
+    jspace::STaoTreeInfo * kgm_tree(jspace::create_bare_tao_tree_info(kgm_root));
+    jspace::STaoTreeInfo * cc_tree(jspace::create_bare_tao_tree_info(cc_root));
 
     //NOTE TODO Perhaps this was what TRY_TO_CONVERT_NAMES achieved
     sutil::CMappedTree<std::basic_string<char>, scl::SRobotLink>::const_iterator itbr, itbre;
@@ -327,7 +327,7 @@ namespace scl
      */
 
     //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
-    jspace::tao_tree_info_s * tao_tree = model_->_getCCTree();
+    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
 
     //Uses the cc tree to integrate the dynamics.
     for (size_t ii(0); ii < ndof_; ++ii)
@@ -385,7 +385,7 @@ namespace scl
    */
   sFloat CTaoDynamics::getKineticEnergy()
   {
-    jspace::tao_tree_info_s * tao_tree = model_->_getCCTree();
+    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
     sFloat ke = taoDynamics::kineticEnergy(tao_tree->root);
     return ke;
   }
@@ -396,7 +396,7 @@ namespace scl
   sFloat CTaoDynamics::getPotentialEnergy()
   {
     deVector3 gravity(0,0,-9.81);
-    jspace::tao_tree_info_s * tao_tree = model_->_getCCTree();
+    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
     sFloat pe = taoDynamics::potentialEnergy(tao_tree->root, &gravity);
     return pe;
   }

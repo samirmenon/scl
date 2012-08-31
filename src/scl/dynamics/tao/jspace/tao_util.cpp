@@ -21,7 +21,7 @@
 /**
    \file jspace/tao_util.cpp
    \author Roland Philippsen (roland DOT philippsen AT gmx DOT net)
-*/
+ */
 
 #include "tao_util.hpp"
 #include "strutil.hpp"
@@ -41,23 +41,23 @@
 #endif
 
 
-namespace jspace {
-  
+namespace jspace
+{
   void mapNodesToIDs(idToNodeMap_t & idToNodeMap,
-		     taoDNode * node)
-    throw(std::runtime_error)
+      taoDNode * node)
+  throw(std::runtime_error)
   {
     deInt id = node->getID();
     if (idToNodeMap.find( id ) != idToNodeMap.end())
       throw std::runtime_error("jspace::mapNodesToIDs(): duplicate ID " + sfl::to_string(id));
     idToNodeMap.insert(std::make_pair(id, node));
-    
+
     // recurse
     for( taoDNode* p = node->getDChild(); p != NULL; p = p->getDSibling() )
       mapNodesToIDs(idToNodeMap, p);
   }
-  
-  
+
+
   int countNumberOfLinks(taoDNode * root)
   {
     int count(0);
@@ -67,8 +67,8 @@ namespace jspace {
     }
     return count;
   }
-  
-  
+
+
   int countNumberOfJoints(taoDNode * node)
   {
     int count(0);
@@ -80,8 +80,8 @@ namespace jspace {
     }
     return count;
   }
-  
-  
+
+
   int countDegreesOfFreedom(taoDNode * node)
   {
     int dof(0);
@@ -93,8 +93,8 @@ namespace jspace {
     }
     return dof;
   }
-  
-  
+
+
   double computeTotalMass(taoDNode * node)
   {
     double mass(0);
@@ -110,69 +110,69 @@ namespace jspace {
     }
     return mass;
   }
-  
-  
+
+
   STaoNodeInfo::
   STaoNodeInfo()
-    : id(-2),
-      node(0),
-      joint(0),
-      link_name(""),
-      joint_name(""),
-      limit_lower(0),
-      limit_upper(0)
+  : id(-2),
+    node(0),
+    joint(0),
+    link_name(""),
+    joint_name(""),
+    limit_lower(0),
+    limit_upper(0)
   {
   }
-  
-  
+
+
   STaoNodeInfo::
   STaoNodeInfo(taoDNode * _node,
-		  std::string const & _link_name,
-		  std::string _joint_name,
-		  double _limit_lower,
-		  double _limit_upper)
-    : id(_node->getID()),
-      node(_node),
-      joint(0),
-      link_name(_link_name),
-      joint_name(_joint_name),
-      limit_lower(_limit_lower),
-      limit_upper(_limit_upper)
+      std::string const & _link_name,
+      std::string _joint_name,
+      double _limit_lower,
+      double _limit_upper)
+  : id(_node->getID()),
+    node(_node),
+    joint(0),
+    link_name(_link_name),
+    joint_name(_joint_name),
+    limit_lower(_limit_lower),
+    limit_upper(_limit_upper)
   {
     if (node) {
       joint = node->getJointList();
     }
   }
-  
-  
+
+
   STaoNodeInfo::
   STaoNodeInfo(STaoNodeInfo const & orig)
-    : id(orig.id),
-      node(orig.node),
-      joint(orig.joint),
-      link_name(orig.link_name),
-      joint_name(orig.joint_name),
-      limit_lower(orig.limit_lower),
-      limit_upper(orig.limit_upper)
+  : id(orig.id),
+    node(orig.node),
+    joint(orig.joint),
+    link_name(orig.link_name),
+    joint_name(orig.joint_name),
+    limit_lower(orig.limit_lower),
+    limit_upper(orig.limit_upper)
   {
   }
-  
-  
-  tao_tree_info_s::
-  tao_tree_info_s()
-    : root(0)
+
+
+  STaoTreeInfo::
+  STaoTreeInfo()
+  : root(0)
   {
   }
-  
-  
-  tao_tree_info_s::
-  ~tao_tree_info_s()
+
+
+  STaoTreeInfo::
+  ~STaoTreeInfo()
   {
     delete root;
   }
-  
-  
-  bool tao_tree_info_s::
+
+
+  bool STaoTreeInfo::
   sort()
   {
     // swap any out-of-order entries (yes yes, this is
@@ -180,26 +180,26 @@ namespace jspace {
     // already be correctly ordered anyway)
     for (ssize_t ii(0); ii < static_cast<ssize_t>(info.size()); ++ii) {
       if (info[ii].id != ii) {
-	for (ssize_t jj(ii + 1); jj < static_cast<ssize_t>(info.size()); ++jj) {
-	  if (info[jj].id == ii) {
-	    std::swap(info[ii], info[jj]);
-	    break;
-	  }
-	}
+        for (ssize_t jj(ii + 1); jj < static_cast<ssize_t>(info.size()); ++jj) {
+          if (info[jj].id == ii) {
+            std::swap(info[ii], info[jj]);
+            break;
+          }
+        }
       }
     }
     // check if it worked
     for (ssize_t ii(0); ii < static_cast<ssize_t>(info.size()); ++ii) {
       if (info[ii].id != ii) {
-	return false;
+        return false;
       }
     }
     return true;
   }
-  
-  
-  static void _recurse_create_bare_tao_tree_info(tao_tree_info_s * tree_info,
-						 taoDNode * node)
+
+
+  static void _recurse_create_bare_tao_tree_info(STaoTreeInfo * tree_info,
+      taoDNode * node)
   {
     tree_info->info.push_back(STaoNodeInfo());
     STaoNodeInfo & node_info(tree_info->info.back());
@@ -214,21 +214,21 @@ namespace jspace {
       _recurse_create_bare_tao_tree_info(tree_info, child);
     }
   }
-  
-  
-  tao_tree_info_s * create_bare_tao_tree_info(taoNodeRoot * root)
+
+
+  STaoTreeInfo * create_bare_tao_tree_info(taoNodeRoot * root)
   {
-    tao_tree_info_s * tree_info(new tao_tree_info_s());
+    STaoTreeInfo * tree_info(new STaoTreeInfo());
     tree_info->root = root;
     for (taoDNode * child(root->getDChild()); child != NULL; child = child->getDSibling()) {
       _recurse_create_bare_tao_tree_info(tree_info, child);
     }
     return tree_info;
   }
-  
-  
+
+
   typedef std::map<int, int> id_counter_t;
-  
+
   static void tao_collect_ids(taoDNode * node, id_counter_t & id_counter)
   {
     int const id(node->getID());
@@ -243,13 +243,13 @@ namespace jspace {
       tao_collect_ids(child, id_counter);
     }
   }
-  
-  
+
+
   int tao_consistency_check(taoNodeRoot * root, std::ostream * msg)
   {
     if (root->getID() != -1) {
       if (msg) {
-	*msg << "jspace::tao_consistency_check(): root has ID " << root->getID() << " instead of -1\n";
+        *msg << "jspace::tao_consistency_check(): root has ID " << root->getID() << " instead of -1\n";
       }
       return 1;
     }
@@ -260,20 +260,20 @@ namespace jspace {
     int expected_id(0);
     for (id_counter_t::const_iterator idc(id_counter.begin()); idc != id_counter.end(); ++idc, ++expected_id) {
       if (idc->first != expected_id) {
-	if (msg) {
-	  *msg << "jspace::tao_consistency_check(): ID gap, expected "
-	       << expected_id << " but encountered " << idc->first << "\n";
-	}
-	return 2;
+        if (msg) {
+          *msg << "jspace::tao_consistency_check(): ID gap, expected "
+              << expected_id << " but encountered " << idc->first << "\n";
+        }
+        return 2;
       }
       if (1 != idc->second) {
-	if (msg) {
-	  *msg << "jspace::tao_consistency_check(): duplicate ID " << idc->first << "\n";
-	}
-	return 3;
+        if (msg) {
+          *msg << "jspace::tao_consistency_check(): duplicate ID " << idc->first << "\n";
+        }
+        return 3;
       }
     }
     return 0;
   }
-  
+
 }

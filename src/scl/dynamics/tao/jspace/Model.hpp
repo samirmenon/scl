@@ -44,7 +44,7 @@ namespace jspace {
   
   
   // declared in <jspace/tao_util.hpp>
-  struct tao_tree_info_s;
+  struct STaoTreeInfo;
   
   class Model
   {
@@ -79,13 +79,13 @@ namespace jspace {
 		 gravity torque vector, the mass-inertia matrix, and
 		 its inverse. This tree will be deleted in the
 		 jspace::Model destructor. */
-	     tao_tree_info_s * kgm_tree,
+	     STaoTreeInfo * kgm_tree,
 	     /** Optional TAO tree info for computing Coriolis and
 		 centrifugal torques. If you set this to NULL, then
 		 the Coriolis and centrifugal forces won't be
 		 computed. This tree will be deleted in the
 		 jspace::Model destructor. */
-	     tao_tree_info_s * cc_tree,
+	     STaoTreeInfo * cc_tree,
 	     /** Gravity x **/
 	     double grav_x_,
        /** Gravity y **/
@@ -364,20 +364,20 @@ namespace jspace {
     
     /** For debugging only, access to the
 	kinematics-gravity-mass-inertia tree. */
-    tao_tree_info_s * _getKGMTree() { return kgm_tree_; }
+    STaoTreeInfo * _getKGMTree() { return kgm_tree_; }
     
     /** For debugging only, access to the optional
 	Coriolis-centrifugal tree. Can NULL if the user is not
 	interested in Coriolis-centrifugal effects. */
-    tao_tree_info_s * _getCCTree() { return cc_tree_; }
+    STaoTreeInfo * _getCCTree() { return cc_tree_; }
     
     
   private:
     typedef std::set<size_t> dof_set_t;
     
     std::size_t ndof_;
-    tao_tree_info_s * kgm_tree_;
-    tao_tree_info_s * cc_tree_;
+    STaoTreeInfo * kgm_tree_;
+    STaoTreeInfo * cc_tree_;
 
     dof_set_t gravity_disabled_;
     deVector3* gravity_;

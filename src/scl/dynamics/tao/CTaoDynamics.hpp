@@ -47,7 +47,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 class taoDNode;
 
 namespace jspace {
-  struct tao_tree_info_s;
+  struct STaoTreeInfo;
   class Model;
 }
 

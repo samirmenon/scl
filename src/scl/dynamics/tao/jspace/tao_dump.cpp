@@ -112,7 +112,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
   }
   
   
-  static void _dump_tao_tree_info(std::ostream & os, taoDNode * root, tao_tree_info_s::node_info_t const & info,
+  static void _dump_tao_tree_info(std::ostream & os, taoDNode * root, STaoTreeInfo::node_info_t const & info,
 				  std::string prefix, bool detailed)
   {
     int const id(root->getID());
@@ -151,13 +151,13 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
   }
   
   
-  void dump_tao_tree_info(std::ostream & os, tao_tree_info_s * tree, std::string prefix, bool detailed)
+  void dump_tao_tree_info(std::ostream & os, STaoTreeInfo * tree, std::string prefix, bool detailed)
   {
     _dump_tao_tree_info(os, tree->root, tree->info, prefix, detailed);
   }
   
   
-  static void _dump_tao_tree_info_saixml(std::ostream & os, taoDNode * root, tao_tree_info_s::node_info_t const & info,
+  static void _dump_tao_tree_info_saixml(std::ostream & os, taoDNode * root, STaoTreeInfo::node_info_t const & info,
 					 std::string prefix) throw(std::runtime_error)
   {
     deFrame * const home(root->frameHome());
@@ -242,7 +242,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
   }
   
   
-  void dump_tao_tree_info_saixml(std::ostream & os, tao_tree_info_s * tree) throw(std::runtime_error)
+  void dump_tao_tree_info_saixml(std::ostream & os, STaoTreeInfo * tree) throw(std::runtime_error)
   {
     os << "<?xml version=\"1.0\" ?>\n"
        << "<dynworld>\n";
@@ -255,7 +255,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
   void dump_tao_tree_info_lotusxml(std::ostream & os,
 				   std::string const & robot_name,
 				   std::string const & root_link_name,
-				   tao_tree_info_s * tree) throw(std::runtime_error)
+				   STaoTreeInfo * tree) throw(std::runtime_error)
   {
     os << "<?xml version=\"1.0\" ?>\n"
        << "<lotus_world>\n"
@@ -284,7 +284,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
     //////////////////////////////////////////////////
     // links
     
-    for (tao_tree_info_s::node_info_t::const_iterator inode(tree->info.begin());
+    for (STaoTreeInfo::node_info_t::const_iterator inode(tree->info.begin());
 	 inode != tree->info.end(); ++inode) {
       home = inode->node->frameHome();
       if ( ! home) {
@@ -338,7 +338,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
 	  parent_link_name = root_link_name;
 	}
 	else {
-	  for (tao_tree_info_s::node_info_t::const_iterator jj(tree->info.begin());
+	  for (STaoTreeInfo::node_info_t::const_iterator jj(tree->info.begin());
 	       jj != tree->info.end(); ++jj) {
 	    if (jj->node == parent) {
 	      parent_link_name = jj->link_name;

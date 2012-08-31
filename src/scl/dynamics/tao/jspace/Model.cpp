@@ -67,8 +67,8 @@ namespace jspace {
   
   
   int Model::
-  init(tao_tree_info_s * kgm_tree,
-       tao_tree_info_s * cc_tree,
+  init(STaoTreeInfo * kgm_tree,
+       STaoTreeInfo * cc_tree,
        double grav_x_,
        double grav_y_,
        double grav_z_,
@@ -106,7 +106,7 @@ namespace jspace {
     // Create ancestry table of all nodes in the KGM tree, for correct
     // (and slightly more efficient) computation of the Jacobian.
     ancestry_table_.clear();	// just paranoid...
-    typedef tao_tree_info_s::node_info_t::const_iterator cit_t;
+    typedef STaoTreeInfo::node_info_t::const_iterator cit_t;
     cit_t in(kgm_tree->info.begin());
     cit_t iend(kgm_tree->info.end());
     for (/**/; in != iend; ++in) {
