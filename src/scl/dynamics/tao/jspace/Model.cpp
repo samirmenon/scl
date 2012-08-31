@@ -122,11 +122,11 @@ namespace jspace {
         }
         return -5;
       }
-      ancestry_list_t & alist(ancestry_table_[in->node]); // first reference creates the instance
+      std::list<SAncestryEntry> & alist(ancestry_table_[in->node]); // first reference creates the instance
       // walk up the ancestry, append each parent to the list of
       // ancestors of this node
       for (taoDNode * node(in->node); 0 != node; node = node->getDParent()) {
-        ancestry_entry_s entry;
+        SAncestryEntry entry;
         entry.id = node->getID();
         entry.joint = node->getJointList();
         if (0 != entry.joint) {
@@ -372,11 +372,11 @@ namespace jspace {
     if ( ! node) {
       return false;
     }
-    ancestry_table_t::const_iterator iae(ancestry_table_.find(const_cast<taoDNode*>(node)));
+    std::map<taoDNode *, std::list<SAncestryEntry>>::const_iterator iae(ancestry_table_.find(const_cast<taoDNode*>(node)));
     if (iae == ancestry_table_.end()) {
       return false;
     }
-    ancestry_list_t const & alist(iae->second);
+    std::list<SAncestryEntry> const & alist(iae->second);
 
 #ifdef DEBUG
     fprintf(stderr, "computeJacobian()\ng: [% 4.2f % 4.2f % 4.2f]\n", gx, gy, gz);
@@ -385,8 +385,8 @@ namespace jspace {
     // \todo Implement support for more than one joint per node, and
     //  more than one DOF per joint.
     jacobian = Matrix::Zero(6, ndof_);
-    ancestry_list_t::const_iterator ia(alist.begin());
-    ancestry_list_t::const_iterator iend(alist.end());
+    std::list<SAncestryEntry>::const_iterator ia(alist.begin());
+    std::list<SAncestryEntry>::const_iterator iend(alist.end());
     for (/**/; ia != iend; ++ia) {
       deVector6 Jg_col;
       ia->joint->getJgColumns(&Jg_col);

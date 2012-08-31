@@ -388,13 +388,12 @@ namespace jspace {
     std::vector<double> a_upper_triangular_;
     std::vector<double> ainv_upper_triangular_;
     
-    struct ancestry_entry_s {
+    struct SAncestryEntry {
       int id;
       taoJoint * joint;
     };
-    typedef std::list<ancestry_entry_s> ancestry_list_t;
-    typedef std::map<taoDNode *, ancestry_list_t> ancestry_table_t;
-    ancestry_table_t ancestry_table_;
+
+    std::map<taoDNode *, std::list<SAncestryEntry>> ancestry_table_;
   };
   
 }
