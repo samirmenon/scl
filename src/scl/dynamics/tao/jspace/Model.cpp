@@ -277,7 +277,7 @@ namespace jspace {
 
 
   bool Model::getGlobalFrame(taoDNode const * node,
-      Transform & global_transform) const
+      Eigen::Affine3d & global_transform) const
   {
     if ( ! node) {
       return false;
@@ -300,8 +300,8 @@ namespace jspace {
 
 
   bool Model::computeGlobalFrame(taoDNode const * node,
-      Transform const & local_transform,
-      Transform & global_transform) const
+      Eigen::Affine3d const & local_transform,
+      Eigen::Affine3d & global_transform) const
   {
     if ( ! getGlobalFrame(node, global_transform)) {
       return false;
@@ -313,7 +313,7 @@ namespace jspace {
 
   bool Model::computeGlobalFrame(taoDNode const * node,
       Vector const & local_translation,
-      Transform & global_transform) const
+      Eigen::Affine3d & global_transform) const
   {
     if ( ! getGlobalFrame(node, global_transform)) {
       return false;
@@ -325,7 +325,7 @@ namespace jspace {
 
   bool Model::computeGlobalFrame(taoDNode const * node,
       double local_x, double local_y, double local_z,
-      Transform & global_transform) const
+      Eigen::Affine3d & global_transform) const
   {
     if ( ! getGlobalFrame(node, global_transform)) {
       return false;
@@ -336,7 +336,7 @@ namespace jspace {
 
 
   bool Model::computeGlobalCOMFrame(taoDNode const * node,
-      Transform & global_com_transform) const
+      Eigen::Affine3d & global_com_transform) const
   {
     if ( ! node) {
       return false;

@@ -262,7 +262,7 @@ namespace jspace {
 	throw runtime_error(msg.str());
       }
       
-      Transform global_com;
+      Eigen::Affine3d global_com;
       Matrix Jacobian;
       deVector3 const * com(node->center());
       if (com) {

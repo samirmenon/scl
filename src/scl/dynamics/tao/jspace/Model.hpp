@@ -215,7 +215,7 @@ namespace jspace {
 	an invalid node, so if you got that using getNode() or one of
 	the related methods you can safely ignore the return value. */
     bool getGlobalFrame(taoDNode const * node,
-			Transform & global_transform) const;
+			Eigen::Affine3d & global_transform) const;
     
     /** Compute the global frame (translation and rotation)
 	corresponding to a local frame expressed wrt the origin of a
@@ -225,8 +225,8 @@ namespace jspace {
 	an invalid node, so if you got that using getNode() or one of
 	the related methods you can safely ignore the return value. */
     bool computeGlobalFrame(taoDNode const * node,
-			    Transform const & local_transform,
-			    Transform & global_transform) const;
+			    Eigen::Affine3d const & local_transform,
+			    Eigen::Affine3d & global_transform) const;
     
     /** Convenience method in case you are only interested in the
 	translational part and hold the local point in three
@@ -238,7 +238,7 @@ namespace jspace {
 	the related methods you can safely ignore the return value. */
     bool computeGlobalFrame(taoDNode const * node,
 			    double local_x, double local_y, double local_z,
-			    Transform & global_transform) const;
+			    Eigen::Affine3d & global_transform) const;
     
     /** Convenience method in case you are only interested in the
 	translational part and hold the local point in a
@@ -250,10 +250,10 @@ namespace jspace {
 	the related methods you can safely ignore the return value. */
     bool computeGlobalFrame(taoDNode const * node,
 			    Vector const & local_translation,
-			    Transform & global_transform) const;
+			    Eigen::Affine3d & global_transform) const;
     
     bool computeGlobalCOMFrame(taoDNode const * node,
-			       Transform & global_com_transform) const;
+			       Eigen::Affine3d & global_com_transform) const;
     
     /** Compute the Jacobian (J_v over J_omega) at the origin of a
 	given node.
