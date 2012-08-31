@@ -21,7 +21,7 @@
 /**
    \file jspace/wrap_eigen.hpp
    \author Roland Philippsen
-*/
+ */
 
 #ifndef JSPACE_WRAP_EIGEN_HPP
 #define JSPACE_WRAP_EIGEN_HPP
@@ -43,36 +43,36 @@ namespace jspace
   // typedef Eigen::Map<Eigen::VectorXd> VectorMap;
   // inline VectorMap map(std::vector<double> & from) { return Vector::Map(&from[0], from.size()); }
   // inline VectorMap const map(std::vector<double> const & from) { return Vector::Map(&from[0], from.size()); }
-  
+
   void convert(jspace::Eigen::VectorXd const & from, std::vector<double> & to);
   void convert(std::vector<double> const & from, jspace::Eigen::VectorXd & to);
   void convert(double const * from, size_t length, jspace::Eigen::VectorXd & to);
- 
+
   // should also work as-is for jspace::Vector
   bool compare(jspace::Eigen::MatrixXd const & lhs, jspace::Eigen::MatrixXd const & rhs, double precision);
   bool compare(jspace::Eigen::Quaternion<double> const & lhs, jspace::Eigen::Quaternion<double> const & rhs, double precision);
-  
+
   std::string pretty_string(double vv);
   std::string pretty_string(jspace::Eigen::VectorXd const & vv);
   std::string pretty_string(jspace::Eigen::Quaternion<double> const & qq);
   std::string pretty_string(jspace::Eigen::MatrixXd const & mm, std::string const & prefix);
-  
+
   void pretty_print(jspace::Eigen::VectorXd const & vv, std::ostream & os,
-		    std::string const & title, std::string const & prefix, bool nonl = false);
+      std::string const & title, std::string const & prefix, bool nonl = false);
 
   inline void pretty_print(Eigen::Vector3d const & vv, std::ostream & os,
-			   std::string const & title, std::string const & prefix, bool nonl = false)
+      std::string const & title, std::string const & prefix, bool nonl = false)
   {
     pretty_print(static_cast<jspace::Eigen::VectorXd const &>(vv), os, title, prefix, nonl);
   }
-  
+
   void pretty_print(jspace::Eigen::Quaternion<double> const & qq, std::ostream & os,
-		    std::string const & title, std::string const & prefix, bool nonl = false);
-  
+      std::string const & title, std::string const & prefix, bool nonl = false);
+
   void pretty_print(jspace::Eigen::MatrixXd const & mm, std::ostream & os,
-		    std::string const & title, std::string const & prefix,
-		    bool vecmode = false, bool nonl = false);
-  
+      std::string const & title, std::string const & prefix,
+      bool vecmode = false, bool nonl = false);
+
 }
 
 #endif // JSPACE_WRAP_EIGEN_HPP
