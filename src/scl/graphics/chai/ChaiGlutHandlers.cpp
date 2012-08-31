@@ -183,33 +183,31 @@ namespace scl_chai_glut_interface
       chai_glob_ds->chai_glut_running = false;
     }
 
-    // option 1: Enable/Disable textures
-    if (chai_glob_ds->keys_active[static_cast<int>('1')])
+    // option 1-8: UI flags
+    const char numarr[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8'};
+    for(int i=0;i<9;++i)
     {
-      bool useTexture = chai_glob_ds->GLOB_chaiDbptr->chai_world_->getUseTexture();
-      chai_glob_ds->GLOB_chaiDbptr->chai_world_->setUseTexture(!useTexture,true);
-      chai_glob_ds->keys_active[static_cast<int>('1')] = false;
+      if (chai_glob_ds->keys_active[static_cast<int>( numarr[i] )])
+      {//Toggle the UI flag
+        scl::CDatabase::getData()->s_gui_.ui_flag_[i] = ~scl::CDatabase::getData()->s_gui_.ui_flag_[i] ;
+        chai_glob_ds->keys_active[static_cast<int>(numarr[i])] = false;
+      }
     }
 
-    // option 2: Enable/Disable wireframe mode
-    if (chai_glob_ds->keys_active[static_cast<int>('2')])
-    {
-      bool useWireMode = chai_glob_ds->GLOB_chaiDbptr->chai_world_->getWireMode();
-      chai_glob_ds->GLOB_chaiDbptr->chai_world_->setWireMode(!useWireMode, true);
-      chai_glob_ds->keys_active[static_cast<int>('2')] = false;
-    }
-
+    // 9  is a special flag for moving all ui points independently
     if (chai_glob_ds->keys_active[static_cast<int>('9')])
     {
-      std::cout<<"\nGLUT: Moving all operational points simultaneously with 's', 'w', 'd', 'a', 'e', 'q'";
-      scl::CDatabase::getData()->s_gui_.ui_point_selector_ = 1;
+      if(scl::CDatabase::getData()->s_gui_.ui_point_selector_ == 0)
+      {
+        std::cout<<"\nGLUT: Moving all operational points simultaneously with 's', 'w', 'd', 'a', 'e', 'q'";
+        scl::CDatabase::getData()->s_gui_.ui_point_selector_ = 1;
+      }
+      else
+      {
+        std::cout<<"\nGLUT: Moving all operational points independently";
+        scl::CDatabase::getData()->s_gui_.ui_point_selector_ = 0;
+      }
       chai_glob_ds->keys_active[static_cast<int>('9')] = false;
-    }
-    if (chai_glob_ds->keys_active[static_cast<int>('0')])
-    {
-      std::cout<<"\nGLUT: Moving all operational points independently";
-      scl::CDatabase::getData()->s_gui_.ui_point_selector_ = 0;
-      chai_glob_ds->keys_active[static_cast<int>('0')] = false;
     }
 
     /** Control the gui 3D points. Can control 6 points total using the glut buttons */

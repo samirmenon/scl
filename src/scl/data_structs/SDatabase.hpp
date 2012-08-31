@@ -164,7 +164,10 @@ public:
   }
 };
 
+/** The number of UI points (3-d vectors) whose key-handlers are supported. Use these in your app. */
 #define SCL_NUM_UI_POINTS 12
+/** The number of UI flags (bool) whose key-handlers are supported. Use these in your app. */
+#define SCL_NUM_UI_FLAGS 9
 
 /** All the data updated by the gui
  *
@@ -196,7 +199,10 @@ struct SGuiData
   sutil::CMappedList<std::string,scl::SChaiGraphics> chai_data_;
 #endif
 
+  /** Users may use these ui points in their controller for keyboard based control */
   Eigen::Vector3d ui_point_[SCL_NUM_UI_POINTS];
+
+  sBool ui_flag_[SCL_NUM_UI_FLAGS];
 
   /** 0 = All points by themselves.
    *  1 = All points together*/
