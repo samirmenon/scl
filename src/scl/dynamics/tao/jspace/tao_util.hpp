@@ -120,23 +120,17 @@ namespace jspace {
   int countNumberOfLinks(taoDNode * root);
 
 
-  /**
-     Count the total number of joints attached to the given node and
-     all its descendants.
-   */
+  /** Count the total number of joints attached to the given node and
+   * all its descendants. */
   int countNumberOfJoints(taoDNode * node);
 
 
-  /**
-     Count the total number of degrees of freedom of all the joints
-     attached to the given node and all its descendants.
-   */
+  /** Count the total number of degrees of freedom of all the joints
+   * attached to the given node and all its descendants. */
   int countDegreesOfFreedom(taoDNode * node);
 
 
-  /**
-     Sum up the mass of the given node plus all its descendants.
-   */
+  /** Sum up the mass of the given node plus all its descendants. */
   double computeTotalMass(taoDNode * node);
 
 }
