@@ -292,7 +292,7 @@ namespace jspace {
 #endif
     // beware: Eigen::Quaternion(w, x, y, z) puts w first, whereas
     // deQuaternion(qx, qy, qz, qw) puts w last. Of course.
-    global_transform = Translation(tao_trans[0], tao_trans[1], tao_trans[2]);
+    global_transform = Eigen::Translation3d(tao_trans[0], tao_trans[1], tao_trans[2]);
     global_transform *= Quaternion(tao_quat[3], tao_quat[0], tao_quat[1], tao_quat[2]);
 
     return true;

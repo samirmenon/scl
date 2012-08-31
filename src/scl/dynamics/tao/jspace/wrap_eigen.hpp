@@ -39,8 +39,6 @@ extern "C" {
 
 namespace jspace {
 
-  typedef Eigen::Affine3d Eigen::Affine3d;
-  typedef Eigen::Translation3d Translation;
   typedef Eigen::Quaternion<double> Quaternion;
   typedef Eigen::VectorXd Vector;
   typedef Eigen::MatrixXd Matrix;
