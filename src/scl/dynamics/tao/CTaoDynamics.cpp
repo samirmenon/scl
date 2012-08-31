@@ -268,6 +268,16 @@ namespace scl
       return false;
     }
 
+//    std::vector<Eigen::MatrixXd>::iterator it, ite;
+//    for(it = js_model->J_com_vec_.begin(), ite = js_model->J_com_vec_.end();
+//        it!=ite;++it)
+//    {
+//      if ( ! calculateJacobian(js_model->b_)) {
+//        fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getCoriolisCentrifugal() failed\n");
+//        return false;
+//      }
+//    }
+
     return true;
   }
 
