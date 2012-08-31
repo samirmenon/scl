@@ -72,9 +72,9 @@ namespace jspace {
     
     size_t time_sec_;
     size_t time_usec_;
-    Vector position_;
-    Vector velocity_;
-    Vector force_;
+    Eigen::VectorXd position_;
+    Eigen::VectorXd velocity_;
+    Eigen::VectorXd force_;
   };
   
 }

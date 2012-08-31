@@ -58,7 +58,7 @@ namespace jspace {
   }
   
   
-  std::string pretty_string(jspace::Vector const & vv)
+  std::string pretty_string(jspace::Eigen::VectorXd const & vv)
   {
     ostringstream os;
     pretty_print(vv, os, "", "", true);
@@ -82,7 +82,7 @@ namespace jspace {
   }
     
     
-  void pretty_print(jspace::Vector const & vv, std::ostream & os,
+  void pretty_print(jspace::Eigen::VectorXd const & vv, std::ostream & os,
 		    std::string const & title, std::string const & prefix,
 		    bool nonl)
   {
@@ -168,22 +168,22 @@ namespace jspace {
   }
   
   
-  void convert(jspace::Vector const & from, std::vector<double> & to)
+  void convert(jspace::Eigen::VectorXd const & from, std::vector<double> & to)
   {
     to.resize(from.size());
-    Vector::Map(&to[0], to.size()) = from;
+    Eigen::VectorXd::Map(&to[0], to.size()) = from;
   }
   
   
-  void convert(std::vector<double> const & from, jspace::Vector & to)
+  void convert(std::vector<double> const & from, jspace::Eigen::VectorXd & to)
   {
-    to = Vector::Map(&from[0], from.size());
+    to = Eigen::VectorXd::Map(&from[0], from.size());
   }
   
   
-  void convert(double const * from, size_t length, jspace::Vector & to)
+  void convert(double const * from, size_t length, jspace::Eigen::VectorXd & to)
   {
-    to = Vector::Map(from, length);
+    to = Eigen::VectorXd::Map(from, length);
   }
   
 }

@@ -32,7 +32,7 @@ namespace jspace {
   
   
   Status FloatController::
-  setGoal(Vector const & goal)
+  setGoal(Eigen::VectorXd const & goal)
   {
     Status ok;
     return ok;
@@ -40,7 +40,7 @@ namespace jspace {
   
   
   Status FloatController::
-  getGoal(Vector & goal) const
+  getGoal(Eigen::VectorXd & goal) const
   {
     goal.resize(0);
     Status ok;
@@ -49,7 +49,7 @@ namespace jspace {
   
   
   Status FloatController::
-  getActual(Vector & actual) const
+  getActual(Eigen::VectorXd & actual) const
   {
     actual.resize(0);
     Status ok;
@@ -58,7 +58,7 @@ namespace jspace {
   
   
   Status FloatController::
-  setGains(Vector const & kp, Vector const & kd)
+  setGains(Eigen::VectorXd const & kp, Eigen::VectorXd const & kd)
   {
     Status ok;
     return ok;
@@ -66,7 +66,7 @@ namespace jspace {
   
   
   Status FloatController::
-  getGains(Vector & kp, Vector & kd) const
+  getGains(Eigen::VectorXd & kp, Eigen::VectorXd & kd) const
   {
     kp.resize(0);
     kd.resize(0);
@@ -84,9 +84,9 @@ namespace jspace {
   
   
   Status FloatController::
-  computeCommand(Model const & model, Vector & tau)
+  computeCommand(Model const & model, Eigen::VectorXd & tau)
   {
-    Vector gg;
+    Eigen::VectorXd gg;
     model.getGravity(gg);
     tau.resize(gg.rows());
     memcpy(&tau[0], gg.data(), gg.rows() * sizeof(double));
@@ -97,8 +97,8 @@ namespace jspace {
   
   GoalControllerBase::
   GoalControllerBase(int compensation_flags,
-		     Vector const & default_kp,
-		     Vector const & default_kd)
+		     Eigen::VectorXd const & default_kp,
+		     Eigen::VectorXd const & default_kd)
     : compensation_flags_(compensation_flags),
       default_kp_(default_kp),
       default_kd_(default_kd)
@@ -142,7 +142,7 @@ namespace jspace {
   
   
   Status GoalControllerBase::
-  setGoal(Vector const & goal)
+  setGoal(Eigen::VectorXd const & goal)
   {
     Status status;
     if (goal.size() != goal_.size()) {
@@ -158,7 +158,7 @@ namespace jspace {
   
   
   Status GoalControllerBase::
-  getGoal(Vector & goal) const
+  getGoal(Eigen::VectorXd & goal) const
   {
     goal = goal_;
     Status ok;
@@ -167,7 +167,7 @@ namespace jspace {
   
   
   Status GoalControllerBase::
-  setGains(Vector const & kp, Vector const & kd)
+  setGains(Eigen::VectorXd const & kp, Eigen::VectorXd const & kd)
   {
     Status status;
     if ((kp.size() != kp_.size()) || (kd.size() != kd_.size())) {
@@ -182,7 +182,7 @@ namespace jspace {
   
   
   Status GoalControllerBase::
-  getGains(Vector & kp, Vector & kd) const
+  getGains(Eigen::VectorXd & kp, Eigen::VectorXd & kd) const
   {
     kp = kp_;
     kd = kd_;
@@ -193,15 +193,15 @@ namespace jspace {
   
   JointGoalController::
   JointGoalController(int compensation_flags,
-		      Vector const & default_kp,
-		      Vector const & default_kd)
+		      Eigen::VectorXd const & default_kp,
+		      Eigen::VectorXd const & default_kd)
     : GoalControllerBase(compensation_flags, default_kp, default_kd)
   {
   }
   
   
   Status JointGoalController::
-  getActual(Vector & actual) const
+  getActual(Eigen::VectorXd & actual) const
   {
     actual = actual_;
     Status ok;
@@ -219,7 +219,7 @@ namespace jspace {
   
   
   Status JointGoalController::
-  computeCommand(Model const & model, Vector & tau)
+  computeCommand(Model const & model, Eigen::VectorXd & tau)
   {
     unsigned int const ndof(model.getNDOF());
     Status status;
@@ -232,7 +232,7 @@ namespace jspace {
     State const & state(model.getState());
     actual_ = state.position_;
 
-    Vector etau(ndof);
+    Eigen::VectorXd etau(ndof);
     for (unsigned int ii(0); ii < ndof; ++ii) {
       etau[ii] = - kp_[ii] * (actual_[ii] - goal_[ii]) - kd_[ii] * state.velocity_[ii];
     }
@@ -248,7 +248,7 @@ namespace jspace {
     }
     
     if (compensation_flags_ & COMP_CORIOLIS) {
-      Vector BB;
+      Eigen::VectorXd BB;
       if ( ! model.getCoriolisCentrifugal(BB)) {
 	status.ok = false;
 	status.errstr = "model.getCoriolisCentrifugal() failed";
@@ -258,7 +258,7 @@ namespace jspace {
     }
     
     if (compensation_flags_ & COMP_GRAVITY) {
-      Vector GG;
+      Eigen::VectorXd GG;
       if ( ! model.getGravity(GG)) {
 	status.ok = false;
 	status.errstr = "model.getGravity() failed";

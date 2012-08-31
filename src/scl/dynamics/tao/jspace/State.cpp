@@ -62,24 +62,24 @@ namespace jspace {
       position_.resize(0);
     }
     else {
-      position_ = Vector::Zero(npos);
+      position_ = Eigen::VectorXd::Zero(npos);
     }
     if (0 == nvel) {
       velocity_.resize(0);
     }
     else {
-      velocity_ = Vector::Zero(nvel);
+      velocity_ = Eigen::VectorXd::Zero(nvel);
     }
     if (0 == nforce) {
       force_.resize(0);
     }
     else {
-      force_ = Vector::Zero(nforce);
+      force_ = Eigen::VectorXd::Zero(nforce);
     }
   }
   
   
-  static void _pad(Vector & vv, size_t nn)
+  static void _pad(Eigen::VectorXd & vv, size_t nn)
   {
     size_t const old(vv.size());
     if (old != nn) {

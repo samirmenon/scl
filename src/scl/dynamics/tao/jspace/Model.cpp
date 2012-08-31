@@ -253,8 +253,8 @@ namespace jspace {
   }
 
 
-  void Model::getJointLimits(Vector & joint_limits_lower,
-      Vector & joint_limits_upper) const
+  void Model::getJointLimits(Eigen::VectorXd & joint_limits_lower,
+      Eigen::VectorXd & joint_limits_upper) const
   {
     joint_limits_lower.resize(ndof_);
     joint_limits_upper.resize(ndof_);
@@ -312,7 +312,7 @@ namespace jspace {
 
 
   bool Model::computeGlobalFrame(taoDNode const * node,
-      Vector const & local_translation,
+      Eigen::VectorXd const & local_translation,
       Eigen::Affine3d & global_transform) const
   {
     if ( ! getGlobalFrame(node, global_transform)) {
@@ -435,9 +435,9 @@ namespace jspace {
   }
 
 
-  bool Model::computeCOM(Vector & com, Matrix * opt_jcom) const
+  bool Model::computeCOM(Eigen::VectorXd & com, Matrix * opt_jcom) const
   {
-    com = Vector::Zero(3);
+    com = Eigen::VectorXd::Zero(3);
     if (opt_jcom) {
       *opt_jcom = Matrix::Zero(3, ndof_);
     }
@@ -456,7 +456,7 @@ namespace jspace {
       }
       wpos *= *(node->mass());
       mtotal += *(node->mass());
-      com += Vector::Map(&wpos[0], 3);
+      com += Eigen::VectorXd::Map(&wpos[0], 3);
     }
     if (fabs(mtotal) > 1e-3) {
       com /= mtotal;
@@ -506,7 +506,7 @@ namespace jspace {
   }
 
 
-  bool Model::getGravity(Vector & gravity) const
+  bool Model::getGravity(Eigen::VectorXd & gravity) const
   {
     if (0 == g_torque_.size()) {
       return false;
@@ -533,7 +533,7 @@ namespace jspace {
   }
 
 
-  bool Model::getCoriolisCentrifugal(Vector & coriolis_centrifugal) const
+  bool Model::getCoriolisCentrifugal(Eigen::VectorXd & coriolis_centrifugal) const
   {
     if ( ! cc_tree_) {
       return false;

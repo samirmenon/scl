@@ -45,15 +45,15 @@ namespace jspace {
     : public Controller
   {
   public:
-    virtual Status setGoal(Vector const & goal);
-    virtual Status getGoal(Vector & goal) const;
-    virtual Status getActual(Vector & actual) const;
+    virtual Status setGoal(Eigen::VectorXd const & goal);
+    virtual Status getGoal(Eigen::VectorXd & goal) const;
+    virtual Status getActual(Eigen::VectorXd & actual) const;
     
-    virtual Status setGains(Vector const & kp, Vector const & kd);
-    virtual Status getGains(Vector & kp, Vector & kd) const;
+    virtual Status setGains(Eigen::VectorXd const & kp, Eigen::VectorXd const & kd);
+    virtual Status getGains(Eigen::VectorXd & kp, Eigen::VectorXd & kd) const;
     
     virtual Status latch(Model const & model);
-    virtual Status computeCommand(Model const & model, Vector & tau);
+    virtual Status computeCommand(Model const & model, Eigen::VectorXd & tau);
   };
   
   
@@ -62,24 +62,24 @@ namespace jspace {
   {
   public:
     GoalControllerBase(int compensation_flags,
-		       Vector const & default_kp,
-		       Vector const & default_kd);
+		       Eigen::VectorXd const & default_kp,
+		       Eigen::VectorXd const & default_kd);
     
     virtual Status init(Model const & model);
     
-    virtual Status setGoal(Vector const & goal);
-    virtual Status getGoal(Vector & goal) const;
+    virtual Status setGoal(Eigen::VectorXd const & goal);
+    virtual Status getGoal(Eigen::VectorXd & goal) const;
     
-    virtual Status setGains(Vector const & kp, Vector const & kd);
-    virtual Status getGains(Vector & kp, Vector & kd) const;
+    virtual Status setGains(Eigen::VectorXd const & kp, Eigen::VectorXd const & kd);
+    virtual Status getGains(Eigen::VectorXd & kp, Eigen::VectorXd & kd) const;
     
   protected:
     int compensation_flags_;
-    Vector default_kp_;
-    Vector default_kd_;
-    Vector goal_;
-    Vector kp_;
-    Vector kd_;
+    Eigen::VectorXd default_kp_;
+    Eigen::VectorXd default_kd_;
+    Eigen::VectorXd goal_;
+    Eigen::VectorXd kp_;
+    Eigen::VectorXd kd_;
   };
   
   
@@ -88,15 +88,15 @@ namespace jspace {
   {
   public:
     JointGoalController(int compensation_flags,
-			Vector const & default_kp,
-			Vector const & default_kd);
+			Eigen::VectorXd const & default_kp,
+			Eigen::VectorXd const & default_kd);
     
-    virtual Status getActual(Vector & actual) const;
+    virtual Status getActual(Eigen::VectorXd & actual) const;
     virtual Status latch(Model const & model);
-    virtual Status computeCommand(Model const & model, Vector & tau);
+    virtual Status computeCommand(Model const & model, Eigen::VectorXd & tau);
     
   protected:
-    Vector actual_;
+    Eigen::VectorXd actual_;
   };
   
 }

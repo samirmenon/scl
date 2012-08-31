@@ -199,8 +199,8 @@ namespace jspace {
 	case no joint limit information is available, it sets the
 	lower limit to \c std::numeric_limits<double>::min() and the
 	upper limit to \c std::numeric_limits<double>::max(). */
-    void getJointLimits(Vector & joint_limits_lower,
-			Vector & joint_limits_upper) const;
+    void getJointLimits(Eigen::VectorXd & joint_limits_lower,
+			Eigen::VectorXd & joint_limits_upper) const;
     
     //////////////////////////////////////////////////
     // kinematic facet
@@ -249,7 +249,7 @@ namespace jspace {
 	an invalid node, so if you got that using getNode() or one of
 	the related methods you can safely ignore the return value. */
     bool computeGlobalFrame(taoDNode const * node,
-			    Vector const & local_translation,
+			    Eigen::VectorXd const & local_translation,
 			    Eigen::Affine3d & global_transform) const;
     
     bool computeGlobalCOMFrame(taoDNode const * node,
@@ -286,7 +286,7 @@ namespace jspace {
     /** Convenience method in case you are holding the global position
 	in a three-dimensional vector. */
     inline bool computeJacobian(taoDNode const * node,
-				Vector const & global_point,
+				Eigen::VectorXd const & global_point,
 				Matrix & jacobian) const
     { return computeJacobian(node, global_point[0], global_point[1], global_point[2], jacobian); }
     
@@ -302,7 +302,7 @@ namespace jspace {
 	in the Jacobian. Failures can only be due to calls of
 	computeJacobian() that happens for each node's contribution to
 	the Jacobian of the COM. */
-    bool computeCOM(Vector & com, Matrix * opt_jcom) const;
+    bool computeCOM(Eigen::VectorXd & com, Matrix * opt_jcom) const;
     
     /** Compute the gravity joint-torque vector. */
     void computeGravity();
@@ -323,7 +323,7 @@ namespace jspace {
 	\return True on success. The only possibility of receiving
 	false is if you never called updateDynamics(), which gets
 	called by updateDynamics(), which gets called by update(). */
-    bool getGravity(Vector & gravity) const;
+    bool getGravity(Eigen::VectorXd & gravity) const;
     
     /** Compute the Coriolis and contrifugal joint-torque vector. If
 	you set cc_tree=NULL in the constructor, then this is a
@@ -337,7 +337,7 @@ namespace jspace {
 	or (ii) you never called computeCoriolisCentrifugal(), which
 	gets called by updateDynamics(), which gets called by
 	update(). */
-    bool getCoriolisCentrifugal(Vector & coriolis_centrifugal) const;
+    bool getCoriolisCentrifugal(Eigen::VectorXd & coriolis_centrifugal) const;
     
     /** Compute the joint-space mass-inertia matrix, a.k.a. the
 	kinetic energy matrix. */
@@ -383,8 +383,8 @@ namespace jspace {
     deVector3* gravity_;
     
     State state_;
-    Vector g_torque_;
-    Vector cc_torque_;
+    Eigen::VectorXd g_torque_;
+    Eigen::VectorXd cc_torque_;
     std::vector<double> a_upper_triangular_;
     std::vector<double> ainv_upper_triangular_;
     

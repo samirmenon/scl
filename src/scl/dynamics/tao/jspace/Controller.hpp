@@ -43,7 +43,7 @@ namespace jspace {
     virtual void getDOFNames(Model const & model, std::vector<std::string> & names) const = 0;
     virtual void getDOFUnits(Model const & model, std::vector<std::string> & names) const = 0;
     virtual void getGainNames(Model const & model, std::vector<std::string> & names) const = 0;
-    virtual void getLimits(Model const & model, Vector & limits_lower, Vector & limits_upper) const = 0;
+    virtual void getLimits(Model const & model, Eigen::VectorXd & limits_lower, Eigen::VectorXd & limits_upper) const = 0;
   };
   
   /** Default info getter is based on the jspace::Model. */
@@ -52,7 +52,7 @@ namespace jspace {
     virtual void getDOFNames(Model const & model, std::vector<std::string> & names) const;
     virtual void getDOFUnits(Model const & model, std::vector<std::string> & names) const;
     virtual void getGainNames(Model const & model, std::vector<std::string> & names) const;
-    virtual void getLimits(Model const & model, Vector & limits_lower, Vector & limits_upper) const;
+    virtual void getLimits(Model const & model, Eigen::VectorXd & limits_lower, Eigen::VectorXd & limits_upper) const;
   };
   
   
@@ -83,12 +83,12 @@ namespace jspace {
 	inspect the state. */
     virtual Status init(Model const & model) { Status ok; return ok; }
     
-    virtual Status setGoal(Vector const & goal) = 0;
-    virtual Status getGoal(Vector & goal) const = 0;
-    virtual Status getActual(Vector & actual) const = 0;
+    virtual Status setGoal(Eigen::VectorXd const & goal) = 0;
+    virtual Status getGoal(Eigen::VectorXd & goal) const = 0;
+    virtual Status getActual(Eigen::VectorXd & actual) const = 0;
     
-    virtual Status setGains(Vector const & kp, Vector const & kd) = 0;
-    virtual Status getGains(Vector & kp, Vector & kd) const = 0;
+    virtual Status setGains(Eigen::VectorXd const & kp, Eigen::VectorXd const & kd) = 0;
+    virtual Status getGains(Eigen::VectorXd & kp, Eigen::VectorXd & kd) const = 0;
     
     /** This method is supposed to be called just before the first
 	call to computeCommand(), in order to allow the controller to
@@ -96,7 +96,7 @@ namespace jspace {
 	applications where we switch controllers at runtime. */
     virtual Status latch(Model const & model) = 0;
     
-    virtual Status computeCommand(Model const & model, Vector & tau) = 0;
+    virtual Status computeCommand(Model const & model, Eigen::VectorXd & tau) = 0;
     
   protected:
     mutable jspace_controller_info_getter_s * info_getter_;
