@@ -189,7 +189,7 @@ namespace scl_chai_glut_interface
     {
       if (chai_glob_ds->keys_active[static_cast<int>( numarr[i] )])
       {//Toggle the UI flag
-        scl::CDatabase::getData()->s_gui_.ui_flag_[i] = ~scl::CDatabase::getData()->s_gui_.ui_flag_[i] ;
+        scl::CDatabase::getData()->s_gui_.ui_flag_[i] = !scl::CDatabase::getData()->s_gui_.ui_flag_[i] ;
         chai_glob_ds->keys_active[static_cast<int>(numarr[i])] = false;
       }
     }
