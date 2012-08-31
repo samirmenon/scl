@@ -21,6 +21,7 @@
 /**
    \file jspace/Model.cpp
    \author Roland Philippsen, inspired by scl/core code of Luis Sentis
+   \edited by (Aug 2012) Samir Menon <smenon@stanford.edu>
  */
 
 #include "Model.hpp"
