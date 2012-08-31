@@ -82,8 +82,7 @@ namespace jspace
     bool sort();
 
     taoNodeRoot * root;
-    typedef std::vector<STaoNodeInfo> node_info_t;
-    node_info_t info;
+    std::vector<STaoNodeInfo> info;
   };
 
   // =================================================================

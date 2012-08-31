@@ -112,7 +112,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
   }
   
   
-  static void _dump_tao_tree_info(std::ostream & os, taoDNode * root, STaoTreeInfo::node_info_t const & info,
+  static void _dump_tao_tree_info(std::ostream & os, taoDNode * root, STaoTreeInfo::std::vector<STaoNodeInfo> const & info,
 				  std::string prefix, bool detailed)
   {
     int const id(root->getID());
@@ -157,7 +157,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
   }
   
   
-  static void _dump_tao_tree_info_saixml(std::ostream & os, taoDNode * root, STaoTreeInfo::node_info_t const & info,
+  static void _dump_tao_tree_info_saixml(std::ostream & os, taoDNode * root, STaoTreeInfo::std::vector<STaoNodeInfo> const & info,
 					 std::string prefix) throw(std::runtime_error)
   {
     deFrame * const home(root->frameHome());
@@ -284,7 +284,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
     //////////////////////////////////////////////////
     // links
     
-    for (STaoTreeInfo::node_info_t::const_iterator inode(tree->info.begin());
+    for (STaoTreeInfo::std::vector<STaoNodeInfo>::const_iterator inode(tree->info.begin());
 	 inode != tree->info.end(); ++inode) {
       home = inode->node->frameHome();
       if ( ! home) {
@@ -338,7 +338,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
 	  parent_link_name = root_link_name;
 	}
 	else {
-	  for (STaoTreeInfo::node_info_t::const_iterator jj(tree->info.begin());
+	  for (STaoTreeInfo::std::vector<STaoNodeInfo>::const_iterator jj(tree->info.begin());
 	       jj != tree->info.end(); ++jj) {
 	    if (jj->node == parent) {
 	      parent_link_name = jj->link_name;
