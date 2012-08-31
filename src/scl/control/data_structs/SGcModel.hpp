@@ -34,10 +34,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define SGCMODEL_HPP_
 
 #include <scl/DataTypes.hpp>
-
 #include <scl/data_structs/SRobotParsedData.hpp>
 
 #include <Eigen/Dense>
+
+#include <vector>
 
 namespace scl
 {
