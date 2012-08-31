@@ -52,7 +52,7 @@ namespace jspace {
   }
     
     
-  bool compare(jspace::Quaternion const & lhs, jspace::Quaternion const & rhs, double precision)
+  bool compare(jspace::Eigen::Quaternion<double> const & lhs, jspace::Eigen::Quaternion<double> const & rhs, double precision)
   {
     return compare(lhs.coeffs(), rhs.coeffs(), precision);
   }
@@ -66,7 +66,7 @@ namespace jspace {
   }
   
     
-  std::string pretty_string(jspace::Quaternion const & qq)
+  std::string pretty_string(jspace::Eigen::Quaternion<double> const & qq)
   {
     ostringstream os;
     pretty_print(qq, os, "", "", true);
@@ -90,7 +90,7 @@ namespace jspace {
   }
     
     
-  void pretty_print(jspace::Quaternion const & qq, std::ostream & os,
+  void pretty_print(jspace::Eigen::Quaternion<double> const & qq, std::ostream & os,
 		    std::string const & title, std::string const & prefix,
 		    bool nonl)
   {
