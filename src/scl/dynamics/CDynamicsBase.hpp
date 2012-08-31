@@ -39,38 +39,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/data_structs/SRobotIOData.hpp>
 #include <scl/control/data_structs/SGcModel.hpp>
+#include <scl/dynamics/SDynamicsState.hpp>
 
 namespace scl {
-
-/** A data structure containing the current dynamics
- * engine state.
- */
-class SDynamicsState
-{
-public:
-  //    Various flags to control dynamics    Defaults
-  // ==================================================
-  sBool flag_apply_damping_gc_;              //false
-  sBool flag_apply_limits_q_;                //true
-  sBool flag_apply_limits_dq_;               //false
-  sBool flag_apply_limits_ddq_;              //false
-  sBool flag_apply_errors_integrator_;       //false
-  sBool flag_apply_errors_matrices_;         //false
-
-  Eigen::VectorXd damping_gc_;
-  Eigen::VectorXd limits_q_;
-  Eigen::VectorXd limits_dq_;
-  Eigen::VectorXd limits_ddq_;
-
-  SDynamicsState() :
-    flag_apply_damping_gc_(false),
-    flag_apply_limits_q_(true),
-    flag_apply_limits_dq_(false),
-    flag_apply_limits_ddq_(false),
-    flag_apply_errors_integrator_(false),
-    flag_apply_errors_matrices_(false)
-  {}
-};
 
 /** A base class for different dynamics implementations.
  *
