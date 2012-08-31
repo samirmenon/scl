@@ -46,7 +46,8 @@ namespace scl
    * to compute their own models (mass, coriolis/centrifugal
    * and gravity).
    *
-   * Each controller data structure contains an object of this type.   */
+   * Each controller data structure contains an object of
+   * this type.   */
   class SGcModel
   {
   public:
@@ -62,11 +63,14 @@ namespace scl
     /** g : Gravity torque vector */
     Eigen::VectorXd g_;
 
+    /** J_com_ : The center of mass Jacobians of the articulated body */
+    std::vector<Eigen::MatrixXd> J_com_vec_;
+
     /** Constructor does nothing */
     SGcModel();
 
     /** Initialization function sets up the matrix sizes */
-    sBool init(const sUInt arg_robot_dof_);
+    sBool init(const sUInt arg_robot_dof);
   };
 }
 

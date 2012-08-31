@@ -39,17 +39,24 @@ namespace scl
   SGcModel::SGcModel()
   { }
 
-  sBool SGcModel::init(const sUInt arg_robot_dof_)
+  sBool SGcModel::init(const sUInt arg_robot_dof)
   {
     try
     {
-      if(0==arg_robot_dof_)
+      if(0==arg_robot_dof)
       { throw(std::runtime_error("Can not initialize for a parent-robot with 0 dof")); }
 
-      A_.setIdentity(arg_robot_dof_,arg_robot_dof_);
-      Ainv_.setIdentity(arg_robot_dof_,arg_robot_dof_);
-      b_.setZero(arg_robot_dof_);
-      g_.setZero(arg_robot_dof_);
+      A_.setIdentity(arg_robot_dof,arg_robot_dof);
+      Ainv_.setIdentity(arg_robot_dof,arg_robot_dof);
+      b_.setZero(arg_robot_dof);
+      g_.setZero(arg_robot_dof);
+
+      for(int i=0;i<arg_robot_dof;++i)
+      {
+        Eigen::VectorXd J_com;
+        J_com.setZero(6, arg_robot_dof);
+        J_com_vec_.push_back(J_com);
+      }
 
       return true;
     }
