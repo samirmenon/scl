@@ -112,8 +112,8 @@ namespace jspace {
   }
   
   
-  tao_node_info_s::
-  tao_node_info_s()
+  STaoNodeInfo::
+  STaoNodeInfo()
     : id(-2),
       node(0),
       joint(0),
@@ -125,8 +125,8 @@ namespace jspace {
   }
   
   
-  tao_node_info_s::
-  tao_node_info_s(taoDNode * _node,
+  STaoNodeInfo::
+  STaoNodeInfo(taoDNode * _node,
 		  std::string const & _link_name,
 		  std::string _joint_name,
 		  double _limit_lower,
@@ -145,8 +145,8 @@ namespace jspace {
   }
   
   
-  tao_node_info_s::
-  tao_node_info_s(tao_node_info_s const & orig)
+  STaoNodeInfo::
+  STaoNodeInfo(STaoNodeInfo const & orig)
     : id(orig.id),
       node(orig.node),
       joint(orig.joint),
@@ -201,8 +201,8 @@ namespace jspace {
   static void _recurse_create_bare_tao_tree_info(tao_tree_info_s * tree_info,
 						 taoDNode * node)
   {
-    tree_info->info.push_back(tao_node_info_s());
-    tao_node_info_s & node_info(tree_info->info.back());
+    tree_info->info.push_back(STaoNodeInfo());
+    STaoNodeInfo & node_info(tree_info->info.back());
     node_info.node = node;
     node_info.joint = node->getJointList();
     node_info.id = node->getID();

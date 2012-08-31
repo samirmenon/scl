@@ -45,11 +45,11 @@ namespace jspace {
      links, so we treat joint names just as link names until further
      notice.
   */
-  struct tao_node_info_s {
-    tao_node_info_s();
-    tao_node_info_s(taoDNode * node, std::string const & link_name,
+  struct STaoNodeInfo {
+    STaoNodeInfo();
+    STaoNodeInfo(taoDNode * node, std::string const & link_name,
 		    std::string joint_name, double limit_lower, double limit_upper);
-    tao_node_info_s(tao_node_info_s const & orig);
+    STaoNodeInfo(STaoNodeInfo const & orig);
     
     int id;
     taoDNode * node;
@@ -79,7 +79,7 @@ namespace jspace {
     bool sort();
     
     taoNodeRoot * root;
-    typedef std::vector<tao_node_info_s> node_info_t;
+    typedef std::vector<STaoNodeInfo> node_info_t;
     node_info_t info;
   };
   

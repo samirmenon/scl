@@ -185,7 +185,7 @@ namespace scl
         itbre = arg_robot_data.robot_br_rep_.end();
         itbr!=itbre; ++itbr)
     {
-      std::vector<jspace::tao_node_info_s>::iterator it, ite, icc;
+      std::vector<jspace::STaoNodeInfo>::iterator it, ite, icc;
 
       //Name the stuff in the kgm tree
       it = kgm_tree->info.begin();
