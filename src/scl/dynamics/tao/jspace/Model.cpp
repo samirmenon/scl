@@ -106,7 +106,7 @@ namespace jspace {
     // Create ancestry table of all nodes in the KGM tree, for correct
     // (and slightly more efficient) computation of the Jacobian.
     ancestry_table_.clear();	// just paranoid...
-    typedef STaoTreeInfo::std::vector<STaoNodeInfo>::const_iterator cit_t;
+    typedef std::vector<STaoNodeInfo>::const_iterator cit_t;
     cit_t in(kgm_tree->info.begin());
     cit_t iend(kgm_tree->info.end());
     for (/**/; in != iend; ++in) {
