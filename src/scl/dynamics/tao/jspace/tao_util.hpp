@@ -39,11 +39,10 @@ class taoJoint;
 
 namespace jspace {
 
-  /**
-     \note TAO supports multiple joints per link, but all use cases so
-     far seem to require that exactly one joint sits between two
-     links, so we treat joint names just as link names until further
-     notice.
+  /** \note TAO supports multiple joints per link, but all use cases so
+   *  far seem to require that exactly one joint sits between two
+   *  links, so we treat joint names just as link names until further
+   *  notice.
    */
   struct STaoNodeInfo {
     STaoNodeInfo();
@@ -68,13 +67,12 @@ namespace jspace {
     virtual ~STaoTreeInfo();
 
     /** Iterates over the info vector, making sure that each node sits
-	at the position specified by its ID. Also does a sanity check
-	afterwards, so don't ignore the return value. See also
-	tao_consistency_check().
-
-	\return true if the sort succeeded (info[ii].id == id for all
-	nodes), false if something went wrong (this happens e.g. when
-	you have duplicate IDs or gaps in the sequence from 0..N-1).
+     * 	at the position specified by its ID. Also does a sanity check
+     * 		afterwards, so don't ignore the return value. See also
+     * 			tao_consistency_check().
+     * \return true  if the sort succeeded (info[ii].id == id for all	nodes),
+     *         false if something went wrong (this happens e.g. when
+     *               you have duplicate IDs or gaps in the sequence from 0..N-1).
      */
     bool sort();
 
@@ -84,28 +82,24 @@ namespace jspace {
   };
 
 
-  /**
-     Create a minimal tao_tree_info_s from a TAO tree. The created
-     structure will use dummy names like "joint12" and humongous
-     limits.
-   */
+  /** Create a minimal tao_tree_info_s from a TAO tree. The created
+   * structure will use dummy names like "joint12" and humongous
+   * limits. */
   STaoTreeInfo * create_bare_tao_tree_info(taoNodeRoot * root);
 
 
-  /**
-     Run a consistency check on a TAO tree. For the time being, this
-     simply checks that each node has a unique ID, that the IDs range
-     from 0 to N-1, and that the root has an ID of -1.
-
-     \return 0 on success, 1 if the root node's ID is wrong, 2 if
-     there's a gap in the ID sequence, and 3 if there's a duplicate
-     ID.
+  /** Run a consistency check on a TAO tree. For the time being, this
+   * simply checks that each node has a unique ID, that the IDs range
+   * from 0 to N-1, and that the root has an ID of -1.
+   * \return 0 on success,
+   *         1 if the root node's ID is wrong,
+   *         2 if there's a gap in the ID sequence, and
+   *         3 if there's a duplicate ID.
    */
   int tao_consistency_check(/** The TAO tree which should be checked. */
       taoNodeRoot * root,
-      /** An optional pointer to a stream, where
-				error messages get printed in case you
-				specify a non-NULL pointer here. */
+      /** An optional pointer to a stream, where error messages
+       * get printed in case you specify a non-NULL pointer here. */
       std::ostream * msg);
 
 
