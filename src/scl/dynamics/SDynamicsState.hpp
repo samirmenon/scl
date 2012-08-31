@@ -93,13 +93,13 @@ namespace scl
     // ==================================================
     /** Default constructor sets the initialization state to false */
     SDynamicsState():
+      SObject("SDynamicsState"),
       flag_apply_damping_dq_(false),
       flag_apply_limits_q_(true),
       flag_apply_limits_dq_(false),
       flag_apply_limits_ddq_(false),
       flag_apply_errors_integrator_(false),
-      flag_apply_errors_matrices_(false),
-      SObject("SDynamicsState"){}
+      flag_apply_errors_matrices_(false){}
 
     /** Default destructor does nothing */
     virtual ~SDynamicsState(){}
