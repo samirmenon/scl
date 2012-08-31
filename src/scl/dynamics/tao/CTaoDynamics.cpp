@@ -236,11 +236,11 @@ namespace scl
       return false;
     }
 
-    // XXXX to do: jspace should probably use Eigen already in
+    // NOTE TODO: jspace should probably use Eigen already in
     // jspace::State (instead of std::vector<double>)
 
-    // XXXX if you get a segfault here, you probably need to finish
-    // implementing registerTaoDynamics() in DbRegisterFunctions.cpp
+    // NOTE : If you get a segfault here, you probably need to finish
+    // implementing/using registerTaoDynamics() in DbRegisterFunctions.cpp
     size_t const npos(sensor_data->q_.rows());
 
     state_.position_.resize(npos);
