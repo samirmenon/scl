@@ -43,7 +43,7 @@
 
 namespace jspace
 {
-  void mapNodesToIDs(idToNodeMap_t & idToNodeMap,
+  void mapNodesToIDs(std::map<int, taoDNode*> & idToNodeMap,
       taoDNode * node)
   throw(std::runtime_error)
   {

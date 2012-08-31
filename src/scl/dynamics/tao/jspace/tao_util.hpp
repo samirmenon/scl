@@ -102,27 +102,20 @@ namespace jspace {
        * get printed in case you specify a non-NULL pointer here. */
       std::ostream * msg);
 
-
-  typedef std::map<int, taoDNode *> idToNodeMap_t;
-
-  /**
-     Create a map between tao nodes and IDs. The \c idToNodeMap is not
-     cleared for you: use this function to append to an existing map,
-     or clear the map yourself prior to use.
-
-     \note Throws a \c runtime_error in case there is a duplicate ID
-   */
-  void mapNodesToIDs(idToNodeMap_t & idToNodeMap,
+  /** Create a map between tao nodes and IDs. The \c idToNodeMap is not
+   * cleared for you: use this function to append to an existing map,
+   * or clear the map yourself prior to use.
+   * \note Throws a \c runtime_error in case there is a duplicate ID   */
+  void mapNodesToIDs(std::map<int, taoDNode*> & idToNodeMap,
       taoDNode * node)
   throw(std::runtime_error);
 
 
-  /**
-     Count the total number of links connected to the given node,
-     following all children in to the leaf nodes. This number does NOT
-     include the given link (because usually you will call this on the
-     TAO root node in order to figure out how many degrees of freedom
-     the robot has, in which case you do not count the root itself).
+  /** Count the total number of links connected to the given node,
+   * following all children in to the leaf nodes. This number does NOT
+   * include the given link (because usually you will call this on the
+   * TAO root node in order to figure out how many degrees of freedom
+   * the robot has, in which case you do not count the root itself).
    */
   int countNumberOfLinks(taoDNode * root);
 
