@@ -21,6 +21,7 @@
 /**
    \file jspace/tao_util.hpp
    \author Roland Philippsen (roland DOT philippsen AT gmx DOT net)
+   \edited by (Aug 2012) Samir menon <smenon@stanford.edu>
  */
 
 #ifndef JSPACE_TAO_UTIL_H
@@ -37,7 +38,11 @@ class taoDNode;
 class taoJoint;
 
 
-namespace jspace {
+namespace jspace
+{
+  // =================================================================
+  //                      Tao data structure wrappers
+  // =================================================================
 
   /** \note TAO supports multiple joints per link, but all use cases so
    *  far seem to require that exactly one joint sits between two
@@ -81,6 +86,9 @@ namespace jspace {
     node_info_t info;
   };
 
+  // =================================================================
+  //                     Tao helper functions
+  // =================================================================
 
   /** Create a minimal tao_tree_info_s from a TAO tree. The created
    * structure will use dummy names like "joint12" and humongous
