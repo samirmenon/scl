@@ -355,7 +355,7 @@ namespace jspace {
 
 
   bool Model::computeJacobian(taoDNode const * node,
-      Matrix & jacobian) const
+      Eigen::MatrixXd & jacobian) const
   {
     if ( ! node) {
       return false;
@@ -367,7 +367,7 @@ namespace jspace {
 
   bool Model::computeJacobian(taoDNode const * node,
       double gx, double gy, double gz,
-      Matrix & jacobian) const
+      Eigen::MatrixXd & jacobian) const
   {
     if ( ! node) {
       return false;
@@ -384,7 +384,7 @@ namespace jspace {
 
     // \todo Implement support for more than one joint per node, and
     //  more than one DOF per joint.
-    jacobian = Matrix::Zero(6, ndof_);
+    jacobian = Eigen::MatrixXd::Zero(6, ndof_);
     std::list<SAncestryEntry>::const_iterator ia(alist.begin());
     std::list<SAncestryEntry>::const_iterator iend(alist.end());
     for (/**/; ia != iend; ++ia) {
@@ -435,11 +435,11 @@ namespace jspace {
   }
 
 
-  bool Model::computeCOM(Eigen::VectorXd & com, Matrix * opt_jcom) const
+  bool Model::computeCOM(Eigen::VectorXd & com, Eigen::MatrixXd * opt_jcom) const
   {
     com = Eigen::VectorXd::Zero(3);
     if (opt_jcom) {
-      *opt_jcom = Matrix::Zero(3, ndof_);
+      *opt_jcom = Eigen::MatrixXd::Zero(3, ndof_);
     }
     double mtotal(0);
     for (size_t ii(0); ii < ndof_; ++ii) {
@@ -448,7 +448,7 @@ namespace jspace {
       wpos.multiply(node->frameGlobal()->rotation(), *(node->center()));
       wpos += node->frameGlobal()->translation();
       if (opt_jcom) {
-        Matrix wjcom;
+        Eigen::MatrixXd wjcom;
         if ( ! computeJacobian(node, wpos[0], wpos[1], wpos[2], wjcom)) {
           return false;
         }
@@ -582,7 +582,7 @@ namespace jspace {
   }
 
 
-  bool Model::getMassInertia(Matrix & mass_inertia) const
+  bool Model::getMassInertia(Eigen::MatrixXd & mass_inertia) const
   {
     if (a_upper_triangular_.empty()) {
       return false;
@@ -637,7 +637,7 @@ namespace jspace {
   }
 
 
-  bool Model::getInverseMassInertia(Matrix & inverse_mass_inertia) const
+  bool Model::getInverseMassInertia(Eigen::MatrixXd & inverse_mass_inertia) const
   {
     if (ainv_upper_triangular_.empty()) {
       return false;

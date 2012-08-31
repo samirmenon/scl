@@ -267,7 +267,7 @@ namespace jspace {
 	node using getNode() or one of the related methods, then you
 	need to extend this implementation when it returns false. */
     bool computeJacobian(taoDNode const * node,
-			 Matrix & jacobian) const;
+			 Eigen::MatrixXd & jacobian) const;
     
     /** Compute the Jacobian (J_v over J_omega) for a given node, at a
 	point expressed wrt to the global frame.
@@ -281,13 +281,13 @@ namespace jspace {
 	need to extend this implementation when it returns false. */
     bool computeJacobian(taoDNode const * node,
 			 double gx, double gy, double gz,
-			 Matrix & jacobian) const;
+			 Eigen::MatrixXd & jacobian) const;
     
     /** Convenience method in case you are holding the global position
 	in a three-dimensional vector. */
     inline bool computeJacobian(taoDNode const * node,
 				Eigen::VectorXd const & global_point,
-				Matrix & jacobian) const
+				Eigen::MatrixXd & jacobian) const
     { return computeJacobian(node, global_point[0], global_point[1], global_point[2], jacobian); }
     
     //////////////////////////////////////////////////
@@ -302,7 +302,7 @@ namespace jspace {
 	in the Jacobian. Failures can only be due to calls of
 	computeJacobian() that happens for each node's contribution to
 	the Jacobian of the COM. */
-    bool computeCOM(Eigen::VectorXd & com, Matrix * opt_jcom) const;
+    bool computeCOM(Eigen::VectorXd & com, Eigen::MatrixXd * opt_jcom) const;
     
     /** Compute the gravity joint-torque vector. */
     void computeGravity();
@@ -349,7 +349,7 @@ namespace jspace {
 	\return True on success. The only possibility of receiving
 	false is if you never called computeMassInertia(), which gets
 	called by updateDynamics(), which gets called by update(). */
-    bool getMassInertia(Matrix & mass_inertia) const;
+    bool getMassInertia(Eigen::MatrixXd & mass_inertia) const;
     
     /** Compute the inverse joint-space mass-inertia matrix. */
     void computeInverseMassInertia();
@@ -359,7 +359,7 @@ namespace jspace {
 	\return True on success. The only possibility of receiving
 	false is if you never called computeMassInertia(), which gets
 	called by updateDynamics(), which gets called by update(). */
-    bool getInverseMassInertia(Matrix & inverse_mass_inertia) const;
+    bool getInverseMassInertia(Eigen::MatrixXd & inverse_mass_inertia) const;
     
     
     /** For debugging only, access to the

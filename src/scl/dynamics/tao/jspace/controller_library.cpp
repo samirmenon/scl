@@ -238,7 +238,7 @@ namespace jspace {
     }
     
     if (compensation_flags_ & COMP_MASS_INERTIA) {
-      Matrix AA;
+      Eigen::MatrixXd AA;
       if ( ! model.getMassInertia(AA)) {
 	status.ok = false;
 	status.errstr = "model.getMassInertia() failed";

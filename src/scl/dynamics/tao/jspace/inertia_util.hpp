@@ -110,7 +110,7 @@ namespace jspace {
 			    /** OK to pass same ref as original */
 			    deMassProp & fused);
   
-  void mass_inertia_explicit_form(Model const & model, Matrix & mass_inertia,
+  void mass_inertia_explicit_form(Model const & model, Eigen::MatrixXd & mass_inertia,
 				  std::ostream * dbgos = 0)
     throw(std::runtime_error);
   

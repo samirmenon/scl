@@ -237,12 +237,12 @@ namespace jspace {
   }
   
   
-  void mass_inertia_explicit_form(Model const & model, Matrix & mass_inertia,
+  void mass_inertia_explicit_form(Model const & model, Eigen::MatrixXd & mass_inertia,
 				  std::ostream * dbgos)
     throw(std::runtime_error)
   {
     size_t const ndof(model.getNDOF());
-    mass_inertia = Matrix::Zero(ndof, ndof);
+    mass_inertia = Eigen::MatrixXd::Zero(ndof, ndof);
     
     if (dbgos) {
       *dbgos << "jspace::mass_inertia_explicit_form()\n"
@@ -263,7 +263,7 @@ namespace jspace {
       }
       
       Eigen::Affine3d global_com;
-      Matrix Jacobian;
+      Eigen::MatrixXd Jacobian;
       deVector3 const * com(node->center());
       if (com) {
 	if ( ! model.computeGlobalFrame(node, com->elementAt(0), com->elementAt(1), com->elementAt(2), global_com)) {
@@ -319,7 +319,7 @@ namespace jspace {
       Eigen::Matrix3d Im(Eigen::Matrix3d::Zero());
       deFloat const * mass(node->mass());
       if (mass) {
-	Matrix const mass_contrib(Jacobian.block(0, 0, 3, ndof).transpose() * Jacobian.block(0, 0, 3, ndof));
+	Eigen::MatrixXd const mass_contrib(Jacobian.block(0, 0, 3, ndof).transpose() * Jacobian.block(0, 0, 3, ndof));
 	mass_inertia += *mass * mass_contrib;
 	if (com) {
 	  double const xx(pow(com->elementAt(0), 2));
@@ -363,7 +363,7 @@ namespace jspace {
 	// transformation matrix. Hopefully anyway.
 	
 	// Use the transpose to get the inverse of the rotation.
-	Matrix const J_omega(global_com.linear().transpose() * Jacobian.block(3, 0, 3, ndof));
+	Eigen::MatrixXd const J_omega(global_com.linear().transpose() * Jacobian.block(3, 0, 3, ndof));
 	
 	Eigen::Matrix3d Ic;
 	Ic <<

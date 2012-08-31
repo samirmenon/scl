@@ -30,7 +30,7 @@ using namespace std;
 
 namespace jspace {
   
-  bool compare(jspace::Matrix const & lhs, jspace::Matrix const & rhs, double precision)
+  bool compare(jspace::Eigen::MatrixXd const & lhs, jspace::Eigen::MatrixXd const & rhs, double precision)
   {
     if ( &lhs == &rhs ) {
       return true;
@@ -74,7 +74,7 @@ namespace jspace {
   }
     
     
-  std::string pretty_string(jspace::Matrix const & mm, std::string const & prefix)
+  std::string pretty_string(jspace::Eigen::MatrixXd const & mm, std::string const & prefix)
   {
     ostringstream os;
     pretty_print(mm, os, "", prefix);
@@ -86,7 +86,7 @@ namespace jspace {
 		    std::string const & title, std::string const & prefix,
 		    bool nonl)
   {
-    pretty_print((jspace::Matrix const &) vv, os, title, prefix, true, nonl);
+    pretty_print((jspace::Eigen::MatrixXd const &) vv, os, title, prefix, true, nonl);
   }
     
     
@@ -124,7 +124,7 @@ namespace jspace {
   }
   
   
-  void pretty_print(jspace::Matrix const & mm, std::ostream & os,
+  void pretty_print(jspace::Eigen::MatrixXd const & mm, std::ostream & os,
 		    std::string const & title, std::string const & prefix,
 		    bool vecmode, bool nonl)
   {
