@@ -372,7 +372,7 @@ namespace jspace {
     if ( ! node) {
       return false;
     }
-    std::map<taoDNode *, std::list<SAncestryEntry>>::const_iterator iae(ancestry_table_.find(const_cast<taoDNode*>(node)));
+    std::map<taoDNode *, std::list<SAncestryEntry> >::const_iterator iae(ancestry_table_.find(const_cast<taoDNode*>(node)));
     if (iae == ancestry_table_.end()) {
       return false;
     }

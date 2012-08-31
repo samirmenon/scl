@@ -393,7 +393,7 @@ namespace jspace {
       taoJoint * joint;
     };
 
-    std::map<taoDNode *, std::list<SAncestryEntry>> ancestry_table_;
+    std::map<taoDNode *, std::list<SAncestryEntry> > ancestry_table_;
   };
   
 }
