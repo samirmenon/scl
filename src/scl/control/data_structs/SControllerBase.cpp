@@ -39,9 +39,6 @@ namespace scl
 {
   SControllerBase::SControllerBase() : SObject("SControllerBase")
   {
-    has_been_init_ = false;
-    name_ = "";
-    type_ = "not-init";
     robot_ = S_NULL;
     io_data_ = S_NULL;
     robot_name_ = "";
