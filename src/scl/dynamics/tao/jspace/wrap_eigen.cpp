@@ -30,7 +30,7 @@ using namespace std;
 
 namespace jspace {
   
-  bool compare(jspace::Eigen::MatrixXd const & lhs, jspace::Eigen::MatrixXd const & rhs, double precision)
+  bool compare(Eigen::MatrixXd const & lhs, Eigen::MatrixXd const & rhs, double precision)
   {
     if ( &lhs == &rhs ) {
       return true;
@@ -52,13 +52,13 @@ namespace jspace {
   }
     
     
-  bool compare(jspace::Eigen::Quaternion<double> const & lhs, jspace::Eigen::Quaternion<double> const & rhs, double precision)
+  bool compare(Eigen::Quaternion<double> const & lhs, Eigen::Quaternion<double> const & rhs, double precision)
   {
     return compare(lhs.coeffs(), rhs.coeffs(), precision);
   }
   
   
-  std::string pretty_string(jspace::Eigen::VectorXd const & vv)
+  std::string pretty_string(Eigen::VectorXd const & vv)
   {
     ostringstream os;
     pretty_print(vv, os, "", "", true);
@@ -66,7 +66,7 @@ namespace jspace {
   }
   
     
-  std::string pretty_string(jspace::Eigen::Quaternion<double> const & qq)
+  std::string pretty_string(Eigen::Quaternion<double> const & qq)
   {
     ostringstream os;
     pretty_print(qq, os, "", "", true);
@@ -74,7 +74,7 @@ namespace jspace {
   }
     
     
-  std::string pretty_string(jspace::Eigen::MatrixXd const & mm, std::string const & prefix)
+  std::string pretty_string(Eigen::MatrixXd const & mm, std::string const & prefix)
   {
     ostringstream os;
     pretty_print(mm, os, "", prefix);
@@ -82,15 +82,15 @@ namespace jspace {
   }
     
     
-  void pretty_print(jspace::Eigen::VectorXd const & vv, std::ostream & os,
+  void pretty_print(Eigen::VectorXd const & vv, std::ostream & os,
 		    std::string const & title, std::string const & prefix,
 		    bool nonl)
   {
-    pretty_print((jspace::Eigen::MatrixXd const &) vv, os, title, prefix, true, nonl);
+    pretty_print((Eigen::MatrixXd const &) vv, os, title, prefix, true, nonl);
   }
     
     
-  void pretty_print(jspace::Eigen::Quaternion<double> const & qq, std::ostream & os,
+  void pretty_print(Eigen::Quaternion<double> const & qq, std::ostream & os,
 		    std::string const & title, std::string const & prefix,
 		    bool nonl)
   {
@@ -124,7 +124,7 @@ namespace jspace {
   }
   
   
-  void pretty_print(jspace::Eigen::MatrixXd const & mm, std::ostream & os,
+  void pretty_print(Eigen::MatrixXd const & mm, std::ostream & os,
 		    std::string const & title, std::string const & prefix,
 		    bool vecmode, bool nonl)
   {
@@ -168,20 +168,20 @@ namespace jspace {
   }
   
   
-  void convert(jspace::Eigen::VectorXd const & from, std::vector<double> & to)
+  void convert(Eigen::VectorXd const & from, std::vector<double> & to)
   {
     to.resize(from.size());
     Eigen::VectorXd::Map(&to[0], to.size()) = from;
   }
   
   
-  void convert(std::vector<double> const & from, jspace::Eigen::VectorXd & to)
+  void convert(std::vector<double> const & from, Eigen::VectorXd & to)
   {
     to = Eigen::VectorXd::Map(&from[0], from.size());
   }
   
   
-  void convert(double const * from, size_t length, jspace::Eigen::VectorXd & to)
+  void convert(double const * from, size_t length, Eigen::VectorXd & to)
   {
     to = Eigen::VectorXd::Map(from, length);
   }
