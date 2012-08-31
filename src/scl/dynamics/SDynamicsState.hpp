@@ -98,7 +98,8 @@ namespace scl
       flag_apply_limits_dq_(false),
       flag_apply_limits_ddq_(false),
       flag_apply_errors_integrator_(false),
-      flag_apply_errors_matrices_(false){}
+      flag_apply_errors_matrices_(false),
+      SObject("SDynamicsState"){}
 
     /** Default destructor does nothing */
     virtual ~SDynamicsState(){}
