@@ -279,7 +279,7 @@ namespace scl
       }
 
       if ( ! calculateJacobian(it->link_dynamic_id_, it->T_com_ * it->pos_com_ ,it->J_com_)) {
-        fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Could not compute the com Jacobian at link : %s\n",it->name_);
+        fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Could not compute the com Jacobian at link : %s\n",it->name_.c_str());
         return false;
       }
     }
