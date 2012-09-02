@@ -21,6 +21,7 @@
 /**
    \file jspace/wrap_eigen.hpp
    \author Roland Philippsen
+   \edited (Aug 2012) Samir Menon <smenon@stanford.edu>
  */
 
 #ifndef JSPACE_WRAP_EIGEN_HPP
@@ -39,11 +40,6 @@ extern "C" {
 
 namespace jspace
 {
-  // ...an idea that needs more thought...
-  // typedef Eigen::Map<Eigen::VectorXd> VectorMap;
-  // inline VectorMap map(std::vector<double> & from) { return Vector::Map(&from[0], from.size()); }
-  // inline VectorMap const map(std::vector<double> const & from) { return Vector::Map(&from[0], from.size()); }
-
   void convert(Eigen::VectorXd const & from, std::vector<double> & to);
   void convert(std::vector<double> const & from, Eigen::VectorXd & to);
   void convert(double const * from, size_t length, Eigen::VectorXd & to);
