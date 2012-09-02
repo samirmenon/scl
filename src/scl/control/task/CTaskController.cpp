@@ -48,6 +48,7 @@ namespace scl
     data_= S_NULL;
     dynamics_ = S_NULL;
     task_count_ = 0;
+    task_non_ctrl_count_ = 0;
   }
 
   sBool CTaskController::init(SControllerBase* arg_data,

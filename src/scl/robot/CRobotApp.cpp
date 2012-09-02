@@ -66,6 +66,21 @@ namespace scl
   /****************       All the function implementations   **************/
   /************************************************************************/
 
+  CRobotApp::CRobotApp() :
+      db_(NULL),
+      rob_io_ds_(NULL),
+      tao_dyn_(NULL),
+      ctrl_ctr_(0),
+      t_start_(0.0),
+      t_end_(0.0)
+#ifdef GRAPHICS_ON
+      ,
+      gr_ctr_(0),
+      gr_frm_skip_(0),
+      gr_frm_ctr_(0)
+#endif
+  {}
+
   scl::sBool CRobotApp::init(const std::vector<std::string>& argv)
   {
     bool flag;
@@ -83,8 +98,8 @@ namespace scl
         //1. Initialize the database and clock.
         if(false == sutil::CSystemClock::start()) { throw(std::runtime_error("Could not start clock"));  }
 
-        db = scl::CDatabase::getData(); //Sanity Check
-        if(S_NULL==db) { throw(std::runtime_error("Database not initialized"));  }
+        db_ = scl::CDatabase::getData(); //Sanity Check
+        if(S_NULL==db_) { throw(std::runtime_error("Database not initialized"));  }
 
         //For parsing controllers
         flag = scl_registry::registerNativeDynamicTypes();
@@ -104,37 +119,37 @@ namespace scl
         /******************************File Parsing************************************/
         scl_parser::CLotusParser tmp_lparser;//Use the lotus tinyxml parser
         flag = scl_registry::parseEverythingInFile(tmp_infile,
-            &tmp_lparser,&robots_parsed,
+            &tmp_lparser,&robots_parsed_,
 #ifdef GRAPHICS_ON
-            &graphics_parsed);
+            &graphics_parsed_);
 #else
             NULL);
 #endif
-        if((false == flag) || (robots_parsed.size()<=0)
+        if((false == flag) || (robots_parsed_.size()<=0)
 #ifdef GRAPHICS_ON
-            || (graphics_parsed.size()<=0)
+            || (graphics_parsed_.size()<=0)
 #endif
             )
         { throw(std::runtime_error("Could not parse the file"));  }
 
-        robot_name = argv[2];
-        if(!scl_util::isStringInVector(robot_name,robots_parsed))
+        robot_name_ = argv[2];
+        if(!scl_util::isStringInVector(robot_name_,robots_parsed_))
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
         /******************************TaoDynamics************************************/
-        tao_dyn = new scl::CTaoDynamics();
-        flag = tao_dyn->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
+        tao_dyn_ = new scl::CTaoDynamics();
+        flag = tao_dyn_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
         if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
         /******************************ChaiGlut Graphics************************************/
 #ifdef GRAPHICS_ON
-        flag = chai_gr.initGraphics(graphics_parsed[0]);
+        flag = chai_gr_.initGraphics(graphics_parsed_[0]);
         if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
 
-        flag = chai_gr.addRobotToRender(robot_name);
+        flag = chai_gr_.addRobotToRender(robot_name_);
         if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
 
-        if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_parsed[0], &chai_gr))
+        if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_parsed_[0], &chai_gr_))
         { throw(std::runtime_error("Glut initialization error")); }
 
         //Set up the graphics refresh interval defaults (for multi-threaded mode)
@@ -148,16 +163,16 @@ namespace scl
 #endif
 
         /******************************Shared I/O Data Structure************************************/
-        rob_io_ds = db->s_io_.io_data_.at(robot_name);
-        if(S_NULL == rob_io_ds)
+        rob_io_ds_ = db_->s_io_.io_data_.at(robot_name_);
+        if(S_NULL == rob_io_ds_)
         { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
         /**********************Initialize Robot Dynamics and Controller*******************/
-        flag = robot.initFromDb(robot_name,tao_dyn,tao_dyn);//Note: The robot deletes these pointers.
+        flag = robot_.initFromDb(robot_name_,tao_dyn_,tao_dyn_);//Note: The robot deletes these pointers.
         if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
 
-        ctrl_name = argv[3];
-        flag = robot.setControllerCurrent(ctrl_name);
+        ctrl_name_ = argv[3];
+        flag = robot_.setControllerCurrent(ctrl_name_);
         if(false == flag) { throw(std::runtime_error("Could not initialize robot's controller"));  }
 
         /**********************Initialize Single Control Task *******************/
@@ -165,13 +180,13 @@ namespace scl
         if(false == flag)
         { throw(std::runtime_error("Could not initialize user's custom controller"));  }
 
-        ctrl_ctr=0;//Controller computation counter
+        ctrl_ctr_=0;//Controller computation counter
 #ifdef GRAPHICS_ON
-        gr_ctr=0;//Controller computation counter
+        gr_ctr_=0;//Controller computation counter
 #endif
 
         //Simulation loop.
-        std::cout<<"\nStarting simulation. Integration timestep: "<<db->sim_dt_<<std::flush;
+        std::cout<<"\nStarting simulation. Integration timestep: "<<db_->sim_dt_<<std::flush;
 
         return true;
       }
@@ -205,12 +220,12 @@ namespace scl
   {
     /****************************Print Collected Statistics*****************************/
     std::cout<<"\nTotal Simulated Time : "<<sutil::CSystemClock::getSimTime() <<" sec";
-    std::cout<<"\nTotal Control Model and Servo Updates : "<<ctrl_ctr;
+    std::cout<<"\nTotal Control Model and Servo Updates : "<<ctrl_ctr_;
 #ifdef GRAPHICS_ON
-    std::cout<<"\nTotal Graphics Updates                : "<<gr_ctr;
+    std::cout<<"\nTotal Graphics Updates                : "<<gr_ctr_;
 
     /******************************Termination************************************/
-    bool flag = chai_gr.destroyGraphics();
+    bool flag = chai_gr_.destroyGraphics();
     if(false == flag) { std::cout<<"\nError deallocating graphics pointers"; } //Sanity check.
 #endif
 
@@ -243,7 +258,7 @@ namespace scl
         {
           nanosleep(&ts_,NULL);
           glutMainLoopEvent(); //Update the graphics
-          gr_ctr++;
+          gr_ctr_++;
         }
       }
 #endif
@@ -268,7 +283,7 @@ namespace scl
         { gr_frm_ctr_++; continue; }
         gr_frm_ctr_ = 0;
         glutMainLoopEvent(); //Update the graphics
-        gr_ctr++;
+        gr_ctr_++;
       }
 #endif
     }

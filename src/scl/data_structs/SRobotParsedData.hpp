@@ -108,7 +108,8 @@ public:
   //std::string name_; //Inherited
   //sBool has_been_init_; //Inherited
 
-  SRobotParsedData() : SObject(std::string("SRobotParsedData") )
+  SRobotParsedData() : SObject(std::string("SRobotParsedData") ),
+      dof_(0)
   {
     //Flags to control SRobot's behavior
     flag_apply_damping_               = false;

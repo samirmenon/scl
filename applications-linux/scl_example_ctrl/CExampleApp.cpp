@@ -64,7 +64,7 @@ namespace scl_app
       scl::sUInt args_ctr = args_parsed;
 
       /** Initialize Single Control Task */
-      ctrl = (scl::CTaskController*) robot.getControllerCurrent();
+      ctrl = (scl::CTaskController*) robot_.getControllerCurrent();
       if(S_NULL == ctrl)
       { throw(std::runtime_error("Could not get current controller"));  }
 
@@ -75,7 +75,7 @@ namespace scl_app
         {// We know the next argument *should* be the log file's name
           if(args_ctr+1 <= argv.size())
           {
-            flag = robot.setLogFile(argv[args_ctr+1]);
+            flag = robot_.setLogFile(argv[args_ctr+1]);
             if(false == flag) { throw(std::runtime_error("Could not set up log file"));  }
             args_ctr = args_ctr+2;
           }
@@ -90,7 +90,7 @@ namespace scl_app
           //Initialize the first op point controller
           op_link_name = argv[args_ctr]; args_ctr++;
           op_link_set = true;
-          db->s_gui_.ui_point_[0]<<0,0.1,0; //Ctrl tracks this control point.
+          db_->s_gui_.ui_point_[0]<<0,0.1,0; //Ctrl tracks this control point.
           tsk = (scl::COpPointTask*)(ctrl->getTask(op_link_name));
           if(S_NULL == tsk)
           { throw(std::runtime_error("Must specify at least one valid op-point task. Could not find specified task"));  }
@@ -111,7 +111,7 @@ namespace scl_app
             {//Should have atleast two op point tasks to connect the second to keyboard commands.
               op_link2_name = argv[5]; args_ctr++;
               op_link2_set = true;
-              db->s_gui_.ui_point_[1]<<0,-0.1,0; //Ctrl2 tracks this control point.
+              db_->s_gui_.ui_point_[1]<<0,-0.1,0; //Ctrl2 tracks this control point.
               tsk2 = (scl::COpPointTask*)(ctrl->getTask(op_link2_name));
               if(S_NULL == tsk2)
               { throw(std::runtime_error("There are atleast two op-point tasks. Specify the second task's name to connect it to a keyboard handler."));  }
@@ -141,26 +141,26 @@ namespace scl_app
 
   void CExampleApp::stepMySimulation()
   {
-    sutil::CSystemClock::tick(db->sim_dt_);//Tick the clock.
+    sutil::CSystemClock::tick(db_->sim_dt_);//Tick the clock.
 
-    tsk->setGoal(db->s_gui_.ui_point_[0]); //Interact with the gui
+    tsk->setGoal(db_->s_gui_.ui_point_[0]); //Interact with the gui
 
     if(op_link2_set)//Use only if the second task was also initialized.
-    { tsk2->setGoal(db->s_gui_.ui_point_[1]); }
+    { tsk2->setGoal(db_->s_gui_.ui_point_[1]); }
 
-    if(ctrl_ctr%5 == 0)           //Update dynamics at a slower rate
+    if(ctrl_ctr_%5 == 0)           //Update dynamics at a slower rate
     {
-      robot.computeDynamics();
-      robot.computeNonControlOperations();
+      robot_.computeDynamics();
+      robot_.computeNonControlOperations();
     }
 
-    if(ctrl_ctr%100 == 0)           //Log at a slower rate
+    if(ctrl_ctr_%100 == 0)           //Log at a slower rate
     {
-      robot.logState(true,true,true);
+      robot_.logState(true,true,true);
     }
-    robot.computeServo();           //Run the servo loop
-    robot.integrateDynamics();      //Integrate system
+    robot_.computeServo();           //Run the servo loop
+    robot_.integrateDynamics();      //Integrate system
 
-    ctrl_ctr++;//Increment the counter for dynamics computed.
+    ctrl_ctr_++;//Increment the counter for dynamics computed.
   }
 }

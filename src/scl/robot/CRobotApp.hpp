@@ -90,8 +90,8 @@ namespace scl
     /****************       But feel free to use the objects   **************/
     /************************************************************************/
 
-    /** Default constructor. Does nothing */
-    CRobotApp() {}
+    /** Default constructor. Sets stuff to zero. */
+    CRobotApp();
 
     /** Default destructor. Does nothing */
     virtual ~CRobotApp(){}
@@ -143,26 +143,26 @@ namespace scl
     void runConsoleShell();
 
     //Data types. Feel free to use them.
-    scl::SDatabase* db;                 //Generic database (for sharing data)
+    scl::SDatabase* db_;                 //Generic database (for sharing data)
 
-    std::vector<std::string> robots_parsed;   //Parsed robots
+    std::vector<std::string> robots_parsed_;   //Parsed robots
 
-    std::string robot_name;             //Currently selected robot
-    std::string ctrl_name;              //Currently selected controller
+    std::string robot_name_;             //Currently selected robot
+    std::string ctrl_name_;              //Currently selected controller
 
-    scl::CRobot robot;                  //Generic robot
-    scl::SRobotIOData* rob_io_ds;       //Access the robot's sensors and actuators
+    scl::CRobot robot_;                  //Generic robot
+    scl::SRobotIOData* rob_io_ds_;       //Access the robot's sensors and actuators
 
-    scl::CTaoDynamics* tao_dyn;         //Generic tao dynamics
+    scl::CTaoDynamics* tao_dyn_;         //Generic tao dynamics
 
-    scl::sLongLong ctrl_ctr;            //Controller computation counter
-    scl::sFloat t_start, t_end;         //Start and end times
+    scl::sLongLong ctrl_ctr_;            //Controller computation counter
+    scl::sFloat t_start_, t_end_;         //Start and end times
 
     //Graphics stuff
 #ifdef GRAPHICS_ON
-    std::vector<std::string> graphics_parsed; //Parsed graphics views
-    scl::CChaiGraphics chai_gr;         //Generic chai graphics
-    scl::sLongLong gr_ctr;              //Graphic update counter
+    std::vector<std::string> graphics_parsed_; //Parsed graphics views
+    scl::CChaiGraphics chai_gr_;         //Generic chai graphics
+    scl::sLongLong gr_ctr_;              //Graphic update counter
     timespec ts_;                       //Sleep for graphics (nanoseconds)
     int gr_frm_skip_;                   //Graphics frames to skip (single-threaded mode)
     int gr_frm_ctr_;                    //Graphics frame counter (single-threaded mode)

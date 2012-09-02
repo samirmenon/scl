@@ -76,10 +76,6 @@ namespace scl
       flag = gc_model_.init(arg_robot_ds->dof_);
       if(false == flag)
       { throw(std::runtime_error("Could not initialize generalized coordinate dynamic matrices")); }
-
-      //NOTE : We will not set has_been_init_ to true. The actual controller's data struct
-      //implementation should do that.
-      return true;
     }
 
     catch(std::exception& e)
@@ -90,5 +86,9 @@ namespace scl
       //So, we will keep the past values for error handling / debugging.
       return false;
     }
+
+    //NOTE : We will not set has_been_init_ to true. The actual controller's data struct
+    //implementation should do that.
+    return true;
   }
 }

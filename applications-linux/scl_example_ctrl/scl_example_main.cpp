@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 
   int thread_id;
 
-  app.t_start = sutil::CSystemClock::getSysTime();
+  app.t_start_ = sutil::CSystemClock::getSysTime();
 #pragma omp parallel private(thread_id)
   {//Start threaded region
     thread_id = omp_get_thread_num();
@@ -102,8 +102,8 @@ int main(int argc, char** argv)
 #endif
     }
   }
-  app.t_end = sutil::CSystemClock::getSysTime();
-  std::cout<<"\nSimulation Took Time : "<<app.t_end-app.t_start <<" sec";
+  app.t_end_ = sutil::CSystemClock::getSysTime();
+  std::cout<<"\nSimulation Took Time : "<<app.t_end_-app.t_start_ <<" sec";
 
   /****************************Deallocate Memory And Exit*****************************/
   app.terminate();

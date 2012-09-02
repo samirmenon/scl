@@ -59,13 +59,13 @@ namespace scl
         com.name_ = "";
         coms_.push_back(com);
       }
-
-      return true;
     }
     catch(std::exception& e)
     {
       std::cerr<<"\nSGcModel::init() : "<<e.what();
       return false;
     }
+
+    return true;
   }
 }

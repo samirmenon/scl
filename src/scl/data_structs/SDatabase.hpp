@@ -323,6 +323,7 @@ public:
     dir_specs_ = "";
     running_ = true;
     pause_ctrl_dyn_ = false;
+    step_ctrl_dyn_ = false;
     pause_graphics_ = false;
     param_logging_on_ = false;
   }
