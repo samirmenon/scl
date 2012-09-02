@@ -268,15 +268,21 @@ namespace scl
       return false;
     }
 
-//    std::vector<Eigen::MatrixXd>::iterator it, ite;
-//    for(it = js_model->J_com_vec_.begin(), ite = js_model->J_com_vec_.end();
-//        it!=ite;++it)
-//    {
-//      if ( ! calculateJacobian(js_model->b_)) {
-//        fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getCoriolisCentrifugal() failed\n");
-//        return false;
-//      }
-//    }
+    bool flag;
+    std::vector<SGcModel::SCOMInfo>::iterator it, ite;
+    for(it = js_model->coms_.begin(), ite = js_model->coms_.end(); it!=ite;++it)
+    {
+      flag = calculateTransformationMatrix(it->link_dynamic_id_,it->T_com_);
+      if(false == flag) {
+        fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Com transformation matrix computation failed\n");
+        return false;
+      }
+
+      if ( ! calculateJacobian(it->link_dynamic_id_, it->T_com_ * it->pos_com_ ,it->J_com_)) {
+        fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Could not compute the com Jacobian at link : %s\n",it->name_);
+        return false;
+      }
+    }
 
     return true;
   }
