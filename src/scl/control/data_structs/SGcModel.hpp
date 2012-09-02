@@ -65,7 +65,26 @@ namespace scl
     Eigen::VectorXd g_;
 
     /** J_com_ : The center of mass Jacobians of the articulated body */
-    std::vector<Eigen::MatrixXd> J_com_vec_;
+    class SCOMInfo{
+    public:
+      Eigen::MatrixXd J_com_;
+      Eigen::Affine3d T_com_;
+      Eigen::Vector3d pos_com_;
+      /** The link's name.
+       * This is redundant, but primarily for error checks,
+       * since external libraries might not maintain the same
+       * numeric ordering scheme used in scl.
+       *
+       * The errors primarily arise because of an inconsistent
+       * initialization sequence between the two, which would lead
+       * to mixed link ids. */
+      std::string name_;
+      /** The dynamics engine's id.
+       * This, again, is redundant like the name. But simplifies
+       * and speeds up error checks. */
+      const void* link_dynamic_id_;
+    };
+    std::vector<SCOMInfo> coms_;
 
     /** Constructor does nothing */
     SGcModel();

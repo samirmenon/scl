@@ -53,9 +53,11 @@ namespace scl
 
       for(int i=0;i<arg_robot_dof;++i)
       {
-        Eigen::VectorXd J_com;
-        J_com.setZero(6, arg_robot_dof);
-        J_com_vec_.push_back(J_com);
+        SCOMInfo com;
+        com.J_com_.setZero(6, arg_robot_dof);
+        com.pos_com_.setZero(3);
+        com.name_ = "";
+        coms_.push_back(com);
       }
 
       return true;
