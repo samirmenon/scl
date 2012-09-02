@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <stdexcept>
-
+#include <sstream>
 
 namespace scl
 {
@@ -58,6 +58,7 @@ namespace scl
       //Reset the computational object (remove all the associated data).
       reset();
 
+      // Set up the task controller data stucture
       if(S_NULL==arg_data)
       { throw(std::runtime_error("NULL data structure passed."));  }
       if(false==arg_data->has_been_init_)
@@ -65,11 +66,51 @@ namespace scl
       //This ensures that the passed data was properly initialized for task controllers.
       data_ = dynamic_cast<STaskController*>(arg_data);
 
+      // Set up the dynamics
       if(NULL==arg_dynamics)
       { throw(std::runtime_error("NULL dynamics object passed."));  }
       if(false==arg_dynamics->hasBeenInit())
       { throw(std::runtime_error("Uninitialized dynamics object passed."));  }
       dynamics_ = arg_dynamics;
+
+      // Set up the center of mass properties of the robot
+      std::vector<SGcModel::SCOMInfo>::iterator itcom,itcome;
+      sutil::CMappedTree<std::string, SRobotLink>::const_iterator itr,itre;
+      //Set the center of mass position for each link.
+      for(itcom = data_->gc_model_.coms_.begin(), itcome =data_->gc_model_.coms_.end(),
+          itr = data_->robot_->robot_br_rep_.begin(),itre = data_->robot_->robot_br_rep_.end();
+          itcom!=itcome; ++itcom,++itr)
+      {
+        //Note : The root node doesn't move, has infinite mass, and doesn't
+        //       have a com jacobian. So skip it.
+        while(itr->is_root_) { ++itr; }
+
+        if(itr == itre)
+        {
+          std::stringstream ss;
+          ss<<"Inconsistent model. Gc model has more entries ["
+              <<data_->gc_model_.coms_.size()<<"] than the robot's mapped tree ["
+              <<data_->robot_->robot_br_rep_.size()<<"]";
+          throw(std::runtime_error(ss.str()));
+        }
+
+        itcom->name_ = itr->name_;
+        itcom->link_dynamic_id_ = dynamics_->getIdForLink(itcom->name_);
+        itcom->pos_com_ = itr->com_;
+      }
+      if(itr != itre)
+      {
+        //In case the root node is at the end.
+        while(itr->is_root_) { ++itr; if(itr == itre) break; }
+        if(itr != itre)
+        {
+          std::stringstream ss;
+          ss<<"Inconsistent model. Gc model has less entries ["
+              <<data_->gc_model_.coms_.size()<<"] than the robot's mapped tree ["
+              <<data_->robot_->robot_br_rep_.size()-1<<"]"; //-1 in br_rep_.size to remove root.
+          throw(std::runtime_error(ss.str()));
+        }
+      }
 
       has_been_init_ = true;
 
