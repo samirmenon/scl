@@ -204,7 +204,11 @@ bool COpPointTask::computeModel()
       //NOTE : This is slower and generally performs worse than the simple inversion
       //for small (3x3) matrices that are usually used in op-space controllers.
       svd_.compute(data_->lambda_inv_,
-          Eigen::ComputeThinU | Eigen::ComputeThinV | Eigen::ColPivHouseholderQRPreconditioner);
+          Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+
+#ifdef DEBUG
+      std::cout<<"\n Singular values : "<<svd_.singularValues().transpose();
+#endif
 
       //NOTE : A threshold of .005 works quite well for most robots.
       //Experimentally determined: Take the robot to a singularity

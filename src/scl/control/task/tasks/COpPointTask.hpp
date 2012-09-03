@@ -116,7 +116,7 @@ private:
   Eigen::VectorXd tmp1, tmp2;
 
   /** For inverting the lambda matrix (when it gets singular) */
-  Eigen::ColPivHouseholderQR<Eigen::MatrixXd> qr_;
+  Eigen::ColPivHouseholderQR<Eigen::Matrix3d> qr_;
 
   /** True when the lambda_inv matrix turns singular. */
   sBool lambda_inv_singular_;
