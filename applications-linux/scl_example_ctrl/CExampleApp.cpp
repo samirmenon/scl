@@ -100,7 +100,7 @@ namespace scl_app
 
 #ifdef GRAPHICS_ON
           /** Render a sphere at the op-point task's position */
-          flag = chai_gr.addSphereToRender(robot_name,tsk_ds->link_ds_->name_,tsk_ds->pos_in_parent_);
+          flag = chai_gr_.addSphereToRender(robot_name_,tsk_ds->link_ds_->name_,tsk_ds->pos_in_parent_);
           if(false == flag) { throw(std::runtime_error("Could not add sphere at op task"));  }
 #endif
 
@@ -121,7 +121,7 @@ namespace scl_app
 
 #ifdef GRAPHICS_ON
               /** Render a sphere at the op-point task's position */
-              flag = chai_gr.addSphereToRender(robot_name,tsk2_ds->link_ds_->name_,tsk2_ds->pos_in_parent_);
+              flag = chai_gr_.addSphereToRender(robot_name_,tsk2_ds->link_ds_->name_,tsk2_ds->pos_in_parent_);
               if(false == flag) { throw(std::runtime_error("Could not add sphere at op task"));  }
 #endif
             }
