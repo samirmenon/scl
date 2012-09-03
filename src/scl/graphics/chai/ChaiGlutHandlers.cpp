@@ -211,7 +211,7 @@ namespace scl_chai_glut_interface
     }
 
     /** Control the gui 3D points. Can control 6 points total using the glut buttons */
-    const char arr[] = {'s', 'w', 'd', 'a', 'e', 'q', 'j', 'u', 'k', 'h', 'i', 'y', 'v', 't', 'g', 'f', 'y', 'r',
+    const char arr[] = {'s', 'w', 'd', 'a', 'e', 'q', 'j', 'u', 'k', 'h', 'i', 'y', 'v', 'f', 'b', 'c', 't', 'r',
         'S', 'W', 'D', 'A', 'E', 'Q', 'J', 'U', 'K', 'H', 'I', 'Y', 'V', 'T', 'G', 'F', 'Y', 'R'};
     //Can set this multiplier to modulate the motion of the operational points
     const scl::sFloat opt_mult=1;
@@ -245,26 +245,16 @@ namespace scl_chai_glut_interface
             scl::CDatabase::getData()->s_gui_.ui_point_[i](j) += opt_mult*0.01;
           }
         }
-        chai_glob_ds->keys_active[static_cast<int>( arr[2*j] )] = false;
+        //chai_glob_ds->keys_active[static_cast<int>( arr[2*j] )] = false;
         if (chai_glob_ds->keys_active[static_cast<int>( arr[2*j+1] )])
         {//Decrement op point
           for(unsigned int i=0; i<12; ++i)
           {//Loop over all operational points
             scl::CDatabase::getData()->s_gui_.ui_point_[i](j) -= opt_mult*0.01;
           }
-          chai_glob_ds->keys_active[static_cast<int>( arr[2*j+1] )] = false;
+          //chai_glob_ds->keys_active[static_cast<int>( arr[2*j+1] )] = false;
         }
       }
-    }
-
-    //Print debug info:
-    if (chai_glob_ds->keys_active[static_cast<int>('b')])
-    {
-      std::cout<<"\nGLUT: Operational Point Pos : "<<
-          scl::CDatabase::getData()->s_gui_.ui_point_[0].transpose();
-      std::cout<<"\nGLUT: Operational Point 2 Pos : "<<
-          scl::CDatabase::getData()->s_gui_.ui_point_[1].transpose();
-      chai_glob_ds->keys_active[static_cast<int>('b')] = false;
     }
 
     //Pause the controller
