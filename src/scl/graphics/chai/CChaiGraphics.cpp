@@ -422,7 +422,7 @@ namespace scl {
 
           //Use display lists : Uses the graphics card for faster rendering
           // NOTE : Possibly corrputs the rendering. Disable if required.
-#ifndef S_TESTING
+#ifndef DEBUG
           tmp->setUseDisplayList(true, true);
           tmp->invalidateDisplayList(true);
 #endif

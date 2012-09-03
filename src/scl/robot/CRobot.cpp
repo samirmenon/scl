@@ -149,7 +149,7 @@ namespace scl
             //Collision
             data_.io_data_->sensors_.dq_(i) = data_.io_data_->sensors_.dq_(i) * 0.01;//99% energy loss
             data_.io_data_->sensors_.ddq_(i) = 0;
-            #ifdef S_TESTING
+            #ifdef DEBUG
             //std::cout<<"\nCollided with joint limits: "<<data_.io_data_->sensors_.q_.transpose();
             #endif
           }
