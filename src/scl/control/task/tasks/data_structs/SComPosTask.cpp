@@ -51,7 +51,7 @@ namespace scl
     try
     {
       if(3!=dof_task_)//This is a position based op point task
-      { throw(std::runtime_error("Operational point tasks MUST have 3 dofs (xyz translation at a point)."));  }
+      { throw(std::runtime_error("Com pos tasks MUST have 3 dofs (xyz translation at a point)."));  }
 
       //Initalize the task data structure.
       pos_in_parent_ = Eigen::Vector3d::Zero();

@@ -77,6 +77,11 @@ namespace scl
       //Defaults
       singular_values_.setZero();
 
+      data_->jacobian_.setZero(3, data_->robot_->dof_);
+      data_->jacobian_dyn_inv_.setZero(data_->robot_->dof_, 3);
+      data_->lambda_.setZero(3,3);
+      data_->lambda_inv_.setZero(3,3);
+
       //Try to use the householder qr instead of the svd in general
       //Computing this once here initializes memory and resizes qr_
       //It will be used later.
@@ -155,12 +160,11 @@ namespace scl
       bool flag = true;
       const SGcModel* gcm = data_->gc_model_;
 
-      //NOTE TODO : Compute the COM Jacobian
-//      flag = flag && dynamics_->calculateJacobian(
-//          data_->link_dynamic_id_,pos,data_->jacobian_);
-
-      //Use the position jacobian only. This is an op-point task.
-      data_->jacobian_ = data_->jacobian_.block(0,0,3,data_->robot_->dof_);
+      //Compute the COM Jacobian : sum over all the link com jacobians
+      data_->jacobian_.setZero(3, data_->robot_->dof_);
+      std::vector<SGcModel::SCOMInfo>::const_iterator it,ite;
+      for(it = gcm->coms_.begin(), ite = gcm->coms_.end(); it!=ite; ++it)
+      { data_->jacobian_ += it->J_com_.block(0,0,3,data_->robot_->dof_);  }
 
       //Operational space mass/KE matrix:
       //Lambda = (J * Ainv * J')^-1
