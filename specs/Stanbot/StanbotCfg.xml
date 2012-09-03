@@ -72,6 +72,17 @@
             <force_min>-100</force_min>
         </task>
 
+        <task name="com">
+            <type>ComPosTask</type>
+            <priority>1</priority>
+            <task_dof>3</task_dof>
+            <kp>100</kp>
+            <kv>20</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+        </task>
+
         <task name="GcTask">
             <type>TaskGc</type>
             <priority>1</priority>
