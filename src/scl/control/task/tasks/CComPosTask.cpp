@@ -178,8 +178,10 @@ namespace scl
       {
         //The general inverse function works very well for op-point controllers.
         //3x3 matrix inversion behaves quite well. Even near singularities where
-        //singular values go down to ~0.001. If the model is coarse, use a n-k rank
-        //approximation with the SVD for a k rank loss in a singularity.
+        //singular values go down to ~0.001. If the model is updated at a much lower
+        //rate than the servo (aka. 1/20 or lesser), use an n-k rank
+        //approximation with the SVD for stable inverses at the cost of a k-rank loss
+        //of control.
         qr_.compute(data_->lambda_inv_);
         if(qr_.isInvertible())
         { data_->lambda_ = qr_.inverse();  }
