@@ -42,9 +42,38 @@ namespace scl_app
 {
   class CExampleApp : public scl::CRobotApp
   {
-  private:
-    scl::CTaskController* ctrl;           //Use a task controller
+  public:
+    // ****************************************************
+    //                 The main function
+    // ****************************************************
+    /** Runs the task controller. */
+    virtual void stepMySimulation();
 
+    // ****************************************************
+    //           The initialization functions
+    // ****************************************************
+    /** Default constructor. Sets stuff to zero. */
+    CExampleApp();
+
+    /** Default destructor. Does nothing. */
+    virtual ~CExampleApp(){}
+
+    /** Sets up the task controller. */
+    virtual scl::sBool initMyController(const std::vector<std::string>& argv,
+        scl::sUInt args_parsed);
+
+    /** Register any custom dynamic types that you have. */
+    virtual scl::sBool registerCustomDynamicTypes();
+
+  private:
+    // ****************************************************
+    //                      The data
+    // ****************************************************
+    scl::CTaskController* ctrl_;           //Use a task controller
+
+    /** This is an internal class for organizing the control-task
+     * to ui-point connection through the keyboard or an external
+     * haptic device */
     class SOpPointUiLinkData
     {
     public:
@@ -66,23 +95,6 @@ namespace scl_app
     scl::SComPosTask* task_ds_com_;
     scl::sInt ui_pt_com_;
     scl::sBool has_been_init_com_task_;
-
-  public:
-    /** Default constructor. Sets stuff to zero. */
-    CExampleApp();
-
-    /** Default destructor. Does nothing. */
-    virtual ~CExampleApp(){}
-
-    /** Sets up the task controller. */
-    virtual scl::sBool initMyController(const std::vector<std::string>& argv,
-        scl::sUInt args_parsed);
-
-    /** Register any custom dynamic types that you have. */
-    virtual scl::sBool registerCustomDynamicTypes();
-
-    /** Runs the task controller. */
-    virtual void stepMySimulation();
   };
 
 }

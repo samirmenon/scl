@@ -45,7 +45,13 @@ namespace scl_app
 
   /** Default constructor. Sets stuff to zero.
    * Uses a task controller*/
-  CExampleApp::CExampleApp() : ctrl(S_NULL)
+  CExampleApp::CExampleApp() :
+      ctrl_(S_NULL),
+      name_com_task_(""),
+      task_com_(S_NULL),
+      task_ds_com_(S_NULL),
+      ui_pt_com_(-1),
+      has_been_init_com_task_(false)
   { }
 
   scl::sBool CExampleApp::initMyController(const std::vector<std::string>& argv,
@@ -59,8 +65,8 @@ namespace scl_app
       scl::sUInt args_ctr = args_parsed, ui_points_used=0;
 
       /** Initialize Single Control Task */
-      ctrl = (scl::CTaskController*) robot_.getControllerCurrent();
-      if(S_NULL == ctrl)
+      ctrl_ = (scl::CTaskController*) robot_.getControllerCurrent();
+      if(S_NULL == ctrl_)
       { throw(std::runtime_error("Could not get current controller"));  }
 
       // Check that we haven't finished parsing everything
@@ -89,7 +95,7 @@ namespace scl_app
             }
             //Initialize the com task
             name_com_task_ = argv[args_ctr+1];
-            task_com_ = (scl::CComPosTask*)(ctrl->getTask(name_com_task_));
+            task_com_ = (scl::CComPosTask*)(ctrl_->getTask(name_com_task_));
             if(S_NULL == task_com_)
             { throw(std::runtime_error(std::string("Could not find specified com task: ")+name_com_task_));  }
             task_ds_com_ = dynamic_cast<scl::SComPosTask*>(task_com_->getTaskData());
@@ -116,7 +122,7 @@ namespace scl_app
             //Initialize the com task
             SOpPointUiLinkData tmp_op;
             tmp_op.name_ = argv[args_ctr+1];
-            tmp_op.task_ = (scl::COpPointTask*)(ctrl->getTask(tmp_op.name_));
+            tmp_op.task_ = (scl::COpPointTask*)(ctrl_->getTask(tmp_op.name_));
             if(S_NULL == tmp_op.task_)
             { throw(std::runtime_error(std::string("Could not find specified op point task: ")+tmp_op.name_));  }
             tmp_op.task_ds_ = dynamic_cast<scl::SOpPointTask*>(tmp_op.task_->getTaskData());
