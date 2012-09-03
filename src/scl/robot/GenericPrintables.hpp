@@ -41,6 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <sutil/CRegisteredPrintables.hpp>
 
 #include <stdexcept>
+#include <iomanip>
 
 /* **************************************************************************
  *                         Starting namespace sutil
@@ -121,10 +122,7 @@ namespace sutil
       std::ostream& ostr,
       const Eigen::Vector3d& arg_eigvec
   )
-  {
-    ostr<<"\n"<<arg_eigvec.transpose();
-    ostr<<std::flush;
-  }
+  { ostr<<arg_eigvec.transpose()<<std::flush; }
 }
 
 /* **************************************************************************
@@ -139,6 +137,9 @@ namespace scl
     bool flag;
     try
     {
+      std::cout<<"\n\n*** Robot printables ***"
+          <<"\n\nscl>> print <printable name>"
+          <<"\n\n"<<std::setw(10)<< "Printable information"<<std::setw(45)<<"Printable name\n";
       //Add all the robot links as printables.
       sutil::CMappedList<std::string,scl::SRobotParsedData>::iterator it,ite;
       for(it = scl::CDatabase::getData()->s_parser_.robots_.begin(),
@@ -155,7 +156,7 @@ namespace scl
         {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
             rob.name_));  }
         else
-        { std::cout<<"\n Adding data callback: Robot: "<<rob.name_+std::string("Parsed"); }
+        { std::cout<<"\n"<<std::setw(10)<< "Printable: Robot: "<<std::setw(51)<<rob.name_+std::string("Parsed"); }
 
         //Also add the links
         sutil::CMappedTree<std::string, scl::SRobotLink>::iterator itl, itle;
@@ -168,7 +169,7 @@ namespace scl
           {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
               rob.name_+". Link: "+l.name_));  }
           else
-          { std::cout<<"\n Adding data callback: "<<rob.name_<<" "<<l.getType()<<" "<<l.name_; }
+          { std::cout<<"\n"<<std::setw(10)<<"Printable: "<<rob.name_<<" "<<l.getType()<<std::setw(40)<<l.name_; }
         }
       }
 
@@ -184,7 +185,7 @@ namespace scl
         {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
             io.name_));  }
         else
-        { std::cout<<"\n Adding data callback: Robot: "<<io.name_; }
+        { std::cout<<"\n"<<std::setw(10)<<"Printable: Robot: "<<std::setw(51)<<io.name_; }
       }
 
       //Add the UI points
@@ -196,8 +197,9 @@ namespace scl
         if(false == flag)
         {throw(std::runtime_error(std::string("Could not add a printable: ")+name));  }
         else
-        { std::cout<<"\n Adding ui point callback: "<<name; }
+        { std::cout<<"\n"<<std::setw(10)<<"Printable: UI-point "<<std::setw(49)<<name; }
       }
+      std::cout<<std::endl<<std::endl;
     }
     catch(std::exception &e)
     {
