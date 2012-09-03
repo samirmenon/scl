@@ -41,7 +41,11 @@ namespace scl
 #define SCL_COPPTTASK_SPATIAL_RESOLUTION 0.005
 #define SCL_COPPTTASK_TASK_DOF 3
 
-  SOpPointTask::SOpPointTask()
+  SOpPointTask::SOpPointTask() : STaskBase(),
+      link_name_(""),
+      link_ds_(S_NULL),
+      spatial_resolution_(SCL_COPPTTASK_SPATIAL_RESOLUTION),
+      link_dynamic_id_(S_NULL)
   { }
 
   SOpPointTask::~SOpPointTask()
@@ -97,8 +101,6 @@ namespace scl
       link_ds_ = dynamic_cast<const SRobotLink *>(robot_->robot_br_rep_.at_const(link_name_));
       if(S_NULL == link_ds_)
       { throw(std::runtime_error("Could not find the parent link in the parsed robot data structure"));  }
-
-      spatial_resolution_ = SCL_COPPTTASK_SPATIAL_RESOLUTION;//1cm
 
       //Initalize the task data structure.
       pos_in_parent_ = pos_in_parent;

@@ -30,7 +30,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl_app
 {
-  CExampleTask::CExampleTask() : scl::CTaskBase(), data_(S_NULL)
+  CExampleTask::CExampleTask() :
+      scl::CTaskBase(),
+      data_(S_NULL),
+      link_dynamic_id_(S_NULL)
   {}
 
   CExampleTask::~CExampleTask()
