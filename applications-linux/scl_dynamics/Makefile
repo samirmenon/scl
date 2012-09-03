@@ -14,7 +14,7 @@ WBC_TAO_INC_DIR = ../../src/scl/dynamics/tao/
 WBC_DBG_LIB_DIR = -L../scl_lib/debug/ -Wl,--rpath=../scl_lib/debug/
 WBC_FIN_LIB_DIR = -L../scl_lib/release/ -Wl,--rpath=../scl_lib/release/
 WBC_LIBS = -lscl -fopenmp -lgomp 
-WBC_DEFS_DBG = -DTIXML_USE_STL -DASSERT=assert -DDEBUG=1 -DTESTING -DW_TESTING=1
+WBC_DEFS_DBG = -DTIXML_USE_STL -DASSERT=assert -DDEBUG=1
 WBC_DEFS_FIN = -DTIXML_USE_STL
 
 #3rd party lib : Eigen (local install)

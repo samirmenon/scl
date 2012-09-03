@@ -124,7 +124,7 @@ SET(ALLSRC ${DB_SRC} ${UTIL_SRC} ${ROBOT_SRC}
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
   #Add debug definitions
   ADD_DEFINITIONS( -DASSERT=assert -DDEBUG=1)
-  SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wextra -Wno-unused-parameter -ggdb -O0 -pg -DW_TESTING -fopenmp")
+  SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wextra -Wno-unused-parameter -ggdb -O0 -pg -fopenmp")
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 IF(CMAKE_BUILD_TYPE MATCHES Release)
