@@ -113,6 +113,9 @@ namespace scl
     /** Temporary variables */
     Eigen::VectorXd tmp1, tmp2;
 
+    /** For normalizing the Jacobian */
+    Eigen::Matrix3d J_premultiplier_;
+
     /** For inverting the lambda matrix (when it gets singular) */
     Eigen::ColPivHouseholderQR<Eigen::Matrix3d> qr_;
 

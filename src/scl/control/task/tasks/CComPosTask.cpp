@@ -71,16 +71,18 @@ namespace scl
       { throw(std::runtime_error("Passed an uninitialized dynamics object"));  }
 
       data_ = dynamic_cast<SComPosTask*>(arg_task_data);
+      data_->jacobian_.setZero(3, data_->robot_->dof_);
+      data_->jacobian_dyn_inv_.setZero(data_->robot_->dof_, 3);
+      data_->lambda_.setZero(3,3);
+      data_->lambda_inv_.setZero(3,3);
 
       dynamics_ = arg_dynamics;
 
       //Defaults
       singular_values_.setZero();
 
-      data_->jacobian_.setZero(3, data_->robot_->dof_);
-      data_->jacobian_dyn_inv_.setZero(data_->robot_->dof_, 3);
-      data_->lambda_.setZero(3,3);
-      data_->lambda_inv_.setZero(3,3);
+      J_premultiplier_ = Eigen::Matrix3d::Identity();
+      J_premultiplier_ = J_premultiplier_.array() / data_->robot_->dof_;
 
       //Try to use the householder qr instead of the svd in general
       //Computing this once here initializes memory and resizes qr_
@@ -165,6 +167,8 @@ namespace scl
       std::vector<SGcModel::SCOMInfo>::const_iterator it,ite;
       for(it = gcm->coms_.begin(), ite = gcm->coms_.end(); it!=ite; ++it)
       { data_->jacobian_ += it->J_com_.block(0,0,3,data_->robot_->dof_);  }
+
+      data_->jacobian_ = J_premultiplier_ * data_->jacobian_;
 
       //Operational space mass/KE matrix:
       //Lambda = (J * Ainv * J')^-1
