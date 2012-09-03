@@ -105,6 +105,21 @@ namespace scl_app
             { throw(std::runtime_error("Error. The com task's data structure is NULL."));  }
             ui_pt_com_ = ui_points_used; ui_points_used++;
             has_been_init_com_task_ = true;
+
+#ifdef GRAPHICS_ON
+            /** Render a sphere at the op-point task's position */
+            flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), chai_com_pos_, 0.02);
+            if(false == flag) { throw(std::runtime_error("Could not add sphere at com pos"));  }
+
+            if(NULL == chai_com_pos_){ throw(std::runtime_error("Could not add sphere at com pos"));  }
+
+            /** Render a sphere at the op-point task's position */
+            flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), chai_com_pos_des_, 0.02);
+            if(false == flag) { throw(std::runtime_error("Could not add sphere at com desired pos"));  }
+
+            if(NULL == chai_com_pos_des_){ throw(std::runtime_error("Could not add sphere at com desired pos"));  }
+#endif
+
             args_ctr+=2; continue;
           }
           else
@@ -178,15 +193,15 @@ namespace scl_app
   {
     sutil::CSystemClock::tick(db_->sim_dt_);//Tick the clock.
 
+    //Update the operational point tasks (if any)
     std::vector<SOpPointUiLinkData>::iterator it,ite;
     for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
     {
       assert(it->has_been_init_);
-      it->task_->setGoal(db_->s_gui_.ui_point_[it->ui_pt_]);
-      it->chai_pos_des_->setLocalPos(db_->s_gui_.ui_point_[it->ui_pt_]);
+      it->task_->setGoal(db_->s_gui_.ui_point_[it->ui_pt_]); //Set the goal position.
     }
 
-    if(has_been_init_com_task_)
+    if(has_been_init_com_task_) //Update the com task (if any)
     { task_com_->setGoal(db_->s_gui_.ui_point_[ui_pt_com_]); }
 
     if(ctrl_ctr_%5 == 0)           //Update dynamics at a slower rate
@@ -195,9 +210,19 @@ namespace scl_app
       robot_.computeNonControlOperations();
     }
 
-    if(ctrl_ctr_%100 == 0)           //Log at a slower rate
+    if(ctrl_ctr_%100 == 0)           //Update graphics and/or log at a slower rate
     {
       robot_.logState(true,true,true);
+
+      //Set the positions of the ui points
+      for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
+      { it->chai_pos_des_->setLocalPos(db_->s_gui_.ui_point_[it->ui_pt_]); }
+
+      if(has_been_init_com_task_)
+      {
+        chai_com_pos_->setLocalPos(task_ds_com_->x_);
+        chai_com_pos_des_->setLocalPos(db_->s_gui_.ui_point_[ui_pt_com_]);
+      }
     }
     robot_.computeServo();           //Run the servo loop
     robot_.integrateDynamics();      //Integrate system

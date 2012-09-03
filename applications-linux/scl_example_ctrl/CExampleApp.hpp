@@ -98,6 +98,7 @@ namespace scl_app
     scl::SComPosTask* task_ds_com_;
     scl::sInt ui_pt_com_;
     scl::sBool has_been_init_com_task_;
+    cGenericObject *chai_com_pos_,*chai_com_pos_des_;
   };
 
 }
