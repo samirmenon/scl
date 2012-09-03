@@ -118,8 +118,11 @@ namespace scl_app
             if(false == flag) { throw(std::runtime_error("Could not add sphere at com desired pos"));  }
 
             if(NULL == chai_com_pos_des_){ throw(std::runtime_error("Could not add sphere at com desired pos"));  }
-#endif
 
+            //Make desired position red/orange
+            cMaterial mat_red; mat_red.setRedFireBrick();
+            chai_com_pos_des_->setMaterial(mat_red, false);
+#endif
             args_ctr+=2; continue;
           }
           else
@@ -159,8 +162,11 @@ namespace scl_app
             if(false == flag) { throw(std::runtime_error("Could not add sphere at op desired pos"));  }
 
             if(NULL == tmp_op.chai_pos_des_){ throw(std::runtime_error("Could not add sphere at op desired pos"));  }
-#endif
 
+            //Make desired position red/orange
+            cMaterial mat_red; mat_red.setRedFireBrick();
+            tmp_op.chai_pos_des_->setMaterial(mat_red, false);
+#endif
             //Add the initialized task to the vector
             taskvec_op_point_.push_back(tmp_op);
 
