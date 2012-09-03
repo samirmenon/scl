@@ -80,13 +80,15 @@ public:
   std::vector<SGraphicsPhysicalLink*> child_addrs_;
 
 
-  SGraphicsPhysicalLink()
-  {
-    robot_link_ = S_NULL;
-    graphics_obj_ = S_NULL;
-    io_data_ = S_NULL;
-    io_data_idx_ = -1;
-  }
+  SGraphicsPhysicalLink() :
+    robot_link_(S_NULL),
+    graphics_obj_(S_NULL),
+    io_data_(S_NULL),
+    io_data_idx_ (-1),
+    name_(""),
+    parent_name_(""),
+    parent_addr_(NULL)
+  { }
   ~SGraphicsPhysicalLink(){}
 };
 
@@ -190,7 +192,7 @@ public:
   bool mouse_button_pressed_;
   sInt mouse_x_, mouse_y_, mouse_button_;
 
-  scl::sFloat mouse_grab_mag_;
+  scl::sFloat mouse_grab_mag_; //magnitude
   Eigen::Vector3d mouse_grab_pos_;
   cGenericObject* mouse_grab_obj_;
 
@@ -215,6 +217,14 @@ public:
     //Mouse defaults
     mouse_mode_cam_ = true;
     mouse_button_pressed_ = false;
+    mouse_x_ = 0;
+    mouse_y_ = 0;
+    mouse_button_ = 0;
+
+    //For drag and click
+    mouse_grab_mag_ = 0.0;
+    mouse_grab_pos_ = Eigen::Vector3d::Zero();
+    mouse_grab_obj_ = NULL;
   }
 };
 

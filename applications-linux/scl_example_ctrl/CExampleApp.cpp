@@ -53,7 +53,9 @@ namespace scl_app
       task_com_(S_NULL),
       task_ds_com_(S_NULL),
       ui_pt_com_(-1),
-      has_been_init_com_task_(false)
+      has_been_init_com_task_(false),
+      chai_com_pos_(S_NULL),
+      chai_com_pos_des_(S_NULL)
   { }
 
   scl::sBool CExampleApp::initMyController(const std::vector<std::string>& argv,
