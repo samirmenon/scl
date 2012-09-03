@@ -45,16 +45,27 @@ namespace scl_app
   private:
     scl::CTaskController* ctrl;           //Use a task controller
 
-    std::string op_link_name,op_link2_name;
-    scl::COpPointTask* tsk, *tsk2;
-    scl::SOpPointTask* tsk_ds, *tsk2_ds;
-    scl::sBool op_link_set, op_link2_set;
+    class SOpPointUiLinkData
+    {
+    public:
+      std::string name_;
+      scl::COpPointTask* task_;
+      scl::SOpPointTask* task_ds_;
+      scl::sInt ui_pt_;
+      scl::sBool has_been_init_;
+      SOpPointUiLinkData() :
+        name_(""),task_(NULL), task_ds_(NULL),ui_pt_(-1),
+        has_been_init_(false){}
+    };
+    /** The operational points that will be linked to keyboard handlers */
+    std::vector<SOpPointUiLinkData> taskvec_op_point_;
 
     //For controlling the com task with a ui point
-    std::string com_task_name_;
-    scl::CComPosTask* com_tsk_;
-    scl::SComPosTask* com_tsk_ds_;
-    scl::sBool com_tsk_set_;
+    std::string name_com_task_;
+    scl::CComPosTask* task_com_;
+    scl::SComPosTask* task_ds_com_;
+    scl::sInt ui_pt_com_;
+    scl::sBool has_been_init_com_task_;
 
   public:
     /** Default constructor. Sets stuff to zero. */
