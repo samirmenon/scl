@@ -64,6 +64,9 @@ namespace scl
     /** g : Gravity torque vector */
     Eigen::VectorXd g_;
 
+    /** com : Center of mass vector */
+    Eigen::Vector3d pos_com_;
+
     /** J_com_ : The center of mass Jacobians of the articulated body */
     class SCOMInfo{
     public:

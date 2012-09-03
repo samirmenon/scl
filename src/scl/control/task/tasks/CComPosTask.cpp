@@ -159,20 +159,19 @@ namespace scl
 #endif
     if(data_->has_been_init_)
     {
-      bool flag = true;
-      const SGcModel* gcm = data_->gc_model_;
+      data_->x_ = data_->gc_model_->pos_com_;
 
       //Compute the COM Jacobian : sum over all the link com jacobians
       data_->jacobian_.setZero(3, data_->robot_->dof_);
       std::vector<SGcModel::SCOMInfo>::const_iterator it,ite;
-      for(it = gcm->coms_.begin(), ite = gcm->coms_.end(); it!=ite; ++it)
+      for(it = data_->gc_model_->coms_.begin(), ite = data_->gc_model_->coms_.end(); it!=ite; ++it)
       { data_->jacobian_ += it->J_com_.block(0,0,3,data_->robot_->dof_);  }
 
       data_->jacobian_ = J_premultiplier_ * data_->jacobian_;
 
       //Operational space mass/KE matrix:
       //Lambda = (J * Ainv * J')^-1
-      data_->lambda_inv_ = data_->jacobian_ * gcm->Ainv_ * data_->jacobian_.transpose();
+      data_->lambda_inv_ = data_->jacobian_ * data_->gc_model_->Ainv_ * data_->jacobian_.transpose();
 
       if(!lambda_inv_singular_)
       {
@@ -230,7 +229,7 @@ namespace scl
 
       //Compute the Jacobian dynamically consistent generalized inverse :
       //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
-      data_->jacobian_dyn_inv_ = gcm->Ainv_ * data_->jacobian_.transpose() * data_->lambda_;
+      data_->jacobian_dyn_inv_ = data_->gc_model_->Ainv_ * data_->jacobian_.transpose() * data_->lambda_;
 
       //J' * J_dyn_inv'
       sUInt dof = data_->robot_->dof_;
@@ -241,12 +240,11 @@ namespace scl
       data_->mu_.setZero(data_->dof_task_,1);
 
       // J' * J_dyn_inv' * g(q)
-      data_->p_ =  data_->jacobian_dyn_inv_.transpose() * gcm->g_;
+      data_->p_ =  data_->jacobian_dyn_inv_.transpose() * data_->gc_model_->g_;
 
-      return flag;
+      return true;
     }
-    else
-    { return false; }
+    return false;
   }
 
 

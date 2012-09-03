@@ -269,6 +269,8 @@ namespace scl
     }
 
     bool flag;
+    js_model->pos_com_.setZero(3);
+    Eigen::Vector3d tmp_lnk_com;
     std::vector<SGcModel::SCOMInfo>::iterator it, ite;
     for(it = js_model->coms_.begin(), ite = js_model->coms_.end(); it!=ite;++it)
     {
@@ -278,11 +280,14 @@ namespace scl
         return false;
       }
 
-      if ( ! calculateJacobian(it->link_dynamic_id_, it->T_com_ * it->pos_com_ ,it->J_com_)) {
+      tmp_lnk_com = it->T_com_ * it->pos_com_;
+      js_model->pos_com_ += tmp_lnk_com;
+      if ( ! calculateJacobian(it->link_dynamic_id_, tmp_lnk_com ,it->J_com_)) {
         fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Could not compute the com Jacobian at link : %s\n",it->name_.c_str());
         return false;
       }
     }
+    js_model->pos_com_ = js_model->pos_com_.array() / js_model->A_.rows();
 
     return true;
   }

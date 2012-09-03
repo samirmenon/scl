@@ -50,6 +50,7 @@ namespace scl
       Ainv_.setIdentity(arg_robot_dof,arg_robot_dof);
       b_.setZero(arg_robot_dof);
       g_.setZero(arg_robot_dof);
+      pos_com_.setZero(3);
 
       for(int i=0;i<arg_robot_dof;++i)
       {
