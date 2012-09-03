@@ -58,11 +58,11 @@
         <task name="hand">
             <type>OpPointTask</type>
             <parent_link>l_wrist_roll_link</parent_link>
-            <pos_in_parent>0.0 0.0 0.0</pos_in_parent>
+            <pos_in_parent>0.1 0.0 0.0</pos_in_parent>
             <priority>0</priority>
             <task_dof>3</task_dof>
             <kp>100</kp>
-            <kv>21</kv>
+            <kv>25</kv>
             <ki>0</ki>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
@@ -73,21 +73,32 @@
         <task name="hand2">
             <type>OpPointTask</type>
             <parent_link>r_wrist_roll_link</parent_link>
-            <pos_in_parent>0.0 0.0 0.0</pos_in_parent>
+            <pos_in_parent>0.1 0.0 0.0</pos_in_parent>
             <priority>0</priority>
             <task_dof>3</task_dof>
             <kp>100</kp>
-            <kv>21</kv>
+            <kv>25</kv>
             <ki>0</ki>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
         </task>
 
+        <task name="com">
+            <type>ComPosTask</type>
+            <priority>1</priority>
+            <task_dof>3</task_dof>
+            <kp>100</kp>
+            <kv>25</kv>
+            <ki>0</ki>
+            <force_max>3000</force_max>
+            <force_min>-3000</force_min>
+        </task>
+        
         <task name="GcTask">
             <type>TaskGc</type>
-            <priority>1</priority>
+            <priority>2</priority>
             <task_dof>0</task_dof> 
-            <kp>400</kp>
+            <kp>100</kp>
             <kv>40</kv>
             <ki>0</ki>
             <force_max>3000</force_max>
