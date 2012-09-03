@@ -75,7 +75,7 @@ namespace scl
         data_.io_data_->actuators_.force_gc_commanded_.setZero(data_.io_data_->dof_);
       }
     }
-#ifdef W_TESTING
+#ifdef DEBUG
     assert(flag);
 #endif
   }
@@ -91,7 +91,7 @@ namespace scl
     {
       flag = flag && ctrl_current_->computeDynamics();
     }
-#ifdef W_TESTING
+#ifdef DEBUG
     assert(flag);
 #endif
   }
@@ -107,7 +107,7 @@ namespace scl
     {
       flag = flag && ctrl_current_->computeNonControlOperations();
     }
-#ifdef W_TESTING
+#ifdef DEBUG
     assert(flag);
 #endif
   }
@@ -157,7 +157,7 @@ namespace scl
 
     }
 
-#ifdef W_TESTING
+#ifdef DEBUG
     assert(flag);
 #endif
   }

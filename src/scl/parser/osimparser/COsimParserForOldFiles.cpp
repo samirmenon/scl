@@ -236,7 +236,7 @@ namespace scl_parser {
           //Add the muscle point to the vector
           mus->points_.push_back(tmp);
 
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cout<<"\n"<<model_name <<" ("<<muscle_name<<") Pt#"<<tmp.position_on_muscle_<<" Lnk: "<<tmp.parent_link_<<" Pos: "<<tmp.point_.transpose();
 #endif
         }
@@ -398,7 +398,7 @@ namespace scl_parser {
           //3. Insert translated/rotated element into its parent
           par->graphics_obj_vec_.push_back(tmp);
 
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cout<<"\nPushed: "<<std::setw(15)<<lnk.name_
               <<", To: "<<std::setw(15)<<par->name_
               <<", GrObj: "<<std::setw(22)<<tmp.file_name_<<" ("
@@ -464,7 +464,7 @@ namespace scl_parser {
           pos_in_parent += cpar->pos_in_parent_;
           ori_in_parent = cpar->ori_parent_quat_.toRotationMatrix() * ori_in_parent.toRotationMatrix();
 
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cout<<"\nCust Pushed: "<<std::setw(15)<<lnk.name_
               <<", To: "<<std::setw(15)<<cpar->name_<<" ("
               <<lnk.pos_in_parent_.transpose()<<") to ("
@@ -637,7 +637,7 @@ namespace scl_parser {
           else if(jtype == "sl"){ lnk->joint_type_ = JOINT_TYPE_SPLINE;  }
           else {throw(std::runtime_error("Error reading joint type"));}
 
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cout<<"\nLnk "<<lnk->link_id_<<": "<<std::setw(20)<<lnk->name_
               <<", Jnt: "<<std::setw(40)<<lnk->joint_name_<<" ("<<lnk->joint_type_<<")"
               <<", Par: "<<std::setw(20)<<lnk->parent_name_<<" ("<<lnk->pos_in_parent_.transpose()
@@ -766,7 +766,7 @@ namespace scl_parser {
           }
         }
       }
-#ifdef W_TESTING
+#ifdef DEBUG
       std::cout<<"\nLnk "<<lnk->link_id_<<": "<<std::setw(20)<<lnk->name_
           <<", Jnt: "<<std::setw(40)<<lnk->joint_name_<<" ("<<lnk->joint_type_<<")"
           <<", Par: "<<std::setw(20)<<lnk->parent_name_<<" ("<<lnk->pos_in_parent_.transpose()

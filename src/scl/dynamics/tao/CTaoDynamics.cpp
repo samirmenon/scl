@@ -142,7 +142,7 @@ namespace scl
           << "'): scl::CTaoRepCreator::taoRootRepCreator() failed [invalid robot name?]\n";
       return false;
     }
-#ifdef W_TESTING
+#ifdef DEBUG
     else
     {
       std::cout << "\nscl::CTaoDynamics::init(`" << robot_name_
@@ -167,7 +167,7 @@ namespace scl
           << "'): scl::CTaoRepCreator::taoRootRepCreator(cc) failed [invalid robot name?]\n";
       return false;
     }
-#ifdef W_TESTING
+#ifdef DEBUG
     else
     {
       std::cout << "\nscl::CTaoDynamics::init(`" << robot_name_

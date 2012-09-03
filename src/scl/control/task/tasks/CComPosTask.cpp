@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <stdexcept>
 #include <sstream>
 
-#ifdef W_TESTING
+#ifdef DEBUG
 #include <cassert>
 #endif
 
@@ -112,7 +112,7 @@ namespace scl
 
   bool CComPosTask::computeServo(const SRobotSensorData* arg_sensors)
   {
-#ifdef W_TESTING
+#ifdef DEBUG
     assert(has_been_init_);
     assert(S_NULL!=dynamics_);
 #endif
@@ -152,7 +152,7 @@ namespace scl
    * Assumes that the data_->model_.gc_model_ has been updated. */
   bool CComPosTask::computeModel()
   {
-#ifdef W_TESTING
+#ifdef DEBUG
     assert(has_been_init_);
     assert(data_->has_been_init_);
     assert(S_NULL!=dynamics_);

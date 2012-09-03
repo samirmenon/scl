@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <stdexcept>
 
-#ifdef W_TESTING
+#ifdef DEBUG
 //Asserts appear in debug mode when the ifdef is true
 #include <cassert>
 #endif

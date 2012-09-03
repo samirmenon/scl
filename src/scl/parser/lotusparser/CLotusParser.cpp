@@ -83,7 +83,7 @@ bool CLotusParser::listRobotsInFile(const std::string& arg_file,
     {
       if(NULL == tiElem_robot->Attribute("name"))
       {
-#ifdef W_TESTING
+#ifdef DEBUG
         throw(std::runtime_error("File contains a robot without a name"));
 #endif
       }
@@ -152,7 +152,7 @@ bool CLotusParser::readRobotFromFile(const std::string& arg_file,
       robot_ctr++; //Found a candidate
       if(robot_ctr>1) //There should only be one robot with this name.
       {
-#ifdef W_TESTING
+#ifdef DEBUG
         //Stronger error checking in debug mode. Break if robot names aren't unique.
         throw(std::runtime_error("Multiple robots have the same name"));
 #endif
@@ -302,7 +302,7 @@ bool CLotusParser::readRobotSpecFromFile(const std::string& arg_spec_file,
       //Read robot name
       if(NULL == tiElem_robot->Attribute("spec_name")) //Unnamed robot
       {
-#ifdef W_TESTING
+#ifdef DEBUG
         std::cout<<"Warning : Found unnamed spec.";
 #endif
         continue;
@@ -310,7 +310,7 @@ bool CLotusParser::readRobotSpecFromFile(const std::string& arg_spec_file,
 
       if(arg_robot_spec_name != tiElem_robot->Attribute("spec_name")) //Names don't match
       {
-#ifdef W_TESTING
+#ifdef DEBUG
         std::cout<<"Warning : Wanted spec: "<<arg_robot_spec_name<<". Got: "<<tiElem_robot->Attribute("spec_name");
 #endif
         continue;
@@ -319,7 +319,7 @@ bool CLotusParser::readRobotSpecFromFile(const std::string& arg_spec_file,
       robot_ctr++; //Found a candidate
       if(robot_ctr>1) //There should only be one robot with this name.
       {
-#ifdef W_TESTING
+#ifdef DEBUG
         //Stronger error checking in debug mode. Break if robot names aren't unique.
         throw(std::runtime_error("Multiple robots have the same name"));
 #endif
@@ -441,7 +441,7 @@ bool CLotusParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
       if(tmp_lnk.is_root_ == true)
       {//There should be only one root in the robot
         static int i=0; i++;
-#ifdef W_TESTING
+#ifdef DEBUG
         std::cout<<"\nFound root link in robot : "<<tmp_lnk.name_;
         if(2<=i)//This error is more of a warning but we'll raise it anyway in debug mode.
         {throw(std::runtime_error("There are multiple roots in the robot"));  }
@@ -782,7 +782,7 @@ bool CLotusParser::listControllersInFile(const std::string &arg_file,
     {
       if(NULL == tiElem_ctrl->Attribute("name"))
       {
-#ifdef W_TESTING
+#ifdef DEBUG
         throw(std::runtime_error("File contains a controller without a name"));
 #endif
       }
@@ -1246,7 +1246,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
           nonstd_param.data_[0] = tiElem_task_options->Value();
           nonstd_param.data_[1] = tiElem_task_options->FirstChild()->Value();
 
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Read a non standard param: "<<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
 #endif
 
@@ -1261,7 +1261,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
         //Add the parsed task to the controller' task vector
         arg_taskvec.push_back(tmp_task);
 
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Parsed task: "<<tmp_task.name_<<". Type: "<<tmp_task.type_task_;
 #endif
 
@@ -1330,7 +1330,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
           nonstd_param.data_[0] = tiElem_task_options->Value();
           nonstd_param.data_[1] = tiElem_task_options->FirstChild()->Value();
 
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Read a non standard param: "
               <<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
 #endif
@@ -1340,7 +1340,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
         //Add the parsed task to the controller' task vector
         arg_task_non_ctrl_vec.push_back(tmp_task);
 
-#ifdef W_TESTING
+#ifdef DEBUG
         std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Parsed non-control task: "<<tmp_task.name_<<". Type: "<<tmp_task.type_task_;
 #endif
 
@@ -1351,7 +1351,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
        * ************************************************ */
 
 
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Parsed controller: "<<arg_ctrl_name<<". Type: "<<arg_ctrl.type_ctrl_ds_;
 #endif
 

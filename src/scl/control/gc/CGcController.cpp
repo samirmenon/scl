@@ -111,7 +111,7 @@ namespace scl
 
     data_->des_force_gc_ = data_->gc_model_.A_ * tmp1 + data_->gc_model_.g_;
 
-#ifdef W_TESTING
+#ifdef DEBUG
     Eigen::VectorXd tmp2 = data_->gc_model_.A_ * tmp1;
     std::cout<<"\n******* F* *******\n"<<tmp1.transpose()
         <<"\n******* A *******\n"<<data_->gc_model_.A_

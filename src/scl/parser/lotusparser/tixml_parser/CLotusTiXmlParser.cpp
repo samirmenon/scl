@@ -64,7 +64,7 @@ namespace scl_parser {
       else
       { throw(std::runtime_error("Error reading link name")); }
 
-#ifdef W_TESTING
+#ifdef DEBUG
       std::cout<<"\nParsing link : "<<arg_link_ds.name_;//Remaining messages are for this link name.
 #endif
 
@@ -199,7 +199,7 @@ namespace scl_parser {
       //******************************** Graphics Stuff ******************************
       //Graphics : obj file
       link_data = arg_link_txml.FirstChild( "graphics" ).FirstChild("obj_file").ToElement();
-#ifdef W_TESTING
+#ifdef DEBUG
       if ( !link_data ) {std::cerr<< "\nWarning: No obj files found";}
 #endif
       for(; link_data; link_data=link_data->NextSiblingElement() )
@@ -232,7 +232,7 @@ namespace scl_parser {
           tgr.pos_in_parent_(2) = tmpvar;
         }
         else  {
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cerr<< "\nCLotusTiXmlParser::readLink() : Warning : Position in parent not found for obj file : "<<tgr.file_name_;
 #endif
         }
@@ -252,7 +252,7 @@ namespace scl_parser {
           tgr.ori_parent_quat_(3) = tmpvar;
         }
         else  {
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cerr<< "\nCLotusTiXmlParser::readLink() : Warning : Orientation in parent not found for obj file : "<<tgr.file_name_;
 #endif
         }
@@ -270,7 +270,7 @@ namespace scl_parser {
           tgr.scaling_(2) = tmpvar; //z
         }
         else  {
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cerr<< "\nCLotusTiXmlParser::readLink()  : Warning : Graphics scaling not found for obj file : "<<tgr.file_name_;
 #endif
         }
@@ -282,7 +282,7 @@ namespace scl_parser {
           ss>>tgr.collision_type_;
         }
         else  {
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cerr<< "\nCLotusTiXmlParser::readLink() : Warning : Collision type not found for obj file : "<<tgr.file_name_;
 #endif
         }
@@ -337,7 +337,7 @@ namespace scl_parser {
           ss>>arg_graphics_ds.cam_pos_[2];
         }
         else{
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cerr<< "\nWarning: Couldn't find camera pos. Proceeding.";
 #endif
         }
@@ -352,7 +352,7 @@ namespace scl_parser {
           ss>>arg_graphics_ds.cam_lookat_[2];
         }
         else{
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cerr<< "\nWarning. Couldn't find camera lookat. Proceeding.";
 #endif
           }
@@ -367,7 +367,7 @@ namespace scl_parser {
           ss>>arg_graphics_ds.cam_up_[2];
         }
         else{
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cerr<< "\nWarning. Couldn't find camera up. Proceeding";
 #endif
           }

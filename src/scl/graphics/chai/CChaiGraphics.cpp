@@ -123,7 +123,7 @@ namespace scl {
         cVector3d tmp2(data_parsed_->cam_lookat_[0], data_parsed_->cam_lookat_[1], data_parsed_->cam_lookat_[2]);
         cVector3d tmp3(data_parsed_->cam_up_[0], data_parsed_->cam_up_[1], data_parsed_->cam_up_[2]);
 
-#ifdef W_TESTING
+#ifdef DEBUG
         std::cout<<"\nCam Pos:"<<data_parsed_->cam_pos_[0]
           <<" "<<data_parsed_->cam_pos_[1]<<" "<<data_parsed_->cam_pos_[2]<<std::flush;
         std::cout<<"\nCam Lookat:"<<data_parsed_->cam_lookat_[0]
@@ -162,7 +162,7 @@ namespace scl {
           cVector3d lookat( it->lookat_[0], it->lookat_[1], it->lookat_[2]);
           cVector3d dir = lookat-pos;
 
-#ifdef W_TESTING
+#ifdef DEBUG
           std::cout<<"\nLight Pos:"<<pos[0]<<" "<<pos[1]<<" "<<pos[2];
           std::cout<<"\nLight Lookat:"<<lookat[0]<<" "<<lookat[1]<<" "<<lookat[2];
           std::cout<<"\nLight Dir:"<<dir[0]<<" "<<dir[1]<<" "<<dir[2]<<std::flush;
@@ -295,7 +295,7 @@ namespace scl {
       //8. Add the constructed robot tree to the graphics (chai) world
       data_->chai_world_->addChild(robot_brrep_root->graphics_obj_);
 
-#ifdef W_TESTING
+#ifdef DEBUG
       // Print some info
       printf("\nAdded a robot <%s> to graphics specification <%s>",
           robdef->name_.c_str(), data_->name_.c_str());
@@ -346,7 +346,7 @@ namespace scl {
       if(false == flag)
       { throw(std::runtime_error("Could not remove robot's graphics from the mapped tree. Invalid data state, scl graphics data might be corrupted."));  }
 
-#ifdef W_TESTING
+#ifdef DEBUG
       // Print some info
       printf("\nRemoved a robot <%s> from graphics specification <%s>",
           arg_robot.c_str(), data_->name_.c_str());
@@ -445,7 +445,7 @@ namespace scl {
       //Set the rotation in its parent
       arg_link->graphics_obj_->setLocalRot(arg_link->robot_link_->ori_parent_quat_.toRotationMatrix());
 
-#ifdef W_TESTING
+#ifdef DEBUG
       //When testing, show the frames as well (gives a good idea of how things work).
       arg_link->graphics_obj_->setFrameSize(0.15,true);
       arg_link->graphics_obj_->setShowFrame(true,true);
@@ -474,7 +474,7 @@ namespace scl {
         arg_link->graphics_obj_->addChild(child_link->graphics_obj_);
       }
 
-#ifdef W_TESTING
+#ifdef DEBUG
       //Debugging information. To make sure we did the job correctly.
       printf("\n\n%s: Adding a child %s for parent link %s of robot %s \n Pos: %lf %lf %lf \n Rot: %lf %lf %lf %lf",
           data_->name_.c_str(),
@@ -844,7 +844,7 @@ namespace scl {
   sBool CChaiGraphics::updateGraphics()
   {
     bool flag = true;
-#ifdef W_TESTING
+#ifdef DEBUG
     try
     {
       if(S_NULL == data_) { throw(std::runtime_error("Graphics data structure not initialized"));  }
@@ -864,7 +864,7 @@ namespace scl {
       glViewport(0,0,data_->gl_width_,data_->gl_height_);
       data_->chai_cam_->renderView(data_->gl_width_,data_->gl_height_);//Finally : Use the camera to render the scene view.
 
-#ifdef W_TESTING
+#ifdef DEBUG
     }
     catch(std::exception& ee)
     {
@@ -881,7 +881,7 @@ namespace scl {
     {
       //0. Get a copy of the database
       SDatabase* db = CDatabase::getData();
-#ifdef W_TESTING
+#ifdef DEBUG
       if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
 #endif
 
@@ -898,7 +898,7 @@ namespace scl {
         const SRobotIOData* rob_io;
         std::string tmp_rob_name = !it;
         rob_io = db->s_io_.io_data_.at_const(tmp_rob_name);
-#ifdef W_TESTING
+#ifdef DEBUG
         if(S_NULL == rob_io) { throw(std::runtime_error("Robot's I/O database entry is not initialized"));  }
 #endif
 
@@ -911,12 +911,12 @@ namespace scl {
           SGraphicsPhysicalLink& lnk = *itgr;
 
           const SRobotLink* lnk_robdata = lnk.robot_link_;
-#ifdef W_TESTING
+#ifdef DEBUG
           if(S_NULL == lnk_robdata) { throw(std::runtime_error("Found an uninitialized pointer to a robot link in the graphics pile"));  }
 #endif
 
           cGenericObject* lnk_grdata = lnk.graphics_obj_;
-#ifdef W_TESTING
+#ifdef DEBUG
           if(S_NULL == lnk_grdata) { throw(std::runtime_error("Found an uninitialized pointer to a chai generic object in the graphics pile"));  }
 #endif
 
@@ -925,7 +925,7 @@ namespace scl {
 
           if(-1 == link_id)//Ground node. Do not change.
           { continue; }
-#ifdef W_TESTING
+#ifdef DEBUG
           if(-1 > link_id) { throw(std::runtime_error("Found a link with an id less than 0"));  }
           if(link_id >= rob_io->sensors_.q_.size()) { throw(std::runtime_error("Found a link with an id greater than the max for this robot"));  }
 #endif

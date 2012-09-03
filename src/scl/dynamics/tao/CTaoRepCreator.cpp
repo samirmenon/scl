@@ -149,7 +149,7 @@ bool CTaoRepCreator::createChildTaoNodes(
 	    printf("\nCTaoRepCreator::createChildTaoNodes() : Error. Couldn't create tao node.");
 	    return false;
 	  }
-#ifdef W_TESTING
+#ifdef DEBUG
 	  else
 	  {
 	    printf("\nCTaoRepCreator::createChildTaoNodes() : Created Tao Node (%d) %s .",

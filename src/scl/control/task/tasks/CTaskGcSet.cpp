@@ -95,7 +95,7 @@ namespace scl
 
   bool CTaskGcSet::computeServo(const SRobotSensorData* arg_sensors)
   {
-#ifdef W_TESTING
+#ifdef DEBUG
     assert(has_been_init_);
     assert(S_NULL!=dynamics_);
 #endif
@@ -105,7 +105,7 @@ namespace scl
 
       for(sUInt i=0; i<data_->dof_task_; ++i)
       {
-#ifdef W_TESTING
+#ifdef DEBUG
         //Test if the selection indices are correctly assigned
         if(data_->robot_->dof_ < data_->q_sel_[i])
         {

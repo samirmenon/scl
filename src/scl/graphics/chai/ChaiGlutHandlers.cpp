@@ -401,7 +401,7 @@ namespace scl_chai_glut_interface
     //Update the IO
     keyHandler();
 
-#ifdef W_TESTING
+#ifdef DEBUG
     bool flag;
     flag = chai_glob_ds->chai_glut->updateGraphics();
     if (false == flag) { printf("\nChai-Glut Error: Could not update graphics successfully.");  }
@@ -424,7 +424,7 @@ namespace scl_chai_glut_interface
     glutSwapBuffers();
 
     // check for any OpenGL errors
-#ifdef W_TESTING
+#ifdef DEBUG
     GLenum err;
     err = glGetError();
     if (err != GL_NO_ERROR)
