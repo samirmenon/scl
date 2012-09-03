@@ -244,8 +244,8 @@ namespace scl_app
       robot_.computeNonControlOperations();
     }
 
-    if(ctrl_ctr_%100 == 0)           //Update graphics and/or log at a slower rate
-    {
+    if(ctrl_ctr_%20 == 0)           //Update graphics and/or log at a slower rate
+    { // Every 2ms
       robot_.logState(true,true,true);
 
       //Set the positions of the ui points
