@@ -4,7 +4,7 @@ cd 3rdparty/chai3d-3.0/lib/ &&
 #rm build_* -rf &&
 sh make_debug.sh &&
 sh make_release.sh &&
-cd ../../yaml-cpp-0.2.7/ &&
+cd ../../yaml-cpp-0.3.0/ &&
 #rm build -rf &&
 mkdir -p build &&
 cd build &&
