@@ -82,6 +82,23 @@ namespace scl_app
           else
           { throw(std::runtime_error("Specified -l flag but did not specify log file"));  }
         }
+        else if ("-com" == argv[args_ctr])
+        {// We know the next argument *should* be the com pos task's name : Use ui point 2
+          if(args_ctr+1 <= argv.size())
+          {
+            //Initialize the com task
+            com_task_name_ = argv[args_ctr+1]; args_ctr+=2;
+            com_tsk_ = (scl::CComPosTask*)(ctrl->getTask(com_task_name_));
+            if(S_NULL == com_tsk_)
+            { throw(std::runtime_error(std::string("Could not find specified com task: ")+com_task_name_));  }
+            com_tsk_ds_ = dynamic_cast<scl::SComPosTask*>(com_tsk_->getTaskData());
+            if(S_NULL == com_tsk_ds_)
+            { throw(std::runtime_error("Error. The com task's data structure is NULL."));  }
+            com_tsk_set_ = true;
+          }
+          else
+          { throw(std::runtime_error("Specified -com flag but did not specify com task's name"));  }
+        }
         /* NOTE : ADD MORE COMMAND LINE PARSING OPTIONS IF REQUIRED */
         // else if (argv[args_ctr] == "-p")
         // { }
@@ -147,6 +164,9 @@ namespace scl_app
 
     if(op_link2_set)//Use only if the second task was also initialized.
     { tsk2->setGoal(db_->s_gui_.ui_point_[1]); }
+
+    if(com_tsk_set_)
+    { com_tsk_->setGoal(db_->s_gui_.ui_point_[2]); }
 
     if(ctrl_ctr_%5 == 0)           //Update dynamics at a slower rate
     {

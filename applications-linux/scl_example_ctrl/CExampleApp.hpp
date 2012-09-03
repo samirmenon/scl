@@ -36,6 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/control/task/CTaskController.hpp>
 #include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/control/task/tasks/CComPosTask.hpp>
 
 namespace scl_app
 {
@@ -48,6 +49,12 @@ namespace scl_app
     scl::COpPointTask* tsk, *tsk2;
     scl::SOpPointTask* tsk_ds, *tsk2_ds;
     scl::sBool op_link_set, op_link2_set;
+
+    //For controlling the com task with a ui point
+    std::string com_task_name_;
+    scl::CComPosTask* com_tsk_;
+    scl::SComPosTask* com_tsk_ds_;
+    scl::sBool com_tsk_set_;
 
   public:
     /** Default constructor. Sets stuff to zero. */
