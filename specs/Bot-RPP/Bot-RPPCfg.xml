@@ -6,7 +6,7 @@
     <robot name="rppbot"> 
         <gravity>0.000   0.000   -9.81</gravity> 
         <spec>RPP</spec>
-        <file>../../specs/Bot-RPP/RPP.xml</file>
+        <file>../../specs/Bot-RPP/RPP2.xml</file>
         <root_link>
             <link_name>ground</link_name> <!-- The ground link has id -1 -->
             <position_in_parent>-0.300   0.000   -0.700</position_in_parent> 
@@ -20,7 +20,7 @@
 				        <scaling>0.75 0.75 0.75</scaling>
 			        </obj_file>
 			        <obj_file>
-				        <name>/Bot-RPP/graphics/0_base.obj</name>
+				        <name>/Bot-RPP/graphics/RPPBase.obj</name>
 				        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
 				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
 				        <collision_type>0</collision_type>
