@@ -59,6 +59,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskNullSpaceDamping.hpp>
 #include <scl/control/task/tasks/data_structs/STaskNullSpaceDamping.hpp>
 
+#include <scl/control/task/tasks/CComPosTask.hpp>
+#include <scl/control/task/tasks/data_structs/SComPosTask.hpp>
+
 #include <sutil/CRegisteredDynamicTypes.hpp>
 
 #include <iostream>
@@ -569,6 +572,14 @@ namespace scl_registry
       sutil::CDynamicType<std::string,scl::STaskGcSet> typeSTaskGcSet(std::string("STaskGcSet"));
       flag = typeSTaskGcSet.registerType();
       if(false == flag) {throw(std::runtime_error("STaskGcSet"));}
+
+      sutil::CDynamicType<std::string,scl::CComPosTask> typeCComPosTask(std::string("CComPosTask"));
+      flag = typeCComPosTask.registerType();
+      if(false == flag) {throw(std::runtime_error("CComPosTask"));}
+
+      sutil::CDynamicType<std::string,scl::SComPosTask> typeSComPosTask(std::string("SComPosTask"));
+      flag = typeSComPosTask.registerType();
+      if(false == flag) {throw(std::runtime_error("SComPosTask"));}
     }
     catch (std::exception& e)
     {

@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef SOPPOINTTASK_HPP_
-#define SOPPOINTTASK_HPP_
+#ifndef SCOMPOSTASK_HPP_
+#define SCOMPOSTASK_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
@@ -75,4 +75,4 @@ namespace scl
 
 }
 
-#endif /* SOPPOINTTASK_HPP_ */
+#endif /* SCOMPOSTASK_HPP_ */

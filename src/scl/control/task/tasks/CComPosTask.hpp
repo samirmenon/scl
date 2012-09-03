@@ -32,8 +32,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CCOMPOSTASK_HPP_
 #define CCOMPOSTASK_HPP_
 
-
-
 #include <scl/DataTypes.hpp>
 #include <scl/control/task/tasks/data_structs/SComPosTask.hpp>
 #include <scl/control/task/CTaskBase.hpp>
