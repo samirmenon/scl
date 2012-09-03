@@ -101,7 +101,7 @@ namespace scl_test
             <<robot_names[0]<<" on the pile"<<std::flush;
       }
 
-#ifdef W_TESTING
+#ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "
           <<db->s_parser_.robots_.at(robot_names[0])->name_;
       scl_util::printRobotLinkTree(*( db->s_parser_.robots_.at(robot_names[0])->robot_br_rep_.getRootNode()),0);

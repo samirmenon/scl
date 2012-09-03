@@ -108,7 +108,7 @@ namespace scl_test
             <<robot_name<<" on the pile"<<std::flush;
       }
 
-#ifdef W_TESTING
+#ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "
           <<db->s_parser_.robots_.at(robot_name)->name_;
       scl_util::printRobotLinkTree(*( db->s_parser_.robots_.at(robot_name)->robot_br_rep_.getRootNode()),0);
@@ -161,7 +161,7 @@ namespace scl_test
       std::cout<<"\nTest Result ("<<r_id++<<") Simulation Took Time : "<<t2-t1 <<" sec";
 
       //Now stress test the setup -- Only in release mode.
-#ifndef W_TESTING
+#ifndef DEBUG
       ke[0] = dynamics->getKineticEnergy(); //Now you can get the energies
       pe[0] = dynamics->getPotentialEnergy();
 

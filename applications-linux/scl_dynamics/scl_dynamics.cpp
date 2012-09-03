@@ -117,7 +117,7 @@ int main(int argc, char** argv)
       if(S_NULL == scl_registry::parseGraphics(tmp_infile, graphics_names[0], &tmp_lparser))
       { throw(std::runtime_error("Could not register graphics with the database"));  }
 
-#ifdef W_TESTING
+#ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<robot_name;
       scl_util::printRobotLinkTree(*( scl::CDatabase::getData()->
           s_parser_.robots_.at(robot_name)->robot_br_rep_.getRootNode()),0);

@@ -319,7 +319,7 @@ namespace scl_test
             <<robot_name<<" on the pile"<<std::flush;
       }
 
-#ifdef W_TESTING
+#ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "
           <<db->data_.s_parser_.robots_.at(robot_name)->name_;
       scl_util::printRobotLinkTree(*( db->data_.s_parser_.robots_.at(robot_name)->robot_br_rep_.getRootNode()),0);
@@ -481,7 +481,7 @@ namespace scl_test
           <<"\n\tServo+Model time: "<<t2-t1<<std::flush;
 
       //Now stress test the setup -- Only in release mode.
-#ifndef W_TESTING
+#ifndef DEBUG
       imax = 2000;
       t1 = sutil::CSystemClock::getSysTime();
       for(i=0; i<imax; ++i)

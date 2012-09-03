@@ -113,7 +113,7 @@ int main(int argc, char** argv)
   /***********************Main Loop*****************************/
   app.t_start = sutil::CSystemClock::getSysTime();
 
-#ifndef W_TESTING
+#ifndef DEBUG
   app.runMainLoopThreaded();  //Run multi-threaded in release mode
 #else
   app.runMainLoop();          //Run single-threaded in debug mode

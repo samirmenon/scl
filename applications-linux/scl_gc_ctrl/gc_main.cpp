@@ -129,7 +129,7 @@ int main(int argc, char** argv)
       if(S_NULL == scl_registry::parseGcController(tmp_infile, robot_name, ctrl_name, &tmp_lparser))
       { throw(std::runtime_error("Could not register controller with the database"));  }
 
-#ifdef W_TESTING
+#ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<robot_name;
       scl_util::printRobotLinkTree(*( scl::CDatabase::getData()->
           s_parser_.robots_.at(robot_name)->robot_br_rep_.getRootNode()),0);
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
       flag = tao_dyn_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
-#ifdef W_TESTING
+#ifdef DEBUG
       std::cout<<"\nTesting Tao And Robot Ids "<<robot_name;
 
       sutil::CMappedTree<std::string, scl::SRobotLink> br = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)->robot_br_rep_;
@@ -263,7 +263,7 @@ int main(int argc, char** argv)
 
         assert(rob_io_ds == gc_ctrl_ds->io_data_);
 
-#ifdef W_TESTING
+#ifdef DEBUG
         rob_io_ds->printInfo();
 #endif
 

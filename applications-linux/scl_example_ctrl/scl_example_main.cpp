@@ -79,7 +79,7 @@ int main(int argc, char** argv)
   { std::cout<<"\nFailed to register callbacks"; return 1; }
 
   //Set up the threads
-#ifndef W_TESTING
+#ifndef DEBUG
   omp_set_num_threads(3);
 #else
   omp_set_num_threads(1);
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     /***********************Main Loop*****************************/
     if(2 == thread_id) { app.runConsoleShell(); }
     else {//No shell in debug mode for now.
-#ifndef W_TESTING
+#ifndef DEBUG
       app.runMainLoopThreaded(thread_id);  //Run multi-threaded in release mode
 #else
       app.runMainLoop();          //Run single-threaded in debug mode

@@ -41,7 +41,7 @@ namespace scl_app
 
   bool CExampleTask::computeServo(const scl::SRobotSensorData* arg_sensors)
   {
-#ifdef W_TESTING
+#ifdef DEBUG
     assert(has_been_init_);
     assert(S_NULL!=dynamics_);
 #endif
@@ -58,7 +58,7 @@ namespace scl_app
 
   bool CExampleTask::computeModel()
   {
-#ifdef W_TESTING
+#ifdef DEBUG
     assert(has_been_init_);
     assert(S_NULL!=dynamics_);
 #endif
@@ -141,7 +141,7 @@ namespace scl_app
       flag = typeSExampleTask.registerType();
       if(false == flag) {throw(std::runtime_error("Could not register type SExampleTask"));}
 
-#ifdef W_TESTING
+#ifdef DEBUG
       std::cout<<"\nregisterExampleTaskType() : Registered my cool task with the database";
 #endif
     }
