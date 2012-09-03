@@ -6,7 +6,7 @@
     <robot name="rppbot"> 
         <gravity>0.000   0.000   -9.81</gravity> 
         <spec>RPP</spec>
-        <file>../../specs/Bot-RPP/RPP2.xml</file>
+        <file>../../specs/Bot-RPP/RPP.xml</file>
         <root_link>
             <link_name>ground</link_name> <!-- The ground link has id -1 -->
             <position_in_parent>-0.300   0.000   -0.700</position_in_parent> 
@@ -66,7 +66,7 @@
         <task name="hand">
             <type>OpPointTask</type>
             <parent_link>link2</parent_link>
-            <pos_in_parent>0.01 0.01 0.01</pos_in_parent>
+            <pos_in_parent>0.00 0.00 0.00</pos_in_parent>
             <priority>0</priority>
             <task_dof>3</task_dof>
             <kp>10</kp>

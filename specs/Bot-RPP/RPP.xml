@@ -49,14 +49,14 @@
 		<graphics>
 			<obj_file>
 				<name>Bot-RPP/graphics/RPPLink1-1.obj</name> <!-- obj file format is best. 3ds is possible -->
-				<position_in_parent>0.1000 0.3000 -0.2000</position_in_parent>
+				<position_in_parent>0.1000 0.1500 -0.2000</position_in_parent>
 				<orientation_in_parent>0.000000 0.000000 1.000000 0.000000</orientation_in_parent>
 				<scaling>.001 .001 .001</scaling> <!-- Graphics only scaling, along x y and z -->
 				<collision_type>0</collision_type> <!-- 0 = no collision, 1 = convex hull collision, 2 = polygon collision. -->
 			</obj_file>
 			<obj_file>
 				<name>Bot-RPP/graphics/RPPLink0-2.obj</name> <!-- obj file format is best. 3ds is possible -->
-				<position_in_parent>-0.10000 -0.8500 -0.20000</position_in_parent>
+				<position_in_parent>-0.10000 -1.00 -0.20000</position_in_parent>
 				<orientation_in_parent>0.000 0.000000 0.000000 1.0</orientation_in_parent>
 				<scaling>.001 .001 .001</scaling> <!-- Graphics only scaling, along x y and z -->
 				<collision_type>0</collision_type> <!-- 0 = no collision, 1 = convex hull collision, 2 = polygon collision. -->
@@ -78,7 +78,7 @@
 		<graphics>
 			<obj_file>
 				<name>Bot-RPP/graphics/RPPLink2.obj</name> <!-- obj file format is best. 3ds is possible -->
-				<position_in_parent>-0.07500 0.2250 -0.200</position_in_parent>
+				<position_in_parent>-0.07500 0.0750 -0.050</position_in_parent>
 				<orientation_in_parent>0.7071067811865476 0.000000 0.000000 0.7071067811865476</orientation_in_parent>
 				<scaling>.001 .001 .001</scaling> <!-- Graphics only scaling, along x y and z -->
 				<collision_type>0</collision_type> <!-- 0 = no collision, 1 = convex hull collision, 2 = polygon collision. -->
