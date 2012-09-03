@@ -37,6 +37,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <sutil/CSystemClock.hpp>
 
+#include <chai3d.h>
+
 #include <iostream>
 #include <stdexcept>
 
@@ -131,15 +133,21 @@ namespace scl_app
             tmp_op.ui_pt_ = ui_points_used; ui_points_used++;
             tmp_op.has_been_init_ = true;
 
+#ifdef GRAPHICS_ON
+            /** Render a sphere at the op-point task's position */
+            flag = chai_gr_.addSphereToRender(robot_name_,tmp_op.task_ds_->link_ds_->name_,
+                tmp_op.task_ds_->pos_in_parent_,0.02, &tmp_op.chai_pos_);
+            if(false == flag) { throw(std::runtime_error("Could not add sphere at op task"));  }
+
+            /** Render a sphere at the op-point task's position */
+            flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), tmp_op.chai_pos_des_, 0.02);
+            if(false == flag) { throw(std::runtime_error("Could not add sphere at op desired pos"));  }
+
+            if(NULL == tmp_op.chai_pos_des_){ throw(std::runtime_error("Could not add sphere at op desired pos"));  }
+#endif
+
             //Add the initialized task to the vector
             taskvec_op_point_.push_back(tmp_op);
-
-#ifdef GRAPHICS_ON
-          /** Render a sphere at the op-point task's position */
-          flag = chai_gr_.addSphereToRender(robot_name_,tmp_op.task_ds_->link_ds_->parent_name_,
-              tmp_op.task_ds_->pos_in_parent_);
-          if(false == flag) { throw(std::runtime_error("Could not add sphere at op task"));  }
-#endif
 
             args_ctr+=2; continue;
           }
@@ -175,6 +183,7 @@ namespace scl_app
     {
       assert(it->has_been_init_);
       it->task_->setGoal(db_->s_gui_.ui_point_[it->ui_pt_]);
+      it->chai_pos_des_->setLocalPos(db_->s_gui_.ui_point_[it->ui_pt_]);
     }
 
     if(has_been_init_com_task_)
