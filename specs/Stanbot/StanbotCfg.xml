@@ -85,7 +85,7 @@
 
         <task name="GcTask">
             <type>TaskGc</type>
-            <priority>1</priority>
+            <priority>2</priority>
             <task_dof>0</task_dof> 
             <kp>100</kp>
             <kv>20</kv>
@@ -97,7 +97,7 @@
         <!-- 0 task_dof means a gc task, ie full dofs -->
         <task name="NullSpaceDampingTask">
             <type>TaskNullSpaceDamping</type>
-            <priority>1</priority>
+            <priority>2</priority>
             <task_dof>0</task_dof> 
             <kp>0</kp>
             <kv>50</kv>
