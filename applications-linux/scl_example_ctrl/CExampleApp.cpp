@@ -197,6 +197,35 @@ namespace scl_app
   scl::sBool CExampleApp::registerCustomDynamicTypes()
   { return registerExampleTaskType();  }
 
+  void CExampleApp::setInitialStateForUIAndDynamics()
+  {
+    //Compute dynamics and servo once to initialize matrices.
+    robot_.computeDynamics();
+    robot_.computeNonControlOperations();
+    robot_.computeServo();
+
+    //Update the operational point tasks (if any)
+    std::vector<SOpPointUiLinkData>::iterator it,ite;
+    for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
+    {
+      assert(it->has_been_init_);
+      assert(NULL!=it->chai_pos_des_);
+      assert(NULL!=it->task_);
+      assert(NULL!=it->task_ds_);
+      db_->s_gui_.ui_point_[it->ui_pt_] = it->task_ds_->x_;
+      it->chai_pos_des_->setLocalPos(db_->s_gui_.ui_point_[it->ui_pt_]);
+    }
+
+    if(has_been_init_com_task_) //Update the com task (if any)
+    {
+      assert(NULL!=chai_com_pos_);
+      assert(NULL!=chai_com_pos_des_);
+      db_->s_gui_.ui_point_[ui_pt_com_] = task_ds_com_->x_;
+      chai_com_pos_->setLocalPos(task_ds_com_->x_);
+      chai_com_pos_des_->setLocalPos(db_->s_gui_.ui_point_[ui_pt_com_]);
+    }
+  }
+
   void CExampleApp::stepMySimulation()
   {
     sutil::CSystemClock::tick(db_->sim_dt_);//Tick the clock.
@@ -204,10 +233,7 @@ namespace scl_app
     //Update the operational point tasks (if any)
     std::vector<SOpPointUiLinkData>::iterator it,ite;
     for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
-    {
-      assert(it->has_been_init_);
-      it->task_->setGoal(db_->s_gui_.ui_point_[it->ui_pt_]); //Set the goal position.
-    }
+    { it->task_->setGoal(db_->s_gui_.ui_point_[it->ui_pt_]); } //Set the goal position.
 
     if(has_been_init_com_task_) //Update the com task (if any)
     { task_com_->setGoal(db_->s_gui_.ui_point_[ui_pt_com_]); }

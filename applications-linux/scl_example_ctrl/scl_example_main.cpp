@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 #endif
 
   int thread_id;
-
+  app.setInitialStateForUIAndDynamics();
   app.t_start_ = sutil::CSystemClock::getSysTime();
 #pragma omp parallel private(thread_id)
   {//Start threaded region

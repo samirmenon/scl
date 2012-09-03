@@ -46,7 +46,7 @@ namespace scl_app
   {
   public:
     // ****************************************************
-    //                 The main function
+    //                 The main functions
     // ****************************************************
     /** Runs the task controller. */
     virtual void stepMySimulation();
@@ -66,6 +66,10 @@ namespace scl_app
 
     /** Register any custom dynamic types that you have. */
     virtual scl::sBool registerCustomDynamicTypes();
+
+    /** Sets all the ui points to their current position and
+     * run the dynamics once to flush the state. */
+    void setInitialStateForUIAndDynamics();
 
   private:
     // ****************************************************
