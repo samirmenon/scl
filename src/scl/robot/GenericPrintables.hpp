@@ -115,6 +115,16 @@ namespace sutil
         <<", "<<arg_data.ori_parent_quat_.z()<<"]";
     ostr<<std::endl;
   }
+
+  template <>
+  void printToStream<Eigen::Vector3d >(
+      std::ostream& ostr,
+      const Eigen::Vector3d& arg_eigvec
+  )
+  {
+    ostr<<"\n"<<arg_eigvec.transpose();
+    ostr<<std::flush;
+  }
 }
 
 /* **************************************************************************
@@ -175,6 +185,18 @@ namespace scl
             io.name_));  }
         else
         { std::cout<<"\n Adding data callback: Robot: "<<io.name_; }
+      }
+
+      //Add the UI points
+      for(unsigned int i=0;i<SCL_NUM_UI_POINTS;++i)
+      {
+        std::stringstream ss; ss<<"ui"<<i;
+        std::string name(ss.str());
+        flag = sutil::printables::add(name,scl::CDatabase::getData()->s_gui_.ui_point_[i]);
+        if(false == flag)
+        {throw(std::runtime_error(std::string("Could not add a printable: ")+name));  }
+        else
+        { std::cout<<"\n Adding ui point callback: "<<name; }
       }
     }
     catch(std::exception &e)
