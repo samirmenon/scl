@@ -82,9 +82,9 @@ namespace scl_app
   bool ChaiHapticWrapper::getHapticDevicePositions(
       std::vector<Eigen::Vector3d>& ret_pos_vec)
   {
-    if(ret_pos_vec.size() != haptics_handler_->getNumDevices())
+    if(ret_pos_vec.size() > haptics_handler_->getNumDevices())
     {
-      std::cout<<"\n The passed vector doesn't have the same elements as the number of connected devices";
+      std::cout<<"\n The passed vector has more elements than the number of connected devices";
       return false;
     }
 
