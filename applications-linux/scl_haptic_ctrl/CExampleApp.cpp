@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CExampleApp.cpp
+/* \file CHapticApp.cpp
  *
  *  Created on: Sep 16, 2011
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "CExampleApp.hpp"
-#include "CExampleTask.hpp"
+#include "CHapticApp.hpp"
+#include "CHapticTask.hpp"
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SDatabase.hpp>
@@ -47,7 +47,7 @@ namespace scl_app
 
   /** Default constructor. Sets stuff to zero.
    * Uses a task controller*/
-  CExampleApp::CExampleApp() :
+  CHapticApp::CHapticApp() :
       ctrl_(S_NULL),
       name_com_task_(""),
       task_com_(S_NULL),
@@ -58,7 +58,7 @@ namespace scl_app
       chai_com_pos_des_(S_NULL)
   { }
 
-  scl::sBool CExampleApp::initMyController(const std::vector<std::string>& argv,
+  scl::sBool CHapticApp::initMyController(const std::vector<std::string>& argv,
       scl::sUInt args_parsed)
   {
     bool flag;
@@ -190,14 +190,14 @@ namespace scl_app
       return true;
     }
     catch(std::exception &e)
-    { std::cout<<"\nCExampleApp::initMyController() : "<<e.what(); }
+    { std::cout<<"\nCHapticApp::initMyController() : "<<e.what(); }
     return false;
   }
 
-  scl::sBool CExampleApp::registerCustomDynamicTypes()
-  { return registerExampleTaskType();  }
+  scl::sBool CHapticApp::registerCustomDynamicTypes()
+  { return registerHapticTaskType();  }
 
-  void CExampleApp::setInitialStateForUIAndDynamics()
+  void CHapticApp::setInitialStateForUIAndDynamics()
   {
     //Compute dynamics and servo once to initialize matrices.
     robot_.computeDynamics();
@@ -226,7 +226,7 @@ namespace scl_app
     }
   }
 
-  void CExampleApp::stepMySimulation()
+  void CHapticApp::stepMySimulation()
   {
     sutil::CSystemClock::tick(db_->sim_dt_);//Tick the clock.
 

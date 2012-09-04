@@ -14,13 +14,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /*
- * CExampleTask.cpp
+ * CHapticTask.cpp
  *
  *  Created on: Apr 12, 2011
  *      Author: samir
  */
 
-#include "CExampleTask.hpp"
+#include "CHapticTask.hpp"
 
 #include <scl/Singletons.hpp>
 
@@ -30,16 +30,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl_app
 {
-  CExampleTask::CExampleTask() :
+  CHapticTask::CHapticTask() :
       scl::CTaskBase(),
       data_(S_NULL),
       link_dynamic_id_(S_NULL)
   {}
 
-  CExampleTask::~CExampleTask()
+  CHapticTask::~CHapticTask()
   {}
 
-  bool CExampleTask::computeServo(const scl::SRobotSensorData* arg_sensors)
+  bool CHapticTask::computeServo(const scl::SRobotSensorData* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -56,7 +56,7 @@ namespace scl_app
   }
 
 
-  bool CExampleTask::computeModel()
+  bool CHapticTask::computeModel()
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -73,10 +73,10 @@ namespace scl_app
     { return false; }
   }
 
-  scl::STaskBase* CExampleTask::getTaskData()
+  scl::STaskBase* CHapticTask::getTaskData()
   { return data_; }
 
-  bool CExampleTask::init(scl::STaskBase* arg_task_data,
+  bool CHapticTask::init(scl::STaskBase* arg_task_data,
       scl::CDynamicsBase* arg_dynamics)
   {
     try
@@ -93,7 +93,7 @@ namespace scl_app
       if(false == arg_dynamics->hasBeenInit())
       { throw(std::runtime_error("Passed an uninitialized dynamics object"));  }
 
-      data_ = dynamic_cast<SExampleTask*>(arg_task_data);
+      data_ = dynamic_cast<SHapticTask*>(arg_task_data);
       dynamics_ = arg_dynamics;
 
       link_dynamic_id_ = dynamics_->getIdForLink("end-effector");
@@ -104,13 +104,13 @@ namespace scl_app
     }
     catch(std::exception& e)
     {
-      std::cerr<<"\nCExampleTask::init() :"<<e.what();
+      std::cerr<<"\nCHapticTask::init() :"<<e.what();
       has_been_init_ = false;
     }
     return has_been_init_;
   }
 
-  void CExampleTask::reset()
+  void CHapticTask::reset()
   {
     data_ = S_NULL;
     dynamics_ = S_NULL;
@@ -119,7 +119,7 @@ namespace scl_app
 
 
   /*******************************************
-            Dynamic Type : CExampleTask
+            Dynamic Type : CHapticTask
 
    NOTE : To enable dynamic typing for tasks, you
    must define the types for the "CTaskName" computation
@@ -128,26 +128,26 @@ namespace scl_app
    Why? So that you have a quick and easy way to specify
    custom xml parameters in the *Cfg.xml file.
    *******************************************/
-  scl::sBool registerExampleTaskType()
+  scl::sBool registerHapticTaskType()
   {
     bool flag;
     try
     {
-      sutil::CDynamicType<std::string,scl_app::CExampleTask> typeCExampleTask(std::string("CExampleTask"));
-      flag = typeCExampleTask.registerType();
-      if(false == flag) {throw(std::runtime_error("Could not register type CExampleTask"));}
+      sutil::CDynamicType<std::string,scl_app::CHapticTask> typeCHapticTask(std::string("CHapticTask"));
+      flag = typeCHapticTask.registerType();
+      if(false == flag) {throw(std::runtime_error("Could not register type CHapticTask"));}
 
-      sutil::CDynamicType<std::string,scl_app::SExampleTask> typeSExampleTask(std::string("SExampleTask"));
-      flag = typeSExampleTask.registerType();
-      if(false == flag) {throw(std::runtime_error("Could not register type SExampleTask"));}
+      sutil::CDynamicType<std::string,scl_app::SHapticTask> typeSHapticTask(std::string("SHapticTask"));
+      flag = typeSHapticTask.registerType();
+      if(false == flag) {throw(std::runtime_error("Could not register type SHapticTask"));}
 
 #ifdef DEBUG
-      std::cout<<"\nregisterExampleTaskType() : Registered my cool task with the database";
+      std::cout<<"\nregisterHapticTaskType() : Registered my cool task with the database";
 #endif
     }
     catch (std::exception& e)
     {
-      std::cout<<"\nregisterExampleTaskType() : Error : "<<e.what();
+      std::cout<<"\nregisterHapticTaskType() : Error : "<<e.what();
       return false;
     }
     return true;

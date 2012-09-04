@@ -14,18 +14,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /*
- * CExampleTask.hpp
+ * CHapticTask.hpp
  *
  *  Created on: Apr 12, 2011
  *      Author: Samir Menon
  */
 
-#ifndef CEXAMPLETASK_HPP_
-#define CEXAMPLETASK_HPP_
+#ifndef CHAPTICTASK_HPP_
+#define CHAPTICTASK_HPP_
 
 #include <scl/control/task/CTaskBase.hpp>
 
-#include "SExampleTask.hpp"
+#include "SHapticTask.hpp"
 
 namespace scl_app
 {
@@ -33,10 +33,10 @@ namespace scl_app
   /** Function to register task with the database and enable
    * dynamic typing. Call this function if you want your
    * task to be initialized by specifying stuff in a file. */
-  scl::sBool registerExampleTaskType();
+  scl::sBool registerHapticTaskType();
 
   /** This is my cool new task. */
-  class CExampleTask : public scl::CTaskBase
+  class CHapticTask : public scl::CTaskBase
   {
   public:
     /*******************************************
@@ -62,12 +62,12 @@ namespace scl_app
     virtual void reset();
 
   public:
-    CExampleTask();
-    virtual ~CExampleTask();
+    CHapticTask();
+    virtual ~CHapticTask();
 
   protected:
     //This will be filled in from the file
-    SExampleTask* data_;
+    SHapticTask* data_;
 
     //TODO : Add what you want.
     //myCoolDataType data2_;
@@ -76,4 +76,4 @@ namespace scl_app
   };
 }
 
-#endif /* CEXAMPLETASK_HPP_ */
+#endif /* CHAPTICTASK_HPP_ */

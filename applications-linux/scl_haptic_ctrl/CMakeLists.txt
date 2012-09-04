@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 #Name the project
-project(scl_example_app)
+project(scl_haptic_app)
 
 #Set the build mode to debug by default
 #SET(CMAKE_BUILD_TYPE Debug)
@@ -26,7 +26,7 @@ ADD_DEFINITIONS(-DTIXML_USE_STL)
 ###(b) Eigen
 SET(EIGEN_INC_DIR ${SCL_BASE_DIR}3rdparty/eigen3.1.1/)
 
-###(c) Chai3D scenegraph
+###(c) Chai3D scenhapticraph
 SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/chai3d/)
 ADD_DEFINITIONS(-D_LINUX -DLINUX)
 
@@ -43,17 +43,17 @@ SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -O0 -pg -std=c++0x -DGRAPHICS_ON -DASSERT=asser
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
 
 #Set all the sources required for the library
-SET(EG_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_example_ctrl/)
+SET(EG_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_haptic_ctrl/)
 
-SET(ALL_SRC ${EG_BASE_DIR}scl_example_main.cpp 
-            ${EG_BASE_DIR}CExampleApp.cpp 
-            ${EG_BASE_DIR}CExampleTask.cpp
+SET(ALL_SRC ${EG_BASE_DIR}scl_haptic_main.cpp 
+            ${EG_BASE_DIR}CHapticApp.cpp 
+            ${EG_BASE_DIR}CHapticTask.cpp
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
             ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
-add_executable(scl_eg_ctrl ${ALL_SRC})
+add_executable(scl_haptic_ctrl ${ALL_SRC})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
 find_library( SCL_LIBRARY_DEBUG NAMES scl
@@ -67,7 +67,7 @@ find_library( SCL_LIBRARY_RELEASE NAMES scl
 SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
               optimized ${SCL_LIBRARY_RELEASE} )
 
-target_link_libraries(scl_eg_ctrl ${SCL_LIBRARY})
+target_link_libraries(scl_haptic_ctrl ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
 find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
@@ -81,8 +81,8 @@ find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
 SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
               optimized ${CHAI_LIBRARY_RELEASE} )
 
-target_link_libraries(scl_eg_ctrl ${CHAI_LIBRARY})
+target_link_libraries(scl_haptic_ctrl ${CHAI_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_eg_ctrl gomp GL GLU glut ncurses)
+target_link_libraries(scl_haptic_ctrl gomp GL GLU glut ncurses)

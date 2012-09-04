@@ -14,25 +14,25 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /*
- * SExampleTask.hpp
+ * SHapticTask.hpp
  *
  *  Created on: Sep 1, 2011
  *      Author: Samir Menon
  */
 
-#ifndef SEXAMPLETASK_HPP_
-#define SEXAMPLETASK_HPP_
+#ifndef SHAPTICTASK_HPP_
+#define SHAPTICTASK_HPP_
 
 #include <scl/control/task/data_structs/STaskBase.hpp>
 
 namespace scl_app
 {
 
-  class SExampleTask : public scl::STaskBase
+  class SHapticTask : public scl::STaskBase
   {
   public:
-    SExampleTask(){}
-    virtual ~SExampleTask(){}
+    SHapticTask(){}
+    virtual ~SHapticTask(){}
 
     /** Processes the task's non standard parameters, which the
      * init() function stores in the task_nonstd_params_.
@@ -44,4 +44,4 @@ namespace scl_app
   };
 
 } /* namespace scl */
-#endif /* SEXAMPLETASK_HPP_ */
+#endif /* SHAPTICTASK_HPP_ */

@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file ExampleCallbacks.hpp
+/* \file HapticCallbacks.hpp
  *
  *  Created on: Sep 16, 2011
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef EXAMPLECALLBACKS_HPP_
-#define EXAMPLECALLBACKS_HPP_
+#ifndef HAPTICCALLBACKS_HPP_
+#define HAPTICCALLBACKS_HPP_
 
 #include <scl/Singletons.hpp>
 
@@ -120,4 +120,4 @@ namespace scl_app
   }
 }
 
-#endif /* EXAMPLECALLBACKS_HPP_ */
+#endif /* HAPTICCALLBACKS_HPP_ */

@@ -29,9 +29,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "CExampleApp.hpp"
-#include "CExampleTask.hpp"
-#include "ExampleCallbacks.hpp"
+#include "CHapticApp.hpp"
+#include "CHapticTask.hpp"
+#include "HapticCallbacks.hpp"
 
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
   { argvec.push_back(std::string(argv[i])); }
 
   //Initialize the app
-  scl_app::CExampleApp app;
+  scl_app::CHapticApp app;
   if(false == app.init(argvec)) {   return 1;  }
 
   //Register all the callback functions.

@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
  */
-/* \file CExampleApp.hpp
+/* \file CHapticApp.hpp
  *
  *  Created on: Sep 16, 2011
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CEXAMPLEAPP_HPP_
-#define CEXAMPLEAPP_HPP_
+#ifndef CHAPTICAPP_HPP_
+#define CHAPTICAPP_HPP_
 
 #include <scl/robot/CRobotApp.hpp>
 
@@ -42,7 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl_app
 {
-  class CExampleApp : public scl::CRobotApp
+  class CHapticApp : public scl::CRobotApp
   {
   public:
     // ****************************************************
@@ -55,10 +55,10 @@ namespace scl_app
     //           The initialization functions
     // ****************************************************
     /** Default constructor. Sets stuff to zero. */
-    CExampleApp();
+    CHapticApp();
 
     /** Default destructor. Does nothing. */
-    virtual ~CExampleApp(){}
+    virtual ~CHapticApp(){}
 
     /** Sets up the task controller. */
     virtual scl::sBool initMyController(const std::vector<std::string>& argv,
@@ -107,4 +107,4 @@ namespace scl_app
 
 }
 
-#endif /* CEXAMPLEAPP_HPP_ */
+#endif /* CHAPTICAPP_HPP_ */
