@@ -189,7 +189,7 @@ namespace scl_app
             //Set up haptic devices
             std::stringstream ss(argv[args_ctr+1]);
             ss>>num_haptic_devices_to_use_;
-            if(num_haptic_devices_to_use_ != haptics_.getNumDevicesConnected())
+            if(num_haptic_devices_to_use_ > haptics_.getNumDevicesConnected())
             {
               std::stringstream ss;
               ss<<"Error. Num haptic devices connected = "<<haptics_.getNumDevicesConnected()
@@ -297,7 +297,7 @@ namespace scl_app
         int i;
         for(i=0, it = haptic_pos_.begin(), ite = haptic_pos_.end(),
             itv = haptic_base_pos_.begin(), itve = haptic_base_pos_.end();
-            it!=ite && itv!=itve;++i,++it,++itve)
+            it!=ite && itv!=itve;++i,++it,++itv)
         { db_->s_gui_.ui_point_[i] = (*it).array()*5 + (*itv).array(); }
         assert(itv == itve && it==ite);
       }
