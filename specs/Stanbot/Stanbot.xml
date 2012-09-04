@@ -4,7 +4,7 @@
 <robot spec_name="Stanbot">
   <link>
     <link_name>left-foot-dummay</link_name>
-    <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+    <position_in_parent>0.000000 0.070000 0.000000</position_in_parent>
     <orientation_in_parent>0 0 0 1</orientation_in_parent>
     <mass>1.000000</mass>
     <inertia>0.010000 0.010000 0.010000</inertia>
@@ -182,7 +182,8 @@
   <link>
     <link_name>right-shoulder-straightward</link_name>
     <position_in_parent>-0.140000 0.000000 0.320000</position_in_parent>
-    <orientation_in_parent>-0.4794 -0 -0 0.8776</orientation_in_parent>
+    <!-- -0.4794 -0 -0 0.8776 -->
+    <orientation_in_parent>-0.8776 0.0 -0.4794 0.0</orientation_in_parent>
     <mass>1.000000</mass>
     <inertia>0.010000 0.010000 0.010000</inertia>
     <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
@@ -278,7 +279,8 @@
   <link>
     <link_name>left-shoulder-straightward</link_name>
     <position_in_parent>0.140000 0.000000 0.320000</position_in_parent>
-    <orientation_in_parent>-0.4794 -0 -0 0.8776</orientation_in_parent>
+    <!-- -0.4794 0 0 0.8776 -->
+    <orientation_in_parent>0.8776 0.0 -0.4794 0.0</orientation_in_parent>
     <mass>1.000000</mass>
     <inertia>0.010000 0.010000 0.010000</inertia>
     <center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
