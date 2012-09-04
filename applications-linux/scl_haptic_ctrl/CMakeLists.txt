@@ -33,9 +33,28 @@ ADD_DEFINITIONS(-D_LINUX -DLINUX)
 ### (d) sUtil code
 SET(SUTIL_INC_DIR ${SCL_BASE_DIR}3rdparty/sUtil/src/)
 
+###(d) Cdhd
+SET(CDHD_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/DHD/include)
+
+###(e) CGEL
+SET(CGEL_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/GEL/src)
+
+###(f) CGIFLIB
+SET(CGIFLIB_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/giflib/include)
+
+###(g) CLIB3DS
+SET(CLIB3DS_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/lib3ds/include)
+
+###(h) CLIBJPEG
+SET(CLIBJPEG_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/libjpeg/include)
+
+###(i) CLIBPNG
+SET(CLIBPNG_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/libpng/include)
+
 ################Initialize the executable#################
 #Set the include directories
-INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR}) 
+INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR}
+${CDHD_INC_DIR} ${CGEL_INC_DIR} ${CGIFLIB_INC_DIR} ${CLIB3DS_INC_DIR} ${CLIBJPEG_INC_DIR} ${CLIBPNG_INC_DIR} ) 
 
 #Set the compilation flags
 SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp")
@@ -71,17 +90,46 @@ target_link_libraries(scl_haptic_ctrl ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
 find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
-            PATHS   ${CHAI_INC_DIR}../lib/
+            PATHS   ${CHAI_INC_DIR}../lib_haptics/
             PATH_SUFFIXES debug )
 
 find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
-            PATHS   ${CHAI_INC_DIR}../lib/
+            PATHS   ${CHAI_INC_DIR}../lib_haptics/
             PATH_SUFFIXES release )
 
 SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
               optimized ${CHAI_LIBRARY_RELEASE} )
 
 target_link_libraries(scl_haptic_ctrl ${CHAI_LIBRARY})
+
+###############SPECIAL CODE TO FIND AND LINK IMAGE LIB DIR ######################
+find_library( IMG_LIBRARY_DEBUG NAMES imageformats
+            PATHS   ${CHAI_INC_DIR}../lib_haptics/
+            PATH_SUFFIXES debug )
+
+find_library( IMG_LIBRARY_RELEASE NAMES imageformats
+            PATHS   ${CHAI_INC_DIR}../lib_haptics/
+            PATH_SUFFIXES release )
+
+SET( IMG_LIBRARY debug     ${IMG_LIBRARY_DEBUG}
+              optimized ${IMG_LIBRARY_RELEASE} )
+
+target_link_libraries(scl_haptic_ctrl ${IMG_LIBRARY})
+
+
+###############SPECIAL CODE TO FIND AND LINK DHD LIB DIR ######################
+find_library( CDHD_LIBRARY_DEBUG NAMES dhd
+            PATHS   ${CHAI_INC_DIR}../DHD/lib/
+            PATH_SUFFIXES lin-x86_64 )
+
+find_library( CDHD_LIBRARY_RELEASE NAMES dhd
+            PATHS   ${CHAI_INC_DIR}../DHD/lib/
+            PATH_SUFFIXES lin-x86_64 )
+
+SET( CDHD_LIBRARY debug     ${CDHD_LIBRARY_DEBUG}
+              optimized ${CDHD_LIBRARY_RELEASE} )
+
+target_link_libraries(scl_haptic_ctrl ${CDHD_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
