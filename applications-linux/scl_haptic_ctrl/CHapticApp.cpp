@@ -31,6 +31,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CHapticApp.hpp"
 
+
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SDatabase.hpp>
 
@@ -54,7 +55,9 @@ namespace scl_app
       ui_pt_com_(-1),
       has_been_init_com_task_(false),
       chai_com_pos_(S_NULL),
-      chai_com_pos_des_(S_NULL)
+      chai_com_pos_des_(S_NULL),
+      num_haptic_devices_to_use_(0),
+      has_been_init_haptics_(false)
   { }
 
   scl::sBool CHapticApp::initMyController(const std::vector<std::string>& argv,
@@ -63,6 +66,11 @@ namespace scl_app
     bool flag;
     try
     {
+      //First set up the haptics
+      flag = haptics_.connectToDevices();
+      if(false == flag)
+      { throw(std::runtime_error("Could not get connect to haptic devices"));  }
+
       //Ctr in array of args_parsed = (args_parsed - 1)
       //So ctr for un-parsed arg = (args_parsed - 1) + 1
       scl::sUInt args_ctr = args_parsed, ui_points_used=0;
@@ -173,8 +181,33 @@ namespace scl_app
 
             args_ctr+=2; continue;
           }
+        }
+        else if ("-haptics" == argv[args_ctr])
+        {// We know the next argument *should* be the com pos task's name
+          if(args_ctr+1 <= argv.size())
+          {
+            //Set up haptic devices
+            std::stringstream ss(argv[args_ctr+1]);
+            ss>>num_haptic_devices_to_use_;
+            if(num_haptic_devices_to_use_ != haptics_.getNumDevicesConnected())
+            {
+              std::stringstream ss;
+              ss<<"Error. Num haptic devices connected = "<<haptics_.getNumDevicesConnected()
+                  <<". Num requested = "<<num_haptic_devices_to_use_;
+              throw(std::runtime_error(ss.str()));
+            }
+            std::cout<<"\nInitializing ["<<num_haptic_devices_to_use_<<"] haptic devices to first ["
+                <<num_haptic_devices_to_use_<<"] UI points.";
+            has_been_init_haptics_ = true;
+            for(int i=0;i<num_haptic_devices_to_use_;++i)
+            {
+              haptic_pos_.push_back(Eigen::VectorXd());
+              haptic_base_pos_.push_back(Eigen::VectorXd());
+            }
+            args_ctr+=2; continue;
+          }
           else
-          { throw(std::runtime_error("Specified -com flag but did not specify com task's name"));  }
+          { throw(std::runtime_error("Specified -haptics flag but did not specify <num_haptic_devices_to_use>"));  }
         }
         /* NOTE : ADD MORE COMMAND LINE PARSING OPTIONS IF REQUIRED */
         // else if (argv[args_ctr] == "-p")
@@ -223,6 +256,12 @@ namespace scl_app
       chai_com_pos_->setLocalPos(task_ds_com_->x_);
       chai_com_pos_des_->setLocalPos(db_->s_gui_.ui_point_[ui_pt_com_]);
     }
+
+    std::vector<Eigen::Vector3d>::iterator itv,itve;
+    scl::sInt i;
+    for(i=0, itv = haptic_base_pos_.begin(), itve = haptic_base_pos_.end();
+        itv!=itve;++itv, ++i)
+    { *itv = db_->s_gui_.ui_point_[i]; }
   }
 
   void CHapticApp::stepMySimulation()
@@ -247,12 +286,24 @@ namespace scl_app
     { // Every 2ms
       robot_.logState(true,true,true);
 
+      if(has_been_init_haptics_)
+      {//Update the position of the first few points using the haptics
+        bool flag = haptics_.getHapticDevicePositions(haptic_pos_);
+        assert(flag);
+        std::vector<Eigen::Vector3d>::iterator it,ite, itv,itve;
+        int i;
+        for(i=0, it = haptic_pos_.begin(), ite = haptic_pos_.end(),
+            itv = haptic_base_pos_.begin(), itve = haptic_base_pos_.end();
+            it!=ite;++i,++it,++itve)
+        { db_->s_gui_.ui_point_[i] = (*it) + (*itve); }
+      }
+
       //Set the positions of the ui points
       for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
       { it->chai_pos_des_->setLocalPos(db_->s_gui_.ui_point_[it->ui_pt_]); }
 
       if(has_been_init_com_task_)
-      {
+      {// Update the com position.
         chai_com_pos_->setLocalPos(task_ds_com_->x_);
         chai_com_pos_des_->setLocalPos(db_->s_gui_.ui_point_[ui_pt_com_]);
       }

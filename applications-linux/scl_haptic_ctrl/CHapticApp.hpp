@@ -40,6 +40,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>
 
+#include "ChaiHapticWrapper.hpp"
+
 namespace scl_app
 {
   class CHapticApp : public scl::CRobotApp
@@ -103,6 +105,14 @@ namespace scl_app
     scl::sInt ui_pt_com_;
     scl::sBool has_been_init_com_task_;
     cGenericObject *chai_com_pos_,*chai_com_pos_des_;
+
+    //For controlling op points with haptics
+    //The app will support dual-mode control, with the haptics controlling op points.
+    ChaiHapticWrapper haptics_;
+    scl::sInt num_haptic_devices_to_use_; //These will directly control ui-points.
+    scl::sBool has_been_init_haptics_;
+    std::vector<Eigen::Vector3d> haptic_pos_;
+    std::vector<Eigen::Vector3d> haptic_base_pos_;
   };
 
 }

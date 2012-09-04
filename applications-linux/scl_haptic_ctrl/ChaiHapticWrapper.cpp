@@ -43,7 +43,7 @@ namespace scl_app
       // ***********************************************************
       //                     CONNECT TO DEVICES
       // ***********************************************************
-      for(int i=0;i<haptics_handler_->getNumDevices();++i)
+      for(unsigned int i=0;i<haptics_handler_->getNumDevices();++i)
       {// Now connect to all the haptic devices.
         cGenericHapticDevice* tmp_haptic_device = NULL;
 
