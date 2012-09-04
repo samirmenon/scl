@@ -77,6 +77,8 @@ int main(int argc, char** argv)
   if(false == registerCallbacks())
   { std::cout<<"\nFailed to register callbacks"; return 1; }
 
+  std::cout<<"\nSimulation Starting";
+
   //Set up the threads
 #ifndef DEBUG
   omp_set_num_threads(3);

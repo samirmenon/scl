@@ -201,8 +201,8 @@ namespace scl_app
             has_been_init_haptics_ = true;
             for(int i=0;i<num_haptic_devices_to_use_;++i)
             {
-              haptic_pos_.push_back(Eigen::VectorXd());
-              haptic_base_pos_.push_back(Eigen::VectorXd());
+              haptic_pos_.push_back(Eigen::Vector3d());
+              haptic_base_pos_.push_back(Eigen::Vector3d());
             }
             args_ctr+=2; continue;
           }
@@ -261,7 +261,10 @@ namespace scl_app
     scl::sInt i;
     for(i=0, itv = haptic_base_pos_.begin(), itve = haptic_base_pos_.end();
         itv!=itve;++itv, ++i)
-    { *itv = db_->s_gui_.ui_point_[i]; }
+    {
+      *itv = db_->s_gui_.ui_point_[i];
+      std::cout<<"\nBase position of haptic device ["<<i<<"] = "<<itv->transpose();
+    }
   }
 
   void CHapticApp::stepMySimulation()
@@ -294,8 +297,9 @@ namespace scl_app
         int i;
         for(i=0, it = haptic_pos_.begin(), ite = haptic_pos_.end(),
             itv = haptic_base_pos_.begin(), itve = haptic_base_pos_.end();
-            it!=ite;++i,++it,++itve)
-        { db_->s_gui_.ui_point_[i] = (*it) + (*itve); }
+            it!=ite && itv!=itve;++i,++it,++itve)
+        { db_->s_gui_.ui_point_[i] = (*it) + (*itv); }
+        assert(itv == itve && it==ite);
       }
 
       //Set the positions of the ui points
