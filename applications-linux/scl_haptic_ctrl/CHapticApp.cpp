@@ -298,7 +298,7 @@ namespace scl_app
         for(i=0, it = haptic_pos_.begin(), ite = haptic_pos_.end(),
             itv = haptic_base_pos_.begin(), itve = haptic_base_pos_.end();
             it!=ite && itv!=itve;++i,++it,++itve)
-        { db_->s_gui_.ui_point_[i] = (*it) + (*itv); }
+        { db_->s_gui_.ui_point_[i] = (*it).array()*5 + (*itv).array(); }
         assert(itv == itve && it==ite);
       }
 
