@@ -840,6 +840,7 @@ namespace scl
 
   CRobot::CRobot()
   {
+    db_ = S_NULL;
     dynamics_ = S_NULL;
     integrator_ = S_NULL;
     ctrl_current_ = S_NULL;
