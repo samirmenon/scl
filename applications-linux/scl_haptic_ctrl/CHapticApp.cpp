@@ -22,15 +22,14 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 */
 /* \file CHapticApp.cpp
  *
- *  Created on: Sep 16, 2011
+ *  Created on: Sep 3, 2012
  *
- *  Copyright (C) 2011
+ *  Copyright (C) 2012
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
 #include "CHapticApp.hpp"
-#include "CHapticTask.hpp"
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SDatabase.hpp>
@@ -195,7 +194,7 @@ namespace scl_app
   }
 
   scl::sBool CHapticApp::registerCustomDynamicTypes()
-  { return registerHapticTaskType();  }
+  { return true;  }//No custom tasks to register
 
   void CHapticApp::setInitialStateForUIAndDynamics()
   {

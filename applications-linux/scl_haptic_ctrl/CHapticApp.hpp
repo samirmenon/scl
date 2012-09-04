@@ -22,9 +22,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 /* \file CHapticApp.hpp
  *
- *  Created on: Sep 16, 2011
+ *  Created on: Sep 3, 2012
  *
- *  Copyright (C) 2011
+ *  Copyright (C) 2012
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
