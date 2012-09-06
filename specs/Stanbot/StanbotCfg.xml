@@ -55,8 +55,8 @@
             <kp>100</kp>
             <kv>20</kv>
             <ki>0</ki>
-            <force_max>100</force_max>
-            <force_min>-100</force_min>
+            <force_max>1000</force_max>
+            <force_min>-1000</force_min>
         </task>
 
         <task name="hand2">
@@ -68,8 +68,8 @@
             <kp>100</kp>
             <kv>20</kv>
             <ki>0</ki>
-            <force_max>100</force_max>
-            <force_min>-100</force_min>
+            <force_max>1000</force_max>
+            <force_min>-1000</force_min>
         </task>
 
         <task name="com">
@@ -79,8 +79,8 @@
             <kp>100</kp>
             <kv>20</kv>
             <ki>0</ki>
-            <force_max>100</force_max>
-            <force_min>-100</force_min>
+            <force_max>1000</force_max>
+            <force_min>-1000</force_min>
         </task>
 
         <task name="GcTask">
@@ -90,8 +90,8 @@
             <kp>100</kp>
             <kv>20</kv>
             <ki>0</ki>
-            <force_max>100</force_max>
-            <force_min>-100</force_min>
+            <force_max>1000</force_max>
+            <force_min>-1000</force_min>
         </task>
 
         <!-- 0 task_dof means a gc task, ie full dofs -->
@@ -100,10 +100,10 @@
             <priority>2</priority>
             <task_dof>0</task_dof> 
             <kp>0</kp>
-            <kv>50</kv>
+            <kv>20</kv>
             <ki>0</ki>
-            <force_max>100</force_max>
-            <force_min>-100</force_min>
+            <force_max>1000</force_max>
+            <force_min>-1000</force_min>
         </task>
     </controller>
 </lotus>
