@@ -52,6 +52,10 @@ namespace scl
   class SGcModel
   {
   public:
+    // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.
+    // See http://eigen.tuxfamily.org/dox/StructHavingEigenMembers.html
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
     /** A: Mass matrix */
     Eigen::MatrixXd A_;
 
@@ -67,12 +71,30 @@ namespace scl
     /** com : Center of mass vector */
     Eigen::Vector3d pos_com_;
 
+    /** m : Mass of the robot in Euclidean coords */
+    sFloat mass_;
+
     /** J_com_ : The center of mass Jacobians of the articulated body */
     class SCOMInfo{
     public:
+      // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.
+      // See http://eigen.tuxfamily.org/dox/StructHavingEigenMembers.html
+      EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+      /** The Jacobian relating center of mass velocities in
+       * the origin frame to the generalized velocities.
+       *     dx_o_ = J_com_ * dq_
+       */
       Eigen::MatrixXd J_com_;
+
+      /** The transformation matrix from the center of mass
+       * to the origin frame:
+       *     x_o_ = T_com_ * x_com_; */
       Eigen::Affine3d T_com_;
-      Eigen::Vector3d pos_com_;
+
+      /** The data structure pointing to the static link information */
+      const SRobotLink* link_ds_;
+
       /** The link's name.
        * This is redundant, but primarily for error checks,
        * since external libraries might not maintain the same
@@ -82,6 +104,7 @@ namespace scl
        * initialization sequence between the two, which would lead
        * to mixed link ids. */
       std::string name_;
+
       /** The dynamics engine's id.
        * This, again, is redundant like the name. But simplifies
        * and speeds up error checks. */
