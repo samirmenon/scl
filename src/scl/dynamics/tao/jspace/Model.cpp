@@ -290,8 +290,11 @@ namespace jspace {
 #ifndef WIN32
 #warning "TO DO: maybe the other way around..."
 #endif
-    // beware: Eigen::Quaternion(w, x, y, z) puts w first, whereas
-    // deQuaternion(qx, qy, qz, qw) puts w last. Of course.
+    // beware: Eigen::Quaternion(w, x, y, z) asks for w first, (but stores it as xyzw)
+    // whereas
+    // deQuaternion(qx, qy, qz, qw) asks for w last and stores it as xyzw.
+    //DE_MATH_API void deSetQ4S4(deFloat* res, const deFloat x, const deFloat y, const deFloat z, const deFloat w)
+    //{ res[0] = x; res[1] = y; res[2] = z; res[3] = w; }
     global_transform = Eigen::Translation3d(tao_trans[0], tao_trans[1], tao_trans[2]);
     global_transform *= Eigen::Quaternion<double>(tao_quat[3], tao_quat[0], tao_quat[1], tao_quat[2]);
 
