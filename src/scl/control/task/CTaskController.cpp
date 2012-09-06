@@ -75,6 +75,7 @@ namespace scl
       dynamics_ = arg_dynamics;
 
       // Set up the center of mass properties of the robot
+      data_->gc_model_.mass_ = 0.0;
       std::vector<SGcModel::SCOMInfo>::iterator itcom,itcome;
       sutil::CMappedTree<std::string, SRobotLink>::const_iterator itr,itre;
       //Set the center of mass position for each link.
@@ -87,7 +88,7 @@ namespace scl
         while(itr->is_root_) { ++itr; }
 
         if(itr == itre)
-        {
+        {// gc and dynamics should have same dof.
           std::stringstream ss;
           ss<<"Inconsistent model. Gc model has more entries ["
               <<data_->gc_model_.coms_.size()<<"] than the robot's mapped tree ["
@@ -97,11 +98,12 @@ namespace scl
 
         itcom->name_ = itr->name_;
         itcom->link_dynamic_id_ = dynamics_->getIdForLink(itcom->name_);
-        itcom->pos_com_ = itr->com_;
+        itcom->link_ds_ = static_cast<const SRobotLink*>( &(*itr) );
+
+        data_->gc_model_.mass_ += itcom->link_ds_->mass_;
       }
       if(itr != itre)
-      {
-        //In case the root node is at the end.
+      {// Error check in case the root node is at the end.
         while(itr->is_root_) { ++itr; if(itr == itre) break; }
         if(itr != itre)
         {
