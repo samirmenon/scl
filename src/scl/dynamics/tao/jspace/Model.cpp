@@ -30,10 +30,6 @@
 #include <tao/dynamics/taoJoint.h>
 #include <tao/dynamics/taoDynamics.h>
 
-//NOTE TODO : Understand what this does and remove it.
-#undef DEBUG
-
-
 static deVector3 const zero_gravity(0, 0, 0);
 
 
@@ -145,10 +141,9 @@ namespace jspace {
 
   Model::~Model()
   {
-    delete kgm_tree_;
-    delete cc_tree_;
-    if(gravity_ != 0)
-    { delete gravity_; }
+    if(NULL!=kgm_tree_) { delete kgm_tree_; }
+    if(NULL!=cc_tree_){ delete cc_tree_;  }
+    if(0 != gravity_) { delete gravity_; }
   }
 
 
@@ -381,9 +376,9 @@ namespace jspace {
     }
     std::list<SAncestryEntry> const & alist(iae->second);
 
-#ifdef DEBUG
+#ifdef TAO_DEBUG
     fprintf(stderr, "computeJacobian()\ng: [% 4.2f % 4.2f % 4.2f]\n", gx, gy, gz);
-#endif // DEBUG
+#endif // TAO_DEBUG
 
     // \todo Implement support for more than one joint per node, and
     //  more than one DOF per joint.
@@ -395,12 +390,12 @@ namespace jspace {
       ia->joint->getJgColumns(&Jg_col);
       int const icol(ia->id);
 
-#ifdef DEBUG
+#ifdef TAO_DEBUG
       fprintf(stderr, "iJg[%d]: [ % 4.2f % 4.2f % 4.2f % 4.2f % 4.2f % 4.2f]\n",
           icol,
           Jg_col.elementAt(0), Jg_col.elementAt(1), Jg_col.elementAt(2),
           Jg_col.elementAt(3), Jg_col.elementAt(4), Jg_col.elementAt(5));
-#endif // DEBUG
+#endif // TAO_DEBUG
 
       for (size_t irow(0); irow < 6; ++irow) {
         jacobian.coeffRef(irow, icol) = Jg_col.elementAt(irow);
@@ -417,12 +412,12 @@ namespace jspace {
       jacobian.coeffRef(1, icol) -=  gz * Jg_col.elementAt(3) - gx * Jg_col.elementAt(5);
       jacobian.coeffRef(2, icol) -= -gy * Jg_col.elementAt(3) + gx * Jg_col.elementAt(4);
 
-#ifdef DEBUG
+#ifdef TAO_DEBUG
       fprintf(stderr, "0Jg[%d]: [ % 4.2f % 4.2f % 4.2f % 4.2f % 4.2f % 4.2f]\n",
           icol,
           jacobian.coeff(0, icol), jacobian.coeff(1, icol), jacobian.coeff(2, icol),
           jacobian.coeff(3, icol), jacobian.coeff(4, icol), jacobian.coeff(5, icol));
-#endif // DEBUG
+#endif // TAO_DEBUG
 
     }
     return true;
