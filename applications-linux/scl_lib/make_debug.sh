@@ -1,4 +1,4 @@
-rm debug -rf &&
+rm -rf debug &&
 mkdir debug &&
 mkdir -p build_dbg &&
 cd build_dbg &&

@@ -1,4 +1,4 @@
-rm release -rf &&
+rm -rf release &&
 mkdir -p release &&
 mkdir -p build_rel &&
 cd build_rel &&
