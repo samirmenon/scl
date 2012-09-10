@@ -695,7 +695,7 @@ namespace scl_parser {
           lnk->joint_limit_upper_ = cr->max_;
           lnk->joint_default_pos_ = cr->default_pos_;
           lnk->mass_ = 1.0;
-          lnk->inertia_(0) = 1.0; lnk->inertia_(1) = 1.0; lnk->inertia_(2) = 1.0;
+          lnk->inertia_ = Eigen::Matrix3d::Identity();
 
           //Set the joint type
           std::string jtype;
@@ -726,7 +726,7 @@ namespace scl_parser {
               <<" "<<lnk->ori_parent_quat_.z()
               <<" "<<lnk->ori_parent_quat_.w()<<")"
               <<", Com: "<<lnk->com_.transpose()
-              <<", Mass: "<<lnk->mass_<<", Inertia: "<<lnk->inertia_.transpose()<<", Gr:";
+              <<", Mass: "<<lnk->mass_<<", \nInertia: "<<lnk->inertia_<<", \nGr:";
           for(scl::sUInt i=0;i<lnk->graphics_obj_vec_.size();++i)
           { std::cout<<" "<<lnk->graphics_obj_vec_[i].file_name_; }
 #endif
@@ -763,15 +763,14 @@ namespace scl_parser {
 
       if(NULL != arg_tiHndl_body.FirstChild("inertia").ToElement())
       {//Only one tag
-        Eigen::Matrix3d in;
         std::stringstream ss(arg_tiHndl_body.FirstChild("inertia").ToElement()->FirstChild()->Value());
-        ss>>in(0,0); ss>>in(0,1); ss>>in(0,2);
-        ss>>in(1,0); ss>>in(1,1); ss>>in(1,2);
-        ss>>in(2,0); ss>>in(2,1); ss>>in(2,2);
-        lnk->inertia_(0) = in(0,0); lnk->inertia_(1) = in(1,1); lnk->inertia_(2) = in(2,2);
+        ss>>lnk->inertia_(0,0); ss>>lnk->inertia_(0,1); ss>>lnk->inertia_(0,2);
+        ss>>lnk->inertia_(1,0); ss>>lnk->inertia_(1,1); ss>>lnk->inertia_(1,2);
+        ss>>lnk->inertia_(2,0); ss>>lnk->inertia_(2,1); ss>>lnk->inertia_(2,2);
       }
       else
       {//Individual tags : More versioning
+        lnk->inertia_ = Eigen::Matrix3d::Identity();//Reset the inertia and then read in the diagonal elements.
         if(NULL == arg_tiHndl_body.FirstChild("inertia_xx").ToElement())
         {
           std::string msg = "No inertia_xx. At body : " + body_name;
@@ -780,7 +779,7 @@ namespace scl_parser {
         else
         {
           std::stringstream ss(arg_tiHndl_body.FirstChild("inertia_xx").ToElement()->FirstChild()->Value());
-          ss>>lnk->inertia_(0);
+          ss>>lnk->inertia_(0,0);
         }
 
         if(NULL == arg_tiHndl_body.FirstChild("inertia_yy").ToElement())
@@ -791,7 +790,7 @@ namespace scl_parser {
         else
         {
           std::stringstream ss(arg_tiHndl_body.FirstChild("inertia_yy").ToElement()->FirstChild()->Value());
-          ss>>lnk->inertia_(1);
+          ss>>lnk->inertia_(1,1);
         }
 
         if(NULL == arg_tiHndl_body.FirstChild("inertia_zz").ToElement())
@@ -802,7 +801,7 @@ namespace scl_parser {
         else
         {
           std::stringstream ss(arg_tiHndl_body.FirstChild("inertia_zz").ToElement()->FirstChild()->Value());
-          ss>>lnk->inertia_(2);
+          ss>>lnk->inertia_(2,2);
         }
       }
 
@@ -878,7 +877,7 @@ namespace scl_parser {
           <<" "<<lnk->ori_parent_quat_.z()
           <<" "<<lnk->ori_parent_quat_.w()<<")"
           <<", Com: "<<lnk->com_.transpose()
-          <<", Mass: "<<lnk->mass_<<", Inertia: "<<lnk->inertia_.transpose()<<", Gr:";
+          <<", Mass: "<<lnk->mass_<<", \nInertia: "<<lnk->inertia_<<", \nGr:";
       for(scl::sUInt i=0;i<lnk->graphics_obj_vec_.size();++i)
       { std::cout<<" "<<lnk->graphics_obj_vec_[i].file_name_; }
 #endif
