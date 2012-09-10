@@ -28,26 +28,25 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
-
-#include <sstream>
-#include <stdexcept>
-#include <utility>
-
 //The Class definition.
 #include <scl/parser/lotusparser/CLotusParser.hpp>
 
-#include <scl/DataTypes.hpp>
-
 //The required data structures
+#include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/data_structs/SRobotLink.hpp>
-
 #include <scl/util/HelperFunctions.hpp>
 
 //The tinyxml parser implementation for lotus xml files
 #include <scl/parser/scl_tinyxml/scl_tinyxml.h>
 #include <scl/parser/lotusparser/tixml_parser/CLotusTiXmlParser.hpp>
+
+//The Standard cpp headers
+#include <sstream>
+#include <stdexcept>
+#include <utility>
+
 
 using namespace scl_tinyxml; //Tinyxml parser implementation is in a separate namespace
 using namespace scl;
