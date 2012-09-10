@@ -64,7 +64,7 @@ namespace scl_util
               <<", Depth: "<<depth
               <<", Com: "<<(link.com_).transpose()
               <<", Mass: "<<link.mass_
-              <<", Inertia: "<<(link.inertia_).transpose()
+              <<", \nInertia: "<<link.inertia_
               <<std::flush;
 
     std::vector<SRobotLink*>::const_iterator clink, clinke;
