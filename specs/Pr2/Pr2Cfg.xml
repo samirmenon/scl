@@ -82,24 +82,13 @@
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
         </task>
-
-        <task name="com">
-            <type>ComPosTask</type>
-            <priority>1</priority>
-            <task_dof>3</task_dof>
-            <kp>100</kp>
-            <kv>25</kv>
-            <ki>0</ki>
-            <force_max>3000</force_max>
-            <force_min>-3000</force_min>
-        </task>
         
         <task name="GcTask">
             <type>TaskGc</type>
-            <priority>2</priority>
+            <priority>1</priority>
             <task_dof>0</task_dof> 
-            <kp>100</kp>
-            <kv>40</kv>
+            <kp>30</kp>
+            <kv>6</kv>
             <ki>0</ki>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
