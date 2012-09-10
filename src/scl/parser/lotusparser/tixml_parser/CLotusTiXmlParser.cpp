@@ -115,10 +115,35 @@ namespace scl_parser {
         link_data = arg_link_txml.FirstChildElement( "inertia" ).Element();
         if ( link_data )
         {
+          arg_link_ds.inertia_ == Eigen::Matrix3d::Identity();
           std::stringstream ss(link_data->FirstChild()->Value());
-          ss>>arg_link_ds.inertia_[0];
-          ss>>arg_link_ds.inertia_[1];
-          ss>>arg_link_ds.inertia_[2];
+          ss>>arg_link_ds.inertia_(0,0);
+          ss>>arg_link_ds.inertia_(1,1);
+          ss>>arg_link_ds.inertia_(2,2);
+          //Odd syntax?
+          //Reason: Sets the var and implicitly sets the state of the stringstream
+          //If the stringstream is empty, it sets the last valid var to every succeeding var.
+          //Ie. If this following line fails:
+          //       (arg_link_ds.inertia_(0,1) ==  arg_link_ds.inertia_(2,2))
+          if(ss>>arg_link_ds.inertia_(0,1))
+          {
+          ss>>arg_link_ds.inertia_(0,2);
+          ss>>arg_link_ds.inertia_(1,2);
+          }
+          else
+          {//If the prev "if" failed, we have to reset these three.
+            arg_link_ds.inertia_(0,1) = 0.0;
+            arg_link_ds.inertia_(0,2) = 0.0;
+            arg_link_ds.inertia_(1,2) = 0.0;
+#ifdef DEBUG
+            std::cout<<"\nCLotusTiXmlParser::readLink() : WARNING : Only three inertia values specified at link : "
+                <<arg_link_ds.name_<<". \nConsider specifying all 6 : {Ixx, Iyy, Izz, Ixy, Ixz, Iyz}";
+#endif
+          }
+          //The inertia matrix is symmetric
+          arg_link_ds.inertia_(1,0) = arg_link_ds.inertia_(0,1);
+          arg_link_ds.inertia_(2,0) = arg_link_ds.inertia_(0,2);
+          arg_link_ds.inertia_(2,1) = arg_link_ds.inertia_(1,2);
         }
         else
         {throw(std::runtime_error("Error reading inertia"));}

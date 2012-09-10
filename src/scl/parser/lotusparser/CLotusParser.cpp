@@ -464,8 +464,9 @@ bool CLotusParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
 
       //Non-root node specific stuff
       fprintf(fp, "\n\t\t<mass>%lf</mass>",tmp_lnk.mass_);
-      fprintf(fp, "\n\t\t<inertia>%lf %lf %lf</inertia>",tmp_lnk.inertia_(0),
-          tmp_lnk.inertia_(1),tmp_lnk.inertia_(2));
+      fprintf(fp, "\n\t\t<inertia>%lf %lf %lf %lf %lf %lf</inertia>",tmp_lnk.inertia_(0,0),
+          tmp_lnk.inertia_(1,1),tmp_lnk.inertia_(2,2), tmp_lnk.inertia_(0,1),
+          tmp_lnk.inertia_(0,2), tmp_lnk.inertia_(1,2));
       fprintf(fp, "\n\t\t<center_of_mass>%lf %lf %lf</center_of_mass>",tmp_lnk.com_(0),
           tmp_lnk.com_(1),tmp_lnk.com_(2));
 
