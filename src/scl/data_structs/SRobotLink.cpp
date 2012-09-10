@@ -61,7 +61,7 @@ namespace scl
 
     //Link's Physical Properties
     com_<<0, 0, 0;
-    inertia_<<1,1,1;
+    inertia_ = Eigen::Matrix3d::Identity();
     rot_axis_<<0,0,0;
 
     mass_ = 1.0;

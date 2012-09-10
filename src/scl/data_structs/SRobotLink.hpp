@@ -88,7 +88,7 @@ public:
 
 	//Constructor@End of the class:
 	
-	//***********************
+	//**********************
   //Robot Branching data:
   
   //1. Identifiers
@@ -99,13 +99,13 @@ public:
   SRobotLink* parent_addr_;
   std::vector<SRobotLink*> child_addrs_;
 
-  //***********************
+  //**********************
   
-  //***********************
+  //**********************
   //2. Link Properties
   sBool is_root_;
 
-	/***
+	/**
 	 * Position and orientation in the parent frame.
 	 * And the transformation matrix from the parent
 	 * frame to this frame
@@ -118,7 +118,7 @@ public:
 
   Eigen::Matrix4d t_from_parent_;
 
-  /***
+  /**
    * Position and orientation in global coordinates
    * (wrt the ground frame)
    * And the transformation matrix from the global
@@ -132,19 +132,19 @@ public:
 
   Eigen::Matrix4d t_global_;
 
-  /***
+  /**
    * Mass and inertia properties
    */
   Eigen::Vector3d com_; //Center of mass
   sFloat mass_;
-  Eigen::Vector3d inertia_;
+  Eigen::Matrix3d inertia_;
 
   Eigen::Vector3d rot_axis_;
   sFloat rot_angle_;
 
   sInt link_is_fixed_;
 
-  /****************************
+  /***************************
    * 3. Joint information
    */
   std::string joint_name_;
@@ -152,22 +152,22 @@ public:
   sFloat joint_limit_lower_, joint_limit_upper_;
   sFloat joint_default_pos_;
   sJointType joint_type_;
-  //***********************
+  //**********************
   
-  //****************
+  //***************
   //3. Graphics data
   std::vector<SRobotLinkGraphics> graphics_obj_vec_;
   sInt collision_type_;
   sRenderType render_type_;
-  //****************
+  //***************
 
-  //***********
+  //**********
   /** Constructor */
   SRobotLink();
 
   /** Sets the default parameter values */
 	void init();
-	//****************
+	//***************
 };
 
 }//end of namespace scl_parser
