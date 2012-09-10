@@ -240,9 +240,12 @@ createTaoNonRootNode(const SRobotLink* arg_link,
 
     //3. Set up the node's physical link properties
     deMassProp tmp_m; //Init mass, and set it in the new tao child node
-    tmp_m.inertia(arg_link->inertia_[0],
-        arg_link->inertia_[1], arg_link->inertia_[2],
-        &tmp_frame);
+    deMatrix3 tmp_mat;
+    tmp_mat.zero();
+    for(int i=0;i<3;++i)
+      for(int j=0;j<3;++j)
+        { tmp_mat.elementAt(i,j) = arg_link->inertia_(i,j); }
+    tmp_m.inertia(&tmp_mat, &tmp_frame);
     tmp_m.mass(arg_link->mass_, &tmp_frame);
     tmp_m.get(ret_tao_node->mass(), ret_tao_node->center(),
         ret_tao_node->inertia());
