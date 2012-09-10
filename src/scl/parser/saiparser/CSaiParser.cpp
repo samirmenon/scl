@@ -243,10 +243,35 @@ bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
       link_data = arg_tiHndl_link.FirstChild( "inertia" ).ToElement();
       if ( link_data )
       {
+        tmp_link_ds->inertia_ = Eigen::Matrix3d::Identity(); //Default
         std::stringstream ss(link_data->FirstChild()->Value());
-        ss>>tmp_link_ds->inertia_[0];
-        ss>>tmp_link_ds->inertia_[1];
-        ss>>tmp_link_ds->inertia_[2];
+        ss>>tmp_link_ds->inertia_(0,0);
+        ss>>tmp_link_ds->inertia_(1,1);
+        ss>>tmp_link_ds->inertia_(2,2);
+        //Odd syntax?
+        //Reason: Sets the var and implicitly sets the state of the stringstream
+        //If the stringstream is empty, it sets the last valid var to every succeeding var.
+        //Ie. If this following line fails:
+        //       (tmp_link_ds->inertia_(0,1) ==  tmp_link_ds->inertia_(2,2))
+        if(ss>>tmp_link_ds->inertia_(0,1))
+        {
+          ss>>tmp_link_ds->inertia_(0,2);
+          ss>>tmp_link_ds->inertia_(1,2);
+        }
+        else
+        {//If the prev "if" failed, we have to reset these three.
+          tmp_link_ds->inertia_(0,1) = 0.0;
+          tmp_link_ds->inertia_(0,2) = 0.0;
+          tmp_link_ds->inertia_(1,2) = 0.0;
+#ifdef DEBUG
+          std::cout<<"\nCLotusTiXmlParser::readLink() : WARNING : Only three inertia values specified at link : "
+              <<tmp_link_ds->name_<<". \nConsider specifying all 6 : {Ixx, Iyy, Izz, Ixy, Ixz, Iyz}";
+#endif
+        }
+        //The inertia matrix is symmetric
+        tmp_link_ds->inertia_(1,0) = tmp_link_ds->inertia_(0,1);
+        tmp_link_ds->inertia_(2,0) = tmp_link_ds->inertia_(0,2);
+        tmp_link_ds->inertia_(2,1) = tmp_link_ds->inertia_(1,2);
       }
       else
       { std::cerr<<"\nWarning : Link \'"<<tmp_link_ds->name_<<"\' has no inertia information. Default is (1,1,1)."; }
