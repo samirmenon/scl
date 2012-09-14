@@ -28,6 +28,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Copyright (C) 2012
  *
  *  Author: Samir Menon <smenon@stanford.edu>
+ *  Author: Gerald Brantner <geraldb@stanford.edu>
  */
 
 #ifndef COPROTATIONTASK_HPP_

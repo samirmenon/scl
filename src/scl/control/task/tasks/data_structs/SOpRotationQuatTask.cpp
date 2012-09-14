@@ -27,6 +27,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Copyright (C) 2012
  *
  *  Author: Samir Menon <smenon@stanford.edu>
+ *  Author: Gerald Brantner <geraldb@stanford.edu>
  */
 
 #include <scl/control/task/tasks/data_structs/SOpRotationQuatTask.hpp>
