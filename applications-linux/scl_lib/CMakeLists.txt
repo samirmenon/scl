@@ -59,6 +59,8 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskGcSet.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CComPosTask.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/SComPosTask.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/COpRotationQuatTask.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/data_structs/SOpRotationQuatTask.cpp
    )
    
 SET(CTR_TRAJ_SRC ${SCL_INC_DIR}/control/trajectory/OTG/TypeIOTG.cpp
