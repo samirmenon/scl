@@ -36,6 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/control/task/CTaskController.hpp>
 #include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/control/task/tasks/COpRotationQuatTask.hpp>
 #include <scl/control/task/tasks/CComPosTask.hpp>
 
 #include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>
@@ -103,6 +104,24 @@ namespace scl_app
     scl::sInt ui_pt_com_;
     scl::sBool has_been_init_com_task_;
     cGenericObject *chai_com_pos_,*chai_com_pos_des_;
+
+    /** This is an internal class for organizing the control-task
+     * to ui-point connection through the keyboard or an external
+     * haptic device */
+    class SOpRotationQuatLinkData
+    {
+    public:
+      std::string name_;
+      scl::COpRotationQuatTask* task_;
+      scl::SOpRotationQuatTask* task_ds_;
+      scl::sInt ui_pt_;
+      scl::sBool has_been_init_;
+      SOpRotationQuatLinkData() :
+        name_(""),task_(NULL), task_ds_(NULL),ui_pt_(-1),
+        has_been_init_(false){}
+    };
+    /** The operational points that will be linked to keyboard handlers */
+    std::vector<SOpRotationQuatLinkData> taskvec_op_rot_quat_;
   };
 
 }

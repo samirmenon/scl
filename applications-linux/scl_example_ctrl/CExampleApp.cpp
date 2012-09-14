@@ -41,6 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <stdexcept>
+#include <cassert>
 
 namespace scl_app
 {
@@ -190,6 +191,53 @@ namespace scl_app
           else
           { throw(std::runtime_error("Specified -op flag but did not specify op point task's name"));  }
         }
+        else if ("-rot" == argv[args_ctr])
+        {// We know the next argument *should* be the rot pos task's name
+          if(args_ctr+1 <= argv.size())
+          {
+            if(ui_points_used >= SCL_NUM_UI_POINTS)
+            {
+              std::cout<<"\nThe keyboard can only support "<<SCL_NUM_UI_POINTS<<" ui points. Can't add: "
+                  << argv[args_ctr]<<" "<< argv[args_ctr+1];
+              args_ctr+=2; continue;
+            }
+
+            //Initialize the com task
+            SOpRotationQuatLinkData tmp_rot;
+            tmp_rot.name_ = argv[args_ctr+1];
+            tmp_rot.task_ = dynamic_cast<scl::COpRotationQuatTask*>(ctrl_->getTask(tmp_rot.name_));
+            if(S_NULL == tmp_rot.task_)
+            { throw(std::runtime_error(std::string("Could not find specified rot point task: ")+tmp_rot.name_));  }
+            tmp_rot.task_ds_ = dynamic_cast<scl::SOpRotationQuatTask*>(tmp_rot.task_->getTaskData());
+            if(S_NULL == tmp_rot.task_ds_)
+            { throw(std::runtime_error(std::string("Error. The rotation task's data structure is NULL:"+tmp_rot.name_)));  }
+            tmp_rot.ui_pt_ = ui_points_used; ui_points_used++;
+            tmp_rot.has_been_init_ = true;
+
+            //NOTE TODO : This is hard coded to work with the first graphics specification.
+            // Get the first graphics view
+            scl::SChaiGraphics* tmp_lnk = scl::CDatabase::getData()->s_gui_.chai_data_.at(0);
+            if(NULL == tmp_lnk)
+            { throw(std::runtime_error("Could not find any graphics instances"));  }
+            // Get the robot if it is being rendered in the graphics view
+            sutil::CMappedTree<std::string, scl::SGraphicsPhysicalLink> *
+                 tmp_rob_gr_ds = tmp_lnk->robots_rendered_.at(tmp_rot.task_ds_->robot_->name_);
+            if(NULL == tmp_rob_gr_ds)
+            { throw(std::runtime_error("Could not add find graphics representation for robot (to enable frame rendering)"));  }
+            // Get the link's graphics representation
+            scl::SGraphicsPhysicalLink* tmp_link_gr_ds = tmp_rob_gr_ds->at(tmp_rot.task_ds_->link_ds_->name_);
+            if(NULL == tmp_lnk){ throw(std::runtime_error("Could not find graphics link to enable frame rendering"));  }
+            // Turn on its frame so the rotation is visible.
+            tmp_link_gr_ds->graphics_obj_->setShowFrame(true,false);
+
+            //Add the initialized task to the vector
+            taskvec_op_rot_quat_.push_back(tmp_rot);
+
+            args_ctr+=2; continue;
+          }
+          else
+          { throw(std::runtime_error("Specified -op flag but did not specify op task's name"));  }
+        }
         /* NOTE : ADD MORE COMMAND LINE PARSING OPTIONS IF REQUIRED */
         // else if (argv[args_ctr] == "-p")
         // { }
@@ -232,6 +280,16 @@ namespace scl_app
       it->chai_pos_des_->setLocalPos(db_->s_gui_.ui_point_[it->ui_pt_]);
     }
 
+    //Update the operational point tasks (if any)
+    std::vector<SOpRotationQuatLinkData>::iterator itr,itre;
+    for(itr = taskvec_op_rot_quat_.begin(), itre = taskvec_op_rot_quat_.end(); itr!=itre; ++itr )
+    {
+      assert(itr->has_been_init_);
+      assert(NULL!=itr->task_);
+      assert(NULL!=itr->task_ds_);
+      db_->s_gui_.ui_point_[itr->ui_pt_] = itr->task_ds_->ori_eulerang_goal_;
+    }
+
     if(has_been_init_com_task_) //Update the com task (if any)
     {
       assert(NULL!=chai_com_pos_);
@@ -250,6 +308,11 @@ namespace scl_app
     std::vector<SOpPointUiLinkData>::iterator it,ite;
     for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
     { it->task_->setGoal(db_->s_gui_.ui_point_[it->ui_pt_]); } //Set the goal position.
+
+    //Update the operational rotation tasks (if any)
+    std::vector<SOpRotationQuatLinkData>::iterator itr,itre;
+    for(itr = taskvec_op_rot_quat_.begin(), itre = taskvec_op_rot_quat_.end(); itr!=itre; ++itr )
+    { itr->task_->setGoal(db_->s_gui_.ui_point_[itr->ui_pt_]); } //Set the goal orientation.
 
     if(has_been_init_com_task_) //Update the com task (if any)
     { task_com_->setGoal(db_->s_gui_.ui_point_[ui_pt_com_]); }
