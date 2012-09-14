@@ -62,6 +62,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CComPosTask.hpp>
 #include <scl/control/task/tasks/data_structs/SComPosTask.hpp>
 
+#include <scl/control/task/tasks/COpRotationQuatTask.hpp>
+#include <scl/control/task/tasks/data_structs/SOpRotationQuatTask.hpp>
+
 #include <sutil/CRegisteredDynamicTypes.hpp>
 
 #include <iostream>
@@ -580,6 +583,14 @@ namespace scl_registry
       sutil::CDynamicType<std::string,scl::SComPosTask> typeSComPosTask(std::string("SComPosTask"));
       flag = typeSComPosTask.registerType();
       if(false == flag) {throw(std::runtime_error("SComPosTask"));}
+
+      sutil::CDynamicType<std::string,scl::COpRotationQuatTask> typeCOpRotationQuatTask(std::string("COpRotationQuatTask"));
+      flag = typeCOpRotationQuatTask.registerType();
+      if(false == flag) {throw(std::runtime_error("Could not register type COpRotationQuatTask"));}
+
+      sutil::CDynamicType<std::string,scl::SOpRotationQuatTask> typeSOpRotationQuatTask(std::string("SOpRotationQuatTask"));
+      flag = typeSOpRotationQuatTask.registerType();
+      if(false == flag) {throw(std::runtime_error("Could not register type SOpRotationQuatTask"));}
     }
     catch (std::exception& e)
     {
