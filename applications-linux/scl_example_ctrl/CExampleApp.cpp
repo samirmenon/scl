@@ -214,6 +214,7 @@ namespace scl_app
             tmp_rot.ui_pt_ = ui_points_used; ui_points_used++;
             tmp_rot.has_been_init_ = true;
 
+#ifdef GRAPHICS_ON
             //NOTE TODO : This is hard coded to work with the first graphics specification.
             // Get the first graphics view
             scl::SChaiGraphics* tmp_lnk = scl::CDatabase::getData()->s_gui_.chai_data_.at(0);
@@ -229,6 +230,7 @@ namespace scl_app
             if(NULL == tmp_lnk){ throw(std::runtime_error("Could not find graphics link to enable frame rendering"));  }
             // Turn on its frame so the rotation is visible.
             tmp_link_gr_ds->graphics_obj_->setShowFrame(true,false);
+#endif
 
             //Add the initialized task to the vector
             taskvec_op_rot_quat_.push_back(tmp_rot);
