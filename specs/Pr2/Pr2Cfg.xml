@@ -82,6 +82,20 @@
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
         </task>
+
+        <!-- Optional. Enable the hand rotation task if required
+        <task name="handrot">
+            <type>OpRotationQuatTask</type>
+            <parent_link>r_wrist_roll_link</parent_link>
+            <pos_in_parent>0.01 0.00 0.00</pos_in_parent>
+            <priority>0</priority>
+            <task_dof>3</task_dof>
+            <kp>200</kp>
+            <kv>25</kv>
+            <ki>0</ki>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+        </task> -->
         
         <task name="GcTask">
             <type>TaskGc</type>
