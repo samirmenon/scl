@@ -169,10 +169,6 @@ namespace scl
 
       Eigen::Vector3d F_star;
       F_star = - data_->kp_[0] * delta_PHI - data_->kv_[0] * omega;    //TODO: expand kp, kv
-//
-//      F_star(0) = 1;
-//      F_star(1) = 0;
-//      F_star(2) = 0;
 
       //Step 6: scale with Mass matrix
       Eigen::Vector3d F;
@@ -180,15 +176,6 @@ namespace scl
 
       //Step 7: compute GC torque
       data_->force_gc_ = (data_->J_omega_).transpose() * data_->force_task_;
-
-      //      Eigen::VectorXd zerovector;
-      //      zerovector.setZero(data_->robot_->dof_);
-      //      data_->force_gc_ = zerovector;
-
-      //std::cout << "Lambda size = " << data_->lambda_.rows() << " x " << data_->lambda_.cols() << std::endl;
-      std::cout << "UI Point = " << scl::CDatabase::getData()->s_gui_.ui_point_[3] << std::endl;
-
-
 
       return true;
     }
@@ -220,18 +207,9 @@ namespace scl
       //angluar velocity Jacobian
       data_->J_omega_ = data_->jacobian_.block(3,0,3,data_->robot_->dof_);
 
-      //      std::cout << "\n" << "name = " << data_->link_name_ << std::endl;
-      //      std::cout << "\n" << "linkID = " << data_->link_dynamic_id_ << std::endl;
-      //      std::cout << "\n" << data_->J_omega_ << std::endl;
-
-
       //Operational space mass/KE matrix:
       //Lambda = (J * Ainv * J')^-1
       data_->lambda_inv_ = data_->J_omega_ * gcm->Ainv_ * data_->J_omega_.transpose();
-
-      //std::cout << "J_omega size = " << data_->J_omega_.rows() << " x " << data_->J_omega_.cols() << std::endl;
-      //std::cout << "Ainv size = " << gcm->Ainv_.rows() << " x " << gcm->Ainv_.cols() << std::endl;
-
 
       if(!lambda_inv_singular_)
       {
