@@ -1,4 +1,4 @@
-The wbc database enables sharing information across different (independently executable) code components:
+The scl database enables sharing information across different (independently executable) code components:
 
 1. SParserData : Contains all the static data
     i) SWorld : The world (physics) specification
