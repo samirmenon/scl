@@ -79,83 +79,83 @@ namespace scl
    * http://www.euclideanspace.com/maths/geometry/rotations/
    * conversions/quaternionToAngle/index.htm
    */
-  inline void quat2axisangle(const Eigen::Quaternion<sFloat> & arg_q,
+  inline void quat2axisangle(Eigen::Quaternion<sFloat> & arg_q,
       Eigen::Vector4d & arg_aa)
   {
     //1. Normalize the quaternion
     if (arg_q.norm() > 1)
     { arg_q.normalize(); }
 
-    arg_aa[3] = 2 * acos(arg_q[3]);
+    arg_aa[3] = 2 * acos(arg_q.w());
 
-    sFloat s = sqrt(1- (arg_q[3]*arg_q[3]));
+    sFloat s = sqrt(1- (arg_q.w()*arg_q.w()));
 
     if (s < 0.001)
     {// If s close to zero then direction of axis not important
-      arg_aa[0] = arg_q[0];
-      arg_aa[1] = arg_q[1];
-      arg_aa[2] = arg_q[2];
+      arg_aa[0] = arg_q.x();
+      arg_aa[1] = arg_q.y();
+      arg_aa[2] = arg_q.z();
     }
     else
     {
-      arg_aa[0] = arg_q[0]/s;
-      arg_aa[1] = arg_q[1]/s;
-      arg_aa[2] = arg_q[2]/s;
+      arg_aa[0] = arg_q.x()/s;
+      arg_aa[1] = arg_q.y()/s;
+      arg_aa[2] = arg_q.z()/s;
     }
  }
 
   /** Converts an XYZ euler angle to a 4D vector WXYZ quaternion */
-  inline void eulerAngleXYZToQuatWXYZ4DVec(
+  inline void eulerAngleXYZToQuat(
       const Eigen::Vector3d & arg_euler_angle_xyz,
-      Eigen::Vector4d & ret_quat)
+      Eigen::Quaternion<sFloat> & ret_quat)
   {
     // Create an affine transformation from the xyz euler angles
     Eigen::Affine3d T;
-    T = Eigen::AngleAxisd(arg_euler_angle(0), Eigen::Vector3d::UnitX())
-    * Eigen::AngleAxisd(arg_euler_angle(1), Eigen::Vector3d::UnitY())
-    * Eigen::AngleAxisd(arg_euler_angle(2), Eigen::Vector3d::UnitZ());
+    T = Eigen::AngleAxisd(arg_euler_angle_xyz(0), Eigen::Vector3d::UnitX())
+    * Eigen::AngleAxisd(arg_euler_angle_xyz(1), Eigen::Vector3d::UnitY())
+    * Eigen::AngleAxisd(arg_euler_angle_xyz(2), Eigen::Vector3d::UnitZ());
 
     // Find the quaternion corresponding to the rotation part of the transform
-    Eigen::Quaterniond qq(T.rotation());
-
-    // Set the values in the returned vector
-    ret_quat[0] = qq.w();
-    ret_quat[1] = qq.x();
-    ret_quat[2] = qq.y();
-    ret_quat[3] = qq.z();
+    ret_quat = T.rotation();
   }
 
-  /** Returns the difference between two quaternions (WXYZ)
+  /** Returns the difference between two quaternions
    * as an Euler angle (XYZ).
    *
    * Angular diff(Euler) = AngleToSubFrom(Quat) - AngleToSub(Quat)
    */
-  inline void quatWXYZDiffToEulerAngle(
-      const Eigen::Vector4d &arg_quat_to_sub_from,
-      const Eigen::Vector4d &arg_quat_to_sub,
+  inline void quatDiffToEulerAngleXYZ(
+      const Eigen::Quaternion<sFloat> &arg_quat_to_sub_from,
+      const Eigen::Quaternion<sFloat> &arg_quat_to_sub,
       Eigen::Vector3d &ret_ori_dff_euler)
   {
     //Need to conver the quaternion into a difference matrix
     //in order to compute the delta angle.
-    Eigen::MatrixXd tmp_quat_diff_matrix(3,4);
-    tmp_quat_diff_matrix(0,0) = -arg_quat_to_sub[1];
-    tmp_quat_diff_matrix(0,1) = arg_quat_to_sub[0];
-    tmp_quat_diff_matrix(0,2) = -arg_quat_to_sub[3];
-    tmp_quat_diff_matrix(0,3) = arg_quat_to_sub[2];
+    Eigen::Matrix<sFloat,3,4> tmp_quat_diff_matrix;
+    tmp_quat_diff_matrix(0,0) = -arg_quat_to_sub.x();
+    tmp_quat_diff_matrix(0,1) = arg_quat_to_sub.w();
+    tmp_quat_diff_matrix(0,2) = -arg_quat_to_sub.z();
+    tmp_quat_diff_matrix(0,3) = arg_quat_to_sub.y();
 
-    tmp_quat_diff_matrix(1,0) = -arg_quat_to_sub[2];
-    tmp_quat_diff_matrix(1,1) = arg_quat_to_sub[3];
-    tmp_quat_diff_matrix(1,2) = arg_quat_to_sub[0];
-    tmp_quat_diff_matrix(1,3) = -arg_quat_to_sub[1];
+    tmp_quat_diff_matrix(1,0) = -arg_quat_to_sub.y();
+    tmp_quat_diff_matrix(1,1) = arg_quat_to_sub.z();
+    tmp_quat_diff_matrix(1,2) = arg_quat_to_sub.w();
+    tmp_quat_diff_matrix(1,3) = -arg_quat_to_sub.x();
 
-    tmp_quat_diff_matrix(2,0) = -arg_quat_to_sub[3];
-    tmp_quat_diff_matrix(2,1) = -arg_quat_to_sub[2];
-    tmp_quat_diff_matrix(2,2) = arg_quat_to_sub[1];
-    tmp_quat_diff_matrix(2,3) = arg_quat_to_sub[0];
+    tmp_quat_diff_matrix(2,0) = -arg_quat_to_sub.z();
+    tmp_quat_diff_matrix(2,1) = -arg_quat_to_sub.y();
+    tmp_quat_diff_matrix(2,2) = arg_quat_to_sub.x();
+    tmp_quat_diff_matrix(2,3) = arg_quat_to_sub.w();
+
+    Eigen::Vector4d tmp_quat;
+    tmp_quat<<arg_quat_to_sub_from.w(),
+        arg_quat_to_sub_from.x(),
+        arg_quat_to_sub_from.y(),
+        arg_quat_to_sub_from.z();
 
     //Compute the quaternion difference with the matrix multiply and
     //return the value
-    ret_ori_dff_euler = -2 * tmp_quat_diff_matrix * arg_quat_to_sub_from;
+    ret_ori_dff_euler = -2 * tmp_quat_diff_matrix * tmp_quat;
   }
 }
 
