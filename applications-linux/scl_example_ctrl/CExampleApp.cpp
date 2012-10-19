@@ -76,9 +76,17 @@ namespace scl_app
       // Check that we haven't finished parsing everything
       while(args_ctr < argv.size())
       {
-        if ("-l" == argv[args_ctr])
+        if ("-p" == argv[args_ctr])
+        {//Start simulation paused
+
+          if(S_NULL == scl::CDatabase::getData())
+          { throw(std::runtime_error("Database not intialized. Can't pause simulation."));  }
+          scl::CDatabase::getData()->pause_ctrl_dyn_ = true;
+          args_ctr = args_ctr+1;
+        }
+        else if ("-l" == argv[args_ctr])
         {// We know the next argument *should* be the log file's name
-          if(args_ctr+1 <= argv.size())
+          if(args_ctr+1 < argv.size())
           {
             flag = robot_.setLogFile(argv[args_ctr+1]);
             if(false == flag) { throw(std::runtime_error("Could not set up log file"));  }
@@ -89,7 +97,7 @@ namespace scl_app
         }
         else if ("-com" == argv[args_ctr])
         {// We know the next argument *should* be the com pos task's name
-          if(args_ctr+1 <= argv.size())
+          if(args_ctr+1 < argv.size())
           {
             if(ui_points_used >= SCL_NUM_UI_POINTS)
             {
@@ -132,7 +140,7 @@ namespace scl_app
         }
         else if ("-op" == argv[args_ctr])
         {// We know the next argument *should* be the com pos task's name
-          if(args_ctr+1 <= argv.size())
+          if(args_ctr+1 < argv.size())
           {
             if(ui_points_used >= SCL_NUM_UI_POINTS)
             {
@@ -175,14 +183,14 @@ namespace scl_app
             args_ctr+=2; continue;
           }
           else
-          { throw(std::runtime_error("Specified -com flag but did not specify com task's name"));  }
+          { throw(std::runtime_error("Specified -op flag but did not specify com task's name"));  }
         }
         /* NOTE : ADD MORE COMMAND LINE PARSING OPTIONS IF REQUIRED */
         // else if (argv[args_ctr] == "-p")
         // { }
         else
         {
-          std::cout<<"\n Possible example task options: -l (log file), -com (com control task), -op (op point task)";
+          std::cout<<"\n Possible example task options: -p (start paused) -l (log file), -com (com control task), -op (op point task)";
           args_ctr++;
         }
     }
@@ -203,6 +211,9 @@ namespace scl_app
     robot_.computeDynamics();
     robot_.computeNonControlOperations();
     robot_.computeServo();
+    robot_.setGeneralizedCoordinatesToZero();
+    robot_.setGeneralizedVelocitiesToZero();
+    robot_.setGeneralizedAccelerationsToZero();
 
     //Update the operational point tasks (if any)
     std::vector<SOpPointUiLinkData>::iterator it,ite;
