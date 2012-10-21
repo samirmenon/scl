@@ -27,38 +27,54 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Copyright (C) 2012
  *
  *  Author: Samir Menon <smenon@stanford.edu>
- *  Author: Gerald Brantner <geraldb@stanford.edu>
  */
 
 #ifndef SOPROTATIONQUATTASK_HPP_
 #define SOPROTATIONQUATTASK_HPP_
 
-#include <scl/DataTypes.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
+#include <scl/DataTypes.hpp>
 
 #include <Eigen/Dense>
 
 namespace scl
 {
-
+  /** This data structure contains variables used while
+   * computing a rotation control task   */
   class SOpRotationQuatTask : public scl::STaskBase
   {
   public:
     //Computed attributes (last measured, in x dimensional task-space)
-    Eigen::Vector4d ori_quat_;             //Current Orientation in quaternions
-    Eigen::Vector3d ori_eulerang_goal_;        //Goal Orientation in the global frame, Euler angles
-    Eigen::Vector4d ori_quat_goal_;        //Goal Orientation in the global frame, quaternions
+    /** The current orientation in quaternions */
+    Eigen::Quaterniond ori_quat_;
 
-    Eigen::MatrixXd J_omega_;
+    /** The desired orientation in euler angles 3D XYZ */
+    Eigen::Vector3d ori_eulerang_goal_;
 
+    /** The current orientation in quaternions */
+    Eigen::Quaterniond ori_quat_goal_;
 
-    Eigen::Vector3d pos_in_parent_; //Position in the parent link's local frame (x,y,z)
-    std::string link_name_;         //The parent link
-    const SRobotLink *link_ds_;     //The parent link's parsed data structure
+    /** The rotational Jacobian between the generalized coords
+     * and rotational coords */
+    Eigen::MatrixXd J_;
 
-    sFloat spatial_resolution_;     //Meters
+    /** The position in the parent's local frame (xyz) at
+     * which the axis of rotation is centered */
+    Eigen::Vector3d pos_in_parent_;
 
-    const void *link_dynamic_id_;   //For quickly obtaining a task Jacobian
+    /** The parent link */
+    std::string link_name_;
+
+    /** The parent link's parsed data structure */
+    const SRobotLink *link_ds_;
+
+    /** In rad. Task stops once the error reaches this bound. */
+    sFloat spatial_resolution_;
+
+    /** This is a custom data type used to quickly identify the
+     * parent link. It is the address of a data struct "in the
+     * dynamics engine". */
+    const void *link_dynamic_id_;
 
     /** Default constructor sets stuff to S_NULL */
     SOpRotationQuatTask();

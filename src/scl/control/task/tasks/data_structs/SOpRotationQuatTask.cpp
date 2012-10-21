@@ -27,7 +27,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Copyright (C) 2012
  *
  *  Author: Samir Menon <smenon@stanford.edu>
- *  Author: Gerald Brantner <geraldb@stanford.edu>
  */
 
 #include <scl/control/task/tasks/data_structs/SOpRotationQuatTask.hpp>
@@ -38,27 +37,35 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  //0.5cm spatial resolution
-#define SCL_COPPTTASK_SPATIAL_RESOLUTION 0.005
-#define SCL_COPPTTASK_TASK_DOF 3
+#define SCL_OPROTATION_TASK_SPATIAL_RESOLUTION 0.01
+#define SCL_OPROTATION_TASK_DOF 3
 
   SOpRotationQuatTask::SOpRotationQuatTask() : STaskBase(),
+      ori_quat_(Eigen::Quaterniond::Identity()),
+      ori_eulerang_goal_(Eigen::Vector3d::Zero()),
+      ori_quat_goal_(Eigen::Quaterniond::Identity()),
+      pos_in_parent_(Eigen::Vector3d::Zero()),
       link_name_(""),
       link_ds_(S_NULL),
-      spatial_resolution_(SCL_COPPTTASK_SPATIAL_RESOLUTION),
+      spatial_resolution_(SCL_OPROTATION_TASK_SPATIAL_RESOLUTION),
       link_dynamic_id_(S_NULL)
   { }
 
   SOpRotationQuatTask::~SOpRotationQuatTask()
   { }
 
-
+  /** 1. Initializes the task specific data members.
+   *
+   * 2. Parses non standard task parameters,
+   * which are stored in STaskBase::task_nonstd_params_.
+   * Namely:
+   *  (a) parent link name
+   *  (b) pos in parent.*/
   bool SOpRotationQuatTask::initTaskParams()
   {
     try
     {
-
-      /** Extract the extra params */
+      /** Extract the extra params from the command line args */
       std::string parent_link_name;
       Eigen::Vector3d pos_in_parent;
 
@@ -85,7 +92,7 @@ namespace scl
         }
       }
 
-      //Error checks
+      //Error checks : The config file task specific args should contain a parent name and pos in parent
       if(false == contains_plink)
       { throw(std::runtime_error("Task's nonstandard params do not contain a parent link name."));  }
 
@@ -97,20 +104,18 @@ namespace scl
 
       link_name_ = parent_link_name;
 
-      link_ds_ = dynamic_cast<const SRobotLink *>(robot_->robot_br_rep_.at_const(link_name_));
+      link_ds_ = robot_->robot_br_rep_.at_const(link_name_);
       if(S_NULL == link_ds_)
       { throw(std::runtime_error("Could not find the parent link in the parsed robot data structure"));  }
 
       //Initalize the task data structure.
       pos_in_parent_ = pos_in_parent;
 
-      //Set task space vector sizes stuff to zero
-      ori_quat_.setZero();
-
-      ori_eulerang_goal_.setZero();
-      ori_quat_goal_.setZero();
-      J_omega_.setZero(3,robot_->dof_);
-
+      //Set task space quaternions to identity and vector sizes to zero
+      ori_quat_ = Eigen::Quaterniond::Identity();
+      ori_eulerang_goal_ = Eigen::Vector3d::Zero();
+      ori_quat_goal_ = Eigen::Quaterniond::Identity();
+      J_.setZero(3,robot_->dof_);
     }
     catch(std::exception& e)
     {
