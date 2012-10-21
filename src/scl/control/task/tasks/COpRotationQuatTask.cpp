@@ -27,28 +27,23 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Copyright (C) 2012
  *
  *  Author: Samir Menon <smenon@stanford.edu>
- *  Author: Gerald Brantner <geraldb@stanford.edu>
  */
 
 #include "COpRotationQuatTask.hpp"
-#include <scl/control/task/tasks/data_structs/SOpRotationQuatTask.hpp>
-#include <sutil/CRegisteredDynamicTypes.hpp>
 #include <scl/Singletons.hpp>
+#include <scl/util/RobotMath.hpp>
+#include <sutil/CRegisteredDynamicTypes.hpp>
 
 #include <stdio.h>
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
-
+#include <vector>
+#include <string>
 
 #ifdef DEBUG
 #include <cassert>
 #endif
-
-#include <Eigen/Dense>
-
-//Don't always use it. Read comments in the model update function
-#include <Eigen/SVD>
 
 namespace scl
 {
@@ -122,61 +117,43 @@ namespace scl
     if(data_->has_been_init_)
     {
       //Step 1: Find current orientation
-
       Eigen::Affine3d T;
       dynamics_->calculateTransformationMatrix(data_->link_dynamic_id_,T);
+      data_->ori_quat_ = T.rotation();
 
-      Eigen::Matrix3d R = T.rotation();
-      Eigen::Quaterniond q(R);
-      Eigen::Vector4d ori_cur_temp; // w x y z
-      ori_cur_temp[0] = q.w();
-      ori_cur_temp[1] = q.x();
-      ori_cur_temp[2] = q.y();
-      ori_cur_temp[3] = q.z();
-      data_->ori_quat_ = ori_cur_temp;
+      //Step 2: Find desired orientation.
+      //NOTE : These are considered absolute euler angles wrt. the origin
+      scl::eulerAngleXYZToQuat(data_->ori_eulerang_goal_, data_->ori_quat_goal_);
 
-      //Step 2: Find desired orientation
+      //If the goal has already been achieved, exit.
+      if(achievedGoalPos())
+      {
+        data_->force_gc_.setZero(data_->robot_->dof_);
+        return true;
+      }
 
-      COpRotationQuatTask::convertGoalfromEulertoQuat(data_->ori_eulerang_goal_, data_->ori_quat_goal_);
-
-      //Step 3: Find angular error
-
-      Eigen::MatrixXd l_hat_transp(3,4);
-      l_hat_transp(0,0) = -data_->ori_quat_[1];
-      l_hat_transp(0,1) = data_->ori_quat_[0];
-      l_hat_transp(0,2) = -data_->ori_quat_[3];
-      l_hat_transp(0,3) = data_->ori_quat_[2];
-
-      l_hat_transp(1,0) = -data_->ori_quat_[2];
-      l_hat_transp(1,1) = data_->ori_quat_[3];
-      l_hat_transp(1,2) = data_->ori_quat_[0];
-      l_hat_transp(1,3) = -data_->ori_quat_[1];
-
-      l_hat_transp(2,0) = -data_->ori_quat_[3];
-      l_hat_transp(2,1) = -data_->ori_quat_[2];
-      l_hat_transp(2,2) = data_->ori_quat_[1];
-      l_hat_transp(2,3) = data_->ori_quat_[0];
-
-      Eigen::Vector3d delta_PHI;
-
-      delta_PHI = -2 * l_hat_transp * data_->ori_quat_goal_;
+      //Step 3: Find angular error between the current and goal quaternions:
+      // (a) Slerp the quaternions.
+      // (b) Get next step quaternion
+      // (c) Get the difference between the current and next step in euler angles
+      // (d) Apply the euler angle difference to the Jacobian pd control loop
+      Eigen::Vector3d tmp_delta_angle;
+      scl::quatDiffToEulerAngleXYZ(data_->ori_quat_goal_,data_->ori_quat_,tmp_delta_angle);
 
       //Step 4: Find angular velocity
-
-      Eigen::Vector3d omega;
-      omega = data_->J_omega_ * arg_sensors->dq_;
+      Eigen::Vector3d tmp_delta_angular_velocity;
+      tmp_delta_angular_velocity = data_->J_ * arg_sensors->dq_;
 
       //Step 5: compute unit-mass force(=acceleration), due to rotation
-
       Eigen::Vector3d F_star;
-      F_star = - data_->kp_[0] * delta_PHI - data_->kv_[0] * omega;    //TODO: expand kp, kv
+      F_star = - data_->kp_.array() * tmp_delta_angle.array() - data_->kv_.array() * tmp_delta_angular_velocity.array();
 
       //Step 6: scale with Mass matrix
-      Eigen::Vector3d F;
+      // NOTE : We ignore the gravitational and centrifugal/coriolis forces here
       data_->force_task_ = data_->lambda_ * F_star;
 
-      //Step 7: compute GC torque
-      data_->force_gc_ = (data_->J_omega_).transpose() * data_->force_task_;
+      //Step 7: Compute GC forces, which will be used later.
+      data_->force_gc_ = (data_->J_).transpose() * data_->force_task_;
 
       return true;
     }
@@ -206,11 +183,11 @@ namespace scl
       flag = flag && dynamics_->calculateJacobian(data_->link_dynamic_id_,pos,data_->jacobian_);
 
       //angluar velocity Jacobian
-      data_->J_omega_ = data_->jacobian_.block(3,0,3,data_->robot_->dof_);
+      data_->J_ = data_->jacobian_.block(3,0,3,data_->robot_->dof_);
 
       //Operational space mass/KE matrix:
       //Lambda = (J * Ainv * J')^-1
-      data_->lambda_inv_ = data_->J_omega_ * gcm->Ainv_ * data_->J_omega_.transpose();
+      data_->lambda_inv_ = data_->J_ * gcm->Ainv_ * data_->J_.transpose();
 
       if(!lambda_inv_singular_)
       {
@@ -270,13 +247,13 @@ namespace scl
 
       //Compute the Jacobian dynamically consistent generalized inverse :
       //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
-      data_->jacobian_dyn_inv_ = gcm->Ainv_ * data_->J_omega_.transpose() * data_->lambda_;
+      data_->jacobian_dyn_inv_ = gcm->Ainv_ * data_->J_.transpose() * data_->lambda_;
 
       //J' * J_dyn_inv'
       sUInt dof = data_->robot_->dof_;
 
       // Set up the null space
-      data_->null_space_ = Eigen::MatrixXd::Identity(dof, dof) -data_->J_omega_.transpose() * data_->jacobian_dyn_inv_.transpose();
+      data_->null_space_ = Eigen::MatrixXd::Identity(dof, dof) -data_->J_.transpose() * data_->jacobian_dyn_inv_.transpose();
 
       // We do not use the centrifugal/coriolis forces. They can cause instabilities.
       data_->mu_.setZero(data_->dof_task_,1);
@@ -292,43 +269,8 @@ namespace scl
   }
 
 
-  //************************
-  // Task specific stuff
-  //************************
-
-  /*
+  /* Achieved Goal Orientation or not */
   bool COpRotationQuatTask::achievedGoalPos()
-  {
-    sFloat dist;
-    dist = fabs((data_->x_goal_ - data_->x_).norm());
-
-    if(dist > data_->spatial_resolution_)
-    { return false; }
-    else
-    { return true;  }
-  }
-   */
-
-
-  bool COpRotationQuatTask::convertGoalfromEulertoQuat(const Eigen::Vector3d & arg_goal_euler,
-      Eigen::Vector4d & ret_goal_quat)
-  {
-    Eigen::Affine3d R;
-    R = Eigen::AngleAxisd(arg_goal_euler(0), Eigen::Vector3d::UnitX())
-    * Eigen::AngleAxisd(arg_goal_euler(1), Eigen::Vector3d::UnitY())
-    * Eigen::AngleAxisd(arg_goal_euler(2), Eigen::Vector3d::UnitZ());
-
-    Eigen::Quaterniond qq(R.rotation());
-    Eigen::Vector4d ori_quat_temp;
-
-    ori_quat_temp[0] = qq.w();
-    ori_quat_temp[1] = qq.x();
-    ori_quat_temp[2] = qq.y();
-    ori_quat_temp[3] = qq.z();
-
-    ret_goal_quat = ori_quat_temp;
-
-    return true;
-  }
+  { return data_->ori_quat_.isApprox(data_->ori_quat_goal_); }
 
 }

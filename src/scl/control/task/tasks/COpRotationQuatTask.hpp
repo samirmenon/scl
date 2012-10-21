@@ -28,7 +28,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Copyright (C) 2012
  *
  *  Author: Samir Menon <smenon@stanford.edu>
- *  Author: Gerald Brantner <geraldb@stanford.edu>
  */
 
 #ifndef COPROTATIONTASK_HPP_
@@ -40,9 +39,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <Eigen/Dense>
 #include <Eigen/SVD>
-#include <string>
-#include <vector>
-
 
 namespace scl
 {
@@ -98,14 +94,8 @@ namespace scl
     inline void setGoal(const Eigen::Vector3d & arg_goal)
     { data_->ori_eulerang_goal_ = arg_goal;  }
 
-    /** Convert goal to quaternion */
-    bool convertGoalfromEulertoQuat(
-        const Eigen::Vector3d & arg_goal_euler,
-        Eigen::Vector4d & ret_goal_quat);
-
     /** Whether the task has achieved its goal position. */
-    sBool achievedGoalPos()
-    { return false; }
+    inline sBool achievedGoalPos();
 
   protected:
     /** The actual data structure for this computational object */
