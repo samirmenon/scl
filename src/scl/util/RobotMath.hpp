@@ -129,7 +129,7 @@ namespace scl
       const Eigen::Quaternion<sFloat> &arg_quat_to_sub,
       Eigen::Vector3d &ret_ori_dff_euler)
   {
-    //Need to conver the quaternion into a difference matrix
+    //Need to convert the quaternion into a difference matrix
     //in order to compute the delta angle.
     Eigen::Matrix<sFloat,3,4> tmp_quat_diff_matrix;
     tmp_quat_diff_matrix(0,0) = -arg_quat_to_sub.x();
