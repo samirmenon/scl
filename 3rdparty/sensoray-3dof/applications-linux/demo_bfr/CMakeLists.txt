@@ -7,17 +7,18 @@ project(bfr_demo)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 #Set Include directories
-SET(SENSORAY_DEMO_DIR ./)
+SET(SENSORAY_BFR_DEMO_DIR ./)
 SET(SENSORAY_BASE_DIR ../../)
 
-SET(SENSORAY_INC_DIR ${SENSORAY_BASE_DIR}src/sensoray)
-SET(SENSORAY_COMMON_INC_DIR ${SENSORAY_INC_DIR}/common)
-SET(SENSORAY_LINUX_INC_DIR ${SENSORAY_INC_DIR}/linux)
+SET(SENSORAY_INC_DIR ${SENSORAY_BASE_DIR}src/)
+SET(SENSORAY_COMMON_INC_DIR ${SENSORAY_INC_DIR}/sensoray/common)
+SET(SENSORAY_LINUX_INC_DIR ${SENSORAY_INC_DIR}/sensoray/linux)
 
 INCLUDE_DIRECTORIES(${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR})
 
 #Set all the sources required for the library
-SET(SENSORAY_ALL_SRC ${SENSORAY_DEMO_DIR}/bfr_demo.cpp)
+SET(SENSORAY_ALL_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_demo.cpp
+                     ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIO.cpp)
 
 ######################END OF SRC DEFS##############
 #Add debug definitions
