@@ -41,7 +41,7 @@ namespace sensoray
   ////////////////////////////////
   // Display gateway error info.
 
-  void CSensoray3DofIODriver::ShowErrorInfo( u32 gwerr, u8 *arg_iom_status )
+  void CSensoray3DofIODriver::showErrorInfo( u32 gwerr, u8 *arg_iom_status )
   {
     char  errmsg[128];
     int   ExtraInfo = gwerr & ~GWERRMASK;
@@ -148,7 +148,7 @@ namespace sensoray
     if ( ( faults = S26_RegisterAllIoms( s_ds_.mm_handle_, s_ds_.timeout_gateway_ms_,
         &s_ds_.num_iom_boards_, s_ds_.iom_types_, s_ds_.iom_status_, s_ds_.retries_gateway_ ) ) != 0 )
     {
-      ShowErrorInfo( faults, s_ds_.iom_status_ );
+      showErrorInfo( faults, s_ds_.iom_status_ );
       return 0; // failed.
     }
 
@@ -215,88 +215,6 @@ namespace sensoray
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Initialize two serial comports, one of which may be looped back into the other via a null-modem cable.
-  // Returns zero if successful.
-
-  int CSensoray3DofIODriver::SerialInit( u8 ComSrc, u8 ComDst, u16 BaudRate )
-  {
-    u32 comstatus;
-
-    // Source (transmitter) port.
-    comstatus = S26_ComSetMode( s_ds_.mm_handle_,
-        ComSrc,
-        BaudRate,
-        SIO_PHY_RS232 | SIO_PARITY_NONE | SIO_DATA_8 | SIO_STOP_1 | SIO_FLOW_OFF,
-        SIO_LED_TRANSMIT,
-        s_ds_.timeout_comport_ms_,
-        s_ds_.retries_com_ );
-    if ( ComError( comstatus, "S26_ComSetMode", s_ds_.com_reject_evaluate_ ) )
-      return 1;
-
-    comstatus = S26_ComOpen( s_ds_.mm_handle_, ComSrc, s_ds_.timeout_comport_ms_, s_ds_.retries_com_ );
-    if ( ComError( comstatus, "S26_ComOpen", s_ds_.com_reject_evaluate_ ) )
-      return 1;
-
-    // Destination (receiver) port.
-    comstatus = S26_ComSetMode( s_ds_.mm_handle_,
-        ComDst,
-        BaudRate,
-        SIO_PHY_RS232 | SIO_PARITY_NONE | SIO_DATA_8 | SIO_STOP_1 | SIO_FLOW_OFF,
-        SIO_LED_RECEIVE,
-        s_ds_.timeout_comport_ms_,
-        s_ds_.retries_com_ );
-    if ( ComError( comstatus, "S26_ComSetMode", s_ds_.com_reject_evaluate_ ) )
-      return 1;
-
-    comstatus = S26_ComOpen( s_ds_.mm_handle_, ComDst, s_ds_.timeout_comport_ms_, s_ds_.retries_com_ );
-    if ( ComError( comstatus, "S26_ComOpen", s_ds_.com_reject_evaluate_ ) )
-      return 1;
-
-    return 0;
-  }
-
-  //////////////////////////////////////////////
-  // Do some serial I/O.
-  // Returns zero if successful.
-
-  int CSensoray3DofIODriver::SerialIo( u8 ComSrc, u8 ComDst )
-  {
-    int   msglen;
-    char  SndBuf[1024];   // String to be sent.
-    char  RcvBuf[1024];   // Buffer that will receive the string.
-    u16   BufLen;       // Max number of characters to receive.
-    u32   comstatus;
-
-    // Construct a message.
-    sprintf( SndBuf, "12345678901234567890123456:%d\n", s_ds_.iters_ctrl_loop_ );
-    msglen = strlen( SndBuf );
-
-    // Attempt to send message.  Ignore the COM_REJECT error, which is caused by insufficient transmit buffer free space.
-    comstatus = S26_ComSend( s_ds_.mm_handle_, ComSrc, (u8 *)SndBuf, (u16)msglen, s_ds_.timeout_comport_ms_, s_ds_.retries_com_ );
-    if ( ComError( comstatus, "S26_ComSend", s_ds_.com_reject_ignore_ ) )
-    {
-      printf( "TotalSent = %d\n", totalSent );
-      return 1;
-    }
-    else
-      totalSent += msglen;
-
-    // Receive all available data from the receiving comport's receive buffer.
-    BufLen = sizeof(RcvBuf);     // Max number of characters to receive.
-    comstatus = S26_ComReceive( s_ds_.mm_handle_, ComDst, (u8 *)RcvBuf, &BufLen, s_ds_.timeout_comport_ms_, s_ds_.retries_com_ );
-    if ( ComError( comstatus, "S26_ComReceive", s_ds_.com_reject_evaluate_ ) )
-    {
-      printf( "TotalSent = %d\n", totalSent );
-      return 1;
-    }
-    else
-      RcvBuf[BufLen] = 0;           // Append null to end of string.
-
-    // Success.
-    return 0;
-  }
-
   ///////////////////////////////////////////////////////
   // Main control loop.  Returns loop iteration count.
 
@@ -310,7 +228,7 @@ namespace sensoray
     int       tMax = 0;
 
     // Repeat until keypress ...
-    for ( ; ; )
+    for (int i=0 ;i<100 ;++i )
     {
       // Wait for a real-time tick (crude simulation via Sleep used here).
       // Disable this to benchmark the i/o system performance.
@@ -334,13 +252,6 @@ namespace sensoray
         s_ds_.analog_out_voltages_[chan] = (double)( chan + 1 );
 
       // Schedule and execute the gateway I/O --------------------------------------------------------------
-
-      // First do some serial io.
-      if ( SerialIo( s_ds_.com_src_a_, s_ds_.com_dest_a_ ) )
-        return s_ds_.iters_ctrl_loop_;
-
-      if ( SerialIo( s_ds_.com_src_b_, s_ds_.com_dest_b_ ) )
-        return s_ds_.iters_ctrl_loop_;
 
       // Start a new transaction.
       x = CreateTransaction( s_ds_.mm_handle_ );
@@ -370,13 +281,6 @@ namespace sensoray
 
       // Bump the loop count.
       s_ds_.iters_ctrl_loop_++;
-
-      // Exit on keypress.
-      if ( kbhit() )
-      {
-        kbread(); // Flush the keypress.
-        break;
-      }
     }
 
     // Report worst-case i/o time.
@@ -417,10 +321,6 @@ namespace sensoray
         V_10_TYPE,  // chan 14
         V_10_TYPE // chan 15
     };
-
-    // Initialize serial comports.
-    SerialInit( s_ds_.com_src_a_, s_ds_.com_dest_a_, s_ds_.com_baud_a_ );
-    SerialInit( s_ds_.com_src_b_, s_ds_.com_dest_b_, s_ds_.com_baud_b_ );
 
     // INITIALIZE IOM's ================================================================================
 
@@ -552,72 +452,8 @@ namespace sensoray
 
     // Execute the scheduled i/o.  Report error if one was detected.
     if ( ( err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ ) ) != 0 )
-      ShowErrorInfo( err, s_ds_.iom_status_ );
+      showErrorInfo( err, s_ds_.iom_status_ );
 
     return (int)err;
   }
-
-  ////////////////////////////////////////////////
-  // Keyboard functions.
-
-
-
-  void CSensoray3DofIODriver::kbopen( void )
-  {
-    tcgetattr( 0, &initial_settings );
-    new_settings = initial_settings;
-    new_settings.c_lflag &= ~ICANON;
-    new_settings.c_lflag &= ~ECHO;
-    new_settings.c_lflag &= ~ISIG;
-    new_settings.c_cc[VMIN] = 1;
-    new_settings.c_cc[VTIME] = 0;
-    tcsetattr( 0, TCSANOW, &new_settings );
-  }
-
-  void CSensoray3DofIODriver::kbclose( void )
-  {
-    tcsetattr(0, TCSANOW, &initial_settings);
-  }
-
-  int CSensoray3DofIODriver::kbhit( void )
-  {
-    unsigned char ch;
-    int nread;
-
-    if ( peek_character != -1 )
-      return 1;
-
-    new_settings.c_cc[VMIN] = 0;
-    tcsetattr( 0, TCSANOW, &new_settings );
-
-    nread = read( 0, &ch, 1 );
-
-    new_settings.c_cc[VMIN] = 1;
-    tcsetattr( 0, TCSANOW, &new_settings );
-
-    if ( nread == 1 )
-    {
-      peek_character = ch;
-      return 1;
-    }
-
-    return 0;
-  }
-
-  int CSensoray3DofIODriver::kbread( void )
-  {
-    char ch;
-
-    if ( peek_character != -1 )
-    {
-      ch = peek_character;
-      peek_character = -1;
-      return ch;
-    }
-
-    read( 0, &ch, 1 );
-
-    return ch;
-  }
-
 } /* namespace sensoray */
