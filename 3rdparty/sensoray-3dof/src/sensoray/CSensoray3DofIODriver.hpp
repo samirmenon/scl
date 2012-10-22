@@ -74,7 +74,7 @@ namespace sensoray
       {
         iom_types_[i] = 0;
         iom_status_[i] = 0;
-        num_2608_aouts_at_iom_[i] = 0;
+        s2608_num_aouts_at_iom_[i] = 0;
       }
 
       for (i=0; i<6; ++i)
@@ -135,7 +135,7 @@ namespace sensoray
     u8    iom_status_[16];
 
     /** Number of dac channels (applies to 2608 only). */
-    u8    num_2608_aouts_at_iom_[16];
+    u8    s2608_num_aouts_at_iom_[16];
 
     // Input data from the i/o system.
     /** IOM port Link status. */
