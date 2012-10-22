@@ -204,12 +204,12 @@ namespace sensoray
     SSensoray3DofIO& getData()
     { return s_ds_; }
 
-    //Non-static functions
-    void ShowErrorInfo( u32 gwerr, u8 *iom_status_ );
+    /** Prints out an error message given an io module status
+     * vector */
+    void showErrorInfo( u32 gwerr, u8 *iom_status_ );
+
     u32 ComError( u32 gwerr, const char *fname, int evalComReject );
     void sched_io( void* x );
-    int SerialInit( u8 ComSrc, u8 ComDst, u16 BaudRate );
-    int SerialIo( u8 ComSrc, u8 ComDst );
     int io_control_loop( void );
 
     // Static fn. FORWARD REFERENCES ////////////////////////////////////////////////////////////
@@ -219,10 +219,6 @@ namespace sensoray
     int  DetectAllIoms( void );
 
     void* CreateTransaction( HBD hbd );
-    void kbopen( void );
-    void kbclose( void );
-    int kbhit( void );
-    int kbread( void );
 
   private:
     SSensoray3DofIO s_ds_;
