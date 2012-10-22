@@ -42,6 +42,7 @@ extern "C" {
 }
 #endif
 
+#include <termios.h>
 #include <string>
 
 namespace sensoray
@@ -51,7 +52,7 @@ namespace sensoray
   class SSensoray3DofIO
   {
   public:
-    /** The Default constructor : Sets stuff to defaults */
+    /** Default constructor : Sets stuff to defaults */
     SSensoray3DofIO() :
       mm_ip_addr_("10.10.10.1"),
       mm_handle_(0),
@@ -100,6 +101,9 @@ namespace sensoray
       }
 
     }
+
+    /** Default destructor : Does nothing */
+    ~SSensoray3DofIO(){}
 
     // CONSTANTS //////////////////////////////////////////////////////////////////
     /** Set this to the MM's IP address.*/
@@ -190,8 +194,44 @@ namespace sensoray
   class CSensoray3DofIO
   {
   public:
-    CSensoray3DofIO();
-    ~CSensoray3DofIO();
+    /** Default constructor : Does nothing */
+    CSensoray3DofIO() : s_ds_(), totalSent(0), peek_character(-1) {}
+
+    /** Default destructor : Does nothing */
+    ~CSensoray3DofIO() {}
+
+    /** Get data */
+    SSensoray3DofIO& getData()
+    { return s_ds_; }
+
+    //Non-static functions
+    void ShowErrorInfo( u32 gwerr, u8 *iom_status_ );
+    u32 ComError( u32 gwerr, const char *fname, int evalComReject );
+    void sched_io( void* x );
+    int SerialInit( u8 ComSrc, u8 ComDst, u16 BaudRate );
+    int SerialIo( u8 ComSrc, u8 ComDst );
+    int io_control_loop( void );
+
+    // Static fn. FORWARD REFERENCES ////////////////////////////////////////////////////////////
+
+    int  io_exec( void* x );
+    void io_control_main( void );
+    int  DetectAllIoms( void );
+
+    void* CreateTransaction( HBD hbd );
+    void kbopen( void );
+    void kbclose( void );
+    int kbhit( void );
+    int kbread( void );
+
+  private:
+    SSensoray3DofIO s_ds_;
+
+    int  totalSent;
+
+    int        peek_character;
+    struct termios initial_settings;
+    struct termios new_settings;
   };
 
 } /* namespace sensoray */
