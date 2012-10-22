@@ -11,10 +11,20 @@
 #include <time.h>
 #include <sys/time.h>
 
-#include "app2600.h"		// Linux api to 2600 middleware
+//For compiling the demo in cpp instead of c.
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+  #include "app2600.h"    // Linux api to 2600 middleware
+
+#ifdef __cplusplus
+}
+#endif
 
 // CONSTANTS //////////////////////////////////////////////////////////////////
-const char mm_ip_addr_[] 	=	{"10.10.10.1"};		// Set this to the MM's IP address.
+// This is weird code in the sensoray driver. Should really be a const.
+char mm_ip_addr_[] 	=	{"10.10.10.1"};		// Set this to the MM's IP address.
 
 const int mm_handle_ =0;					// This is the first MM in the system, so it is number 0.
 
