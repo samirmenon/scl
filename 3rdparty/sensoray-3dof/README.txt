@@ -3,6 +3,18 @@
              
 This is Samir's mod of the Sensoray driver. 
 
+How to use:
+1. Attach lan connection to the BFR box.
+2. Set your own IP to 10.10.10.255
+3. Do the following:
+  $ cd applications-linux/lib
+  $ sh make_dbg.sh
+  $ sh make_rel.sh
+  $ cd ../demo
+  $ sh make_rel.sh
+  $ ./sensoray-demo
+4. Should connect to the sensoray modules
+
 Why modify the defaults?
 1. No source is changed. Merely the directory structure.
 2. Enable #include <sensoray/...h>
