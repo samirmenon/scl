@@ -31,7 +31,7 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 #Add release definitions
 IF(CMAKE_BUILD_TYPE MATCHES Release)
-  SET(CMAKE_C_FLAGS_RELEASE "-Wall -m32 -D OSTYPE_LINUX -D ENDIAN_LITTLE -O2")
+  SET(CMAKE_C_FLAGS_RELEASE "-Wall -m32 -D OSTYPE_LINUX -D ENDIAN_LITTLE -O3")
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 #Define the libraries to be built (cmake sources + 3rdparty libs)
