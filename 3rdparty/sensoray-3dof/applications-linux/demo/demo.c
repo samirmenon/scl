@@ -15,7 +15,7 @@
 
 // CONSTANTS //////////////////////////////////////////////////////////////////
 
-#define IP_ADDRESS			"10.10.10.3"		// Set this to the MM's IP address.
+#define IP_ADDRESS			"10.10.10.1"		// Set this to the MM's IP address.
 
 #define MMHANDLE			0					// This is the first MM in the system, so it is number 0.
 
