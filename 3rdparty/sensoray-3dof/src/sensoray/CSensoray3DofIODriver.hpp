@@ -79,9 +79,6 @@ namespace sensoray
       for (i=0; i<6; ++i)
       { num_digital_in_states_[i] = 0;  }
 
-      for (i=0; i<16; ++i)
-      { analog_in_voltages_[i] = 0;  }
-
       for (i=0; i<MAX_NUM_AOUTS; ++i)
       { analog_out_voltages_[i] = 0;  }
 
@@ -143,8 +140,6 @@ namespace sensoray
     u8    interlock_flags_;
     /** Digital input states (48 channels). */
     u8    num_digital_in_states_[6];
-    /** Analog input voltages. */
-    DOUBLE  analog_in_voltages_[16];
 
     // Output data to the i/o system.
     /** Analog output voltages. */

@@ -122,8 +122,7 @@ namespace sensoray
       for ( chan = 0; chan < MAX_NUM_AOUTS; chan++ )
         s_ds_.analog_out_voltages_[chan] = (double)( chan + 1 );
 
-      // Schedule and execute the gateway I/O --------------------------------------------------------------
-
+      // Schedule and execute the gateway I/O -----------------------------------------------------
       // Create a new transaction.
       x = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
 
@@ -149,7 +148,6 @@ namespace sensoray
           case 2608:
             // Update reference standards and read analog inputs
             S26_Sched2608_GetCalData( x, i, 0 );          // Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
-            S26_Sched2608_GetAins( x, i, s_ds_.analog_in_voltages_, ADC_INTEGRATED ); // Fetch the analog inputs.
 
             // Program all analog outputs.
             for ( chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_[chan]; chan++ )
@@ -313,21 +311,6 @@ namespace sensoray
     {
       switch ( s_ds_.iom_types_[i] )
       {
-        case 2608:
-          // Print the analog inputs.
-          printf( "AIN states:\n" );
-          for ( j = 0; j < 16; j++ )
-            printf( " %8f\n", s_ds_.analog_in_voltages_[j] );
-          break;
-
-        case 2610:
-          // Print the dio input states.
-          printf( "DIN states:" );
-          for ( j = 0; j < 6; j++ )
-            printf( " %2.2hhX", s_ds_.num_digital_in_states_[j] );
-          printf( "\n" );
-          break;
-
         case 2620:
           // Print the dio input states.
           printf( "Counter states:" );
