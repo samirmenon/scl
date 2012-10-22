@@ -14,33 +14,33 @@
 #include "app2600.h"		// Linux api to 2600 middleware
 
 // CONSTANTS //////////////////////////////////////////////////////////////////
-const char IP_ADDRESS[] 	=	{"10.10.10.1"};		// Set this to the MM's IP address.
+const char mm_ip_addr_[] 	=	{"10.10.10.1"};		// Set this to the MM's IP address.
 
-#define MMHANDLE			0					// This is the first MM in the system, so it is number 0.
+const int mm_handle_ =0;					// This is the first MM in the system, so it is number 0.
 
-#define MSEC_GATEWAY		100					// This many milliseconds before timing out or retry gateway transactions.
-#define MSEC_COMPORT		100					// This many milliseconds before timing out or retry comport transactions.
+const int timeout_gateway_ms_	= 100;					// This many milliseconds before timing out or retry gateway transactions.
+const int timeout_comport_ms_	= 100;					// This many milliseconds before timing out or retry comport transactions.
 
-#define COM_RETRIES			50					// Do up to this many comport retries.
-#define GATEWAY_RETRIES		50					// Do up to this many gateway retries.
+const int retries_com_ = 50;					// Do up to this many comport retries.
+const int retries_gateway_	 = 50;					// Do up to this many gateway retries.
 
 // 2620 channel usage for this app:
-#define CHAN_WIDTH			0					// Pulse width measurement.
-#define CHAN_FREQ			1					// Frequency counter.
-#define CHAN_PWM			2					// Pulse width modulated output.
-#define CHAN_ENCODER		3					// Incremental encoder input.
+const int s2620_channel_width_ = 0;					// Pulse width measurement.
+const int s2620_channel_freq_	 = 1;					// Frequency counter.
+const int s2620_channel_pwm_ = 2;					// Pulse width modulated output.
+const int s2620_channel_encoder_ = 3;					// Incremental encoder input.
 
 // Comport usage for this app.  With two null-modem cables, we can loop back two ports into two other ports:
-#define COM_SRC_A			LOGDEV_COM2			// Transmit A.
-#define COM_DST_A			LOGDEV_COM1			// Receive A.
-#define COM_BR_A			SIO_BR_9600			// Baudrate for A.
+const u8 COM_SRC_A = 	LOGDEV_COM2;			// Transmit A.
+const u8 COM_DST_A = LOGDEV_COM1;			// Receive A.
+const u16 COM_BR_A = SIO_BR_9600;			// Baudrate for A.
 
-#define COM_SRC_B			LOGDEV_COM4			// Transmit B.
-#define COM_DST_B			LOGDEV_COM3			// Receive B.
-#define COM_BR_B			SIO_BR_115200		// Baudrate for B.
+const u8 COM_SRC_B = LOGDEV_COM4;			// Transmit B.
+const u8 COM_DST_B = LOGDEV_COM3;			// Receive B.
+const u16 COM_BR_B = SIO_BR_115200;		// Baudrate for B.
 
-#define COM_REJECT_IGNORE	0					// Ignore the comport REJ flag.
-#define COM_REJECT_EVAL		1					// Treat comport REJ flag as an error.
+const int COM_REJECT_IGNORE = 0;					// Ignore the comport REJ flag.
+const int COM_REJECT_EVAL	 = 1;					// Treat comport REJ flag as an error.
 
 // TYPES ////////////////////////////////////////////////////////////////////////
 
@@ -97,14 +97,14 @@ int main()
 	else
 	{
 		// Open the MM.
-		if ( ( faults = S26_BoardOpen( MMHANDLE, 0, IP_ADDRESS ) ) != 0 )
+		if ( ( faults = S26_BoardOpen( mm_handle_, 0, mm_ip_addr_ ) ) != 0 )
 			printf( "BoardOpen() fault: %d\n", (int)faults );
 
 		// If MM was successfully opened ...
 		else
 		{
 			// Reset the I/O system.
-			S26_ResetNetwork( MMHANDLE );
+			S26_ResetNetwork( mm_handle_ );
 
 			// Register all iom's.  If no errors, execute the I/O control loop until it is terminated.
 			if ( DetectAllIoms() )
@@ -230,7 +230,7 @@ int DetectAllIoms( void )
 	u32	faults;
 
 	// Detect and register all iom's.
-	if ( ( faults = S26_RegisterAllIoms( MMHANDLE, MSEC_GATEWAY, &nboards, IomType, IomStatus, GATEWAY_RETRIES ) ) != 0 )
+	if ( ( faults = S26_RegisterAllIoms( mm_handle_, timeout_gateway_ms_, &nboards, IomType, IomStatus, retries_gateway_ ) ) != 0 )
 	{
 		ShowErrorInfo( faults, IomStatus );
 		return 0;	// failed.
@@ -283,8 +283,8 @@ static void sched_io( HX x )
 
 		case 2620:
 			// Transfer counter cores to latches.
-			S26_Sched2620_SetControlReg( x, i, CHAN_PWM, 2 );
-			S26_Sched2620_SetControlReg( x, i, CHAN_ENCODER, 2 );
+			S26_Sched2620_SetControlReg( x, i, s2620_channel_pwm_, 2 );
+			S26_Sched2620_SetControlReg( x, i, s2620_channel_encoder_, 2 );
 
 			// Read latches.
 			for ( chan = 0; chan < 4; chan++ )
@@ -310,32 +310,32 @@ static int SerialInit( u8 ComSrc, u8 ComDst, u16 BaudRate )
 	u32	comstatus;
 
 	// Source (transmitter) port.
-	comstatus = S26_ComSetMode( MMHANDLE,
+	comstatus = S26_ComSetMode( mm_handle_,
 		ComSrc,
 		BaudRate,
 		SIO_PHY_RS232 | SIO_PARITY_NONE | SIO_DATA_8 | SIO_STOP_1 | SIO_FLOW_OFF,
 		SIO_LED_TRANSMIT,
-		MSEC_COMPORT,
-		COM_RETRIES );
+		timeout_comport_ms_,
+		retries_com_ );
 	if ( ComError( comstatus, "S26_ComSetMode", COM_REJECT_EVAL ) )
 		return 1;
 
-	comstatus = S26_ComOpen( MMHANDLE, ComSrc, MSEC_COMPORT, COM_RETRIES );
+	comstatus = S26_ComOpen( mm_handle_, ComSrc, timeout_comport_ms_, retries_com_ );
 	if ( ComError( comstatus, "S26_ComOpen", COM_REJECT_EVAL ) )
 		return 1;
 
 	// Destination (receiver) port.
-	comstatus = S26_ComSetMode( MMHANDLE,
+	comstatus = S26_ComSetMode( mm_handle_,
 		ComDst,
 		BaudRate,
 		SIO_PHY_RS232 | SIO_PARITY_NONE | SIO_DATA_8 | SIO_STOP_1 | SIO_FLOW_OFF,
 		SIO_LED_RECEIVE,
-		MSEC_COMPORT,
-		COM_RETRIES );
+		timeout_comport_ms_,
+		retries_com_ );
 	if ( ComError( comstatus, "S26_ComSetMode", COM_REJECT_EVAL ) )
 		return 1;
 
-	comstatus = S26_ComOpen( MMHANDLE, ComDst, MSEC_COMPORT, COM_RETRIES );
+	comstatus = S26_ComOpen( mm_handle_, ComDst, timeout_comport_ms_, retries_com_ );
 	if ( ComError( comstatus, "S26_ComOpen", COM_REJECT_EVAL ) )
 		return 1;
 
@@ -361,7 +361,7 @@ static int SerialIo( u8 ComSrc, u8 ComDst )
 	msglen = strlen( SndBuf );
 
 	// Attempt to send message.  Ignore the COM_REJECT error, which is caused by insufficient transmit buffer free space.
-	comstatus = S26_ComSend( MMHANDLE, ComSrc, (u8 *)SndBuf, (u16)msglen, MSEC_COMPORT, COM_RETRIES );
+	comstatus = S26_ComSend( mm_handle_, ComSrc, (u8 *)SndBuf, (u16)msglen, timeout_comport_ms_, retries_com_ );
 	if ( ComError( comstatus, "S26_ComSend", COM_REJECT_IGNORE ) )
 	{
 		printf( "TotalSent = %d\n", totalSent );
@@ -372,7 +372,7 @@ static int SerialIo( u8 ComSrc, u8 ComDst )
 
 	// Receive all available data from the receiving comport's receive buffer.
 	BufLen = sizeof(RcvBuf);     // Max number of characters to receive.
-	comstatus = S26_ComReceive( MMHANDLE, ComDst, (u8 *)RcvBuf, &BufLen, MSEC_COMPORT, COM_RETRIES );
+	comstatus = S26_ComReceive( mm_handle_, ComDst, (u8 *)RcvBuf, &BufLen, timeout_comport_ms_, retries_com_ );
 	if ( ComError( comstatus, "S26_ComReceive", COM_REJECT_EVAL ) )
 	{
 		printf( "TotalSent = %d\n", totalSent );
@@ -431,7 +431,7 @@ static int io_control_loop( void )
 			return iters;
 
 		// Start a new transaction.
-		x = CreateTransaction( MMHANDLE );
+		x = CreateTransaction( mm_handle_ );
 
 		// Schedule all I/O into the transaction.
 		sched_io( x );
@@ -513,7 +513,7 @@ static void io_control_main( void )
 	// INITIALIZE IOM's ================================================================================
 
 	// Start a new transaction.
-	x = CreateTransaction( MMHANDLE );
+	x = CreateTransaction( mm_handle_ );
 
 	// Schedule the I/O actions into the transaction.
 	// For each iom port on the MM ...
@@ -535,19 +535,19 @@ static void io_control_main( void )
 			// Set gate period to 1 second, timestamp resolution to 1 millisecond.
 			S26_Sched2620_SetCommonControl( x, i, 1000, 3 );
 
-			// Set up the pwm generator on CHAN_PWM.
-			S26_Sched2620_SetPreload( x, i, CHAN_PWM, 1, 99 );		// Preload 1: on time.
-			S26_Sched2620_SetPreload( x, i, CHAN_PWM, 0, 4899 );		// Preload 0: off time.
-			S26_Sched2620_SetModePwmGen( x, i, CHAN_PWM, 0 );		// Configure as pwm generator.
+			// Set up the pwm generator on s2620_channel_pwm_.
+			S26_Sched2620_SetPreload( x, i, s2620_channel_pwm_, 1, 99 );		// Preload 1: on time.
+			S26_Sched2620_SetPreload( x, i, s2620_channel_pwm_, 0, 4899 );		// Preload 0: off time.
+			S26_Sched2620_SetModePwmGen( x, i, s2620_channel_pwm_, 0 );		// Configure as pwm generator.
 
-			// Set up the frequency counter on CHAN_FREQ.
-			S26_Sched2620_SetModeFreqMeas( x, i, CHAN_FREQ, 1 );		// Configure channel 1: freq counter, internal gate.
+			// Set up the frequency counter on s2620_channel_freq_.
+			S26_Sched2620_SetModeFreqMeas( x, i, s2620_channel_freq_, 1 );		// Configure channel 1: freq counter, internal gate.
 
 			// Set up for pulse width measurement on CHAN_PULSE.
-			S26_Sched2620_SetModePulseMeas( x, i, CHAN_WIDTH, 0 );		// active high input.
+			S26_Sched2620_SetModePulseMeas( x, i, s2620_channel_width_, 0 );		// active high input.
 
-			// Set up encoder interface on CHAN_ENCODER.
-			S26_Sched2620_SetModeEncoder( x, i, CHAN_ENCODER, 0, 0, 3 );
+			// Set up encoder interface on s2620_channel_encoder_.
+			S26_Sched2620_SetModeEncoder( x, i, s2620_channel_encoder_, 0, 0, 3 );
 
 			break;
 		}
@@ -621,7 +621,7 @@ static void io_control_main( void )
 HX CreateTransaction( HBD hbd )
 {
 	// Create a new transaction.
-	HX x = S26_SchedOpen( hbd, GATEWAY_RETRIES );
+	HX x = S26_SchedOpen( hbd, retries_gateway_ );
 
 	// Report error if transaction couldn't be created.
 	if ( x == 0 )
@@ -639,7 +639,7 @@ int io_exec( HX x )
 	GWERR	err;
 
 	// Execute the scheduled i/o.  Report error if one was detected.
-	if ( ( err = S26_SchedExecute( x, MSEC_GATEWAY, IomStatus ) ) != 0 )
+	if ( ( err = S26_SchedExecute( x, timeout_gateway_ms_, IomStatus ) ) != 0 )
 		ShowErrorInfo( err, IomStatus );
 
 	return (int)err;
