@@ -22,10 +22,11 @@ extern "C" {
 #include <time.h>
 #include <sys/time.h>
 
+#include <string>
+
 
 // CONSTANTS //////////////////////////////////////////////////////////////////
-// NOTE TODO : This is weird code in the sensoray driver. Should really be a const.
-const char mm_ip_addr_[] 	=	{"10.10.10.1"};		// Set this to the MM's IP address.
+const std::string mm_ip_addr_("10.10.10.1");		// Set this to the MM's IP address.
 
 const int mm_handle_ =0;					// This is the first MM in the system, so it is number 0.
 
@@ -104,7 +105,7 @@ int main()
 	else
 	{
 		// Open the MM.
-		if ( ( faults = S26_BoardOpen( mm_handle_, 0, mm_ip_addr_ ) ) != 0 )
+		if ( ( faults = S26_BoardOpen( mm_handle_, 0, mm_ip_addr_.c_str() ) ) != 0 )
 			printf( "BoardOpen() fault: %d\n", (int)faults );
 
 		// If MM was successfully opened ...
