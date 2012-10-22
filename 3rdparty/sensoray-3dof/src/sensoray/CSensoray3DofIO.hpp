@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 extern "C" {
 #endif
 
-  #include "app2600.h"    // Linux api to 2600 middleware
+#include "app2600.h"    // Linux api to 2600 middleware
 
 #ifdef __cplusplus
 }
@@ -51,6 +51,7 @@ namespace sensoray
   class SSensoray3DofIO
   {
   public:
+    /** The Default constructor : Sets stuff to defaults */
     SSensoray3DofIO() :
       mm_ip_addr_("10.10.10.1"),
       mm_handle_(0),
@@ -69,8 +70,36 @@ namespace sensoray
       com_dest_b_(LOGDEV_COM3),
       com_baud_b_(SIO_BR_115200),
       com_reject_ignore_(0),
-      com_reject_evaluate_ (1)
-    {}
+      com_reject_evaluate_ (1),iters_ctrl_loop_(0),
+      num_iom_boards_(0),
+      iom_link_flags_(0),
+      interlock_flags_(0),
+      num_relay_states_(0)
+    {//Somewhat redundant initialization to maintain declaration order
+      int i;
+      for (i=0; i<16; ++i)
+      {
+        iom_types_[i] = 0;
+        iom_status_[i] = 0;
+        num_2608_aouts_at_iom_[i] = 0;
+      }
+
+      for (i=0; i<6; ++i)
+      { num_digital_in_states_[i] = 0;  }
+
+      for (i=0; i<16; ++i)
+      { analog_in_voltages_[i] = 0;  }
+
+      for (i=0; i<MAX_NUM_AOUTS; ++i)
+      { analog_out_voltages_[i] = 0;  }
+
+      for (i=0; i<4; ++i)
+      {
+        counter_counts_[i] = 0;
+        counter_timestamp_[i] = 0;
+      }
+
+    }
 
     // CONSTANTS //////////////////////////////////////////////////////////////////
     /** Set this to the MM's IP address.*/
@@ -117,6 +146,42 @@ namespace sensoray
     const int com_reject_ignore_;
     /** Treat comport REJ flag as an error. */
     const int com_reject_evaluate_;
+
+    // PUBLIC STORAGE ///////////////////////////////////////////////////////////////
+    /** Number of times through the control loop so far. */
+    int   iters_ctrl_loop_;
+
+    /** Number of detected iom's. */
+    u16   num_iom_boards_;
+    /** Detected iom types. */
+    u16   iom_types_[16];
+    /** Iom status info. */
+    u8    iom_status_[16];
+
+    /** Number of dac channels (applies to 2608 only). */
+    u8    num_2608_aouts_at_iom_[16];
+
+    // Input data from the i/o system.
+    /** IOM port Link status. */
+    u16   iom_link_flags_;
+    /** Interlock power status. */
+    u8    interlock_flags_;
+    /** Digital input states (48 channels). */
+    u8    num_digital_in_states_[6];
+    /** Analog input voltages. */
+    DOUBLE  analog_in_voltages_[16];
+
+    // Output data to the i/o system.
+    /** Relay states. */
+    u8    num_relay_states_;
+    /** Digital output states (48 channels). */
+    u8    num_digital_out_states_[6];
+    /** Analog output voltages. */
+    DOUBLE  analog_out_voltages_[MAX_NUM_AOUTS];
+    /** Counter data. */
+    u32   counter_counts_[4];
+    /** Counter timestamps. */
+    u16   counter_timestamp_[4];
   };
 
   /** This class provides a simple interface to connect
