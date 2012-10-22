@@ -234,8 +234,13 @@ namespace sensoray
 
       // Schedule and execute the gateway I/O --------------------------------------------------------------
 
-      // Start a new transaction.
-      x = createTransaction( s_ds_.mm_handle_ );
+      // Create a new transaction.
+      x = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
+
+      // Report error if transaction couldn't be created.
+      if ( x == 0 )
+        printf( "Error: S26_SchedOpen() failed to allocate a transaction object.\n" );
+
 
       // Schedule all I/O into the transaction.
       schedIo( x );
@@ -244,7 +249,11 @@ namespace sensoray
       gettimeofday( &tStart, 0 );
 
       // Execute the scheduled i/o and then release the transaction object.  Exit loop if there was no error.
-      if ( ioExec( x ) )
+      GWERR err;
+      // Execute the scheduled i/o.  Report error if one was detected.
+      if ( ( err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ ) ) != 0 )
+        showErrorInfo( err, s_ds_.iom_status_ );
+      if ( (int)err )
       {
         printf( "Terminating i/o control loop.\n" );
         break;
@@ -306,7 +315,11 @@ namespace sensoray
     // INITIALIZE IOM's ================================================================================
 
     // Start a new transaction.
-    x = createTransaction( s_ds_.mm_handle_ );
+    x = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
+
+    // Report error if transaction couldn't be created.
+    if ( x == 0 )
+      printf( "Error: S26_SchedOpen() failed to allocate a transaction object.\n" );
 
     // Schedule the I/O actions into the transaction.
     // For each iom port on the MM ...
@@ -347,7 +360,14 @@ namespace sensoray
     }
 
     // Execute the scheduled i/o and release the transaction object.
-    if ( ioExec( x ) )
+
+    GWERR err;
+
+    // Execute the scheduled i/o.  Report error if one was detected.
+    if ( ( err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ ) ) != 0 )
+      showErrorInfo( err, s_ds_.iom_status_ );
+
+    if ( (int)err )
       return;
 
     // MAIN CONTROL LOOP ====================================================================================
@@ -405,36 +425,5 @@ namespace sensoray
     printf( "Control loop cycles:    %d\n", s_ds_.iters_ctrl_loop_ );
     printf( "Elapsed time (seconds): %lu\n", (u32)tElapsed );
     printf( "Average I/O cycle time (msec):  %.2f\n", tElapsed / (double)s_ds_.iters_ctrl_loop_ * 1000.0 );
-  }
-
-  ////////////////////////////////////////////////////////
-  // Start a new transaction.
-  // Returns non-zero transaction handle if successful.
-
-  void* CSensoray3DofIODriver::createTransaction( HBD hbd )
-  {
-    // Create a new transaction.
-    void* x = S26_SchedOpen( hbd, s_ds_.retries_gateway_ );
-
-    // Report error if transaction couldn't be created.
-    if ( x == 0 )
-      printf( "Error: S26_SchedOpen() failed to allocate a transaction object.\n" );
-
-    return x;
-  }
-
-  ////////////////////////////////
-  // Execute all scheduled i/o.
-  // Returns zero if successful.
-
-  int CSensoray3DofIODriver::ioExec( void* x )
-  {
-    GWERR err;
-
-    // Execute the scheduled i/o.  Report error if one was detected.
-    if ( ( err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ ) ) != 0 )
-      showErrorInfo( err, s_ds_.iom_status_ );
-
-    return (int)err;
   }
 } /* namespace sensoray */

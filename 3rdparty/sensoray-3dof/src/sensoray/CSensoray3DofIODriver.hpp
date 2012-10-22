@@ -223,11 +223,7 @@ namespace sensoray
 
     // Static fn. FORWARD REFERENCES ////////////////////////////////////////////////////////////
 
-    int  ioExec( void* x );
     void ioControlMain( void );
-
-
-    void* createTransaction( HBD hbd );
 
   private:
     /** The data structore with all the important vars etc. */
