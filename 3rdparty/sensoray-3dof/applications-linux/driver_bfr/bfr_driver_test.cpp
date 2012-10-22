@@ -27,8 +27,6 @@ int main()
   sensoray::CSensoray3DofIODriver sensorayio;
 	u32 faults;
 
-	sensorayio.kbopen();
-
 	// Open the 2600 api.  Declare one MM in system.
 	if ( ( faults = S26_DriverOpen( 1 ) ) != 0 )
 	{
@@ -57,8 +55,6 @@ int main()
 		// Close the api library.
 		S26_DriverClose();
 	}
-
-	sensorayio.kbclose();
 
 	return 0;
 }
