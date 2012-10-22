@@ -31,6 +31,17 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CSENSORAY3DOFIO_HPP_
 #define CSENSORAY3DOFIO_HPP_
 
+//For compiling the demo in cpp instead of c.
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+  #include "app2600.h"    // Linux api to 2600 middleware
+
+#ifdef __cplusplus
+}
+#endif
+
 #include <string>
 
 namespace sensoray
@@ -51,6 +62,12 @@ namespace sensoray
       s2620_channel_freq_(1),
       s2620_channel_pwm_(2),
       s2620_channel_encoder_(3),
+      com_src_a_(LOGDEV_COM2),
+      com_dest_a_(LOGDEV_COM1),
+      com_baud_a_(SIO_BR_9600),
+      com_src_b_(LOGDEV_COM4),
+      com_dest_b_(LOGDEV_COM3),
+      com_baud_b_(SIO_BR_115200),
       com_reject_ignore_(0),
       com_reject_evaluate_ (1)
     {}
@@ -80,6 +97,21 @@ namespace sensoray
     const int s2620_channel_pwm_;
     /** Incremental encoder input. */
     const int s2620_channel_encoder_;
+
+    // Comport usage for this app.  With two null-modem cables, we can loop back two ports into two other ports:
+    /** Transmit A. */
+    const u8 com_src_a_;
+    /** Receive A. */
+    const u8 com_dest_a_;
+    /** Baudrate for A. */
+    const u16 com_baud_a_;
+
+    /** Transmit B. */
+    const u8 com_src_b_;
+    /** Receive B. */
+    const u8 com_dest_b_;
+    /** Baudrate for B. */
+    const u16 com_baud_b_;
 
     /** Ignore the comport REJ flag. */
     const int com_reject_ignore_;
