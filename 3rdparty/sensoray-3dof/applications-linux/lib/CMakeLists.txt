@@ -4,11 +4,11 @@ cmake_minimum_required(VERSION 2.0)
 project(sensoray-3dof)
 
 #Set Include directories
-SET(SENSORAY_BASE_DIR ..)
+SET(SENSORAY_BASE_DIR ../../)
 
-SET(SENSORAY_INC_DIR ../src/sensoray)
-SET(SENSORAY_COMMON_INC_DIR ../src/sensoray/common)
-SET(SENSORAY_LINUX_INC_DIR ../src/sensoray/linux)
+SET(SENSORAY_INC_DIR ${SENSORAY_BASE_DIR}src/sensoray)
+SET(SENSORAY_COMMON_INC_DIR ${SENSORAY_BASE_DIR}src/sensoray/common)
+SET(SENSORAY_LINUX_INC_DIR ${SENSORAY_BASE_DIR}src/sensoray/linux)
 
 INCLUDE_DIRECTORIES(${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR})
 
