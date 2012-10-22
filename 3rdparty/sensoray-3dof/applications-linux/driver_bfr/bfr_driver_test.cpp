@@ -45,10 +45,10 @@ int main()
 			S26_ResetNetwork( sensorayio.getData().mm_handle_ );
 
 			// Register all iom's.  If no errors, execute the I/O control loop until it is terminated.
-			if ( sensorayio.DetectAllIoms() )
+			if ( sensorayio.detectAllIoms() )
 			{
 				// Execute the i/o control loop until it terminates.
-			  sensorayio.io_control_main();
+			  sensorayio.ioControlMain();
 			}
 		}
 
