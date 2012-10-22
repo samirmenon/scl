@@ -36,8 +36,68 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <time.h>
 #include <sys/time.h>
 
+#include <stdexcept>
+#include <sstream>
+#include <iostream>
+
+
 namespace sensoray
 {
+  bool CSensoray3DofIODriver::init()
+  {
+    bool flag;
+    try
+    {
+      u32 faults;
+
+      // Open the 2600 main module. Assume max_main_modules_ == 1.
+      faults = S26_DriverOpen( max_main_modules_ );
+      if(0 != faults)
+      {
+        std::stringstream s;
+        s<<"Could not open the driver. S26_DriverOpen() fault: "<<static_cast<int>(faults);
+        throw(std::runtime_error(s.str()));
+      }
+
+      // Open the main module. Assume s_ds_.mm_handle_ == 0
+      faults = S26_BoardOpen( s_ds_.mm_handle_, 0, s_ds_.mm_ip_addr_.c_str() );
+      if(0 != faults)
+      {
+        std::stringstream s;
+        s<<"Could not open connection to the board. S26_BoardOpen() fault: "<<static_cast<int>(faults);
+        throw(std::runtime_error(s.str()));
+      }
+
+      // Reset the I/O system.
+      flag = S26_ResetNetwork( s_ds_.mm_handle_ );
+      if(false == flag)
+      { throw(std::runtime_error("Could not reset the sensoray main and IO module network."));  }
+
+      // Register all iom's.  If no errors, proceed to IO loop
+      // Detect and register all sensoray I/O modules.
+      faults = S26_RegisterAllIoms( s_ds_.mm_handle_, s_ds_.timeout_gateway_ms_,
+                &s_ds_.num_iom_boards_, s_ds_.iom_types_, s_ds_.iom_status_, s_ds_.retries_gateway_ );
+      if(0 != faults)
+      {
+        showErrorInfo( faults, s_ds_.iom_status_ );
+        throw(std::runtime_error("Could register one or more sensoray IO modules."));
+      }
+
+      // Print all the registered I/O modules
+      std::cout<<"\nDetected I/O modules on Sensoray Board:";
+      for (unsigned int i = 0; i < max_io_modules_at_main_module_; i++ )
+      {
+        if ( 0 != s_ds_.iom_types_[i] )
+        { std::cout<<"\nPort ["<<i<<"]. I/O module : "<<s_ds_.iom_types_[i]; }
+      }
+
+      return true;
+    }
+    catch(std::exception& e)
+    { std::cerr<<"\nCSensoray3DofIODriver::init() : Error :"<<e.what(); }
+    return false;
+  }
+
   ////////////////////////////////
   // Display gateway error info.
 
@@ -96,33 +156,6 @@ namespace sensoray
     printf( "Error: 0x%X (%s), s_ds_.iters_ctrl_loop_ = %d.\n", (int)gwerr, errmsg, s_ds_.iters_ctrl_loop_ );
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Detect and register all i/o modules connected to the 2601 main module.
-
-  int CSensoray3DofIODriver::detectAllIoms( void )
-  {
-    int i;
-    u32 faults;
-
-    // Detect and register all iom's.
-    if ( ( faults = S26_RegisterAllIoms( s_ds_.mm_handle_, s_ds_.timeout_gateway_ms_,
-        &s_ds_.num_iom_boards_, s_ds_.iom_types_, s_ds_.iom_status_, s_ds_.retries_gateway_ ) ) != 0 )
-    {
-      showErrorInfo( faults, s_ds_.iom_status_ );
-      return 0; // failed.
-    }
-
-    // List the discovered iom's.
-    printf( "DETECTED IOM'S:\n" );
-    for ( i = 0; i < 16; i++ )
-    {
-      if ( s_ds_.iom_types_[i] )
-        printf( " port %2.2d: %4.4d\n", i, s_ds_.iom_types_[i] );
-    }
-
-    return 1; // success.
-  }
-
   ///////////////////////////////////////////////////////////////
   // Schedule some gateway I/O into transaction object x
   void CSensoray3DofIODriver::schedIo( void* x )
@@ -150,11 +183,6 @@ namespace sensoray
             S26_Sched2608_SetAout( x, i, (u8)chan, s_ds_.analog_out_voltages_[chan] );
           break;
 
-        case 2610:
-          S26_Sched2610_SetOutputs( x, i, s_ds_.num_digital_out_states_ );    // Program the dio outputs.
-          S26_Sched2610_GetInputs( x, i, s_ds_.num_digital_in_states_ );      // Fetch physical inputs.
-          break;
-
         case 2620:
           // Transfer counter cores to latches.
           S26_Sched2620_SetControlReg( x, i, s_ds_.s2620_channel_pwm_, 2 );
@@ -163,13 +191,6 @@ namespace sensoray
           // Read latches.
           for ( chan = 0; chan < 4; chan++ )
             S26_Sched2620_GetCounts( x, i, (u8)chan, &s_ds_.counter_counts_[chan], &s_ds_.counter_timestamp_[chan] ); // Fetch values from all channel latches.
-          break;
-
-        case 2650:
-          S26_Sched2650_SetOutputs( x, i, &s_ds_.num_relay_states_ );   // Program the relays.
-          break;
-        case 2652:
-          S26_Sched2652_SetOutputs( x, i, &s_ds_.num_relay_states_ );   // Program the relays.
           break;
       }
     }
@@ -331,7 +352,7 @@ namespace sensoray
 
     // MAIN CONTROL LOOP ====================================================================================
 
-    printf( "Running main control loop\nHit any key to terminate\n" );
+    printf( "\nRunning main control loop\nHit any key to terminate\n" );
 
     // Start benchmark timer.
     StartTime = time( NULL );

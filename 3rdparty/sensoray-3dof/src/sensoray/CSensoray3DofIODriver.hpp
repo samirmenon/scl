@@ -194,7 +194,9 @@ namespace sensoray
   {
   public:
     /** Default constructor : Does nothing */
-    CSensoray3DofIODriver() : s_ds_(), totalSent(0), peek_character(-1) {}
+    CSensoray3DofIODriver() :
+      s_ds_(), max_main_modules_(1), max_io_modules_at_main_module_(16),
+      totalSent(0), peek_character(-1) {}
 
     /** Default destructor : Does nothing */
     ~CSensoray3DofIODriver() {}
@@ -202,6 +204,15 @@ namespace sensoray
     /** Get data */
     SSensoray3DofIO& getData()
     { return s_ds_; }
+
+    /** ***************** Driver calls (in order) *********************** */
+    /** Initializes the main module.
+     *
+     * Assumptions :
+     * 1. Only one main module in the system
+     * 2. The main module's id is 0, and IP is 10.10.10.1
+     * 3.  */
+    bool init();
 
     /** Prints out an error message given an io module status
      * vector */
@@ -214,13 +225,16 @@ namespace sensoray
 
     int  ioExec( void* x );
     void ioControlMain( void );
-    int  detectAllIoms( void );
+
 
     void* createTransaction( HBD hbd );
 
   private:
     /** The data structore with all the important vars etc. */
     SSensoray3DofIO s_ds_;
+
+    const unsigned int max_main_modules_;
+    const unsigned int max_io_modules_at_main_module_;
 
     int totalSent;
     int peek_character;
