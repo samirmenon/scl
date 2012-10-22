@@ -1,8 +1,0 @@
-#!/bin/sh
-# Build Sensoray 2600 demo program
-
-# Compile demo program
-gcc -Wall -g -c -I ../linux -I ../common demo.c -o demo.o
-
-# Create demo program
-gcc -g -o demo demo.o -L. -l2600
