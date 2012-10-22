@@ -18,7 +18,7 @@ INCLUDE_DIRECTORIES(${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LI
 
 #Set all the sources required for the library
 SET(SENSORAY_ALL_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_demo.cpp
-                     ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIO.cpp)
+                     ${SENSORAY_BFR_DEMO_DIR}/CSensoray3DofIO.cpp)
 
 ######################END OF SRC DEFS##############
 #Add debug definitions
