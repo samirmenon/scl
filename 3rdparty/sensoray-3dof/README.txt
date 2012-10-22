@@ -35,7 +35,8 @@ in 64 bit mode. On x86-64 machines, you have to compile it as a
 When Sensoray gave us the code, they included a short script to 
 compile the lib:
 
-"sudo apt-get install libc6-dev-i386"
+"sudo apt-get install libc6-dev-i386 "
+"sudo apt-get install gcc-multilib g++-multilib ia32-libs" (Samir's extras)
 "rm *.o"
 "./makelib32"
 "./makedemo32"
