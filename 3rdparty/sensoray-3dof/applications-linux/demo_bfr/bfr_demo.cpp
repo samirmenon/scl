@@ -15,7 +15,7 @@ extern "C" {
 }
 #endif
 
-#include <sensoray/CSensoray3DofIO.hpp>
+#include "CSensoray3DofIO.hpp"
 
 #include <string>
 #include <stdio.h>
