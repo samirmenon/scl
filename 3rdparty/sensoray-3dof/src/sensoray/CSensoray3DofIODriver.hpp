@@ -66,8 +66,7 @@ namespace sensoray
       iters_ctrl_loop_(0),
       num_iom_boards_(0),
       iom_link_flags_(0),
-      interlock_flags_(0),
-      num_relay_states_(0)
+      interlock_flags_(0)
     {//Somewhat redundant initialization to maintain declaration order
       int i;
       for (i=0; i<16; ++i)
@@ -148,10 +147,6 @@ namespace sensoray
     DOUBLE  analog_in_voltages_[16];
 
     // Output data to the i/o system.
-    /** Relay states. */
-    u8    num_relay_states_;
-    /** Digital output states (48 channels). */
-    u8    num_digital_out_states_[6];
     /** Analog output voltages. */
     DOUBLE  analog_out_voltages_[MAX_NUM_AOUTS];
     /** Counter data. */
