@@ -4,13 +4,6 @@
 // Target OS : Linux
 ///////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <string.h>
-#include <termios.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/time.h>
-
 //For compiling the demo in cpp instead of c.
 #ifdef __cplusplus
 extern "C" {
@@ -22,9 +15,17 @@ extern "C" {
 }
 #endif
 
+#include <stdio.h>
+#include <string.h>
+#include <termios.h>
+#include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
+
+
 // CONSTANTS //////////////////////////////////////////////////////////////////
-// This is weird code in the sensoray driver. Should really be a const.
-char mm_ip_addr_[] 	=	{"10.10.10.1"};		// Set this to the MM's IP address.
+// NOTE TODO : This is weird code in the sensoray driver. Should really be a const.
+const char mm_ip_addr_[] 	=	{"10.10.10.1"};		// Set this to the MM's IP address.
 
 const int mm_handle_ =0;					// This is the first MM in the system, so it is number 0.
 

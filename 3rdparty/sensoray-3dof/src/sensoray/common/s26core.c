@@ -1931,7 +1931,7 @@ EXPORT(void) S26_DriverClose( void )
 //	MMDotAdrs	= MM's IP address.
 // Returns zero if successful, otherwise error flags (ERR_BADHANDLE, ERR_CREATESOCKET, ERR_BINDSOCKET).
 
-EXPORT(u32) S26_BoardOpen( HBD hbd, char *CLDotAdrs, char *MMDotAdrs )
+EXPORT(u32) S26_BoardOpen( HBD hbd, char *CLDotAdrs, const char *MMDotAdrs )
 {
 	MM_OBJ	*mm;								// Pointer to core's MM object.
 	u32		ClientAdrs;							// Client's address in network byte order.

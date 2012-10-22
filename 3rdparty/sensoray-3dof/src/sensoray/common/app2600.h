@@ -219,7 +219,7 @@ typedef void *					HXACT;		// Transaction handle, from the application's perspec
 API( int, 		S26_DriverOpen,						( int NumMMs ) );
 API( void,		S26_DriverClose,					( void ) );
 API( const char *, S26_DriverVersion,				( void ) );
-API( u32,		S26_BoardOpen,						( HBD hbd, char *CLDotAdrs, char *MMDotAdrs ) );
+API( u32,		S26_BoardOpen,						( HBD hbd, char *CLDotAdrs, const char *MMDotAdrs ) );
 API( void,  	S26_BoardClose,						( HBD hbd ) );
 API( GWERR, 	S26_RegisterAllIoms,				( HBD hbd, u32 msec, u16 *NumBoards, u16 *IomTypeList, u8 *IomStatus, u32 retries ) );
 API( GWERR, 	S26_ResetIom,						( HBD hbd, IOMPORT IomPort, u32 msec, u32 retries ) );
