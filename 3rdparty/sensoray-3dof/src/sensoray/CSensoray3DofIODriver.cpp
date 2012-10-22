@@ -118,18 +118,6 @@ namespace sensoray
       //    Sleep( 100 );
 
       // Compute the next output states -----------------------------------------------------------
-
-      // Bump the relay state images.
-      s_ds_.num_relay_states_++;
-
-      // Bump the dio state images.
-      if ( ++s_ds_.num_digital_out_states_[0] == 0 )
-        if ( ++s_ds_.num_digital_out_states_[1] == 0 )
-          if ( ++s_ds_.num_digital_out_states_[2] == 0 )
-            if ( ++s_ds_.num_digital_out_states_[3] == 0 )
-              if ( ++s_ds_.num_digital_out_states_[4] == 0 )
-                ++s_ds_.num_digital_out_states_[5];
-
       // Bump analog output voltage images.
       for ( chan = 0; chan < MAX_NUM_AOUTS; chan++ )
         s_ds_.analog_out_voltages_[chan] = (double)( chan + 1 );
