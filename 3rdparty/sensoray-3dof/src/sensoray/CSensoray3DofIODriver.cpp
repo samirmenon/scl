@@ -76,7 +76,7 @@ namespace sensoray
       // Register all iom's.  If no errors, proceed to IO loop
       // Detect and register all sensoray I/O modules.
       faults = S26_RegisterAllIoms( s_ds_.mm_handle_, s_ds_.timeout_gateway_ms_,
-                &s_ds_.num_iom_boards_, s_ds_.iom_types_, s_ds_.iom_status_, s_ds_.retries_gateway_ );
+          &s_ds_.num_iom_boards_, s_ds_.iom_types_, s_ds_.iom_status_, s_ds_.retries_gateway_ );
       if(0 != faults)
       {
         showErrorInfo( faults, s_ds_.iom_status_ );
@@ -96,64 +96,6 @@ namespace sensoray
     catch(std::exception& e)
     { std::cerr<<"\nCSensoray3DofIODriver::init() : Error :"<<e.what(); }
     return false;
-  }
-
-  ////////////////////////////////
-  // Display gateway error info.
-
-  void CSensoray3DofIODriver::showErrorInfo( u32 gwerr, u8 *arg_iom_status )
-  {
-    char  errmsg[128];
-    int   ExtraInfo = gwerr & ~GWERRMASK;
-    u8    status;
-
-    switch ( gwerr & GWERRMASK )
-    {
-      case GWERR_IOMSPECIFIC:
-
-        status = arg_iom_status[ExtraInfo];
-
-        sprintf( errmsg, "Iom-specific error on iomport %d", ExtraInfo );
-
-        if ( arg_iom_status )
-        {
-          switch( s_ds_.iom_types_[ExtraInfo] )
-          {
-            case 2608:
-              if ( status & STATUS_2608_CALERR )  strcat( errmsg, ": using default cal values" );
-              break;
-
-            case 2610:
-              if ( status & STATUS_2610_STRM )  strcat( errmsg, ": serial stream error" );
-              break;
-
-            case 2650:
-              if ( status & STATUS_2650_DRVR )  strcat( errmsg, ": relay coil driver fault" );
-              if ( status & STATUS_2650_STRM )  strcat( errmsg, ": serial stream error" );
-              break;
-            case 2652:
-              if ( status & STATUS_2652_STRM )  strcat( errmsg, ": serial stream error" );
-              break;
-          }
-        }
-
-        break;
-
-      case GWERR_BADVALUE:    sprintf( errmsg, "Illegal value for argument %d", ExtraInfo );        break;
-      case GWERR_IOMCLOSED:   sprintf( errmsg, "Iom is not open" );                       break;
-      case GWERR_IOMERROR:    sprintf( errmsg, "Iom CERR asserted" );                       break;
-      case GWERR_IOMNORESPOND:  sprintf( errmsg, "Bad module response from iomport %d", ExtraInfo );    break;
-      case GWERR_IOMRESET:    sprintf( errmsg, "Module RST asserted" );                     break;
-      case GWERR_IOMTYPE:     sprintf( errmsg, "Action not supported by iom type" );                break;
-      case GWERR_MMCLOSED:    sprintf( errmsg, "MM is closed" );                          break;
-      case GWERR_MMNORESPOND:   sprintf( errmsg, "MM response timed out" );                     break;
-      case GWERR_PACKETSEND:    sprintf( errmsg, "Failed to send cmd packet" );                   break;
-      case GWERR_TOOLARGE:    sprintf( errmsg, "Command or response packet too large" );              break;
-      case GWERR_XACTALLOC:   sprintf( errmsg, "Transaction Object allocation problem" );             break;
-      default:          sprintf( errmsg, "Unknown error" );                         break;
-    }
-
-    printf( "Error: 0x%X (%s), s_ds_.iters_ctrl_loop_ = %d.\n", (int)gwerr, errmsg, s_ds_.iters_ctrl_loop_ );
   }
 
   ///////////////////////////////////////////////////////////////
@@ -426,4 +368,64 @@ namespace sensoray
     printf( "Elapsed time (seconds): %lu\n", (u32)tElapsed );
     printf( "Average I/O cycle time (msec):  %.2f\n", tElapsed / (double)s_ds_.iters_ctrl_loop_ * 1000.0 );
   }
+
+
+  ////////////////////////////////
+  // Display gateway error info.
+
+  void CSensoray3DofIODriver::showErrorInfo( u32 gwerr, u8 *arg_iom_status )
+  {
+    char  errmsg[128];
+    int   ExtraInfo = gwerr & ~GWERRMASK;
+    u8    status;
+
+    switch ( gwerr & GWERRMASK )
+    {
+      case GWERR_IOMSPECIFIC:
+
+        status = arg_iom_status[ExtraInfo];
+
+        sprintf( errmsg, "Iom-specific error on iomport %d", ExtraInfo );
+
+        if ( arg_iom_status )
+        {
+          switch( s_ds_.iom_types_[ExtraInfo] )
+          {
+            case 2608:
+              if ( status & STATUS_2608_CALERR )  strcat( errmsg, ": using default cal values" );
+              break;
+
+            case 2610:
+              if ( status & STATUS_2610_STRM )  strcat( errmsg, ": serial stream error" );
+              break;
+
+            case 2650:
+              if ( status & STATUS_2650_DRVR )  strcat( errmsg, ": relay coil driver fault" );
+              if ( status & STATUS_2650_STRM )  strcat( errmsg, ": serial stream error" );
+              break;
+            case 2652:
+              if ( status & STATUS_2652_STRM )  strcat( errmsg, ": serial stream error" );
+              break;
+          }
+        }
+
+        break;
+
+      case GWERR_BADVALUE:    sprintf( errmsg, "Illegal value for argument %d", ExtraInfo );        break;
+      case GWERR_IOMCLOSED:   sprintf( errmsg, "Iom is not open" );                       break;
+      case GWERR_IOMERROR:    sprintf( errmsg, "Iom CERR asserted" );                       break;
+      case GWERR_IOMNORESPOND:  sprintf( errmsg, "Bad module response from iomport %d", ExtraInfo );    break;
+      case GWERR_IOMRESET:    sprintf( errmsg, "Module RST asserted" );                     break;
+      case GWERR_IOMTYPE:     sprintf( errmsg, "Action not supported by iom type" );                break;
+      case GWERR_MMCLOSED:    sprintf( errmsg, "MM is closed" );                          break;
+      case GWERR_MMNORESPOND:   sprintf( errmsg, "MM response timed out" );                     break;
+      case GWERR_PACKETSEND:    sprintf( errmsg, "Failed to send cmd packet" );                   break;
+      case GWERR_TOOLARGE:    sprintf( errmsg, "Command or response packet too large" );              break;
+      case GWERR_XACTALLOC:   sprintf( errmsg, "Transaction Object allocation problem" );             break;
+      default:          sprintf( errmsg, "Unknown error" );                         break;
+    }
+
+    printf( "Error: 0x%X (%s), s_ds_.iters_ctrl_loop_ = %d.\n", (int)gwerr, errmsg, s_ds_.iters_ctrl_loop_ );
+  }
+
 } /* namespace sensoray */
