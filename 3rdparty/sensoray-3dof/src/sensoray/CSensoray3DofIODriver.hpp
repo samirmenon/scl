@@ -207,7 +207,6 @@ namespace sensoray
      * vector */
     void showErrorInfo( u32 gwerr, u8 *iom_status_ );
 
-    u32 comError( u32 gwerr, const char *fname, int evalComReject );
     void schedIo( void* x );
     int ioControlLoop( void );
 

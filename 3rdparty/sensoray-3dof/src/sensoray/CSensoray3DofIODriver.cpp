@@ -96,46 +96,6 @@ namespace sensoray
     printf( "Error: 0x%X (%s), s_ds_.iters_ctrl_loop_ = %d.\n", (int)gwerr, errmsg, s_ds_.iters_ctrl_loop_ );
   }
 
-  //////////////////////////////////////
-  // Process comport error, if any.
-
-  u32 CSensoray3DofIODriver::comError( u32 gwerr, const char *fname, int evalComReject )
-  {
-    char errmsg[128];
-
-    // If transaction error was detected ...
-    if ( gwerr & GWERRMASK )
-    {
-      switch ( gwerr & GWERRMASK )
-      {
-        case GWERR_BADVALUE:    sprintf( errmsg, "Illegal value for argument %lu", gwerr & ~GWERRMASK );  break;
-        case GWERR_IOMRESET:    sprintf( errmsg, "Module RST asserted" );                 break;
-        case GWERR_MMCLOSED:    sprintf( errmsg, "MM is closed" );                      break;
-        case GWERR_MMNORESPOND:   sprintf( errmsg, "MM response timed out" );                 break;
-        case GWERR_PACKETSEND:    sprintf( errmsg, "Failed to send cmd packet" );               break;
-        case GWERR_TOOLARGE:    sprintf( errmsg, "Command or response packet too large" );          break;
-        case GWERR_XACTALLOC:   sprintf( errmsg, "Transaction Object allocation problem" );         break;
-        default:          sprintf( errmsg, "Unknown error" );                     break;
-      }
-    }
-
-    // If comport error was detected ...
-    else if ( gwerr & COM_FRAMINGERROR )  sprintf( errmsg, "Framing error" );
-    else if ( gwerr & COM_PARITYERROR )   sprintf( errmsg, "Parity error" );
-    else if ( gwerr & COM_OVERFLOWERROR ) sprintf( errmsg, "Receiver overflow" );
-
-    // If comport command was rejected and checking for this condition is enabled ...
-    else if ( ( ( gwerr & COM_REJECTED ) != 0 ) && ( evalComReject == s_ds_.com_reject_evaluate_ ) )
-      sprintf( errmsg, "Command rejected" );
-
-    // If no errors were detected ...
-    else
-      return GWERR_NONE;
-
-    printf( "%s() error: 0x%lX (%s), s_ds_.iters_ctrl_loop_ = %d.\n", fname, gwerr, errmsg, s_ds_.iters_ctrl_loop_ );
-    return gwerr;
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // Detect and register all i/o modules connected to the 2601 main module.
 
