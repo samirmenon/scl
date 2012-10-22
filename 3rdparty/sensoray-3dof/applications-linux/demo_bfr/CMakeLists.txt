@@ -17,17 +17,17 @@ SET(SENSORAY_LINUX_INC_DIR ${SENSORAY_INC_DIR}/linux)
 INCLUDE_DIRECTORIES(${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR})
 
 #Set all the sources required for the library
-SET(SENSORAY_ALL_SRC ${SENSORAY_DEMO_DIR}/bfr_demo.c)
+SET(SENSORAY_ALL_SRC ${SENSORAY_DEMO_DIR}/bfr_demo.cpp)
 
 ######################END OF SRC DEFS##############
 #Add debug definitions
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
-  SET(CMAKE_C_FLAGS_DEBUG "-Wall -m32 -ggdb -O0 -g -pg")
+  SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -m32 -ggdb -O0 -g -pg")
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 #Add release definitions
 IF(CMAKE_BUILD_TYPE MATCHES Release)
-  SET(CMAKE_C_FLAGS_RELEASE "-Wall -m32 -O3")
+  SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -m32 -O3")
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 #Define the libraries to be built (cmake sources + 3rdparty libs)
