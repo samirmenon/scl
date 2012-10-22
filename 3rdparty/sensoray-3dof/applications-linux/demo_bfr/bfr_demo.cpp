@@ -28,31 +28,31 @@ extern "C" {
 
 
 // CONSTANTS //////////////////////////////////////////////////////////////////
-const sensoray::SSensoray3DofIO s_ds_;
+sensoray::SSensoray3DofIO s_ds_;
 
 
 // PUBLIC STORAGE ///////////////////////////////////////////////////////////////
 
-int		iters = 0;						// Number of times through the control loop so far.
+int		iters_ctrl_loop_ = 0;						// Number of times through the control loop so far.
 
-u16		nboards;						// Number of detected iom's.
-u16		IomType[16];					// Detected iom types.
-u8		IomStatus[16];					// Iom status info.
+u16		num_iom_boards_;						// Number of detected iom's.
+u16		iom_types_[16];					// Detected iom types.
+u8		iom_status_[16];					// Iom status info.
 
-u8		nAouts2608[16];					// Number of dac channels (applies to 2608 only).
+u8		num_2608_aouts_at_iom_[16];					// Number of dac channels (applies to 2608 only).
 
 // Input data from the i/o system.
-u16		LinkFlags;						// IOM port Link status.
-u8		LockFlags;						// Interlock power status.
-u8		DinStates[6];					// Digital input states (48 channels).
-DOUBLE	Ain[16];						// Analog input voltages.
+u16		iom_link_flags_;						// IOM port Link status.
+u8		interlock_flags_;						// Interlock power status.
+u8		num_digital_in_states_[6];					// Digital input states (48 channels).
+DOUBLE	analog_in_voltages_[16];						// Analog input voltages.
 
 // Output data to the i/o system.
-u8		RelayStates			= 0;		// Relay states.
-u8		DoutStates[6]		= { 0, };	// Digital output states (48 channels).
-DOUBLE	Aout[MAX_NUM_AOUTS]	= { 0, };	// Analog output voltages.
-u32		Counts[4]			= { 0, };	// Counter data.
-u16		Timestamp[4]		= { 0, };	// Counter timestamps.
+u8		num_relay_states_			= 0;		// Relay states.
+u8		num_digital_out_states_[6]		= { 0, };	// Digital output states (48 channels).
+DOUBLE	analog_out_voltages_[MAX_NUM_AOUTS]	= { 0, };	// Analog output voltages.
+u32		counter_counts_[4]			= { 0, };	// Counter data.
+u16		counter_timestamp_[4]		= { 0, };	// Counter timestamps.
 
 // FORWARD REFERENCES ////////////////////////////////////////////////////////////
 
@@ -111,7 +111,7 @@ int main()
 ////////////////////////////////
 // Display gateway error info.
 
-void ShowErrorInfo( u32 gwerr, u8 *IomStatus )
+void ShowErrorInfo( u32 gwerr, u8 *iom_status_ )
 {
 	char	errmsg[128];
 	int		ExtraInfo = gwerr & ~GWERRMASK;
@@ -121,13 +121,13 @@ void ShowErrorInfo( u32 gwerr, u8 *IomStatus )
 	{
 	case GWERR_IOMSPECIFIC:
 
-		status = IomStatus[ExtraInfo];
+		status = iom_status_[ExtraInfo];
 
 		sprintf( errmsg, "Iom-specific error on iomport %d", ExtraInfo );
 
-		if ( IomStatus )
+		if ( iom_status_ )
 		{
-			switch( IomType[ExtraInfo] )
+			switch( iom_types_[ExtraInfo] )
 			{
 			case 2608:
 				if ( status & STATUS_2608_CALERR )	strcat( errmsg, ": using default cal values" );
@@ -163,7 +163,7 @@ void ShowErrorInfo( u32 gwerr, u8 *IomStatus )
 	default:					sprintf( errmsg, "Unknown error" );													break;
 	}
 
-	printf( "Error: 0x%X (%s), iters = %d.\n", (int)gwerr, errmsg, iters );
+	printf( "Error: 0x%X (%s), iters_ctrl_loop_ = %d.\n", (int)gwerr, errmsg, iters_ctrl_loop_ );
 }
 
 //////////////////////////////////////
@@ -202,7 +202,7 @@ u32 ComError( u32 gwerr, const char *fname, int evalComReject )
 	else
 		return GWERR_NONE;
 
-	printf( "%s() error: 0x%lX (%s), iters = %d.\n", fname, gwerr, errmsg, iters );
+	printf( "%s() error: 0x%lX (%s), iters_ctrl_loop_ = %d.\n", fname, gwerr, errmsg, iters_ctrl_loop_ );
 	return gwerr;
 }
 
@@ -215,9 +215,9 @@ int DetectAllIoms( void )
 	u32	faults;
 
 	// Detect and register all iom's.
-	if ( ( faults = S26_RegisterAllIoms( s_ds_.mm_handle_, s_ds_.timeout_gateway_ms_, &nboards, IomType, IomStatus, s_ds_.retries_gateway_ ) ) != 0 )
+	if ( ( faults = S26_RegisterAllIoms( s_ds_.mm_handle_, s_ds_.timeout_gateway_ms_, &num_iom_boards_, iom_types_, iom_status_, s_ds_.retries_gateway_ ) ) != 0 )
 	{
-		ShowErrorInfo( faults, IomStatus );
+		ShowErrorInfo( faults, iom_status_ );
 		return 0;	// failed.
 	}
 
@@ -225,8 +225,8 @@ int DetectAllIoms( void )
 	printf( "DETECTED IOM'S:\n" );
 	for ( i = 0; i < 16; i++ )
 	{
-		if ( IomType[i] )
-			printf( " port %2.2d: %4.4d\n", i, IomType[i] );
+		if ( iom_types_[i] )
+			printf( " port %2.2d: %4.4d\n", i, iom_types_[i] );
 	}
 
 	return 1;	// success.
@@ -242,28 +242,28 @@ static void sched_io( void* x )
 	u8		i;
 
 	// Schedule some 2601 actions.
-	S26_Sched2601_GetLinkStatus( x, &LinkFlags );
-	S26_Sched2601_GetInterlocks( x, &LockFlags );
+	S26_Sched2601_GetLinkStatus( x, &iom_link_flags_ );
+	S26_Sched2601_GetInterlocks( x, &interlock_flags_ );
 
 	// Schedule some iom actions.  For each iom port ...
 	for ( i = 0; i < 16; i++ )
 	{
 		// Schedule some i/o actions based on module type.
-		switch( IomType[i] )
+		switch( iom_types_[i] )
 		{
 		case 2608:
 			// Update reference standards and read analog inputs
 			S26_Sched2608_GetCalData( x, i, 0 );					// Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
-			S26_Sched2608_GetAins( x, i, Ain, ADC_INTEGRATED );	// Fetch the analog inputs.
+			S26_Sched2608_GetAins( x, i, analog_in_voltages_, ADC_INTEGRATED );	// Fetch the analog inputs.
 
 			// Program all analog outputs.
-			for ( chan = 0; chan < (int)nAouts2608[chan]; chan++ )
-				S26_Sched2608_SetAout( x, i, (u8)chan, Aout[chan] );
+			for ( chan = 0; chan < (int)num_2608_aouts_at_iom_[chan]; chan++ )
+			  S26_Sched2608_SetAout( x, i, (u8)chan, analog_out_voltages_[chan] );
 			break;
 
 		case 2610:
-			S26_Sched2610_SetOutputs( x, i, DoutStates );		// Program the dio outputs.
-			S26_Sched2610_GetInputs( x, i, DinStates );			// Fetch physical inputs.
+			S26_Sched2610_SetOutputs( x, i, num_digital_out_states_ );		// Program the dio outputs.
+			S26_Sched2610_GetInputs( x, i, num_digital_in_states_ );			// Fetch physical inputs.
 			break;
 
 		case 2620:
@@ -273,14 +273,14 @@ static void sched_io( void* x )
 
 			// Read latches.
 			for ( chan = 0; chan < 4; chan++ )
-				S26_Sched2620_GetCounts( x, i, (u8)chan, &Counts[chan], &Timestamp[chan] );	// Fetch values from all channel latches.
+			  S26_Sched2620_GetCounts( x, i, (u8)chan, &counter_counts_[chan], &counter_timestamp_[chan] );	// Fetch values from all channel latches.
 			break;
 
 		case 2650:
-			S26_Sched2650_SetOutputs( x, i, &RelayStates );		// Program the relays.
+			S26_Sched2650_SetOutputs( x, i, &num_relay_states_ );		// Program the relays.
 			break;
 		case 2652:
-			S26_Sched2652_SetOutputs( x, i, &RelayStates );		// Program the relays.
+			S26_Sched2652_SetOutputs( x, i, &num_relay_states_ );		// Program the relays.
 			break;
 		}
 	}
@@ -342,7 +342,7 @@ static int SerialIo( u8 ComSrc, u8 ComDst )
 	u32		comstatus;
 
 	// Construct a message.
-	sprintf( SndBuf, "12345678901234567890123456:%d\n", iters );
+	sprintf( SndBuf, "12345678901234567890123456:%d\n", iters_ctrl_loop_ );
 	msglen = strlen( SndBuf );
 
 	// Attempt to send message.  Ignore the COM_REJECT error, which is caused by insufficient transmit buffer free space.
@@ -392,28 +392,28 @@ static int io_control_loop( void )
 		// Compute the next output states -----------------------------------------------------------
 
 		// Bump the relay state images.
-		RelayStates++;
+		num_relay_states_++;
 
 		// Bump the dio state images.
-		if ( ++DoutStates[0] == 0 )
-		if ( ++DoutStates[1] == 0 )
-		if ( ++DoutStates[2] == 0 )
-		if ( ++DoutStates[3] == 0 )
-		if ( ++DoutStates[4] == 0 )
-		++DoutStates[5];
+		if ( ++num_digital_out_states_[0] == 0 )
+		if ( ++num_digital_out_states_[1] == 0 )
+		if ( ++num_digital_out_states_[2] == 0 )
+		if ( ++num_digital_out_states_[3] == 0 )
+		if ( ++num_digital_out_states_[4] == 0 )
+		++num_digital_out_states_[5];
 
 		// Bump analog output voltage images.
 		for ( chan = 0; chan < MAX_NUM_AOUTS; chan++ )
-			Aout[chan] = (double)( chan + 1 );
+			analog_out_voltages_[chan] = (double)( chan + 1 );
 
 		// Schedule and execute the gateway I/O --------------------------------------------------------------
 
 		// First do some serial io.
 		if ( SerialIo( s_ds_.com_src_a_, s_ds_.com_dest_a_ ) )
-			return iters;
+			return iters_ctrl_loop_;
 
 		if ( SerialIo( s_ds_.com_src_b_, s_ds_.com_dest_b_ ) )
-			return iters;
+			return iters_ctrl_loop_;
 
 		// Start a new transaction.
 		x = CreateTransaction( s_ds_.mm_handle_ );
@@ -442,7 +442,7 @@ static int io_control_loop( void )
 			tMax = tDiff;
 
 		// Bump the loop count.
-		iters++;
+		iters_ctrl_loop_++;
 
 		// Exit on keypress.
 		if ( kbhit() )
@@ -456,7 +456,7 @@ static int io_control_loop( void )
 	printf( "Worst-case I/O time (msec):  %d\n", tMax / 1000 );
 
 	// Return cycle count.
-	return iters;
+	return iters_ctrl_loop_;
 }
 
 /////////////////////////////////////////////////////////
@@ -505,11 +505,11 @@ static void io_control_main( void )
 	for ( i = 0; i < 16; i++ )
 	{
 		// Schedule some initialization actions based on iom type.
-		switch ( IomType[i] )
+		switch ( iom_types_[i] )
 		{
 		case 2608:
 
-			S26_Sched2608_ReadEeprom( x, i, 0, &nAouts2608[i] );	// Get the dac channel count.
+			S26_Sched2608_ReadEeprom( x, i, 0, &num_2608_aouts_at_iom_[i] );	// Get the dac channel count.
 			S26_Sched2608_SetLineFreq( x, i, LINEFREQ_60HZ );		// 60 Hz line frequency (default).
 			S26_Sched2608_SetAinTypes( x, i, ain_types );			// Declare the analog input types.
 
@@ -550,7 +550,7 @@ static void io_control_main( void )
 	StartTime = time( NULL );
 
 	// Run control loop until terminated or error.
-	iters = io_control_loop();
+	iters_ctrl_loop_ = io_control_loop();
 
 	// Stop benchmark timer.
 	tElapsed = difftime( time( NULL ), StartTime );
@@ -560,20 +560,20 @@ static void io_control_main( void )
 	// For each iom port ...
 	for ( i = 0; i < 16; i++ )
 	{
-		switch ( IomType[i] )
+		switch ( iom_types_[i] )
 		{
 		case 2608:
 			// Print the analog inputs.
 			printf( "AIN states:\n" );
 			for ( j = 0; j < 16; j++ )
-				printf( " %8f\n", Ain[j] );
+				printf( " %8f\n", analog_in_voltages_[j] );
 			break;
 
 		case 2610:
 			// Print the dio input states.
 			printf( "DIN states:" );
 			for ( j = 0; j < 6; j++ )
-				printf( " %2.2hhX", DinStates[j] );
+				printf( " %2.2hhX", num_digital_in_states_[j] );
 			printf( "\n" );
 			break;
 
@@ -581,7 +581,7 @@ static void io_control_main( void )
 			// Print the dio input states.
 			printf( "Counter states:" );
 			for ( j = 0; j < 4; j++ )
-				printf( "%d:%8.8lX ", j, Counts[j] );
+				printf( "%d:%8.8lX ", j, counter_counts_[j] );
 			printf( "\n" );
 			break;
 
@@ -594,9 +594,9 @@ static void io_control_main( void )
 	}
 
 	// Report benchmark results.
-	printf( "Control loop cycles:    %d\n", iters );
+	printf( "Control loop cycles:    %d\n", iters_ctrl_loop_ );
 	printf( "Elapsed time (seconds): %lu\n", (u32)tElapsed );
-	printf( "Average I/O cycle time (msec):  %.2f\n", tElapsed / (double)iters * 1000.0 );
+	printf( "Average I/O cycle time (msec):  %.2f\n", tElapsed / (double)iters_ctrl_loop_ * 1000.0 );
 }
 
 ////////////////////////////////////////////////////////
@@ -624,8 +624,8 @@ int io_exec( void* x )
 	GWERR	err;
 
 	// Execute the scheduled i/o.  Report error if one was detected.
-	if ( ( err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, IomStatus ) ) != 0 )
-		ShowErrorInfo( err, IomStatus );
+	if ( ( err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, iom_status_ ) ) != 0 )
+		ShowErrorInfo( err, iom_status_ );
 
 	return (int)err;
 }
