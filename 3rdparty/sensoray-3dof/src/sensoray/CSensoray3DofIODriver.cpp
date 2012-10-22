@@ -164,7 +164,7 @@ namespace sensoray
             S26_Sched2608_GetAins( x, i, s_ds_.analog_in_voltages_, ADC_INTEGRATED ); // Fetch the analog inputs.
 
             // Program all analog outputs.
-            for ( chan = 0; chan < (int)s_ds_.num_2608_aouts_at_iom_[chan]; chan++ )
+            for ( chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_[chan]; chan++ )
               S26_Sched2608_SetAout( x, i, (u8)chan, s_ds_.analog_out_voltages_[chan] );
             break;
 
@@ -265,7 +265,7 @@ namespace sensoray
       {
         case 2608:
 
-          S26_Sched2608_ReadEeprom( x, i, 0, &s_ds_.num_2608_aouts_at_iom_[i] );  // Get the dac channel count.
+          S26_Sched2608_ReadEeprom( x, i, 0, &s_ds_.s2608_num_aouts_at_iom_[i] );  // Get the dac channel count.
           S26_Sched2608_SetLineFreq( x, i, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
           S26_Sched2608_SetAinTypes( x, i, ain_types );     // Declare the analog input types.
 
