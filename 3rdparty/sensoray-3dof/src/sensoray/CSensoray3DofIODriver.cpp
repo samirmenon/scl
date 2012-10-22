@@ -98,46 +98,6 @@ namespace sensoray
     return false;
   }
 
-  ///////////////////////////////////////////////////////////////
-  // Schedule some gateway I/O into transaction object x
-  void CSensoray3DofIODriver::schedIo( void* x )
-  {
-    int   chan;
-    u8    i;
-
-    // Schedule some 2601 actions.
-    S26_Sched2601_GetLinkStatus( x, &s_ds_.iom_link_flags_ );
-    S26_Sched2601_GetInterlocks( x, &s_ds_.interlock_flags_ );
-
-    // Schedule some iom actions.  For each iom port ...
-    for ( i = 0; i < 16; i++ )
-    {
-      // Schedule some i/o actions based on module type.
-      switch( s_ds_.iom_types_[i] )
-      {
-        case 2608:
-          // Update reference standards and read analog inputs
-          S26_Sched2608_GetCalData( x, i, 0 );          // Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
-          S26_Sched2608_GetAins( x, i, s_ds_.analog_in_voltages_, ADC_INTEGRATED ); // Fetch the analog inputs.
-
-          // Program all analog outputs.
-          for ( chan = 0; chan < (int)s_ds_.num_2608_aouts_at_iom_[chan]; chan++ )
-            S26_Sched2608_SetAout( x, i, (u8)chan, s_ds_.analog_out_voltages_[chan] );
-          break;
-
-        case 2620:
-          // Transfer counter cores to latches.
-          S26_Sched2620_SetControlReg( x, i, s_ds_.s2620_channel_pwm_, 2 );
-          S26_Sched2620_SetControlReg( x, i, s_ds_.s2620_channel_encoder_, 2 );
-
-          // Read latches.
-          for ( chan = 0; chan < 4; chan++ )
-            S26_Sched2620_GetCounts( x, i, (u8)chan, &s_ds_.counter_counts_[chan], &s_ds_.counter_timestamp_[chan] ); // Fetch values from all channel latches.
-          break;
-      }
-    }
-  }
-
   ///////////////////////////////////////////////////////
   // Main control loop.  Returns loop iteration count.
 
@@ -185,7 +145,40 @@ namespace sensoray
 
 
       // Schedule all I/O into the transaction.
-      schedIo( x );
+      int   chan;
+      u8    i;
+
+      // Schedule some 2601 actions.
+      S26_Sched2601_GetLinkStatus( x, &s_ds_.iom_link_flags_ );
+      S26_Sched2601_GetInterlocks( x, &s_ds_.interlock_flags_ );
+
+      // Schedule some iom actions.  For each iom port ...
+      for ( i = 0; i < 16; i++ )
+      {
+        // Schedule some i/o actions based on module type.
+        switch( s_ds_.iom_types_[i] )
+        {
+          case 2608:
+            // Update reference standards and read analog inputs
+            S26_Sched2608_GetCalData( x, i, 0 );          // Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
+            S26_Sched2608_GetAins( x, i, s_ds_.analog_in_voltages_, ADC_INTEGRATED ); // Fetch the analog inputs.
+
+            // Program all analog outputs.
+            for ( chan = 0; chan < (int)s_ds_.num_2608_aouts_at_iom_[chan]; chan++ )
+              S26_Sched2608_SetAout( x, i, (u8)chan, s_ds_.analog_out_voltages_[chan] );
+            break;
+
+          case 2620:
+            // Transfer counter cores to latches.
+            S26_Sched2620_SetControlReg( x, i, s_ds_.s2620_channel_pwm_, 2 );
+            S26_Sched2620_SetControlReg( x, i, s_ds_.s2620_channel_encoder_, 2 );
+
+            // Read latches.
+            for ( chan = 0; chan < 4; chan++ )
+              S26_Sched2620_GetCounts( x, i, (u8)chan, &s_ds_.counter_counts_[chan], &s_ds_.counter_timestamp_[chan] ); // Fetch values from all channel latches.
+            break;
+        }
+      }
 
       // Cache the i/o start time.
       gettimeofday( &tStart, 0 );

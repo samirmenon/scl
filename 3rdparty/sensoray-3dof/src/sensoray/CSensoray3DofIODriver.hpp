@@ -218,7 +218,6 @@ namespace sensoray
      * vector */
     void showErrorInfo( u32 gwerr, u8 *iom_status_ );
 
-    void schedIo( void* x );
     int ioControlLoop( void );
 
     // Static fn. FORWARD REFERENCES ////////////////////////////////////////////////////////////
