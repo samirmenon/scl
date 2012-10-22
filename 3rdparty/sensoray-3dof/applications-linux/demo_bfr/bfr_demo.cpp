@@ -15,6 +15,8 @@ extern "C" {
 }
 #endif
 
+#include <sensoray/CSensoray3DofIO.hpp>
+
 #include <stdio.h>
 #include <string.h>
 #include <termios.h>
@@ -26,33 +28,53 @@ extern "C" {
 
 
 // CONSTANTS //////////////////////////////////////////////////////////////////
-const std::string mm_ip_addr_("10.10.10.1");		// Set this to the MM's IP address.
+const sensoray::SSensoray3DofIO s_ds_;
 
-const int mm_handle_ =0;					// This is the first MM in the system, so it is number 0.
+/** Set this to the MM's IP address.*/
+const std::string mm_ip_addr_("10.10.10.1");
 
-const int timeout_gateway_ms_	= 100;					// This many milliseconds before timing out or retry gateway transactions.
-const int timeout_comport_ms_	= 100;					// This many milliseconds before timing out or retry comport transactions.
+/** This is the first MM in the system, so it is number 0.*/
+const int mm_handle_ =0;
 
-const int retries_com_ = 50;					// Do up to this many comport retries.
-const int retries_gateway_	 = 50;					// Do up to this many gateway retries.
+/** This many milliseconds before timing out or retry gateway transactions.*/
+const int timeout_gateway_ms_	= 100;
+/** This many milliseconds before timing out or retry comport transactions.*/
+const int timeout_comport_ms_	= 100;
+
+/** Do up to this many comport retries. */
+const int retries_com_ = 50;
+/** Do up to this many gateway retries. */
+const int retries_gateway_	 = 50;
 
 // 2620 channel usage for this app:
-const int s2620_channel_width_ = 0;					// Pulse width measurement.
-const int s2620_channel_freq_	 = 1;					// Frequency counter.
-const int s2620_channel_pwm_ = 2;					// Pulse width modulated output.
-const int s2620_channel_encoder_ = 3;					// Incremental encoder input.
+/** Pulse width measurement.*/
+const int s2620_channel_width_ = 0;
+/** Frequency counter. */
+const int s2620_channel_freq_ = 1;
+/** Pulse width modulated output. */
+const int s2620_channel_pwm_ = 2;
+/** Incremental encoder input. */
+const int s2620_channel_encoder_ = 3;
 
 // Comport usage for this app.  With two null-modem cables, we can loop back two ports into two other ports:
-const u8 com_src_a_ = 	LOGDEV_COM2;			// Transmit A.
-const u8 com_dest_a_ = LOGDEV_COM1;			// Receive A.
-const u16 com_baud_a_ = SIO_BR_9600;			// Baudrate for A.
+/** Transmit A. */
+const u8 com_src_a_ = 	LOGDEV_COM2;
+/** Receive A. */
+const u8 com_dest_a_ = LOGDEV_COM1;
+/** Baudrate for A. */
+const u16 com_baud_a_ = SIO_BR_9600;
 
-const u8 com_src_b_ = LOGDEV_COM4;			// Transmit B.
-const u8 com_dest_b_ = LOGDEV_COM3;			// Receive B.
-const u16 com_baud_b_ = SIO_BR_115200;		// Baudrate for B.
+/** Transmit B. */
+const u8 com_src_b_ = LOGDEV_COM4;
+/** Receive B. */
+const u8 com_dest_b_ = LOGDEV_COM3;
+/** Baudrate for B. */
+const u16 com_baud_b_ = SIO_BR_115200;
 
-const int com_reject_ignore_ = 0;					// Ignore the comport REJ flag.
-const int com_reject_evaluate_	 = 1;					// Treat comport REJ flag as an error.
+/** Ignore the comport REJ flag. */
+const int com_reject_ignore_ = 0;
+/** Treat comport REJ flag as an error. */
+const int com_reject_evaluate_	 = 1;
 
 // PUBLIC STORAGE ///////////////////////////////////////////////////////////////
 
