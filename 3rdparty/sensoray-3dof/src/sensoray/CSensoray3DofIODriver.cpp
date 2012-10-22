@@ -99,7 +99,7 @@ namespace sensoray
   //////////////////////////////////////
   // Process comport error, if any.
 
-  u32 CSensoray3DofIODriver::ComError( u32 gwerr, const char *fname, int evalComReject )
+  u32 CSensoray3DofIODriver::comError( u32 gwerr, const char *fname, int evalComReject )
   {
     char errmsg[128];
 
@@ -139,7 +139,7 @@ namespace sensoray
   /////////////////////////////////////////////////////////////////////////////
   // Detect and register all i/o modules connected to the 2601 main module.
 
-  int CSensoray3DofIODriver::DetectAllIoms( void )
+  int CSensoray3DofIODriver::detectAllIoms( void )
   {
     int i;
     u32 faults;
@@ -165,7 +165,7 @@ namespace sensoray
 
   ///////////////////////////////////////////////////////////////
   // Schedule some gateway I/O into transaction object x
-  void CSensoray3DofIODriver::sched_io( void* x )
+  void CSensoray3DofIODriver::schedIo( void* x )
   {
     int   chan;
     u8    i;
@@ -218,7 +218,7 @@ namespace sensoray
   ///////////////////////////////////////////////////////
   // Main control loop.  Returns loop iteration count.
 
-  int CSensoray3DofIODriver::io_control_loop( void )
+  int CSensoray3DofIODriver::ioControlLoop( void )
   {
     void*   x;        // Transaction object.
     u8    chan;
@@ -254,16 +254,16 @@ namespace sensoray
       // Schedule and execute the gateway I/O --------------------------------------------------------------
 
       // Start a new transaction.
-      x = CreateTransaction( s_ds_.mm_handle_ );
+      x = createTransaction( s_ds_.mm_handle_ );
 
       // Schedule all I/O into the transaction.
-      sched_io( x );
+      schedIo( x );
 
       // Cache the i/o start time.
       gettimeofday( &tStart, 0 );
 
       // Execute the scheduled i/o and then release the transaction object.  Exit loop if there was no error.
-      if ( io_exec( x ) )
+      if ( ioExec( x ) )
       {
         printf( "Terminating i/o control loop.\n" );
         break;
@@ -293,7 +293,7 @@ namespace sensoray
   /////////////////////////////////////////////////////////
   // Initialize all I/O and run control loop "forever."
 
-  void CSensoray3DofIODriver::io_control_main( void )
+  void CSensoray3DofIODriver::ioControlMain( void )
   {
     u8    i;
     int   j;
@@ -325,7 +325,7 @@ namespace sensoray
     // INITIALIZE IOM's ================================================================================
 
     // Start a new transaction.
-    x = CreateTransaction( s_ds_.mm_handle_ );
+    x = createTransaction( s_ds_.mm_handle_ );
 
     // Schedule the I/O actions into the transaction.
     // For each iom port on the MM ...
@@ -366,7 +366,7 @@ namespace sensoray
     }
 
     // Execute the scheduled i/o and release the transaction object.
-    if ( io_exec( x ) )
+    if ( ioExec( x ) )
       return;
 
     // MAIN CONTROL LOOP ====================================================================================
@@ -377,7 +377,7 @@ namespace sensoray
     StartTime = time( NULL );
 
     // Run control loop until terminated or error.
-    s_ds_.iters_ctrl_loop_ = io_control_loop();
+    s_ds_.iters_ctrl_loop_ = ioControlLoop();
 
     // Stop benchmark timer.
     tElapsed = difftime( time( NULL ), StartTime );
@@ -430,7 +430,7 @@ namespace sensoray
   // Start a new transaction.
   // Returns non-zero transaction handle if successful.
 
-  void* CSensoray3DofIODriver::CreateTransaction( HBD hbd )
+  void* CSensoray3DofIODriver::createTransaction( HBD hbd )
   {
     // Create a new transaction.
     void* x = S26_SchedOpen( hbd, s_ds_.retries_gateway_ );
@@ -446,7 +446,7 @@ namespace sensoray
   // Execute all scheduled i/o.
   // Returns zero if successful.
 
-  int CSensoray3DofIODriver::io_exec( void* x )
+  int CSensoray3DofIODriver::ioExec( void* x )
   {
     GWERR err;
 

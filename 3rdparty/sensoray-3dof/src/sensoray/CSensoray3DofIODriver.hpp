@@ -42,7 +42,6 @@ extern "C" {
 }
 #endif
 
-#include <termios.h>
 #include <string>
 
 namespace sensoray
@@ -208,26 +207,24 @@ namespace sensoray
      * vector */
     void showErrorInfo( u32 gwerr, u8 *iom_status_ );
 
-    u32 ComError( u32 gwerr, const char *fname, int evalComReject );
-    void sched_io( void* x );
-    int io_control_loop( void );
+    u32 comError( u32 gwerr, const char *fname, int evalComReject );
+    void schedIo( void* x );
+    int ioControlLoop( void );
 
     // Static fn. FORWARD REFERENCES ////////////////////////////////////////////////////////////
 
-    int  io_exec( void* x );
-    void io_control_main( void );
-    int  DetectAllIoms( void );
+    int  ioExec( void* x );
+    void ioControlMain( void );
+    int  detectAllIoms( void );
 
-    void* CreateTransaction( HBD hbd );
+    void* createTransaction( HBD hbd );
 
   private:
+    /** The data structore with all the important vars etc. */
     SSensoray3DofIO s_ds_;
 
-    int  totalSent;
-
-    int        peek_character;
-    struct termios initial_settings;
-    struct termios new_settings;
+    int totalSent;
+    int peek_character;
   };
 
 } /* namespace sensoray */
