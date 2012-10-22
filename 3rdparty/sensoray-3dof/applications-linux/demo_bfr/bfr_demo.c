@@ -31,20 +31,16 @@ const int s2620_channel_pwm_ = 2;					// Pulse width modulated output.
 const int s2620_channel_encoder_ = 3;					// Incremental encoder input.
 
 // Comport usage for this app.  With two null-modem cables, we can loop back two ports into two other ports:
-const u8 COM_SRC_A = 	LOGDEV_COM2;			// Transmit A.
-const u8 COM_DST_A = LOGDEV_COM1;			// Receive A.
-const u16 COM_BR_A = SIO_BR_9600;			// Baudrate for A.
+const u8 com_src_a_ = 	LOGDEV_COM2;			// Transmit A.
+const u8 com_dest_a_ = LOGDEV_COM1;			// Receive A.
+const u16 com_baud_a_ = SIO_BR_9600;			// Baudrate for A.
 
-const u8 COM_SRC_B = LOGDEV_COM4;			// Transmit B.
-const u8 COM_DST_B = LOGDEV_COM3;			// Receive B.
-const u16 COM_BR_B = SIO_BR_115200;		// Baudrate for B.
+const u8 com_src_b_ = LOGDEV_COM4;			// Transmit B.
+const u8 com_dest_b_ = LOGDEV_COM3;			// Receive B.
+const u16 com_baud_b_ = SIO_BR_115200;		// Baudrate for B.
 
-const int COM_REJECT_IGNORE = 0;					// Ignore the comport REJ flag.
-const int COM_REJECT_EVAL	 = 1;					// Treat comport REJ flag as an error.
-
-// TYPES ////////////////////////////////////////////////////////////////////////
-
-typedef void 	*HX;		// Handle to a gateway transaction object.
+const int com_reject_ignore_ = 0;					// Ignore the comport REJ flag.
+const int com_reject_evaluate_	 = 1;					// Treat comport REJ flag as an error.
 
 // PUBLIC STORAGE ///////////////////////////////////////////////////////////////
 
@@ -71,10 +67,10 @@ u16		Timestamp[4]		= { 0, };	// Counter timestamps.
 
 // FORWARD REFERENCES ////////////////////////////////////////////////////////////
 
-static int	io_exec( HX x );
+static int	io_exec( void* x );
 static void io_control_main( void );
 static int	DetectAllIoms( void );
-static HX   CreateTransaction( HBD hbd );
+static void*   CreateTransaction( HBD hbd );
 
 static void	kbopen( void );
 static void	kbclose( void );
@@ -210,7 +206,7 @@ u32 ComError( u32 gwerr, const char *fname, int evalComReject )
 	else if ( gwerr & COM_OVERFLOWERROR )	sprintf( errmsg, "Receiver overflow" );
 
 	// If comport command was rejected and checking for this condition is enabled ...
-	else if ( ( ( gwerr & COM_REJECTED ) != 0 ) && ( evalComReject == COM_REJECT_EVAL ) )
+	else if ( ( ( gwerr & COM_REJECTED ) != 0 ) && ( evalComReject == com_reject_evaluate_ ) )
 		sprintf( errmsg, "Command rejected" );
 
 	// If no errors were detected ...
@@ -251,7 +247,7 @@ int DetectAllIoms( void )
 ///////////////////////////////////////////////////////////////
 // Schedule some gateway I/O into transaction object x.
 
-static void sched_io( HX x )
+static void sched_io( void* x )
 {
 	int		chan;
 	u8		i;
@@ -317,11 +313,11 @@ static int SerialInit( u8 ComSrc, u8 ComDst, u16 BaudRate )
 		SIO_LED_TRANSMIT,
 		timeout_comport_ms_,
 		retries_com_ );
-	if ( ComError( comstatus, "S26_ComSetMode", COM_REJECT_EVAL ) )
+	if ( ComError( comstatus, "S26_ComSetMode", com_reject_evaluate_ ) )
 		return 1;
 
 	comstatus = S26_ComOpen( mm_handle_, ComSrc, timeout_comport_ms_, retries_com_ );
-	if ( ComError( comstatus, "S26_ComOpen", COM_REJECT_EVAL ) )
+	if ( ComError( comstatus, "S26_ComOpen", com_reject_evaluate_ ) )
 		return 1;
 
 	// Destination (receiver) port.
@@ -332,11 +328,11 @@ static int SerialInit( u8 ComSrc, u8 ComDst, u16 BaudRate )
 		SIO_LED_RECEIVE,
 		timeout_comport_ms_,
 		retries_com_ );
-	if ( ComError( comstatus, "S26_ComSetMode", COM_REJECT_EVAL ) )
+	if ( ComError( comstatus, "S26_ComSetMode", com_reject_evaluate_ ) )
 		return 1;
 
 	comstatus = S26_ComOpen( mm_handle_, ComDst, timeout_comport_ms_, retries_com_ );
-	if ( ComError( comstatus, "S26_ComOpen", COM_REJECT_EVAL ) )
+	if ( ComError( comstatus, "S26_ComOpen", com_reject_evaluate_ ) )
 		return 1;
 
 	return 0;
@@ -362,7 +358,7 @@ static int SerialIo( u8 ComSrc, u8 ComDst )
 
 	// Attempt to send message.  Ignore the COM_REJECT error, which is caused by insufficient transmit buffer free space.
 	comstatus = S26_ComSend( mm_handle_, ComSrc, (u8 *)SndBuf, (u16)msglen, timeout_comport_ms_, retries_com_ );
-	if ( ComError( comstatus, "S26_ComSend", COM_REJECT_IGNORE ) )
+	if ( ComError( comstatus, "S26_ComSend", com_reject_ignore_ ) )
 	{
 		printf( "TotalSent = %d\n", totalSent );
 		return 1;
@@ -373,7 +369,7 @@ static int SerialIo( u8 ComSrc, u8 ComDst )
 	// Receive all available data from the receiving comport's receive buffer.
 	BufLen = sizeof(RcvBuf);     // Max number of characters to receive.
 	comstatus = S26_ComReceive( mm_handle_, ComDst, (u8 *)RcvBuf, &BufLen, timeout_comport_ms_, retries_com_ );
-	if ( ComError( comstatus, "S26_ComReceive", COM_REJECT_EVAL ) )
+	if ( ComError( comstatus, "S26_ComReceive", com_reject_evaluate_ ) )
 	{
 		printf( "TotalSent = %d\n", totalSent );
 		return 1;
@@ -390,7 +386,7 @@ static int SerialIo( u8 ComSrc, u8 ComDst )
 
 static int io_control_loop( void )
 {
-	HX		x;				// Transaction object.
+	void*		x;				// Transaction object.
 	u8		chan;
     struct	timeval	tStart;
     struct	timeval	tEnd;
@@ -424,10 +420,10 @@ static int io_control_loop( void )
 		// Schedule and execute the gateway I/O --------------------------------------------------------------
 
 		// First do some serial io.
-		if ( SerialIo( COM_SRC_A, COM_DST_A ) )
+		if ( SerialIo( com_src_a_, com_dest_a_ ) )
 			return iters;
 
-		if ( SerialIo( COM_SRC_B, COM_DST_B ) )
+		if ( SerialIo( com_src_b_, com_dest_b_ ) )
 			return iters;
 
 		// Start a new transaction.
@@ -481,7 +477,7 @@ static void io_control_main( void )
 {
 	u8		i;
 	int		j;
-	HX		x;				// Transaction object.
+	void*		x;				// Transaction object.
 	time_t	StartTime;		// Benchmark start time.
 	double	tElapsed;		// Benchmark elapsed time.
 
@@ -507,8 +503,8 @@ static void io_control_main( void )
 	};
 
 	// Initialize serial comports.
-	SerialInit( COM_SRC_A, COM_DST_A, COM_BR_A );
-	SerialInit( COM_SRC_B, COM_DST_B, COM_BR_B );
+	SerialInit( com_src_a_, com_dest_a_, com_baud_a_ );
+	SerialInit( com_src_b_, com_dest_b_, com_baud_b_ );
 
 	// INITIALIZE IOM's ================================================================================
 
@@ -618,10 +614,10 @@ static void io_control_main( void )
 // Start a new transaction.
 // Returns non-zero transaction handle if successful.
 
-HX CreateTransaction( HBD hbd )
+void* CreateTransaction( HBD hbd )
 {
 	// Create a new transaction.
-	HX x = S26_SchedOpen( hbd, retries_gateway_ );
+	void* x = S26_SchedOpen( hbd, retries_gateway_ );
 
 	// Report error if transaction couldn't be created.
 	if ( x == 0 )
@@ -634,7 +630,7 @@ HX CreateTransaction( HBD hbd )
 // Execute all scheduled i/o.
 // Returns zero if successful.
 
-int io_exec( HX x )
+int io_exec( void* x )
 {
 	GWERR	err;
 
