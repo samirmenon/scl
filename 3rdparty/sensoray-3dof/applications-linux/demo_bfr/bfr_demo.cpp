@@ -30,51 +30,6 @@ extern "C" {
 // CONSTANTS //////////////////////////////////////////////////////////////////
 const sensoray::SSensoray3DofIO s_ds_;
 
-/** Set this to the MM's IP address.*/
-const std::string mm_ip_addr_("10.10.10.1");
-
-/** This is the first MM in the system, so it is number 0.*/
-const int mm_handle_ =0;
-
-/** This many milliseconds before timing out or retry gateway transactions.*/
-const int timeout_gateway_ms_	= 100;
-/** This many milliseconds before timing out or retry comport transactions.*/
-const int timeout_comport_ms_	= 100;
-
-/** Do up to this many comport retries. */
-const int retries_com_ = 50;
-/** Do up to this many gateway retries. */
-const int retries_gateway_	 = 50;
-
-// 2620 channel usage for this app:
-/** Pulse width measurement.*/
-const int s2620_channel_width_ = 0;
-/** Frequency counter. */
-const int s2620_channel_freq_ = 1;
-/** Pulse width modulated output. */
-const int s2620_channel_pwm_ = 2;
-/** Incremental encoder input. */
-const int s2620_channel_encoder_ = 3;
-
-// Comport usage for this app.  With two null-modem cables, we can loop back two ports into two other ports:
-/** Transmit A. */
-const u8 com_src_a_ = 	LOGDEV_COM2;
-/** Receive A. */
-const u8 com_dest_a_ = LOGDEV_COM1;
-/** Baudrate for A. */
-const u16 com_baud_a_ = SIO_BR_9600;
-
-/** Transmit B. */
-const u8 com_src_b_ = LOGDEV_COM4;
-/** Receive B. */
-const u8 com_dest_b_ = LOGDEV_COM3;
-/** Baudrate for B. */
-const u16 com_baud_b_ = SIO_BR_115200;
-
-/** Ignore the comport REJ flag. */
-const int com_reject_ignore_ = 0;
-/** Treat comport REJ flag as an error. */
-const int com_reject_evaluate_	 = 1;
 
 // PUBLIC STORAGE ///////////////////////////////////////////////////////////////
 
@@ -127,14 +82,14 @@ int main()
 	else
 	{
 		// Open the MM.
-		if ( ( faults = S26_BoardOpen( mm_handle_, 0, mm_ip_addr_.c_str() ) ) != 0 )
+		if ( ( faults = S26_BoardOpen( s_ds_.mm_handle_, 0, s_ds_.mm_ip_addr_.c_str() ) ) != 0 )
 			printf( "BoardOpen() fault: %d\n", (int)faults );
 
 		// If MM was successfully opened ...
 		else
 		{
 			// Reset the I/O system.
-			S26_ResetNetwork( mm_handle_ );
+			S26_ResetNetwork( s_ds_.mm_handle_ );
 
 			// Register all iom's.  If no errors, execute the I/O control loop until it is terminated.
 			if ( DetectAllIoms() )
@@ -240,7 +195,7 @@ u32 ComError( u32 gwerr, const char *fname, int evalComReject )
 	else if ( gwerr & COM_OVERFLOWERROR )	sprintf( errmsg, "Receiver overflow" );
 
 	// If comport command was rejected and checking for this condition is enabled ...
-	else if ( ( ( gwerr & COM_REJECTED ) != 0 ) && ( evalComReject == com_reject_evaluate_ ) )
+	else if ( ( ( gwerr & COM_REJECTED ) != 0 ) && ( evalComReject == s_ds_.com_reject_evaluate_ ) )
 		sprintf( errmsg, "Command rejected" );
 
 	// If no errors were detected ...
@@ -260,7 +215,7 @@ int DetectAllIoms( void )
 	u32	faults;
 
 	// Detect and register all iom's.
-	if ( ( faults = S26_RegisterAllIoms( mm_handle_, timeout_gateway_ms_, &nboards, IomType, IomStatus, retries_gateway_ ) ) != 0 )
+	if ( ( faults = S26_RegisterAllIoms( s_ds_.mm_handle_, s_ds_.timeout_gateway_ms_, &nboards, IomType, IomStatus, s_ds_.retries_gateway_ ) ) != 0 )
 	{
 		ShowErrorInfo( faults, IomStatus );
 		return 0;	// failed.
@@ -313,8 +268,8 @@ static void sched_io( void* x )
 
 		case 2620:
 			// Transfer counter cores to latches.
-			S26_Sched2620_SetControlReg( x, i, s2620_channel_pwm_, 2 );
-			S26_Sched2620_SetControlReg( x, i, s2620_channel_encoder_, 2 );
+			S26_Sched2620_SetControlReg( x, i, s_ds_.s2620_channel_pwm_, 2 );
+			S26_Sched2620_SetControlReg( x, i, s_ds_.s2620_channel_encoder_, 2 );
 
 			// Read latches.
 			for ( chan = 0; chan < 4; chan++ )
@@ -340,33 +295,33 @@ static int SerialInit( u8 ComSrc, u8 ComDst, u16 BaudRate )
 	u32	comstatus;
 
 	// Source (transmitter) port.
-	comstatus = S26_ComSetMode( mm_handle_,
+	comstatus = S26_ComSetMode( s_ds_.mm_handle_,
 		ComSrc,
 		BaudRate,
 		SIO_PHY_RS232 | SIO_PARITY_NONE | SIO_DATA_8 | SIO_STOP_1 | SIO_FLOW_OFF,
 		SIO_LED_TRANSMIT,
-		timeout_comport_ms_,
-		retries_com_ );
-	if ( ComError( comstatus, "S26_ComSetMode", com_reject_evaluate_ ) )
+		s_ds_.timeout_comport_ms_,
+		s_ds_.retries_com_ );
+	if ( ComError( comstatus, "S26_ComSetMode", s_ds_.com_reject_evaluate_ ) )
 		return 1;
 
-	comstatus = S26_ComOpen( mm_handle_, ComSrc, timeout_comport_ms_, retries_com_ );
-	if ( ComError( comstatus, "S26_ComOpen", com_reject_evaluate_ ) )
+	comstatus = S26_ComOpen( s_ds_.mm_handle_, ComSrc, s_ds_.timeout_comport_ms_, s_ds_.retries_com_ );
+	if ( ComError( comstatus, "S26_ComOpen", s_ds_.com_reject_evaluate_ ) )
 		return 1;
 
 	// Destination (receiver) port.
-	comstatus = S26_ComSetMode( mm_handle_,
+	comstatus = S26_ComSetMode( s_ds_.mm_handle_,
 		ComDst,
 		BaudRate,
 		SIO_PHY_RS232 | SIO_PARITY_NONE | SIO_DATA_8 | SIO_STOP_1 | SIO_FLOW_OFF,
 		SIO_LED_RECEIVE,
-		timeout_comport_ms_,
-		retries_com_ );
-	if ( ComError( comstatus, "S26_ComSetMode", com_reject_evaluate_ ) )
+		s_ds_.timeout_comport_ms_,
+		s_ds_.retries_com_ );
+	if ( ComError( comstatus, "S26_ComSetMode", s_ds_.com_reject_evaluate_ ) )
 		return 1;
 
-	comstatus = S26_ComOpen( mm_handle_, ComDst, timeout_comport_ms_, retries_com_ );
-	if ( ComError( comstatus, "S26_ComOpen", com_reject_evaluate_ ) )
+	comstatus = S26_ComOpen( s_ds_.mm_handle_, ComDst, s_ds_.timeout_comport_ms_, s_ds_.retries_com_ );
+	if ( ComError( comstatus, "S26_ComOpen", s_ds_.com_reject_evaluate_ ) )
 		return 1;
 
 	return 0;
@@ -391,8 +346,8 @@ static int SerialIo( u8 ComSrc, u8 ComDst )
 	msglen = strlen( SndBuf );
 
 	// Attempt to send message.  Ignore the COM_REJECT error, which is caused by insufficient transmit buffer free space.
-	comstatus = S26_ComSend( mm_handle_, ComSrc, (u8 *)SndBuf, (u16)msglen, timeout_comport_ms_, retries_com_ );
-	if ( ComError( comstatus, "S26_ComSend", com_reject_ignore_ ) )
+	comstatus = S26_ComSend( s_ds_.mm_handle_, ComSrc, (u8 *)SndBuf, (u16)msglen, s_ds_.timeout_comport_ms_, s_ds_.retries_com_ );
+	if ( ComError( comstatus, "S26_ComSend", s_ds_.com_reject_ignore_ ) )
 	{
 		printf( "TotalSent = %d\n", totalSent );
 		return 1;
@@ -402,8 +357,8 @@ static int SerialIo( u8 ComSrc, u8 ComDst )
 
 	// Receive all available data from the receiving comport's receive buffer.
 	BufLen = sizeof(RcvBuf);     // Max number of characters to receive.
-	comstatus = S26_ComReceive( mm_handle_, ComDst, (u8 *)RcvBuf, &BufLen, timeout_comport_ms_, retries_com_ );
-	if ( ComError( comstatus, "S26_ComReceive", com_reject_evaluate_ ) )
+	comstatus = S26_ComReceive( s_ds_.mm_handle_, ComDst, (u8 *)RcvBuf, &BufLen, s_ds_.timeout_comport_ms_, s_ds_.retries_com_ );
+	if ( ComError( comstatus, "S26_ComReceive", s_ds_.com_reject_evaluate_ ) )
 	{
 		printf( "TotalSent = %d\n", totalSent );
 		return 1;
@@ -454,14 +409,14 @@ static int io_control_loop( void )
 		// Schedule and execute the gateway I/O --------------------------------------------------------------
 
 		// First do some serial io.
-		if ( SerialIo( com_src_a_, com_dest_a_ ) )
+		if ( SerialIo( s_ds_.com_src_a_, s_ds_.com_dest_a_ ) )
 			return iters;
 
-		if ( SerialIo( com_src_b_, com_dest_b_ ) )
+		if ( SerialIo( s_ds_.com_src_b_, s_ds_.com_dest_b_ ) )
 			return iters;
 
 		// Start a new transaction.
-		x = CreateTransaction( mm_handle_ );
+		x = CreateTransaction( s_ds_.mm_handle_ );
 
 		// Schedule all I/O into the transaction.
 		sched_io( x );
@@ -537,13 +492,13 @@ static void io_control_main( void )
 	};
 
 	// Initialize serial comports.
-	SerialInit( com_src_a_, com_dest_a_, com_baud_a_ );
-	SerialInit( com_src_b_, com_dest_b_, com_baud_b_ );
+	SerialInit( s_ds_.com_src_a_, s_ds_.com_dest_a_, s_ds_.com_baud_a_ );
+	SerialInit( s_ds_.com_src_b_, s_ds_.com_dest_b_, s_ds_.com_baud_b_ );
 
 	// INITIALIZE IOM's ================================================================================
 
 	// Start a new transaction.
-	x = CreateTransaction( mm_handle_ );
+	x = CreateTransaction( s_ds_.mm_handle_ );
 
 	// Schedule the I/O actions into the transaction.
 	// For each iom port on the MM ...
@@ -565,19 +520,19 @@ static void io_control_main( void )
 			// Set gate period to 1 second, timestamp resolution to 1 millisecond.
 			S26_Sched2620_SetCommonControl( x, i, 1000, 3 );
 
-			// Set up the pwm generator on s2620_channel_pwm_.
-			S26_Sched2620_SetPreload( x, i, s2620_channel_pwm_, 1, 99 );		// Preload 1: on time.
-			S26_Sched2620_SetPreload( x, i, s2620_channel_pwm_, 0, 4899 );		// Preload 0: off time.
-			S26_Sched2620_SetModePwmGen( x, i, s2620_channel_pwm_, 0 );		// Configure as pwm generator.
+			// Set up the pwm generator on s_ds_.s2620_channel_pwm_.
+			S26_Sched2620_SetPreload( x, i, s_ds_.s2620_channel_pwm_, 1, 99 );		// Preload 1: on time.
+			S26_Sched2620_SetPreload( x, i, s_ds_.s2620_channel_pwm_, 0, 4899 );		// Preload 0: off time.
+			S26_Sched2620_SetModePwmGen( x, i, s_ds_.s2620_channel_pwm_, 0 );		// Configure as pwm generator.
 
-			// Set up the frequency counter on s2620_channel_freq_.
-			S26_Sched2620_SetModeFreqMeas( x, i, s2620_channel_freq_, 1 );		// Configure channel 1: freq counter, internal gate.
+			// Set up the frequency counter on s_ds_.s2620_channel_freq_.
+			S26_Sched2620_SetModeFreqMeas( x, i, s_ds_.s2620_channel_freq_, 1 );		// Configure channel 1: freq counter, internal gate.
 
 			// Set up for pulse width measurement on CHAN_PULSE.
-			S26_Sched2620_SetModePulseMeas( x, i, s2620_channel_width_, 0 );		// active high input.
+			S26_Sched2620_SetModePulseMeas( x, i, s_ds_.s2620_channel_width_, 0 );		// active high input.
 
-			// Set up encoder interface on s2620_channel_encoder_.
-			S26_Sched2620_SetModeEncoder( x, i, s2620_channel_encoder_, 0, 0, 3 );
+			// Set up encoder interface on s_ds_.s2620_channel_encoder_.
+			S26_Sched2620_SetModeEncoder( x, i, s_ds_.s2620_channel_encoder_, 0, 0, 3 );
 
 			break;
 		}
@@ -651,7 +606,7 @@ static void io_control_main( void )
 void* CreateTransaction( HBD hbd )
 {
 	// Create a new transaction.
-	void* x = S26_SchedOpen( hbd, retries_gateway_ );
+	void* x = S26_SchedOpen( hbd, s_ds_.retries_gateway_ );
 
 	// Report error if transaction couldn't be created.
 	if ( x == 0 )
@@ -669,7 +624,7 @@ int io_exec( void* x )
 	GWERR	err;
 
 	// Execute the scheduled i/o.  Report error if one was detected.
-	if ( ( err = S26_SchedExecute( x, timeout_gateway_ms_, IomStatus ) ) != 0 )
+	if ( ( err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, IomStatus ) ) != 0 )
 		ShowErrorInfo( err, IomStatus );
 
 	return (int)err;
