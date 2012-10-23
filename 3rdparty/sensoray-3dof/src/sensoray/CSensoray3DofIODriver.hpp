@@ -165,7 +165,7 @@ namespace sensoray
     bool readEncodersAndCommandMotors();
 
     /** Runs a control loop to test communication with the device. */
-    int ioControlLoop();
+    bool testDriver(const unsigned int arg_control_loops);
 
   private:
     /** Prints out an error message given an io module status

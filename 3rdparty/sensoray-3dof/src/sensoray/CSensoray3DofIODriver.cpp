@@ -223,64 +223,59 @@ namespace sensoray
   ///////////////////////////////////////////////////////
   // Main control loop.  Returns loop iteration count.
 
-  int CSensoray3DofIODriver::ioControlLoop( void )
+  bool CSensoray3DofIODriver::testDriver(const unsigned int arg_control_loops)
   {
-    void*   x;        // Transaction object.
-    u8    chan;
+    void*   tran_hndl;        // Transaction object.
     struct  timeval tStart;
     struct  timeval tEnd;
     int       tDiff;
     int       tMax = 0;
 
-    for (int i=0 ;i<500 ;++i )
+    for (unsigned int i=0; i<arg_control_loops; ++i)
     {
       // Compute the next output states -----------------------------------------------------------
       // Bump analog output voltage images.
-      for ( chan = 0; chan < MAX_NUM_AOUTS; chan++ )
-        s_ds_.analog_out_voltages_[chan] = (double)( chan + 1 );
+      for (unsigned int chan = 0; chan < MAX_NUM_AOUTS; chan++ )
+      { s_ds_.analog_out_voltages_[chan] = (double)( chan + 1 );  }
 
       // Schedule and execute the gateway I/O -----------------------------------------------------
       // Create a new transaction.
-      x = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
+      tran_hndl = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
 
       // Report error if transaction couldn't be created.
-      if ( x == 0 )
-        printf( "Error: S26_SchedOpen() failed to allocate a transaction object.\n" );
-
-
-      // Schedule all I/O into the transaction.
-      int   chan;
-      u8    i;
+      if ( tran_hndl == 0 )
+      {  printf( "Error: S26_SchedOpen() failed to allocate a transaction object.\n" );  }
 
       // Schedule some 2601 actions.
 #ifdef DEBUG
-      S26_Sched2601_GetLinkStatus( x, &s_ds_.iom_link_flags_ );
-      S26_Sched2601_GetInterlocks( x, &s_ds_.interlock_flags_ );
+      //NOTE TODO : These should have associated checks.
+      S26_Sched2601_GetLinkStatus( tran_hndl, &s_ds_.iom_link_flags_ );
+      S26_Sched2601_GetInterlocks( tran_hndl, &s_ds_.interlock_flags_ );
 #endif
 
       // Schedule some iom actions.  For each iom port ...
-      for ( i = 0; i < max_io_modules_at_main_module_; i++ )
+      for (unsigned int i = 0; i < max_io_modules_at_main_module_; i++ )
       {
         // Schedule some i/o actions based on module type.
         switch( s_ds_.iom_types_[i] )
         {
           case 2608:
             // Update reference standards and read analog inputs
-            S26_Sched2608_GetCalData( x, i, 0 );          // Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
+            S26_Sched2608_GetCalData( tran_hndl, i, 0 );          // Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
             // Program all analog outputs.
-            for ( chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
-              S26_Sched2608_SetAout( x, i, (u8)chan, s_ds_.analog_out_voltages_[chan] );
+            for (unsigned int chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
+              S26_Sched2608_SetAout( tran_hndl, i, (u8)chan, s_ds_.analog_out_voltages_[chan] );
             break;
 
           case 2620:
             // Transfer counter cores to latches.
-            S26_Sched2620_SetControlReg( x, 0, 0, 2 );
-            S26_Sched2620_SetControlReg( x, 0, 1, 2 );
-            S26_Sched2620_SetControlReg( x, 0, 2, 2 );
+            S26_Sched2620_SetControlReg( tran_hndl, 0, 0, 2 );
+            S26_Sched2620_SetControlReg( tran_hndl, 0, 1, 2 );
+            S26_Sched2620_SetControlReg( tran_hndl, 0, 2, 2 );
 
             // Read latches.
-            for ( chan = 0; chan < 3; chan++ )
-            { S26_Sched2620_GetCounts( x, i, (u8)chan, &s_ds_.counter_counts_[chan], &s_ds_.counter_timestamp_[chan] );  }// Fetch values from all channel latches.
+            for (unsigned int chan = 0; chan < 3; chan++ )
+            { S26_Sched2620_GetCounts( tran_hndl, i, (u8)chan, &s_ds_.counter_counts_[chan], &s_ds_.counter_timestamp_[chan] );  }// Fetch values from all channel latches.
             printf("\nEnc : %ld %ld %ld", s_ds_.counter_counts_[0], s_ds_.counter_counts_[1], s_ds_.counter_counts_[2]);
 
             break;
@@ -293,7 +288,7 @@ namespace sensoray
       // Execute the scheduled i/o and then release the transaction object.  Exit loop if there was no error.
       GWERR err;
       // Execute the scheduled i/o.  Report error if one was detected.
-      err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
+      err = S26_SchedExecute( tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
       if (0 != err)
       {
         showErrorInfo( err, s_ds_.iom_status_ );
