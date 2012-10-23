@@ -142,18 +142,6 @@ namespace sensoray
   class CSensoray3DofIODriver
   {
   public:
-    /** Default constructor : Does nothing */
-    CSensoray3DofIODriver() :
-      s_ds_(), max_main_modules_(1), max_io_modules_at_main_module_(2),
-      totalSent(0), peek_character(-1) {}
-
-    /** Default destructor : Does nothing */
-    ~CSensoray3DofIODriver() {}
-
-    /** Get data */
-    SSensoray3DofIODriver& getData()
-    { return s_ds_; }
-
     /** ***************** Driver calls (in order) *********************** */
     /** Initializes the main module.
      *
@@ -169,6 +157,12 @@ namespace sensoray
     /** Closes the driver and shuts down the modules */
     void shutdown();
 
+    /** Encoder operation only : Reads encoders */
+    bool readEncoders();
+
+    /** Encoder+Motor operation : Sends analog out to motors + reads encoders */
+    bool readEncodersAndCommandMotors();
+
     /** Runs a control loop to test communication with the device. */
     int ioControlLoop();
 
@@ -177,12 +171,32 @@ namespace sensoray
      * vector */
     void showErrorInfo( u32 gwerr, u8 *iom_status_ );
 
+    /** ***************** Misc functions *********************** */
+  public:
+    /** Default constructor : Does nothing */
+    CSensoray3DofIODriver() :
+      s_ds_(), max_main_modules_(1), max_io_modules_at_main_module_(2),
+      enc_mm_id_(0), dac_mm_id_(1),
+      totalSent(0), peek_character(-1) {}
+
+    /** Default destructor : Does nothing */
+    ~CSensoray3DofIODriver() {}
+
+    /** Get data */
+    SSensoray3DofIODriver& getData()
+    { return s_ds_; }
+
   private:
     /** The data structore with all the important vars etc. */
     SSensoray3DofIODriver s_ds_;
 
     const unsigned int max_main_modules_;
     const unsigned int max_io_modules_at_main_module_;
+
+    /** Encoder must be at port 0 */
+    const int enc_mm_id_;
+    /** Dac must be at port 1 */
+    const int dac_mm_id_;
 
     int totalSent;
     int peek_character;
