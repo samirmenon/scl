@@ -144,7 +144,7 @@ namespace sensoray
   public:
     /** Default constructor : Does nothing */
     CSensoray3DofIODriver() :
-      s_ds_(), max_main_modules_(1), max_io_modules_at_main_module_(16),
+      s_ds_(), max_main_modules_(1), max_io_modules_at_main_module_(2),
       totalSent(0), peek_character(-1) {}
 
     /** Default destructor : Does nothing */
