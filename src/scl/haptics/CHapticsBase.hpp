@@ -29,8 +29,8 @@
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CHAIHAPTICWRAPPER_HPP_
-#define CHAIHAPTICWRAPPER_HPP_
+#ifndef CHAPTICSBASE_HPP_
+#define CHAPTICSBASE_HPP_
 
 //For interfacing with chai
 #include <scl/DataTypes.hpp>
@@ -82,5 +82,5 @@ namespace scl
   };
 }
 
-#endif /* CHAIHAPTICWRAPPER_HPP_ */
+#endif /* CHAPTICSBASE_HPP_ */
 
