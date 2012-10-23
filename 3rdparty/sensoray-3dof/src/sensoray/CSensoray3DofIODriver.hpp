@@ -174,7 +174,8 @@ namespace sensoray
      * Assumptions :
      * 1. Only one main module in the system
      * 2. The main module's id is 0, and IP is 10.10.10.1
-     * 3.  */
+     * 3. The I/O modules are connected on ports 0 and 1 of the main module
+     * */
     bool init();
 
     /** Prints out an error message given an io module status

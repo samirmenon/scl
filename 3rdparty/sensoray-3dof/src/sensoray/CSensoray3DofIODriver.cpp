@@ -91,6 +91,61 @@ namespace sensoray
         { std::cout<<"\nPort ["<<i<<"]. I/O module : "<<s_ds_.iom_types_[i]; }
       }
 
+      // Initialize the 2608 (aout) and 2620 (din) IO modules
+      // Doing so requires scheduling a transaction, with all the init loaded into it.
+      void*   tran_hndl;        // Transaction object.
+
+      // ========= Open Transaction =============
+      // Start a new transaction. Create it using the sensoray driver API.
+      tran_hndl = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
+      if (NULL == tran_hndl)
+      { throw(std::runtime_error("S26_SchedOpen() : Could not allocate a transaction object." ));  }
+
+      // Schedule the I/O actions into the transaction.
+      // For each iom port on the MM ...
+      for (unsigned int i = 0; i < max_io_modules_at_main_module_; i++ )
+      {
+        // Schedule some initialization actions based on iom type.
+        switch ( s_ds_.iom_types_[i] )
+        {
+          case 2608:
+            S26_Sched2608_ReadEeprom(tran_hndl, i, 0, &s_ds_.s2608_num_aouts_at_iom_[i] );  // Get the dac channel count.
+            S26_Sched2608_SetLineFreq(tran_hndl, i, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
+            break;
+
+          case 2620:
+            // Set gate period to 1 second, timestamp resolution to 1 millisecond.
+            S26_Sched2620_SetCommonControl( tran_hndl, i, 1000, 3 );
+            // Set up the pwm generator on s_ds_.s2620_channel_pwm_.
+            S26_Sched2620_SetPreload( tran_hndl, i, s_ds_.s2620_channel_pwm_, 1, 99 );    // Preload 1: on time.
+            S26_Sched2620_SetPreload( tran_hndl, i, s_ds_.s2620_channel_pwm_, 0, 4899 );    // Preload 0: off time.
+            S26_Sched2620_SetModePwmGen( tran_hndl, i, s_ds_.s2620_channel_pwm_, 0 );   // Configure as pwm generator.
+
+            // Set up the frequency counter on s_ds_.s2620_channel_freq_.
+            S26_Sched2620_SetModeFreqMeas( tran_hndl, i, s_ds_.s2620_channel_freq_, 1 );    // Configure channel 1: freq counter, internal gate.
+
+            // Set up for pulse width measurement on CHAN_PULSE.
+            S26_Sched2620_SetModePulseMeas( tran_hndl, i, s_ds_.s2620_channel_width_, 0 );    // active high input.
+
+            // Set up encoder interface on s_ds_.s2620_channel_encoder_.
+            S26_Sched2620_SetModeEncoder( tran_hndl, i, s_ds_.s2620_channel_encoder_, 0, 0, 3 );
+
+            break;
+        }
+      }
+
+      // Execute the scheduled i/o and release the transaction object.
+
+      GWERR err;
+
+      // Execute the scheduled i/o.  Report error if one was detected.
+      if ( ( err = S26_SchedExecute( tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ ) ) != 0 )
+        showErrorInfo( err, s_ds_.iom_status_ );
+
+      if ( (int)err )
+        return false;
+      // ========= End Transaction =============
+
       return true;
     }
     catch(std::exception& e)
@@ -136,11 +191,13 @@ namespace sensoray
       u8    i;
 
       // Schedule some 2601 actions.
+#ifdef DEBUG
       S26_Sched2601_GetLinkStatus( x, &s_ds_.iom_link_flags_ );
       S26_Sched2601_GetInterlocks( x, &s_ds_.interlock_flags_ );
+#endif
 
       // Schedule some iom actions.  For each iom port ...
-      for ( i = 0; i < 16; i++ )
+      for ( i = 0; i < max_io_modules_at_main_module_; i++ )
       {
         // Schedule some i/o actions based on module type.
         switch( s_ds_.iom_types_[i] )
@@ -212,85 +269,6 @@ namespace sensoray
     time_t  StartTime;    // Benchmark start time.
     double  tElapsed;   // Benchmark elapsed time.
 
-    // Analog input types for the 2608 iom.  These can be any supported voltage or thermocouple types.
-    // Voltage types return volts, temperature types return degrees C.
-    const u8 ain_types[] = {
-        V_10_TYPE,  // chan 0: 10V range on channels 0-15.
-        V_10_TYPE,  // chan 1
-        V_10_TYPE,  // chan 2
-        V_10_TYPE,  // chan 3
-        V_10_TYPE,  // chan 4
-        V_10_TYPE,  // chan 1
-        V_10_TYPE,  // chan 6
-        V_10_TYPE,  // chan 7
-        V_10_TYPE,  // chan 8
-        V_10_TYPE,  // chan 9
-        V_10_TYPE,  // chan 10
-        V_10_TYPE,  // chan 11
-        V_10_TYPE,  // chan 12
-        V_10_TYPE,  // chan 13
-        V_10_TYPE,  // chan 14
-        V_10_TYPE // chan 15
-    };
-
-    // INITIALIZE IOM's ================================================================================
-
-    // Start a new transaction.
-    x = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
-
-    // Report error if transaction couldn't be created.
-    if ( x == 0 )
-      printf( "Error: S26_SchedOpen() failed to allocate a transaction object.\n" );
-
-    // Schedule the I/O actions into the transaction.
-    // For each iom port on the MM ...
-    for ( i = 0; i < 16; i++ )
-    {
-      // Schedule some initialization actions based on iom type.
-      switch ( s_ds_.iom_types_[i] )
-      {
-        case 2608:
-
-          S26_Sched2608_ReadEeprom( x, i, 0, &s_ds_.s2608_num_aouts_at_iom_[i] );  // Get the dac channel count.
-          S26_Sched2608_SetLineFreq( x, i, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
-          S26_Sched2608_SetAinTypes( x, i, ain_types );     // Declare the analog input types.
-
-          break;
-
-        case 2620:
-
-          // Set gate period to 1 second, timestamp resolution to 1 millisecond.
-          S26_Sched2620_SetCommonControl( x, i, 1000, 3 );
-
-          // Set up the pwm generator on s_ds_.s2620_channel_pwm_.
-          S26_Sched2620_SetPreload( x, i, s_ds_.s2620_channel_pwm_, 1, 99 );    // Preload 1: on time.
-          S26_Sched2620_SetPreload( x, i, s_ds_.s2620_channel_pwm_, 0, 4899 );    // Preload 0: off time.
-          S26_Sched2620_SetModePwmGen( x, i, s_ds_.s2620_channel_pwm_, 0 );   // Configure as pwm generator.
-
-          // Set up the frequency counter on s_ds_.s2620_channel_freq_.
-          S26_Sched2620_SetModeFreqMeas( x, i, s_ds_.s2620_channel_freq_, 1 );    // Configure channel 1: freq counter, internal gate.
-
-          // Set up for pulse width measurement on CHAN_PULSE.
-          S26_Sched2620_SetModePulseMeas( x, i, s_ds_.s2620_channel_width_, 0 );    // active high input.
-
-          // Set up encoder interface on s_ds_.s2620_channel_encoder_.
-          S26_Sched2620_SetModeEncoder( x, i, s_ds_.s2620_channel_encoder_, 0, 0, 3 );
-
-          break;
-      }
-    }
-
-    // Execute the scheduled i/o and release the transaction object.
-
-    GWERR err;
-
-    // Execute the scheduled i/o.  Report error if one was detected.
-    if ( ( err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ ) ) != 0 )
-      showErrorInfo( err, s_ds_.iom_status_ );
-
-    if ( (int)err )
-      return;
-
     // MAIN CONTROL LOOP ====================================================================================
 
     printf( "\nRunning main control loop\nHit any key to terminate\n" );
@@ -307,7 +285,7 @@ namespace sensoray
     // Show the final system state ============================================================================
 
     // For each iom port ...
-    for ( i = 0; i < 16; i++ )
+    for ( i = 0; i < max_io_modules_at_main_module_; i++ )
     {
       switch ( s_ds_.iom_types_[i] )
       {
@@ -317,12 +295,6 @@ namespace sensoray
           for ( j = 0; j < 4; j++ )
             printf( "%d:%8.8lX ", j, s_ds_.counter_counts_[j] );
           printf( "\n" );
-          break;
-
-        case 2650:
-          break;
-
-        case 2652:
           break;
       }
     }
