@@ -135,15 +135,12 @@ namespace sensoray
       }
 
       // Execute the scheduled i/o and release the transaction object.
-
-      GWERR err;
-
-      // Execute the scheduled i/o.  Report error if one was detected.
-      if ( ( err = S26_SchedExecute( tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ ) ) != 0 )
-        showErrorInfo( err, s_ds_.iom_status_ );
-
-      if ( (int)err )
-        return false;
+      faults = S26_SchedExecute( tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
+      if (0 != faults)
+      { //Report error if one was detected.
+        showErrorInfo(faults, s_ds_.iom_status_);
+        throw(std::runtime_error("Could execute transaction to initialize one or more sensoray IO modules."));
+      }
       // ========= End Transaction =============
 
       return true;
