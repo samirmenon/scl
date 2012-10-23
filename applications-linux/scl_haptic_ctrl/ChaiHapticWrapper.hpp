@@ -48,6 +48,11 @@ class cGenericHapticDevice;
 
 namespace scl_app
 {
+  /** This class is a simple wrapper around Chai's haptics
+   * API. It is designed to abstract the actual device initialization
+   * and operation. Provides a high level interface to get device
+   * positions for multiple haptic devices.
+   */
   class ChaiHapticWrapper
   {
   public:
