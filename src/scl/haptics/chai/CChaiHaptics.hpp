@@ -59,23 +59,23 @@ namespace scl
      *    success : The number of devices it found.
      *    failure : -1
      */
-    scl::sInt connectToDevices();
+    virtual scl::sInt connectToDevices();
 
     /** Get the present state of the haptic devices. This is typically
      * the position, but can also include the orientation and/or a push
      * button. */
-    scl::sBool getHapticDevicePositions(std::vector<Eigen::VectorXd>& ret_pos_vec);
+    virtual scl::sBool getHapticDevicePositions(std::vector<Eigen::VectorXd>& ret_pos_vec);
 
     /** Sets the actuators on the haptic devices. */
-    scl::sBool setHapticDeviceActuators(const std::vector<Eigen::VectorXd>& arg_cmd_vec)
+    virtual scl::sBool setHapticDeviceActuators(const std::vector<Eigen::VectorXd>& arg_cmd_vec)
     { /** NOTE TODO : Implement this */ return false; }
 
     /* Close the connections to the haptic devices */
-    bool closeConnectionToDevices();
+    virtual bool closeConnectionToDevices();
 
     /** Returns the number of currently connected devices */
-    scl::sInt getNumDevicesConnected()
-    { return haptic_devices_.size();  }
+    virtual scl::sUInt getNumDevicesConnected()
+    { return static_cast<scl::sUInt>(haptic_devices_.size());  }
 
     /* ********************************************************
      *                 INITIALIZTION FUNCTIONS

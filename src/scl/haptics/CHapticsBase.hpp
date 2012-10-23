@@ -33,6 +33,7 @@
 #define CHAPTICSBASE_HPP_
 
 //For interfacing with chai
+#include <scl/data_structs/SObject.hpp>
 #include <scl/DataTypes.hpp>
 #include <Eigen/Core>
 
@@ -64,21 +65,21 @@ namespace scl
      *    success : The number of devices it found.
      *    failure : -1
      */
-    scl::sInt connectToDevices()=0;
+    virtual scl::sInt connectToDevices()=0;
 
     /** Get the present state of the haptic devices. This is typically
      * the position, but can also include the orientation and/or a push
      * button. */
-    scl::sBool getHapticDevicePositions(std::vector<Eigen::VectorXd>& ret_pos_vec)=0;
+    virtual scl::sBool getHapticDevicePositions(std::vector<Eigen::VectorXd>& ret_pos_vec)=0;
 
     /** Sets the actuators on the haptic devices. */
-    scl::sBool setHapticDeviceActuators(const std::vector<Eigen::VectorXd>& arg_cmd_vec)=0;
+    virtual scl::sBool setHapticDeviceActuators(const std::vector<Eigen::VectorXd>& arg_cmd_vec)=0;
 
     /* Close the connections to the haptic devices */
-    scl::sBool closeConnectionToDevices()=0;
+    virtual scl::sBool closeConnectionToDevices()=0;
 
     /** Returns the number of currently connected devices */
-    scl::sUInt getNumDevicesConnected()=0;
+    virtual scl::sUInt getNumDevicesConnected()=0;
   };
 }
 

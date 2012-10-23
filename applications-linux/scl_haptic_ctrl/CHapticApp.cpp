@@ -41,6 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <stdexcept>
+#include <cassert>
 
 namespace scl_app
 {
@@ -199,7 +200,7 @@ namespace scl_app
             std::cout<<"\nInitializing ["<<num_haptic_devices_to_use_<<"] haptic devices to first ["
                 <<num_haptic_devices_to_use_<<"] UI points.";
             has_been_init_haptics_ = true;
-            for(int i=0;i<num_haptic_devices_to_use_;++i)
+            for(scl::sUInt i=0;i<num_haptic_devices_to_use_;++i)
             {
               haptic_pos_.push_back(Eigen::Vector3d());
               haptic_base_pos_.push_back(Eigen::Vector3d());
@@ -214,7 +215,7 @@ namespace scl_app
         // { }
         else
         {
-          std::cout<<"\n Possible example task options: -l (log file), -com (com control task), -op (op point task)";
+          std::cout<<"\n Possible example task options: -l (log file), -com (com control task), -op (op point task) -haptics (haptic op task)";
           args_ctr++;
         }
     }
@@ -257,7 +258,7 @@ namespace scl_app
       chai_com_pos_des_->setLocalPos(db_->s_gui_.ui_point_[ui_pt_com_]);
     }
 
-    std::vector<Eigen::Vector3d>::iterator itv,itve;
+    std::vector<Eigen::VectorXd>::iterator itv,itve;
     scl::sInt i;
     for(i=0, itv = haptic_base_pos_.begin(), itve = haptic_base_pos_.end();
         itv!=itve;++itv, ++i)
@@ -293,7 +294,7 @@ namespace scl_app
       {//Update the position of the first few points using the haptics
         bool flag = haptics_.getHapticDevicePositions(haptic_pos_);
         assert(flag);
-        std::vector<Eigen::Vector3d>::iterator it,ite, itv,itve;
+        std::vector<Eigen::VectorXd>::iterator it,ite, itv,itve;
         int i;
         for(i=0, it = haptic_pos_.begin(), ite = haptic_pos_.end(),
             itv = haptic_base_pos_.begin(), itve = haptic_base_pos_.end();
