@@ -117,11 +117,10 @@ namespace sensoray
             // Set gate period to 1 second, timestamp resolution to 1 millisecond.
             S26_Sched2620_SetCommonControl( tran_hndl, i, 1000, 3 );
 
-            // Set up encoder interface on s_ds_.s2620_channel_encoder_.
+            // Set up encoder interface on the first three ports
             S26_Sched2620_SetModeEncoder( tran_hndl, i, 0, 0, 0, 3 );
             S26_Sched2620_SetModeEncoder( tran_hndl, i, 1, 0, 0, 3 );
             S26_Sched2620_SetModeEncoder( tran_hndl, i, 2, 0, 0, 3 );
-            S26_Sched2620_SetModeEncoder( tran_hndl, i, 3, 0, 0, 3 );
 
             break;
         }

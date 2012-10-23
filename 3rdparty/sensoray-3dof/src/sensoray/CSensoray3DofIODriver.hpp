@@ -59,10 +59,6 @@ namespace sensoray
       timeout_comport_ms_(100),
       retries_com_(50),
       retries_gateway_(50),
-      s2620_channel_width_(0),
-      s2620_channel_freq_(1),
-      s2620_channel_pwm_(2),
-      s2620_channel_encoder_(3),
       iters_ctrl_loop_(0),
       num_iom_boards_(0),
       iom_link_flags_(0),
@@ -108,16 +104,6 @@ namespace sensoray
     const int retries_com_;
     /** Do up to this many gateway retries. */
     const int retries_gateway_;
-
-    // 2620 channel usage for this app:
-    /** Pulse width measurement.*/
-    const int s2620_channel_width_;
-    /** Frequency counter. */
-    const int s2620_channel_freq_;
-    /** Pulse width modulated output. */
-    const int s2620_channel_pwm_;
-    /** Incremental encoder input. */
-    const int s2620_channel_encoder_;
 
     // PUBLIC STORAGE ///////////////////////////////////////////////////////////////
     /** Number of times through the control loop so far. */
