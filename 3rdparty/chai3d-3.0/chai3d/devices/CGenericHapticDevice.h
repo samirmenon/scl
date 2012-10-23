@@ -49,7 +49,7 @@
 #include "math/CMaths.h"
 #include "timers/CPrecisionClock.h"
 //---------------------------------------------------------------------------
-
+#include <string>
 //===========================================================================
 /*!
     \file       CGenericHapticDevice.h
@@ -82,7 +82,8 @@ enum cHapticDeviceModel
     C_HAPTIC_DEVICE_PHANTOM_OMNI,
     C_HAPTIC_DEVICE_PHANTOM_15_6DOF,
     C_HAPTIC_DEVICE_PHANTOM_OTHER,
-    C_HAPTIC_DEVICE_CUSTOM
+    C_HAPTIC_DEVICE_CUSTOM,
+    C_HAPTIC_DEVICE_BFR
 };
 
 //===========================================================================
@@ -159,10 +160,10 @@ struct cHapticDeviceInfo
     cHapticDeviceModel m_model;
 
     //! Name of the device model. `delta`, `omega` or `phantom` for instance.
-    string m_modelName;
+    std::string m_modelName;
 
     //! Name of the manufacturer of the device.
-    string m_manufacturerName;
+    std::string m_manufacturerName;
 
     //! Maximum force in [N] that can be produced by the device in translation.
     double m_maxLinearForce;
