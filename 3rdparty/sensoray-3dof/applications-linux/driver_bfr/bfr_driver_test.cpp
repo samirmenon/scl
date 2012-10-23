@@ -25,17 +25,25 @@ extern "C" {
 int main()
 {
   bool flag;
-  sensoray::CSensoray3DofIODriver sensorayio;
+  int   ctrl_cycles;  // Total control cycles
+  time_t  t_start;    // Benchmark start time.
+  double  t_tot;     // Benchmark elapsed time.
 
-  flag = sensorayio.init();
-  if(false == flag)
-  { return 1; }
+  sensoray::CSensoray3DofIODriver sensorayio;   // Create a driver object
 
-  // Execute the i/o control loop until it terminates.
-  sensorayio.ioControlMain();
+  flag = sensorayio.init();                     // Initialize the driver
+  if(false == flag)  { return 1; }
 
-  // Close the api library.
-  S26_DriverClose();
+  t_start = time( NULL );
+  ctrl_cycles = sensorayio.ioControlLoop();    // Run control loop until terminated or error.
+  t_tot = difftime( time( NULL ), t_start );
+
+  sensorayio.shutdown();                       // Shut down the driver
+
+  // Report benchmark results.
+  printf( "\nControl loop cycles:    %d", ctrl_cycles );
+  printf( "\nElapsed time (seconds): %lf", t_tot );
+  printf( "\nAverage I/O cycle time (msec):  %.2f \n\n", t_tot / static_cast<double>(ctrl_cycles) * 1000.0 );
 
 	return 0;
 }
