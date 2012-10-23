@@ -116,16 +116,6 @@ namespace sensoray
           case 2620:
             // Set gate period to 1 second, timestamp resolution to 1 millisecond.
             S26_Sched2620_SetCommonControl( tran_hndl, i, 1000, 3 );
-            // Set up the pwm generator on s_ds_.s2620_channel_pwm_.
-//            S26_Sched2620_SetPreload( tran_hndl, i, s_ds_.s2620_channel_pwm_, 1, 99 );    // Preload 1: on time.
-//            S26_Sched2620_SetPreload( tran_hndl, i, s_ds_.s2620_channel_pwm_, 0, 4899 );  // Preload 0: off time.
-//            S26_Sched2620_SetModePwmGen( tran_hndl, i, s_ds_.s2620_channel_pwm_, 0 );     // Configure as pwm generator.
-//
-//            // Set up the frequency counter on s_ds_.s2620_channel_freq_.
-//            S26_Sched2620_SetModeFreqMeas( tran_hndl, i, s_ds_.s2620_channel_freq_, 1 );  // Configure channel 1: freq counter, internal gate.
-//
-//            // Set up for pulse width measurement on CHAN_PULSE.
-//            S26_Sched2620_SetModePulseMeas( tran_hndl, i, s_ds_.s2620_channel_width_, 0 );// active high input.
 
             // Set up encoder interface on s_ds_.s2620_channel_encoder_.
             S26_Sched2620_SetModeEncoder( tran_hndl, i, 0, 0, 0, 3 );
@@ -168,10 +158,6 @@ namespace sensoray
     // Repeat until keypress ...
     for (int i=0 ;i<500 ;++i )
     {
-      // Wait for a real-time tick (crude simulation via Sleep used here).
-      // Disable this to benchmark the i/o system performance.
-      //    Sleep( 100 );
-
       // Compute the next output states -----------------------------------------------------------
       // Bump analog output voltage images.
       for ( chan = 0; chan < MAX_NUM_AOUTS; chan++ )
@@ -212,11 +198,7 @@ namespace sensoray
             break;
 
           case 2620:
-//            // Transfer counter cores to latches.
-//            S26_Sched2620_SetControlReg( x, i, s_ds_.s2620_channel_pwm_, 2 );
-//            S26_Sched2620_SetControlReg( x, i, s_ds_.s2620_channel_encoder_, 2 );
-
-
+            // Transfer counter cores to latches.
             S26_Sched2620_SetControlReg( x, 0, 0, 2 );
             S26_Sched2620_SetControlReg( x, 0, 1, 2 );
             S26_Sched2620_SetControlReg( x, 0, 2, 2 );
