@@ -104,18 +104,24 @@ namespace sensoray
       // Schedule the I/O actions into the transaction.
       if(2620 != s_ds_.iom_types_[0])
       { throw(std::runtime_error("Incorrect setup. Please connect 2620 to Main Module port 0.")); }
+      else
+      {// Case 2620: Set up encoder interface on the first three ports
+        S26_Sched2620_SetModeEncoder( tran_hndl, enc_mm_id_, 0, 0, 0, 3 );
+        S26_Sched2620_SetModeEncoder( tran_hndl, enc_mm_id_, 1, 0, 0, 3 );
+        S26_Sched2620_SetModeEncoder( tran_hndl, enc_mm_id_, 2, 0, 0, 3 );
+      }
+
       if(2608 != s_ds_.iom_types_[1])
-      { throw(std::runtime_error("Incorrect setup. Please connect 2608 to Main Module port 1.")); }
-
-      // Case 2620: Set up encoder interface on the first three ports
-      S26_Sched2620_SetModeEncoder( tran_hndl, enc_mm_id_, 0, 0, 0, 3 );
-      S26_Sched2620_SetModeEncoder( tran_hndl, enc_mm_id_, 1, 0, 0, 3 );
-      S26_Sched2620_SetModeEncoder( tran_hndl, enc_mm_id_, 2, 0, 0, 3 );
-
-      // Case 2608: Count the number of dac output channels and set the line frequency
-      const int tmp_dac_mm_id = 1; //Digital to Analog out must be at port 1
-      S26_Sched2608_ReadEeprom(tran_hndl, dac_mm_id_, 0, &s_ds_.s2608_num_aouts_at_iom_ );  // Get the dac channel count.
-      S26_Sched2608_SetLineFreq(tran_hndl, dac_mm_id_, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
+      {
+        std::cout<<"\n WARNING : Encoder only mode. 2608 not connected to Main Module port 1.";
+        mode_encoder_only_ = true;
+      }
+      else
+      {// Case 2608: Count the number of dac output channels and set the line frequency
+        S26_Sched2608_ReadEeprom(tran_hndl, dac_mm_id_, 0, &s_ds_.s2608_num_aouts_at_iom_ );  // Get the dac channel count.
+        S26_Sched2608_SetLineFreq(tran_hndl, dac_mm_id_, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
+        mode_encoder_only_ = false;
+      }
 
       // Execute the scheduled i/o and release the transaction object.
       faults = S26_SchedExecute( tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
@@ -125,6 +131,10 @@ namespace sensoray
         throw(std::runtime_error("Could execute transaction to initialize one or more sensoray IO modules."));
       }
       // ========= End Transaction : INITIALIZE THE SENSORAY IO MODULES =============
+
+      //Error checks: If motors are to be controlled, there should be 3 dac outputs
+      if( (false == mode_encoder_only_) && (3 != s_ds_.s2608_num_aouts_at_iom_ ) )
+      {std::cout<<"\n WARNING : Did not find 3 analog outs. A outs = "<<s_ds_.s2608_num_aouts_at_iom_; }
 
       std::cout<<"\nInitalized Main module, Encoder in (2620), and Analog out (2608)"<<std::flush;
 
@@ -164,15 +174,50 @@ namespace sensoray
       showErrorInfo( err, s_ds_.iom_status_ );
       return false;
     }
-
+#ifdef DEBUG
     printf("\nEnc : %ld %ld %ld", s_ds_.counter_counts_[0], s_ds_.counter_counts_[1], s_ds_.counter_counts_[2]);
-    printf("\nTim : %ld %ld %ld", s_ds_.counter_timestamp_[0], s_ds_.counter_timestamp_[1], s_ds_.counter_timestamp_[2]);
+#endif
+    return true;
   }
 
   /** Encoder+Motor operation : Sends analog out to motors + reads encoders */
   bool CSensoray3DofIODriver::readEncodersAndCommandMotors()
   {
-    return false;
+    if(mode_encoder_only_) //Can't operate motors just yet
+    { return false; }
+
+    //Open transaction
+    void* tran_hndl = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
+    if(NULL == tran_hndl)
+    { return false; }
+
+    // Transfer counter cores to latches.
+    S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 0, 2 );
+    S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 1, 2 );
+    S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 2, 2 );
+
+    // Read latches.
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 0, &s_ds_.counter_counts_[0], &s_ds_.counter_timestamp_[0] );
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 1, &s_ds_.counter_counts_[1], &s_ds_.counter_timestamp_[1] );
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 2, &s_ds_.counter_counts_[2], &s_ds_.counter_timestamp_[2] );
+
+    //Init motors
+    // Update reference standards and read analog inputs
+    // NOTE TODO : Fix later. Auto-cal.  Only needed ~once/sec, but we do every time for simplicity.
+    S26_Sched2608_GetCalData(tran_hndl, dac_mm_id_, 0 );
+
+    // Program all analog outputs.
+    for (int chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
+    {  S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, (u8)chan, s_ds_.analog_out_voltages_[chan] ); }
+
+    // Execute the scheduled i/o and then release the transaction object.  Exit loop if there was no error.
+    GWERR err = S26_SchedExecute(tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
+    if (0 != err)
+    {
+      showErrorInfo( err, s_ds_.iom_status_ );
+      return false;
+    }
+    return true;
   }
 
   ///////////////////////////////////////////////////////
