@@ -166,15 +166,16 @@ namespace sensoray
      * */
     bool init();
 
+    /** Closes the driver and shuts down the modules */
+    void shutdown();
+
+    /** Runs a control loop to test communication with the device. */
+    int ioControlLoop();
+
+  private:
     /** Prints out an error message given an io module status
      * vector */
     void showErrorInfo( u32 gwerr, u8 *iom_status_ );
-
-    int ioControlLoop( void );
-
-    // Static fn. FORWARD REFERENCES ////////////////////////////////////////////////////////////
-
-    void ioControlMain( void );
 
   private:
     /** The data structore with all the important vars etc. */

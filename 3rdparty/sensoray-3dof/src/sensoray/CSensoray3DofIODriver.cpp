@@ -136,6 +136,10 @@ namespace sensoray
     return false;
   }
 
+  /** Closes the driver and shuts down the modules */
+  void CSensoray3DofIODriver::shutdown()
+  { S26_DriverClose();  }
+
   ///////////////////////////////////////////////////////
   // Main control loop.  Returns loop iteration count.
 
@@ -184,7 +188,6 @@ namespace sensoray
           case 2608:
             // Update reference standards and read analog inputs
             S26_Sched2608_GetCalData( x, i, 0 );          // Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
-
             // Program all analog outputs.
             for ( chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
               S26_Sched2608_SetAout( x, i, (u8)chan, s_ds_.analog_out_voltages_[chan] );
@@ -239,53 +242,6 @@ namespace sensoray
     // Return cycle count.
     return s_ds_.iters_ctrl_loop_;
   }
-
-  /////////////////////////////////////////////////////////
-  // Initialize all I/O and run control loop "forever."
-
-  void CSensoray3DofIODriver::ioControlMain( void )
-  {
-    u8    i;
-    int   j;
-    time_t  StartTime;    // Benchmark start time.
-    double  tElapsed;   // Benchmark elapsed time.
-
-    // MAIN CONTROL LOOP ====================================================================================
-
-    printf( "\nRunning main control loop\nHit any key to terminate\n" );
-
-    // Start benchmark timer.
-    StartTime = time( NULL );
-
-    // Run control loop until terminated or error.
-    s_ds_.iters_ctrl_loop_ = ioControlLoop();
-
-    // Stop benchmark timer.
-    tElapsed = difftime( time( NULL ), StartTime );
-
-    // Show the final system state ============================================================================
-
-    // For each iom port ...
-    for ( i = 0; i < max_io_modules_at_main_module_; i++ )
-    {
-      switch ( s_ds_.iom_types_[i] )
-      {
-        case 2620:
-          // Print the dio input states.
-          printf( "Counter states:" );
-          for ( j = 0; j < 4; j++ )
-            printf( "%d:%8.8lX ", j, s_ds_.counter_counts_[j] );
-          printf( "\n" );
-          break;
-      }
-    }
-
-    // Report benchmark results.
-    printf( "Control loop cycles:    %d\n", s_ds_.iters_ctrl_loop_ );
-    printf( "Elapsed time (seconds): %lu\n", (u32)tElapsed );
-    printf( "Average I/O cycle time (msec):  %.2f\n", tElapsed / (double)s_ds_.iters_ctrl_loop_ * 1000.0 );
-  }
-
   ////////////////////////////////
   // Display gateway error info.
   void CSensoray3DofIODriver::showErrorInfo( u32 gwerr, u8 *arg_iom_status )
