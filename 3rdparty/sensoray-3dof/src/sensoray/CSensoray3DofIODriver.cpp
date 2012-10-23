@@ -150,7 +150,8 @@ namespace sensoray
   { S26_DriverClose();  }
 
   /** Encoder operation only : Reads encoders */
-  bool CSensoray3DofIODriver::readEncoders()
+  bool CSensoray3DofIODriver::readEncoders(
+      unsigned long& c0, unsigned long& c1, unsigned long& c2)
   {
     //Open transaction
     void* tran_hndl = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
@@ -163,20 +164,18 @@ namespace sensoray
     S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 2, 2 );
 
     // Read latches.
-    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 0, &s_ds_.counter_counts_[0], &s_ds_.counter_timestamp_[0] );
-    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 1, &s_ds_.counter_counts_[1], &s_ds_.counter_timestamp_[1] );
-    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 2, &s_ds_.counter_counts_[2], &s_ds_.counter_timestamp_[2] );
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 0, &c0, 0);
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 1, &c1, 0);
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 2, &c2, 0);
 
-    // Execute the scheduled i/o and then release the transaction object.  Exit loop if there was no error.
-    GWERR err = S26_SchedExecute(tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
+    // Execute the scheduled i/o and then release the transaction object.  Return false if there was an error.
+    // We don't care about the I/O module status, so last arg is zero
+    GWERR err = S26_SchedExecute(tran_hndl, s_ds_.timeout_gateway_ms_, 0);
     if (0 != err)
     {
       showErrorInfo( err, s_ds_.iom_status_ );
       return false;
     }
-#ifdef DEBUG
-    printf("\nEnc : %ld %ld %ld", s_ds_.counter_counts_[0], s_ds_.counter_counts_[1], s_ds_.counter_counts_[2]);
-#endif
     return true;
   }
 
@@ -210,8 +209,9 @@ namespace sensoray
     for (int chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
     {  S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, (u8)chan, s_ds_.analog_out_voltages_[chan] ); }
 
-    // Execute the scheduled i/o and then release the transaction object.  Exit loop if there was no error.
-    GWERR err = S26_SchedExecute(tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
+    // Execute the scheduled i/o and then release the transaction object.  Return false if there was an error.
+    // We don't care about the I/O module status, so last arg is zero
+    GWERR err = S26_SchedExecute(tran_hndl, s_ds_.timeout_gateway_ms_, 0);
     if (0 != err)
     {
       showErrorInfo( err, s_ds_.iom_status_ );

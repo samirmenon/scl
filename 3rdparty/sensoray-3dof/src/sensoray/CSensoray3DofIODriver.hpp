@@ -158,7 +158,8 @@ namespace sensoray
     void shutdown();
 
     /** Encoder operation only : Reads encoders */
-    bool readEncoders();
+    bool readEncoders(unsigned long& c0,
+        unsigned long& c1, unsigned long& c2);
 
     /** Encoder+Motor operation : Sends analog out to motors + reads encoders */
     bool readEncodersAndCommandMotors();
