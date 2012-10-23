@@ -167,6 +167,12 @@ namespace sensoray
     /** Runs a control loop to test communication with the device. */
     bool testDriver(const unsigned int arg_control_loops);
 
+    bool modeEncoderOnly()
+    { return mode_encoder_only_;  }
+
+    bool modeEncoderAndMotor()
+    { return (mode_encoder_only_==false);  }
+
   private:
     /** Prints out an error message given an io module status
      * vector */
