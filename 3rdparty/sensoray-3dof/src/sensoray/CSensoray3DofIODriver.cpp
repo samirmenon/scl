@@ -108,15 +108,14 @@ namespace sensoray
       { throw(std::runtime_error("Incorrect setup. Please connect 2608 to Main Module port 1.")); }
 
       // Case 2620: Set up encoder interface on the first three ports
-      const int tmp_enc_mm_id = 0; //Encoder must be at port 0
-      S26_Sched2620_SetModeEncoder( tran_hndl, tmp_enc_mm_id, 0, 0, 0, 3 );
-      S26_Sched2620_SetModeEncoder( tran_hndl, tmp_enc_mm_id, 1, 0, 0, 3 );
-      S26_Sched2620_SetModeEncoder( tran_hndl, tmp_enc_mm_id, 2, 0, 0, 3 );
+      S26_Sched2620_SetModeEncoder( tran_hndl, enc_mm_id_, 0, 0, 0, 3 );
+      S26_Sched2620_SetModeEncoder( tran_hndl, enc_mm_id_, 1, 0, 0, 3 );
+      S26_Sched2620_SetModeEncoder( tran_hndl, enc_mm_id_, 2, 0, 0, 3 );
 
       // Case 2608: Count the number of dac output channels and set the line frequency
       const int tmp_dac_mm_id = 1; //Digital to Analog out must be at port 1
-      S26_Sched2608_ReadEeprom(tran_hndl, tmp_dac_mm_id, 0, &s_ds_.s2608_num_aouts_at_iom_ );  // Get the dac channel count.
-      S26_Sched2608_SetLineFreq(tran_hndl, tmp_dac_mm_id, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
+      S26_Sched2608_ReadEeprom(tran_hndl, dac_mm_id_, 0, &s_ds_.s2608_num_aouts_at_iom_ );  // Get the dac channel count.
+      S26_Sched2608_SetLineFreq(tran_hndl, dac_mm_id_, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
 
       // Execute the scheduled i/o and release the transaction object.
       faults = S26_SchedExecute( tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
@@ -140,6 +139,42 @@ namespace sensoray
   void CSensoray3DofIODriver::shutdown()
   { S26_DriverClose();  }
 
+  /** Encoder operation only : Reads encoders */
+  bool CSensoray3DofIODriver::readEncoders()
+  {
+    //Open transaction
+    void* tran_hndl = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
+    if(NULL == tran_hndl)
+    { return false; }
+
+    // Transfer counter cores to latches.
+    S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 0, 2 );
+    S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 1, 2 );
+    S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 2, 2 );
+
+    // Read latches.
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 0, &s_ds_.counter_counts_[0], &s_ds_.counter_timestamp_[0] );
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 1, &s_ds_.counter_counts_[1], &s_ds_.counter_timestamp_[1] );
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 2, &s_ds_.counter_counts_[2], &s_ds_.counter_timestamp_[2] );
+
+    // Execute the scheduled i/o and then release the transaction object.  Exit loop if there was no error.
+    GWERR err = S26_SchedExecute(tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
+    if (0 != err)
+    {
+      showErrorInfo( err, s_ds_.iom_status_ );
+      return false;
+    }
+
+    printf("\nEnc : %ld %ld %ld", s_ds_.counter_counts_[0], s_ds_.counter_counts_[1], s_ds_.counter_counts_[2]);
+    printf("\nTim : %ld %ld %ld", s_ds_.counter_timestamp_[0], s_ds_.counter_timestamp_[1], s_ds_.counter_timestamp_[2]);
+  }
+
+  /** Encoder+Motor operation : Sends analog out to motors + reads encoders */
+  bool CSensoray3DofIODriver::readEncodersAndCommandMotors()
+  {
+    return false;
+  }
+
   ///////////////////////////////////////////////////////
   // Main control loop.  Returns loop iteration count.
 
@@ -152,7 +187,6 @@ namespace sensoray
     int       tDiff;
     int       tMax = 0;
 
-    // Repeat until keypress ...
     for (int i=0 ;i<500 ;++i )
     {
       // Compute the next output states -----------------------------------------------------------
@@ -214,10 +248,10 @@ namespace sensoray
       // Execute the scheduled i/o and then release the transaction object.  Exit loop if there was no error.
       GWERR err;
       // Execute the scheduled i/o.  Report error if one was detected.
-      if ( ( err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ ) ) != 0 )
-        showErrorInfo( err, s_ds_.iom_status_ );
-      if ( (int)err )
+      err = S26_SchedExecute( x, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
+      if (0 != err)
       {
+        showErrorInfo( err, s_ds_.iom_status_ );
         printf( "Terminating i/o control loop.\n" );
         break;
       }
