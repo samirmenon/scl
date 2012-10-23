@@ -46,7 +46,7 @@ int main()
 
   // TEST 1 : Run a full control loop
   t_start = sutil::CSystemClock::getSysTime();
-  ctrl_cycles = sensorayio.ioControlLoop();    // Run control loop until terminated or error.
+  ctrl_cycles = sensorayio.testDriver(100);    // Run control loop until terminated or error.
   t_tot = sutil::CSystemClock::getSysTime() - t_start;
 
   // Report benchmark results.
