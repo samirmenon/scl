@@ -48,11 +48,11 @@ namespace sensoray
 {
   /** A bunch of constants used by the Sensoray driver
    * to establish 3dof I/O */
-  class SSensoray3DofIO
+  class SSensoray3DofIODriver
   {
   public:
     /** Default constructor : Sets stuff to defaults */
-    SSensoray3DofIO() :
+    SSensoray3DofIODriver() :
       mm_ip_addr_("10.10.10.1"),
       mm_handle_(0),
       timeout_gateway_ms_(100),
@@ -61,6 +61,7 @@ namespace sensoray
       retries_gateway_(50),
       iters_ctrl_loop_(0),
       num_iom_boards_(0),
+      s2608_num_aouts_at_iom_(3),
       iom_link_flags_(0),
       interlock_flags_(0)
     {//Somewhat redundant initialization to maintain declaration order
@@ -69,7 +70,6 @@ namespace sensoray
       {
         iom_types_[i] = 0;
         iom_status_[i] = 0;
-        s2608_num_aouts_at_iom_[i] = 0;
       }
 
       for (i=0; i<6; ++i)
@@ -87,7 +87,7 @@ namespace sensoray
     }
 
     /** Default destructor : Does nothing */
-    ~SSensoray3DofIO(){}
+    ~SSensoray3DofIODriver(){}
 
     // CONSTANTS //////////////////////////////////////////////////////////////////
     /** Set this to the MM's IP address.*/
@@ -117,7 +117,7 @@ namespace sensoray
     u8    iom_status_[16];
 
     /** Number of dac channels (applies to 2608 only). */
-    u8    s2608_num_aouts_at_iom_[16];
+    u8    s2608_num_aouts_at_iom_;
 
     // Input data from the i/o system.
     /** IOM port Link status. */
@@ -151,7 +151,7 @@ namespace sensoray
     ~CSensoray3DofIODriver() {}
 
     /** Get data */
-    SSensoray3DofIO& getData()
+    SSensoray3DofIODriver& getData()
     { return s_ds_; }
 
     /** ***************** Driver calls (in order) *********************** */
@@ -160,7 +160,9 @@ namespace sensoray
      * Assumptions :
      * 1. Only one main module in the system
      * 2. The main module's id is 0, and IP is 10.10.10.1
-     * 3. The I/O modules are connected on ports 0 and 1 of the main module
+     * 3. The I/O modules are connected on main module ports:
+     *    -- Port 0 = Encoders 2620
+     *    -- Port 1 = Motors 2608
      * */
     bool init();
 
@@ -176,7 +178,7 @@ namespace sensoray
 
   private:
     /** The data structore with all the important vars etc. */
-    SSensoray3DofIO s_ds_;
+    SSensoray3DofIODriver s_ds_;
 
     const unsigned int max_main_modules_;
     const unsigned int max_io_modules_at_main_module_;

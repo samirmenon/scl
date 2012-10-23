@@ -91,38 +91,32 @@ namespace sensoray
         { std::cout<<"\nPort ["<<i<<"]. I/O module : "<<s_ds_.iom_types_[i]; }
       }
 
+      // ========= Open Transaction : INITIALIZE THE SENSORAY IO MODULES =============
       // Initialize the 2608 (aout) and 2620 (din) IO modules
       // Doing so requires scheduling a transaction, with all the init loaded into it.
       void*   tran_hndl;        // Transaction object.
 
-      // ========= Open Transaction =============
       // Start a new transaction. Create it using the sensoray driver API.
       tran_hndl = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
       if (NULL == tran_hndl)
       { throw(std::runtime_error("S26_SchedOpen() : Could not allocate a transaction object." ));  }
 
       // Schedule the I/O actions into the transaction.
-      // For each iom port on the MM ...
-      for (unsigned int i = 0; i < max_io_modules_at_main_module_; i++ )
-      {
-        // Schedule some initialization actions based on iom type.
-        switch ( s_ds_.iom_types_[i] )
-        {
-          case 2608:
-            // Count the number of dac output channels and set the line frequency
-            S26_Sched2608_ReadEeprom(tran_hndl, i, 0, &s_ds_.s2608_num_aouts_at_iom_[i] );  // Get the dac channel count.
-            S26_Sched2608_SetLineFreq(tran_hndl, i, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
-            break;
+      if(2620 != s_ds_.iom_types_[0])
+      { throw(std::runtime_error("Incorrect setup. Please connect 2620 to Main Module port 0.")); }
+      if(2608 != s_ds_.iom_types_[1])
+      { throw(std::runtime_error("Incorrect setup. Please connect 2608 to Main Module port 1.")); }
 
-          case 2620:
-            // Set up encoder interface on the first three ports
-            S26_Sched2620_SetModeEncoder( tran_hndl, i, 0, 0, 0, 3 );
-            S26_Sched2620_SetModeEncoder( tran_hndl, i, 1, 0, 0, 3 );
-            S26_Sched2620_SetModeEncoder( tran_hndl, i, 2, 0, 0, 3 );
+      // Case 2620: Set up encoder interface on the first three ports
+      const int tmp_enc_mm_id = 0; //Encoder must be at port 0
+      S26_Sched2620_SetModeEncoder( tran_hndl, tmp_enc_mm_id, 0, 0, 0, 3 );
+      S26_Sched2620_SetModeEncoder( tran_hndl, tmp_enc_mm_id, 1, 0, 0, 3 );
+      S26_Sched2620_SetModeEncoder( tran_hndl, tmp_enc_mm_id, 2, 0, 0, 3 );
 
-            break;
-        }
-      }
+      // Case 2608: Count the number of dac output channels and set the line frequency
+      const int tmp_dac_mm_id = 1; //Digital to Analog out must be at port 1
+      S26_Sched2608_ReadEeprom(tran_hndl, tmp_dac_mm_id, 0, &s_ds_.s2608_num_aouts_at_iom_ );  // Get the dac channel count.
+      S26_Sched2608_SetLineFreq(tran_hndl, tmp_dac_mm_id, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
 
       // Execute the scheduled i/o and release the transaction object.
       faults = S26_SchedExecute( tran_hndl, s_ds_.timeout_gateway_ms_, s_ds_.iom_status_ );
@@ -131,7 +125,9 @@ namespace sensoray
         showErrorInfo(faults, s_ds_.iom_status_);
         throw(std::runtime_error("Could execute transaction to initialize one or more sensoray IO modules."));
       }
-      // ========= End Transaction =============
+      // ========= End Transaction : INITIALIZE THE SENSORAY IO MODULES =============
+
+      std::cout<<"\nInitalized Main module, Encoder in (2620), and Analog out (2608)"<<std::flush;
 
       return true;
     }
@@ -190,7 +186,7 @@ namespace sensoray
             S26_Sched2608_GetCalData( x, i, 0 );          // Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
 
             // Program all analog outputs.
-            for ( chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_[chan]; chan++ )
+            for ( chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
               S26_Sched2608_SetAout( x, i, (u8)chan, s_ds_.analog_out_voltages_[chan] );
             break;
 
@@ -203,7 +199,7 @@ namespace sensoray
             // Read latches.
             for ( chan = 0; chan < 3; chan++ )
             { S26_Sched2620_GetCounts( x, i, (u8)chan, &s_ds_.counter_counts_[chan], &s_ds_.counter_timestamp_[chan] );  }// Fetch values from all channel latches.
-            printf("\nEnc : %d %d %d", s_ds_.counter_counts_[0], s_ds_.counter_counts_[1], s_ds_.counter_counts_[2]);
+            printf("\nEnc : %ld %ld %ld", s_ds_.counter_counts_[0], s_ds_.counter_counts_[1], s_ds_.counter_counts_[2]);
 
             break;
         }
@@ -251,7 +247,6 @@ namespace sensoray
   {
     u8    i;
     int   j;
-    void*   x;        // Transaction object.
     time_t  StartTime;    // Benchmark start time.
     double  tElapsed;   // Benchmark elapsed time.
 
