@@ -67,6 +67,8 @@ namespace scl_app
     bool flag;
     try
     {
+      std::cout<<"\nTo use haptics, connect haptic devices and use flag : -haptic <num-devices>"
+               <<"\n NOTE : Run as sudo for usb.\n\n"<<std::flush;
       //First set up the haptics
       flag = haptics_.connectToDevices();
       if(false == flag)
@@ -202,8 +204,8 @@ namespace scl_app
             has_been_init_haptics_ = true;
             for(scl::sUInt i=0;i<num_haptic_devices_to_use_;++i)
             {
-              haptic_pos_.push_back(Eigen::Vector3d());
-              haptic_base_pos_.push_back(Eigen::Vector3d());
+              haptic_pos_.push_back(Eigen::VectorXd());
+              haptic_base_pos_.push_back(Eigen::VectorXd());
             }
             args_ctr+=2; continue;
           }
@@ -215,7 +217,7 @@ namespace scl_app
         // { }
         else
         {
-          std::cout<<"\n Possible example task options: -l (log file), -com (com control task), -op (op point task) -haptics (haptic op task)";
+          std::cout<<"\n Possible example task options: -l (log file), -com (com control task), -op (op point task) -haptics (num haptic points)";
           args_ctr++;
         }
     }
