@@ -175,9 +175,12 @@ namespace sensoray
   public:
     /** Default constructor : Does nothing */
     CSensoray3DofIODriver() :
-      s_ds_(), max_main_modules_(1), max_io_modules_at_main_module_(2),
-      enc_mm_id_(0), dac_mm_id_(1),
-      totalSent(0), peek_character(-1) {}
+      s_ds_(),
+      mode_encoder_only_(false),
+      max_main_modules_(1),
+      max_io_modules_at_main_module_(2),
+      enc_mm_id_(0),
+      dac_mm_id_(1) {}
 
     /** Default destructor : Does nothing */
     ~CSensoray3DofIODriver() {}
@@ -190,16 +193,19 @@ namespace sensoray
     /** The data structore with all the important vars etc. */
     SSensoray3DofIODriver s_ds_;
 
-    const unsigned int max_main_modules_;
-    const unsigned int max_io_modules_at_main_module_;
+    /** True if only encoders are to be used.
+     * False if both motors and encoders used. */
+    bool mode_encoder_only_;
 
+    /** ****************** Some Constants **************** */
+    /** Only one main module allowed here */
+    const unsigned int max_main_modules_;
+    /** 2 : Encoder 2620 and Dac 2608 */
+    const unsigned int max_io_modules_at_main_module_;
     /** Encoder must be at port 0 */
     const int enc_mm_id_;
     /** Dac must be at port 1 */
     const int dac_mm_id_;
-
-    int totalSent;
-    int peek_character;
   };
 
 } /* namespace sensoray */
