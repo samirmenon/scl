@@ -294,10 +294,8 @@ namespace sensoray
     printf( "Average I/O cycle time (msec):  %.2f\n", tElapsed / (double)s_ds_.iters_ctrl_loop_ * 1000.0 );
   }
 
-
   ////////////////////////////////
   // Display gateway error info.
-
   void CSensoray3DofIODriver::showErrorInfo( u32 gwerr, u8 *arg_iom_status )
   {
     char  errmsg[128];
