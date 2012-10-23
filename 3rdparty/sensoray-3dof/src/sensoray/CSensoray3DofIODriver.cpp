@@ -109,14 +109,12 @@ namespace sensoray
         switch ( s_ds_.iom_types_[i] )
         {
           case 2608:
+            // Count the number of dac output channels and set the line frequency
             S26_Sched2608_ReadEeprom(tran_hndl, i, 0, &s_ds_.s2608_num_aouts_at_iom_[i] );  // Get the dac channel count.
             S26_Sched2608_SetLineFreq(tran_hndl, i, LINEFREQ_60HZ );   // 60 Hz line frequency (default).
             break;
 
           case 2620:
-            // Set gate period to 1 second, timestamp resolution to 1 millisecond.
-            S26_Sched2620_SetCommonControl( tran_hndl, i, 1000, 3 );
-
             // Set up encoder interface on the first three ports
             S26_Sched2620_SetModeEncoder( tran_hndl, i, 0, 0, 0, 3 );
             S26_Sched2620_SetModeEncoder( tran_hndl, i, 1, 0, 0, 3 );
