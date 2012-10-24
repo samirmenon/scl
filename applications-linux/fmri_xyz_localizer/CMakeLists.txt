@@ -65,9 +65,7 @@ SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -DGRAPHICS_ON -DW_THREADING_ON -DNDE
 SET(EG_BASE_DIR ${SCL_BASE_DIR}/applications-linux/fmri_xyz_localizer/)
 
 SET(ALL_SRC ${EG_BASE_DIR}fmri_xyz_localizer_main.cpp
-            ${EG_BASE_DIR}CFmriXYZLocalizerApp.cpp
-						${SCL_INC_DIR}/haptics/chai/CChaiHaptics.cpp 
-            ${SCL_INC_DIR}/robot/CRobotApp.cpp 
+						${SCL_INC_DIR}/haptics/chai/CChaiHaptics.cpp
             ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
 
