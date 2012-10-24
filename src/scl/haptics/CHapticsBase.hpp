@@ -70,10 +70,10 @@ namespace scl
     /** Get the present state of the haptic devices. This is typically
      * the position, but can also include the orientation and/or a push
      * button. */
-    virtual scl::sBool getHapticDevicePositions(std::vector<Eigen::VectorXd>& ret_pos_vec)=0;
+    virtual scl::sBool getAllHapticDevicePositions(std::vector<Eigen::VectorXd>& ret_pos_vec)=0;
 
     /** Sets the actuators on the haptic devices. */
-    virtual scl::sBool setHapticDeviceActuators(const std::vector<Eigen::VectorXd>& arg_cmd_vec)=0;
+    virtual scl::sBool setAllHapticDeviceActuators(const std::vector<Eigen::VectorXd>& arg_cmd_vec)=0;
 
     /* Close the connections to the haptic devices */
     virtual scl::sBool closeConnectionToDevices()=0;

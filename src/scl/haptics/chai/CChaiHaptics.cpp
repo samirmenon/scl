@@ -104,7 +104,7 @@ namespace scl
     return true;
   }
 
-  bool CChaiHaptics::getHapticDevicePositions(
+  bool CChaiHaptics::getAllHapticDevicePositions(
       std::vector<Eigen::VectorXd>& ret_pos_vec)
   {
     if(ret_pos_vec.size() > haptics_handler_->getNumDevices())

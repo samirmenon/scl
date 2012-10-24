@@ -294,7 +294,7 @@ namespace scl_app
 
       if(has_been_init_haptics_)
       {//Update the position of the first few points using the haptics
-        bool flag = haptics_.getHapticDevicePositions(haptic_pos_);
+        bool flag = haptics_.getAllHapticDevicePositions(haptic_pos_);
         assert(flag);
         std::vector<Eigen::VectorXd>::iterator it,ite, itv,itve;
         int i;
