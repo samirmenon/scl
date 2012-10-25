@@ -148,7 +148,7 @@ int main(int argc, char** argv)
             // screen
             if(has_been_init_haptics_)
             {
-              haptics_.getHapticDevicePositions(haptic_pos_);
+              haptics_.getHapticDevicePosition(0,haptic_pos_);
               db->s_gui_.ui_point_[0] = haptic_pos_;
             }
             chai_haptic_pos_->setLocalPos(db->s_gui_.ui_point_[0]);
