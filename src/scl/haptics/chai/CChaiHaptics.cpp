@@ -104,19 +104,45 @@ namespace scl
     return true;
   }
 
-  bool CChaiHaptics::getAllHapticDevicePositions(
-      std::vector<Eigen::VectorXd>& ret_pos_vec)
+  /** Get the present state of a single haptic devices. This is typically
+   * the position, but can also include the orientation and/or a push
+   * button. */
+  scl::sBool CChaiHaptics::getHapticDevicePosition(
+      const sUInt arg_id, Eigen::VectorXd& ret_pos_vec) const
   {
-    if(ret_pos_vec.size() > haptics_handler_->getNumDevices())
+    if(arg_id >= haptics_handler_->getNumDevices())
     {
-      std::cout<<"\n The passed vector has more elements than the number of connected devices";
+      std::cout<<"\nCChaiHaptics::getHapticDevicePosition() : Error:"
+          <<"\n\tThe requested haptic ID is greater than the number of connected devices";
       return false;
     }
 
     // ***********************************************************
     //                     READ DEVICE STATE
     // ***********************************************************
-    std::vector<cGenericHapticDevice*>::iterator it,ite;
+    cVector3d tmpv;
+    int tmp = haptic_devices_[arg_id]->getPosition(tmpv);
+    if (0 != tmp)
+    { std::cout<<"\nCChaiHaptics::getHapticDevicePosition() : WARNING : \n\tCould not read position of haptic device: "<<arg_id; }
+    ret_pos_vec = tmpv;
+
+    return true;
+  }
+
+  bool CChaiHaptics::getAllHapticDevicePositions (
+      std::vector<Eigen::VectorXd>& ret_pos_vec) const
+  {
+    if(ret_pos_vec.size() > haptics_handler_->getNumDevices())
+    {
+      std::cout<<"\nCChaiHaptics::getAllHapticDevicePositions () : Error:"
+          <<"\n\tThe passed vector has more elements than the number of connected devices";
+      return false;
+    }
+
+    // ***********************************************************
+    //                     READ DEVICE STATE
+    // ***********************************************************
+    std::vector<cGenericHapticDevice*>::const_iterator it,ite;
     std::vector<Eigen::VectorXd>::iterator itv, itve;
     int i=0;
     for(it = haptic_devices_.begin(), ite = haptic_devices_.end(),
