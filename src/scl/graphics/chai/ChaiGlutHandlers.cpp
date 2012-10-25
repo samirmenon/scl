@@ -294,63 +294,66 @@ namespace scl_chai_glut_interface
 
     //Modulate a robot's links
     static int link_idx = 0;
-    if (chai_glob_ds->keys_active[static_cast<int>('+')])
-    {
-      link_idx++;
+    if(scl::CDatabase::getData()->s_io_.io_data_.at(0) != NULL)
+    {//Can't modulate links if there is no robot.
+      if (chai_glob_ds->keys_active[static_cast<int>('+')])
+      {
+        link_idx++;
 
-      scl::SDatabase* db = scl::CDatabase::getData();
-      scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
-      if(link_idx >= io->sensors_.q_.size())
-      { link_idx = io->sensors_.q_.size()-1;  }
+        scl::SDatabase* db = scl::CDatabase::getData();
+        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        if(link_idx >= io->sensors_.q_.size())
+        { link_idx = io->sensors_.q_.size()-1;  }
 
-      std::cout<<"\nGLUT: "<<io->name_<<" : Link : "<<link_idx<<std::flush;
-      chai_glob_ds->keys_active[static_cast<int>('+')] = false;
-    }
-    if (chai_glob_ds->keys_active[static_cast<int>('-')])
-    {
-      link_idx--;
-      if(0>link_idx) link_idx = 0;
+        std::cout<<"\nGLUT: "<<io->name_<<" : Link : "<<link_idx<<std::flush;
+        chai_glob_ds->keys_active[static_cast<int>('+')] = false;
+      }
+      if (chai_glob_ds->keys_active[static_cast<int>('-')])
+      {
+        link_idx--;
+        if(0>link_idx) link_idx = 0;
 
-      scl::SDatabase* db = scl::CDatabase::getData();
-      scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        scl::SDatabase* db = scl::CDatabase::getData();
+        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
 
-      std::cout<<"\nGLUT: "<<io->name_<<" : Link : "<<link_idx<<std::flush;
-      chai_glob_ds->keys_active[static_cast<int>('-')] = false;
-    }
+        std::cout<<"\nGLUT: "<<io->name_<<" : Link : "<<link_idx<<std::flush;
+        chai_glob_ds->keys_active[static_cast<int>('-')] = false;
+      }
 
-    // Position keyboard shortcuts.
-    if (chai_glob_ds->keys_active[static_cast<int>('o')])
-    {
-      scl::SDatabase* db = scl::CDatabase::getData();
-      scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
-      if(link_idx >= io->sensors_.q_.size())
-      { link_idx = io->sensors_.q_.size()-1;  }
-      io->sensors_.q_(link_idx) += 0.1;
-    }
-    if (chai_glob_ds->keys_active[static_cast<int>('O')])
-    {
-      scl::SDatabase* db = scl::CDatabase::getData();
-      scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
-      if(link_idx >= io->sensors_.q_.size())
-      { link_idx = io->sensors_.q_.size()-1;  }
-      io->sensors_.q_(link_idx) += 0.3;
-    }
+      // Position keyboard shortcuts.
+      if (chai_glob_ds->keys_active[static_cast<int>('o')])
+      {
+        scl::SDatabase* db = scl::CDatabase::getData();
+        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        if(link_idx >= io->sensors_.q_.size())
+        { link_idx = io->sensors_.q_.size()-1;  }
+        io->sensors_.q_(link_idx) += 0.1;
+      }
+      if (chai_glob_ds->keys_active[static_cast<int>('O')])
+      {
+        scl::SDatabase* db = scl::CDatabase::getData();
+        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        if(link_idx >= io->sensors_.q_.size())
+        { link_idx = io->sensors_.q_.size()-1;  }
+        io->sensors_.q_(link_idx) += 0.3;
+      }
 
-    if (chai_glob_ds->keys_active[static_cast<int>('l')])
-    {
-      scl::SDatabase* db = scl::CDatabase::getData();
-      scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
-      if(link_idx >= io->sensors_.q_.size())
-      { link_idx = io->sensors_.q_.size()-1;  }
-      io->sensors_.q_(link_idx) -= 0.1;
-    }
-    if (chai_glob_ds->keys_active[static_cast<int>('L')])
-    {
-      scl::SDatabase* db = scl::CDatabase::getData();
-      scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
-      if(link_idx >= io->sensors_.q_.size())
-      { link_idx = io->sensors_.q_.size()-1;  }
-      io->sensors_.q_(link_idx) -= 0.3;
+      if (chai_glob_ds->keys_active[static_cast<int>('l')])
+      {
+        scl::SDatabase* db = scl::CDatabase::getData();
+        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        if(link_idx >= io->sensors_.q_.size())
+        { link_idx = io->sensors_.q_.size()-1;  }
+        io->sensors_.q_(link_idx) -= 0.1;
+      }
+      if (chai_glob_ds->keys_active[static_cast<int>('L')])
+      {
+        scl::SDatabase* db = scl::CDatabase::getData();
+        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        if(link_idx >= io->sensors_.q_.size())
+        { link_idx = io->sensors_.q_.size()-1;  }
+        io->sensors_.q_(link_idx) -= 0.3;
+      }
     }
   }
 
