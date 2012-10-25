@@ -37,11 +37,13 @@
 #include <iostream>
 #include <stdexcept>
 #include <cassert>
+#include <ctime>
 
 /** A sample application to control a haptic fmri experiment */
 int main(int argc, char** argv)
 {
   bool flag;
+  const double NaN = 0.0/0.0;
   if((argc != 2)&&(argc != 3))
   {
     std::cout<<"\nfmri_xyz_localizer demo application allows controlling a haptic device."
@@ -130,6 +132,33 @@ int main(int argc, char** argv)
       else
       { has_been_init_haptics = true; }
 
+      /****************************** Logging ************************************/
+      FILE * fp;
+      std::string tmp_outfile = tmp_infile + std::string(".log");
+      fp = fopen(tmp_outfile.c_str(),"a");
+      if(NULL == fp)
+      { throw(std::runtime_error(std::string("Could not open log file : ") + tmp_outfile));  }
+
+      time_t t = time(0);   // get time now
+      struct tm * now = localtime( & t );
+      int year = now->tm_year + 1900;
+      int mon = now->tm_mon + 1;
+      int day = now->tm_mday;
+
+      double last_log_time = sutil::CSystemClock::getSysTime();
+
+      //Log initial state:
+      fprintf(fp,"\n*******************************************************************");
+      fprintf(fp,"\n************************fMRI Localizer*****************************");
+      fprintf(fp,"\n Real World Start Date : %d-%d-%d", mon, day, year);
+      fprintf(fp,"\n Real World Start Time : %lf", sutil::CSystemClock::getSysTime());
+      fprintf(fp,"\n Config File : %s", tmp_infile.c_str());
+      fprintf(fp,"\n Haptics Used : %s", has_been_init_haptics?"true":"false");
+      fprintf(fp,"\n Data format : time x_des y_des z_des x_curr y_curr z_curr");
+      fprintf(fp,"\n Data accuracy : time = ms. pos = mm");
+      fprintf(fp,"\n*******************************************************************");
+      fprintf(fp,"\n*******************************************************************");
+
 
       /******************************Main Loop************************************/
       std::cout<<std::flush;
@@ -169,25 +198,36 @@ int main(int argc, char** argv)
         thread_id = omp_get_thread_num();
         if(thread_id==1)
         {
-          std::cout<<"\nI am the haptics thread. Id = "<<thread_id<<std::flush;
+          std::cout<<"\nI am the haptics and logging thread. Id = "<<thread_id<<std::flush;
 #endif
           while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
           {
             // Get latest haptic device position and update the pointer on the
             // screen
+            Eigen::Vector3d& hpos = db->s_gui_.ui_point_[0];
             if(has_been_init_haptics)
             {
               haptics_.getHapticDevicePosition(0,haptic_pos_);
-              db->s_gui_.ui_point_[0] = haptic_pos_;
+              hpos = haptic_pos_;
             }
-            chai_haptic_pos->setLocalPos(db->s_gui_.ui_point_[0]);
+            chai_haptic_pos->setLocalPos(hpos);
 
             // Get the desired position where the haptic point should go
-            chai_haptic_pos_des->setLocalPos(db->s_gui_.ui_point_[1]);
+            Eigen::Vector3d& hpos_des = db->s_gui_.ui_point_[1];
+            chai_haptic_pos_des->setLocalPos(hpos_des);
 
             // NOTE TODO : If reached, do something else
 
             haptics_ctr++;
+
+            //Log the data
+            double curr_time = sutil::CSystemClock::getSysTime();
+            if(0.001 < curr_time - last_log_time)
+            {
+              fprintf(fp,"\n%.3lf %.3lf %.3lf %.3lf %.3lf %.3lf %.3lf",curr_time - t_start,
+                  hpos_des(0), hpos_des(1), hpos_des(2), hpos(0), hpos(1), hpos(2) );
+              last_log_time = curr_time;
+            }
 #ifndef DEBUG
           }
         }
@@ -199,8 +239,10 @@ int main(int argc, char** argv)
 #endif
             glutMainLoopEvent();
             gr_ctr++;
-            const timespec ts = {0, 15000000};//Sleep for 15ms
+#ifndef DEBUG
+            const timespec ts = {0, 5000000};//Sleep for 5ms
             nanosleep(&ts,NULL);
+#endif
           }
 #ifndef DEBUG
         }
@@ -214,6 +256,13 @@ int main(int argc, char** argv)
       std::cout<<"\nReal World End Time  : "<<sutil::CSystemClock::getSysTime() <<" sec \n";
       std::cout<<"\nTotal Graphics Updates  : "<<gr_ctr;
       std::cout<<"\nTotal Haptics Updates   : "<<haptics_ctr;
+
+      fprintf(fp,"\n Simulation Took Time : %lf", t_end-t_start);
+      fprintf(fp,"\n Real World End Time  : %lf", sutil::CSystemClock::getSysTime());
+      fprintf(fp,"\n Tot Graphics Updates : %lld", gr_ctr);
+      fprintf(fp,"\n Tot Haptics Updates  : %lld", haptics_ctr);
+      fprintf(fp,"\n*******************************************************************");
+      fprintf(fp,"\n*******************************************************************");
 
       /****************************Deallocate Memory And Exit*****************************/
       flag = chai_gr.destroyGraphics();
