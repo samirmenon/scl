@@ -90,29 +90,45 @@ int main(int argc, char** argv)
       { throw(std::runtime_error("Glut initialization error")); }
 
       /*****************************Chai Control Points************************************/
-      cGenericObject *chai_haptic_pos_,*chai_haptic_pos_des_;
+      cGenericObject *chai_haptic_pos = S_NULL,*chai_haptic_pos_des = S_NULL;
+
+      /** Render a sphere at the haptic point's position */
+      flag = chai_gr.addSphereToRender(Eigen::Vector3d::Zero(), chai_haptic_pos, 0.02);
+      if(false == flag) { throw(std::runtime_error("Could not add sphere at com pos"));  }
+      if(NULL == chai_haptic_pos){ throw(std::runtime_error("Could not add sphere at com pos"));  }
+
+      /** Render a sphere at the haptic point's desired position */
+      flag = chai_gr.addSphereToRender(Eigen::Vector3d::Zero(), chai_haptic_pos_des, 0.02);
+      if(false == flag) { throw(std::runtime_error("Could not add sphere at com desired pos"));  }
+      if(NULL == chai_haptic_pos_des){ throw(std::runtime_error("Could not add sphere at com desired pos"));  }
+
+      //Make desired position red/orange
+      cMaterial mat_red; mat_red.setRedFireBrick();
+      chai_haptic_pos_des->setMaterial(mat_red, false);
 
       /******************************Chai Haptics************************************/
       //For controlling op points with haptics
       //The app will support dual-mode control, with the haptics controlling op points.
       scl::CChaiHaptics haptics_;
-      scl::sBool has_been_init_haptics_;
+      scl::sBool has_been_init_haptics;
       Eigen::VectorXd haptic_pos_;
       Eigen::VectorXd haptic_base_pos_;
 
       //First set up the haptics
       flag = haptics_.connectToDevices();
       if(false == flag)
-      { throw(std::runtime_error("Could not get connect to haptic device"));  }
+      {
+        std::cout<<"\nWARNING : Could not connect to haptic device. Proceeding in kbd mode. \n\tDid you run as sudo?";
+      }
 
       //Set up haptic device
       if(0 == haptics_.getNumDevicesConnected())
       {
         std::cout<<"WARNING: No haptic devices connected. Proceeding in keyboard mode";
-        has_been_init_haptics_ = false;
+        has_been_init_haptics = false;
       }
       else
-      { has_been_init_haptics_ = true; }
+      { has_been_init_haptics = true; }
 
 
       /******************************Main Loop************************************/
@@ -125,7 +141,7 @@ int main(int argc, char** argv)
       int thread_id;
 
       //Trigger the fmri scan with the serial pulse here.
-      if(argc == 3)
+      if((argc == 3) && has_been_init_haptics)
       {
         std::string tmp_trigger(argv[2]);
         if(tmp_trigger == std::string("1"))
@@ -134,31 +150,36 @@ int main(int argc, char** argv)
           //NOTE TODO : Call the usb-serial code
         }
       }
+      else
+      { std::cout<<"\n ========= Skipping fmri scan trigger. No haptics ========";  }
       t_start = sutil::CSystemClock::getSysTime();
 
+#ifndef DEBUG
 #pragma omp parallel private(thread_id)
       {
         thread_id = omp_get_thread_num();
         if(thread_id==1)
         {
           std::cout<<"\nI am the haptics thread. Id = "<<thread_id<<std::flush;
+#endif
           while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
           {
             // Get latest haptic device position and update the pointer on the
             // screen
-            if(has_been_init_haptics_)
+            if(has_been_init_haptics)
             {
               haptics_.getHapticDevicePosition(0,haptic_pos_);
               db->s_gui_.ui_point_[0] = haptic_pos_;
             }
-            chai_haptic_pos_->setLocalPos(db->s_gui_.ui_point_[0]);
+            chai_haptic_pos->setLocalPos(db->s_gui_.ui_point_[0]);
 
             // Get the desired position where the haptic point should go
-            chai_haptic_pos_des_->setLocalPos(db->s_gui_.ui_point_[1]);
+            chai_haptic_pos_des->setLocalPos(db->s_gui_.ui_point_[1]);
 
             // NOTE TODO : If reached, do something else
 
             haptics_ctr++;
+#ifndef DEBUG
           }
         }
         else
@@ -166,13 +187,16 @@ int main(int argc, char** argv)
           std::cout<<"\nI am the graphics thread. Id = "<<thread_id<<std::flush;
           while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
           {
+#endif
             glutMainLoopEvent();
             gr_ctr++;
             const timespec ts = {0, 15000000};//Sleep for 15ms
             nanosleep(&ts,NULL);
           }
+#ifndef DEBUG
         }
       }
+#endif
 
       t_end = sutil::CSystemClock::getSysTime();
 
