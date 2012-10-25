@@ -29,5 +29,5 @@ cd ../scl_gc_ctrl && make release -j8 &&
 cd ../scl_task_ctrl && make release -j8 &&
 cd ../scl_example_ctrl && sh make_dbg.sh && sh make_rel.sh &&
 cd ../scl_file_converter && make release -j8 &&
-cd ../scl_haptic_ctrl && make release -j8 &&
+cd ../scl_haptic_ctrl && sh make_dbg.sh && sh make_rel.sh &&
 cd ../scl_lib
