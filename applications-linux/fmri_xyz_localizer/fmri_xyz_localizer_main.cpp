@@ -141,13 +141,22 @@ int main(int argc, char** argv)
       int thread_id;
 
       //Trigger the fmri scan with the serial pulse here.
-      if((argc == 3) && has_been_init_haptics)
+      if(argc == 3)
       {
         std::string tmp_trigger(argv[2]);
         if(tmp_trigger == std::string("1"))
         {
-          std::cout<<"\n ********** Triggering scan ********** ";
-          //NOTE TODO : Call the usb-serial code
+          char ch;
+          if(false == has_been_init_haptics)
+          {
+            std::cout<<"\n WARNING : Could not intialize haptics. Trigger scan? y/n \n>>";
+            std::cin>>ch;
+          }
+          if(ch == 'y')
+          {
+            std::cout<<"\n ********** Triggering scan ********** ";
+            //NOTE TODO : Call the usb-serial code
+          }
         }
       }
       else
