@@ -284,7 +284,7 @@ int cBFR1Device::close()
   int result = 0;
 
   // *** INSERT YOUR CODE HERE ***
-  sensorayio.shutdown();                       // Shut down the driver
+  sensorayio_.shutdown();                       // Shut down the driver
   result = 1;
 
   // update status
