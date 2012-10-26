@@ -184,7 +184,6 @@ cBFR1Device::cBFR1Device(unsigned int a_deviceNumber)
 
 
   iters       = 0;    // Number of times through the control loop so far.
-  RelayStates = 0;    // Relay states.
   enc0 = 0;
   enc1 = 0;
   enc2 = 0;
