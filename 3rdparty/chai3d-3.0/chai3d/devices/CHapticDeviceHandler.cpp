@@ -276,6 +276,47 @@ void cHapticDeviceHandler::update()
 
     #endif
 
+
+    //-----------------------------------------------------------------------
+    // search for MyCustom device
+    //-----------------------------------------------------------------------
+    #if defined(C_ENABLE_BFR_DEVICE_SUPPORT)
+
+    // reset index number
+    index = 0;
+
+    // create a first device of this class
+    device = new cBFR1Device(index);
+
+    // check for how many devices of this type that are available
+    count = device->getNumDevices();
+
+    // if there are one or more devices available, then store them in the device table
+    if (count > 0)
+    {
+        // store first device
+        m_devices[m_numDevices] = device;
+        m_numDevices++;
+
+        // search for other devices
+        if (count > 1)
+        {
+            for (int i=1; i<count; i++)
+            {
+                index++;
+                device = new cBFR1Device(index);
+                m_devices[m_numDevices] = device;
+                m_numDevices++;
+            }
+        }
+    }
+    else
+    {
+        delete device;
+    }
+
+    #endif
+
     //-----------------------------------------------------------------------
     // search for CHAI3D Virtual Device
     // Note:
