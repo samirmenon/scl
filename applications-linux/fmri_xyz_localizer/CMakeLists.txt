@@ -175,7 +175,7 @@ else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
               PATH_SUFFIXES debug )
 
   find_library( CSENSORAY_LIBRARY_RELEASE NAMES sensoray-3dof
-              PATHS   ${CHAI_INC_DIR}../applications-linux/lib/
+              PATHS   ${SENSORAY_INC_DIR}../applications-linux/lib/
               PATH_SUFFIXES release )
 
   SET( CSENSORAY_LIBRARY debug     ${CSENSORAY_LIBRARY_DEBUG}
