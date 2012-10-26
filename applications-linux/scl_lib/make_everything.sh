@@ -1,5 +1,11 @@
 cd ../../ &&
 git submodule init && git submodule update &&
+#Build the sensoray driver library.
+cd 3rdparty/sensoray-3dof/applications-linux/lib/ &&
+#rm -rf build_* &&
+sh make_debug.sh &&
+sh make_release.sh &&
+cd ../../../../ &&
 # NOTE : We compile chai twice. This is a shared lib (works better for faster compiles for non-haptic apps)
 cd 3rdparty/chai3d-3.0/lib/ &&
 #rm -rf build_* &&
@@ -29,6 +35,7 @@ cd ../scl_test &&
 #rm -rf build_* &&
 sh make_debug.sh &&
 sh make_release.sh &&
+cd ../fmri_xyz_localizer && sh make_dbg.sh && sh make_rel.sh &&
 cd ../scl_dynamics && make release -j8 &&
 cd ../scl_gc_ctrl && make release -j8 &&
 cd ../scl_task_ctrl && make release -j8 &&
