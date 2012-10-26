@@ -51,13 +51,30 @@ SET(CLIBJPEG_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/libjpeg/include)
 ###(i) CLIBPNG
 SET(CLIBPNG_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/libpng/include)
 
+###(j) Sensoray
+#Add Sensoray drivers
+SET(SENSORAY_INC_DIR ${SCL_BASE_DIR}3rdparty/sensoray-3dof/src/)
+SET(SENSORAY_COMMON_INC_DIR ${SENSORAY_INC_DIR}/sensoray/common)
+SET(SENSORAY_LINUX_INC_DIR ${SENSORAY_INC_DIR}/sensoray/linux)
+
 ################Initialize the executable#################
 #Set the include directories
 INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR}
-${CDHD_INC_DIR} ${CGEL_INC_DIR} ${CGIFLIB_INC_DIR} ${CLIB3DS_INC_DIR} ${CLIBJPEG_INC_DIR} ${CLIBPNG_INC_DIR} ) 
+${CDHD_INC_DIR} ${CGEL_INC_DIR} ${CGIFLIB_INC_DIR} ${CLIB3DS_INC_DIR} ${CLIBJPEG_INC_DIR} ${CLIBPNG_INC_DIR}
+${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR})
 
 #Set the compilation flags
-SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp")
+# NOTE : This is only to detect 32 vs 64 bit code.
+# The else is not really an else, just a continuation of the if. CMake syntax.
+# The bfr is supported only on 32 bit systems. Else use the Force Dim devices.
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  # 64 bit..
+  SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp")
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  # 32 bit..
+  SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp -DC_ENABLE_BFR_DEVICE_SUPPORT")
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
 SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -O0 -pg -std=c++0x -DGRAPHICS_ON -DASSERT=assert -DDEBUG=1")
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
 
@@ -146,6 +163,26 @@ SET( CDHD_LIBRARY debug     ${CDHD_LIBRARY_DEBUG}
               optimized ${CDHD_LIBRARY_RELEASE} )
 
 target_link_libraries(fmri_xyz_localizer ${CDHD_LIBRARY})
+
+###############SPECIAL CODE TO FIND AND LINK SENSORAY LIB DIR ######################
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  # 64 bit..
+
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  # 32 bit..
+  find_library( CSENSORAY_LIBRARY_DEBUG NAMES sensoray-3dof
+              PATHS   ${SENSORAY_INC_DIR}../applications-linux/lib/
+              PATH_SUFFIXES debug )
+
+  find_library( CSENSORAY_LIBRARY_RELEASE NAMES sensoray-3dof
+              PATHS   ${CHAI_INC_DIR}../applications-linux/lib/
+              PATH_SUFFIXES release )
+
+  SET( CSENSORAY_LIBRARY debug     ${CSENSORAY_LIBRARY_DEBUG}
+                optimized ${CSENSORAY_LIBRARY_RELEASE} )
+
+  target_link_libraries(fmri_xyz_localizer ${CSENSORAY_LIBRARY})
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
