@@ -77,6 +77,10 @@
 #if defined(C_ENABLE_CUSTOM_DEVICE_SUPPORT)
 #include "devices/CMyCustomDevice.h"
 #endif
+
+#if defined(C_ENABLE_BFR_DEVICE_SUPPORT)
+#include "devices/CBFR1Device.h"
+#endif
 //---------------------------------------------------------------------------
 //! Maximum number of devices that can be connected at the same time.
 const unsigned int C_MAX_HAPTIC_DEVICES = 16;
