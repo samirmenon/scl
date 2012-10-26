@@ -101,12 +101,23 @@ SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
 target_link_libraries(fmri_xyz_localizer ${CHAI_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK IMAGE LIB DIR ######################
+# NOTE : This is only to detect 32 vs 64 bit code.
+# The else is not really an else, just a continuation of the if. CMake syntax.
+# The bfr is supported only on 32 bit systems. Else use the Force Dim devices.
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  # 64 bit..
+  set( CHAI_LIB_PATH ${CHAI_INC_DIR}../lib_haptics/ )
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  # 32 bit..
+  set( CHAI_LIB_PATH ${CHAI_INC_DIR}../lib_bfr/ )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
 find_library( IMG_LIBRARY_DEBUG NAMES imageformats
-            PATHS   ${CHAI_INC_DIR}../lib_haptics/
+            PATHS   ${CHAI_LIB_PATH}
             PATH_SUFFIXES debug )
 
 find_library( IMG_LIBRARY_RELEASE NAMES imageformats
-            PATHS   ${CHAI_INC_DIR}../lib_haptics/
+            PATHS   ${CHAI_LIB_PATH}
             PATH_SUFFIXES release )
 
 SET( IMG_LIBRARY debug     ${IMG_LIBRARY_DEBUG}
@@ -114,15 +125,22 @@ SET( IMG_LIBRARY debug     ${IMG_LIBRARY_DEBUG}
 
 target_link_libraries(fmri_xyz_localizer ${IMG_LIBRARY})
 
-
 ###############SPECIAL CODE TO FIND AND LINK DHD LIB DIR ######################
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  # 64 bit..
+  set( DHD_LIB_SUFFIX "lin-x86_64" )
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  # 32 bit..
+  set( DHD_LIB_SUFFIX "lin-i686" )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
 find_library( CDHD_LIBRARY_DEBUG NAMES dhd
             PATHS   ${CHAI_INC_DIR}../DHD/lib/
-            PATH_SUFFIXES lin-x86_64 )
+            PATH_SUFFIXES ${DHD_LIB_SUFFIX} )
 
 find_library( CDHD_LIBRARY_RELEASE NAMES dhd
             PATHS   ${CHAI_INC_DIR}../DHD/lib/
-            PATH_SUFFIXES lin-x86_64 )
+            PATH_SUFFIXES ${DHD_LIB_SUFFIX} )
 
 SET( CDHD_LIBRARY debug     ${CDHD_LIBRARY_DEBUG}
               optimized ${CDHD_LIBRARY_RELEASE} )
