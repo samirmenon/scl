@@ -86,6 +86,7 @@ SET(CHAI_SRC ${CHAI_INC_DIR}/graphics/CFont.cpp
              ${CHAI_INC_DIR}/devices/CPhantomDevices.cpp
              ${CHAI_INC_DIR}/devices/CHapticDeviceHandler.cpp
              ${CHAI_INC_DIR}/devices/CMyCustomDevice.cpp
+             ${CHAI_INC_DIR}/devices/CBFR1Device.cpp
              ${CHAI_INC_DIR}/devices/CVirtualDevice.cpp
              ${CHAI_INC_DIR}/devices/CDeltaDevices.cpp
              ${CHAI_INC_DIR}/devices/CFalconDevice.cpp
