@@ -87,20 +87,6 @@ SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
 target_link_libraries(fmri_xyz_localizer ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
-find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
-            PATHS   ${CHAI_INC_DIR}../lib_haptics/
-            PATH_SUFFIXES debug )
-
-find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
-            PATHS   ${CHAI_INC_DIR}../lib_haptics/
-            PATH_SUFFIXES release )
-
-SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
-              optimized ${CHAI_LIBRARY_RELEASE} )
-
-target_link_libraries(fmri_xyz_localizer ${CHAI_LIBRARY})
-
-###############SPECIAL CODE TO FIND AND LINK IMAGE LIB DIR ######################
 # NOTE : This is only to detect 32 vs 64 bit code.
 # The else is not really an else, just a continuation of the if. CMake syntax.
 # The bfr is supported only on 32 bit systems. Else use the Force Dim devices.
@@ -112,6 +98,20 @@ else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
   set( CHAI_LIB_PATH ${CHAI_INC_DIR}../lib_bfr/ )
 endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
+find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
+            PATHS   ${CHAI_LIB_PATH}
+            PATH_SUFFIXES debug )
+
+find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
+            PATHS   ${CHAI_LIB_PATH}
+            PATH_SUFFIXES release )
+
+SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
+              optimized ${CHAI_LIBRARY_RELEASE} )
+
+target_link_libraries(fmri_xyz_localizer ${CHAI_LIBRARY})
+
+###############SPECIAL CODE TO FIND AND LINK IMAGE LIB DIR ######################
 find_library( IMG_LIBRARY_DEBUG NAMES imageformats
             PATHS   ${CHAI_LIB_PATH}
             PATH_SUFFIXES debug )
