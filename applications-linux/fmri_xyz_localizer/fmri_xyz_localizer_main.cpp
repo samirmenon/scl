@@ -108,6 +108,15 @@ int main(int argc, char** argv)
       cMaterial mat_red; mat_red.setRedFireBrick();
       chai_haptic_pos_des->setMaterial(mat_red, false);
 
+      /*****************************Chai Background Text************************************/
+      cFont *text_font = NEW_CFONTCALIBRI20();
+      cLabel *text_label;
+      // Initialize the text label
+      text_label = new cLabel(text_font);
+      chai_gr.getChaiData()->chai_cam_->m_frontLayer->addChild(text_label);
+      text_label->m_fontColor.setBlue();
+      text_label->setFontScale(2);
+
       /******************************Chai Haptics************************************/
       //For controlling op points with haptics
       //The app will support dual-mode control, with the haptics controlling op points.
@@ -224,6 +233,22 @@ int main(int argc, char** argv)
             double curr_time = sutil::CSystemClock::getSysTime();
             if(0.001 < curr_time - last_log_time)
             {
+              std::stringstream ss;
+              ss <<cStr(curr_time - t_start, 1)<<" : ["
+                  <<cStr(hpos_des(0), 2)<<", "
+                  <<cStr(hpos_des(1), 2)<<", "
+                  <<cStr(hpos_des(2), 2)<<"] ["
+                  <<cStr(hpos(0), 2)<<", "
+                  <<cStr(hpos(1), 2)<<", "
+                  <<cStr(hpos(2), 2)<<"]";
+              std::string s;
+              s = ss.str();
+              // update haptic rate label
+              //text_label->setString ("Pos: "+cStr(sutil::CSystemClock::getSysTime(), 1) + " [sec]");
+              text_label->setString(s);
+              int px = (int)(0.5 * (1024 - text_label->getWidth()));
+              text_label->setLocalPos(px, 15);
+
               fprintf(fp,"\n%.3lf %.3lf %.3lf %.3lf %.3lf %.3lf %.3lf",curr_time - t_start,
                   hpos_des(0), hpos_des(1), hpos_des(2), hpos(0), hpos(1), hpos(2) );
               last_log_time = curr_time;
