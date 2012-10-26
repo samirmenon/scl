@@ -93,11 +93,42 @@ int main(int argc, char** argv)
 
       /*****************************Chai Control Points************************************/
       cGenericObject *chai_haptic_pos = S_NULL,*chai_haptic_pos_des = S_NULL;
+      cGenericObject *chai_haptic_box_des_red = S_NULL, *chai_haptic_box_des_green = S_NULL,
+          *chai_haptic_box_des_yellow = S_NULL;
 
       /** Render a sphere at the haptic point's position */
       flag = chai_gr.addSphereToRender(Eigen::Vector3d::Zero(), chai_haptic_pos, 0.02);
       if(false == flag) { throw(std::runtime_error("Could not add sphere at com pos"));  }
       if(NULL == chai_haptic_pos){ throw(std::runtime_error("Could not add sphere at com pos"));  }
+
+      /** Render a box at the haptic point's desired position */
+      flag = chai_gr.addMeshToRender("haptic_box_red","./graphics/haptic_des_box_red.obj",
+          Eigen::Vector3d(-0.05,-0.05,-0.05), Eigen::Matrix3d::Identity());
+      if(false == flag) { throw(std::runtime_error("Could not add mesh box at com desired pos"));  }
+      chai_haptic_box_des_red = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_red")->graphics_obj_;
+      if(NULL == chai_haptic_box_des_red){ throw(std::runtime_error("Could not add red mesh box at com desired pos"));  }
+      // For now, the box's dimensions are x1000 (mm units). Convert to m units.
+      chai_haptic_box_des_red->scale(0.002,true);
+
+      /** Render a box at the haptic point's desired position */
+      flag = chai_gr.addMeshToRender("haptic_box_green","./graphics/haptic_des_box_green.obj",
+          Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity());
+      if(false == flag) { throw(std::runtime_error("Could not add green mesh box at com desired pos"));  }
+      chai_haptic_box_des_green = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_green")->graphics_obj_;
+      if(NULL == chai_haptic_box_des_green){ throw(std::runtime_error("Could not add green mesh box at com desired pos"));  }
+      // For now, the box's dimensions are x1000 (mm units). Convert to m units.
+      chai_haptic_box_des_green->scale(0.002,true);
+      chai_haptic_box_des_green->setEnabled(false,true);
+
+      /** Render a box at the haptic point's desired position */
+      flag = chai_gr.addMeshToRender("haptic_box_yellow","./graphics/haptic_des_box_yellow.obj",
+          Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity());
+      if(false == flag) { throw(std::runtime_error("Could not add yellow mesh box at com desired pos"));  }
+      chai_haptic_box_des_yellow = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_yellow")->graphics_obj_;
+      if(NULL == chai_haptic_box_des_yellow){ throw(std::runtime_error("Could not add yellow mesh box at com desired pos"));  }
+      // For now, the box's dimensions are x1000 (mm units). Convert to m units.
+      chai_haptic_box_des_yellow->scale(0.002,true);
+      chai_haptic_box_des_yellow->setEnabled(false,true);
 
       /** Render a sphere at the haptic point's desired position */
       flag = chai_gr.addSphereToRender(Eigen::Vector3d::Zero(), chai_haptic_pos_des, 0.02);
@@ -223,9 +254,36 @@ int main(int argc, char** argv)
 
             // Get the desired position where the haptic point should go
             Eigen::Vector3d& hpos_des = db->s_gui_.ui_point_[1];
+            chai_haptic_box_des_yellow->setLocalPos(hpos_des);
+            chai_haptic_box_des_green->setLocalPos(hpos_des);
             chai_haptic_pos_des->setLocalPos(hpos_des);
 
             // NOTE TODO : If reached, do something else
+            enum fMRIState {FMRI_REST_INIT, FMRI_RESTING,
+              FMRI_DECIDE_TASK,
+              FMRI_PLAN_INIT, FMRI_PLANNING,
+              FMRI_EXEC_INIT, FMRI_EXECUTING,
+              FMRI_EXIT};
+            fMRIState state;
+            switch(state)
+            {
+              case FMRI_REST_INIT:
+                break;
+              case FMRI_RESTING:
+                break;
+              case FMRI_DECIDE_TASK:
+                break;
+              case FMRI_PLAN_INIT:
+                break;
+              case FMRI_PLANNING:
+                break;
+              case FMRI_EXEC_INIT:
+                break;
+              case FMRI_EXECUTING:
+                break;
+              case FMRI_EXIT:
+                break;
+            }
 
             haptics_ctr++;
 
