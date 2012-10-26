@@ -5,8 +5,13 @@ cd 3rdparty/chai3d-3.0/lib/ &&
 #rm -rf build_* &&
 sh make_debug.sh &&
 sh make_release.sh &&
-# NOTE : We compile chai twice. This is a static lib (works better for linking with dhd for haptics)
+# NOTE : We compile chai thrice. This is a static lib (works better for linking with dhd for haptics)
 cd ../lib_haptics/ &&
+#rm -rf build_* &&
+sh make_debug.sh &&
+sh make_release.sh &&
+# NOTE : We compile chai thrice. This is a static lib with the sensoray drivers integrated
+cd ../lib_bfr/ &&
 #rm -rf build_* &&
 sh make_debug.sh &&
 sh make_release.sh &&
