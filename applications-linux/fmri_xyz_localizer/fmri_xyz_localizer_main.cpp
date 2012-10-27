@@ -16,6 +16,7 @@
 #include <scl/haptics/chai/CChaiHaptics.hpp>
 #include <scl/parser/lotusparser/CLotusParser.hpp>
 #include <scl/util/DatabaseUtils.hpp>
+#include <scl/util/FileFunctions.hpp>
 
 //sUtil lib
 #include <sutil/CSystemClock.hpp>
@@ -131,22 +132,58 @@ int main(int argc, char** argv)
       chai_haptic_box_des_yellow->setEnabled(false,true);
 
       /** Render a sphere at the haptic point's desired position */
-      flag = chai_gr.addSphereToRender(Eigen::Vector3d::Zero(), chai_haptic_pos_des, 0.02);
+      flag = chai_gr.addSphereToRender(Eigen::Vector3d::Zero(), chai_haptic_pos_des, 0.01);
       if(false == flag) { throw(std::runtime_error("Could not add sphere at com desired pos"));  }
       if(NULL == chai_haptic_pos_des){ throw(std::runtime_error("Could not add sphere at com desired pos"));  }
+      chai_haptic_pos_des->setEnabled(false,true);
 
-      //Make desired position red/orange
-      cMaterial mat_red; mat_red.setRedFireBrick();
-      chai_haptic_pos_des->setMaterial(mat_red, false);
+//      //Make desired position red/orange
+//      cMaterial mat_red; mat_red.setRedFireBrick();
+//      chai_haptic_pos_des->setMaterial(mat_red, false);
 
       /*****************************fMRI State Machine************************************/
-      enum fMRIState {FMRI_REST_INIT, FMRI_RESTING,
-        FMRI_DECIDE_TASK,
-        FMRI_CENTER_INIT, FMRI_CENTER,
-        FMRI_PLAN_INIT, FMRI_PLANNING,
-        FMRI_EXEC_INIT, FMRI_EXECUTING,
+      /** The first task ids are for the actual states */
+      enum fMRIState {FMRI_RESTING, FMRI_CENTER, FMRI_PLANNING, FMRI_EXECUTING,
+        /** The remaining enum ids are for the state initialization code */
+        FMRI_INCREMENT_TASK_STATE,
+        FMRI_REST_INIT,
+        FMRI_CENTER_INIT,
+        FMRI_PLAN_INIT,
+        FMRI_EXECUTE_INIT,
         FMRI_EXIT};
-      fMRIState state=FMRI_REST_INIT;
+      fMRIState state=FMRI_REST_INIT; //Always start off at the rest state
+
+      // ALL THE STATE VARIABLES :
+      int state_task_row_in_matrix=0;
+      double state_t_curr = 0.0;
+      double state_t_curr_task_max=-1.0;
+      Eigen::Vector3d state_x_des_curr_task(0,0,0);
+      Eigen::MatrixXd state_task_selection_matrix;
+
+      /** Read the states for this trial run.
+       * The state machine will accept inputs like:
+       *
+       * <task-id> <time-at-completion> <time-duration> <x-des> <y-des> <z-des> <optional-args>
+       *
+       * NOTES:
+       * 1. The time is relative time wrt. the start of the fMRI machine.
+       * 2. xyz desired are only valid for planning/executing tasks (they are ignored for others).
+       * 3. Optional args may trigger some other behavior for future tasks.
+       * 4. The time-duration is for your knowledge. It is ignored by the program.
+       * 5. Only time-at-completion is used for the timer (this simplifies code to prevent time-drift)
+       */
+      flag = scl_util::readEigenMatFromFile(state_task_selection_matrix, 10, 6, "task.txt");
+      if(false == flag)
+      { throw(std::runtime_error("Could not open task input file"));  }
+      std::cout<<"\nRunning task matrix:"
+          <<"\n<task-id> <time-at-completion> <time-duration> <x-des> <y-des> <z-des>"
+          <<"\n"<<state_task_selection_matrix<<"\n";
+
+      if(0!=state_task_selection_matrix(0,0))
+      { throw(std::runtime_error("Simulation must start at rest state"));  }
+
+      if(FMRI_REST_INIT!=state)
+      { throw(std::runtime_error("Simulation state machine must start at rest init state"));  }
 
       /*****************************Chai Background Text************************************/
       cFont *text_font = NEW_CFONTCALIBRI20();
@@ -267,128 +304,138 @@ int main(int argc, char** argv)
             // SET THE CURRENT POSITION OF THE DEVICE!!
             chai_haptic_pos->setLocalPos(hpos);
 
-            // Get the desired position where the haptic point should go
-            Eigen::Vector3d& hpos_des = db->s_gui_.ui_point_[1];
+            //Set up the state variables for the state machine
+            // Current time
+            state_t_curr = sutil::CSystemClock::getSysTime() - t_start;
+            // Max time in this state
+            state_t_curr_task_max = state_task_selection_matrix(state_task_row_in_matrix,1);
+            // Display target's position
+            state_x_des_curr_task<<state_task_selection_matrix(state_task_row_in_matrix,3),
+                state_task_selection_matrix(state_task_row_in_matrix,4),
+                state_task_selection_matrix(state_task_row_in_matrix,5);
 
             // ************** STATE MACHINE ******************
             switch(state)
             {
-              case FMRI_REST_INIT:
-                chai_haptic_pos_des->setLocalPos(hpos_des);
-                //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
-                {
-                  std::cout<<"\nSwitching to : FMRI_RESTING"<<std::flush;
-                  state = FMRI_RESTING;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
-                }
-                break;
-
               case FMRI_RESTING:
                 //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                if(state_t_curr_task_max < state_t_curr)
                 {
-                  std::cout<<"\nSwitching to : FMRI_DECIDE_TASK"<<std::flush;
-                  state = FMRI_DECIDE_TASK;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                  std::cout<<"\n"<<state_t_curr<<" : Switching to : FMRI_INCREMENT_TASK_STATE"<<std::flush;
+                  state = FMRI_INCREMENT_TASK_STATE;
                 }
                 break;
 
-              case FMRI_DECIDE_TASK:  // Set hpos_des
+              case FMRI_CENTER:
                 //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                if(state_t_curr_task_max < state_t_curr)
                 {
-                  std::cout<<"\nSwitching to : FMRI_CENTER_INIT"<<std::flush;
-                  state = FMRI_CENTER_INIT;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                  std::cout<<"\n"<<state_t_curr<<" : Switching to : FMRI_INCREMENT_TASK_STATE"<<std::flush;
+                  state = FMRI_INCREMENT_TASK_STATE;
                 }
                 break;
 
-              case FMRI_CENTER_INIT:  // R : yes, G : no, Y : no
-                chai_haptic_box_des_red->setEnabled(true,true);
-                chai_haptic_box_des_green->setEnabled(false,true);
-                chai_haptic_box_des_yellow->setEnabled(false,true);
-
+              case FMRI_PLANNING:
                 //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                if(state_t_curr_task_max < state_t_curr)
                 {
-                  std::cout<<"\nSwitching to : FMRI_CENTER"<<std::flush;
-                  state = FMRI_CENTER;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
-                }
-                break;
-
-              case FMRI_CENTER:       // while t <= t_center
-
-                //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
-                {
-                  std::cout<<"\nSwitching to : FMRI_PLAN_INIT"<<std::flush;
-                  state = FMRI_PLAN_INIT;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
-                }
-                break;
-
-              case FMRI_PLAN_INIT:    // R : yes, G : no, Y : yes
-                chai_haptic_box_des_yellow->setLocalPos(hpos_des);
-                chai_haptic_box_des_red->setEnabled(true,true);
-                chai_haptic_box_des_green->setEnabled(false,true);
-                chai_haptic_box_des_yellow->setEnabled(true,true);
-
-                //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
-                {
-                  std::cout<<"\nSwitching to : FMRI_PLANNING"<<std::flush;
-                  state = FMRI_PLANNING;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
-                }
-                break;
-
-              case FMRI_PLANNING:     // While t <= t_planning + jitter
-                //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
-                {
-                  std::cout<<"\nSwitching to : FMRI_EXEC_INIT"<<std::flush;
-                  state = FMRI_EXEC_INIT;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
-                }
-                break;
-
-              case FMRI_EXEC_INIT:    // R : no, G : yes, Y : no
-                chai_haptic_box_des_green->setLocalPos(hpos_des);
-                chai_haptic_box_des_red->setEnabled(false,true);
-                chai_haptic_box_des_green->setEnabled(true,true);
-                chai_haptic_box_des_yellow->setEnabled(false,true);
-
-                //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
-                {
-                  std::cout<<"\nSwitching to : FMRI_EXECUTING"<<std::flush;
-                  state = FMRI_EXECUTING;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                  std::cout<<"\n"<<state_t_curr<<" : Switching to : FMRI_INCREMENT_TASK_STATE"<<std::flush;
+                  state = FMRI_INCREMENT_TASK_STATE;
                 }
                 break;
 
               case FMRI_EXECUTING:
-
                 //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                if(state_t_curr_task_max < state_t_curr)
                 {
-                  std::cout<<"\nSwitching to : FMRI_EXIT"<<std::flush;
-                  state = FMRI_EXIT;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                  std::cout<<"\n"<<state_t_curr<<" : Switching to : FMRI_INCREMENT_TASK_STATE"<<std::flush;
+                  state = FMRI_INCREMENT_TASK_STATE;
                 }
                 break;
 
-              case FMRI_EXIT:
-
+              case FMRI_INCREMENT_TASK_STATE:  // Set state_x_des_curr_task
                 //Transition to next state:
-                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                state_task_row_in_matrix++;
+                if(state_task_row_in_matrix >= state_task_selection_matrix.rows())
+                { state = FMRI_EXIT;  }
+                else
                 {
-                  std::cout<<"\nSwitching to : FMRI_REST_INIT"<<std::flush;
-                  state = FMRI_REST_INIT;
-                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                  switch(static_cast<int>(state_task_selection_matrix(state_task_row_in_matrix,0)))
+                  {
+                    case 0:
+                      state = FMRI_REST_INIT;
+                      break;
+                    case 1:
+                      state = FMRI_CENTER_INIT;
+                      break;
+                    case 2:
+                      state = FMRI_PLAN_INIT;
+                      break;
+                    case 3:
+                      state = FMRI_EXECUTE_INIT;
+                      break;
+                  }
                 }
+                break;
+
+              case FMRI_REST_INIT:
+                //Goal boxes
+                chai_haptic_box_des_red->setEnabled(false,true);
+                chai_haptic_box_des_green->setEnabled(false,true);
+                chai_haptic_box_des_yellow->setEnabled(false,true);
+                //Goal point
+                chai_haptic_pos_des->setEnabled(false,true);
+                //Transition to next state:
+                std::cout<<"\nSwitching to : FMRI_RESTING"<<std::flush;
+                state = FMRI_INCREMENT_TASK_STATE;
+                break;
+
+              case FMRI_CENTER_INIT:  // R : yes, G : no, Y : no
+                //Goal boxes
+                chai_haptic_box_des_red->setEnabled(true,true);
+                chai_haptic_box_des_green->setEnabled(false,true);
+                chai_haptic_box_des_yellow->setEnabled(false,true);
+                //Goal point
+                chai_haptic_pos_des->setEnabled(true,true);
+                chai_haptic_pos_des->setLocalPos(0,0,0);
+                //Transition to next state:
+                std::cout<<"\nSwitching to : FMRI_CENTER"<<std::flush;
+                state = FMRI_CENTER;
+                break;
+
+              case FMRI_PLAN_INIT:    // R : yes, G : no, Y : yes
+                //Goal boxes
+                chai_haptic_box_des_red->setEnabled(true,true);
+                chai_haptic_box_des_green->setEnabled(false,true);
+                chai_haptic_box_des_yellow->setEnabled(true,true);
+                //Goal box pos
+                chai_haptic_box_des_yellow->setLocalPos(state_x_des_curr_task);
+                //Goal point
+                chai_haptic_pos_des->setEnabled(true,true);
+                chai_haptic_pos_des->setLocalPos(state_x_des_curr_task);
+                //Switch tasks
+                std::cout<<"\nSwitching to : FMRI_PLANNING"<<std::flush;
+                state = FMRI_PLANNING;
+                break;
+
+              case FMRI_EXECUTE_INIT:    // R : no, G : yes, Y : no
+                //Goal boxes
+                chai_haptic_box_des_red->setEnabled(false,true);
+                chai_haptic_box_des_green->setEnabled(true,true);
+                chai_haptic_box_des_yellow->setEnabled(false,true);
+                //Goal box pos
+                chai_haptic_box_des_green->setLocalPos(state_x_des_curr_task);
+                //Goal point
+                chai_haptic_pos_des->setEnabled(true,true);
+                chai_haptic_pos_des->setLocalPos(state_x_des_curr_task);
+                //Switch tasks
+                std::cout<<"\nSwitching to : FMRI_EXECUTING"<<std::flush;
+                state = FMRI_EXECUTING;
+                break;
+
+              case FMRI_EXIT:
+                //Exit the simulation at the next loop
+                scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running = false;
                 break;
             }
 
@@ -400,9 +447,9 @@ int main(int argc, char** argv)
             {
               std::stringstream ss;
               ss <<cStr(curr_time - t_start, 1)<<" : ["
-                  <<cStr(hpos_des(0), 2)<<", "
-                  <<cStr(hpos_des(1), 2)<<", "
-                  <<cStr(hpos_des(2), 2)<<"] ["
+                  <<cStr(state_x_des_curr_task(0), 2)<<", "
+                  <<cStr(state_x_des_curr_task(1), 2)<<", "
+                  <<cStr(state_x_des_curr_task(2), 2)<<"] ["
                   <<cStr(hpos(0), 2)<<", "
                   <<cStr(hpos(1), 2)<<", "
                   <<cStr(hpos(2), 2)<<"]";
@@ -415,7 +462,7 @@ int main(int argc, char** argv)
               text_label->setLocalPos(px, 15);
 
               fprintf(fp,"\n%.3lf %.3lf %.3lf %.3lf %.3lf %.3lf %.3lf",curr_time - t_start,
-                  hpos_des(0), hpos_des(1), hpos_des(2), hpos(0), hpos(1), hpos(2) );
+                  state_x_des_curr_task(0), state_x_des_curr_task(1), state_x_des_curr_task(2), hpos(0), hpos(1), hpos(2) );
               last_log_time = curr_time;
             }
 #ifndef DEBUG
