@@ -171,6 +171,9 @@ int main(int argc, char** argv)
        * 3. Optional args may trigger some other behavior for future tasks.
        * 4. The time-duration is for your knowledge. It is ignored by the program.
        * 5. Only time-at-completion is used for the timer (this simplifies code to prevent time-drift)
+       * 6. Workspace : Roughly 24" (along bore) x 12" (width) x 8" (height)
+       *                ==      0.6 x 0.3 x 0.2 m (xyz in chai)
+       *                ==      0.3 x 0.15 x 0. m (xyz displacements to reach cuboid edges from center)
        */
       flag = scl_util::readEigenMatFromFile(state_task_selection_matrix, 10, 6, "task.txt");
       if(false == flag)
