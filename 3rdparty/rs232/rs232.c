@@ -38,23 +38,26 @@
 #ifdef __linux__   /* Linux */
 
 
-int Cport[22],
+#define NUM_COM_PORT_OPTIONS 23
+
+int Cport[NUM_COM_PORT_OPTIONS],
     error;
 
 struct termios new_port_settings,
-       old_port_settings[22];
+       old_port_settings[NUM_COM_PORT_OPTIONS];
 
-char comports[22][13]={"/dev/ttyS0","/dev/ttyS1","/dev/ttyS2","/dev/ttyS3","/dev/ttyS4","/dev/ttyS5",
+char comports[NUM_COM_PORT_OPTIONS][13]={"/dev/ttyS0","/dev/ttyS1","/dev/ttyS2","/dev/ttyS3","/dev/ttyS4","/dev/ttyS5",
                        "/dev/ttyS6","/dev/ttyS7","/dev/ttyS8","/dev/ttyS9","/dev/ttyS10","/dev/ttyS11",
                        "/dev/ttyS12","/dev/ttyS13","/dev/ttyS14","/dev/ttyS15","/dev/ttyUSB0",
-                       "/dev/ttyUSB1","/dev/ttyUSB2","/dev/ttyUSB3","/dev/ttyUSB4","/dev/ttyUSB5"};
+                       "/dev/ttyUSB1","/dev/ttyUSB2","/dev/ttyUSB3","/dev/ttyUSB4","/dev/ttyUSB5",
+                       "/dev/ttyACM0"};
 
 
 int OpenComport(int comport_number, int baudrate)
 {
   int baudr;
 
-  if((comport_number>21)||(comport_number<0))
+  if((comport_number>=NUM_COM_PORT_OPTIONS)||(comport_number<0))
   {
     printf("illegal comport number\n");
     return(1);
@@ -380,7 +383,7 @@ int IsCTSEnabled(int comport_number)
 
 void cprintf(int comport_number, const char *text)  /* sends a string to serial port */
 {
-  while(*text != 0)   SendByte(comport_number, *(text++));
+  while(*text != '\0')   SendByte(comport_number, *(text++));
 }
 
 
