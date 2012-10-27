@@ -139,6 +139,15 @@ int main(int argc, char** argv)
       cMaterial mat_red; mat_red.setRedFireBrick();
       chai_haptic_pos_des->setMaterial(mat_red, false);
 
+      /*****************************fMRI State Machine************************************/
+      enum fMRIState {FMRI_REST_INIT, FMRI_RESTING,
+        FMRI_DECIDE_TASK,
+        FMRI_CENTER_INIT, FMRI_CENTER,
+        FMRI_PLAN_INIT, FMRI_PLANNING,
+        FMRI_EXEC_INIT, FMRI_EXECUTING,
+        FMRI_EXIT};
+      fMRIState state=FMRI_REST_INIT;
+
       /*****************************Chai Background Text************************************/
       cFont *text_font = NEW_CFONTCALIBRI20();
       cLabel *text_label;
@@ -200,7 +209,11 @@ int main(int argc, char** argv)
       fprintf(fp,"\n*******************************************************************");
 
 
+      /***************************************************************************/
+      /***************************************************************************/
       /******************************Main Loop************************************/
+      /***************************************************************************/
+      /***************************************************************************/
       std::cout<<std::flush;
       scl::sLongLong gr_ctr=0;//Graphics computation counter
       scl::sLongLong haptics_ctr=0;//Graphics computation counter
@@ -209,6 +222,7 @@ int main(int argc, char** argv)
       omp_set_num_threads(2);
       int thread_id;
 
+      /******************************fMRI Trigger************************************/
       //Trigger the fmri scan with the serial pulse here.
       if(argc == 3)
       {
@@ -250,38 +264,131 @@ int main(int argc, char** argv)
               haptics_.getHapticDevicePosition(0,haptic_pos_);
               hpos = haptic_pos_;
             }
+            // SET THE CURRENT POSITION OF THE DEVICE!!
             chai_haptic_pos->setLocalPos(hpos);
 
             // Get the desired position where the haptic point should go
             Eigen::Vector3d& hpos_des = db->s_gui_.ui_point_[1];
-            chai_haptic_box_des_yellow->setLocalPos(hpos_des);
-            chai_haptic_box_des_green->setLocalPos(hpos_des);
-            chai_haptic_pos_des->setLocalPos(hpos_des);
 
-            // NOTE TODO : If reached, do something else
-            enum fMRIState {FMRI_REST_INIT, FMRI_RESTING,
-              FMRI_DECIDE_TASK,
-              FMRI_PLAN_INIT, FMRI_PLANNING,
-              FMRI_EXEC_INIT, FMRI_EXECUTING,
-              FMRI_EXIT};
-            fMRIState state;
+            // ************** STATE MACHINE ******************
             switch(state)
             {
               case FMRI_REST_INIT:
+                chai_haptic_pos_des->setLocalPos(hpos_des);
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_RESTING"<<std::flush;
+                  state = FMRI_RESTING;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
                 break;
+
               case FMRI_RESTING:
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_DECIDE_TASK"<<std::flush;
+                  state = FMRI_DECIDE_TASK;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
                 break;
-              case FMRI_DECIDE_TASK:
+
+              case FMRI_DECIDE_TASK:  // Set hpos_des
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_CENTER_INIT"<<std::flush;
+                  state = FMRI_CENTER_INIT;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
                 break;
-              case FMRI_PLAN_INIT:
+
+              case FMRI_CENTER_INIT:  // R : yes, G : no, Y : no
+                chai_haptic_box_des_red->setEnabled(true,true);
+                chai_haptic_box_des_green->setEnabled(false,true);
+                chai_haptic_box_des_yellow->setEnabled(false,true);
+
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_CENTER"<<std::flush;
+                  state = FMRI_CENTER;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
                 break;
-              case FMRI_PLANNING:
+
+              case FMRI_CENTER:       // while t <= t_center
+
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_PLAN_INIT"<<std::flush;
+                  state = FMRI_PLAN_INIT;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
                 break;
-              case FMRI_EXEC_INIT:
+
+              case FMRI_PLAN_INIT:    // R : yes, G : no, Y : yes
+                chai_haptic_box_des_yellow->setLocalPos(hpos_des);
+                chai_haptic_box_des_red->setEnabled(true,true);
+                chai_haptic_box_des_green->setEnabled(false,true);
+                chai_haptic_box_des_yellow->setEnabled(true,true);
+
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_PLANNING"<<std::flush;
+                  state = FMRI_PLANNING;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
                 break;
+
+              case FMRI_PLANNING:     // While t <= t_planning + jitter
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_EXEC_INIT"<<std::flush;
+                  state = FMRI_EXEC_INIT;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
+                break;
+
+              case FMRI_EXEC_INIT:    // R : no, G : yes, Y : no
+                chai_haptic_box_des_green->setLocalPos(hpos_des);
+                chai_haptic_box_des_red->setEnabled(false,true);
+                chai_haptic_box_des_green->setEnabled(true,true);
+                chai_haptic_box_des_yellow->setEnabled(false,true);
+
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_EXECUTING"<<std::flush;
+                  state = FMRI_EXECUTING;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
+                break;
+
               case FMRI_EXECUTING:
+
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_EXIT"<<std::flush;
+                  state = FMRI_EXIT;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
                 break;
+
               case FMRI_EXIT:
+
+                //Transition to next state:
+                if(scl::CDatabase::getData()->s_gui_.ui_flag_[0])
+                {
+                  std::cout<<"\nSwitching to : FMRI_REST_INIT"<<std::flush;
+                  state = FMRI_REST_INIT;
+                  scl::CDatabase::getData()->s_gui_.ui_flag_[0] = false;
+                }
                 break;
             }
 
