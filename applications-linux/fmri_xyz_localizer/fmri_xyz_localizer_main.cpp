@@ -102,14 +102,22 @@ int main(int argc, char** argv)
       if(false == flag) { throw(std::runtime_error("Could not add sphere at com pos"));  }
       if(NULL == chai_haptic_pos){ throw(std::runtime_error("Could not add sphere at com pos"));  }
 
+      /** If the box is not centered */
+      // For now, the box's dimensions are 50x50x50 x1000 (mm units). Convert to m units.
+      //  = 0.05 x 0.05 x 0.05 m *2 = 0.1 x 0.1 x 0.1 m
+      const Eigen::Vector3d box_xyz_translate_center(0.05,0.05,0.05);
+      const double box_scaling = 0.002;
+
       /** Render a box at the haptic point's desired position */
       flag = chai_gr.addMeshToRender("haptic_box_red","./graphics/haptic_des_box_red.obj",
-          Eigen::Vector3d(-0.05,-0.05,-0.05), Eigen::Matrix3d::Identity());
+          Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity());
       if(false == flag) { throw(std::runtime_error("Could not add mesh box at com desired pos"));  }
       chai_haptic_box_des_red = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_red")->graphics_obj_;
       if(NULL == chai_haptic_box_des_red){ throw(std::runtime_error("Could not add red mesh box at com desired pos"));  }
-      // For now, the box's dimensions are x1000 (mm units). Convert to m units.
-      chai_haptic_box_des_red->scale(0.002,true);
+      // For now, the box's dimensions are 50x50x50 x1000 (mm units). Convert to m units.
+      chai_haptic_box_des_red->scale(box_scaling,true);
+      chai_haptic_box_des_red->setLocalPos(-box_xyz_translate_center);
+      chai_haptic_box_des_red->setEnabled(false,true);
 
       /** Render a box at the haptic point's desired position */
       flag = chai_gr.addMeshToRender("haptic_box_green","./graphics/haptic_des_box_green.obj",
@@ -118,7 +126,7 @@ int main(int argc, char** argv)
       chai_haptic_box_des_green = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_green")->graphics_obj_;
       if(NULL == chai_haptic_box_des_green){ throw(std::runtime_error("Could not add green mesh box at com desired pos"));  }
       // For now, the box's dimensions are x1000 (mm units). Convert to m units.
-      chai_haptic_box_des_green->scale(0.002,true);
+      chai_haptic_box_des_green->scale(box_scaling,true);
       chai_haptic_box_des_green->setEnabled(false,true);
 
       /** Render a box at the haptic point's desired position */
@@ -128,7 +136,7 @@ int main(int argc, char** argv)
       chai_haptic_box_des_yellow = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_yellow")->graphics_obj_;
       if(NULL == chai_haptic_box_des_yellow){ throw(std::runtime_error("Could not add yellow mesh box at com desired pos"));  }
       // For now, the box's dimensions are x1000 (mm units). Convert to m units.
-      chai_haptic_box_des_yellow->scale(0.002,true);
+      chai_haptic_box_des_yellow->scale(box_scaling,true);
       chai_haptic_box_des_yellow->setEnabled(false,true);
 
       /** Render a sphere at the haptic point's desired position */
@@ -412,7 +420,7 @@ int main(int argc, char** argv)
                 chai_haptic_box_des_green->setEnabled(false,true);
                 chai_haptic_box_des_yellow->setEnabled(true,true);
                 //Goal box pos
-                chai_haptic_box_des_yellow->setLocalPos(state_x_des_curr_task);
+                chai_haptic_box_des_yellow->setLocalPos(state_x_des_curr_task-box_xyz_translate_center);
                 //Goal point
                 chai_haptic_pos_des->setEnabled(true,true);
                 chai_haptic_pos_des->setLocalPos(state_x_des_curr_task);
@@ -427,7 +435,7 @@ int main(int argc, char** argv)
                 chai_haptic_box_des_green->setEnabled(true,true);
                 chai_haptic_box_des_yellow->setEnabled(false,true);
                 //Goal box pos
-                chai_haptic_box_des_green->setLocalPos(state_x_des_curr_task);
+                chai_haptic_box_des_green->setLocalPos(state_x_des_curr_task-box_xyz_translate_center);
                 //Goal point
                 chai_haptic_pos_des->setEnabled(true,true);
                 chai_haptic_pos_des->setLocalPos(state_x_des_curr_task);
