@@ -30,6 +30,9 @@
 //Openmp
 #include <omp.h>
 
+//rs232 (Serial port communication)
+#include <rs232.h>
+
 //Freeglut windowing environment
 #include <GL/freeglut.h>
 
@@ -270,7 +273,7 @@ int main(int argc, char** argv)
       omp_set_num_threads(2);
       int thread_id;
 
-      /******************************fMRI Trigger************************************/
+      /******************************fMRI Scan Trigger************************************/
       //Trigger the fmri scan with the serial pulse here.
       if(argc == 3)
       {
@@ -285,14 +288,38 @@ int main(int argc, char** argv)
           }
           if(ch == 'y')
           {
-            std::cout<<"\n ********** Triggering scan ********** ";
-            //NOTE TODO : Call the usb-serial code
+            std::cout<<"\n ********** Triggering scan ********** \n";
+            int err;
+            err = OpenComport(22,57600);
+            if(0 == err)
+            { std::cout<<"\nOpened com port /dev/ttyACM0 at a baud rate of 57600"; }
+            else
+            { throw(std::runtime_error("Could not connect to fMRI serial port: Is /dev/ttyACM0 connected? $ sudo chown user:user /dev/ttyACM0 ? Else fix code or try manual trigger."));  }
+
+            err = 0;
+            err = err+SendByte(22, '[');
+            err = err+SendByte(22, 't');
+            err = err+SendByte(22, ']');
+            err = err+SendByte(22, '\n');
+            if(0 == err)
+            {
+              t_start = sutil::CSystemClock::getSysTime();
+              std::cout<<"\nSent scan trigger '[t]\n' over the usb-serial port";
+              std::cout<<"\nStarted experiment clock";
+            }
+            { throw(std::runtime_error("Could not trigger fMRI scan: Is /dev/ttyACM0 connected? $ sudo chown user:user /dev/ttyACM0 ? Else fix code or try manual trigger."));  }
+
+            CloseComport(22);
+            std::cout<<"\nClosed com port. Continuing to the experiment.";
+            std::cout<<"\n ========= Fmri scan triggered. With haptics. ========";
           }
         }
       }
       else
-      { std::cout<<"\n ========= Skipping fmri scan trigger. No haptics ========";  }
-      t_start = sutil::CSystemClock::getSysTime();
+      {
+        std::cout<<"\n ========= Skipping fmri scan trigger. No haptics ========";
+        t_start = sutil::CSystemClock::getSysTime();
+      }
 
 #ifndef DEBUG
 #pragma omp parallel private(thread_id)
