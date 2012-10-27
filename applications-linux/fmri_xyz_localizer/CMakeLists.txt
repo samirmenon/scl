@@ -57,11 +57,15 @@ SET(SENSORAY_INC_DIR ${SCL_BASE_DIR}3rdparty/sensoray-3dof/src/)
 SET(SENSORAY_COMMON_INC_DIR ${SENSORAY_INC_DIR}/sensoray/common)
 SET(SENSORAY_LINUX_INC_DIR ${SENSORAY_INC_DIR}/sensoray/linux)
 
+###(k) rs232 (Serial port communication)
+SET(RS232_INC_DIR ${SCL_BASE_DIR}3rdparty/rs232)
+
 ################Initialize the executable#################
 #Set the include directories
 INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR}
 ${CDHD_INC_DIR} ${CGEL_INC_DIR} ${CGIFLIB_INC_DIR} ${CLIB3DS_INC_DIR} ${CLIBJPEG_INC_DIR} ${CLIBPNG_INC_DIR}
-${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR})
+${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR}
+${RS232_INC_DIR})
 
 #Set the compilation flags
 # NOTE : This is only to detect 32 vs 64 bit code.
@@ -84,7 +88,8 @@ SET(EG_BASE_DIR ${SCL_BASE_DIR}/applications-linux/fmri_xyz_localizer/)
 SET(ALL_SRC ${EG_BASE_DIR}fmri_xyz_localizer_main.cpp
 						${SCL_INC_DIR}/haptics/chai/CChaiHaptics.cpp
             ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
+            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
+            ${RS232_INC_DIR}/rs232.c)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(fmri_xyz_localizer ${ALL_SRC})
