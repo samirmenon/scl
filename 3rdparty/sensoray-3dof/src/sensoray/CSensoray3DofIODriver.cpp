@@ -155,6 +155,8 @@ namespace sensoray
   bool CSensoray3DofIODriver::readEncoders(
       long& c0, long& c1, long& c2)
   {
+    u32 tc0, tc1, tc2; //Sensoray data types for reading encoders
+
     //Open transaction
     void* tran_hndl = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
     if(NULL == tran_hndl)
@@ -166,14 +168,9 @@ namespace sensoray
     S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 2, 2 );
 
     // Read latches.
-    unsigned long int tc0, tc1, tc2;
     S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 0, &tc0, 0);
     S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 1, &tc1, 0);
     S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 2, &tc2, 0);
-
-    c0 = tc0;
-    c1 = tc1;
-    c2 = tc2;
 
     // Execute the scheduled i/o and then release the transaction object.  Return false if there was an error.
     // We don't care about the I/O module status, so last arg is zero
@@ -183,6 +180,12 @@ namespace sensoray
       showErrorInfo( err, s_ds_.iom_status_ );
       return false;
     }
+
+    //Transaction exectued. We now have the values.
+    c0 = tc0;
+    c1 = tc1;
+    c2 = tc2;
+
     return true;
   }
 
