@@ -403,7 +403,7 @@ int cBFR1Device::getPosition(cVector3d& a_position)
 #ifdef DEBUG
     if(false == flag)
     { printf("\nError reading encoders"); }
-    printf("Enc0: %d, Enc1: %d, Enc2: %d \n", enc0, enc1, enc2);
+    printf("Enc0: %ld, Enc1: %ld, Enc2: %ld \n", enc0, enc1, enc2);
 #endif
   }
 
@@ -411,13 +411,17 @@ int cBFR1Device::getPosition(cVector3d& a_position)
   double ang0 = 2.0 * C_PI * (1.0 / HD_GEAR_RATIO_0) * (enc0 / HD_ENCODER_RESOLUTION_0);
   double ang1 = 2.0 * C_PI * (1.0 / HD_GEAR_RATIO_1) * (enc1 / HD_ENCODER_RESOLUTION_1);
   double ang2 =-2.0 * C_PI * (1.0 / HD_GEAR_RATIO_2) * (enc2 / HD_ENCODER_RESOLUTION_2);
-  //printf("Ang0: %f, Ang1: %f, Ang2: %f \n", cRadToDeg(ang0), cRadToDeg(ang1), cRadToDeg(ang2));
+#ifdef DEBUG
+  printf("Ang0: %lf, Ang1: %lf, Ang2: %lf \n", cRadToDeg(ang0), cRadToDeg(ang1), cRadToDeg(ang2));
+#endif
 
   // compute position in cartesian space
   double xg = -HD_LENGTH_0 * sin(ang0) + HD_LENGTH_2 * cos(ang1) + HD_LENGTH_1 * sin(ang2);
   double yg =  HD_LENGTH_2 * sin(ang1) + HD_LENGTH_1 * cos(ang2);
   double zg =  HD_LENGTH_0 * cos(ang0) + (HD_LENGTH_2 * cos(ang1) + HD_LENGTH_1 * sin(ang2)) * sin(ang0);
-
+#ifdef DEBUG
+  printf("Xraw: %lf, Xraw: %lf, Xraw: %lf \n", xg, yg, zg);
+#endif
 
   // compute Jacobian
   m_jacobian(0,0) =-HD_LENGTH_0*cos(ang0);
@@ -432,11 +436,15 @@ int cBFR1Device::getPosition(cVector3d& a_position)
   m_jacobian(2,1) =-HD_LENGTH_2*sin(ang1)*sin(ang0);
   m_jacobian(2,2) = HD_LENGTH_1*cos(ang2)*sin(ang0);
 
-  // add offset if necessary
-  x = xg - 1.275 - 0.175;
-  y = yg - 0.485;
-  z = zg - 0.127;
-
+  // Add offset if necessary to calibrate.
+  // NOTE : The calibration might change with time, and so its magnitude is logged
+  //        every time it is changed.
+  x = xg - 1.275 - 0.175 + /** 2012-10-27 */ 0.205;
+  y = yg - 0.485 - /** 2012-10-27 */ 0.01;
+  z = zg - 0.127 - /** 2012-10-27 */ 0.025;
+#ifdef DEBUG
+  printf("Xcal: %lf, Xcal: %lf, Xcal: %lf \n", x, y, z);
+#endif
   // store new position values
   a_position.set(x, y, z);
 
