@@ -95,6 +95,8 @@ int main(int argc, char** argv)
       if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_names[0], &chai_gr))
       { throw(std::runtime_error("Glut initialization error")); }
 
+      glutFullScreen();
+
       /*****************************Chai Control Points************************************/
       cGenericObject *chai_haptic_pos = S_NULL,*chai_haptic_pos_des = S_NULL;
       cGenericObject *chai_haptic_box_des_red = S_NULL, *chai_haptic_box_des_green = S_NULL,
