@@ -158,8 +158,7 @@ namespace sensoray
     void shutdown();
 
     /** Encoder operation only : Reads encoders */
-    bool readEncoders(unsigned long& c0,
-        unsigned long& c1, unsigned long& c2);
+    bool readEncoders(long& c0, long& c1, long& c2);
 
     /** Encoder+Motor operation : Sends analog out to motors + reads encoders */
     bool readEncodersAndCommandMotors();
@@ -187,7 +186,8 @@ namespace sensoray
       max_main_modules_(1),
       max_io_modules_at_main_module_(2),
       enc_mm_id_(0),
-      dac_mm_id_(1) {}
+      dac_mm_id_(1),
+      sensoray_calibrate_ctr(0){}
 
     /** Default destructor : Does nothing */
     ~CSensoray3DofIODriver() {}
@@ -213,6 +213,8 @@ namespace sensoray
     const int enc_mm_id_;
     /** Dac must be at port 1 */
     const int dac_mm_id_;
+    /** Calibration counter */
+    int sensoray_calibrate_ctr;
   };
 
 } /* namespace sensoray */

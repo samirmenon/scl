@@ -138,6 +138,8 @@ namespace sensoray
 
       std::cout<<"\nInitalized Main module, Encoder in (2620), and Analog out (2608)"<<std::flush;
 
+      sensoray_calibrate_ctr = 0;
+
       return true;
     }
     catch(std::exception& e)
@@ -151,7 +153,7 @@ namespace sensoray
 
   /** Encoder operation only : Reads encoders */
   bool CSensoray3DofIODriver::readEncoders(
-      unsigned long& c0, unsigned long& c1, unsigned long& c2)
+      long& c0, long& c1, long& c2)
   {
     //Open transaction
     void* tran_hndl = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
@@ -202,8 +204,11 @@ namespace sensoray
 
     //Init motors
     // Update reference standards and read analog inputs
-    // NOTE TODO : Fix later. Auto-cal.  Only needed ~once/sec, but we do every time for simplicity.
-    S26_Sched2608_GetCalData(tran_hndl, dac_mm_id_, 0 );
+    // Auto-cal.  Only needed ~once/sec, but we do every 50 loops (a few times/sec).
+    if(sensoray_calibrate_ctr==0)
+    { S26_Sched2608_GetCalData(tran_hndl, dac_mm_id_, 0 ); }
+    sensoray_calibrate_ctr++;
+    if(sensoray_calibrate_ctr>50) { sensoray_calibrate_ctr = 0; }
 
     // Program all analog outputs.
     for (int chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
