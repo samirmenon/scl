@@ -166,9 +166,14 @@ namespace sensoray
     S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 2, 2 );
 
     // Read latches.
-    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 0, &c0, 0);
-    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 1, &c1, 0);
-    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 2, &c2, 0);
+    unsigned long int tc0, tc1, tc2;
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 0, &tc0, 0);
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 1, &tc1, 0);
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 2, &tc2, 0);
+
+    c0 = tc0;
+    c1 = tc1;
+    c2 = tc2;
 
     // Execute the scheduled i/o and then release the transaction object.  Return false if there was an error.
     // We don't care about the I/O module status, so last arg is zero
