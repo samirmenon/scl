@@ -172,7 +172,7 @@ class cBFR1Device : public cGenericHapticDevice
     /** Device Jacobian */
     cMatrix3d m_jacobian;
     /** To store the encoder positions */
-    unsigned long enc0, enc1, enc2;
+    long enc0, enc1, enc2;
 };
 
 //---------------------------------------------------------------------------
