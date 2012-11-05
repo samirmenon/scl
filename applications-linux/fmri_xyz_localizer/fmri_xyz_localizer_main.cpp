@@ -102,6 +102,9 @@ int main(int argc, char** argv)
       cGenericObject *chai_haptic_box_des_red = S_NULL, *chai_haptic_box_des_green = S_NULL,
           *chai_haptic_box_des_yellow = S_NULL;
 
+      Eigen::Vector3d hpos_center_offset;
+      hpos_center_offset<<0.0,0.0,0.0;
+
       /** Render a sphere at the haptic point's position */
       flag = chai_gr.addSphereToRender(Eigen::Vector3d::Zero(), chai_haptic_pos, 0.02);
       if(false == flag) { throw(std::runtime_error("Could not add sphere at com pos"));  }
@@ -284,10 +287,9 @@ int main(int argc, char** argv)
         {
           char ch;
           if(false == has_been_init_haptics)
-          {
-            std::cout<<"\n WARNING : Could not intialize haptics. Trigger scan? y/n \n>>";
-            std::cin>>ch;
-          }
+          { std::cout<<"\n WARNING : Could not intialize haptics."; }
+          std::cout<<"\n Trigger scan? y/n \n>>";
+          std::cin>>ch;
           if(ch == 'y')
           {
             std::cout<<"\n ********** Triggering scan ********** \n";
