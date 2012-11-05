@@ -311,6 +311,7 @@ int main(int argc, char** argv)
               std::cout<<"\nSent scan trigger '[t]\n' over the usb-serial port";
               std::cout<<"\nStarted experiment clock";
             }
+            else
             { throw(std::runtime_error("Could not trigger fMRI scan: Is /dev/ttyACM0 connected? $ sudo chown user:user /dev/ttyACM0 ? Else fix code or try manual trigger."));  }
 
             CloseComport(22);
