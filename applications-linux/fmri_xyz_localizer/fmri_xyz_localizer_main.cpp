@@ -171,8 +171,8 @@ int main(int argc, char** argv)
       chai_haptic_pos_des->setEnabled(false,true);
 
       // Set up some materials
-      cMaterial mat_green; mat_green.setGreen();
-      cMaterial mat_red; mat_red.setRed();
+      cMaterial mat_green; mat_green.setGreenForest();
+      cMaterial mat_red; mat_red.setRedFireBrick();
 
       /*****************************fMRI State Machine************************************/
       /** The first task ids are for the actual states */
