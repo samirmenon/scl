@@ -47,18 +47,35 @@
 int main(int argc, char** argv)
 {
   bool flag;
+  bool flag_trigger_scan = false;
+  bool flag_display_timer = false;
   const double NaN = 0.0/0.0;
+  const double DIST_AT_GOAL_ACHIEVED = 0.025;
   if((argc != 2)&&(argc != 3))
   {
     std::cout<<"\nfmri_xyz_localizer demo application allows controlling a haptic device."
         <<"\n Optional : It can also trigger an fmri scan by setting : trigger_fmri_scan = 1 "
-        <<"\nThe command line input is: ./<executable> <config_file_name.xml> <optional : trigger_fmri_scan> \n";
+        <<"\nThe command line input is: ./<executable> <config_file_name.xml> <optional : \"-trig\" to trigger_fmri_scan>"
+        <<" <optional : \"-timer\" to display a text timer> \n";
     return 0;
   }
   else
   {
     try
     {
+      /******************************CommandLineFlags************************************/
+      for(int i=0; i<argc; ++i)
+      {
+        std::stringstream s;
+        s<<argv[i];
+        std::string str;
+        str = s.str();
+        if(str == "-trig")
+        { flag_trigger_scan = true; }
+        if(str == "-timer")
+        { flag_display_timer = true; }
+      }
+
       /******************************Initialization************************************/
       //1. Initialize the database and clock.
       if(false == sutil::CSystemClock::start())
@@ -153,9 +170,9 @@ int main(int argc, char** argv)
       if(NULL == chai_haptic_pos_des){ throw(std::runtime_error("Could not add sphere at com desired pos"));  }
       chai_haptic_pos_des->setEnabled(false,true);
 
-//      //Make desired position red/orange
-//      cMaterial mat_red; mat_red.setRedFireBrick();
-//      chai_haptic_pos_des->setMaterial(mat_red, false);
+      // Set up some materials
+      cMaterial mat_green; mat_green.setGreen();
+      cMaterial mat_red; mat_red.setRed();
 
       /*****************************fMRI State Machine************************************/
       /** The first task ids are for the actual states */
@@ -206,12 +223,15 @@ int main(int argc, char** argv)
 
       /*****************************Chai Background Text************************************/
       cFont *text_font = NEW_CFONTCALIBRI20();
-      cLabel *text_label;
-      // Initialize the text label
-      text_label = new cLabel(text_font);
-      chai_gr.getChaiData()->chai_cam_->m_frontLayer->addChild(text_label);
-      text_label->m_fontColor.setBlue();
-      text_label->setFontScale(2);
+      cLabel *text_label = NULL;
+      if(flag_display_timer)
+      {
+        // Initialize the text label
+        text_label = new cLabel(text_font);
+        chai_gr.getChaiData()->chai_cam_->m_frontLayer->addChild(text_label);
+        text_label->m_fontColor.setBlue();
+        text_label->setFontScale(2);
+      }
 
       /******************************Chai Haptics************************************/
       //For controlling op points with haptics
@@ -334,6 +354,7 @@ int main(int argc, char** argv)
         {
           std::cout<<"\nI am the haptics and logging thread. Id = "<<thread_id<<std::flush;
 #endif
+          bool flag_goal_pos_achieved=false;
           while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
           {
             // Get latest haptic device position and update the pointer on the
@@ -356,6 +377,26 @@ int main(int argc, char** argv)
             state_x_des_curr_task<<state_task_selection_matrix(state_task_row_in_matrix,3),
                 state_task_selection_matrix(state_task_row_in_matrix,4),
                 state_task_selection_matrix(state_task_row_in_matrix,5);
+
+            // ************** HPos Color ******************
+            if( (state_x_des_curr_task - hpos).norm() <= DIST_AT_GOAL_ACHIEVED
+                && (false == flag_goal_pos_achieved) )
+            {
+              //Make desired position green/olive
+              chai_haptic_pos->setMaterial(mat_green, false);
+              // NOTE TODO : This is buggy in chai
+              //chai_haptic_pos->setTransparencyLevel(0.9,1,1);
+              flag_goal_pos_achieved = true;
+            }
+            else if( (state_x_des_curr_task - hpos).norm() > DIST_AT_GOAL_ACHIEVED
+                && (true == flag_goal_pos_achieved) )
+            {
+              //Make desired position red/orange
+              chai_haptic_pos->setMaterial(mat_red, false);
+              // NOTE TODO : This is buggy in chai
+              //chai_haptic_pos->setTransparencyLevel(0.9,1,1);
+              flag_goal_pos_achieved = false;
+            }
 
             // ************** STATE MACHINE ******************
             switch(state)
@@ -488,22 +529,27 @@ int main(int argc, char** argv)
             double curr_time = sutil::CSystemClock::getSysTime();
             if(0.001 < curr_time - last_log_time)
             {
-              std::stringstream ss;
-              ss <<cStr(curr_time - t_start, 1)<<" : ["
-                  <<cStr(state_x_des_curr_task(0), 2)<<", "
-                  <<cStr(state_x_des_curr_task(1), 2)<<", "
-                  <<cStr(state_x_des_curr_task(2), 2)<<"] ["
-                  <<cStr(hpos(0), 2)<<", "
-                  <<cStr(hpos(1), 2)<<", "
-                  <<cStr(hpos(2), 2)<<"]";
-              std::string s;
-              s = ss.str();
-              // update haptic rate label
-              //text_label->setString ("Pos: "+cStr(sutil::CSystemClock::getSysTime(), 1) + " [sec]");
-              text_label->setString(s);
-              int px = (int)(0.5 * (1024 - text_label->getWidth()));
-              text_label->setLocalPos(px, 15);
+              //Update haptic rate label if required
+              if(NULL!=text_label)
+              {
+                std::stringstream ss;
+                ss <<cStr(curr_time - t_start, 1)<<" : ["
+                    <<cStr(state_x_des_curr_task(0), 2)<<", "
+                    <<cStr(state_x_des_curr_task(1), 2)<<", "
+                    <<cStr(state_x_des_curr_task(2), 2)<<"] ["
+                    <<cStr(hpos(0), 2)<<", "
+                    <<cStr(hpos(1), 2)<<", "
+                    <<cStr(hpos(2), 2)<<"]";
+                std::string s;
+                s = ss.str();
 
+                //text_label->setString ("Pos: "+cStr(sutil::CSystemClock::getSysTime(), 1) + " [sec]");
+                text_label->setString(s);
+                int px = (int)(0.5 * (1024 - text_label->getWidth()));
+                text_label->setLocalPos(px, 15);
+              }
+
+              // Log data at 1ms resolution
               fprintf(fp,"\n%.3lf %.3lf %.3lf %.3lf %.3lf %.3lf %.3lf",curr_time - t_start,
                   state_x_des_curr_task(0), state_x_des_curr_task(1), state_x_des_curr_task(2), hpos(0), hpos(1), hpos(2) );
               last_log_time = curr_time;
