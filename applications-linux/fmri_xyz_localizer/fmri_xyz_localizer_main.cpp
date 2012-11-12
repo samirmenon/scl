@@ -300,7 +300,7 @@ int main(int argc, char** argv)
 
       /******************************fMRI Scan Trigger************************************/
       //Trigger the fmri scan with the serial pulse here.
-      if(argc == 3)
+      if(flag_trigger_scan)
       {
         std::string tmp_trigger(argv[2]);
         if(tmp_trigger == std::string("1"))
