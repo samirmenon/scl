@@ -117,13 +117,13 @@ namespace scl_app
             has_been_init_com_task_ = true;
 
 #ifdef GRAPHICS_ON
-            /** Render a sphere at the op-point task's position */
+            /** Render a sphere at the com-point task's position */
             flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), chai_com_pos_, 0.02);
             if(false == flag) { throw(std::runtime_error("Could not add sphere at com pos"));  }
 
             if(NULL == chai_com_pos_){ throw(std::runtime_error("Could not add sphere at com pos"));  }
 
-            /** Render a sphere at the op-point task's position */
+            /** Render a sphere at the com-point task's position */
             flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), chai_com_pos_des_, 0.02);
             if(false == flag) { throw(std::runtime_error("Could not add sphere at com desired pos"));  }
 
@@ -139,7 +139,7 @@ namespace scl_app
           { throw(std::runtime_error("Specified -com flag but did not specify com task's name"));  }
         }
         else if ("-op" == argv[args_ctr])
-        {// We know the next argument *should* be the com pos task's name
+        {// We know the next argument *should* be the op pos task's name
           if(args_ctr+1 < argv.size())
           {
             if(ui_points_used >= SCL_NUM_UI_POINTS)
@@ -149,7 +149,9 @@ namespace scl_app
               args_ctr+=2; continue;
             }
 
-            //Initialize the com task
+            //Initialize the op point task
+            // NOTE : There may be many op point tasks, so we create a tmp, initialize it
+            //        and store it with the others (if any) in the taskvec_op_point_ a few lines below
             SOpPointUiLinkData tmp_op;
             tmp_op.name_ = argv[args_ctr+1];
             tmp_op.task_ = dynamic_cast<scl::COpPointTask*>(ctrl_->getTask(tmp_op.name_));
@@ -177,13 +179,16 @@ namespace scl_app
             cMaterial mat_red; mat_red.setRedFireBrick();
             tmp_op.chai_pos_des_->setMaterial(mat_red, false);
 #endif
+
             //Add the initialized task to the vector
+            // NOTE : We add it after initializing the graphics so that we don't end up with a junk
+            //        task in the vector if the graphics fail.
             taskvec_op_point_.push_back(tmp_op);
 
             args_ctr+=2; continue;
           }
           else
-          { throw(std::runtime_error("Specified -op flag but did not specify com task's name"));  }
+          { throw(std::runtime_error("Specified -op flag but did not specify op point task's name"));  }
         }
         /* NOTE : ADD MORE COMMAND LINE PARSING OPTIONS IF REQUIRED */
         // else if (argv[args_ctr] == "-p")
