@@ -302,9 +302,6 @@ int main(int argc, char** argv)
       //Trigger the fmri scan with the serial pulse here.
       if(flag_trigger_scan)
       {
-        std::string tmp_trigger(argv[2]);
-        if(tmp_trigger == std::string("1"))
-        {
           char ch;
           if(false == has_been_init_haptics)
           { std::cout<<"\n WARNING : Could not intialize haptics."; }
@@ -338,7 +335,6 @@ int main(int argc, char** argv)
             std::cout<<"\nClosed com port. Continuing to the experiment.";
             std::cout<<"\n ========= Fmri scan triggered. With haptics. ========";
           }
-        }
       }
       else
       {
