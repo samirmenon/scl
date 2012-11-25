@@ -49,13 +49,16 @@ int main(int argc, char** argv)
   bool flag;
   bool flag_trigger_scan = false;
   bool flag_display_timer = false;
+  int file_rows = 10;
+  int file_cols = 7;
   const double NaN = 0.0/0.0;
   const double DIST_AT_GOAL_ACHIEVED = 0.025;
-  if((argc != 2)&&(argc != 3))
+  if(argc < 2)
   {
     std::cout<<"\nfmri_xyz_localizer demo application allows controlling a haptic device."
         <<"\n Optional : It can also trigger an fmri scan by setting : trigger_fmri_scan = 1 "
         <<"\nThe command line input is: ./<executable> <config_file_name.xml> <optional : \"-trig\" to trigger_fmri_scan>"
+        <<"\n\t<optional : \"-frows\" to specify file rows = 10> <optional : \"-fcols\" to specify file cols = 7>"
         <<" <optional : \"-timer\" to display a text timer> \n";
     return 0;
   }
@@ -74,6 +77,24 @@ int main(int argc, char** argv)
         { flag_trigger_scan = true; }
         if(str == "-timer")
         { flag_display_timer = true; }
+        if(str == "-frows")
+        {
+          if(i+1>=argc)
+          { throw("Argument '-frows' requires the number of rows to be entered");}
+          std::stringstream ss;
+          ss<<argv[i+1];
+          ss>>file_rows;
+          i = i+1;
+        }
+        if(str == "-fcols")
+        {
+          if(i+1>=argc)
+          { throw("Argument '-fcols' requires the number of cols to be entered");}
+          std::stringstream ss;
+          ss<<argv[i+1];
+          ss>>file_cols;
+          i = i+1;
+        }
       }
 
       /******************************Initialization************************************/
@@ -208,9 +229,10 @@ int main(int argc, char** argv)
        *                ==      0.6 x 0.3 x 0.2 m (xyz in chai)
        *                ==      0.3 x 0.15 x 0. m (xyz displacements to reach cuboid edges from center)
        */
-      flag = scl_util::readEigenMatFromFile(state_task_selection_matrix, 10, 6, "task.txt");
+      flag = scl_util::readEigenMatFromFile(state_task_selection_matrix, file_rows, file_cols, "task.txt");
       if(false == flag)
       { throw(std::runtime_error("Could not open task input file"));  }
+
       std::cout<<"\nRunning task matrix:"
           <<"\n<task-id> <time-at-completion> <time-duration> <x-des> <y-des> <z-des>"
           <<"\n"<<state_task_selection_matrix<<"\n";
@@ -251,7 +273,7 @@ int main(int argc, char** argv)
       //Set up haptic device
       if(0 == haptics_.getNumDevicesConnected())
       {
-        std::cout<<"WARNING: No haptic devices connected. Proceeding in keyboard mode";
+        std::cout<<"\nWARNING: No haptic devices connected. Proceeding in keyboard mode";
         has_been_init_haptics = false;
       }
       else
@@ -302,39 +324,39 @@ int main(int argc, char** argv)
       //Trigger the fmri scan with the serial pulse here.
       if(flag_trigger_scan)
       {
-          char ch;
-          if(false == has_been_init_haptics)
-          { std::cout<<"\n WARNING : Could not intialize haptics."; }
-          std::cout<<"\n Trigger scan? y/n \n>>";
-          std::cin>>ch;
-          if(ch == 'y')
+        char ch;
+        if(false == has_been_init_haptics)
+        { std::cout<<"\n WARNING : Could not intialize haptics."; }
+        std::cout<<"\n Trigger scan? y/n \n>>";
+        std::cin>>ch;
+        if(ch == 'y')
+        {
+          std::cout<<"\n ********** Triggering scan ********** \n";
+          int err;
+          err = OpenComport(22,57600);
+          if(0 == err)
+          { std::cout<<"\nOpened com port /dev/ttyACM0 at a baud rate of 57600"; }
+          else
+          { throw(std::runtime_error("Could not connect to fMRI serial port: Is /dev/ttyACM0 connected? $ sudo chown user:user /dev/ttyACM0 ? Else fix code or try manual trigger."));  }
+
+          err = 0;
+          err = err+SendByte(22, '[');
+          err = err+SendByte(22, 't');
+          err = err+SendByte(22, ']');
+          err = err+SendByte(22, '\n');
+          if(0 == err)
           {
-            std::cout<<"\n ********** Triggering scan ********** \n";
-            int err;
-            err = OpenComport(22,57600);
-            if(0 == err)
-            { std::cout<<"\nOpened com port /dev/ttyACM0 at a baud rate of 57600"; }
-            else
-            { throw(std::runtime_error("Could not connect to fMRI serial port: Is /dev/ttyACM0 connected? $ sudo chown user:user /dev/ttyACM0 ? Else fix code or try manual trigger."));  }
-
-            err = 0;
-            err = err+SendByte(22, '[');
-            err = err+SendByte(22, 't');
-            err = err+SendByte(22, ']');
-            err = err+SendByte(22, '\n');
-            if(0 == err)
-            {
-              t_start = sutil::CSystemClock::getSysTime();
-              std::cout<<"\nSent scan trigger '[t]\n' over the usb-serial port";
-              std::cout<<"\nStarted experiment clock";
-            }
-            else
-            { throw(std::runtime_error("Could not trigger fMRI scan: Is /dev/ttyACM0 connected? $ sudo chown user:user /dev/ttyACM0 ? Else fix code or try manual trigger."));  }
-
-            CloseComport(22);
-            std::cout<<"\nClosed com port. Continuing to the experiment.";
-            std::cout<<"\n ========= Fmri scan triggered. With haptics. ========";
+            t_start = sutil::CSystemClock::getSysTime();
+            std::cout<<"\nSent scan trigger '[t]\n' over the usb-serial port";
+            std::cout<<"\nStarted experiment clock";
           }
+          else
+          { throw(std::runtime_error("Could not trigger fMRI scan: Is /dev/ttyACM0 connected? $ sudo chown user:user /dev/ttyACM0 ? Else fix code or try manual trigger."));  }
+
+          CloseComport(22);
+          std::cout<<"\nClosed com port. Continuing to the experiment.";
+          std::cout<<"\n ========= Fmri scan triggered. With haptics. ========";
+        }
       }
       else
       {
