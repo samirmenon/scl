@@ -56,27 +56,31 @@ int main()
 
   // TEST 2 : Test encoders
   long c0, c1,c2;
-  t_start = sutil::CSystemClock::getSysTime();
-  for(int i=0;i<300; i++)
-  { ctrl_cycles = sensorayio.readEncoders(c0, c1, c2);  }
-  t_tot = sutil::CSystemClock::getSysTime() - t_start;
-  std::cout<<"\nEncoders read 300 times. Time taken = "<<t_tot<<"\n\n"<<std::flush;
+  if(sensorayio.modeEncoderOnly())
+  {
+    t_start = sutil::CSystemClock::getSysTime();
+    for(int i=0;i<300; i++)
+    { ctrl_cycles = sensorayio.readEncoders(c0, c1, c2);  }
+    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    std::cout<<"\nEncoders read 300 times. Time taken = "<<t_tot<<"\n\n"<<std::flush;
+  }
+  else
+  {
+    for(int i=0;i<300; i++)
+    { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 1.0, 0.0, 0.0);  }
+    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    std::cout<<"\nEncoders read 300 times & +x force. Time taken = "<<t_tot<<"\n\n"<<std::flush;
 
-  for(int i=0;i<300; i++)
-  { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 1.0, 0.0, 0.0);  }
-  t_tot = sutil::CSystemClock::getSysTime() - t_start;
-  std::cout<<"\nEncoders read 300 times & +x force. Time taken = "<<t_tot<<"\n\n"<<std::flush;
+    for(int i=0;i<300; i++)
+    { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 1.0, 0.0);  }
+    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    std::cout<<"\nEncoders read 300 times & +y force. Time taken = "<<t_tot<<"\n\n"<<std::flush;
 
-  for(int i=0;i<300; i++)
-  { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 1.0, 0.0);  }
-  t_tot = sutil::CSystemClock::getSysTime() - t_start;
-  std::cout<<"\nEncoders read 300 times & +y force. Time taken = "<<t_tot<<"\n\n"<<std::flush;
-
-  for(int i=0;i<300; i++)
-  { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 1.0);  }
-  t_tot = sutil::CSystemClock::getSysTime() - t_start;
-  std::cout<<"\nEncoders read 300 times & +z force. Time taken = "<<t_tot<<"\n\n"<<std::flush;
-
+    for(int i=0;i<300; i++)
+    { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 1.0);  }
+    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    std::cout<<"\nEncoders read 300 times & +z force. Time taken = "<<t_tot<<"\n\n"<<std::flush;
+  }
   // Exit
   sensorayio.shutdown();                       // Shut down the driver
 
