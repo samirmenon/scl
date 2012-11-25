@@ -561,6 +561,7 @@ int cBFR1Device::getGripperAngleRAD(double& a_angle)
 //===========================================================================
 int cBFR1Device::setForce(const cVector3d& a_force)
 {
+
 #ifndef BFR_FORCES_ENABLED
   return 0;
 #else
@@ -583,39 +584,48 @@ int cBFR1Device::setForce(const cVector3d& a_force)
 
   int error = 0;
 
-  // store new force value.
-  m_prevForce = a_force;
+  if(sensorayio_.modeEncoderAndMotor())
+  {
+    // store new force value.
+    m_prevForce = a_force;
 
 
-  // *** INSERT YOUR CODE HERE ***
+    // *** INSERT YOUR CODE HERE ***
 
-  // compute joint torques
-  cVector3d torque = cMul(m_jacobian, a_force);
+    // compute joint torques
+    cVector3d torque = cMul(m_jacobian, a_force);
 
-  // compute motor currents
-  const double C_NM_PER_AMP = 0.1000; ///0.060;  // [Nm/A]
-  const double C_CURENT_MAX_0 = 2.00;    //3.33;  // [A]
-  const double C_CURENT_MAX_1 = 2.00;    //3.33;  // [A]
-  const double C_CURENT_MAX_2 = 2.00;    //3.33;  // [A]
+    // compute motor currents
+    const double C_NM_PER_AMP = 0.1000; ///0.060;  // [Nm/A]
+    const double C_CURENT_MAX_0 = 1.00;    //3.33;  // [A]
+    const double C_CURENT_MAX_1 = 1.00;    //3.33;  // [A]
+    const double C_CURENT_MAX_2 = 1.00;    //3.33;  // [A]
 
-  double m_motorCurrent0 = torque(0) / (HD_GEAR_RATIO_0 * C_NM_PER_AMP);
-  double m_motorCurrent1 = torque(1) / (HD_GEAR_RATIO_1 * C_NM_PER_AMP);
-  double m_motorCurrent2 = torque(2) / (HD_GEAR_RATIO_2 * C_NM_PER_AMP);
+    double m_motorCurrent0 = torque(0) / (HD_GEAR_RATIO_0 * C_NM_PER_AMP);
+    double m_motorCurrent1 = torque(1) / (HD_GEAR_RATIO_1 * C_NM_PER_AMP);
+    double m_motorCurrent2 = torque(2) / (HD_GEAR_RATIO_2 * C_NM_PER_AMP);
 
-  m_motorCurrent0 = cClamp(m_motorCurrent0, -C_CURENT_MAX_0, C_CURENT_MAX_0);
-  m_motorCurrent1 = cClamp(m_motorCurrent1, -C_CURENT_MAX_1, C_CURENT_MAX_1);
-  m_motorCurrent2 = cClamp(m_motorCurrent2, -C_CURENT_MAX_2, C_CURENT_MAX_2);
+    m_motorCurrent0 = cClamp(m_motorCurrent0, -C_CURENT_MAX_0, C_CURENT_MAX_0);
+    m_motorCurrent1 = cClamp(m_motorCurrent1, -C_CURENT_MAX_1, C_CURENT_MAX_1);
+    m_motorCurrent2 = cClamp(m_motorCurrent2, -C_CURENT_MAX_2, C_CURENT_MAX_2);
 
-  // comput ouput voltage
-  const double C_VOLT_PER_AMP = 1.0;
-  double m_voltageLevel0 = C_VOLT_PER_AMP * m_motorCurrent0;
-  double m_voltageLevel1 =-C_VOLT_PER_AMP * m_motorCurrent1;
-  double m_voltageLevel2 =-C_VOLT_PER_AMP * m_motorCurrent2;
+    // comput ouput voltage
+    const double C_VOLT_PER_AMP = 1.0;
+    double m_voltageLevel0 = C_VOLT_PER_AMP * m_motorCurrent0;
+    double m_voltageLevel1 =-C_VOLT_PER_AMP * m_motorCurrent1;
+    double m_voltageLevel2 =-C_VOLT_PER_AMP * m_motorCurrent2;
 
-  //printf("Mot0: %lf, Mot1: %lf, Mot2: %lf \n", m_voltageLevel0, m_voltageLevel1, m_voltageLevel2);
+    //printf("Mot0: %lf, Mot1: %lf, Mot2: %lf \n", m_voltageLevel0, m_voltageLevel1, m_voltageLevel2);
 
-  // send command to device (Analog out is device 1)
-  // NOTE TODO : Add haptic driver call here.
+    // send command to device (Analog out is device 1)
+    flag = sensorayio_.readEncodersAndCommandMotors(enc0, enc1, enc2,
+        m_voltageLevel0, m_voltageLevel1, m_voltageLevel2);
+#ifdef DEBUG
+    if(false == flag)
+    { printf("\nError reading encoders and setting motors"); }
+    printf("Enc0: %ld, Enc1: %ld, Enc2: %ld \n", enc0, enc1, enc2);
+#endif
+  }
 
   // exit
   return (error);
