@@ -161,7 +161,8 @@ namespace sensoray
     bool readEncoders(long& c0, long& c1, long& c2);
 
     /** Encoder+Motor operation : Sends analog out to motors + reads encoders */
-    bool readEncodersAndCommandMotors();
+    bool readEncodersAndCommandMotors(long& c0, long& c1, long& c2,
+        const double m0, const double m1, const double m2);
 
     /** Runs a control loop to test communication with the device. */
     bool testDriver(const unsigned int arg_control_loops);
