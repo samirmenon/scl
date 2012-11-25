@@ -38,36 +38,36 @@ xlim([-.2 .2]);ylim([-.2 .2]);zlim([-.2 .2]);
 
 repeat = 1;
 while repeat == 1,
-  % Create 15 stimuli each for rest(0) + corners(1-8)
-  n_stims_per_run = 3; 
-  idx = rem(randperm(28 * n_stims_per_run), 28);
+  % Create 3 stimuli each for rest(0) + reaches(1-14)
+  n_stims_per_run = 3;
+  idx = rem(randperm(29 * n_stims_per_run), 29);
 
   output = [];
   for i = 1:length(idx),
     if(idx(i) == 0)
-      output = [output; 0 -1 3 0 0 0]; 
+      output = [output; 0 -1 3 0 0 0 0]; 
     else
       trest = 2+rem(floor(rand(1,1)*3),2);
       tplan = 1+rem(floor(rand(1,1)*3),2);
       tmove = 2+rem(floor(rand(1,1)*3),2);
-      if(idx(i) < 14)
+      if(idx(i) <= 14)
         output = [output;
-          1 -1 trest 0 0 0;
-          [[2 -1 tplan], x(:,idx(i)+1)'];
-          [[3 -1 tmove], x(:,idx(i)+1)']];
+          1 -1 trest 0 0 0 0;
+          [[2 -1 tplan], x(:,idx(i))' idx(i)];
+          [[3 -1 tmove], x(:,idx(i))' idx(i)]];
       else
         tidx = idx(i) - 14;
         output = [output;
-          1 -1 trest 0 0 0;
-          [[2 -1 tplan], x(:,tidx+1)']];
+          1 -1 trest 0 0 0 0;
+          [[2 -1 tplan], x(:,tidx)' idx(i)]];
       end
     end;
   end;
 
   tr = 1.57;
-  n_trs = 254;
+  n_trs = 270;
   t_end = ceil(n_trs * tr);
-  output = [1 8 8 0 0 0; output; 1 t_end 5 0 0 0]; % 225 TRs
+  output = [0 8 8 0 0 0 0; output; 0 t_end 5 0 0 0 0]; % 225 TRs
 
   for i = 2:size(output,1)-1,
     output(i,2) = output(i-1,2) + output(i,3);
@@ -78,11 +78,12 @@ while repeat == 1,
   if output(end,3) < 5 && output(end,3) > 2,
     repeat = 0;
   end
+%   repeat = 0;
 end
 
 
 fp = fopen('delme.txt','w');
 for i = 1:size(output,1),
-  fprintf(fp, '%d %.3f %.3f %.3f %.3f %.3f\n', output(i,:));
+  fprintf(fp, '%d %.3f %.3f %.3f %.3f %.3f %d\n', output(i,:));
 end
 fclose(fp);
