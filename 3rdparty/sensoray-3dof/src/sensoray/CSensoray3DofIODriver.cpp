@@ -190,10 +190,16 @@ namespace sensoray
   }
 
   /** Encoder+Motor operation : Sends analog out to motors + reads encoders */
-  bool CSensoray3DofIODriver::readEncodersAndCommandMotors()
+  bool CSensoray3DofIODriver::readEncodersAndCommandMotors(long& c0, long& c1, long& c2,
+      const double m0, const double m1, const double m2)
   {
     if(mode_encoder_only_) //Can't operate motors just yet
     { return false; }
+
+    //Set the motor control commands
+    s_ds_.analog_out_voltages_[0] = m0;
+    s_ds_.analog_out_voltages_[1] = m1;
+    s_ds_.analog_out_voltages_[2] = m2;
 
     //Open transaction
     void* tran_hndl = S26_SchedOpen( s_ds_.mm_handle_, s_ds_.retries_gateway_ );
@@ -206,9 +212,9 @@ namespace sensoray
     S26_Sched2620_SetControlReg( tran_hndl, enc_mm_id_, 2, 2 );
 
     // Read latches.
-    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 0, &s_ds_.counter_counts_[0], &s_ds_.counter_timestamp_[0] );
-    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 1, &s_ds_.counter_counts_[1], &s_ds_.counter_timestamp_[1] );
-    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 2, &s_ds_.counter_counts_[2], &s_ds_.counter_timestamp_[2] );
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 0, &s_ds_.counter_counts_[0], 0);
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 1, &s_ds_.counter_counts_[1], 0);
+    S26_Sched2620_GetCounts( tran_hndl, enc_mm_id_, 2, &s_ds_.counter_counts_[2], 0);
 
     //Init motors
     // Update reference standards and read analog inputs
@@ -216,11 +222,14 @@ namespace sensoray
     if(sensoray_calibrate_ctr==0)
     { S26_Sched2608_GetCalData(tran_hndl, dac_mm_id_, 0 ); }
     sensoray_calibrate_ctr++;
-    if(sensoray_calibrate_ctr>50) { sensoray_calibrate_ctr = 0; }
+    if(sensoray_calibrate_ctr>150) { sensoray_calibrate_ctr = 0; }
 
     // Program all analog outputs.
-    for (int chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
-    {  S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, (u8)chan, s_ds_.analog_out_voltages_[chan] ); }
+    /* for (int chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
+    {  S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, (u8)chan, s_ds_.analog_out_voltages_[chan] ); } */
+    S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, 0, s_ds_.analog_out_voltages_[0] );
+    S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, 1, s_ds_.analog_out_voltages_[1] );
+    S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, 2, s_ds_.analog_out_voltages_[2] );
 
     // Execute the scheduled i/o and then release the transaction object.  Return false if there was an error.
     // We don't care about the I/O module status, so last arg is zero
@@ -230,6 +239,12 @@ namespace sensoray
       showErrorInfo( err, s_ds_.iom_status_ );
       return false;
     }
+
+    //Return the values
+    c0 = s_ds_.counter_counts_[0];
+    c1 = s_ds_.counter_counts_[1];
+    c2 = s_ds_.counter_counts_[2];
+
     return true;
   }
 
