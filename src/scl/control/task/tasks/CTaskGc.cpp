@@ -97,14 +97,16 @@ namespace scl
 #endif
     if(data_->has_been_init_)
     {
+      data_->q_ = arg_sensors->q_;
+      data_->dq_ = arg_sensors->dq_;
 
       //Compute the servo torques
       Eigen::VectorXd tmp1, tmp2;
 
-      tmp1 = (data_->q_goal_ - arg_sensors->q_);
+      tmp1 = (data_->q_goal_ - data_->q_);
       tmp1 =  data_->kp_.array() * tmp1.array();
 
-      tmp2 = (data_->dq_goal_ - arg_sensors->dq_);
+      tmp2 = (data_->dq_goal_ - data_->dq_);
       tmp2 = data_->kv_.array() * tmp2.array();
 
       //Obtain force to be applied to a unit mass floating about
@@ -125,13 +127,25 @@ namespace scl
   /** Sets the null space for the next level to zero. Ie.
    * any task below this one in the hierarchy is ignored. */
   bool CTaskGc::computeModel()
-  {
+  {//Null space is set to zero by default and doesn't need to be set again.
     if(data_->has_been_init_)
-    {
-      return true;
-    }
+    { return true; }
     else
     { return false; }
+  }
+
+  //************************
+  // Task specific stuff
+  //************************
+  bool CTaskGc::achievedGoalPos()
+  {
+    sFloat dist;
+    dist = fabs((data_->q_goal_ - data_->q_).norm());
+
+    if(dist > data_->spatial_resolution_)
+    { return false; }
+    else
+    { return true;  }
   }
 
 }

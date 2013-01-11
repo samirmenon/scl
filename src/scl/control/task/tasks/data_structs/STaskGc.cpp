@@ -50,7 +50,12 @@ namespace scl
   {
     try
     {
+      // To test whether the goal position has been achieved.
       spatial_resolution_ = SCL_GCTASK_SPATIAL_RESOLUTION;
+
+      // Initialize the gc vectors to the correct sizes
+      q_.setZero(dof_task_);
+      dq_.setZero(dof_task_);
 
       q_goal_.setZero(dof_task_);
       dq_goal_.setZero(dof_task_);

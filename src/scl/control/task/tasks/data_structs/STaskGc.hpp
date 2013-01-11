@@ -43,6 +43,9 @@ namespace scl
   class STaskGc : public scl::STaskBase
   {
   public:
+    Eigen::VectorXd q_;             //Goal Position in the global frame
+    Eigen::VectorXd dq_;            //Goal Velocity in the global frame
+
     Eigen::VectorXd q_goal_;        //Goal Position in the global frame
     Eigen::VectorXd dq_goal_;       //Goal Velocity in the global frame
     Eigen::VectorXd ddq_goal_;      //Goal Acceleration in the global frame

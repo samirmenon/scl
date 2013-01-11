@@ -67,6 +67,25 @@ namespace scl
     /********************************
      * CTaskGc specific functions
      *********************************/
+    /** Sets the current goal position */
+    inline void setGoal(const Eigen::VectorXd & arg_gc_goal)
+    { data_->q_goal_ = arg_gc_goal;  }
+
+    /** Sets the current goal velocity */
+    inline void setGoalVel(const Eigen::VectorXd & arg_dgc_goal)
+    { data_->dq_goal_ = arg_dgc_goal;  }
+
+    /** Sets the current goal acceleration */
+    inline void setGoalAcc(const Eigen::VectorXd & arg_ddgc_goal)
+    { data_->ddq_goal_ = arg_ddgc_goal;  }
+
+    /** Whether the task has achieved its goal position. */
+    sBool achievedGoalPos();
+
+    /********************************
+     * Initialization specific functions
+     *********************************/
+
     /** Default constructor : Does nothing   */
     CTaskGc();
 
