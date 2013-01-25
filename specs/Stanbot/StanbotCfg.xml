@@ -79,8 +79,8 @@
             <kp>100</kp>
             <kv>20</kv>
             <ki>0</ki>
-            <force_max>1000</force_max>
-            <force_min>-1000</force_min>
+            <force_max>10000</force_max>
+            <force_min>-10000</force_min>
         </task>
 
         <task name="GcTask">
@@ -90,8 +90,8 @@
             <kp>100</kp>
             <kv>20</kv>
             <ki>0</ki>
-            <force_max>1000</force_max>
-            <force_min>-1000</force_min>
+            <force_max>10000</force_max>
+            <force_min>-10000</force_min>
         </task>
 
         <!-- 0 task_dof means a gc task, ie full dofs -->
@@ -102,8 +102,8 @@
             <kp>0</kp>
             <kv>20</kv>
             <ki>0</ki>
-            <force_max>1000</force_max>
-            <force_min>-1000</force_min>
+            <force_max>10000</force_max>
+            <force_min>-10000</force_min>
         </task>
     </controller>
 </lotus>
