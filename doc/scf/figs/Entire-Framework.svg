@@ -13,7 +13,7 @@
    height="1052.3622047"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="Entire-Framework.svg"
    inkscape:export-filename="/home/samir/code/scl.git/doc/Entire-Framework.png"
    inkscape:export-xdpi="300.00446"
@@ -511,16 +511,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="196.91699"
-     inkscape:cy="590.54247"
+     inkscape:zoom="1.979899"
+     inkscape:cx="365.32371"
+     inkscape:cy="196.3523"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g5589"
      showgrid="false"
-     inkscape:window-width="2560"
-     inkscape:window-height="1547"
+     inkscape:window-width="1920"
+     inkscape:window-height="1056"
      inkscape:window-x="0"
-     inkscape:window-y="28"
+     inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -530,7 +530,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -2170,11 +2170,9 @@
    id="tspan3806"
    style="font-size:8px">j=1:i-1</tspan> (   <tspan
    id="tspan3910"
-   style="font-size:13px">(q,x)</tspan> +     <tspan
+   style="font-size:13px">(q,x)</tspan>  *     <tspan
    id="tspan3912"
-   style="font-size:13px">(q,x)<tspan
-   id="tspan3914"
-   style="font-size:15px">)</tspan></tspan></tspan></tspan></tspan></text>
+   style="font-size:13px">(q,x)</tspan>)</tspan></tspan></tspan></text>
           <g
              transform="translate(105.77639,23.358996)"
              id="g3848">
