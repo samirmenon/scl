@@ -27,7 +27,7 @@ extern "C" {
 
 int main()
 {
-  bool flag;
+  bool flag=true;
   int   ctrl_cycles;  // Total control cycles
   time_t  t_start;    // Benchmark start time.
   double  t_tot;     // Benchmark elapsed time.
@@ -46,43 +46,58 @@ int main()
 
   // TEST 1 : Run a full control loop
   t_start = sutil::CSystemClock::getSysTime();
-  ctrl_cycles = sensorayio.testDriver(100);    // Run control loop until terminated or error.
+  flag = flag && sensorayio.testDriver(100,-1);    // Run control loop until terminated or error.
   t_tot = sutil::CSystemClock::getSysTime() - t_start;
+
+  if(false == flag)  { std::cout<<"\nError : Driver test failed";	}
 
   // Report benchmark results.
   printf( "\nControl loop cycles:    %d", ctrl_cycles );
   printf( "\nElapsed time (seconds): %lf", t_tot );
   printf( "\nAverage I/O cycle time (msec):  %.2f \n\n", t_tot / static_cast<double>(ctrl_cycles) * 1000.0 );
 
+  flag = true;
   // TEST 2 : Test encoders
   long c0, c1,c2;
   if(sensorayio.modeEncoderOnly())
   {
+	flag = true;
     t_start = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
-    { ctrl_cycles = sensorayio.readEncoders(c0, c1, c2);  }
+    { flag = flag && sensorayio.readEncoders(c0, c1, c2);  }
     t_tot = sutil::CSystemClock::getSysTime() - t_start;
-    std::cout<<"\nEncoders read 300 times. Time taken = "<<t_tot<<"\n\n"<<std::flush;
+    if(false == flag)  { std::cout<<"\nError : Encoder read failed";	}
+    else
+    { std::cout<<"\nEncoders read 300 times. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
   }
   else
   {
+	flag = true;
     for(int i=0;i<300; i++)
-    { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 1.0, 0.0, 0.0);  }
+    { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.5, 0.0, 0.0);  }
     t_tot = sutil::CSystemClock::getSysTime() - t_start;
-    std::cout<<"\nEncoders read 300 times & +x force. Time taken = "<<t_tot<<"\n\n"<<std::flush;
+    if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & +x force failed";	}
+    else
+    { std::cout<<"\nEncoders read 300 times & +x force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
+    flag = true;
     for(int i=0;i<300; i++)
-    { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 1.0, 0.0);  }
+    { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.5, 0.0);  }
     t_tot = sutil::CSystemClock::getSysTime() - t_start;
-    std::cout<<"\nEncoders read 300 times & +y force. Time taken = "<<t_tot<<"\n\n"<<std::flush;
+    if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & +y force failed";	}
+    else
+    { std::cout<<"\nEncoders read 300 times & +y force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
+    flag = true;
     for(int i=0;i<300; i++)
-    { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 1.0);  }
+    { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, -0.5);  }
     t_tot = sutil::CSystemClock::getSysTime() - t_start;
-    std::cout<<"\nEncoders read 300 times & +z force. Time taken = "<<t_tot<<"\n\n"<<std::flush;
+    if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & +z force failed";	}
+    else
+    {  std::cout<<"\nEncoders read 300 times & +z force. Time taken = "<<t_tot<<"\n\n"<<std::flush;  }
   }
   // Exit
   sensorayio.shutdown();                       // Shut down the driver
 
-	return 0;
+  return 0;
 }
