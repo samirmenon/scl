@@ -235,8 +235,6 @@ namespace sensoray
 #endif
 
     // Program all analog outputs.
-    /* for (int chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
-    {  S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, (u8)chan, s_ds_.analog_out_voltages_[chan] ); } */
     S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, 0, s_ds_.analog_out_voltages_[0] );
     S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, 1, s_ds_.analog_out_voltages_[1] );
     S26_Sched2608_SetAout(tran_hndl, dac_mm_id_, 2, s_ds_.analog_out_voltages_[2] );
