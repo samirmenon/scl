@@ -29,8 +29,7 @@ int main()
 {
   bool flag=true;
   int   ctrl_cycles;  // Total control cycles
-  time_t  t_start;    // Benchmark start time.
-  double  t_tot;     // Benchmark elapsed time.
+  double  t_start, t_mid, t_tot;    // Benchmark start time.
 
   flag = sutil::CSystemClock::start();
   if(false == flag)
@@ -62,10 +61,10 @@ int main()
   if(sensorayio.modeEncoderOnly())
   {
 	flag = true;
-    t_start = sutil::CSystemClock::getSysTime();
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncoders(c0, c1, c2);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read failed";	}
     else
     { std::cout<<"\nEncoders read 300 times. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
@@ -73,105 +72,118 @@ int main()
   else
   {
 	flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & 0 force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & 0 force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
 	flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 1, 0.0, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & Motor [0] force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & Motor [0] force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
 	flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & 0 force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & 0 force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
 	flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, -1, 0.0, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & Motor [0]*-1 force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & Motor [0]*-1 force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
 	flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & 0 force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & 0 force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
     flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 1, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & Motor [1] force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & Motor [1] force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
 	flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & 0 force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & 0 force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
     flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, -1, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & Motor [1]*-1 force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & Motor [1]*-1 force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
 	flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & 0 force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & 0 force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
     flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 1);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & Motor [2] force failed";	}
     else
     {  std::cout<<"\nEncoders read 300 times & Motor [2] force. Time taken = "<<t_tot<<"\n\n"<<std::flush;  }
 
 	flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & 0 force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & 0 force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
 
     flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { ctrl_cycles = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, -1);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & Motor [2]*-1 force failed";	}
     else
     {  std::cout<<"\nEncoders read 300 times & Motor [2]*-1 force. Time taken = "<<t_tot<<"\n\n"<<std::flush;  }
 
 	flag = true;
+    t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.0);  }
-    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+    t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read 300 times & 0 force failed";	}
     else
     { std::cout<<"\nEncoders read 300 times & 0 force. Time taken = "<<t_tot<<"\n\n"<<std::flush; }
