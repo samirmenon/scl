@@ -164,8 +164,11 @@ namespace sensoray
     bool readEncodersAndCommandMotors(long& c0, long& c1, long& c2,
         const double m0, const double m1, const double m2);
 
-    /** Runs a control loop to test communication with the device. */
-    bool testDriver(const unsigned int arg_control_loops);
+    /** Runs a control loop to test communication with the device.
+     * NOTE : 1V seems to be a reasonable value for testing the force
+     * output from the motors. (Maxon RE 40s) */
+    bool testDriver(const unsigned int arg_control_loops,
+    		const double arg_motor_voltage = 1 /*Volts*/);
 
     bool modeEncoderOnly()
     { return mode_encoder_only_;  }
