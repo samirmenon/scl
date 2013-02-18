@@ -149,7 +149,13 @@ namespace sensoray
 
   /** Closes the driver and shuts down the modules */
   void CSensoray3DofIODriver::shutdown()
-  { S26_DriverClose();  }
+  {
+    long c0, c1, c2;
+    bool flag = readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.0);
+    if(false == flag)
+    { std::cout<<"\nError : Could not reset the motors to zero during shutdown!"; }
+    S26_DriverClose();
+  }
 
   /** Encoder operation only : Reads encoders */
   bool CSensoray3DofIODriver::readEncoders(
@@ -219,10 +225,14 @@ namespace sensoray
     //Init motors
     // Update reference standards and read analog inputs
     // Auto-cal.  Only needed ~once/sec, but we do every 50 loops (a few times/sec).
+#ifdef DEBUG
+    S26_Sched2608_GetCalData( tran_hndl, dac_mm_id_, 0 );          // In debug mode, we always do it for simplicity.
+#else
     if(sensoray_calibrate_ctr==0)
     { S26_Sched2608_GetCalData(tran_hndl, dac_mm_id_, 0 ); }
     sensoray_calibrate_ctr++;
     if(sensoray_calibrate_ctr>150) { sensoray_calibrate_ctr = 0; }
+#endif
 
     // Program all analog outputs.
     /* for (int chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
@@ -251,7 +261,7 @@ namespace sensoray
   ///////////////////////////////////////////////////////
   // Main control loop.  Returns loop iteration count.
 
-  bool CSensoray3DofIODriver::testDriver(const unsigned int arg_control_loops)
+  bool CSensoray3DofIODriver::testDriver(const unsigned int arg_control_loops, const double arg_motor_voltage)
   {
     void*   tran_hndl;        // Transaction object.
     struct  timeval tStart;
@@ -264,7 +274,7 @@ namespace sensoray
       // Compute the next output states -----------------------------------------------------------
       // Bump analog output voltage images.
       for (unsigned int chan = 0; chan < MAX_NUM_AOUTS; chan++ )
-      { s_ds_.analog_out_voltages_[chan] = (double)( chan + 1 );  }
+      { s_ds_.analog_out_voltages_[chan] = arg_motor_voltage;  }
 
       // Schedule and execute the gateway I/O -----------------------------------------------------
       // Create a new transaction.
@@ -282,17 +292,21 @@ namespace sensoray
 #endif
 
       // Schedule some iom actions.  For each iom port ...
-      for (unsigned int i = 0; i < max_io_modules_at_main_module_; i++ )
+      for (unsigned int j = 0; j < max_io_modules_at_main_module_; j++ )
       {
         // Schedule some i/o actions based on module type.
-        switch( s_ds_.iom_types_[i] )
+        switch( s_ds_.iom_types_[j] )
         {
           case 2608:
             // Update reference standards and read analog inputs
-            S26_Sched2608_GetCalData( tran_hndl, i, 0 );          // Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
+            S26_Sched2608_GetCalData( tran_hndl,j, 0 );          // Auto-cal.  Only needed ~once/sec, but we always do it for simplicity.
             // Program all analog outputs.
             for (unsigned int chan = 0; chan < (int)s_ds_.s2608_num_aouts_at_iom_; chan++ )
-              S26_Sched2608_SetAout( tran_hndl, i, (u8)chan, s_ds_.analog_out_voltages_[chan] );
+            {
+            	if(i==arg_control_loops-1)
+            	{ s_ds_.analog_out_voltages_[chan] = 0; }
+            	S26_Sched2608_SetAout( tran_hndl, j, (u8)chan, s_ds_.analog_out_voltages_[chan] );
+            }
             break;
 
           case 2620:
@@ -303,7 +317,7 @@ namespace sensoray
 
             // Read latches.
             for (unsigned int chan = 0; chan < 3; chan++ )
-            { S26_Sched2620_GetCounts( tran_hndl, i, (u8)chan, &s_ds_.counter_counts_[chan], &s_ds_.counter_timestamp_[chan] );  }// Fetch values from all channel latches.
+            { S26_Sched2620_GetCounts( tran_hndl, j, (u8)chan, &s_ds_.counter_counts_[chan], &s_ds_.counter_timestamp_[chan] );  }// Fetch values from all channel latches.
             printf("\nEnc : %ld %ld %ld", s_ds_.counter_counts_[0], s_ds_.counter_counts_[1], s_ds_.counter_counts_[2]);
 
             break;
