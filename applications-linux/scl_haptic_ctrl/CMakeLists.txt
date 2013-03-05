@@ -118,13 +118,21 @@ target_link_libraries(scl_haptic_ctrl ${IMG_LIBRARY})
 
 
 ###############SPECIAL CODE TO FIND AND LINK DHD LIB DIR ######################
+if ( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
+       set(DHD_LIB_TYPE "lin-x86_64")
+elseif( "${CMAKE_SIZEOF_VOID_P}" EQUAL "4" )
+       set(DHD_LIB_TYPE "lin-i686")
+endif()
+
+# Note : The DHD library is not open source so we can't use
+# the debugger.
 find_library( CDHD_LIBRARY_DEBUG NAMES dhd
             PATHS   ${CHAI_INC_DIR}../DHD/lib/
-            PATH_SUFFIXES lin-x86_64 )
+            PATH_SUFFIXES ${DHD_LIB_TYPE} )
 
 find_library( CDHD_LIBRARY_RELEASE NAMES dhd
             PATHS   ${CHAI_INC_DIR}../DHD/lib/
-            PATH_SUFFIXES lin-x86_64 )
+            PATH_SUFFIXES ${DHD_LIB_TYPE} )
 
 SET( CDHD_LIBRARY debug     ${CDHD_LIBRARY_DEBUG}
               optimized ${CDHD_LIBRARY_RELEASE} )

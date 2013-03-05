@@ -267,8 +267,16 @@ target_link_libraries(chai3d imageformats)
 
 ###############SPECIAL CODE TO FIND AND LINK DHD's LIB (Coz not open source) ######################
 #NOTE : For a 32 bit compile (or other machine arch), please change lin-x86_64 to lin-i686 (or other arch setting)
+if ( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
+       set(DHD_LIB_TYPE "lin-x86_64")
+elseif( "${CMAKE_SIZEOF_VOID_P}" EQUAL "4" )
+       set(DHD_LIB_TYPE "lin-i686")
+endif()
+
+# Note : The DHD library is not open source so we can't use
+# the debugger.
 find_library( DHD_LIBRARY NAMES dhd
             PATHS   ${CHAI_BASE_DIR}/DHD/lib/
-            PATH_SUFFIXES lin-x86_64 )
+            PATH_SUFFIXES ${DHD_LIB_TYPE} )
 
 target_link_libraries(chai3d ${DHD_LIBRARY})
