@@ -50,6 +50,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/COpPointTask.hpp>
 #include <scl/control/task/tasks/data_structs/SOpPointTask.hpp>
 
+#include <scl/control/task/tasks/CTaskOpPosNoGravity.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPosNoGravity.hpp>
+
 #include <scl/control/task/tasks/CTaskGc.hpp>
 #include <scl/control/task/tasks/data_structs/STaskGc.hpp>
 
@@ -548,6 +551,14 @@ namespace scl_registry
       sutil::CDynamicType<std::string,scl::SOpPointTask> typeSOpPointTask(std::string("SOpPointTask"));
       flag = typeSOpPointTask.registerType();
       if(false == flag) {throw(std::runtime_error("SOpPointTask"));}
+
+      sutil::CDynamicType<std::string,scl::CTaskOpPosNoGravity> typeCTaskOpPosNoGravity(std::string("CTaskOpPosNoGravity"));
+      flag = typeCTaskOpPosNoGravity.registerType();
+      if(false == flag) {throw(std::runtime_error("CTaskOpPosNoGravity"));}
+
+      sutil::CDynamicType<std::string,scl::STaskOpPosNoGravity> typeSTaskOpPosNoGravity(std::string("STaskOpPosNoGravity"));
+      flag = typeSTaskOpPosNoGravity.registerType();
+      if(false == flag) {throw(std::runtime_error("STaskOpPosNoGravity"));}
 
       sutil::CDynamicType<std::string,scl::CTaskNullSpaceDamping> typeCTaskNullSpaceDamping(std::string("CTaskNullSpaceDamping"));
       flag = typeCTaskNullSpaceDamping.registerType();
