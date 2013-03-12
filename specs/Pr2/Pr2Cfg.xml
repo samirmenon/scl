@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+<!DOCTYPE LOTUS SYSTEM "scl.dtd">
 
 <!-- Units are in Std International System -->
-<lotus>
+<scl>
     <robot name="Pr2Bot"> 
         <spec>Pr2</spec>
         <file>../../specs/Pr2/Pr2.xml</file>
@@ -106,4 +106,4 @@
             <force_min>-3000</force_min>
         </task> -->
     </controller>
-</lotus>
+</scl>

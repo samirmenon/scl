@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
-<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+<!DOCTYPE LOTUS SYSTEM "scl.dtd">
 
-<lotus>
+<scl>
   <robot spec_name="RRRRRR">
     <!-- Contains all the links in a flat file (ie no link nesting). The robot is constructed by
          the parser by finding each link's parent and attaching the link as a child. -->
@@ -138,5 +138,5 @@
 		  </graphics>
 	  </link>
   </robot>
-</lotus>
+</scl>
 

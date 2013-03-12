@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+<!DOCTYPE LOTUS SYSTEM "scl.dtd">
 
 <!-- Units are in Std International System -->
-<lotus>
+<scl>
     <graphics name="StanbotStdView">
         <camera>
             <pos>4.0   0.0   2.0</pos>
@@ -168,4 +168,4 @@
         <force_max>10</force_max>
         <force_min>-10</force_min>
     </controller>
-</lotus>
+</scl>

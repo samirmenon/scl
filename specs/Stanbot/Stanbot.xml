@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
-<lotus>
+<!DOCTYPE LOTUS SYSTEM "scl.dtd">
+<scl>
 <robot spec_name="Stanbot">
   <link>
     <link_name>left-foot-dummay</link_name>
@@ -470,4 +470,4 @@
     </graphics>
   </link>
 </robot>
-</lotus>
+</scl>

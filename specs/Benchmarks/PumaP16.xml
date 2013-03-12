@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<lotus>
+<scl>
   <robot spec_name="PumaP16">
     <link>
       <link_name>base</link_name>
@@ -1277,4 +1277,4 @@
       <joint_type>rz</joint_type>
     </link>
   </robot>
-</lotus>
+</scl>

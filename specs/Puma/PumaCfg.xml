@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<!DOCTYPE LOTUS SYSTEM "lotus.dtd">
+<!DOCTYPE LOTUS SYSTEM "scl.dtd">
 
 <!-- Units are in Std International System -->
-<lotus>
+<scl>
     <robot name="PumaBot"> 
         <spec>Puma</spec>
         <file>../../specs/Puma/Puma.xml</file>
@@ -96,4 +96,4 @@
             <gc_set_pos_des>0.0 0.0</gc_set_pos_des>
         </task> -->
     </controller>
-</lotus>
+</scl>

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<lotus>
+<scl>
   <robot spec_name="PumaX8">
     <link>
       <link_name>base</link_name>
@@ -639,4 +639,4 @@
     </link>
 
   </robot>
-</lotus>
+</scl>
