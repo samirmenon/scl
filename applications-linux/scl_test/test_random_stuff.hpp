@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl_test
 {
   /**
-   * Tests the robot parser with the sample Lotus format
+   * Tests the robot parser with the sample Scl format
    *
    * Some interesting facts:
    *  1. function call = ~3e-9 sec (ie. ~3 clock cycles for a GHz proc)

@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <GL/freeglut.h>
 #endif
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 #include <scl/util/HelperFunctions.hpp>
 
@@ -117,7 +117,7 @@ namespace scl
         std::cout<<"Running scl task controller for input file: "<<tmp_infile;
 
         /******************************File Parsing************************************/
-        scl_parser::CLotusParser tmp_lparser;//Use the lotus tinyxml parser
+        scl_parser::CSclParser tmp_lparser;//Use the scl tinyxml parser
         flag = scl_registry::parseEverythingInFile(tmp_infile,
             &tmp_lparser,&robots_parsed_,
 #ifdef GRAPHICS_ON

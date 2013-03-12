@@ -77,9 +77,9 @@ namespace jspace {
   
   /**
      Similar to dump_tao_tree_info(), but attempts to spew it out in a
-     format that can be read back into a Lotus XML parser.
+     format that can be read back into a Scl XML parser.
   */
-  void dump_tao_tree_info_lotusxml(std::ostream & os,
+  void dump_tao_tree_info_sclxml(std::ostream & os,
 				   std::string const & robot_name,
 				   std::string const & root_link_name,
 				   STaoTreeInfo * tree) throw(std::runtime_error);

@@ -50,7 +50,7 @@ namespace scl_parser
   {
   public:
     /** Only support reading from Osim files. Use the file converter
-     * to convert them into Lotus files to also add controllers.
+     * to convert them into Scl files to also add controllers.
      * (applications/scl_file_converter)
      *
      * Tags not supported:

@@ -30,7 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Random system queries
 #include "test_random_stuff.hpp"
 //Robot parser base tests
-#include "test_lotus_parser.hpp"
+#include "test_scl_parser.hpp"
 //Matrix and lin-alg test
 #include "test_math.hpp"
 //Controller tests
@@ -79,11 +79,11 @@ int main(int argc, char** argv)
     ++id;
 
     if((tid==0)||(tid==id))
-    {//Test Lotus XML Parser
-      std::cout<<"\n\nTest #"<<id<<". Lotus XML Parser [Sys time, Sim time :"
+    {//Test Scl XML Parser
+      std::cout<<"\n\nTest #"<<id<<". Scl XML Parser [Sys time, Sim time :"
           <<sutil::CSystemClock::getSysTime()<<" "
           <<sutil::CSystemClock::getSimTime()<<"]";
-      scl_test::test_lotus_parser(id);
+      scl_test::test_scl_parser(id);
       scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
     }
     ++id;

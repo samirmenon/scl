@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
 #include <scl/control/task/CTaskController.hpp>
 #include <scl/control/task/tasks/COpPointTask.hpp>
@@ -194,7 +194,7 @@ namespace scl_test
       std::cout<<"Running scl task controller for input file: "<<arg_file;
 
       /******************************File Parsing************************************/
-      scl_parser::CLotusParser tmp_lparser;//Use the lotus tinyxml parser
+      scl_parser::CSclParser tmp_lparser;//Use the scl tinyxml parser
       flag = scl_registry::parseEverythingInFile(arg_file,
           &tmp_lparser,&robots_parsed,&graphics_parsed);
       if((false == flag) || (robots_parsed.size()<=0)

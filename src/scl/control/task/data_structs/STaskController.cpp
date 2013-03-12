@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  sources in scl. Similar to a very fast database.
  *
  *  The data structure is universally available for
- *  any subcomponent of Lotus to use.
+ *  any subcomponent of Scl to use.
  */
 
 #include "STaskController.hpp"

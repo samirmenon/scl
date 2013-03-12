@@ -79,7 +79,7 @@ namespace scl_parser
      *
      * If you want to implement a new parser for a new filetype, please see how you
      * should populate the SRobotParsedData data structure from an existing parser.
-     * Eg. The Lotus parser implements the full API
+     * Eg. The Scl parser implements the full API
 		 */
     virtual bool readRobotFromFile(const std::string& arg_file,
         /** The spec which will be instantiated in the object */

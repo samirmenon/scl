@@ -44,7 +44,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/parser/saiparser/CSaiParser.hpp>
 #include <scl/parser/osimparser/COsimParser.hpp>
 #include <scl/parser/osimparser/COsimParserForOldFiles.hpp>
@@ -93,7 +93,7 @@ int main(int argc, char** argv)
 
       if(ftype == ".xml") //SAI Xml format
       {
-        std::cout<<"\nWARNING : SAI support is only for reading ONE robot per file. Will convert the first robot to lotus xml.";
+        std::cout<<"\nWARNING : SAI support is only for reading ONE robot per file. Will convert the first robot to scl xml.";
         std::cout<<"\nWARNING : SAI support does NOT permit using commas in the xml (,). ONLY use spaces.";
         std::cout<<"\nWARNING : SAI support REQUIRES unique link and joint names for all links.";
         scl_parser::CSaiParser tmp_sai_parser;
@@ -126,10 +126,10 @@ int main(int argc, char** argv)
       else
       { throw(std::runtime_error("Unrecognized input file type."));  }
 
-      //4. Write the file into a lotus output file
-      scl_parser::CLotusParser tmp_lotus_parser;
-      flag = tmp_lotus_parser.saveRobotToFile(tmp_robot,tmp_outfile);
-      if(false == flag) { throw(std::runtime_error("Could not write to Lotus xml file."));  }
+      //4. Write the file into a scl output file
+      scl_parser::CSclParser tmp_scl_parser;
+      flag = tmp_scl_parser.saveRobotToFile(tmp_robot,tmp_outfile);
+      if(false == flag) { throw(std::runtime_error("Could not write to Scl xml file."));  }
 
       /****************************Deallocate Memory And Exit*****************************/
       std::cout<<"\nSCL File Converter Executed Successfully";

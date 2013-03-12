@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file test_lotus_parser.hpp
+/* \file test_scl_parser.hpp
  *
  *  Copyright (C) 2010
  *
@@ -35,11 +35,11 @@ namespace scl_test
 {
 
 /**
- * Tests the robot parser with the sample Lotus format
+ * Tests the robot parser with the sample Scl format
  *
- *   File  = "specs/LotusBot/LotusBot.xml"
+ *   File  = "specs/SclBot/SclBot.xml"
  */
-void test_lotus_parser(int id);
+void test_scl_parser(int id);
 
 /**
  * Tests the tao representation creator:

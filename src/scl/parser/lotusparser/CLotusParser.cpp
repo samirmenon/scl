@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CLotusParser.cpp
+/* \file CSclParser.cpp
  *
  *  Created on: May, 2010
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 //The Class definition.
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 
 //The required data structures
 #include <scl/DataTypes.hpp>
@@ -38,9 +38,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotLink.hpp>
 #include <scl/util/HelperFunctions.hpp>
 
-//The tinyxml parser implementation for lotus xml files
+//The tinyxml parser implementation for scl xml files
 #include <scl/parser/scl_tinyxml/scl_tinyxml.h>
-#include <scl/parser/lotusparser/tixml_parser/CLotusTiXmlParser.hpp>
+#include <scl/parser/sclparser/tixml_parser/CSclTiXmlParser.hpp>
 
 //The Standard cpp headers
 #include <sstream>
@@ -53,7 +53,7 @@ using namespace scl;
 
 namespace scl_parser {
 
-bool CLotusParser::listRobotsInFile(const std::string& arg_file,
+bool CSclParser::listRobotsInFile(const std::string& arg_file,
     std::vector<std::string>& arg_robot_names)
 {
   bool flag;
@@ -72,7 +72,7 @@ bool CLotusParser::listRobotsInFile(const std::string& arg_file,
 
     //Get handles to the tinyxml loaded ds
     tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
-    tiHndl_world = tiHndl_file_handle.FirstChildElement( "lotus" );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
     //Read in the robots.
     tiElem_robot = tiHndl_world.FirstChildElement( "robot" ).ToElement();
@@ -97,14 +97,14 @@ bool CLotusParser::listRobotsInFile(const std::string& arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCLotusParser::listRobotsInFile() :"<<e.what();
+    std::cerr<<"\nCSclParser::listRobotsInFile() :"<<e.what();
     arg_robot_names.clear();
     return false;
   }
   return true; //Success.
 }
 
-bool CLotusParser::readRobotFromFile(const std::string& arg_file,
+bool CSclParser::readRobotFromFile(const std::string& arg_file,
     const std::string& arg_robot_name,
     scl::SRobotParsedData& arg_robot)
 {
@@ -125,7 +125,7 @@ bool CLotusParser::readRobotFromFile(const std::string& arg_file,
 
     //Get handles to the tinyxml loaded ds
     tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
-    tiHndl_world = tiHndl_file_handle.FirstChildElement( "lotus" );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
     //Read in the links.
     tiElem_robot = tiHndl_world.FirstChildElement( "robot" ).ToElement();
@@ -204,7 +204,7 @@ bool CLotusParser::readRobotFromFile(const std::string& arg_file,
       { throw(std::runtime_error("Couldn't find a root link with the robot specification"));  }
 
       TiXmlHandle root_link_handle(tmp_ele); //Back to handles
-      flag = CLotusTiXmlParser::readLink(root_link_handle, *tmp_link_ds, true);
+      flag = CSclTiXmlParser::readLink(root_link_handle, *tmp_link_ds, true);
 
       SRobotLink* tmp_root = arg_robot.robot_br_rep_.create(tmp_link_ds->name_,*tmp_link_ds,true); //Add the root link
       if(S_NULL == tmp_root)
@@ -256,14 +256,14 @@ bool CLotusParser::readRobotFromFile(const std::string& arg_file,
   catch(std::exception& e)
   {
     if(S_NULL!=tmp_link_ds) { delete tmp_link_ds; } //Clear out memory
-    std::cerr<<"\nCLotusParser::readRobotFromFile("<<arg_file<<", "
+    std::cerr<<"\nCSclParser::readRobotFromFile("<<arg_file<<", "
         <<arg_robot_name<<") : "<<e.what();
   }
   return false;
 }
 
 
-bool CLotusParser::readRobotSpecFromFile(const std::string& arg_spec_file,
+bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
     const std::string& arg_robot_spec_name,
     scl::SRobotParsedData& arg_robot)
 {
@@ -284,7 +284,7 @@ bool CLotusParser::readRobotSpecFromFile(const std::string& arg_spec_file,
 
     //Get handles to the tinyxml loaded ds
     tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
-    tiHndl_world = tiHndl_file_handle.FirstChildElement( "lotus" );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
     //Read in the links.
     tiElem_robot = tiHndl_world.FirstChildElement( "robot" ).ToElement();
@@ -337,7 +337,7 @@ bool CLotusParser::readRobotSpecFromFile(const std::string& arg_spec_file,
         if(S_NULL == tmp_link_ds) { throw(std::runtime_error("Couldn't allocate a root link")); }
         tmp_link_ds->init();
         tmp_link_ds->link_id_ = id; id++;
-        flag = CLotusTiXmlParser::readLink(_child_link_handle, *tmp_link_ds, false);
+        flag = CSclTiXmlParser::readLink(_child_link_handle, *tmp_link_ds, false);
         if(false == flag)
         { throw(std::runtime_error("Couldn't read a link")); }
         //Add the root node to the robdef
@@ -359,13 +359,13 @@ bool CLotusParser::readRobotSpecFromFile(const std::string& arg_spec_file,
   catch(std::exception& e)
   {
     if(S_NULL!=tmp_link_ds) { delete tmp_link_ds; } //Clear out memory
-    std::cerr<<"\nCLotusParser::readRobotSpecFromFile("
+    std::cerr<<"\nCSclParser::readRobotSpecFromFile("
         <<arg_spec_file<<"): "<<e.what();
   }
   return false;
 }
 
-bool CLotusParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
+bool CSclParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
     const std::string &arg_file)
 {
   FILE* fp=S_NULL;
@@ -383,8 +383,8 @@ bool CLotusParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
     else{ std::cout<<"\nWriting robot <"<<arg_robot.name_<<"> to file : "<<arg_file;  }
 
     //Else save xml info.
-    fprintf(fp, "<?xml version=\"1.0\"?>\n<!DOCTYPE LOTUS SYSTEM \"lotus.dtd\">" );
-    fprintf(fp, "\n<lotus>");
+    fprintf(fp, "<?xml version=\"1.0\"?>\n<!DOCTYPE LOTUS SYSTEM \"scl.dtd\">" );
+    fprintf(fp, "\n<scl>");
     fprintf(fp, "\n<robot spec_name=\"%s\">",arg_robot.name_.c_str());
 
     /**
@@ -525,7 +525,7 @@ bool CLotusParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
     }
     //Finish
     fprintf(fp, "\n</robot>");
-    fprintf(fp, "\n</lotus>");
+    fprintf(fp, "\n</scl>");
   }
   catch(std::exception& e)
   {
@@ -538,7 +538,7 @@ bool CLotusParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
 }
 
 
-bool CLotusParser::readGraphicsFromFile(const std::string &arg_file,
+bool CSclParser::readGraphicsFromFile(const std::string &arg_file,
     const std::string &arg_graphics_name, scl::SGraphicsParsedData& arg_graphics)
 {
   bool flag;
@@ -557,7 +557,7 @@ bool CLotusParser::readGraphicsFromFile(const std::string &arg_file,
 
     //Get handles to the tinyxml loaded ds
     tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
-    tiHndl_world = tiHndl_file_handle.FirstChildElement( "lotus" );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
     //2. Read in the links.
     tiElem_graphics = tiHndl_world.FirstChildElement( "graphics" ).ToElement();
@@ -674,7 +674,7 @@ bool CLotusParser::readGraphicsFromFile(const std::string &arg_file,
       }
       else
       {
-        std::cout<<"\nCLotusParser::readGraphicsFromFile() : No background color. Setting to black {0.0, 0.0, 0.0}";
+        std::cout<<"\nCSclParser::readGraphicsFromFile() : No background color. Setting to black {0.0, 0.0, 0.0}";
         arg_graphics.background_color_[0] = 0.0;
         arg_graphics.background_color_[1] = 0.0;
         arg_graphics.background_color_[2] = 0.0;
@@ -690,11 +690,11 @@ bool CLotusParser::readGraphicsFromFile(const std::string &arg_file,
     return true;
   }
   catch(std::exception& e)
-  { std::cerr<<"\nCLotusParser::readGraphicsFromFile(): "<<e.what();  }
+  { std::cerr<<"\nCSclParser::readGraphicsFromFile(): "<<e.what();  }
   return false;
 }
 
-bool CLotusParser::listGraphicsInFile(const std::string& arg_file,
+bool CSclParser::listGraphicsInFile(const std::string& arg_file,
     std::vector<std::string>& arg_graphics_names)
 {
   bool flag;
@@ -713,7 +713,7 @@ bool CLotusParser::listGraphicsInFile(const std::string& arg_file,
 
     //Get handles to the tinyxml loaded ds
     tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
-    tiHndl_world = tiHndl_file_handle.FirstChildElement( "lotus" );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
     //2. Read in the robots.
     tiElem_robot = tiHndl_world.FirstChildElement( "graphics" ).ToElement();
@@ -746,14 +746,14 @@ bool CLotusParser::listGraphicsInFile(const std::string& arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCLotusParser::listRobotsInFile() :"<<e.what();
+    std::cerr<<"\nCSclParser::listRobotsInFile() :"<<e.what();
     arg_graphics_names.clear();
     return false;
   }
   return true; //Success.
 }
 
-bool CLotusParser::listControllersInFile(const std::string &arg_file,
+bool CSclParser::listControllersInFile(const std::string &arg_file,
       std::vector<std::pair<std::string,std::string> > &arg_ctrl_name_and_type)
 {
   bool flag;
@@ -772,7 +772,7 @@ bool CLotusParser::listControllersInFile(const std::string &arg_file,
 
     //Get handles to the tinyxml loaded ds
     tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
-    tiHndl_world = tiHndl_file_handle.FirstChildElement( "lotus" );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
     //Read in the robots.
     tiElem_ctrl = tiHndl_world.FirstChildElement( "controller" ).ToElement();
@@ -799,13 +799,13 @@ bool CLotusParser::listControllersInFile(const std::string &arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCLotusParser::listControllersInFile() :"<<e.what();
+    std::cerr<<"\nCSclParser::listControllersInFile() :"<<e.what();
     return false;
   }
   return true; //Success.
 }
 
-bool CLotusParser::readGcControllerFromFile(const std::string &arg_file,
+bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
       std::string &arg_must_use_robot,
       scl::SGcController& arg_ctrl)
@@ -826,7 +826,7 @@ bool CLotusParser::readGcControllerFromFile(const std::string &arg_file,
 
     //Get handles to the tinyxml loaded ds
     tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
-    tiHndl_world = tiHndl_file_handle.FirstChildElement( "lotus" );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
     //2. Read in the controller.
     tiElem_gc_ctrl = tiHndl_world.FirstChildElement( "controller" ).ToElement();
@@ -980,13 +980,13 @@ bool CLotusParser::readGcControllerFromFile(const std::string &arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCLotusParser::readGcControllerFromFile() :"<<e.what();
+    std::cerr<<"\nCSclParser::readGcControllerFromFile() :"<<e.what();
     return false;
   }
   return true; //Success.
 }
 
-bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
+bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
       std::string &arg_must_use_robot,
       scl::STaskController& arg_ctrl,
@@ -1009,7 +1009,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
 
     //Get handles to the tinyxml loaded ds
     tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
-    tiHndl_world = tiHndl_file_handle.FirstChildElement( "lotus" );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
     //2. Read in the links.
     tiElem_tctrl_ctrl = tiHndl_world.FirstChildElement( "controller" ).ToElement();
@@ -1247,7 +1247,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
           nonstd_param.data_[1] = tiElem_task_options->FirstChild()->Value();
 
 #ifdef DEBUG
-          std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Read a non standard param: "<<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
+          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Read a non standard param: "<<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
 #endif
 
           //Store the nonstandard param
@@ -1262,7 +1262,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
         arg_taskvec.push_back(tmp_task);
 
 #ifdef DEBUG
-          std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Parsed task: "<<tmp_task.name_<<". Type: "<<tmp_task.type_task_;
+          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed task: "<<tmp_task.name_<<". Type: "<<tmp_task.type_task_;
 #endif
 
       }//End of loop over tasks in the xml file.
@@ -1331,7 +1331,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
           nonstd_param.data_[1] = tiElem_task_options->FirstChild()->Value();
 
 #ifdef DEBUG
-          std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Read a non standard param: "
+          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Read a non standard param: "
               <<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
 #endif
           //Store the nonstandard param
@@ -1341,7 +1341,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
         arg_task_non_ctrl_vec.push_back(tmp_task);
 
 #ifdef DEBUG
-        std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Parsed non-control task: "<<tmp_task.name_<<". Type: "<<tmp_task.type_task_;
+        std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed non-control task: "<<tmp_task.name_<<". Type: "<<tmp_task.type_task_;
 #endif
 
       }//End of loop over tasks in the xml file.
@@ -1352,7 +1352,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
 
 
 #ifdef DEBUG
-          std::cout<<"\nCLotusParser::readTaskControllerFromFile() : Parsed controller: "<<arg_ctrl_name<<". Type: "<<arg_ctrl.type_ctrl_ds_;
+          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed controller: "<<arg_ctrl_name<<". Type: "<<arg_ctrl.type_ctrl_ds_;
 #endif
 
       //Successfully parsed atleast one controller from the file
@@ -1365,7 +1365,7 @@ bool CLotusParser::readTaskControllerFromFile(const std::string &arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCLotusParser::readTaskControllerFromFile() : "<<e.what();
+    std::cerr<<"\nCSclParser::readTaskControllerFromFile() : "<<e.what();
     return false;
   }
   return true; //Success.

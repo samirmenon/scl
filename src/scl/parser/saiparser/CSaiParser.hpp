@@ -56,7 +56,7 @@ public:
 
   /**
    * Only support reading from SAI files. Use the file converter
-   * to convert them into Lotus files. (applications/scl_file_converter)
+   * to convert them into Scl files. (applications/scl_file_converter)
    *
    * Since the SAI format only has one robot in a file, the "arg_robot_name"
    * argument is not used.

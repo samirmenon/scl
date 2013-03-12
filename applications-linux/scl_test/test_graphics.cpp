@@ -32,7 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/graphics/chai/CChaiGraphics.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/util/DatabaseUtils.hpp>
@@ -81,7 +81,7 @@ namespace scl_test
       //1. Create robot from a file specification (And register it with the db)
       std::vector<std::string> robot_names;
       scl::SRobotParsedData* rob_ds;
-      scl_parser::CLotusParser tmp_lparser;
+      scl_parser::CSclParser tmp_lparser;
       flag = tmp_lparser.listRobotsInFile(file_name,robot_names);
       if(false == flag)
       { throw(std::runtime_error("Could not read robot names from the file"));  }

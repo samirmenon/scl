@@ -98,8 +98,8 @@ SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoCNode.cpp
             ${SCL_INC_DIR}/dynamics/tao/CTaoRepCreator.cpp
    )
 
-SET(LOTUS_PARSER_SRC ${SCL_INC_DIR}/parser/lotusparser/CLotusParser.cpp
-                     ${SCL_INC_DIR}/parser/lotusparser/tixml_parser/CLotusTiXmlParser.cpp
+SET(LOTUS_PARSER_SRC ${SCL_INC_DIR}/parser/sclparser/CSclParser.cpp
+                     ${SCL_INC_DIR}/parser/sclparser/tixml_parser/CSclTiXmlParser.cpp
    )
 
 SET(SAI_PARSER_SRC ${SCL_INC_DIR}/parser/saiparser/CSaiParser.cpp)

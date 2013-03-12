@@ -70,7 +70,7 @@ bool CSaiParser::readRobotFromFile(const std::string& arg_file,
 
     //Read in the root link. (baseNode)
     tmp_link_ds = arg_robot.robot_br_rep_.create(root_link_name_, true); //Add the root link
-    tmp_link_ds->init(); //Default params. Change it after converting to lotus.
+    tmp_link_ds->init(); //Default params. Change it after converting to scl.
     tmp_link_ds->is_root_ = true;
     tmp_link_ds->name_ = root_link_name_;
     tmp_link_ds->link_id_ = -1;
@@ -264,7 +264,7 @@ bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
           tmp_link_ds->inertia_(0,2) = 0.0;
           tmp_link_ds->inertia_(1,2) = 0.0;
 #ifdef DEBUG
-          std::cout<<"\nCLotusTiXmlParser::readLink() : WARNING : Only three inertia values specified at link : "
+          std::cout<<"\nCSclTiXmlParser::readLink() : WARNING : Only three inertia values specified at link : "
               <<tmp_link_ds->name_<<". \nConsider specifying all 6 : {Ixx, Iyy, Izz, Ixy, Ixz, Iyz}";
 #endif
         }

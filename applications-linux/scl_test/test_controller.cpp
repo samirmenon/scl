@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/task/CServo.hpp>
@@ -295,7 +295,7 @@ namespace scl_test
       tmp_infile = scl::CDatabase::getData()->data_.cwd_+ file_name;
       std::cout<<"\nTest Result ("<<r_id++<<")  Opening file : "<<tmp_infile;
 
-      scl_parser::CLotusParser tmp_lparser;
+      scl_parser::CSclParser tmp_lparser;
       std::vector<std::string> rob_names;
       flag = tmp_lparser.listRobotsInFile(tmp_infile,rob_names);
       if(false == flag)

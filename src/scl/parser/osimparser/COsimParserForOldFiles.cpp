@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/data_structs/SRobotLink.hpp>
 
-//The tinyxml parser implementation for lotus xml files
+//The tinyxml parser implementation for scl xml files
 #include <scl/parser/scl_tinyxml/scl_tinyxml.h>
 
 using namespace scl_tinyxml; //Tinyxml parser implementation is in a separate namespace

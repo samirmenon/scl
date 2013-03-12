@@ -252,13 +252,13 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
   }
   
   
-  void dump_tao_tree_info_lotusxml(std::ostream & os,
+  void dump_tao_tree_info_sclxml(std::ostream & os,
 				   std::string const & robot_name,
 				   std::string const & root_link_name,
 				   STaoTreeInfo * tree) throw(std::runtime_error)
   {
     os << "<?xml version=\"1.0\" ?>\n"
-       << "<lotus_world>\n"
+       << "<scl_world>\n"
        << "  <globals>\n"
        << "    <gravity> 0.000 0.000 -9.81 </gravity>\n"
        << "  </globals>\n"
@@ -269,7 +269,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
     
     deFrame * home(tree->root->frameHome());
     if ( ! home) {
-      throw std::runtime_error("dump_tao_tree_info_lotusxml(): no root home frame");
+      throw std::runtime_error("dump_tao_tree_info_sclxml(): no root home frame");
     }
     deVector3 & pos(home->translation());
     deQuaternion & rot(home->rotation());
@@ -288,7 +288,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
 	 inode != tree->info.end(); ++inode) {
       home = inode->node->frameHome();
       if ( ! home) {
-	throw std::runtime_error("dump_tao_tree_info_lotusxml(): no home frame in link `" + inode->link_name + "'");
+	throw std::runtime_error("dump_tao_tree_info_sclxml(): no home frame in link `" + inode->link_name + "'");
       }
       pos = home->translation();
       rot = home->rotation();
@@ -296,7 +296,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
       deMatrix3 const * inertia(inode->node->inertia());
       taoJoint const * joint(inode->node->getJointList());
       if ( ! joint) {
-	throw std::runtime_error("dump_tao_tree_info_lotusxml(): no joint in link `" + inode->link_name + "'");
+	throw std::runtime_error("dump_tao_tree_info_sclxml(): no joint in link `" + inode->link_name + "'");
       }
       std::string jtype;
       double mixx(0);
@@ -312,7 +312,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
 	mizz = (pow(com[0], 2) + pow(com[1], 2)) * *(inode->node->mass());
       }
       else {
-	throw std::runtime_error("dump_tao_tree_info_lotusxml(): invalid joint type in link `"
+	throw std::runtime_error("dump_tao_tree_info_sclxml(): invalid joint type in link `"
 				 + inode->link_name + "'");
       }
       std::string jaxis;
@@ -327,7 +327,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
 	jaxis = "2";//XXXX really soon: "z";
       }
       else {
-	throw std::runtime_error("dump_tao_tree_info_lotusxml(): invalid joint axis in link `"
+	throw std::runtime_error("dump_tao_tree_info_sclxml(): invalid joint axis in link `"
 				 + inode->link_name + "'");
       }
       
@@ -346,7 +346,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
 	    }
 	  }
 	  if (parent_link_name.empty()) {
-	    throw std::runtime_error("dump_tao_tree_info_lotusxml(): invalid parent for link `"
+	    throw std::runtime_error("dump_tao_tree_info_sclxml(): invalid parent for link `"
 				     + inode->link_name + "'");
 	  }
 	}
@@ -376,7 +376,7 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
     // done
     
     os << "  </robot>\n"
-       << "</lotus_world>";
+       << "</scl_world>";
   }
   
 }

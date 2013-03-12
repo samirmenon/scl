@@ -50,7 +50,7 @@ SET(TEST_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_test/)
 
 SET(ALL_SRC ${TEST_BASE_DIR}scl_test.cpp 
             ${TEST_BASE_DIR}test_random_stuff.cpp 
-            ${TEST_BASE_DIR}test_lotus_parser.cpp 
+            ${TEST_BASE_DIR}test_scl_parser.cpp 
             ${TEST_BASE_DIR}test_math.cpp 
             ${TEST_BASE_DIR}test_controller.cpp 
             ${TEST_BASE_DIR}test_dynamics.cpp 

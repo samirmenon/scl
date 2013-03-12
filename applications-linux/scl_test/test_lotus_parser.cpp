@@ -20,14 +20,14 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file test_lotus_parser.cpp
+/* \file test_scl_parser.cpp
  *
  *  Copyright (C) 2010
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "test_lotus_parser.hpp"
+#include "test_scl_parser.hpp"
 
 #include <string>
 #include <vector>
@@ -43,7 +43,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 
 #include <scl/Singletons.hpp>
 
@@ -51,18 +51,18 @@ namespace scl_test
 {
 
 /**
- * Tests the robot parser with the sample Lotus format
+ * Tests the robot parser with the sample Scl format
  *
- *   File  = "specs/LotusBot/LotusBot.xml"
+ *   File  = "specs/SclBot/SclBot.xml"
  */
-void test_lotus_parser(int id)
+void test_scl_parser(int id)
 {
   bool flag=true;
   int r_id=0;
   try
   {
     //0. Create a parser and objects to be filled in from a file.
-    scl_parser::CLotusParser tmp_parser;
+    scl_parser::CSclParser tmp_parser;
 
     scl::SRobotParsedData tmp_robot;
     scl::SGraphicsParsedData tmp_graphics;

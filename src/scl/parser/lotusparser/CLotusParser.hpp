@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CLotusParser.hpp
+/* \file CSclParser.hpp
  *
  *  Created on: May, 2010
  *
@@ -46,10 +46,10 @@ namespace scl_parser {
  *
  * Please see the CParserBase API for more details.
  */
-class CLotusParser: public CParserBase {
+class CSclParser: public CParserBase {
 public:
-  CLotusParser(){}
-  virtual ~CLotusParser(){}
+  CSclParser(){}
+  virtual ~CSclParser(){}
 
   virtual bool listRobotsInFile(const std::string& arg_file,
       std::vector<std::string>& arg_robot_names);

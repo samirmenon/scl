@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/task/CServo.hpp>
 #include <scl/control/task/CTaskController.hpp>

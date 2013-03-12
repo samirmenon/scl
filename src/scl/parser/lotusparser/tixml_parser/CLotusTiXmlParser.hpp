@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CLotusTiXmlParser.hpp
+/* \file CSclTiXmlParser.hpp
  *
  *  Created on: May, 2010
  *
@@ -46,18 +46,18 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl_parser {
 
 /**
- * Provides a set of helper functions to parse a lotus
+ * Provides a set of helper functions to parse a scl
  * xml file using tinyXML.
  *
  * Stores the parsed information in passed data structures
  */
-class CLotusTiXmlParser
+class CSclTiXmlParser
 {
 private:
 
 public:
-  CLotusTiXmlParser() {}
-  ~CLotusTiXmlParser() {}
+  CSclTiXmlParser() {}
+  ~CSclTiXmlParser() {}
 
   /**
    * Reads single links

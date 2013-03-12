@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CLotusTiXmlParser.cpp
+/* \file CSclTiXmlParser.cpp
  *
  *  Created on: May, 2010
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "CLotusTiXmlParser.hpp"
+#include "CSclTiXmlParser.hpp"
 
 #include <sstream>
 #include <iostream>
@@ -44,7 +44,7 @@ using namespace scl_tinyxml;
 
 namespace scl_parser {
 
-  bool CLotusTiXmlParser::readLink(
+  bool CSclTiXmlParser::readLink(
       const TiXmlHandle & arg_link_txml,
       scl::SRobotLink& arg_link_ds,
       bool arg_is_root)
@@ -136,7 +136,7 @@ namespace scl_parser {
             arg_link_ds.inertia_(0,2) = 0.0;
             arg_link_ds.inertia_(1,2) = 0.0;
 #ifdef DEBUG
-            std::cout<<"\nCLotusTiXmlParser::readLink() : WARNING : Only three inertia values specified at link : "
+            std::cout<<"\nCSclTiXmlParser::readLink() : WARNING : Only three inertia values specified at link : "
                 <<arg_link_ds.name_<<". \nConsider specifying all 6 : {Ixx, Iyy, Izz, Ixy, Ixz, Iyz}";
 #endif
           }
@@ -234,7 +234,7 @@ namespace scl_parser {
         //Obj file paths are always relative to the specs directory.
         if("" == scl::CDatabase::getData()->dir_specs_)
         {
-          std::cout<<"\nCLotusTiXmlParser::readLink() : WARNING Specs directory not set in the database. Can't read link's obj file.";
+          std::cout<<"\nCSclTiXmlParser::readLink() : WARNING Specs directory not set in the database. Can't read link's obj file.";
           continue;
         }
 
@@ -258,7 +258,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCLotusTiXmlParser::readLink() : Warning : Position in parent not found for obj file : "<<tgr.file_name_;
+          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not found for obj file : "<<tgr.file_name_;
 #endif
         }
 
@@ -278,7 +278,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCLotusTiXmlParser::readLink() : Warning : Orientation in parent not found for obj file : "<<tgr.file_name_;
+          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Orientation in parent not found for obj file : "<<tgr.file_name_;
 #endif
         }
 
@@ -296,7 +296,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCLotusTiXmlParser::readLink()  : Warning : Graphics scaling not found for obj file : "<<tgr.file_name_;
+          std::cerr<< "\nCSclTiXmlParser::readLink()  : Warning : Graphics scaling not found for obj file : "<<tgr.file_name_;
 #endif
         }
 
@@ -308,7 +308,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCLotusTiXmlParser::readLink() : Warning : Collision type not found for obj file : "<<tgr.file_name_;
+          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Collision type not found for obj file : "<<tgr.file_name_;
 #endif
         }
 
@@ -325,13 +325,13 @@ namespace scl_parser {
     }
     catch(std::exception& e)
     {
-      std::cout<<"\nCLotusTiXmlParser::readLink() : "<<e.what();
+      std::cout<<"\nCSclTiXmlParser::readLink() : "<<e.what();
       return false;
     }
     return true;
   }
 
-  bool CLotusTiXmlParser::readGraphics(
+  bool CSclTiXmlParser::readGraphics(
         const TiXmlHandle &arg_graphics_data_txml,
         scl::SGraphicsParsedData& arg_graphics_ds)
     {
@@ -400,7 +400,7 @@ namespace scl_parser {
         return true;
       }
       catch(std::exception& e)
-      { std::cout<<"\nCLotusTiXmlParser::readGraphicsData() : "<< e.what(); }
+      { std::cout<<"\nCSclTiXmlParser::readGraphicsData() : "<< e.what(); }
       return false;
     }
 }
