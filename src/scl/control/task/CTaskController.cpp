@@ -342,16 +342,11 @@ namespace scl
       if(S_NULL == tmp)
       { throw(std::runtime_error("Could not find task to activate."));  }
 
-      STaskBase* t_ds = (*tmp)->getTaskData();
-      if(S_NULL == t_ds)
-      { throw(std::runtime_error("Task data structure is NULL."));  }
+      bool flag = (*tmp)->setActivated(true);
 
-      if(!t_ds->has_been_init_)
-      { throw(std::runtime_error("Task data structure not intialized. Can't activate."));  }
-
-      t_ds->has_been_activated_ = true;
-
-      return true;
+      if(flag) { return flag; }
+      else
+      { throw(std::runtime_error("Could not activate task."));  }
     }
     catch(std::exception& e)
     { std::cout<<"\nCTaskController::activateTask() : Failed. "<<e.what();  }
@@ -365,21 +360,16 @@ namespace scl
     {
       CTaskBase** tmp = tasks_.at(arg_task_name);
       if(S_NULL == tmp)
-      { throw(std::runtime_error("Could not find task to deactivate."));  }
+      { throw(std::runtime_error("Could not find task to activate."));  }
 
-      STaskBase* t_ds = (*tmp)->getTaskData();
-      if(S_NULL == t_ds)
-      { throw(std::runtime_error("Task data structure is NULL."));  }
+      bool flag = (*tmp)->setActivated(false);
 
-      if(!t_ds->has_been_init_)
-      { throw(std::runtime_error("Task data structure not intialized. Can't deactivate."));  }
-
-      t_ds->has_been_activated_ = false;
-
-      return true;
+      if(flag) { return flag; }
+      else
+      { throw(std::runtime_error("Could not deactivate task."));  }
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::deactivateTask() : Failed. "<<e.what();  }
+    { std::cout<<"\nCTaskController::activateTask() : Failed. "<<e.what();  }
     return false;
   }
 
@@ -530,7 +520,7 @@ namespace scl
 #ifdef DEBUG
         assert(task->getTaskData()->has_been_init_); //Must have been initialized by now
 #endif
-        if(task->getTaskData()->has_been_activated_)
+        if(task->hasBeenActivated())
         { flag = flag && task->computeServo(&(data_->io_data_->sensors_));  }
       }
 
@@ -566,7 +556,7 @@ namespace scl
 #ifdef DEBUG
         assert(task->getTaskData()->has_been_init_); //Must have been initialized by now
 #endif
-        if(task->getTaskData()->has_been_activated_)
+        if(task->hasBeenActivated())
         { flag = flag && task->computeModel();  }
       }
     }

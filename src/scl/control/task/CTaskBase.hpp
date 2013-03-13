@@ -40,6 +40,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/dynamics/CDynamicsBase.hpp>
 
+#ifdef DEBUG
+#include <cassert>
+#endif
+
 namespace scl {
 
 /**
@@ -58,7 +62,9 @@ public:
   virtual bool computeModel()=0;
 
   /** Constructor does nothing */
-  CTaskBase(): has_been_init_(false), dynamics_(S_NULL) {}
+  CTaskBase():
+    has_been_init_(false),
+    dynamics_(S_NULL) {}
 
   /** Destructor does nothing */
   virtual ~CTaskBase(){}
@@ -79,9 +85,43 @@ public:
   /** Resets the task by removing its data. */
   virtual void reset()=0;
 
+  /** Initialized = All static parameters are set and data structures
+   * are up to date. Ready to contribute to a controller. */
   virtual sBool hasBeenInit() { return has_been_init_;  }
 
+  /** Activated = All dynamic parameters and data structures are
+   * up to date and task is actively contributing to a controller.
+   *
+   * Set to true/false during runtime to activate/deactivate task.
+   *
+   * Returns : success/failure */
+  virtual sBool setActivated(sBool arg_activate)
+  {
+    STaskBase* t_ds = getTaskData();
+    if(S_NULL == t_ds) { return false; }        //Can't access task data struct.
+    if(!t_ds->has_been_init_) { return false; } //Task data struct not initialized
+    t_ds->has_been_activated_=arg_activate;
+    return true;
+  }
+
+  /** Activated = All dynamic parameters and data structures are
+   * up to date and task is actively contributing to a controller. */
+  virtual sBool hasBeenActivated()
+  {
+    STaskBase* t_ds = getTaskData();
+    if(S_NULL == t_ds) { return false; } //Can't access task data.
+#ifdef DEBUG!
+    if(!t_ds->has_been_init_)//If it is not initailized, it shouldn't be activated.
+    { assert(!t_ds->has_been_activated_);  }
+#endif
+    return t_ds->has_been_activated_;
+  }
+
 protected:
+  /** Initialized = All static parameters are set and data structures
+   * are up to date.
+   *
+   * Set to true in init() */
   sBool has_been_init_;
 
   /** A Dynamics model required to compute the task's dynamics */
