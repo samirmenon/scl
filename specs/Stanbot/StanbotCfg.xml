@@ -73,7 +73,7 @@
         </task>
 
         <task name="com">
-            <type>ComPosTask</type>
+            <type>TaskComPos</type>
             <priority>1</priority>
             <task_dof>3</task_dof>
             <kp>100</kp>
