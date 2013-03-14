@@ -63,10 +63,10 @@ namespace sutil
     ostr<<"\n Name: "<<arg_data.name_;
     ostr<<"("<<arg_data.getType()<<")";
     ostr<<"\n  Dof: "<<arg_data.dof_;
-    ostr<<"\n  Jlim_max : "<<arg_data.joint_limit_max_.transpose();
-    ostr<<"\n  Jlim_min : "<<arg_data.joint_limit_min_.transpose();
-    ostr<<"\n Force_max : "<<arg_data.max_actuator_forces_.transpose();
-    ostr<<"\n Force_min : "<<arg_data.min_actuator_forces_.transpose();
+    ostr<<"\n  Jlim_max : "<<arg_data.gc_pos_limit_max_.transpose();
+    ostr<<"\n  Jlim_min : "<<arg_data.gc_pos_limit_min_.transpose();
+    ostr<<"\n Force_max : "<<arg_data.actuator_forces_max_.transpose();
+    ostr<<"\n Force_min : "<<arg_data.actuator_forces_min_.transpose();
     ostr<<std::endl;
   }
 

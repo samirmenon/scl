@@ -60,10 +60,10 @@ public:
   sutil::CMappedTree<std::string, SRigidBody> robot_br_rep_;
 
   /** The joint values don't go outside this range */
-  Eigen::VectorXd joint_limit_max_, joint_limit_min_;
+  Eigen::VectorXd gc_pos_limit_max_, gc_pos_limit_min_;
 
   /** The joint default positions */
-  Eigen::VectorXd joint_default_pos_;
+  Eigen::VectorXd gc_pos_default_;
 
   /** The damping (different for each dof)
    *
@@ -75,7 +75,7 @@ public:
   Eigen::VectorXd damping_;
 
   /** The actuators' max force values don't go outside this range */
-  Eigen::VectorXd max_actuator_forces_, min_actuator_forces_;
+  Eigen::VectorXd actuator_forces_max_, actuator_forces_min_;
 
   /** The number of degrees of freedom of the robot */
   sUInt dof_;
@@ -89,8 +89,8 @@ public:
   /** ---------------------------------------------- */
   /** Flags to control the simulation     | Defaults */
   /** ---------------------------------------------- */
-  sBool flag_apply_damping_;                 //false
-  sBool flag_apply_joint_limits_;            //false
+  sBool flag_apply_gc_damping_;                 //false
+  sBool flag_apply_gc_pos_limits_;            //false
   sBool flag_apply_actuator_force_limits_;   //true
   sBool flag_apply_actuator_pos_limits_;     //true
   sBool flag_apply_actuator_vel_limits_;     //true
@@ -106,8 +106,8 @@ public:
       dof_(0)
   {
     //Flags to control SRobot's behavior
-    flag_apply_damping_               = false;
-    flag_apply_joint_limits_          = false;
+    flag_apply_gc_damping_               = false;
+    flag_apply_gc_pos_limits_          = false;
     flag_apply_actuator_force_limits_ = true;
     flag_apply_actuator_pos_limits_   = true;
     flag_apply_actuator_vel_limits_   = true;

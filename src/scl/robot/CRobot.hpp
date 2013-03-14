@@ -128,7 +128,7 @@ namespace scl
      * make the robot lose some (1% default) velocity each
      * second */
     void setFlagApplyDamping(sBool arg_flag)
-    { data_.parsed_robot_data_->flag_apply_damping_ = arg_flag;  }
+    { data_.parsed_robot_data_->flag_apply_gc_damping_ = arg_flag;  }
 
     /** Sets the velocity damping for each joint
      * WARNING: This will overwrite the values read in from the config file */
@@ -138,7 +138,7 @@ namespace scl
      * make the robot lose 99% velocity and all acceleration
      * for a joint if it collides with its limits */
     void setFlagApplyJointLimits(sBool arg_flag)
-    { data_.parsed_robot_data_->flag_apply_joint_limits_ = arg_flag;  }
+    { data_.parsed_robot_data_->flag_apply_gc_pos_limits_ = arg_flag;  }
 
     /** Sets the velocity damping for each joint
      * WARNING: This will overwrite the values read in from the config file */

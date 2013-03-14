@@ -195,9 +195,9 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
         std::string sss;
         ss>>sss;
         if("true" == sss || "1" == sss)
-        { arg_robot.flag_apply_damping_ = true;  }
+        { arg_robot.flag_apply_gc_damping_ = true;  }
         else
-        { arg_robot.flag_apply_damping_ = false;  }
+        { arg_robot.flag_apply_gc_damping_ = false;  }
       }
 
       xmlflags = _robot_handle.FirstChildElement( "flag_gc_limits" ).Element();
@@ -207,9 +207,9 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
         std::string sss;
         ss>>sss;
         if("true" == sss || "1" == sss)
-        { arg_robot.flag_apply_joint_limits_ = true;  }
+        { arg_robot.flag_apply_gc_pos_limits_ = true;  }
         else
-        { arg_robot.flag_apply_joint_limits_ = false;  }
+        { arg_robot.flag_apply_gc_pos_limits_ = false;  }
       }
 
       xmlflags = _robot_handle.FirstChildElement( "flag_actuator_force_limits" ).Element();
@@ -345,9 +345,9 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       { throw(std::runtime_error("Could not link robot's nodes.")); }
 
       //Set up the remaining robot variables
-      arg_robot.joint_limit_max_.setZero(arg_robot.dof_);
-      arg_robot.joint_limit_min_.setZero(arg_robot.dof_);
-      arg_robot.joint_default_pos_.setZero(arg_robot.dof_);
+      arg_robot.gc_pos_limit_max_.setZero(arg_robot.dof_);
+      arg_robot.gc_pos_limit_min_.setZero(arg_robot.dof_);
+      arg_robot.gc_pos_default_.setZero(arg_robot.dof_);
 
       sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::iterator it, ite;
       for(it = arg_robot.robot_br_rep_.begin(), ite = arg_robot.robot_br_rep_.end();
@@ -356,9 +356,9 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
         const SRigidBody& lnk = *it;
         if(lnk.link_id_ >= 0)
         {
-          arg_robot.joint_limit_max_(lnk.link_id_) = lnk.joint_limit_upper_;
-          arg_robot.joint_limit_min_(lnk.link_id_) = lnk.joint_limit_lower_;
-          arg_robot.joint_default_pos_(lnk.link_id_) = lnk.joint_default_pos_;
+          arg_robot.gc_pos_limit_max_(lnk.link_id_) = lnk.joint_limit_upper_;
+          arg_robot.gc_pos_limit_min_(lnk.link_id_) = lnk.joint_limit_lower_;
+          arg_robot.gc_pos_default_(lnk.link_id_) = lnk.joint_default_pos_;
         }
       }
 

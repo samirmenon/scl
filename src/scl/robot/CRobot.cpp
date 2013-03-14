@@ -115,14 +115,14 @@ namespace scl
       //Apply joint limits and collision with heavy energy loss.
       if(data_.parsed_robot_data_->flag_apply_actuator_force_limits_) //Force limits controlled by a flag
       {
-        data_.io_data_->actuators_.force_gc_commanded_.array().min(data_.parsed_robot_data_->max_actuator_forces_.array());
-        data_.io_data_->actuators_.force_gc_commanded_.array().max(data_.parsed_robot_data_->min_actuator_forces_.array());
+        data_.io_data_->actuators_.force_gc_commanded_.array().min(data_.parsed_robot_data_->actuator_forces_max_.array());
+        data_.io_data_->actuators_.force_gc_commanded_.array().max(data_.parsed_robot_data_->actuator_forces_min_.array());
       }
 
       flag = integrator_->integrate(*(data_.io_data_), CDatabase::getData()->sim_dt_);
 
       //Apply gc damping
-      if(data_.parsed_robot_data_->flag_apply_damping_)
+      if(data_.parsed_robot_data_->flag_apply_gc_damping_)
       {
         data_.io_data_->sensors_.dq_.array() -=
             data_.io_data_->sensors_.dq_.array() * data_.parsed_robot_data_->damping_.array(); //1% Velocity damping.
@@ -131,7 +131,7 @@ namespace scl
       /* Note: Most models' joint limits are not correct right now. Uncomment this after
        * fixing them: */
       //Apply joint limits and collision with heavy energy loss.
-      if(data_.parsed_robot_data_->flag_apply_joint_limits_)
+      if(data_.parsed_robot_data_->flag_apply_gc_pos_limits_)
       {
         /* It is normally easier to do this:
          * x = x.array().min(max.array());//Min of self and max
@@ -144,14 +144,14 @@ namespace scl
         {
 #ifdef DEBUG
           //Logical check.
-          assert(data_.parsed_robot_data_->joint_limit_max_(i) >
-          data_.parsed_robot_data_->joint_limit_min_(i));
+          assert(data_.parsed_robot_data_->gc_pos_limit_max_(i) >
+          data_.parsed_robot_data_->gc_pos_limit_min_(i));
 #endif
           //NOTE TODO : Implement the joint limit parsing and fix q at the joint limits
-          if(data_.io_data_->sensors_.q_(i) > data_.parsed_robot_data_->joint_limit_max_(i))
-          { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_max_(i); }
-          else if(data_.io_data_->sensors_.q_(i) < data_.parsed_robot_data_->joint_limit_min_(i))
-          { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_min_(i); }
+          if(data_.io_data_->sensors_.q_(i) > data_.parsed_robot_data_->gc_pos_limit_max_(i))
+          { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->gc_pos_limit_max_(i); }
+          else if(data_.io_data_->sensors_.q_(i) < data_.parsed_robot_data_->gc_pos_limit_min_(i))
+          { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->gc_pos_limit_min_(i); }
           else
           { continue; }
           //Collision
@@ -160,8 +160,8 @@ namespace scl
 #ifdef DEBUG
           std::cout<<"\nCollided with joint limits: "<<i<<" : "<<tmp->name_
               <<" : "<<data_.io_data_->sensors_.q_(i)<<". Lim : "
-              <<data_.parsed_robot_data_->joint_limit_min_(i)<<"-"
-              <<data_.parsed_robot_data_->joint_limit_max_(i);
+              <<data_.parsed_robot_data_->gc_pos_limit_min_(i)<<"-"
+              <<data_.parsed_robot_data_->gc_pos_limit_max_(i);
           std::cout<<"\nFull joint state: "<<data_.io_data_->sensors_.q_.transpose();
           std::cout<<"\nSleeping for a second";
           sleep(1);
@@ -279,8 +279,8 @@ namespace scl
       //Damping = 1% energy loss per second
       data_.parsed_robot_data_->damping_.setConstant(data_.io_data_->dof_,db_->sim_dt_/100);
       //Force limits: 1000 N
-      data_.parsed_robot_data_->max_actuator_forces_.setConstant(data_.io_data_->dof_,3000);
-      data_.parsed_robot_data_->min_actuator_forces_.setConstant(data_.io_data_->dof_,-3000);
+      data_.parsed_robot_data_->actuator_forces_max_.setConstant(data_.io_data_->dof_,3000);
+      data_.parsed_robot_data_->actuator_forces_min_.setConstant(data_.io_data_->dof_,-3000);
 
       std::vector<SControllerBase*>::iterator itcr, itcre;
       for(itcr = arg_ctrls.begin(),itcre=arg_ctrls.end(); itcr!=itcre; ++itcr)
@@ -335,8 +335,8 @@ namespace scl
     if((static_cast<sUInt>(arg_max.size()) == data_.io_data_->dof_) &&
         (static_cast<sUInt>(arg_min.size()) == data_.io_data_->dof_))
     {
-      data_.parsed_robot_data_->joint_limit_max_ = arg_max;
-      data_.parsed_robot_data_->joint_limit_min_ = arg_min;
+      data_.parsed_robot_data_->gc_pos_limit_max_ = arg_max;
+      data_.parsed_robot_data_->gc_pos_limit_min_ = arg_min;
       return true;
     }
     return false;
@@ -349,8 +349,8 @@ namespace scl
     if((static_cast<sUInt>(arg_max.size()) == data_.io_data_->dof_) &&
         (static_cast<sUInt>(arg_min.size()) == data_.io_data_->dof_))
     {
-      data_.parsed_robot_data_->max_actuator_forces_ = arg_max;
-      data_.parsed_robot_data_->min_actuator_forces_ = arg_min;
+      data_.parsed_robot_data_->actuator_forces_max_ = arg_max;
+      data_.parsed_robot_data_->actuator_forces_min_ = arg_min;
       return true;
     }
     return false;
