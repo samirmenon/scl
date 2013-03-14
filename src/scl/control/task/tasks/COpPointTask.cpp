@@ -50,7 +50,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  COpPointTask::COpPointTask() : CTaskBase(), data_(S_NULL), lambda_inv_singular_(false)
+  COpPointTask::COpPointTask() :
+      CTaskBase(),
+      data_(S_NULL),
+      lambda_inv_singular_(false),
+      flag_compute_gravity_(true)
   { }
 
   //************************
@@ -141,7 +145,10 @@ bool COpPointTask::computeServo(const SRobotSensorData* arg_sensors)
     data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
     data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
-    data_->force_task_ = data_->lambda_ * data_->ddx_ + data_->p_;
+    if(flag_compute_gravity_)
+    { data_->force_task_ = data_->lambda_ * data_->ddx_ + data_->p_;  }
+    else
+    { data_->force_task_ = data_->lambda_ * data_->ddx_;  }
 
     // T = J' ( M x F* + p)
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
@@ -251,7 +258,8 @@ bool COpPointTask::computeModel()
     data_->mu_.setZero(data_->dof_task_,1);
 
     // J' * J_dyn_inv' * g(q)
-    data_->p_ =  data_->jacobian_dyn_inv_.transpose() * gcm->g_;
+    if(flag_compute_gravity_)
+    { data_->p_ =  data_->jacobian_dyn_inv_.transpose() * gcm->g_;  }
 
     return flag;
   }

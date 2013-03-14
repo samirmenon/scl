@@ -108,6 +108,9 @@ public:
   /** Whether the task has achieved its goal position. */
   sBool achievedGoalPos();
 
+  void setFlagComputeOpPosGravity(sBool arg_compute_grav)
+  { flag_compute_gravity_ = arg_compute_grav; }
+
 protected:
   /** The actual data structure for this computational object */
   SOpPointTask* data_;
@@ -125,6 +128,8 @@ protected:
    * near singularities. 3x3 for operational point tasks. */
   Eigen::JacobiSVD<Eigen::Matrix3d > svd_;
   Eigen::Matrix3d singular_values_;
+
+  sBool flag_compute_gravity_;
 };
 
 }

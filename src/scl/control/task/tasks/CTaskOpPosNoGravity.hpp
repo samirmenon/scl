@@ -86,13 +86,15 @@ public:
 
   /** Computes the dynamics (task model)
    * Assumes that the data_->model_.gc_model_ has been updated. */
-  virtual bool computeModel();
+  virtual bool computeModel()
+  { return scl::COpPointTask::computeModel();  }
 
   /********************************
    * CTaskOpPosNoGravity specific functions
    *********************************/
   /** Default constructor : Does nothing   */
-  CTaskOpPosNoGravity();
+  CTaskOpPosNoGravity() : COpPointTask()
+  { flag_compute_gravity_= false; }
 
   /** Default destructor : Does nothing.   */
   virtual ~CTaskOpPosNoGravity(){}
