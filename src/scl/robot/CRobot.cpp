@@ -139,25 +139,30 @@ namespace scl
         {
           for(int i=0; i< data_.io_data_->dof_;++i)
           {
+#ifdef DEBUG
+            //Logical check.
+            assert(data_.parsed_robot_data_->joint_limit_max_(i) >
+                    data_.parsed_robot_data_->joint_limit_min_(i));
+#endif
             //NOTE TODO : Implement the joint limit parsing and fix q at the joint limits
             if(data_.io_data_->sensors_.q_(i) > data_.parsed_robot_data_->joint_limit_max_(i))
             { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_max_(i); }
-            if(data_.io_data_->sensors_.q_(i) < data_.parsed_robot_data_->joint_limit_min_(i))
+            else if(data_.io_data_->sensors_.q_(i) < data_.parsed_robot_data_->joint_limit_min_(i))
             { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->joint_limit_min_(i); }
             else
             { continue; }
             //Collision
             data_.io_data_->sensors_.dq_(i) = data_.io_data_->sensors_.dq_(i) * 0.01;//99% energy loss
             data_.io_data_->sensors_.ddq_(i) = 0;
-            #ifdef DEBUG
-            std::cout<<"\nCollided with joint limits: "<<data_.io_data_->sensors_.q_.transpose();
-            #endif
-            SRigidBody* tmp = data_.parsed_robot_data_->robot_br_rep_.at(i);
+#ifdef DEBUG
             std::cout<<"\nCollided with joint limits: "<<i<<" : "<<tmp->name_
                 <<" : "<<data_.io_data_->sensors_.q_(i)<<". Lim : "
                 <<data_.parsed_robot_data_->joint_limit_min_(i)<<"-"
                 <<data_.parsed_robot_data_->joint_limit_max_(i);
+            std::cout<<"\nFull joint state: "<<data_.io_data_->sensors_.q_.transpose();
+            std::cout<<"\nSleeping for a second";
             sleep(1);
+#endif
           }
         }
 
