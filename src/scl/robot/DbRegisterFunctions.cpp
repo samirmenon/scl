@@ -584,11 +584,11 @@ namespace scl_registry
       flag = typeSTaskGcSet.registerType();
       if(false == flag) {throw(std::runtime_error("STaskGcSet"));}
 
-      sutil::CDynamicType<std::string,scl::CComPosTask> typeCComPosTask(std::string("CComPosTask"));
+      sutil::CDynamicType<std::string,scl::CTaskComPos> typeCComPosTask(std::string("CComPosTask"));
       flag = typeCComPosTask.registerType();
       if(false == flag) {throw(std::runtime_error("CComPosTask"));}
 
-      sutil::CDynamicType<std::string,scl::SComPosTask> typeSComPosTask(std::string("SComPosTask"));
+      sutil::CDynamicType<std::string,scl::STaskComPos> typeSComPosTask(std::string("SComPosTask"));
       flag = typeSComPosTask.registerType();
       if(false == flag) {throw(std::runtime_error("SComPosTask"));}
     }

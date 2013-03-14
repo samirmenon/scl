@@ -54,7 +54,7 @@ namespace scl
    *
    * 2. The task servo (computes the dynamically decoupled task
    * forces and the torques. uses the task model to do so). */
-  class CComPosTask : public scl::CTaskBase
+  class CTaskComPos : public scl::CTaskBase
   {
   public:
     /********************************
@@ -92,10 +92,10 @@ namespace scl
      * Initialization specific functions
      *********************************/
     /** Default constructor : Sets stuff to zero.   */
-    CComPosTask();
+    CTaskComPos();
 
     /** Default destructor : Does nothing.   */
-    virtual ~CComPosTask(){}
+    virtual ~CTaskComPos(){}
 
     /** Initializes the task object. Required to set output
      * gc force dofs */
@@ -108,7 +108,7 @@ namespace scl
 
   private:
     /** The actual data structure for this computational object */
-    SComPosTask* data_;
+    STaskComPos* data_;
 
     /** Temporary variables */
     Eigen::VectorXd tmp1, tmp2;

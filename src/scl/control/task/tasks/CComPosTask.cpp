@@ -47,13 +47,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  CComPosTask::CComPosTask() : CTaskBase(), data_(S_NULL), lambda_inv_singular_(false)
+  CTaskComPos::CTaskComPos() : CTaskBase(), data_(S_NULL), lambda_inv_singular_(false)
   { }
 
   //************************
   // Inherited stuff
   //************************
-  bool CComPosTask::init(STaskBase* arg_task_data,
+  bool CTaskComPos::init(STaskBase* arg_task_data,
       CDynamicsBase* arg_dynamics)
   {
     try
@@ -70,7 +70,7 @@ namespace scl
       if(false == arg_dynamics->hasBeenInit())
       { throw(std::runtime_error("Passed an uninitialized dynamics object"));  }
 
-      data_ = dynamic_cast<SComPosTask*>(arg_task_data);
+      data_ = dynamic_cast<STaskComPos*>(arg_task_data);
       data_->jacobian_.setZero(3, data_->robot_->dof_);
       data_->jacobian_dyn_inv_.setZero(data_->robot_->dof_, 3);
       data_->lambda_.setZero(3,3);
@@ -99,10 +99,10 @@ namespace scl
     return has_been_init_;
   }
 
-  STaskBase* CComPosTask::getTaskData()
+  STaskBase* CTaskComPos::getTaskData()
   { return data_; }
 
-  void CComPosTask::reset()
+  void CTaskComPos::reset()
   {
     data_ = S_NULL;
     dynamics_ = S_NULL;
@@ -110,7 +110,7 @@ namespace scl
   }
 
 
-  bool CComPosTask::computeServo(const SRobotSensorData* arg_sensors)
+  bool CTaskComPos::computeServo(const SRobotSensorData* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -150,7 +150,7 @@ namespace scl
 
   /** Computes the dynamics (task model)
    * Assumes that the data_->model_.gc_model_ has been updated. */
-  bool CComPosTask::computeModel()
+  bool CTaskComPos::computeModel()
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -252,7 +252,7 @@ namespace scl
   // Task specific stuff
   //************************
 
-  bool CComPosTask::achievedGoalPos()
+  bool CTaskComPos::achievedGoalPos()
   {
     sFloat dist;
     dist = fabs((data_->x_goal_ - data_->x_).norm());

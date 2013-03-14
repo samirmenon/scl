@@ -47,7 +47,7 @@ namespace scl
    * will use an svd to compute the n-k'th rank approximation of the
    * control equations.
    */
-  class SComPosTask : public scl::STaskBase
+  class STaskComPos : public scl::STaskBase
   {
   public:
     //Computed attributes (last measured, in x dimensional task-space)
@@ -64,10 +64,10 @@ namespace scl
     sFloat spatial_resolution_;     //Meters
 
     /** Default constructor sets stuff to S_NULL */
-    SComPosTask();
+    STaskComPos();
 
     /** Default destructor does nothing */
-    virtual ~SComPosTask();
+    virtual ~STaskComPos();
 
     /** Initializes the task specific data members. */
     virtual bool initTaskParams();
