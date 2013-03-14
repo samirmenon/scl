@@ -4,14 +4,22 @@
 <!-- Units are in Std International System -->
 <scl>
     <robot name="Stanbot"> 
+        <gravity>0.000   0.000   -9.81</gravity> 
         <spec>Stanbot</spec>
         <file>../../specs/Stanbot/Stanbot.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
         <root_link>
             <link_name>ground</link_name>
             <position_in_parent>-0.500   0.200   -0.50</position_in_parent> 
             <orientation_in_parent>0.0 0.0 0.7071 0.7071</orientation_in_parent>
         </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
     </robot>
 
     <graphics name="StanbotStdView">
@@ -72,7 +80,7 @@
             <force_min>-1000</force_min>
         </task>
 
-        <task name="com">
+       <!-- <task name="com">
             <type>TaskComPos</type>
             <priority>1</priority>
             <task_dof>3</task_dof>
@@ -81,11 +89,11 @@
             <ki>0</ki>
             <force_max>10000</force_max>
             <force_min>-10000</force_min>
-        </task>
+        </task> -->
 
         <task name="GcTask">
             <type>TaskGc</type>
-            <priority>2</priority>
+            <priority>1</priority>
             <task_dof>0</task_dof> 
             <kp>100</kp>
             <kv>20</kv>
@@ -94,7 +102,7 @@
             <force_min>-10000</force_min>
         </task>
 
-        <!-- 0 task_dof means a gc task, ie full dofs -->
+        <!-- 0 task_dof means a gc task, ie full dofs 
         <task name="NullSpaceDampingTask">
             <type>TaskNullSpaceDamping</type>
             <priority>2</priority>
@@ -104,6 +112,6 @@
             <ki>0</ki>
             <force_max>10000</force_max>
             <force_min>-10000</force_min>
-        </task>
+        </task>-->
     </controller>
 </scl>
