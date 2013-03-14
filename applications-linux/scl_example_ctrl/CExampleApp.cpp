@@ -107,10 +107,10 @@ namespace scl_app
             }
             //Initialize the com task
             name_com_task_ = argv[args_ctr+1];
-            task_com_ = (scl::CComPosTask*)(ctrl_->getTask(name_com_task_));
+            task_com_ = (scl::CTaskComPos*)(ctrl_->getTask(name_com_task_));
             if(S_NULL == task_com_)
             { throw(std::runtime_error(std::string("Could not find specified com task: ")+name_com_task_));  }
-            task_ds_com_ = dynamic_cast<scl::SComPosTask*>(task_com_->getTaskData());
+            task_ds_com_ = dynamic_cast<scl::STaskComPos*>(task_com_->getTaskData());
             if(S_NULL == task_ds_com_)
             { throw(std::runtime_error("Error. The com task's data structure is NULL."));  }
             ui_pt_com_ = ui_points_used; ui_points_used++;

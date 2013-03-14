@@ -98,8 +98,8 @@ namespace scl_app
 
     //For controlling the com task with a ui point
     std::string name_com_task_;
-    scl::CComPosTask* task_com_;
-    scl::SComPosTask* task_ds_com_;
+    scl::CTaskComPos* task_com_;
+    scl::STaskComPos* task_ds_com_;
     scl::sInt ui_pt_com_;
     scl::sBool has_been_init_com_task_;
     cGenericObject *chai_com_pos_,*chai_com_pos_des_;
