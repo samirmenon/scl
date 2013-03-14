@@ -118,6 +118,7 @@ namespace scl
 
     // **********************************************************************
     //                       Robot helper functions
+    //                Runtime overrides for config file settings
     // **********************************************************************
 
     /** Returns a pointer to the robot's data structure */
@@ -129,27 +130,35 @@ namespace scl
     void setFlagApplyDamping(sBool arg_flag)
     { data_.parsed_robot_data_->flag_apply_damping_ = arg_flag;  }
 
-    /** Sets the velocity damping for each joint */
-    sBool setDamping(Eigen::VectorXd arg_d);
-
-    /** Turn the actuator limits on or off. Simulates physical
-     * force limits of the actuators */
-    void setFlagApplyActuatorForceLimits(sBool arg_flag)
-    { data_.parsed_robot_data_->flag_apply_actuator_force_limits_ = arg_flag;  }
-
-    /** Sets the actuator limits for each joint */
-    sBool setActuatorForceLimits(Eigen::VectorXd arg_max,Eigen::VectorXd arg_min);
-
-    /** Turn the controller on or off. Controller sends zero
-     * command gc forces if off. */
-    void setFlagControllerOn(sBool arg_flag)
-    { data_.parsed_robot_data_->flag_controller_on_ = arg_flag;  }
+    /** Sets the velocity damping for each joint
+     * WARNING: This will overwrite the values read in from the config file */
+    sBool setDamping(const Eigen::VectorXd& arg_d);
 
     /** Turn joint limits on or off. Turning it on will
      * make the robot lose 99% velocity and all acceleration
      * for a joint if it collides with its limits */
     void setFlagApplyJointLimits(sBool arg_flag)
     { data_.parsed_robot_data_->flag_apply_joint_limits_ = arg_flag;  }
+
+    /** Sets the velocity damping for each joint
+     * WARNING: This will overwrite the values read in from the config file */
+    sBool setJointLimits(const Eigen::VectorXd& arg_max,
+        const Eigen::VectorXd& arg_min);
+
+    /** Turn the actuator limits on or off. Simulates physical
+     * force limits of the actuators */
+    void setFlagApplyActuatorForceLimits(sBool arg_flag)
+    { data_.parsed_robot_data_->flag_apply_actuator_force_limits_ = arg_flag;  }
+
+    /** Sets the actuator limits for each joint
+     * WARNING: This will overwrite the values read in from the config file */
+    sBool setActuatorForceLimits(const Eigen::VectorXd& arg_max,
+        const Eigen::VectorXd& arg_min);
+
+    /** Turn the controller on or off. Controller sends zero
+     * command gc forces if off. */
+    void setFlagControllerOn(sBool arg_flag)
+    { data_.parsed_robot_data_->flag_controller_on_ = arg_flag;  }
 
     // **********************************************************************
     //                       Robot state helper functions

@@ -311,7 +311,7 @@ namespace scl
   // **********************************************************************
 
   /** Sets the velocity damping for each joint */
-  sBool CRobot::setDamping(Eigen::VectorXd arg_d)
+  sBool CRobot::setDamping(const Eigen::VectorXd& arg_d)
   {
     sBool flag;
     if(static_cast<sUInt>(arg_d.size()) == data_.io_data_->dof_)
@@ -320,19 +320,33 @@ namespace scl
     return flag;
   }
 
-  /** Sets the actuator limits for each joint */
-  sBool CRobot::setActuatorForceLimits(Eigen::VectorXd arg_max,Eigen::VectorXd arg_min)
+  /** Sets the velocity damping for each joint
+   * WARNING: This will overwrite the values read in from the config file */
+  sBool CRobot::setJointLimits(const Eigen::VectorXd& arg_max,
+      const Eigen::VectorXd& arg_min)
   {
-    sBool flag;
+    if((static_cast<sUInt>(arg_max.size()) == data_.io_data_->dof_) &&
+        (static_cast<sUInt>(arg_min.size()) == data_.io_data_->dof_))
+    {
+      data_.parsed_robot_data_->joint_limit_max_ = arg_max;
+      data_.parsed_robot_data_->joint_limit_min_ = arg_min;
+      return true;
+    }
+    return false;
+  }
+
+  /** Sets the actuator limits for each joint */
+  sBool CRobot::setActuatorForceLimits(const Eigen::VectorXd& arg_max,
+      const Eigen::VectorXd& arg_min)
+  {
     if((static_cast<sUInt>(arg_max.size()) == data_.io_data_->dof_) &&
         (static_cast<sUInt>(arg_min.size()) == data_.io_data_->dof_))
     {
       data_.parsed_robot_data_->max_actuator_forces_ = arg_max;
       data_.parsed_robot_data_->min_actuator_forces_ = arg_min;
-      flag = true;
+      return true;
     }
-    else { flag = false; }
-    return flag;
+    return false;
   }
 
   // **********************************************************************

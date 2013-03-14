@@ -59,29 +59,23 @@ public:
    * and will maintain a mapping between their names and the nodes. */
   sutil::CMappedTree<std::string, SRigidBody> robot_br_rep_;
 
-  /** The joint limit doesn't go below this */
-  Eigen::VectorXd joint_limit_min_;
-
-  /** The joint limit doesn't go below this */
-  Eigen::VectorXd joint_limit_max_;
+  /** The joint values don't go outside this range */
+  Eigen::VectorXd joint_limit_max_, joint_limit_min_;
 
   /** The joint default positions */
   Eigen::VectorXd joint_default_pos_;
 
   /** The damping (different for each dof)
    *
-   * NOTE TODO : Update the friction mode. This could
+   * NOTE TODO : Update the friction model. This could
    * require a more sophisticated data structure than
    * a simple vector.
    *
    * NOTE TODO : Rename this to joint damping. */
   Eigen::VectorXd damping_;
 
-  /** The actuators' max force limits */
-  Eigen::VectorXd max_actuator_forces_;
-
-  /** The actuators' min force limits */
-  Eigen::VectorXd min_actuator_forces_;
+  /** The actuators' max force values don't go outside this range */
+  Eigen::VectorXd max_actuator_forces_, min_actuator_forces_;
 
   /** The number of degrees of freedom of the robot */
   sUInt dof_;
