@@ -145,6 +145,12 @@ namespace scl
     void setFlagControllerOn(sBool arg_flag)
     { data_.parsed_robot_data_->flag_controller_on_ = arg_flag;  }
 
+    /** Turn joint limits on or off. Turning it on will
+     * make the robot lose 99% velocity and all acceleration
+     * for a joint if it collides with its limits */
+    void setFlagApplyJointLimits(sBool arg_flag)
+    { data_.parsed_robot_data_->flag_apply_joint_limits_ = arg_flag;  }
+
     // **********************************************************************
     //                       Robot state helper functions
     // **********************************************************************

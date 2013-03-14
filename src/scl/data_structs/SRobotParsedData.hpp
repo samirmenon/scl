@@ -96,7 +96,7 @@ public:
   /** Flags to control the simulation     | Defaults */
   /** ---------------------------------------------- */
   sBool flag_apply_damping_;                 //false
-  sBool flag_apply_joint_limits_;            //true
+  sBool flag_apply_joint_limits_;            //false
   sBool flag_apply_actuator_force_limits_;   //true
   sBool flag_apply_actuator_pos_limits_;     //true
   sBool flag_apply_actuator_vel_limits_;     //true
@@ -113,7 +113,7 @@ public:
   {
     //Flags to control SRobot's behavior
     flag_apply_damping_               = false;
-    flag_apply_joint_limits_          = true;
+    flag_apply_joint_limits_          = false;
     flag_apply_actuator_force_limits_ = true;
     flag_apply_actuator_pos_limits_   = true;
     flag_apply_actuator_vel_limits_   = true;
