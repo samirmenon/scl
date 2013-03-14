@@ -20,7 +20,7 @@
 				        <scaling>0.25 0.25 0.25</scaling>
 			        </obj_file>
 			        <obj_file>
-				        <name>/Bot-RPP/graphics/0_base.obj</name>
+				        <name>/Bot-R6/graphics/R6Base.obj</name>
 				        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
 				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
 				        <collision_type>0</collision_type>
@@ -28,6 +28,14 @@
 			        </obj_file>
             </graphics>
         </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>true</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
     </robot>
 
     <graphics name="RPPStdView">
