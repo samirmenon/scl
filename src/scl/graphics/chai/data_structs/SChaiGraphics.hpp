@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
-#include <scl/data_structs/SRobotLink.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 
 #include <sutil/CMappedList.hpp>

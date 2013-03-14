@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 
 #include <sutil/CMappedTree.hpp>
-#include <scl/data_structs/SRobotLink.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
 
 #include <scl/data_structs/SObject.hpp>
 
@@ -55,7 +55,7 @@ public:
   /** The controller parser definition contains a root link vector and
    * a child link vector.
    *
-   * The branching representation will store a tree of SRobotLink nodes
+   * The branching representation will store a tree of SRigidBody nodes
    * and will maintain a mapping between their names and the nodes. */
   sutil::CMappedTree<std::string, SRigidBody> robot_br_rep_;
 

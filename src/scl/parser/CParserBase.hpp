@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CPARSERBASE_HPP_
 
 //Data structures passed to the branching template
-#include <scl/data_structs/SRobotLink.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/data_structs/SGraphicsParsedData.hpp>
 #include <scl/data_structs/SMuscleSystem.hpp>
@@ -73,7 +73,7 @@ namespace scl_parser
 		 * supported.
 		 *
 		 * NOTE : Subclass implementation details for the readRobotFromFile() function:
-     *   1) Add a bunch of SRobotLink links to the SRobotParsedData's branching representation,
+     *   1) Add a bunch of SRigidBody links to the SRobotParsedData's branching representation,
      *      "robot_.robot_br_rep_", after reading in the values from a file
      *   2) When all the links have been read in, call "robot_.robot_br_rep_.linkNodes()"
      *

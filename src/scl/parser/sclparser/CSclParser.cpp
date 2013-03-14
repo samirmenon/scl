@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
-#include <scl/data_structs/SRobotLink.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
 #include <scl/util/HelperFunctions.hpp>
 
 //The tinyxml parser implementation for scl xml files
@@ -400,7 +400,7 @@ bool CSclParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
     tmp_sstr<<tmp_lnk->ori_parent_quat_.coeffs().transpose();
     fprintf(fp, "\n\t\t<orientation_in_parent>%s</orientation_in_parent>",
         tmp_sstr.str().c_str());
-    fprintf(fp, "\n\t\t<graphics>"); // SRobotLinkGraphics
+    fprintf(fp, "\n\t\t<graphics>"); // SRigidBodyGraphics
     for(sUInt i=0;i<tmp_lnk->graphics_obj_vec_.size();++i)
     {
       fprintf(fp, "\n\t\t\t<obj_file>");

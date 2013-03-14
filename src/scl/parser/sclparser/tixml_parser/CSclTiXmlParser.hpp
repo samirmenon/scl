@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Include the data structures
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/data_structs/SGraphicsParsedData.hpp>
-#include <scl/data_structs/SRobotLink.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
 
 #include <scl/parser/CParserBase.hpp>
 

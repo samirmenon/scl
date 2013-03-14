@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SRobotLink.hpp
+/* \file SRigidBody.hpp
  *
  *  Created on: Jul 22, 2010
  *
@@ -47,7 +47,7 @@ namespace scl
 {
 
 /** The graphics specification for one rigid body. */
-class SRobotLinkGraphics
+class SRigidBodyGraphics
 {
 public:
   // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.
@@ -63,7 +63,7 @@ public:
 
   std::string file_name_;
 
-  SRobotLinkGraphics()
+  SRigidBodyGraphics()
   {
     pos_in_parent_.setZero(3);
     ori_parent_quat_.setZero(4);
@@ -156,7 +156,7 @@ public:
   
   //***************
   //3. Graphics data
-  std::vector<SRobotLinkGraphics> graphics_obj_vec_;
+  std::vector<SRigidBodyGraphics> graphics_obj_vec_;
   sInt collision_type_;
   sRenderType render_type_;
   //***************

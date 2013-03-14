@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define GENERICPRINTABLES_HPP_
 
 #include <scl/data_structs/SRobotIOData.hpp>
-#include <scl/data_structs/SRobotLink.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
 
 #include <scl/Singletons.hpp>

@@ -22,7 +22,7 @@ INCLUDE_DIRECTORIES(../../src/ ${SCL_INC_DIR}
 
 #Set all the sources required for the library
 SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIOData.cpp
-           ${SCL_INC_DIR}/data_structs/SRobotLink.cpp
+           ${SCL_INC_DIR}/data_structs/SRigidBody.cpp
            ${SCL_INC_DIR}/data_structs/SMuscleSystem.cpp
    )
 

@@ -239,7 +239,7 @@ namespace scl_parser {
         }
 
         //Read all the obj_files
-        SRobotLinkGraphics tgr;
+        SRigidBodyGraphics tgr;
         ss = link_data->FirstChildElement("name")->FirstChild()->Value();
         ss = scl::CDatabase::getData()->dir_specs_ + ss;
         tgr.file_name_ = ss;

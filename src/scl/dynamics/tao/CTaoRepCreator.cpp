@@ -50,7 +50,7 @@ namespace scl {
   /**
    * Creates a tao root structure out of a set of robot definitions
    *
-   * Also assigns ids to the SRobotLink objects
+   * Also assigns ids to the SRigidBody objects
    *
    * input : Robot name
    * output : taoNodeRoot*
@@ -85,7 +85,7 @@ taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const SRobotParsedData& arg_robot
     { throw(std::runtime_error("Robot doesn't have valid root node"));}
     if(false == tmp_root->is_root_)
     { throw(std::runtime_error(
-        "Robot's branching representation returns root with SRobotLink::is_root_==false."));}
+        "Robot's branching representation returns root with SRigidBody::is_root_==false."));}
 
     //Step 2b: Create the corresponding root tao node
     //Root node's home frame translation and orientation
@@ -193,7 +193,7 @@ createTaoNonRootNode(const SRigidBody* arg_link,
     if (S_NULL == arg_link->parent_addr_)
     {
       throw(std::runtime_error(
-          "Tried to create a tao non-root node with SRobotLink specification that doesn't have a parent."));
+          "Tried to create a tao non-root node with SRigidBody specification that doesn't have a parent."));
     }
 
     if (true == arg_link->is_root_)

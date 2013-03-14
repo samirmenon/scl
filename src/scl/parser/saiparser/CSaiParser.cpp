@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //The required data structures
 #include <scl/Singletons.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
-#include <scl/data_structs/SRobotLink.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
 
 using namespace scl;
 using namespace scl_tinyxml; //Tinyxml parser implementation is in a separate namespace
@@ -297,7 +297,7 @@ bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
           std::stringstream ss(link_data->FirstChild()->Value());
           ss>>obj;
 
-          SRobotLinkGraphics tmp_lnk;
+          SRigidBodyGraphics tmp_lnk;
           tmp_lnk.file_name_ = obj;
           tmp_link_ds->graphics_obj_vec_.push_back(tmp_lnk);
 
@@ -313,7 +313,7 @@ bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
         while(img_ele && url_ele)
         {
           //Does not support the deparacted obj behavior. New style only.
-          SRobotLinkGraphics tmp;
+          SRigidBodyGraphics tmp;
 
           std::stringstream ss(img_ele->FirstChild()->Value());
           ss>>tmp.pos_in_parent_[0];

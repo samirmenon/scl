@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //The required data structures
 #include <scl/Singletons.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
-#include <scl/data_structs/SRobotLink.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
 
 //The tinyxml parser implementation for scl xml files
 #include <scl/parser/scl_tinyxml/scl_tinyxml.h>
@@ -373,12 +373,12 @@ namespace scl_parser {
         else
         { par = lnk.parent_addr_;  }
 
-        std::vector<SRobotLinkGraphics>::iterator it,ite;
+        std::vector<SRigidBodyGraphics>::iterator it,ite;
         for(it = lnk.graphics_obj_vec_.begin(), ite = lnk.graphics_obj_vec_.end();
             it!=ite;++it)
         {
           //Transform the joint to the parent's frame
-          SRobotLinkGraphics tmp(*it);
+          SRigidBodyGraphics tmp(*it);
 
           //1. Translate
           tmp.pos_in_parent_ += par->pos_in_parent_;
@@ -756,7 +756,7 @@ namespace scl_parser {
             {
               if ((sbuf != "") && (sbuf != "NULL"))
               {
-                SRobotLinkGraphics tmp_gr;
+                SRigidBodyGraphics tmp_gr;
                 tmp_gr.scaling_ = scale_fac;
                 tmp_gr.file_name_ = "CHANGE_ME_TO_THE_GRAPHICS_DIR_"+sbuf+".obj";
                 lnk->graphics_obj_vec_.push_back(tmp_gr);

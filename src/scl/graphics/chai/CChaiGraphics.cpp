@@ -387,12 +387,12 @@ namespace scl {
 
 
         //Iterate over all the meshes and add them to the chai object
-        std::vector<SRobotLinkGraphics>::const_iterator it,ite;
+        std::vector<SRigidBodyGraphics>::const_iterator it,ite;
         ite = arg_link->robot_link_->graphics_obj_vec_.end();
         for(it = arg_link->robot_link_->graphics_obj_vec_.begin();
             it!=ite; ++it)
         {
-          const SRobotLinkGraphics& lnk_gr = (*it);
+          const SRigidBodyGraphics& lnk_gr = (*it);
           cMultiMesh* tmp = new cMultiMesh();
           if(false == cLoadFileOBJ(tmp,lnk_gr.file_name_))
             if(false == cLoadFile3DS(tmp,lnk_gr.file_name_))

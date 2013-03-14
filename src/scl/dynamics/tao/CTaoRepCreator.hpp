@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 
 #include <scl/parser/CParserBase.hpp>
-#include <scl/data_structs/SRobotLink.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
 
 #include <scl/dynamics/tao/tao/dynamics/taoNode.h>
 
@@ -76,7 +76,7 @@ namespace scl {
         taoNode* arg_parent);
 
     /**Creates a tao node for a non-root link given an initialized home frame
-     * The node is added to the SRobotLink* structure. */
+     * The node is added to the SRigidBody* structure. */
     static taoNode* createTaoNonRootNode(const SRigidBody* arg_link,
         const taoNode* arg_parent_node);
   };
