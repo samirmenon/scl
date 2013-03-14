@@ -79,8 +79,8 @@ namespace scl_test
     scl::CTaskController* ctrl;           //Use a task controller
 
     std::string op_link_name,op_link2_name;
-    scl::COpPointTask* tsk, *tsk2;
-    scl::SOpPointTask* tsk_ds, *tsk2_ds;
+    scl::CTaskOpPos* tsk, *tsk2;
+    scl::STaskOpPos* tsk_ds, *tsk2_ds;
     scl::sBool op_link_set, op_link2_set;
 
     /** Implement this function. Else you will get a linker error. */
@@ -376,10 +376,10 @@ namespace scl_test
       op_link_name = arg_op_link_name1;
       op_link_set = true;
       db->s_gui_.ui_point_[0]<<0,0.1,0; //Ctrl tracks this control point.
-      tsk = (scl::COpPointTask*)(ctrl->getTask(op_link_name));
+      tsk = (scl::CTaskOpPos*)(ctrl->getTask(op_link_name));
       if(S_NULL == tsk)
       { throw(std::runtime_error("Could not get specified task"));  }
-      tsk_ds = dynamic_cast<scl::SOpPointTask*>(tsk->getTaskData());
+      tsk_ds = dynamic_cast<scl::STaskOpPos*>(tsk->getTaskData());
 
       /** Render a sphere at the op-point task's position */
       flag = chai_gr.addSphereToRender(robot_name,tsk_ds->link_ds_->name_,tsk_ds->pos_in_parent_);
@@ -391,10 +391,10 @@ namespace scl_test
         op_link2_name = arg_op_link_name2;
         op_link2_set = true;
         db->s_gui_.ui_point_[1]<<0,-0.1,0; //Ctrl2 tracks this control point.
-        tsk2 = (scl::COpPointTask*)(ctrl->getTask(op_link2_name));
+        tsk2 = (scl::CTaskOpPos*)(ctrl->getTask(op_link2_name));
         if(S_NULL == tsk2)
         { throw(std::runtime_error("Could not get specified task"));  }
-        tsk2_ds = dynamic_cast<scl::SOpPointTask*>(tsk2->getTaskData());
+        tsk2_ds = dynamic_cast<scl::STaskOpPos*>(tsk2->getTaskData());
 
         /** Render a sphere at the op-point task's position */
         flag = chai_gr.addSphereToRender(robot_name,tsk2_ds->link_ds_->name_,tsk2_ds->pos_in_parent_);

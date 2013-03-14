@@ -79,8 +79,8 @@ namespace scl_app
     scl::CTaskController* ctrl[2];           //Use a task controller
 
     std::string op_link_name[2],op_link2_name[2];
-    scl::COpPointTask* tsk[2], *tsk2[2];
-    scl::SOpPointTask* tsk_ds[2], *tsk2_ds[2];
+    scl::CTaskOpPos* tsk[2], *tsk2[2];
+    scl::STaskOpPos* tsk_ds[2], *tsk2_ds[2];
     scl::sBool op_link_set[2], op_link2_set[2];
 
     /** Implement this function. Else you will get a linker error. */

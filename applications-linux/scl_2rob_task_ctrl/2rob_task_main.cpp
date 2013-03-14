@@ -49,10 +49,10 @@ namespace scl_app
       //Initialize the first op point controller
       op_link_name[arg_rob_idx] = argv[5*arg_rob_idx+4];
       db->s_gui_.ui_point_[2*arg_rob_idx+0]<<0,0.1,0; //Ctrl tracks this control point.
-      tsk[arg_rob_idx] = (scl::COpPointTask*)(ctrl[arg_rob_idx]->getTask(op_link_name[arg_rob_idx]));
+      tsk[arg_rob_idx] = (scl::CTaskOpPos*)(ctrl[arg_rob_idx]->getTask(op_link_name[arg_rob_idx]));
       if(S_NULL == tsk[arg_rob_idx])
       { throw(std::runtime_error("Could not get specified task"));  }
-      tsk_ds[arg_rob_idx] = dynamic_cast<scl::SOpPointTask*>(tsk[arg_rob_idx]->getTaskData());
+      tsk_ds[arg_rob_idx] = dynamic_cast<scl::STaskOpPos*>(tsk[arg_rob_idx]->getTaskData());
       op_link_set[arg_rob_idx] = true;
 
       /** Render a sphere at the op-point task's position */
@@ -63,10 +63,10 @@ namespace scl_app
       //If second op point name was passed, use it.
       op_link2_name[arg_rob_idx] = argv[5*arg_rob_idx+5];
       db->s_gui_.ui_point_[2*arg_rob_idx+1]<<0,-0.1,0; //Ctrl2 tracks this control point.
-      tsk2[arg_rob_idx] = (scl::COpPointTask*)(ctrl[arg_rob_idx]->getTask(op_link2_name[arg_rob_idx]));
+      tsk2[arg_rob_idx] = (scl::CTaskOpPos*)(ctrl[arg_rob_idx]->getTask(op_link2_name[arg_rob_idx]));
       if(S_NULL == tsk2[arg_rob_idx])
       { throw(std::runtime_error("Could not get specified task"));  }
-      tsk2_ds[arg_rob_idx] = dynamic_cast<scl::SOpPointTask*>(tsk2[arg_rob_idx]->getTaskData());
+      tsk2_ds[arg_rob_idx] = dynamic_cast<scl::STaskOpPos*>(tsk2[arg_rob_idx]->getTaskData());
       op_link2_set[arg_rob_idx] = true;
 
       /** Render a sphere at the op-point task's position */

@@ -84,8 +84,8 @@ namespace scl_app
     {
     public:
       std::string name_;
-      scl::COpPointTask* task_;
-      scl::SOpPointTask* task_ds_;
+      scl::CTaskOpPos* task_;
+      scl::STaskOpPos* task_ds_;
       scl::sInt ui_pt_;
       scl::sBool has_been_init_;
       cGenericObject *chai_pos_,*chai_pos_des_;

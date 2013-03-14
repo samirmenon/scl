@@ -154,10 +154,10 @@ namespace scl_app
             //        and store it with the others (if any) in the taskvec_op_point_ a few lines below
             SOpPointUiLinkData tmp_op;
             tmp_op.name_ = argv[args_ctr+1];
-            tmp_op.task_ = dynamic_cast<scl::COpPointTask*>(ctrl_->getTask(tmp_op.name_));
+            tmp_op.task_ = dynamic_cast<scl::CTaskOpPos*>(ctrl_->getTask(tmp_op.name_));
             if(S_NULL == tmp_op.task_)
             { throw(std::runtime_error(std::string("Could not find specified op point task: ")+tmp_op.name_));  }
-            tmp_op.task_ds_ = dynamic_cast<scl::SOpPointTask*>(tmp_op.task_->getTaskData());
+            tmp_op.task_ds_ = dynamic_cast<scl::STaskOpPos*>(tmp_op.task_->getTaskData());
             if(S_NULL == tmp_op.task_ds_)
             { throw(std::runtime_error(std::string("Error. The op point task's data structure is NULL:"+tmp_op.name_)));  }
             tmp_op.ui_pt_ = ui_points_used; ui_points_used++;
