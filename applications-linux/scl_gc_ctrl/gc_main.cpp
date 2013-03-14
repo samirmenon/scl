@@ -143,8 +143,8 @@ int main(int argc, char** argv)
 #ifdef DEBUG
       std::cout<<"\nTesting Tao And Robot Ids "<<robot_name;
 
-      sutil::CMappedTree<std::string, scl::SRobotLink> br = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)->robot_br_rep_;
-      sutil::CMappedTree<std::string, scl::SRobotLink>::iterator it,ite;
+      sutil::CMappedTree<std::string, scl::SRigidBody> br = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)->robot_br_rep_;
+      sutil::CMappedTree<std::string, scl::SRigidBody>::iterator it,ite;
       for(it = br.begin(), ite = br.end(); it!=ite; ++it)
       {
         taoDNode * tmp = (taoDNode *)tao_dyn_int.getIdForLink(it->name_);

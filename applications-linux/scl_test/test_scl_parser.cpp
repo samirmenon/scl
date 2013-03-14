@@ -96,15 +96,15 @@ void test_scl_parser(int id)
     }
 
     std::cout<<"\nTest Result ("<<r_id++<<") Printing links:";
-    sutil::CMappedTree<std::basic_string<char>, scl::SRobotLink>::iterator itbr,itbre;
+    sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::iterator itbr,itbre;
     for(itbr = tmp_robot.robot_br_rep_.begin(), itbre = tmp_robot.robot_br_rep_.end();
         itbr!=itbre; ++itbr)
     {
-      scl::SRobotLink& tmp_link = *itbr;
+      scl::SRigidBody& tmp_link = *itbr;
 
       std::cout<<"\n\tNode: "<<tmp_link.name_ <<". Children:";
 
-      std::vector<scl::SRobotLink*>::const_iterator it, ite;
+      std::vector<scl::SRigidBody*>::const_iterator it, ite;
       ite = tmp_link.child_addrs_.end();
       for(it = tmp_link.child_addrs_.begin();it!=ite;++it)
       {
@@ -121,7 +121,7 @@ void test_scl_parser(int id)
 
     //7. Test Map (Idx and name of pointed object should match)
     const std::string test_link_name("ground");
-    scl::SRobotLink* tmp_link = tmp_robot.robot_br_rep_.at(test_link_name);
+    scl::SRigidBody* tmp_link = tmp_robot.robot_br_rep_.at(test_link_name);
     if(S_NULL == tmp_link)
     {
       throw(std::runtime_error(
