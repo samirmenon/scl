@@ -56,7 +56,7 @@
         <must_use_robot>PumaBot</must_use_robot>
 
         <task name="hand">
-            <type>OpPointTask</type>
+            <type>TaskOpPos</type>
             <parent_link>end-effector</parent_link>
             <pos_in_parent>0.01 0.00 0.00</pos_in_parent>
             <priority>0</priority>
