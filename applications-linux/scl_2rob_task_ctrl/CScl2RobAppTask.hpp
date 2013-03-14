@@ -42,7 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
 #include <scl/control/task/CTaskController.hpp>
-#include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/graphics/chai/CChaiGraphics.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/robot/CRobot.hpp>
@@ -59,7 +59,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 
 //User modified includes to suit your application
-#include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/control/task/tasks/CTaskOpPos.hpp>
 
 
 namespace scl_app

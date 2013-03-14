@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/robot/CRobotApp.hpp>
 
 #include <scl/control/task/CTaskController.hpp>
-#include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/control/task/tasks/CComPosTask.hpp>
 
 #include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>

@@ -44,7 +44,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/CServo.hpp>
 #include <scl/control/task/CTaskController.hpp>
 #include <scl/control/task/tasks/CTaskNULL.hpp>
-#include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/control/task/tasks/CTaskOpPos.hpp>
 
 #include <scl/util/DatabaseUtils.hpp>
 
@@ -408,9 +408,9 @@ namespace scl_test
       pos_in_parent = Eigen::Vector3d::Zero();
       max_vel.setZero(6);max_vel<<0.1,0.1,0.1,0.1,0.1,0.1;
       max_acc.setZero(6);max_acc<<0.1,0.1,0.1,0.1,0.1,0.1;
-      scl::CPileMap<std::string,scl::COpPointTask> task_pile2; //Mem mgt for null tasks
+      scl::CPileMap<std::string,scl::CTaskOpPos> task_pile2; //Mem mgt for null tasks
 
-      scl::COpPointTask *task2;
+      scl::CTaskOpPos *task2;
       task2 = task_pile2.create(task_name);
       if(S_NULL == task2) { throw(std::runtime_error("Couldn't create a task data structure on the pile")); }
 
