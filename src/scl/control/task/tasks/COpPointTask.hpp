@@ -59,7 +59,7 @@ namespace scl
    * 2. The task servo (computes the dynamically decoupled task
    * forces and the torques. uses the task model to do so).
    */
-class COpPointTask : public scl::CTaskBase
+class CTaskOpPos : public scl::CTaskBase
 {
 public:
   /********************************
@@ -88,10 +88,10 @@ public:
    * COpPointTask specific functions
    *********************************/
   /** Default constructor : Does nothing   */
-  COpPointTask();
+  CTaskOpPos();
 
   /** Default destructor : Does nothing.   */
-  virtual ~COpPointTask(){}
+  virtual ~CTaskOpPos(){}
 
   /** Sets the current goal position */
   inline void setGoal(const Eigen::VectorXd & arg_goal)
@@ -113,7 +113,7 @@ public:
 
 protected:
   /** The actual data structure for this computational object */
-  SOpPointTask* data_;
+  STaskOpPos* data_;
 
   /** Temporary variables */
   Eigen::VectorXd tmp1, tmp2;

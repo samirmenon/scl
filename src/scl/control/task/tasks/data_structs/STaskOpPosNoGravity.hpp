@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
   /** This is identical to the SOpPointTask for now */
-  class STaskOpPosNoGravity : public scl::SOpPointTask
+  class STaskOpPosNoGravity : public scl::STaskOpPos
   {
   public:
     /** Default constructor sets stuff to S_NULL */

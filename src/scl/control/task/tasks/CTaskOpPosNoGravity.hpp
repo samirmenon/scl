@@ -59,7 +59,7 @@ namespace scl
    * 2. The task servo (computes the dynamically decoupled task
    * forces and the torques. uses the task model to do so).
    */
-class CTaskOpPosNoGravity : public scl::COpPointTask
+class CTaskOpPosNoGravity : public scl::CTaskOpPos
 {
 public:
   /********************************
@@ -69,31 +69,31 @@ public:
    * gc force dofs */
   virtual bool init(STaskBase* arg_task_data,
       CDynamicsBase* arg_dynamics)
-  { return scl::COpPointTask::init(arg_task_data, arg_dynamics);  }
+  { return scl::CTaskOpPos::init(arg_task_data, arg_dynamics);  }
 
   /** Return this task controller's task data structure.*/
   virtual STaskBase* getTaskData()
-  { return scl::COpPointTask::getTaskData();  }
+  { return scl::CTaskOpPos::getTaskData();  }
 
   /** Resets the task by removing its data.
    * NOTE : Does not deallocate its data structure*/
   virtual void reset()
-  { return scl::COpPointTask::reset();  }
+  { return scl::CTaskOpPos::reset();  }
 
   /** Computes the task torques */
   virtual bool computeServo(const SRobotSensorData* arg_sensors)
-  { return scl::COpPointTask::computeServo(arg_sensors);  }
+  { return scl::CTaskOpPos::computeServo(arg_sensors);  }
 
   /** Computes the dynamics (task model)
    * Assumes that the data_->model_.gc_model_ has been updated. */
   virtual bool computeModel()
-  { return scl::COpPointTask::computeModel();  }
+  { return scl::CTaskOpPos::computeModel();  }
 
   /********************************
    * CTaskOpPosNoGravity specific functions
    *********************************/
   /** Default constructor : Does nothing   */
-  CTaskOpPosNoGravity() : COpPointTask()
+  CTaskOpPosNoGravity() : CTaskOpPos()
   { flag_compute_gravity_= false; }
 
   /** Default destructor : Does nothing.   */

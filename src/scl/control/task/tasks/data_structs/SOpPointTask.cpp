@@ -41,18 +41,18 @@ namespace scl
 #define SCL_COPPTTASK_SPATIAL_RESOLUTION 0.005
 #define SCL_COPPTTASK_TASK_DOF 3
 
-  SOpPointTask::SOpPointTask() : STaskBase(),
+  STaskOpPos::STaskOpPos() : STaskBase(),
       link_name_(""),
       link_ds_(S_NULL),
       spatial_resolution_(SCL_COPPTTASK_SPATIAL_RESOLUTION),
       link_dynamic_id_(S_NULL)
   { }
 
-  SOpPointTask::~SOpPointTask()
+  STaskOpPos::~STaskOpPos()
   { }
 
 
-  bool SOpPointTask::initTaskParams()
+  bool STaskOpPos::initTaskParams()
   {
     try
     {

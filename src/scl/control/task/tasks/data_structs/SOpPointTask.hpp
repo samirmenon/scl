@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  class SOpPointTask : public scl::STaskBase
+  class STaskOpPos : public scl::STaskBase
   {
   public:
     //Computed attributes (last measured, in x dimensional task-space)
@@ -61,10 +61,10 @@ namespace scl
     const void *link_dynamic_id_;   //For quickly obtaining a task Jacobian
 
     /** Default constructor sets stuff to S_NULL */
-    SOpPointTask();
+    STaskOpPos();
 
     /** Default destructor does nothing */
-    virtual ~SOpPointTask();
+    virtual ~STaskOpPos();
 
     /** 1. Initializes the task specific data members.
      *

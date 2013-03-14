@@ -544,11 +544,11 @@ namespace scl_registry
       flag = typeCTask.registerType();
       if(false == flag) {throw(std::runtime_error("CTaskController"));}
 
-      sutil::CDynamicType<std::string,scl::COpPointTask> typeCOpPointTask(std::string("COpPointTask"));
+      sutil::CDynamicType<std::string,scl::CTaskOpPos> typeCOpPointTask(std::string("COpPointTask"));
       flag = typeCOpPointTask.registerType();
       if(false == flag) {throw(std::runtime_error("COpPointTask"));}
 
-      sutil::CDynamicType<std::string,scl::SOpPointTask> typeSOpPointTask(std::string("SOpPointTask"));
+      sutil::CDynamicType<std::string,scl::STaskOpPos> typeSOpPointTask(std::string("SOpPointTask"));
       flag = typeSOpPointTask.registerType();
       if(false == flag) {throw(std::runtime_error("SOpPointTask"));}
 

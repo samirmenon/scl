@@ -50,7 +50,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  COpPointTask::COpPointTask() :
+  CTaskOpPos::CTaskOpPos() :
       CTaskBase(),
       data_(S_NULL),
       lambda_inv_singular_(false),
@@ -60,7 +60,7 @@ namespace scl
   //************************
   // Inherited stuff
   //************************
-  bool COpPointTask::init(STaskBase* arg_task_data,
+  bool CTaskOpPos::init(STaskBase* arg_task_data,
       CDynamicsBase* arg_dynamics)
   {
     try
@@ -77,7 +77,7 @@ namespace scl
       if(false == arg_dynamics->hasBeenInit())
       { throw(std::runtime_error("Passed an uninitialized dynamics object"));  }
 
-      data_ = dynamic_cast<SOpPointTask*>(arg_task_data);
+      data_ = dynamic_cast<STaskOpPos*>(arg_task_data);
 
       dynamics_ = arg_dynamics;
       data_->link_dynamic_id_ = dynamics_->getIdForLink(data_->link_name_);
@@ -102,10 +102,10 @@ namespace scl
     return has_been_init_;
   }
 
-  STaskBase* COpPointTask::getTaskData()
+  STaskBase* CTaskOpPos::getTaskData()
   { return data_; }
 
-  void COpPointTask::reset()
+  void CTaskOpPos::reset()
   {
     data_ = S_NULL;
     dynamics_ = S_NULL;
@@ -113,7 +113,7 @@ namespace scl
   }
 
 
-bool COpPointTask::computeServo(const SRobotSensorData* arg_sensors)
+bool CTaskOpPos::computeServo(const SRobotSensorData* arg_sensors)
 {
 #ifdef DEBUG
   assert(has_been_init_);
@@ -162,7 +162,7 @@ bool COpPointTask::computeServo(const SRobotSensorData* arg_sensors)
 
 /** Computes the dynamics (task model)
  * Assumes that the data_->model_.gc_model_ has been updated. */
-bool COpPointTask::computeModel()
+bool CTaskOpPos::computeModel()
 {
 #ifdef DEBUG
   assert(has_been_init_);
@@ -272,7 +272,7 @@ bool COpPointTask::computeModel()
 // Task specific stuff
 //************************
 
-bool COpPointTask::achievedGoalPos()
+bool CTaskOpPos::achievedGoalPos()
 {
   sFloat dist;
   dist = fabs((data_->x_goal_ - data_->x_).norm());
