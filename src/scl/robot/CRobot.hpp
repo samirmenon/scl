@@ -130,19 +130,19 @@ namespace scl
     void setFlagApplyDamping(sBool arg_flag)
     { data_.parsed_robot_data_->flag_apply_gc_damping_ = arg_flag;  }
 
-    /** Sets the velocity damping for each joint
+    /** Sets the velocity damping for each gc dof
      * WARNING: This will overwrite the values read in from the config file */
     sBool setDamping(const Eigen::VectorXd& arg_d);
 
-    /** Turn joint limits on or off. Turning it on will
+    /** Turn gc dof limits on or off. Turning it on will
      * make the robot lose 99% velocity and all acceleration
-     * for a joint if it collides with its limits */
-    void setFlagApplyJointLimits(sBool arg_flag)
+     * for a gc dof if it collides with its limits */
+    void setFlagApplyGcPosLimits(sBool arg_flag)
     { data_.parsed_robot_data_->flag_apply_gc_pos_limits_ = arg_flag;  }
 
-    /** Sets the velocity damping for each joint
+    /** Sets the velocity damping for each gc dof
      * WARNING: This will overwrite the values read in from the config file */
-    sBool setJointLimits(const Eigen::VectorXd& arg_max,
+    sBool setGcPosLimits(const Eigen::VectorXd& arg_max,
         const Eigen::VectorXd& arg_min);
 
     /** Turn the actuator limits on or off. Simulates physical
@@ -150,7 +150,7 @@ namespace scl
     void setFlagApplyActuatorForceLimits(sBool arg_flag)
     { data_.parsed_robot_data_->flag_apply_actuator_force_limits_ = arg_flag;  }
 
-    /** Sets the actuator limits for each joint
+    /** Sets the actuator limits for each gc dof
      * WARNING: This will overwrite the values read in from the config file */
     sBool setActuatorForceLimits(const Eigen::VectorXd& arg_max,
         const Eigen::VectorXd& arg_min);

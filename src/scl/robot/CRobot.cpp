@@ -112,7 +112,7 @@ namespace scl
     if((S_NULL != integrator_)
         && data_.has_been_init_)
     {
-      //Apply joint limits and collision with heavy energy loss.
+      //Apply gc limits and collision with heavy energy loss.
       if(data_.parsed_robot_data_->flag_apply_actuator_force_limits_) //Force limits controlled by a flag
       {
         data_.io_data_->actuators_.force_gc_commanded_.array().min(data_.parsed_robot_data_->actuator_forces_max_.array());
@@ -128,9 +128,9 @@ namespace scl
             data_.io_data_->sensors_.dq_.array() * data_.parsed_robot_data_->damping_.array(); //1% Velocity damping.
       }
 
-      /* Note: Most models' joint limits are not correct right now. Uncomment this after
+      /* Note: Most models' gc limits are not correct right now. Uncomment this after
        * fixing them: */
-      //Apply joint limits and collision with heavy energy loss.
+      //Apply gc limits and collision with heavy energy loss.
       if(data_.parsed_robot_data_->flag_apply_gc_pos_limits_)
       {
         /* It is normally easier to do this:
@@ -147,7 +147,7 @@ namespace scl
           assert(data_.parsed_robot_data_->gc_pos_limit_max_(i) >
           data_.parsed_robot_data_->gc_pos_limit_min_(i));
 #endif
-          //NOTE TODO : Implement the joint limit parsing and fix q at the joint limits
+          //NOTE TODO : Implement the gc limit parsing and fix q at the gc limits
           if(data_.io_data_->sensors_.q_(i) > data_.parsed_robot_data_->gc_pos_limit_max_(i))
           { data_.io_data_->sensors_.q_(i) = data_.parsed_robot_data_->gc_pos_limit_max_(i); }
           else if(data_.io_data_->sensors_.q_(i) < data_.parsed_robot_data_->gc_pos_limit_min_(i))
@@ -158,11 +158,11 @@ namespace scl
           data_.io_data_->sensors_.dq_(i) = data_.io_data_->sensors_.dq_(i) * 0.01;//99% energy loss
           data_.io_data_->sensors_.ddq_(i) = 0;
 #ifdef DEBUG
-          std::cout<<"\nCollided with joint limits: "<<i<<" : "<<tmp->name_
+          std::cout<<"\nCollided with gc limits: "<<i<<" : "<<tmp->name_
               <<" : "<<data_.io_data_->sensors_.q_(i)<<". Lim : "
               <<data_.parsed_robot_data_->gc_pos_limit_min_(i)<<"-"
               <<data_.parsed_robot_data_->gc_pos_limit_max_(i);
-          std::cout<<"\nFull joint state: "<<data_.io_data_->sensors_.q_.transpose();
+          std::cout<<"\nFull gc state: "<<data_.io_data_->sensors_.q_.transpose();
           std::cout<<"\nSleeping for a second";
           sleep(1);
 #endif
@@ -317,7 +317,7 @@ namespace scl
   //                       Robot helper functions
   // **********************************************************************
 
-  /** Sets the velocity damping for each joint */
+  /** Sets the velocity damping for each gc dof */
   sBool CRobot::setDamping(const Eigen::VectorXd& arg_d)
   {
     sBool flag;
@@ -327,9 +327,9 @@ namespace scl
     return flag;
   }
 
-  /** Sets the velocity damping for each joint
+  /** Sets the velocity damping for each gc dof
    * WARNING: This will overwrite the values read in from the config file */
-  sBool CRobot::setJointLimits(const Eigen::VectorXd& arg_max,
+  sBool CRobot::setGcPosLimits(const Eigen::VectorXd& arg_max,
       const Eigen::VectorXd& arg_min)
   {
     if((static_cast<sUInt>(arg_max.size()) == data_.io_data_->dof_) &&
@@ -342,7 +342,7 @@ namespace scl
     return false;
   }
 
-  /** Sets the actuator limits for each joint */
+  /** Sets the actuator limits for each actuator */
   sBool CRobot::setActuatorForceLimits(const Eigen::VectorXd& arg_max,
       const Eigen::VectorXd& arg_min)
   {
