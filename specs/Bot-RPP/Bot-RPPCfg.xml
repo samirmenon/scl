@@ -28,6 +28,14 @@
 			        </obj_file>
             </graphics>
         </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>true</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
     </robot>
 
     <graphics name="RPPStdView">

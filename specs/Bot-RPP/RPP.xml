@@ -44,7 +44,7 @@
 		<joint_name>q1-py</joint_name>
 		<parent_link_name>link0</parent_link_name>
 		<joint_type>py</joint_type>
-		<joint_limits>-3.141590 3.141590</joint_limits>
+		<joint_limits>-0.29 0.65</joint_limits>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
@@ -73,7 +73,7 @@
 		<joint_name>q2-pz</joint_name>
 		<parent_link_name>link1</parent_link_name>
 		<joint_type>pz</joint_type>
-		<joint_limits>-3.141590 3.141590</joint_limits>
+		<joint_limits>-0.75 0.0</joint_limits>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
