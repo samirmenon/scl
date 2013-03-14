@@ -49,16 +49,16 @@ SET(CTR_SRC ${SCL_INC_DIR}/control/data_structs/SControllerBase.cpp
    )
    
 SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
-                  ${SCL_INC_DIR}/control/task/tasks/COpPointTask.cpp
-                  ${SCL_INC_DIR}/control/task/tasks/data_structs/SOpPointTask.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/CTaskOpPos.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskOpPos.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskNullSpaceDamping.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskNullSpaceDamping.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskGc.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskGc.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskGcSet.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskGcSet.cpp
-                  ${SCL_INC_DIR}/control/task/tasks/CComPosTask.cpp
-                  ${SCL_INC_DIR}/control/task/tasks/data_structs/SComPosTask.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/CTaskComPos.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskComPos.cpp
    )
    
 SET(CTR_TRAJ_SRC ${SCL_INC_DIR}/control/trajectory/OTG/TypeIOTG.cpp
