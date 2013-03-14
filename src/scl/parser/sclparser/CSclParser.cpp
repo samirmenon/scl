@@ -127,11 +127,19 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
     tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
     tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
+    // *****************************************************************
+    //                        Find the robot's xml
+    // *****************************************************************
+
     //Read in the links.
     tiElem_robot = tiHndl_world.FirstChildElement( "robot" ).ToElement();
 
     sUInt robot_ctr=0;
 
+    // *****************************************************************
+    //          Loop over the robot xml for each robot
+    // We loop to just double check that no two robots have the same name
+    // *****************************************************************
     //Iterating with TiXmlElement is faster than TiXmlHandle
     for(; tiElem_robot; tiElem_robot=tiElem_robot->NextSiblingElement("robot") )
     {
@@ -158,6 +166,9 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
         break; //In release mode, we ignore the extra robots. Move on.
       }
 
+      // *****************************************************************
+      //                        Start parsing the robot
+      // *****************************************************************
       //Read in the gravity that will apply to the robot
       TiXmlElement* grav_data;
       grav_data = _robot_handle.FirstChildElement( "gravity" ).Element();
@@ -171,6 +182,111 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       else
       {throw(std::runtime_error("Error reading joint gravity"));}
 
+      // *****************************************************************
+      //                        Now parse the optional flags
+      // *****************************************************************
+      //Read in the gravity that will apply to the robot
+      //All flags are optional
+      TiXmlElement* xmlflags;
+      xmlflags = _robot_handle.FirstChildElement( "flag_gc_damping" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sss;
+        ss>>sss;
+        if("true" == sss || "1" == sss)
+        { arg_robot.flag_apply_damping_ = true;  }
+        else
+        { arg_robot.flag_apply_damping_ = false;  }
+      }
+
+      xmlflags = _robot_handle.FirstChildElement( "flag_gc_limits" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sss;
+        ss>>sss;
+        if("true" == sss || "1" == sss)
+        { arg_robot.flag_apply_joint_limits_ = true;  }
+        else
+        { arg_robot.flag_apply_joint_limits_ = false;  }
+      }
+
+      xmlflags = _robot_handle.FirstChildElement( "flag_actuator_force_limits" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sss;
+        ss>>sss;
+        if("true" == sss || "1" == sss)
+        { arg_robot.flag_apply_actuator_force_limits_ = true;  }
+        else
+        { arg_robot.flag_apply_actuator_force_limits_ = false;  }
+      }
+
+      xmlflags = _robot_handle.FirstChildElement( "flag_actuator_vel_limits" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sss;
+        ss>>sss;
+        if("true" == sss || "1" == sss)
+        { arg_robot.flag_apply_actuator_vel_limits_ = true;  }
+        else
+        { arg_robot.flag_apply_actuator_vel_limits_ = false;  }
+      }
+
+      xmlflags = _robot_handle.FirstChildElement( "flag_actuator_acc_limits" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sss;
+        ss>>sss;
+        if("true" == sss || "1" == sss)
+        { arg_robot.flag_apply_actuator_acc_limits_ = true;  }
+        else
+        { arg_robot.flag_apply_actuator_acc_limits_ = false;  }
+      }
+
+      xmlflags = _robot_handle.FirstChildElement( "flag_actuator_acc_limits" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sss;
+        ss>>sss;
+        if("true" == sss || "1" == sss)
+        { arg_robot.flag_apply_actuator_acc_limits_ = true;  }
+        else
+        { arg_robot.flag_apply_actuator_acc_limits_ = false;  }
+      }
+
+      xmlflags = _robot_handle.FirstChildElement( "flag_controller_on" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sss;
+        ss>>sss;
+        if("true" == sss || "1" == sss)
+        { arg_robot.flag_controller_on_ = true;  }
+        else
+        { arg_robot.flag_controller_on_ = false;  }
+      }
+
+      xmlflags = _robot_handle.FirstChildElement( "flag_logging_on" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sss;
+        ss>>sss;
+        if("true" == sss || "1" == sss)
+        { arg_robot.flag_logging_on_ = true;  }
+        else
+        { arg_robot.flag_logging_on_ = false;  }
+      }
+
+      // *****************************************************************
+      //                        Now parse the links
+      // *****************************************************************
       TiXmlElement* link_data;
       std::string spec, spec_file;
 
