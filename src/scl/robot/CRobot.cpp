@@ -58,17 +58,6 @@ namespace scl
         //Computes the command torques for the simulator to the controller's computed torques
         //Also stores the output in the io_data_->actuator data structure
         flag = ctrl_current_->computeControlForces();
-
-        if(data_.parsed_robot_data_->flag_apply_actuator_force_limits_) //Force limits controlled by a flag
-        {
-          for(sUInt i=0; i<data_.io_data_->dof_; i++)
-          {
-            if(data_.io_data_->actuators_.force_gc_commanded_(i) < data_.parsed_robot_data_->min_actuator_forces_(i))
-              data_.io_data_->actuators_.force_gc_commanded_(i) = data_.parsed_robot_data_->min_actuator_forces_(i);
-            else if(data_.io_data_->actuators_.force_gc_commanded_(i) > data_.parsed_robot_data_->max_actuator_forces_(i))
-              data_.io_data_->actuators_.force_gc_commanded_(i) = data_.parsed_robot_data_->max_actuator_forces_(i);
-          }
-        }
       }
       else
       {//Controller off
@@ -123,9 +112,16 @@ namespace scl
     if((S_NULL != integrator_)
         && data_.has_been_init_)
     {
+      //Apply joint limits and collision with heavy energy loss.
+      if(data_.parsed_robot_data_->flag_apply_actuator_force_limits_) //Force limits controlled by a flag
+      {
+        data_.io_data_->actuators_.force_gc_commanded_.array().min(data_.parsed_robot_data_->max_actuator_forces_.array());
+        data_.io_data_->actuators_.force_gc_commanded_.array().max(data_.parsed_robot_data_->min_actuator_forces_.array());
+      }
+
       flag = integrator_->integrate(*(data_.io_data_), CDatabase::getData()->sim_dt_);
 
-      //NOTE TODO : DESIGN DECISION : Consider moving these into the integrator instead.
+      //Apply gc damping
       if(data_.parsed_robot_data_->flag_apply_damping_)
       {
         data_.io_data_->sensors_.dq_.array() -=
@@ -137,6 +133,13 @@ namespace scl
       //Apply joint limits and collision with heavy energy loss.
       if(data_.parsed_robot_data_->flag_apply_joint_limits_)
       {
+        /* It is normally easier to do this:
+         * x = x.array().min(max.array());//Min of self and max
+         * x = x.array().max(min.array());//Max of self and min
+         *
+         * However, we also have to set the acceleration and velocity
+         * so it is just more straightforward to loop through the code.
+         */
         for(int i=0; i< data_.io_data_->dof_;++i)
         {
 #ifdef DEBUG
