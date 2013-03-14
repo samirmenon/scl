@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
  */
-/* \file CComPosTask.hpp
+/* \file CTaskComPos.hpp
  *
  *  Created on: Sep 2, 2012
  *
@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CCOMPOSTASK_HPP_
 
 #include <scl/DataTypes.hpp>
-#include <scl/control/task/tasks/data_structs/SComPosTask.hpp>
+#include <scl/control/task/tasks/data_structs/STaskComPos.hpp>
 #include <scl/control/task/CTaskBase.hpp>
 
 #include <Eigen/Dense>
@@ -68,7 +68,7 @@ namespace scl
     virtual bool computeModel();
 
     /********************************
-     * CComPosTask specific functions
+     * CTaskComPos specific functions
      *********************************/
     /** Return this task controller's task data structure.*/
     virtual STaskBase* getTaskData();

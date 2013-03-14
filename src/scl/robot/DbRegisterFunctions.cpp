@@ -62,8 +62,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskNullSpaceDamping.hpp>
 #include <scl/control/task/tasks/data_structs/STaskNullSpaceDamping.hpp>
 
-#include <scl/control/task/tasks/CComPosTask.hpp>
-#include <scl/control/task/tasks/data_structs/SComPosTask.hpp>
+#include <scl/control/task/tasks/CTaskComPos.hpp>
+#include <scl/control/task/tasks/data_structs/STaskComPos.hpp>
 
 #include <sutil/CRegisteredDynamicTypes.hpp>
 
@@ -584,13 +584,13 @@ namespace scl_registry
       flag = typeSTaskGcSet.registerType();
       if(false == flag) {throw(std::runtime_error("STaskGcSet"));}
 
-      sutil::CDynamicType<std::string,scl::CTaskComPos> typeCComPosTask(std::string("CComPosTask"));
-      flag = typeCComPosTask.registerType();
-      if(false == flag) {throw(std::runtime_error("CComPosTask"));}
+      sutil::CDynamicType<std::string,scl::CTaskComPos> typeCTaskComPos(std::string("CTaskComPos"));
+      flag = typeCTaskComPos.registerType();
+      if(false == flag) {throw(std::runtime_error("CTaskComPos"));}
 
-      sutil::CDynamicType<std::string,scl::STaskComPos> typeSComPosTask(std::string("SComPosTask"));
-      flag = typeSComPosTask.registerType();
-      if(false == flag) {throw(std::runtime_error("SComPosTask"));}
+      sutil::CDynamicType<std::string,scl::STaskComPos> typeSTaskComPos(std::string("STaskComPos"));
+      flag = typeSTaskComPos.registerType();
+      if(false == flag) {throw(std::runtime_error("STaskComPos"));}
     }
     catch (std::exception& e)
     {

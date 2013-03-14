@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SComPosTask.cpp
+/* \file STaskComPos.cpp
  *
  *  Created on: Sep 2, 2012
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "SComPosTask.hpp"
+#include "STaskComPos.hpp"
 
 #include <stdexcept>
 #include <iostream>
@@ -67,7 +67,7 @@ namespace scl
     }
     catch(std::exception& e)
     {
-      std::cerr<<"\nSComPosTask::init() : "<<e.what();
+      std::cerr<<"\nSTaskComPos::init() : "<<e.what();
       return false;
     }
     return true;

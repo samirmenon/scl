@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
  */
-/* \file CComPosTask.cpp
+/* \file CTaskComPos.cpp
  *
  *  Created on: Sep 2, 2012
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <scl/control/task/tasks/CComPosTask.hpp>
+#include <scl/control/task/tasks/CTaskComPos.hpp>
 
 #include <stdio.h>
 #include <iostream>
@@ -93,7 +93,7 @@ namespace scl
     }
     catch(std::exception& e)
     {
-      std::cerr<<"\nCComPosTask::init() :"<<e.what();
+      std::cerr<<"\nCTaskComPos::init() :"<<e.what();
       has_been_init_ = false;
     }
     return has_been_init_;
@@ -186,7 +186,7 @@ namespace scl
         { data_->lambda_ = qr_.inverse();  }
         else
         {
-          std::cout<<"\nCComPosTask::computeModel() : Warning. Lambda_inv is rank deficient. Using svd. Rank = "<<qr_.rank();
+          std::cout<<"\nCTaskComPos::computeModel() : Warning. Lambda_inv is rank deficient. Using svd. Rank = "<<qr_.rank();
           lambda_inv_singular_ = true;
         }
       }
