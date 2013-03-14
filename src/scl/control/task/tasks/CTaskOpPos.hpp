@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file COpPointTask.hpp
+/* \file CTaskOpPos.hpp
  *
  *  Created on: Aug 19, 2010
  *
@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 
-#include <scl/control/task/tasks/data_structs/SOpPointTask.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
 
 #include <scl/control/task/CTaskBase.hpp>
 
@@ -85,7 +85,7 @@ public:
   virtual bool computeModel();
 
   /********************************
-   * COpPointTask specific functions
+   * CTaskOpPos specific functions
    *********************************/
   /** Default constructor : Does nothing   */
   CTaskOpPos();

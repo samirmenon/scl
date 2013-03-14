@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file COpPointTask.cpp
+/* \file CTaskOpPos.cpp
  *
  *  Created on: Aug 19, 2010
  *
@@ -29,9 +29,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/control/task/tasks/CTaskOpPos.hpp>
 
-#include <scl/control/task/tasks/data_structs/SOpPointTask.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
 
 #include <stdio.h>
 #include <iostream>
@@ -96,7 +96,7 @@ namespace scl
     }
     catch(std::exception& e)
     {
-      std::cerr<<"\nCOpPointTask::init() :"<<e.what();
+      std::cerr<<"\nCTaskOpPos::init() :"<<e.what();
       has_been_init_ = false;
     }
     return has_been_init_;
@@ -200,7 +200,7 @@ bool CTaskOpPos::computeModel()
       { data_->lambda_ = qr_.inverse();  }
       else
       {
-        std::cout<<"\nCOpPointTask::computeModel() : Warning. Lambda_inv is rank deficient. Using svd. Rank = "<<qr_.rank();
+        std::cout<<"\nCTaskOpPos::computeModel() : Warning. Lambda_inv is rank deficient. Using svd. Rank = "<<qr_.rank();
         lambda_inv_singular_ = true;
       }
     }

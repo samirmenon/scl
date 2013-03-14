@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SOpPointTask.hpp
+/* \file STaskOpPos.hpp
  *
  *  Created on: Jan 1, 2011
  *

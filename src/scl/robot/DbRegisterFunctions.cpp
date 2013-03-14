@@ -47,8 +47,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/control/task/data_structs/STaskBase.hpp>
 
-#include <scl/control/task/tasks/COpPointTask.hpp>
-#include <scl/control/task/tasks/data_structs/SOpPointTask.hpp>
+#include <scl/control/task/tasks/CTaskOpPos.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
 
 #include <scl/control/task/tasks/CTaskOpPosNoGravity.hpp>
 #include <scl/control/task/tasks/data_structs/STaskOpPosNoGravity.hpp>
@@ -529,7 +529,7 @@ namespace scl_registry
   /**
    * Registers the native dynamic types:
    *  1. CControllerBase subclasses : CGcController, CTaskController
-   *  2. CTaskBase subclasses : COpPointTask, CGcTask, CFrameTrackTask, CContactTask
+   *  2. CTaskBase subclasses : CTaskOpPos, CGcTask, CFrameTrackTask, CContactTask
    */
   scl::sBool registerNativeDynamicTypes()
   {
@@ -544,13 +544,13 @@ namespace scl_registry
       flag = typeCTask.registerType();
       if(false == flag) {throw(std::runtime_error("CTaskController"));}
 
-      sutil::CDynamicType<std::string,scl::CTaskOpPos> typeCOpPointTask(std::string("COpPointTask"));
-      flag = typeCOpPointTask.registerType();
-      if(false == flag) {throw(std::runtime_error("COpPointTask"));}
+      sutil::CDynamicType<std::string,scl::CTaskOpPos> typeCTaskOpPos(std::string("CTaskOpPos"));
+      flag = typeCTaskOpPos.registerType();
+      if(false == flag) {throw(std::runtime_error("CTaskOpPos"));}
 
-      sutil::CDynamicType<std::string,scl::STaskOpPos> typeSOpPointTask(std::string("SOpPointTask"));
-      flag = typeSOpPointTask.registerType();
-      if(false == flag) {throw(std::runtime_error("SOpPointTask"));}
+      sutil::CDynamicType<std::string,scl::STaskOpPos> typeSTaskOpPos(std::string("STaskOpPos"));
+      flag = typeSTaskOpPos.registerType();
+      if(false == flag) {throw(std::runtime_error("STaskOpPos"));}
 
       sutil::CDynamicType<std::string,scl::CTaskOpPosNoGravity> typeCTaskOpPosNoGravity(std::string("CTaskOpPosNoGravity"));
       flag = typeCTaskOpPosNoGravity.registerType();

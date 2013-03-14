@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SOpPointTask.cpp
+/* \file STaskOpPos.cpp
  *
  *  Created on: Jan 1, 2011
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "SOpPointTask.hpp"
+#include "STaskOpPos.hpp"
 
 #include <stdexcept>
 #include <iostream>
@@ -116,7 +116,7 @@ namespace scl
     }
     catch(std::exception& e)
     {
-      std::cerr<<"\nSOpPointTask::init() : "<<e.what();
+      std::cerr<<"\nSTaskOpPos::init() : "<<e.what();
       return false;
     }
     return true;

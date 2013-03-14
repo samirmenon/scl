@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/control/task/tasks/data_structs/STaskOpPosNoGravity.hpp>
 
-#include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/control/task/tasks/CTaskOpPos.hpp>
 
 #include <Eigen/Dense>
 #include <Eigen/SVD>

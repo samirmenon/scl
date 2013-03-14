@@ -33,13 +33,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define STASKOPPOSNOGRAVITY_HPP_
 
 #include <scl/DataTypes.hpp>
-#include <scl/control/task/tasks/data_structs/SOpPointTask.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
 
 #include <Eigen/Dense>
 
 namespace scl
 {
-  /** This is identical to the SOpPointTask for now */
+  /** This is identical to the STaskOpPos for now */
   class STaskOpPosNoGravity : public scl::STaskOpPos
   {
   public:
