@@ -33,47 +33,21 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define STASKOPPOSNOGRAVITY_HPP_
 
 #include <scl/DataTypes.hpp>
-#include <scl/control/task/data_structs/STaskBase.hpp>
+#include <scl/control/task/tasks/data_structs/SOpPointTask.hpp>
 
 #include <Eigen/Dense>
 
 namespace scl
 {
-
-  class STaskOpPosNoGravity : public scl::STaskBase
+  /** This is identical to the SOpPointTask for now */
+  class STaskOpPosNoGravity : public scl::SOpPointTask
   {
   public:
-    //Computed attributes (last measured, in x dimensional task-space)
-    Eigen::VectorXd x_;             //Position in the global frame
-    Eigen::VectorXd dx_;            //Velocity in the global frame
-    Eigen::VectorXd ddx_;           //Acceleration in the global frame
-
-    Eigen::VectorXd x_goal_;        //Goal Position in the global frame
-    Eigen::VectorXd dx_goal_;       //Goal Velocity in the global frame
-    Eigen::VectorXd ddx_goal_;      //Goal Acceleration in the global frame
-
-    Eigen::Vector3d pos_in_parent_; //Position in the parent link's local frame (x,y,z)
-    std::string link_name_;         //The parent link
-    const SRobotLink *link_ds_;     //The parent link's parsed data structure
-
-    sFloat spatial_resolution_;     //Meters
-
-    const void *link_dynamic_id_;   //For quickly obtaining a task Jacobian
-
     /** Default constructor sets stuff to S_NULL */
-    STaskOpPosNoGravity();
+    STaskOpPosNoGravity(){}
 
     /** Default destructor does nothing */
-    virtual ~STaskOpPosNoGravity();
-
-    /** 1. Initializes the task specific data members.
-     *
-     * 2. Parses non standard task parameters,
-     * which are stored in STaskBase::task_nonstd_params_.
-     * Namely:
-     *  (a) parent link name
-     *  (b) pos in parent.*/
-    virtual bool initTaskParams();
+    virtual ~STaskOpPosNoGravity() {}
   };
 
 }

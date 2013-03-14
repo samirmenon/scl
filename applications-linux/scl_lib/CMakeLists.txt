@@ -52,7 +52,6 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
                   ${SCL_INC_DIR}/control/task/tasks/COpPointTask.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/SOpPointTask.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskOpPosNoGravity.cpp
-                  ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskOpPosNoGravity.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskNullSpaceDamping.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskNullSpaceDamping.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskGc.cpp

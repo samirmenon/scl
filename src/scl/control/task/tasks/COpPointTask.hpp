@@ -108,7 +108,7 @@ public:
   /** Whether the task has achieved its goal position. */
   sBool achievedGoalPos();
 
-private:
+protected:
   /** The actual data structure for this computational object */
   SOpPointTask* data_;
 

@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/control/task/tasks/data_structs/STaskOpPosNoGravity.hpp>
 
-#include <scl/control/task/CTaskBase.hpp>
+#include <scl/control/task/tasks/COpPointTask.hpp>
 
 #include <Eigen/Dense>
 #include <Eigen/SVD>
@@ -59,7 +59,7 @@ namespace scl
    * 2. The task servo (computes the dynamically decoupled task
    * forces and the torques. uses the task model to do so).
    */
-class CTaskOpPosNoGravity : public scl::CTaskBase
+class CTaskOpPosNoGravity : public scl::COpPointTask
 {
 public:
   /********************************
@@ -68,17 +68,21 @@ public:
   /** Initializes the task object. Required to set output
    * gc force dofs */
   virtual bool init(STaskBase* arg_task_data,
-      CDynamicsBase* arg_dynamics);
+      CDynamicsBase* arg_dynamics)
+  { return scl::COpPointTask::init(arg_task_data, arg_dynamics);  }
 
   /** Return this task controller's task data structure.*/
-  virtual STaskBase* getTaskData();
+  virtual STaskBase* getTaskData()
+  { return scl::COpPointTask::getTaskData();  }
 
   /** Resets the task by removing its data.
    * NOTE : Does not deallocate its data structure*/
-  virtual void reset();
+  virtual void reset()
+  { return scl::COpPointTask::reset();  }
 
   /** Computes the task torques */
-  virtual bool computeServo(const SRobotSensorData* arg_sensors);
+  virtual bool computeServo(const SRobotSensorData* arg_sensors)
+  { return scl::COpPointTask::computeServo(arg_sensors);  }
 
   /** Computes the dynamics (task model)
    * Assumes that the data_->model_.gc_model_ has been updated. */
@@ -92,39 +96,6 @@ public:
 
   /** Default destructor : Does nothing.   */
   virtual ~CTaskOpPosNoGravity(){}
-
-  /** Sets the current goal position */
-  inline void setGoal(const Eigen::VectorXd & arg_goal)
-  { data_->x_goal_ = arg_goal;  }
-
-  /** Sets the current goal velocity */
-  inline void setGoalVel(const Eigen::VectorXd & arg_goal)
-  { data_->dx_goal_ = arg_goal;  }
-
-  /** Sets the current goal acceleration */
-  inline void setGoalAcc(const Eigen::VectorXd & arg_goal)
-  { data_->ddx_goal_ = arg_goal;  }
-
-  /** Whether the task has achieved its goal position. */
-  sBool achievedGoalPos();
-
-private:
-  /** The actual data structure for this computational object */
-  STaskOpPosNoGravity* data_;
-
-  /** Temporary variables */
-  Eigen::VectorXd tmp1, tmp2;
-
-  /** For inverting the lambda matrix (when it gets singular) */
-  Eigen::ColPivHouseholderQR<Eigen::Matrix3d> qr_;
-
-  /** True when the lambda_inv matrix turns singular. */
-  sBool lambda_inv_singular_;
-
-  /** For inverting the operational space inertia matrix
-   * near singularities. 3x3 for operational point tasks. */
-  Eigen::JacobiSVD<Eigen::Matrix3d > svd_;
-  Eigen::Matrix3d singular_values_;
 };
 
 }
