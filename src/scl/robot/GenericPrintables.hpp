@@ -91,9 +91,9 @@ namespace sutil
   }
 
   template <>
-  void printToStream<scl::SRobotLink>(
+  void printToStream<scl::SRigidBody>(
       std::ostream& ostr,
-      const scl::SRobotLink& arg_data
+      const scl::SRigidBody& arg_data
   )
   {
     ostr<<"\n Name: "<<arg_data.name_;
@@ -159,11 +159,11 @@ namespace scl
         { std::cout<<"\n"<<std::setw(10)<< "Printable: Robot: "<<std::setw(51)<<rob.name_+std::string("Parsed"); }
 
         //Also add the links
-        sutil::CMappedTree<std::string, scl::SRobotLink>::iterator itl, itle;
+        sutil::CMappedTree<std::string, scl::SRigidBody>::iterator itl, itle;
         for(itl = rob.robot_br_rep_.begin(), itle = rob.robot_br_rep_.end();
             itl!=itle; ++itl)
         {
-          scl::SRobotLink& l = *itl;
+          scl::SRigidBody& l = *itl;
           flag = sutil::printables::add(l.name_,l);
           if(false == flag)
           {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+

@@ -57,7 +57,7 @@ public:
    *
    * The branching representation will store a tree of SRobotLink nodes
    * and will maintain a mapping between their names and the nodes. */
-  sutil::CMappedTree<std::string, SRobotLink> robot_br_rep_;
+  sutil::CMappedTree<std::string, SRigidBody> robot_br_rep_;
 
   /** The joint limit doesn't go below this */
   Eigen::VectorXd joint_limit_min_;

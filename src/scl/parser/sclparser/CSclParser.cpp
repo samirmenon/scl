@@ -109,7 +109,7 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
     scl::SRobotParsedData& arg_robot)
 {
   bool flag;
-  SRobotLink* tmp_link_ds=S_NULL;
+  SRigidBody* tmp_link_ds=S_NULL;
 
   try
   {
@@ -195,7 +195,7 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       { throw(std::runtime_error("\nError reading robot spec file name")); }
 
       //Add the root node
-      tmp_link_ds = new SRobotLink();
+      tmp_link_ds = new SRigidBody();
       if(S_NULL == tmp_link_ds) { throw(std::runtime_error("Couldn't allocate a root link")); }
       tmp_link_ds->init();
 
@@ -206,7 +206,7 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       TiXmlHandle root_link_handle(tmp_ele); //Back to handles
       flag = CSclTiXmlParser::readLink(root_link_handle, *tmp_link_ds, true);
 
-      SRobotLink* tmp_root = arg_robot.robot_br_rep_.create(tmp_link_ds->name_,*tmp_link_ds,true); //Add the root link
+      SRigidBody* tmp_root = arg_robot.robot_br_rep_.create(tmp_link_ds->name_,*tmp_link_ds,true); //Add the root link
       if(S_NULL == tmp_root)
       { throw(std::runtime_error("Couldn't create the root link in the branching representation"));  }
       tmp_root->is_root_=true;
@@ -233,11 +233,11 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       arg_robot.joint_limit_min_.setZero(arg_robot.dof_);
       arg_robot.joint_default_pos_.setZero(arg_robot.dof_);
 
-      sutil::CMappedTree<std::basic_string<char>, scl::SRobotLink>::iterator it, ite;
+      sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::iterator it, ite;
       for(it = arg_robot.robot_br_rep_.begin(), ite = arg_robot.robot_br_rep_.end();
           it!=ite; ++it)
       {
-        const SRobotLink& lnk = *it;
+        const SRigidBody& lnk = *it;
         if(lnk.link_id_ >= 0)
         {
           arg_robot.joint_limit_max_(lnk.link_id_) = lnk.joint_limit_upper_;
@@ -268,7 +268,7 @@ bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
     scl::SRobotParsedData& arg_robot)
 {
   bool flag;
-  SRobotLink* tmp_link_ds=S_NULL;
+  SRigidBody* tmp_link_ds=S_NULL;
   try
   {
     //Set up the parser.
@@ -333,7 +333,7 @@ bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
       for(; _child_link_element; _child_link_element=_child_link_element->NextSiblingElement("link") )
       {
         TiXmlHandle _child_link_handle(_child_link_element); //Back to handles
-        tmp_link_ds = new SRobotLink();
+        tmp_link_ds = new SRigidBody();
         if(S_NULL == tmp_link_ds) { throw(std::runtime_error("Couldn't allocate a root link")); }
         tmp_link_ds->init();
         tmp_link_ds->link_id_ = id; id++;
@@ -341,7 +341,7 @@ bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
         if(false == flag)
         { throw(std::runtime_error("Couldn't read a link")); }
         //Add the root node to the robdef
-        SRobotLink* tmp_link_child_ds = arg_robot.robot_br_rep_.create(tmp_link_ds->name_,*tmp_link_ds, false);
+        SRigidBody* tmp_link_child_ds = arg_robot.robot_br_rep_.create(tmp_link_ds->name_,*tmp_link_ds, false);
         tmp_link_child_ds->robot_name_ = arg_robot.name_;
         delete tmp_link_ds; tmp_link_ds = S_NULL;
       }
@@ -371,7 +371,7 @@ bool CSclParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
   FILE* fp=S_NULL;
   try
   {
-    const SRobotLink* tmp_lnk = arg_robot.robot_br_rep_.getRootNode();
+    const SRigidBody* tmp_lnk = arg_robot.robot_br_rep_.getRootNode();
     if(S_NULL == tmp_lnk)
     { throw(std::runtime_error("The robot doesn't have a root")); }
 
@@ -425,7 +425,7 @@ bool CSclParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
     /**
      * Loop over other links.
      */
-    sutil::CMappedTree<std::basic_string<char>, scl::SRobotLink>::iterator it, ite;
+    sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::iterator it, ite;
     for(it = arg_robot.robot_br_rep_.begin(), ite = arg_robot.robot_br_rep_.end();
         it!=ite; ++it)
     {
@@ -435,7 +435,7 @@ bool CSclParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
       { throw(std::runtime_error(
           "Corrupt robot branching representation. Parsed more links than the representation contains.")); }
 
-      scl::SRobotLink& tmp_lnk = *it;
+      scl::SRigidBody& tmp_lnk = *it;
 
       if(tmp_lnk.is_root_ == true)
       {//There should be only one root in the robot

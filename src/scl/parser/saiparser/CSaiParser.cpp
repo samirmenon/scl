@@ -50,7 +50,7 @@ bool CSaiParser::readRobotFromFile(const std::string& arg_file,
     scl::SRobotParsedData& arg_robot)
 {
   bool flag;
-  SRobotLink* tmp_link_ds=S_NULL;
+  SRigidBody* tmp_link_ds=S_NULL;
   try
   {
     //Set up the parser.
@@ -102,7 +102,7 @@ bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
   TiXmlElement* link_data;
   std::string lnk_name;
   bool flag;
-  SRobotLink* tmp_link_ds=S_NULL;
+  SRigidBody* tmp_link_ds=S_NULL;
 
   try
   {

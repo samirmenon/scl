@@ -63,7 +63,7 @@ namespace scl {
    */
 taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const SRobotParsedData& arg_robot)
 {
-  const SRobotLink* tmp_root; // For parsing the database
+  const SRigidBody* tmp_root; // For parsing the database
   taoNodeRoot * ret_tao_root;  // Returns a root node
   bool flag;
 
@@ -79,7 +79,7 @@ taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const SRobotParsedData& arg_robot
     //Traverse the robotRoot's tree and construct a tao tree structure
     //************************
     //Step 2a: Find the desired robot root.
-    const sutil::CMappedTree<std::string, SRobotLink> & br = arg_robot.robot_br_rep_;
+    const sutil::CMappedTree<std::string, SRigidBody> & br = arg_robot.robot_br_rep_;
     tmp_root = br.getRootNodeConst();//The root node.
     if (tmp_root == NULL)
     { throw(std::runtime_error("Robot doesn't have valid root node"));}
@@ -130,10 +130,10 @@ taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const SRobotParsedData& arg_robot
 /**This function creates child tao nodes for a given link in the robot's
  * definition. */
 bool CTaoRepCreator::createChildTaoNodes(
-    const SRobotLink* arg_link, taoNode* arg_parent)
+    const SRigidBody* arg_link, taoNode* arg_parent)
 {
   bool flag = true;
-	std::vector<SRobotLink*>::const_iterator child_iter, child_iterE;
+	std::vector<SRigidBody*>::const_iterator child_iter, child_iterE;
 	//Traverse the list of child links and create a taoNode for each one
 	for (child_iter = arg_link->child_addrs_.begin(),
 	    child_iterE = arg_link->child_addrs_.end();
@@ -179,7 +179,7 @@ bool CTaoRepCreator::createChildTaoNodes(
  * 4. The node's joint(s) -- typically each node represents <1 link,1 joint>
  */
 taoNode* CTaoRepCreator::
-createTaoNonRootNode(const SRobotLink* arg_link,
+createTaoNonRootNode(const SRigidBody* arg_link,
     const taoNode* arg_parent_node)
 {
   taoNode* ret_tao_node = S_NULL; //Create a node (a link in a branching structure)

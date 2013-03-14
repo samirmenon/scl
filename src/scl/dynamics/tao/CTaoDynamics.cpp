@@ -180,7 +180,7 @@ namespace scl
     jspace::STaoTreeInfo * cc_tree(jspace::create_bare_tao_tree_info(cc_root));
 
     //NOTE TODO Perhaps this was what TRY_TO_CONVERT_NAMES achieved
-    sutil::CMappedTree<std::basic_string<char>, scl::SRobotLink>::const_iterator itbr, itbre;
+    sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::const_iterator itbr, itbre;
     for(itbr = arg_robot_data.robot_br_rep_.begin(),
         itbre = arg_robot_data.robot_br_rep_.end();
         itbr!=itbre; ++itbr)
@@ -193,7 +193,7 @@ namespace scl
       ite = kgm_tree->info.end();
       for (/**/; it != ite; ++it, ++icc)
       {
-        const SRobotLink& l_ds = *itbr;
+        const SRigidBody& l_ds = *itbr;
         if (l_ds.name_ == it->node->name_)
         {
           it->link_name   = itbr->name_;

@@ -72,12 +72,12 @@ namespace scl {
 
     /** Creates a child tao node given a robot link with all
      * the required information to initialize the node. */
-    static bool createChildTaoNodes(const SRobotLink* arg_link,
+    static bool createChildTaoNodes(const SRigidBody* arg_link,
         taoNode* arg_parent);
 
     /**Creates a tao node for a non-root link given an initialized home frame
      * The node is added to the SRobotLink* structure. */
-    static taoNode* createTaoNonRootNode(const SRobotLink* arg_link,
+    static taoNode* createTaoNonRootNode(const SRigidBody* arg_link,
         const taoNode* arg_parent_node);
   };
 

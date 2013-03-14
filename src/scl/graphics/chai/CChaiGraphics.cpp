@@ -235,7 +235,7 @@ namespace scl {
 
   sBool CChaiGraphics::addRobotToRender(const std::string& arg_robot)
   {
-    const SRobotLink * tmp_root_link = S_NULL;
+    const SRigidBody * tmp_root_link = S_NULL;
     SGraphicsPhysicalLink* robot_brrep_root = S_NULL;
     try
     {
@@ -456,7 +456,7 @@ namespace scl {
       rob_gr_brrep = data_->robots_rendered_.at(arg_link->robot_link_->robot_name_);
 
       //4. Create the children (recurse)
-      std::vector<SRobotLink*>::const_iterator it,ite;
+      std::vector<SRigidBody*>::const_iterator it,ite;
       ite = arg_link->robot_link_->child_addrs_.end();
       for(it = arg_link->robot_link_->child_addrs_.begin();
           it!=ite;++it)
@@ -910,7 +910,7 @@ namespace scl {
           //1.b.i. Obtain all the data structures.
           SGraphicsPhysicalLink& lnk = *itgr;
 
-          const SRobotLink* lnk_robdata = lnk.robot_link_;
+          const SRigidBody* lnk_robdata = lnk.robot_link_;
 #ifdef DEBUG
           if(S_NULL == lnk_robdata) { throw(std::runtime_error("Found an uninitialized pointer to a robot link in the graphics pile"));  }
 #endif

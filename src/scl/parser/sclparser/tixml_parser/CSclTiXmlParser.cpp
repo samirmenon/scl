@@ -46,7 +46,7 @@ namespace scl_parser {
 
   bool CSclTiXmlParser::readLink(
       const TiXmlHandle & arg_link_txml,
-      scl::SRobotLink& arg_link_ds,
+      scl::SRigidBody& arg_link_ds,
       bool arg_is_root)
   {
     try

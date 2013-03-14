@@ -54,7 +54,7 @@ namespace scl
 
     Eigen::Vector3d pos_in_parent_; //Position in the parent link's local frame (x,y,z)
     std::string link_name_;         //The parent link
-    const SRobotLink *link_ds_;     //The parent link's parsed data structure
+    const SRigidBody *link_ds_;     //The parent link's parsed data structure
 
     sFloat spatial_resolution_;     //Meters
 

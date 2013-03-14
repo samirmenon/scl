@@ -50,7 +50,7 @@ using namespace scl;
 namespace scl_util
 {
 
-  void printRobotLinkTree(const SRobotLink &link, int depth)
+  void printRobotLinkTree(const SRigidBody &link, int depth)
   {
     if(S_NULL==link.parent_addr_)
     { std::cout<<"\nParent: <None>"<<" Robot: <"<<link.robot_name_<<">";  }
@@ -67,7 +67,7 @@ namespace scl_util
               <<", \nInertia: "<<link.inertia_
               <<std::flush;
 
-    std::vector<SRobotLink*>::const_iterator clink, clinke;
+    std::vector<SRigidBody*>::const_iterator clink, clinke;
     for(clink = link.child_addrs_.begin(),
         clinke = link.child_addrs_.end();
         clink != clinke; ++clink)

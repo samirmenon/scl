@@ -42,7 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-struct SRobotLink;
+struct SRigidBody;
 struct SRobotSensorData;
 
 class CGraphicsBase : public SObject

@@ -93,7 +93,7 @@ namespace scl
       Eigen::Affine3d T_com_;
 
       /** The data structure pointing to the static link information */
-      const SRobotLink* link_ds_;
+      const SRigidBody* link_ds_;
 
       /** The link's name.
        * This is redundant, but primarily for error checks,

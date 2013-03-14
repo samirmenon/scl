@@ -36,14 +36,14 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  SRobotLink::SRobotLink() : SObject(std::string("SRobotLink") )
+  SRigidBody::SRigidBody() : SObject(std::string("SRobotLink") )
   {
     init();
     has_been_init_ = false;
   }
 
   /** Sets the default parameter values */
-  void SRobotLink::init()
+  void SRigidBody::init()
   {
     is_root_ = false;
     link_id_ = -2; //(root starts at -1)

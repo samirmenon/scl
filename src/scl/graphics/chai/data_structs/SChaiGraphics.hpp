@@ -65,7 +65,7 @@ namespace scl
 struct SGraphicsPhysicalLink
 {
 public:
-  const SRobotLink* robot_link_;
+  const SRigidBody* robot_link_;
   cGenericObject* graphics_obj_;
   const SRobotIOData* io_data_;
   sInt io_data_idx_;

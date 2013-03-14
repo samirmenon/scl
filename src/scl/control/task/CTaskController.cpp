@@ -77,7 +77,7 @@ namespace scl
       // Set up the center of mass properties of the robot
       data_->gc_model_.mass_ = 0.0;
       std::vector<SGcModel::SCOMInfo>::iterator itcom,itcome;
-      sutil::CMappedTree<std::string, SRobotLink>::const_iterator itr,itre;
+      sutil::CMappedTree<std::string, SRigidBody>::const_iterator itr,itre;
       //Set the center of mass position for each link.
       for(itcom = data_->gc_model_.coms_.begin(), itcome =data_->gc_model_.coms_.end(),
           itr = data_->robot_->robot_br_rep_.begin(),itre = data_->robot_->robot_br_rep_.end();
@@ -98,7 +98,7 @@ namespace scl
 
         itcom->name_ = itr->name_;
         itcom->link_dynamic_id_ = dynamics_->getIdForLink(itcom->name_);
-        itcom->link_ds_ = static_cast<const SRobotLink*>( &(*itr) );
+        itcom->link_ds_ = static_cast<const SRigidBody*>( &(*itr) );
 
         data_->gc_model_.mass_ += itcom->link_ds_->mass_;
       }

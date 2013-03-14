@@ -42,7 +42,7 @@ namespace scl_util
 {
 
   /** Prints a robot link tree with a passed link as its root. */
-  void printRobotLinkTree(const scl::SRobotLink &link, scl::sInt depth);
+  void printRobotLinkTree(const scl::SRigidBody &link, scl::sInt depth);
 
   /** Checks if a muscle system is compatible with a given robot. Looks for
    * both in the database */

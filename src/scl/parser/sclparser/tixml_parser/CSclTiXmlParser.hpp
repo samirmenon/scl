@@ -63,7 +63,7 @@ public:
    * Reads single links
    */
   static bool readLink(const scl_tinyxml::TiXmlHandle& arg_link_txml,
-      scl::SRobotLink& arg_link_ds, bool arg_is_root);
+      scl::SRigidBody& arg_link_ds, bool arg_is_root);
   
   /**
    * Reads in graphics data
