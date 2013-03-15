@@ -158,7 +158,7 @@ namespace scl
           data_.io_data_->sensors_.dq_(i) = data_.io_data_->sensors_.dq_(i) * 0.01;//99% energy loss
           data_.io_data_->sensors_.ddq_(i) = 0;
 #ifdef DEBUG
-          std::cout<<"\nCollided with gc limits: "<<i<<" : "<<tmp->name_
+          std::cout<<"\nCollided with gc limits: "<<i
               <<" : "<<data_.io_data_->sensors_.q_(i)<<". Lim : "
               <<data_.parsed_robot_data_->gc_pos_limit_min_(i)<<"-"
               <<data_.parsed_robot_data_->gc_pos_limit_max_(i);
