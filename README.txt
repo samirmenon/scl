@@ -11,7 +11,7 @@ Wiki: https://bitbucket.org/samirmenon/scl-manips-group/wiki
 
 === 1.Install additional dependencies. ===
 Open a terminal (ctrl+alt+t) and type:
-$ sudo apt-get install build-essential cmake libusb-dev libpci-dev freeglut3-dev libncurses5-dev git-core gitk 
+$ sudo apt-get install build-essential cmake libusb-dev libpci-dev freeglut3-dev libncurses5-dev git-core gitk libusb-1.0-0
 
 
 ===  2. Get the code. ===
