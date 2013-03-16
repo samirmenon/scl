@@ -147,10 +147,12 @@ namespace scl
 
     /** Gains (scalar if same for different dimensions;
      * vector if different for different dimensions)
+     * kp = position, kv = velocity, ka = acceleration
+     * ki = integrated position error (to fix steady-state errors).
      *
      * Computed by : None. These are constants.
      * Used by     : The task-servo to calculate task forces */
-    Eigen::VectorXd kp_, kv_, ki_;
+    Eigen::VectorXd kp_, kv_, ki_, ka_;
 
     /** A set of additional options that may be used by users to
      * initialize this specific task. These typically go above and
@@ -162,6 +164,8 @@ namespace scl
      *    task_options_[0].data_[1] = "base";
      *    task_options_[1].data_[0] = "pos_in_parent";
      *    task_options_[1].data_[1] = "0.0 0.0 0.0";
+     *    task_options_[2].data_[0] = "my_new_arbitrary_option";
+     *    task_options_[2].data_[1] = "8080";
      *    */
     std::vector<sString2> task_nonstd_params_;
 
