@@ -136,6 +136,7 @@ namespace sutil
   {
     ostr<<"\n Name: "<<arg_data.name_;
     ostr<<"("<<arg_data.getType()<<")";
+    ostr<<". Parent("<<arg_data.parent_controller_->name_<<")";
     ostr<<"\n Init/Active : "<<arg_data.has_been_init_<<"/"<<arg_data.has_been_activated_;
     ostr<<"\n Priority    : "<<arg_data.priority_;
     ostr<<"\n F_task : "<<arg_data.force_task_.transpose();
