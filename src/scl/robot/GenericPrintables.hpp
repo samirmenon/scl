@@ -35,6 +35,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotIOData.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/control/data_structs/SControllerBase.hpp>
+#include <scl/control/task/data_structs/STaskBase.hpp>
+#include <scl/control/task/data_structs/STaskController.hpp>
 
 #include <scl/Singletons.hpp>
 
@@ -42,6 +45,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdexcept>
 #include <iomanip>
+
+#ifdef DEBUG
+#include <cassert>
+#endif
 
 /* **************************************************************************
  *                         Starting namespace sutil
@@ -65,8 +72,13 @@ namespace sutil
     ostr<<"\n  Dof: "<<arg_data.dof_;
     ostr<<"\n  Jlim_max : "<<arg_data.gc_pos_limit_max_.transpose();
     ostr<<"\n  Jlim_min : "<<arg_data.gc_pos_limit_min_.transpose();
-    ostr<<"\n Force_max : "<<arg_data.actuator_forces_max_.transpose();
-    ostr<<"\n Force_min : "<<arg_data.actuator_forces_min_.transpose();
+    ostr<<"\n Actuator_force_max : "<<arg_data.actuator_forces_max_.transpose();
+    ostr<<"\n Actuator_force_min : "<<arg_data.actuator_forces_min_.transpose();
+    ostr<<"\n Flag_gc_pos_limits : "<<arg_data.flag_apply_gc_pos_limits_;
+    ostr<<"\n Flag_gc_damping : "<<arg_data.flag_apply_gc_damping_;
+    ostr<<"\n Flag_force_limits : "<<arg_data.flag_apply_actuator_force_limits_;
+    ostr<<"\n Flag_vel_limits : "<<arg_data.flag_apply_actuator_vel_limits_;
+    ostr<<"\n Flag_accel_limits : "<<arg_data.flag_apply_actuator_acc_limits_;
     ostr<<std::endl;
   }
 
@@ -99,7 +111,6 @@ namespace sutil
     ostr<<"\n Name: "<<arg_data.name_;
     ostr<<"("<<arg_data.getType()<<")";
     ostr<<"\n Init   : "<<arg_data.has_been_init_;
-    ostr<<"\n Name   : "<<arg_data.name_;
     ostr<<"\n Id     : "<<arg_data.link_id_;
     ostr<<"\n Parent : "<<arg_data.parent_name_;
     ostr<<"\n Robot  : "<<arg_data.robot_name_;
@@ -115,6 +126,46 @@ namespace sutil
         <<", "<<arg_data.ori_parent_quat_.y()
         <<", "<<arg_data.ori_parent_quat_.z()<<"]";
     ostr<<std::endl;
+  }
+
+  template <>
+  void printToStream<scl::STaskBase>(
+      std::ostream& ostr,
+      const scl::STaskBase& arg_data
+  )
+  {
+    ostr<<"\n Name: "<<arg_data.name_;
+    ostr<<"("<<arg_data.getType()<<")";
+    ostr<<"\n Init/Active : "<<arg_data.has_been_init_<<"/"<<arg_data.has_been_activated_;
+    ostr<<"\n Priority    : "<<arg_data.priority_;
+    ostr<<"\n F_task : "<<arg_data.force_task_.transpose();
+    ostr<<"\n F_gc   : "<<arg_data.force_gc_.transpose();
+    ostr<<std::endl;
+  }
+
+  template <>
+  void printToStream<scl::STaskController>(
+      std::ostream& ostr,
+      const scl::STaskController& arg_data
+  )
+  {
+    ostr<<"\n Name: "<<arg_data.name_;
+    ostr<<"("<<arg_data.getType()<<")";
+    ostr<<"\n Init      : "<<arg_data.has_been_init_;
+    ostr<<std::endl;
+    unsigned int i=0;
+    sutil::CMappedMultiLevelList<std::string, scl::STaskBase*>::const_iterator it,ite;
+    for(it = arg_data.tasks_.begin(), ite = arg_data.tasks_.end();
+        it!=ite; ++it)
+    {
+#ifdef DEBUG
+      assert(NULL != *it);
+      assert(NULL != **it);
+#endif
+      const scl::STaskBase& task = **it;
+      ostr<<"\n === Task #"<<i<<":"; i++;
+      printToStream<scl::STaskBase>(ostr, task);
+    }
   }
 
   template <>
@@ -186,6 +237,23 @@ namespace scl
             io.name_));  }
         else
         { std::cout<<"\n"<<std::setw(10)<<"Printable: Robot: "<<std::setw(51)<<io.name_; }
+      }
+
+      //Add all the task controller data structures for all the robots
+      sutil::CMappedPointerList<std::string, scl::SControllerBase,true>::const_iterator itct,itcte;
+      for(itct = scl::CDatabase::getData()->s_controller_.controllers_.begin(),
+          itcte = scl::CDatabase::getData()->s_controller_.controllers_.end();
+          itct!=itcte; ++itct)
+      {
+        const scl::STaskController* ctrl = dynamic_cast<scl::STaskController*>(*itct);
+        if(S_NULL == ctrl)
+        { continue;  } //Move on. Not a task controller.
+        flag = sutil::printables::add(ctrl->name_,*ctrl);
+        if(false == flag)
+        {throw(std::runtime_error(std::string("Could not add a printable: Task Controller: ")+
+            ctrl->name_));  }
+        else
+        { std::cout<<"\n"<<std::setw(10)<<"Printable: Task Controller: "<<std::setw(51)<<ctrl->name_; }
       }
 
       //Add the UI points
