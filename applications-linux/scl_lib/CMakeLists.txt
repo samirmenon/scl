@@ -55,6 +55,8 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskNullSpaceDamping.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskGc.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskGc.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/CTaskGcLimitCentering.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskGcLimitCentering.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskGcSet.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskGcSet.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskComPos.cpp
