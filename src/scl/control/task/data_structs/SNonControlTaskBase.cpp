@@ -84,4 +84,12 @@ namespace scl
     }
     return has_been_init_;
   }
+
+  bool SNonControlTaskBase::setParentController(const STaskController* arg_parent)
+  {
+    if(NULL == arg_parent)
+    { return false; }
+    parent_controller_ = arg_parent;
+    return true;
+  }
 }

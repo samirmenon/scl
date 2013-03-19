@@ -44,6 +44,8 @@ namespace scl
     priority_ = -1;
     dof_task_ = 0;
     robot_ = S_NULL;
+    gc_model_ = S_NULL;
+    parent_controller_ = S_NULL;
     has_been_init_ = false;
     has_been_activated_ = false;
     has_control_null_space_ = true;
@@ -204,5 +206,13 @@ namespace scl
       has_been_init_ = false;
     }
     return has_been_init_;
+  }
+
+  bool STaskBase::setParentController(const STaskController* arg_parent)
+  {
+    if(NULL == arg_parent)
+    { return false; }
+    parent_controller_ = arg_parent;
+    return true;
   }
 }
