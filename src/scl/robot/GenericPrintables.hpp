@@ -160,7 +160,6 @@ namespace sutil
     {
 #ifdef DEBUG
       assert(NULL != *it);
-      assert(NULL != **it);
 #endif
       const scl::STaskBase& task = **it;
       ostr<<"\n === Task #"<<i<<":"; i++;
@@ -254,6 +253,27 @@ namespace scl
             ctrl->name_));  }
         else
         { std::cout<<"\n"<<std::setw(10)<<"Printable: Task Controller: "<<std::setw(41)<<ctrl->name_; }
+      }
+
+      //Add all the task controller data structures for all the robots
+      sutil::CMappedPointerList<std::string, scl::STaskBase,true>::const_iterator itctt,itctte;
+      for(itctt = scl::CDatabase::getData()->s_controller_.tasks_.begin(),
+          itctte = scl::CDatabase::getData()->s_controller_.tasks_.end();
+          itctt!=itctte; ++itctt)
+      {
+        const scl::STaskBase* task = *itctt;
+#ifdef DEBUG
+        assert(S_NULL != task);
+#else
+        if(S_NULL == task)
+        { continue;  } //Move on. Not a task.
+#endif
+        flag = sutil::printables::add(task->name_,*task);
+        if(false == flag)
+        {throw(std::runtime_error(std::string("Could not add a printable: Task Controller: ")+
+            task->name_));  }
+        else
+        { std::cout<<"\n"<<std::setw(10)<<"Printable: Task: "<<std::setw(52)<<task->name_; }
       }
 
       //Add the UI points
