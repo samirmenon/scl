@@ -253,7 +253,7 @@ namespace scl
         {throw(std::runtime_error(std::string("Could not add a printable: Task Controller: ")+
             ctrl->name_));  }
         else
-        { std::cout<<"\n"<<std::setw(10)<<"Printable: Task Controller: "<<std::setw(51)<<ctrl->name_; }
+        { std::cout<<"\n"<<std::setw(10)<<"Printable: Task Controller: "<<std::setw(41)<<ctrl->name_; }
       }
 
       //Add the UI points
