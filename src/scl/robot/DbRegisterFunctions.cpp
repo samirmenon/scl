@@ -411,7 +411,6 @@ namespace scl_registry
           throw (std::runtime_error(serr.c_str()));
         }
 
-
         //THE JUICE : Add all the tasks into the multi level pilemap!!
         if(S_NULL!=tmp_task2add)
         {
@@ -437,6 +436,28 @@ namespace scl_registry
             throw (std::runtime_error(serr.c_str()));
           }
           //NOTE: SOMEONE HAS TO DELETE THE TASKS LATER!!!
+        }
+
+        //THE JUICE V2 : Add all the tasks into the mapped list in the database!!
+        if(S_NULL!=tmp_task2add)
+        {
+          //NOTE : We have to store a double pointer for tasks because the pilemap
+          //creates its own memory for a pointer.
+          //NOTE 2 : The databse will delete this object later. Remember the object
+          //originally came from a dynamic type factory (look further up in the code).
+          scl::STaskBase** tmp = db->s_controller_.tasks_.create(tmp_task2add->name_, tmp_task2add);
+
+          //Detailed error reporting.
+          if(S_NULL == tmp)
+          {
+            std::string serr;
+            serr = "Could not create database task data structure for : ";
+            if(S_NULL!=tmp_task2add)
+            { serr = serr + tmp_task2add->name_;  }
+            else
+            { serr = serr + "NULL task pointer (should not be NULL)"; }
+            throw (std::runtime_error(serr.c_str()));
+          }
         }
 
         tasks_parsed++;
@@ -500,6 +521,28 @@ namespace scl_registry
             throw (std::runtime_error(serr.c_str()));
           }
           //NOTE: SOMEONE HAS TO DELETE THE TASKS LATER!!!
+        }
+
+        //THE JUICE V2 : Add all the tasks into the mapped list in the database!!
+        if(S_NULL!=tmp_task2add)
+        {
+          //NOTE : We have to store a double pointer for tasks because the pilemap
+          //creates its own memory for a pointer.
+          //NOTE 2 : The databse will delete this object later. Remember the object
+          //originally came from a dynamic type factory (look further up in the code).
+          scl::SNonControlTaskBase** tmp = db->s_controller_.tasks_non_ctrl_.create(tmp_task2add->name_, tmp_task2add);
+
+          //Detailed error reporting.
+          if(S_NULL == tmp)
+          {
+            std::string serr;
+            serr = "Could not create database non control task data structure for : ";
+            if(S_NULL!=tmp_task2add)
+            { serr = serr + tmp_task2add->name_;  }
+            else
+            { serr = serr + "NULL task pointer (should not be NULL)"; }
+            throw (std::runtime_error(serr.c_str()));
+          }
         }
 
         tasks_parsed++;
