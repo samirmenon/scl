@@ -435,7 +435,11 @@ namespace scl_registry
             }
             throw (std::runtime_error(serr.c_str()));
           }
-          //NOTE: SOMEONE HAS TO DELETE THE TASKS LATER!!!
+
+          //Now set the task to point to it's parent.
+          if(S_NULL != (*tmp)->parent_controller_)
+          { throw(std::runtime_error(std::string("Task already has a parent controller : ") + tmp_task2add->name_));  }
+          (*tmp)->setParentController(ret_ctrl);
         }
 
         //THE JUICE V2 : Add all the tasks into the mapped list in the database!!
@@ -520,7 +524,11 @@ namespace scl_registry
             }
             throw (std::runtime_error(serr.c_str()));
           }
-          //NOTE: SOMEONE HAS TO DELETE THE TASKS LATER!!!
+
+          //Now set the task to point to it's parent.
+          if(S_NULL != (*tmp)->parent_controller_)
+          { throw(std::runtime_error(std::string("Non control task already has a parent controller : ") + tmp_task2add->name_));  }
+          (*tmp)->setParentController(ret_ctrl);
         }
 
         //THE JUICE V2 : Add all the tasks into the mapped list in the database!!
