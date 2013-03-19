@@ -56,6 +56,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskGc.hpp>
 #include <scl/control/task/tasks/data_structs/STaskGc.hpp>
 
+#include <scl/control/task/tasks/CTaskGcLimitCentering.hpp>
+#include <scl/control/task/tasks/data_structs/STaskGcLimitCentering.hpp>
+
 #include <scl/control/task/tasks/CTaskGcSet.hpp>
 #include <scl/control/task/tasks/data_structs/STaskGcSet.hpp>
 
@@ -575,6 +578,14 @@ namespace scl_registry
       sutil::CDynamicType<std::string,scl::STaskGc> typeSTaskGc(std::string("STaskGc"));
       flag = typeSTaskGc.registerType();
       if(false == flag) {throw(std::runtime_error("STaskGc"));}
+
+      sutil::CDynamicType<std::string,scl::CTaskGcLimitCentering> typeCTaskGcLimitCentering(std::string("CTaskGcLimitCentering"));
+      flag = typeCTaskGcLimitCentering.registerType();
+      if(false == flag) {throw(std::runtime_error("CTaskGcLimitCentering"));}
+
+      sutil::CDynamicType<std::string,scl::STaskGcLimitCentering> typeSTaskGcLimitCentering(std::string("STaskGcLimitCentering"));
+      flag = typeSTaskGcLimitCentering.registerType();
+      if(false == flag) {throw(std::runtime_error("STaskGcLimitCentering"));}
 
       sutil::CDynamicType<std::string,scl::CTaskGcSet> typeCTaskGcSet(std::string("CTaskGcSet"));
       flag = typeCTaskGcSet.registerType();
