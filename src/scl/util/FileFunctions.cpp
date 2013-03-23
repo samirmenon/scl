@@ -114,7 +114,7 @@ namespace scl_util
   }
 
   bool readEigenMatFromFile(Eigen::MatrixXd & arg_mat,
-      unsigned int arg_rows, unsigned int arg_cols,
+      unsigned long arg_rows, unsigned long arg_cols,
       const std::string & arg_file)
   {
     try
@@ -160,12 +160,12 @@ namespace scl_util
       if(!opfile)
       { throw(std::runtime_error("Could not open file")); }
 
-      int rows = arg_mat.rows();
-      int cols = arg_mat.cols();
+      unsigned int rows = arg_mat.rows();
+      unsigned int cols = arg_mat.cols();
 
-      for(int i=0;i<rows;++i)
+      for(unsigned int i=0;i<rows;++i)
       {
-        for(int j=0;j<cols;++j)
+        for(unsigned int j=0;j<cols;++j)
         {
           opfile<<arg_mat(i,j);
           opfile<<" ";
