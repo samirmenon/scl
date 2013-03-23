@@ -26,12 +26,22 @@ SET(SENSORAY_ALL_SRC ${SENSORAY_INC_DIR}/common/s26core.c
 
 #Add debug definitions
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
+#NOTE : Checks for 32 vs. 64 bit machine.
+if ( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
   SET(CMAKE_C_FLAGS_DEBUG "-Wall -m32 -D OSTYPE_LINUX -D ENDIAN_LITTLE -ggdb -O0 -g -pg")
+elseif( "${CMAKE_SIZEOF_VOID_P}" EQUAL "4" )
+  SET(CMAKE_C_FLAGS_DEBUG "-Wall -D OSTYPE_LINUX -D ENDIAN_LITTLE -ggdb -O0 -g -pg")
+endif()
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 #Add release definitions
 IF(CMAKE_BUILD_TYPE MATCHES Release)
+#NOTE : Checks for 32 vs. 64 bit machine.
+if ( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
   SET(CMAKE_C_FLAGS_RELEASE "-Wall -m32 -D OSTYPE_LINUX -D ENDIAN_LITTLE -O3")
+elseif( "${CMAKE_SIZEOF_VOID_P}" EQUAL "4" )
+  SET(CMAKE_C_FLAGS_RELEASE "-Wall -D OSTYPE_LINUX -D ENDIAN_LITTLE -O3")
+endif()
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 #Define the libraries to be built (cmake sources + 3rdparty libs)
