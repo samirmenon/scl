@@ -14,7 +14,7 @@
 #include <scl/graphics/chai/CChaiGraphics.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/haptics/chai/CChaiHaptics.hpp>
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 #include <scl/util/FileFunctions.hpp>
 
@@ -114,7 +114,7 @@ int main(int argc, char** argv)
       std::cout<<"Running scl benchmarks for input file: "<<tmp_infile;
 
       /******************************File Parsing************************************/
-      scl_parser::CLotusParser tmp_lparser;//Use the lotus tinyxml parser
+      scl_parser::CSclParser tmp_lparser;//Use the scl tinyxml parser
 
       std::vector<std::string> graphics_names;
       flag = tmp_lparser.listGraphicsInFile(tmp_infile,graphics_names);
