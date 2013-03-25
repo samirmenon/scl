@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////
-// Module    : bfr_demo.c
-// Function  : Autodetect and exercise 2608 and 2620 i/o modules.
+// Module    : bfr_system_id_main.cpp
+// Function  : Run system identification on the bfr device
 // Target OS : Linux
 ///////////////////////////////////////////////////////////////
 
@@ -71,14 +71,17 @@ int main(int argc, char** argv)
     //Run the loop over the motors to estimate the system's responses
     for(int i=0;i<3;i++)
     {
+      std::cout<<"\nRunning identification for motor id = "<<i;
+      std::cout<<"\nTime to be taken 0 - "<<sys_id_stimulus(sysid_stim_rows-1,0)<<" sec.";
+
       FILE* fp;
-      char ss[50];
-      if(1 != sscanf(ss,"SysIdLog%d.log",&i))
-      {
-        std::cout<<"\nError : Could not create log file string";
-        break;
-      }
-      fp = fopen(ss,"r");
+      char ss[50],ch;
+      sprintf(ss,"SysIdLog%d.log",i)
+      std::cout<<"\Will save data to log file: "<<ss<<". Continue?\n>>y/n : ";
+      std::cin>>ch;
+      if('y'!=ch) { break; }
+
+      fp = fopen(ss,"w");
       if(NULL == fp)
       {
         std::cout<<"\nError : Could not open `./"<<ss<<"` log file."
@@ -86,15 +89,16 @@ int main(int argc, char** argv)
         break;
       }
 
-      std::cout<<"\nRunning identification for motor id = "<<i;
       t_mid = sutil::CSystemClock::getSysTime();
       t_end = sutil::CSystemClock::getSysTime();
 
       //Loop over the stimulus time
       long idx = 0;
-      while(t_end - t_mid < sys_id_stimulus(sysid_stim_rows,0))
+      while(t_end - t_mid < sys_id_stimulus(sysid_stim_rows-1 /** matrix size = n-rows -1 */,0))
       {
-        while(t_end - t_mid > sys_id_stimulus(idx,0)) { idx++;  }
+        // Either time runs out or the index exceeds the matrix size.
+        while((t_end - t_mid > sys_id_stimulus(idx,0)) && (idx < sysid_stim_rows) )
+        { idx++;  }
         if(0==i)
         { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, sys_id_stimulus(idx,1), 0.0, 0.0);  }
         else if(1==i)
