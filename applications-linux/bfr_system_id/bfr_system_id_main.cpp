@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 
       FILE* fp;
       char ss[50],ch;
-      sprintf(ss,"SysIdLog%d.log",i)
+      sprintf(ss,"SysIdLog%d.log",i);
       std::cout<<"\Will save data to log file: "<<ss<<". Continue?\n>>y/n : ";
       std::cin>>ch;
       if('y'!=ch) { break; }
