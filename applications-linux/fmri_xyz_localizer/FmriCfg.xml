@@ -2,7 +2,7 @@
 <!DOCTYPE LOTUS SYSTEM "lotus.dtd">
 
 <!-- Units are in Std International System -->
-<lotus>
+<scl>
     <graphics name="FmriStdView">
         <camera>
             <pos>0.55   0.0   0.0</pos>
@@ -21,4 +21,4 @@
         </light>
         <background_color>0.0 0.0 0.0</background_color>
     </graphics>
-</lotus>
+</scl>
