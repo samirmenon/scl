@@ -93,6 +93,9 @@ cShapeLine::cShapeLine(const cVector3d& a_pointA, const cVector3d& a_pointB)
     // set color properties
     m_colorPointA.set(1.0, 1.0, 1.0, 1.0);
     m_colorPointB.set(1.0, 1.0, 1.0, 1.0);
+    // initialize stippling settings
+    m_stippleFactor = 1;
+    m_stipplePattern = 0xFFFF;
 };
 
 
