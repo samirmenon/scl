@@ -43,6 +43,20 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace sensoray
 {
+  CSensoray3DofIODriver::CSensoray3DofIODriver() :
+            s_ds_(),
+            mode_encoder_only_(false),
+            max_main_modules_(1),
+            max_io_modules_at_main_module_(2),
+            enc_mm_id_(0),
+            dac_mm_id_(1),
+            sensoray_calibrate_ctr(0)
+  {
+    force_to_current_multiplier_[0] = 2;
+    force_to_current_multiplier_[1] = 2;
+    force_to_current_multiplier_[2] = 2;
+  }
+
   bool CSensoray3DofIODriver::init()
   {
     bool flag;
