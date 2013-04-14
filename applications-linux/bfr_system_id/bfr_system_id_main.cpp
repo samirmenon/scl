@@ -51,7 +51,9 @@ int main(int argc, char** argv)
   { std::cout<<"\nError : Encoder-only mode : Require motors to run system identification.\n"<<std::flush;  }
   else
   {
-    const long sysid_stim_rows = 121082, sysid_stim_cols = 2;
+    //const long sysid_stim_rows = 121082, sysid_stim_cols = 2; //Original 10Hz
+    //const long sysid_stim_rows = 1496884, sysid_stim_cols = 2; // 200Hz
+    const long sysid_stim_rows = 547403, sysid_stim_cols = 2; // 65Hz
     Eigen::MatrixXd sys_id_stimulus;
 
     //Read in stimulus file
@@ -77,17 +79,20 @@ int main(int argc, char** argv)
       FILE* fp;
       char ss[50],ch;
       sprintf(ss,"SysIdLog%d.log",i);
-      std::cout<<"\Will save data to log file: "<<ss<<". Continue?\n>>y/n : ";
-      std::cin>>ch;
-      if('y'!=ch) { break; }
+      std::cout<<"\Will save data to log file: "<<ss;
 
-      fp = fopen(ss,"w");
+      fp = fopen(ss,"a");
       if(NULL == fp)
       {
         std::cout<<"\nError : Could not open `./"<<ss<<"` log file."
             <<"\n Can't run system identification program.";
         break;
       }
+      fprintf(fp,"\n***********************************\n***********************************\n");
+
+      std::cout<<". Continue?\n>>y/n : ";
+      std::cin>>ch;
+      if('y'!=ch) { break; }
 
       t_mid = sutil::CSystemClock::getSysTime();
       t_end = sutil::CSystemClock::getSysTime();
@@ -100,11 +105,11 @@ int main(int argc, char** argv)
         while((t_end - t_mid > sys_id_stimulus(idx,0)) && (idx < sysid_stim_rows) )
         { idx++;  }
         if(0==i)
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, sys_id_stimulus(idx,1), 0.0, 0.0);  }
+        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.66*sys_id_stimulus(idx,1), 0.0, 0.0);  }
         else if(1==i)
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, sys_id_stimulus(idx,1), 0.0);  }
+        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.66*sys_id_stimulus(idx,1), 0.0);  }
         else
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, sys_id_stimulus(idx,1));  }
+        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.66*sys_id_stimulus(idx,1));  }
 
         fprintf(fp, "\n%d %lf %ld %ld %ld %lf",i, t_end-t_mid, c0, c1, c2, sys_id_stimulus(idx,1) );
 
