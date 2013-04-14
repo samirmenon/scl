@@ -184,14 +184,7 @@ namespace sensoray
     /** ***************** Misc functions *********************** */
   public:
     /** Default constructor : Does nothing */
-    CSensoray3DofIODriver() :
-      s_ds_(),
-      mode_encoder_only_(false),
-      max_main_modules_(1),
-      max_io_modules_at_main_module_(2),
-      enc_mm_id_(0),
-      dac_mm_id_(1),
-      sensoray_calibrate_ctr(0){}
+    CSensoray3DofIODriver();
 
     /** Default destructor : Does nothing */
     ~CSensoray3DofIODriver() {}
@@ -219,6 +212,9 @@ namespace sensoray
     const int dac_mm_id_;
     /** Calibration counter */
     int sensoray_calibrate_ctr;
+    /** Force Calibration : Multiply this with the required
+     * force to get the required motor current. */
+    double force_to_current_multiplier_[3];
   };
 
 } /* namespace sensoray */
