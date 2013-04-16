@@ -198,7 +198,7 @@ int main(int argc, char** argv)
       {
         std::cout<<"\nError : Could not open `./"<<ss<<"` log file."
             <<"\n Can't run system identification program.";
-        break;
+        goto DELETEMELATER; //break;
       }
       fprintf(fp,"\n***********************************\n***********************************\n");
 
@@ -236,6 +236,7 @@ int main(int argc, char** argv)
       { std::cout<<"\nSystem Identification : Succeeded for joint"<<i<<". Time taken = "<<t_tot<<"\n\n"<<std::flush; }
     //}
   }
+DELETEMELATER:
   // Exit
   sensorayio.shutdown();                       // Shut down the driver
 
