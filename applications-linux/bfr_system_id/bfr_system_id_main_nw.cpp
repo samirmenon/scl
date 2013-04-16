@@ -128,14 +128,6 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  printf("\nAwaiting server..."); fflush(NULL);
-  while(receive(argv[1])) {
-    //printf("\nAwaiting server..."); fflush(NULL);
-  }
-
-  //Start time
-  t_start = sutil::CSystemClock::getSysTime();
-
   sensoray::CSensoray3DofIODriver sensorayio;   // Create a driver object
 
   flag = sensorayio.init();                     // Initialize the driver
@@ -206,6 +198,14 @@ int main(int argc, char** argv)
 //      std::cin>>ch;
 //      if('y'!=ch) { break; }
 
+      printf("\nAwaiting server..."); fflush(NULL);
+      while(receive(argv[1])) {
+      //printf("\nAwaiting server..."); fflush(NULL);
+      }
+
+      //Start time
+      t_start = sutil::CSystemClock::getSysTime();
+
       t_mid = sutil::CSystemClock::getSysTime();
       t_end = sutil::CSystemClock::getSysTime();
 
@@ -215,14 +215,15 @@ int main(int argc, char** argv)
       while(t_end - t_mid < sys_id_stimulus(sysid_stim_rows-1 /** matrix size = n-rows -1 */,0))
       {
         // Either time runs out or the index exceeds the matrix size.
+        const double force_multiplier=3.0;
         while((t_end - t_mid > sys_id_stimulus(idx,0)) && (idx < sysid_stim_rows) )
         { idx++;  }
         if(0==i)
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.33*sys_id_stimulus(idx,1), 0.0, 0.0);  }
+        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, -0.33*force_multiplier*sys_id_stimulus(idx,1), 0.0, 0.0);  }
         else if(1==i)
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.33*sys_id_stimulus(idx,1), 0.0);  }
+        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, -0.33*force_multiplier*sys_id_stimulus(idx,1), 0.0);  }
         else
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.33*sys_id_stimulus(idx,1));  }
+        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.33*force_multiplier*sys_id_stimulus(idx,1));  }
 
         fprintf(fp, "\n%d %lf %ld %ld %ld %lf",i, t_end-t_start, c0, c1, c2, sys_id_stimulus(idx,1) );
 
