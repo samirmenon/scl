@@ -113,7 +113,7 @@ int main(int argc, char** argv)
 {
 
   if(argc != 4) {
-    printf("\nERROR: Usage is \"./bfr_system_id <Sync Server IP> <> \"\n");
+    printf("\nERROR: Usage is \"./bfr_system_id <Sync Server IP> <Motor #> <sysid filename>\"\n");
     return 0;
   }
 
@@ -154,7 +154,8 @@ int main(int argc, char** argv)
     Eigen::MatrixXd sys_id_stimulus;
 
     //Read in stimulus file
-    flag = scl_util::readEigenMatFromFile(sys_id_stimulus, "./sysid_stimulus.txt");
+	printf("\nReading file"); fflush(NULL);
+    flag = scl_util::readEigenMatFromFile(sys_id_stimulus, argv[3]);
 
     //Some error checks
     if(false == flag)
@@ -165,7 +166,24 @@ int main(int argc, char** argv)
     }
 
     //Run the loop over the motors to estimate the system's responses
-    for(int i=0;i<3;i++)
+	printf("\nGetting motor number"); fflush(NULL);
+	int i;	
+	switch(*argv[2])
+	{
+	  case '0':
+		i = 0;
+		break;
+	  case '1':
+		i = 1;
+		break;
+	  case '2':
+		i = 2;
+		break;
+	  default:
+		i = 0;
+	}
+
+    for(i=0;i<3;i++)
     {
       std::cout<<"\nRunning identification for motor id = "<<i;
       std::cout<<"\nTime to be taken 0 - "<<sys_id_stimulus(sys_id_stimulus.rows()-1,0)<<" sec.";
@@ -193,17 +211,18 @@ int main(int argc, char** argv)
 
       //Loop over the stimulus time
       long idx = 0;
+      long sysid_stim_rows = sys_id_stimulus.rows();
       while(t_end - t_mid < sys_id_stimulus(sysid_stim_rows-1 /** matrix size = n-rows -1 */,0))
       {
         // Either time runs out or the index exceeds the matrix size.
         while((t_end - t_mid > sys_id_stimulus(idx,0)) && (idx < sysid_stim_rows) )
         { idx++;  }
         if(0==i)
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.66*sys_id_stimulus(idx,1), 0.0, 0.0);  }
+        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.33*sys_id_stimulus(idx,1), 0.0, 0.0);  }
         else if(1==i)
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.66*sys_id_stimulus(idx,1), 0.0);  }
+        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.33*sys_id_stimulus(idx,1), 0.0);  }
         else
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.66*sys_id_stimulus(idx,1));  }
+        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.33*sys_id_stimulus(idx,1));  }
 
         fprintf(fp, "\n%d %lf %ld %ld %ld %lf",i, t_end-t_start, c0, c1, c2, sys_id_stimulus(idx,1) );
 
