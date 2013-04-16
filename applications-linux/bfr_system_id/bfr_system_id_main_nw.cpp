@@ -183,8 +183,8 @@ int main(int argc, char** argv)
 		i = 0;
 	}
 
-    for(i=0;i<3;i++)
-    {
+    //for(i=0;i<3;i++)
+    //{
       std::cout<<"\nRunning identification for motor id = "<<i;
       std::cout<<"\nTime to be taken 0 - "<<sys_id_stimulus(sys_id_stimulus.rows()-1,0)<<" sec.";
 
@@ -234,7 +234,7 @@ int main(int argc, char** argv)
       { std::cout<<"\nError : System Identification : Encoder read & motor control failed during execution";	}
       else
       { std::cout<<"\nSystem Identification : Succeeded for joint"<<i<<". Time taken = "<<t_tot<<"\n\n"<<std::flush; }
-    }
+    //}
   }
   // Exit
   sensorayio.shutdown();                       // Shut down the driver
