@@ -111,7 +111,7 @@ int receive(char *IP)
 
 int main(int argc, char** argv)
 {
-
+  printf("\nTHIS IS THE DAMN FILE!!!\n");
   if(argc != 4) {
     printf("\nERROR: Usage is \"./bfr_system_id <Sync Server IP> <Motor #> <sysid filename>\"\n");
     return 0;
@@ -219,6 +219,7 @@ int main(int argc, char** argv)
         while((t_end - t_mid > sys_id_stimulus(idx,0)) && (idx < sysid_stim_rows) )
         { idx++;  }
         double force = 0.33*force_multiplier*(1+sys_id_stimulus(idx,1));
+        double logger_force = 0.33*(1+sys_id_stimulus(idx,1));
         if(0==i)
         {  force = -1*force; flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, force, 0.0, 0.0);  }
         else if(1==i)
@@ -228,7 +229,7 @@ int main(int argc, char** argv)
         {  flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, force);  }
         //{ flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.33*force_multiplier*(1+sys_id_stimulus(idx,1)));  }
 
-        fprintf(fp, "\n%d %lf %ld %ld %ld %lf",i, t_end-t_start, c0, c1, c2, force);
+        fprintf(fp, "\n%d %lf %ld %ld %ld %lf",i, t_end-t_start, c0, c1, c2, logger_force);
 
         t_end = sutil::CSystemClock::getSysTime();
       }

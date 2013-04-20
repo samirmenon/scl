@@ -188,14 +188,17 @@ int main(int argc, char** argv)
     while(t_end - t_mid < sys_id_stimulus(sysid_stim_rows-1 /** matrix size = n-rows -1 */,0))
     {
     // Either time runs out or the index exceeds the matrix size.
-    const double force_multiplier=3.0;
+    const double force_multiplier=0.45;
     while((t_end - t_mid > sys_id_stimulus(idx,0)) && (idx < sysid_stim_rows) )
     { idx++;  }
 
     const double q0_mult = 0.0;
-    flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, q0_mult* -1*sys_id_stimulus(idx,1), -1*sys_id_stimulus(idx,2), sys_id_stimulus(idx,3));
+    double f0 = -1*force_multiplier*sys_id_stimulus(idx,1);
+    double f1 = -1*force_multiplier*sys_id_stimulus(idx,2);
+    double f2 = force_multiplier*sys_id_stimulus(idx,3);
+    flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, f0, f1, f2);
 
-    fprintf(fp, "\n%d %lf %ld %ld %ld %lf %lf %lf",-1, t_end-t_start, c0, c1, c2, q0_mult* -1*sys_id_stimulus(idx,1), -1*sys_id_stimulus(idx,2), sys_id_stimulus(idx,3) );
+    fprintf(fp, "\n%d %lf %ld %ld %ld %lf %lf %lf",-1, t_end-t_start, c0, c1, c2, force_multiplier*sys_id_stimulus(idx,1), force_multiplier*sys_id_stimulus(idx,2), force_multiplier*sys_id_stimulus(idx,3));
 
     t_end = sutil::CSystemClock::getSysTime();
     }

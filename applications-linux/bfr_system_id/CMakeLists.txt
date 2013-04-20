@@ -97,7 +97,7 @@ SET(ALL_NW_SRC ${BFRID_BASE_DIR}bfr_system_id_main_nw.cpp
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
             ${RS232_INC_DIR}/rs232.c)
 
-SET(ALL_NW_SRC ${BFRID_BASE_DIR}bfr_force_id_main_nw.cpp
+SET(ALL_FORCE_SRC ${BFRID_BASE_DIR}bfr_force_id_main_nw.cpp
             ${SCL_INC_DIR}/haptics/chai/CChaiHaptics.cpp
             ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
@@ -108,7 +108,7 @@ add_executable(bfr_system_id ${ALL_SRC})
 
 add_executable(bfr_nw_system_id ${ALL_NW_SRC})
 
-add_executable(bfr_force_system_id ${ALL_NW_SRC})
+add_executable(bfr_force_system_id ${ALL_FORCE_SRC})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
 find_library( SCL_LIBRARY_DEBUG NAMES scl
