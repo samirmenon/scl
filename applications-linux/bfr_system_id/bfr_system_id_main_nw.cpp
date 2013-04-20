@@ -215,7 +215,7 @@ int main(int argc, char** argv)
       while(t_end - t_mid < sys_id_stimulus(sysid_stim_rows-1 /** matrix size = n-rows -1 */,0))
       {
         // Either time runs out or the index exceeds the matrix size.
-        const double force_multiplier=3.0;
+        const double force_multiplier=0.45;
         while((t_end - t_mid > sys_id_stimulus(idx,0)) && (idx < sysid_stim_rows) )
         { idx++;  }
         if(0==i)
