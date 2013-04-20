@@ -218,14 +218,17 @@ int main(int argc, char** argv)
         const double force_multiplier=0.45;
         while((t_end - t_mid > sys_id_stimulus(idx,0)) && (idx < sysid_stim_rows) )
         { idx++;  }
+        double force = 0.33*force_multiplier*(1+sys_id_stimulus(idx,1));
         if(0==i)
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, -0.33*force_multiplier*(1+sys_id_stimulus(idx,1)), 0.0, 0.0);  }
+        {  force = -1*force; flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, force, 0.0, 0.0);  }
         else if(1==i)
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, -0.33*force_multiplier*(1+sys_id_stimulus(idx,1)), 0.0);  }
+        {  force = -1*force; flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, force, 0.0);  }
+        //{ flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, -0.33*force_multiplier*(1+sys_id_stimulus(idx,1)), 0.0);  }
         else
-        { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.33*force_multiplier*(1+sys_id_stimulus(idx,1)));  }
+        {  flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, force);  }
+        //{ flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, 0.0, 0.0, 0.33*force_multiplier*(1+sys_id_stimulus(idx,1)));  }
 
-        fprintf(fp, "\n%d %lf %ld %ld %ld %lf",i, t_end-t_start, c0, c1, c2, sys_id_stimulus(idx,1) );
+        fprintf(fp, "\n%d %lf %ld %ld %ld %lf",i, t_end-t_start, c0, c1, c2, force);
 
         t_end = sutil::CSystemClock::getSysTime();
       }
