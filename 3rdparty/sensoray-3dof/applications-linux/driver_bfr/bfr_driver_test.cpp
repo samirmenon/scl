@@ -64,7 +64,7 @@ int main()
 	flag = true;
     t_mid = sutil::CSystemClock::getSysTime();
     for(int i=0;i<300; i++)
-    { flag = flag && sensorayio.readEncoders(c0, c1, c2);  }
+    { flag = flag && sensorayio.readEncoders(c0, c1, c2); std::cout<<"\nEnc : "<<c0<<" "<<c1<<" "<<c2<<std::flush; }
     t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read failed";	}
     else
