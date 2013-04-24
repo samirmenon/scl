@@ -19,13 +19,15 @@ extern "C" {
 #include <scl/util/FileFunctions.hpp>
 #include <Eigen/Core>
 
+#include <iomanip>
 #include <string>
+#include <sstream>
 #include <stdio.h>
 #include <iostream>
 #include <time.h>
 
 // Get current date/time, format is YYYY-MM-DD.HH:mm:ss
-bool currentDateTime(std::string arg_date) {
+bool currentDateTime(std::string& arg_date) {
   time_t     now = time(0);
   struct tm  tstruct;
   char       buf[128];
@@ -41,8 +43,15 @@ bool currentDateTime(std::string arg_date) {
 
 // EXECUTABLE ////////////////////////////////////////////////////////////////////
 
-int main()
+int main(int argc, char** argv)
 {
+  if(argc < 4)
+  {
+    std::cout<<"\nhuman_force application tests haptic perception capabilities."
+        <<"\nThe command line input is: ./<executable> <dir/file_base> <id_start> <id_end>\n";
+    return 0;
+  }
+
   bool flag;
   double  t_start, t_curr;    // Benchmark start time.
 
@@ -57,25 +66,37 @@ int main()
   // Read the command line params to decide what file range to run the experiment on.
   std::string filebase = argv[1];
   int start_id, end_id;
-  std::stringstream ss;
-  ss<<argv[2]; ss>>start_id;
-  ss<<argv[3]; ss>>end_id;
+  std::stringstream sstr;
+  sstr<<argv[2]<<" ";
+  sstr<<argv[3];
+  sstr>>start_id;
+  sstr>>end_id;
+  //Error check.
+  if(end_id<start_id)
+  { std::cout<<"\nEnd id < start id. End = "<<end_id<<". Start = "<<start_id<<"\n"; return 1;   }
+  else
+  { std::cout<<"\nRunning experiment. End = "<<end_id<<". Start = "<<start_id<<"\n"; }
 
-  printf("\nRunning haptic perception trials: %s%d.txt to %s%d.txt",filebase,start_id,filebase,end_id);
+  printf("\nRunning haptic perception trials: %s%d.txt to %s%d.txt",filebase.c_str(),start_id,filebase.c_str(),end_id);
 
   Eigen::MatrixXd response_mat;
-  response_mat.Zero(end_id-start_id+1,2);
+  response_mat.setZero(end_id-start_id+1,2);
+  std::cout<<"\nResponse matrix initialized. Size ["<<response_mat.rows()<<", "<<response_mat.cols()<<"]"<<std::flush;
 
-  Eigen::MatrixXd task_mat;
-
-  char ss[128], ch;
+  char ss[128];
   for(int file_idx=start_id, resp_id=0; file_idx<=end_id; ++file_idx, ++resp_id)
   {
-    sprintf(ss,"%s%d.txt",filebase, file_idx);
+    Eigen::MatrixXd task_mat;
+
+    sprintf(ss,"%s%d.txt",filebase.c_str(), file_idx);
 
     flag = scl_util::readEigenMatFromFile(task_mat, ss);
     if(false == flag)
     { std::cout<<"\nError. Could not read file: "<<ss<<std::flush; break; }
+#ifdef DEBUG
+    else
+    { std::cout<<"\nRunning trial for: \n"<<task_mat<<std::flush; }
+#endif
 
     flag = true;
 
@@ -84,32 +105,52 @@ int main()
     t_curr = sutil::CSystemClock::getSysTime();
 
     int idx=0;
-    while(t_curr - t_start < task_mat(task_mat.rows(),1))
+    long c0, c1, c2;
+    std::cout<<"\nRunning trial ["<<resp_id<<" / "<<response_mat.rows()-1<<"]. Time = "<<task_mat(task_mat.rows()-1,0)<<std::endl<<std::flush;
+    while(t_curr - t_start < task_mat(task_mat.rows()-1,0))
     {
-      flag = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, task_mat(idx,2), task_mat(idx,3), task_mat(idx,4));
+      //Add the force calibration
+      // Either time runs out or the index exceeds the matrix size.
+      const double force_multiplier=0.45;
+      double f0 = -1*force_multiplier*task_mat(idx,1);
+      double f1 = -1*force_multiplier*task_mat(idx,2);
+      double f2 = force_multiplier*task_mat(idx,3);
+      flag = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, f0, f1, f2);
       if(false == flag)
       { std::cout<<"\nError : readEncodersAndCommandMotors() failed at t = "<<sutil::CSystemClock::getSysTime(); }
+      printf("\nForce : [%5.3lf, %5.3lf, %5.3lf]", f0, f1, f2);
+      //fflush(NULL);
 
       // Move to next force
       t_curr = sutil::CSystemClock::getSysTime();
-      if(t_curr - t_start > task_mat(idx,1)) { idx++;  }
+      if(t_curr - t_start > task_mat(idx,0)) { idx++;  }
 
       // Done with the test
-      if(idx > task_mat.rows()) { break;  }
+      if(idx >= task_mat.rows()) { break;  }
     }
 
     // 1 = same. 0 = different.
-    double were_forces_similar;
-    std::cin>>were_forces_similar;
-    response_mat(resp_id,1) = file_idx;
-    response_mat(resp_id,2) = were_forces_similar;
+    double force_response_val;
+    std::cout<<"\nResponse ["<<resp_id
+        <<"]\n\t0 Felt nothing"
+        <<"\n\t1 First was larger"
+        <<"\n\t2 Second was larger"
+        <<"\n\t3 Both were equal"
+        <<"\n\t-1 Couldn't feel 1"
+        <<"\n\t-2 Couldn't feel 2\n >>"<<std::flush;
+    std::cin>>force_response_val;
+    response_mat(resp_id,0) = file_idx;
+    response_mat(resp_id,1) = force_response_val;
   }
 
-  std::string date = currentDateTime();
+  std::string date;
+  currentDateTime(date);
   sprintf(ss,"%sResponses_Human.txt",date.c_str());
   flag = scl_util::writeEigenMatToFile(response_mat, ss);
   if(false == flag)
-  { std::cout<<"\nError. Could not read file: "<<ss<<std::flush; break; }
+  { std::cout<<"\nError. Could not write response matrix to file: "<<ss<<std::flush; }
+
+  std::cout<<"\nResponses: \n >>"<<response_mat<<"\n";
 
   // Exit
   sensorayio.shutdown();                       // Shut down the driver
