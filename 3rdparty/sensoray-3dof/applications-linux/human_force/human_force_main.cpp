@@ -117,7 +117,7 @@ int main(int argc, char** argv)
       double f2 = force_multiplier*task_mat(idx,3);
       flag = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, f0, f1, f2);
       if(false == flag)
-      { std::cout<<"\nError : readEncodersAndCommandMotors() failed at t = "<<sutil::CSystemClock::getSysTime(); }
+      { std::cout<<"\nError : readEncodersAndCommandMotors() failed at t = "<<sutil::CSystemClock::getSysTime(); break; }
 
       // Move to next force
       t_curr = sutil::CSystemClock::getSysTime();
@@ -135,12 +135,15 @@ int main(int argc, char** argv)
     double force_response_val;
     std::cout<<"\nResponse ["<<resp_id
         <<"]\n\t0 Felt nothing"
-        <<"\n\t1 First was larger"
-        <<"\n\t2 Second was larger"
-        <<"\n\t3 Both were equal"
+        <<"\n\t 1 First was larger"
+        <<"\n\t 2 Second was larger"
+        <<"\n\t 3 Both were equal"
         <<"\n\t-1 Couldn't feel 1"
-        <<"\n\t-2 Couldn't feel 2\n >>"<<std::flush;
+        <<"\n\t-2 Couldn't feel 2"
+        <<"\n\t 9 Break\n >>"<<std::flush;
     std::cin>>force_response_val;
+    if(9 == static_cast<int>(force_response_val))
+    { break; }
     response_mat(resp_id,0) = file_idx;
     response_mat(resp_id,1) = force_response_val;
   }
