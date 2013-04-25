@@ -118,15 +118,17 @@ int main(int argc, char** argv)
       flag = sensorayio.readEncodersAndCommandMotors(c0, c1, c2, f0, f1, f2);
       if(false == flag)
       { std::cout<<"\nError : readEncodersAndCommandMotors() failed at t = "<<sutil::CSystemClock::getSysTime(); }
-      printf("\nForce : [%5.3lf, %5.3lf, %5.3lf]", f0, f1, f2);
-      //fflush(NULL);
 
       // Move to next force
       t_curr = sutil::CSystemClock::getSysTime();
-      if(t_curr - t_start > task_mat(idx,0)) { idx++;  }
-
-      // Done with the test
-      if(idx >= task_mat.rows()) { break;  }
+      while(t_curr - t_start > task_mat(idx,0)) {
+          idx++;
+          // Done with the test
+          if(idx >= task_mat.rows()) { break;  }
+      }
+#ifdef DEBUG
+      printf("\nForce : [%ld: %5.2lf %5.3lf, %5.3lf, %5.3lf]", idx, t_curr-t_start, f0, f1, f2);
+#endif
     }
 
     // 1 = same. 0 = different.
