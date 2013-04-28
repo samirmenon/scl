@@ -70,14 +70,14 @@ namespace bfr
   }
 
   bool CBfrDriver::readGcAnglesAndCommandGcTorques(double& arg_q0, double& arg_q1, double& arg_q2,
-      const double m0, const double m1, const double m2)
+      const double arg_fq0, const double arg_fq1, const double arg_fq2)
   {
     bool flag = true, flag2 = true;
     // Transform the gc torques into driver inputs
     double i0,i1,i2;
-    i0 = m0 / (gear0_* maxon_tau_per_amp_ * i_to_a0_);
-    i1 = m1 / (gear1_* maxon_tau_per_amp_ * i_to_a1_);
-    i2 = m2 / (gear2_* maxon_tau_per_amp_ * i_to_a2_);
+    i0 = arg_fq0 / (gear0_* maxon_tau_per_amp_ * i_to_a0_);
+    i1 = arg_fq1 / (gear1_* maxon_tau_per_amp_ * i_to_a1_);
+    i2 = arg_fq2 / (gear2_* maxon_tau_per_amp_ * i_to_a2_);
 
     // If one or more motors exceeded the max current, limit it to the max.
     if(fabs(i0) > max_amps_/i_to_a0_) { flag = false; i0>=0? i0 = max_amps_/i_to_a0_: i0 = -1*max_amps_/i_to_a0_; }

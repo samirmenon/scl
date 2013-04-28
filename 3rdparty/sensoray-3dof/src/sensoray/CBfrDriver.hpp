@@ -33,13 +33,14 @@ namespace bfr
      * Inputs are gc torques in Nm
      *
      * NOTE : If you aren't familiar with torques.
-     *        Very High torque = 2.5 Nm
-     *        High torque = 1.5 Nm
-     *        Med torque = .75 Nm
-     *        Low torque = .5 Nm
+     *        Very High torque = 5 Nm
+     *        High torque =  3 Nm
+     *        Med torque = 1.5 Nm
+     *        Low torque = 0.6 Nm
+     *        jr3 noise = ~0.1 Nm
      */
     bool readGcAnglesAndCommandGcTorques(double& arg_q0, double& arg_q1, double& arg_q2,
-        const double m0, const double m1, const double m2);
+        const double arg_fq0, const double arg_fq1, const double arg_fq2);
 
     /** Position only operation : Sends analog out to motors + reads encoders
      * Inputs are end-effector forces in N. */
