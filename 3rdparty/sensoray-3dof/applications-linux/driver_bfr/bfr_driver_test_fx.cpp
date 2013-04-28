@@ -96,9 +96,9 @@ int main()
 
     if(fabs(amp0_des)>MAX_AMP_OUTPUT_CURRENT)
     { std::cout<<"\n Max current limit breached on motor0 : "<< amp0_des; break;}
-    if(fabs(amp0_des)>MAX_AMP_OUTPUT_CURRENT)
+    if(fabs(amp1_des)>MAX_AMP_OUTPUT_CURRENT)
     { std::cout<<"\n Max current limit breached on motor1 : "<< amp1_des; break;}
-    if(fabs(amp0_des)>MAX_AMP_OUTPUT_CURRENT)
+    if(fabs(amp2_des)>MAX_AMP_OUTPUT_CURRENT)
     { std::cout<<"\n Max current limit breached on motor2 : "<< amp2_des; break;}
 
     flag = true;
