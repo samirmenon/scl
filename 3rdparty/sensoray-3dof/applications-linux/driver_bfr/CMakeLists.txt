@@ -23,7 +23,8 @@ SET(SENSORAY_ALL_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_test.cpp
                      ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp)
 
 SET(SENSORAY_FX_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_test_fx.cpp
-                     ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp)
+                     ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp
+                     ${SENSORAY_INC_DIR}/sensoray/CBfrDriver.cpp)
 
 SET(SENSORAY_RAW_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_test_raw_input.cpp
                      ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp)
