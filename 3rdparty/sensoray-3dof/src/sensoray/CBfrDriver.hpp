@@ -10,11 +10,12 @@
 #define CBFRDRIVER_HPP_
 
 #include "CSensoray3DofIODriver.hpp"
+#include "SBfrKinematicAndInertialParams.hpp"
 
 namespace bfr
 {
 
-  class CBfrDriver : private sensoray::CSensoray3DofIODriver
+  class CBfrDriver : private sensoray::CSensoray3DofIODriver, private bfr::SBfrKinematicAndInertialParamsV2
   {
   public:
     CBfrDriver();
@@ -53,6 +54,15 @@ namespace bfr
         const double arg_fx, const double arg_fy, const double arg_fz)
     { return false; }
 
+    // *****************************************************
+    // *********             State                **********
+    // *****************************************************
+    void gravityCompensationOn(bool arg_flag)
+    {  flag_grav_compensation_enabled_ = arg_flag;  }
+
+    bool modeGravityCompensated()
+    { return flag_grav_compensation_enabled_; }
+
     bool modePositionOnly()
     { return sensoray::CSensoray3DofIODriver::modeEncoderOnly();  }
 
@@ -75,8 +85,7 @@ namespace bfr
 
     /** Compute and save the end-effector Jacobian using the current
      * generalized coordinates */
-    bool computeCurrGcGravity()
-    { return false; }
+    bool computeCurrGcGravity();
 
     /** Compute and save the end-effector Jacobian using the current
      * generalized coordinates */
@@ -84,6 +93,7 @@ namespace bfr
     { return false; }
 
   private:
+    bool has_been_init_;
     // *****************************************************
     // *********        Position Params           **********
     // *****************************************************
@@ -96,6 +106,16 @@ namespace bfr
     double x_ee_, y_ee_, z_ee_;
     double dx_ee_, dy_ee_, dz_ee_;
     double fx_ee_, fy_ee_, fz_ee_;
+
+    // *****************************************************
+    // *********        Dynamics Params           **********
+    // *****************************************************
+    double fq0_grav_, fq1_grav_, fq2_grav_;
+
+    // *****************************************************
+    // *********          Flag Params             **********
+    // *****************************************************
+    bool flag_grav_compensation_enabled_;
 
     // *****************************************************
     // *********       Calibration Params         **********
