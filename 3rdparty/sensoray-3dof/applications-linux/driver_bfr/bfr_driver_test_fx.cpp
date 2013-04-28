@@ -24,7 +24,7 @@ extern "C" {
 #include <iostream>
 #include <math.h>
 
-# define MAX_AMP_OUTPUT_CURRENT 3.0
+# define MAX_AMP_OUTPUT_CURRENT 2.0
 
 // EXECUTABLE ////////////////////////////////////////////////////////////////////
 
@@ -55,6 +55,9 @@ int main()
     std::cout<<"\nForces > "<<std::flush;
     // The user inputs operational space forces
     std::cin>>fx>>fy>>fz;
+    //Constant calibration
+    const double fxmult = 1.0/0.915;
+    fx = fx*fxmult;
 
     //Double
     double fgc0_des = -0.177*fx + 1.217*fz;
@@ -104,7 +107,7 @@ int main()
     std::cout<<"\nSending driver inputs : "<<f0<<", "<<f1<<", "<<f2<<std::flush;
 
     t_mid = sutil::CSystemClock::getSysTime();
-    for(int i=0;i<3000; i++)
+    for(int i=0;i<500; i++)
     { flag = flag && sensorayio.readEncodersAndCommandMotors(c0, c1, c2, f0, f1, f2);  }
     t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     if(false == flag)  { std::cout<<"\nError : Encoder read read & set force failed"; break;	}

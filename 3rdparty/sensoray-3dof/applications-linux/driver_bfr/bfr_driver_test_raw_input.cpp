@@ -24,7 +24,7 @@ extern "C" {
 #include <iostream>
 #include <math.h>
 
-# define MAX_AMP_OUTPUT_CURRENT 3.0
+# define MAX_AMP_OUTPUT_CURRENT 2.0
 
 // EXECUTABLE ////////////////////////////////////////////////////////////////////
 
