@@ -65,8 +65,7 @@ namespace bfr
      *        Low torque = 0.5 N
      *        jr3 noise = ~0.2 N */
     bool readEEPositionAndCommandEEForce(double& arg_x, double& arg_y, double& arg_z,
-        const double arg_fx, const double arg_fy, const double arg_fz)
-    { return false; }
+        const double arg_fx, const double arg_fy, const double arg_fz);
 
     // *****************************************************
     // *********             State                **********

@@ -150,6 +150,9 @@ namespace bfr
 
   bool CBfrDriver::readEEPosition(double& arg_x, double& arg_y, double& arg_z)
   {
+    // Should only be called after initialization
+    if(!has_been_init_) { return has_been_init_;  }
+
     bool flag; double tmp0, tmp1, tmp2;
     // Run the servo loop.
     flag = readGCAngles(tmp0, tmp1, tmp2);
@@ -161,6 +164,37 @@ namespace bfr
     getEEPosition(arg_x, arg_y, arg_z);
 
     servo_ticks_++;
+    return flag;
+  }
+
+  bool CBfrDriver::readEEPositionAndCommandEEForce(double& arg_x, double& arg_y, double& arg_z,
+          const double arg_fx, const double arg_fy, const double arg_fz)
+  {
+    // Should only be called after initialization
+    if(!has_been_init_) { return has_been_init_;  }
+
+    bool flag = true;
+    //Compute the current Jacobian
+    flag = flag && computeCurrEEJacobian();
+
+    //Compute the forces to be applied
+    Eigen::Vector3d f_ee, f_q;
+    f_ee<<arg_fx, arg_fy, arg_fz;
+    f_q = J_ee_.transpose() * f_ee;
+
+    //Now run the servo
+    double tmp0, tmp1, tmp2, fq0, fq1, fq2;
+    fq0 =f_q(0); fq1 = f_q(1); fq2 = f_q(2);
+
+    // Run the servo loop.
+    flag = flag && readGCAnglesAndCommandGCForces(tmp0, tmp1, tmp2, fq0, fq1, fq2);
+
+    // Do the math to get the end-effector position
+    flag = flag && computeCurrEEPosition();
+
+    // Return the end effector position
+    getEEPosition(arg_x, arg_y, arg_z);
+
     return flag;
   }
 
