@@ -28,7 +28,8 @@ namespace bfr
         dx_ee_(0), dy_ee_(0), dz_ee_(0),
         fx_ee_(0), fy_ee_(0), fz_ee_(0),
         fq0_grav_(0), fq1_grav_(0), fq2_grav_(0),
-        flag_grav_compensation_enabled_(false)
+        flag_grav_compensation_enabled_(false),
+        servo_ticks_(0)
   { time_[0] = 0; time_[1] = 0; time_[2] = 0; }
 
   bool CBfrDriver::init()
@@ -58,7 +59,7 @@ namespace bfr
   }
 
 
-  bool CBfrDriver::readGcAngles(double& arg_q0, double& arg_q1, double& arg_q2)
+  bool CBfrDriver::readGCAngles(double& arg_q0, double& arg_q1, double& arg_q2)
   {
     // Should only be called after initialization
     if(!has_been_init_) { return has_been_init_;  }
@@ -70,18 +71,25 @@ namespace bfr
     if(true == flag)
     {//If transaction was successful, update the joint angles
       q0_ = 2 * 3.1416 * (q0_raw_ - q0_raw_init_) / (encoder_counts_per_rev_ * gear0_);
-      q1_ = 2 * 3.1416 * (q0_raw_ - q0_raw_init_) / (encoder_counts_per_rev_ * gear1_);
-      q2_ = 2 * 3.1416 * (q0_raw_ - q0_raw_init_) / (encoder_counts_per_rev_ * gear2_);
+      q1_ = 2 * 3.1416 * (q1_raw_ - q1_raw_init_) / (encoder_counts_per_rev_ * gear1_);
+      q2_ = 2 * 3.1416 * (q2_raw_ - q2_raw_init_) / (encoder_counts_per_rev_ * gear2_);
+
+#ifdef DEBUG
+      std::cout<<"\nEnc raw : "<<q0_raw_<<", "<<q1_raw_<<", "<<q2_raw_;
+      std::cout<<"\nEnc init: "<<q0_raw_init_<<", "<<q1_raw_init_<<", "<<q2_raw_init_;
+      std::cout<<"\nJoint   : "<<q0_<<", "<<q1_<<", "<<q2_;
+#endif
     }
 
     arg_q0 = q0_;
     arg_q1 = q1_;
     arg_q2 = q2_;
 
+    servo_ticks_++;
     return flag;
   }
 
-  bool CBfrDriver::readGcAnglesAndCommandGcTorques(double& arg_q0, double& arg_q1, double& arg_q2,
+  bool CBfrDriver::readGCAnglesAndCommandGCForces(double& arg_q0, double& arg_q1, double& arg_q2,
       const double arg_fq0, const double arg_fq1, const double arg_fq2)
   {
     // Should only be called after initialization
@@ -120,18 +128,22 @@ namespace bfr
 
     // Talk to the main board
     flag2 = sensoray::CSensoray3DofIODriver::readEncodersAndCommandMotors(q0_raw_, q1_raw_, q2_raw_, i0, i1, i2);
+#ifdef DEBUG
+    std::cout<<"\nSending driver inputs = "<<i0<<", "<<i1<<", "<<i2<<std::flush;
+#endif
 
     if(true == flag2)
     {//If transaction was successful, update the joint angles
       q0_ = 2 * 3.1416 * (q0_raw_ - q0_raw_init_) / (encoder_counts_per_rev_ * gear0_);
-      q1_ = 2 * 3.1416 * (q0_raw_ - q0_raw_init_) / (encoder_counts_per_rev_ * gear1_);
-      q2_ = 2 * 3.1416 * (q0_raw_ - q0_raw_init_) / (encoder_counts_per_rev_ * gear2_);
+      q1_ = 2 * 3.1416 * (q1_raw_ - q1_raw_init_) / (encoder_counts_per_rev_ * gear1_);
+      q2_ = 2 * 3.1416 * (q2_raw_ - q2_raw_init_) / (encoder_counts_per_rev_ * gear2_);
     }
 
     arg_q0 = q0_;
     arg_q1 = q1_;
     arg_q2 = q2_;
 
+    servo_ticks_++;
     // Return success only if motor inputs were within limits AND the sensoray transaction was successful.
     return (flag && flag2);
   }
@@ -140,7 +152,7 @@ namespace bfr
   {
     bool flag; double tmp0, tmp1, tmp2;
     // Run the servo loop.
-    flag = readGcAngles(tmp0, tmp1, tmp2);
+    flag = readGCAngles(tmp0, tmp1, tmp2);
 
     // Do the math to get the end-effector position
     flag = flag && computeCurrEEPosition();
@@ -148,6 +160,7 @@ namespace bfr
     // Return the end effector position
     getEEPosition(arg_x, arg_y, arg_z);
 
+    servo_ticks_++;
     return flag;
   }
 

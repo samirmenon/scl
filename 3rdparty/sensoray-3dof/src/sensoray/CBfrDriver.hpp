@@ -37,7 +37,7 @@ namespace bfr
     // ********* USE CAREFULLY: INVOLVE H/W Commn **********
     // *****************************************************
     /** Position operation only : Reads encoders */
-    bool readGcAngles(double& arg_q0, double& arg_q1, double& arg_q2);
+    bool readGCAngles(double& arg_q0, double& arg_q1, double& arg_q2);
 
     /** Position+Force operation : Sends analog out to motors + reads encoders
      * Inputs are gc torques in Nm
@@ -49,7 +49,7 @@ namespace bfr
      *        Low torque = 0.6 Nm
      *        jr3 noise = ~0.1 Nm
      */
-    bool readGcAnglesAndCommandGcTorques(double& arg_q0, double& arg_q1, double& arg_q2,
+    bool readGCAnglesAndCommandGCForces(double& arg_q0, double& arg_q1, double& arg_q2,
         const double arg_fq0, const double arg_fq1, const double arg_fq2);
 
     /** Position only operation : Sends analog out to motors + reads encoders
@@ -101,6 +101,9 @@ namespace bfr
     void getEEForce(double& arg_fx, double& arg_fy, double& arg_fz)
     { arg_fx = fx_ee_; arg_fy = fy_ee_; arg_fz = fz_ee_;  }
 
+    long long getServoTicks()
+    { return servo_ticks_;  }
+
   private:
     // *****************************************************
     // *********         Kinematics               **********
@@ -149,6 +152,7 @@ namespace bfr
     // *********          Flag Params             **********
     // *****************************************************
     bool flag_grav_compensation_enabled_;
+    long long servo_ticks_;
 
     // *****************************************************
     // *********       Calibration Params         **********
