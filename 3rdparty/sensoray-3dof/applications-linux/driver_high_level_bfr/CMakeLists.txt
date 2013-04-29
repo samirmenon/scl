@@ -21,7 +21,15 @@ SET(EIGEN_INC_DIR ${SENSORAY_BASE_DIR}../eigen3.1.2/)
 INCLUDE_DIRECTORIES(${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR} ${SUTIL_INC_DIR} ${EIGEN_INC_DIR})
 
 #Set all the sources required for the library
-SET(SENSORAY_ALL_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_high_level_test.cpp
+SET(BFR_FX_TEST_ALL_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_hl_fx_test.cpp
+                     ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp
+                     ${SENSORAY_INC_DIR}/sensoray/CBfrDriver.cpp)
+                     
+SET(BFR_FGC_TEST_ALL_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_hl_fgc_test.cpp
+                     ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp
+                     ${SENSORAY_INC_DIR}/sensoray/CBfrDriver.cpp)
+
+SET(BFR_ENC_TEST_ALL_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_hl_encoder_test.cpp
                      ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp
                      ${SENSORAY_INC_DIR}/sensoray/CBfrDriver.cpp)
 
@@ -38,7 +46,9 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 #Define the libraries to be built (cmake sources + 3rdparty libs)
-ADD_EXECUTABLE(bfr_driver_hl_test ${SENSORAY_ALL_SRC})
+ADD_EXECUTABLE(bfr_driver_hl_fx_test ${BFR_FX_TEST_ALL_SRC})
+ADD_EXECUTABLE(bfr_driver_hl_fgc_test ${BFR_FGC_TEST_ALL_SRC})
+ADD_EXECUTABLE(bfr_driver_hl_enc_test ${BFR_ENC_TEST_ALL_SRC})
 
 
 ###############SPECIAL CODE TO FIND AND LINK SENSORAY's LIB DIR ######################
@@ -53,5 +63,6 @@ find_library( SENSORAY_LIBRARY_RELEASE NAMES sensoray-3dof
 SET( SENSORAY_LIBRARY debug     ${SENSORAY_LIBRARY_DEBUG}
               optimized ${SENSORAY_LIBRARY_RELEASE} )
 
-target_link_libraries(bfr_driver_hl_test ${SENSORAY_LIBRARY})
-
+target_link_libraries(bfr_driver_hl_fx_test ${SENSORAY_LIBRARY})
+target_link_libraries(bfr_driver_hl_fgc_test ${SENSORAY_LIBRARY})
+target_link_libraries(bfr_driver_hl_enc_test ${SENSORAY_LIBRARY})
