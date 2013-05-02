@@ -242,19 +242,25 @@ namespace bfr
     if(!has_been_init_) { return has_been_init_;  }
     if(!flag_grav_compensation_enabled_) { return flag_grav_compensation_enabled_;  }
 
-    // Gravity Compensation
-    fq0_grav_ = -g*m1*( cos(q0_)*(L4*sin(q2_)-cos(q1_)*(L1*(1.0/2.0)+L5*(1.0/2.0))) + sin(q0_)*(D1+D2)-D3*cos(q0_))
-                +g*m2*(-sin(q0_)*(D1+D2)+D3*cos(q0_)+L6*cos(q0_)*cos(q1_))
-                -g*m0*(D4*cos(q0_)+D5*sin(q0_))
-                -g*m4*(sin(q0_)*(D1+D2)-D3*cos(q0_)+L7*cos(q0_)*sin(q2_))
-                +g*m3*(-sin(q0_)*(D1+D2)+D3*cos(q0_)+cos(q0_)*(L2*cos(q1_)-L3*sin(q2_)*(1.0/2.0)));
-    fq0_grav_ = -fq0_grav_/30;
+    //NOTE TODO : Implement this:
+    fq0_grav_ = 0.0;
+    fq1_grav_ = 0.0;
+    fq2_grav_ = 0.0;
+    return false;
 
-    fq1_grav_ = -L2*g*m3*sin(q0_)*sin(q1_)-L6*g*m2*sin(q0_)*sin(q1_)-g*m1*sin(q0_)*sin(q1_)*(L1*(1.0/2.0)+L5*(1.0/2.0));
-    fq1_grav_ = fq1_grav_/20;
-
-    fq2_grav_ = -L4*g*m1*cos(q2_)*sin(q0_)-L3*g*m3*cos(q2_)*sin(q0_)*(1.0/2.0)-L7*g*m4*cos(q2_)*sin(q0_);
-    fq2_grav_ = fq2_grav_/20;
+//    // Gravity Compensation
+//    fq0_grav_ = -g*m1*( cos(q0_)*(L4*sin(q2_)-cos(q1_)*(L1*(1.0/2.0)+L5*(1.0/2.0))) + sin(q0_)*(D1+D2)-D3*cos(q0_))
+//                +g*m2*(-sin(q0_)*(D1+D2)+D3*cos(q0_)+L6*cos(q0_)*cos(q1_))
+//                -g*m0*(D4*cos(q0_)+D5*sin(q0_))
+//                -g*m4*(sin(q0_)*(D1+D2)-D3*cos(q0_)+L7*cos(q0_)*sin(q2_))
+//                +g*m3*(-sin(q0_)*(D1+D2)+D3*cos(q0_)+cos(q0_)*(L2*cos(q1_)-L3*sin(q2_)*(1.0/2.0)));
+//    fq0_grav_ = -fq0_grav_/gear0_;
+//
+//    fq1_grav_ = -L2*g*m3*sin(q0_)*sin(q1_)-L6*g*m2*sin(q0_)*sin(q1_)-g*m1*sin(q0_)*sin(q1_)*(L1*(1.0/2.0)+L5*(1.0/2.0));
+//    fq1_grav_ = fq1_grav_/gear1_;
+//
+//    fq2_grav_ = -L4*g*m1*cos(q2_)*sin(q0_)-L3*g*m3*cos(q2_)*sin(q0_)*(1.0/2.0)-L7*g*m4*cos(q2_)*sin(q0_);
+//    fq2_grav_ = fq2_grav_/gear2_;
 
 #ifdef DEBUG
     std::cout<<"\n End-effector gravity = "<<fq0_grav_<<", "<<fq1_grav_<<", "<<fq2_grav_;
