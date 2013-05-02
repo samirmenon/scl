@@ -103,12 +103,21 @@ SET(ALL_FORCE_SRC ${BFRID_BASE_DIR}bfr_force_id_main_nw.cpp
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
             ${RS232_INC_DIR}/rs232.c)
 
+SET(ALL_FORCE_SRC2 ${BFRID_BASE_DIR}bfr_force_id_main_nw_driver2.cpp
+            ${SCL_INC_DIR}/haptics/chai/CChaiHaptics.cpp
+            ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
+            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp 
+            ${SCL_BASE_DIR}/3rdparty/sensoray-3dof/src/sensoray/CBfrDriver.cpp
+            ${RS232_INC_DIR}/rs232.c)
+
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(bfr_system_id ${ALL_SRC})
 
 add_executable(bfr_nw_system_id ${ALL_NW_SRC})
 
 add_executable(bfr_force_system_id ${ALL_FORCE_SRC})
+
+add_executable(bfr_force_system_id_v2 ${ALL_FORCE_SRC2})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
 find_library( SCL_LIBRARY_DEBUG NAMES scl
@@ -127,6 +136,8 @@ target_link_libraries(bfr_system_id ${SCL_LIBRARY})
 target_link_libraries(bfr_nw_system_id ${SCL_LIBRARY})
 
 target_link_libraries(bfr_force_system_id ${SCL_LIBRARY})
+
+target_link_libraries(bfr_force_system_id_v2 ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
 # NOTE : This is only to detect 32 vs 64 bit code.
@@ -157,6 +168,8 @@ target_link_libraries(bfr_nw_system_id ${CHAI_LIBRARY})
 
 target_link_libraries(bfr_force_system_id ${CHAI_LIBRARY})
 
+target_link_libraries(bfr_force_system_id_v2 ${CHAI_LIBRARY})
+
 ###############SPECIAL CODE TO FIND AND LINK IMAGE LIB DIR ######################
 find_library( IMG_LIBRARY_DEBUG NAMES imageformats
             PATHS   ${CHAI_LIB_PATH}
@@ -174,6 +187,8 @@ target_link_libraries(bfr_system_id ${IMG_LIBRARY})
 target_link_libraries(bfr_nw_system_id ${IMG_LIBRARY})
 
 target_link_libraries(bfr_force_system_id ${IMG_LIBRARY})
+
+target_link_libraries(bfr_force_system_id_v2 ${IMG_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK DHD LIB DIR ######################
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
@@ -201,6 +216,8 @@ target_link_libraries(bfr_nw_system_id ${CDHD_LIBRARY})
 
 target_link_libraries(bfr_force_system_id ${CDHD_LIBRARY})
 
+target_link_libraries(bfr_force_system_id_v2 ${CDHD_LIBRARY})
+
 ###############SPECIAL CODE TO FIND AND LINK SENSORAY LIB DIR ######################
 find_library( CSENSORAY_LIBRARY_DEBUG NAMES sensoray-3dof
             PATHS   ${SENSORAY_INC_DIR}../applications-linux/lib/
@@ -219,7 +236,10 @@ target_link_libraries(bfr_nw_system_id ${CSENSORAY_LIBRARY})
 
 target_link_libraries(bfr_force_system_id ${CSENSORAY_LIBRARY})
 
+target_link_libraries(bfr_force_system_id_v2 ${CSENSORAY_LIBRARY})
+
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
 target_link_libraries(bfr_system_id gomp GL GLU glut ncurses usb-1.0 pthread rt pci z)
 target_link_libraries(bfr_nw_system_id gomp GL GLU glut ncurses usb-1.0 pthread rt pci z)
 target_link_libraries(bfr_force_system_id gomp GL GLU glut ncurses usb-1.0 pthread rt pci z)
+target_link_libraries(bfr_force_system_id_v2 gomp GL GLU glut ncurses usb-1.0 pthread rt pci z)
