@@ -70,8 +70,8 @@ namespace scl_app
       std::cout<<"\nTo use haptics, connect haptic devices and use flag : -haptic <num-devices>"
                <<"\n NOTE : Run as sudo for usb.\n\n"<<std::flush;
       //First set up the haptics
-      flag = haptics_.connectToDevices();
-      if(false == flag)
+      int tmp_n_haptics_connected = haptics_.connectToDevices();
+      if(0 >= tmp_n_haptics_connected)
       { throw(std::runtime_error("Could not get connect to haptic devices"));  }
 
       //Ctr in array of args_parsed = (args_parsed - 1)

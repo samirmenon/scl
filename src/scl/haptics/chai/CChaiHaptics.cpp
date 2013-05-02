@@ -49,7 +49,6 @@ namespace scl
 
   scl::sInt CChaiHaptics::connectToDevices()
   {
-
     try
     {
       // Create a haptic device handler :
@@ -99,9 +98,9 @@ namespace scl
     catch (std::exception& e)
     {
       std::cerr << "\nCChaiHaptics::connectToDevices() :" << e.what();
-      return false;
+      return 0;
     }
-    return true;
+    return haptic_devices_.size();
   }
 
   /** Get the present state of a single haptic devices. This is typically
