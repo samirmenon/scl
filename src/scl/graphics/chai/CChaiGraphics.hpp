@@ -101,13 +101,22 @@ public:
    * data pointers, and recursively sets them by calling itself. */
   sBool addRobotLink(SGraphicsPhysicalLink* arg_robot_link);
 
-  /**
-   * Adds a static mesh to render. Indexed by its name.
+  /** Adds a static mesh to render. Indexed by its name.
+   *
+   * A mesh is defined as anything that DOESN'T obey the laws of
+   * physics. It is merely rendered (possibly with collision etc).   */
+  virtual sBool addMeshToRender(const std::string& arg_mesh_name,
+      const std::string& arg_mesh_file, const Eigen::Vector3d& arg_pos,
+      const Eigen::Matrix3d& arg_rot);
+
+  /** Adds a static mesh to render. Indexed by its name.
    *
    * A mesh is defined as anything that DOESN'T obey the laws of
    * physics. It is merely rendered (possibly with collision etc).
-   */
-  virtual sBool addMeshToRender(const std::string& arg_mesh_name,
+   *
+   * The parent mesh MUST exist in the graphics world already. */
+  virtual sBool addMeshToParentInRender(const std::string& arg_mesh_name,
+      const std::string& arg_parent_name,
       const std::string& arg_mesh_file, const Eigen::Vector3d& arg_pos,
       const Eigen::Matrix3d& arg_rot);
 
