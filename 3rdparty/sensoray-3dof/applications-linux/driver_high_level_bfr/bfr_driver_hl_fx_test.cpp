@@ -70,7 +70,7 @@ int main()
     std::cin>>fx>>fy>>fz;
 
     t_mid = sutil::CSystemClock::getSysTime();
-    for(int i=0;i<500; i++)
+    for(int i=0;i<5000; i++)
     { flag = flag && bfrio.readEEPositionAndCommandEEForce(x, y, z, fx, fy, fz); }
     t_tot = sutil::CSystemClock::getSysTime() - t_mid;
     std::cout<<"\nServo rate (ticks/s) = "<<500.0/t_tot<<std::endl;
