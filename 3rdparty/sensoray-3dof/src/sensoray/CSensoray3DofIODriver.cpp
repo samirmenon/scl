@@ -51,11 +51,7 @@ namespace sensoray
             enc_mm_id_(0),
             dac_mm_id_(1),
             sensoray_calibrate_ctr(0)
-  {
-    force_to_current_multiplier_[0] = 2;
-    force_to_current_multiplier_[1] = 2;
-    force_to_current_multiplier_[2] = 2;
-  }
+  { }
 
   bool CSensoray3DofIODriver::init()
   {

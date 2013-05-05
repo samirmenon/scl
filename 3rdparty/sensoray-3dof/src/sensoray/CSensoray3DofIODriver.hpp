@@ -212,9 +212,6 @@ namespace sensoray
     const int dac_mm_id_;
     /** Calibration counter */
     int sensoray_calibrate_ctr;
-    /** Force Calibration : Multiply this with the required
-     * force to get the required motor current. */
-    double force_to_current_multiplier_[3];
   };
 
 } /* namespace sensoray */
