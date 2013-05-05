@@ -71,10 +71,10 @@ int main()
     std::cin>>fx>>fy>>fz;
 
     t_mid = sutil::CSystemClock::getSysTime();
-    for(int i=0;i<5000; i++)
+    for(int i=0;i<1000; i++)
     { flag = flag && bfrio.readEEPositionAndCommandEEForce(x, y, z, fx, fy, fz); }
     t_tot = sutil::CSystemClock::getSysTime() - t_mid;
-    std::cout<<"\nServo rate (ticks/s) = "<<5000.0/t_tot<<std::endl;
+    std::cout<<"\nServo rate (ticks/s) = "<<1000.0/t_tot<<std::endl;
 
     bfrio.getGCForce(fq0, fq1, fq2);
     std::cout<<"\nForceGC applied: "<<fq0<<", "<<fq1<<", "<<fq2;
