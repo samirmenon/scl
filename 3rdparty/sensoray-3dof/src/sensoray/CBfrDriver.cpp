@@ -49,6 +49,18 @@ namespace bfr
 
     has_been_init_ = flag;
 
+    //Set the zero initial position of the end effector
+    flag = computeCurrEEPosition();
+    if(false == flag)
+    {
+      std::cout<<"\nCBfrDriver::init() : Could not read initial end effector position.";
+      has_been_init_ = false;
+    }
+
+    x_ee_zero_ = x_ee_;
+    y_ee_zero_ = y_ee_;
+    z_ee_zero_ = z_ee_;
+
     return flag;
   }
 

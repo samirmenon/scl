@@ -97,6 +97,9 @@ namespace bfr
     void getEEPosition(double& arg_x, double& arg_y, double& arg_z)
     { arg_x = x_ee_; arg_y = y_ee_; arg_z = z_ee_;  }
 
+    void getEEZeroPosition(double& arg_x, double& arg_y, double& arg_z)
+    { arg_x = x_ee_zero_; arg_y = y_ee_zero_; arg_z = z_ee_zero_;  }
+
     void getEEForce(double& arg_fx, double& arg_fy, double& arg_fz)
     { arg_fx = fx_ee_; arg_fy = fy_ee_; arg_fz = fz_ee_;  }
 
@@ -137,6 +140,7 @@ namespace bfr
     double fq0_, fq1_, fq2_;
 
     double x_ee_, y_ee_, z_ee_;
+    double x_ee_zero_, y_ee_zero_, z_ee_zero_;
     double dx_ee_, dy_ee_, dz_ee_;
     double fx_ee_, fy_ee_, fz_ee_;
 
@@ -176,6 +180,8 @@ namespace bfr
 
     // Encoder params
     static const double encoder_counts_per_rev_ = 10000.0; //Includes quadrature (2500 * 4)
+
+    // Regression Fits
   };
 
 } /* namespace bfr */
