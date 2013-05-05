@@ -175,7 +175,7 @@ int main(int argc, char** argv)
 
     FILE* fp;
     char ss[50];
-    std::cout<<"\Will save data to log file: "<<"ForceIdLog.log"<<std::flush;
+    std::cout<<"\nWill save data to log file: "<<"ForceIdLog.log"<<std::flush;
 
     fp = fopen("ForceIdLog.log","a");
     if(NULL == fp)
@@ -208,9 +208,8 @@ int main(int argc, char** argv)
       while((t_end - t_mid > sys_id_stimulus(idx,0)) && (idx < sysid_stim_rows) )
       { idx++;  }
 
-      const double q0_mult = 0.0;
-      double f0 = -1*force_multiplier*sys_id_stimulus(idx,1);
-      double f1 = -1*force_multiplier*sys_id_stimulus(idx,2);
+      double f0 = force_multiplier*sys_id_stimulus(idx,1);
+      double f1 = force_multiplier*sys_id_stimulus(idx,2);
       double f2 = force_multiplier*sys_id_stimulus(idx,3);
       flag = flag && bfrio.readGCAnglesAndCommandGCForces(q0, q1, q2, f0, f1, f2);
 
