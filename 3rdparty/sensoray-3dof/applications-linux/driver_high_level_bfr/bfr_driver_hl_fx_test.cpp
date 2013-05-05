@@ -60,6 +60,7 @@ int main()
   double q0, q1, q2;
   double x, y, z;
   double fx, fy, fz;
+  double fq0, fq1, fq2;
 
   //Set forces to zero at the start. (Just in case).
   flag = flag && bfrio.readGCAnglesAndCommandGCForces(q0, q1, q2, 0, 0, 0);
@@ -73,7 +74,10 @@ int main()
     for(int i=0;i<5000; i++)
     { flag = flag && bfrio.readEEPositionAndCommandEEForce(x, y, z, fx, fy, fz); }
     t_tot = sutil::CSystemClock::getSysTime() - t_mid;
-    std::cout<<"\nServo rate (ticks/s) = "<<500.0/t_tot<<std::endl;
+    std::cout<<"\nServo rate (ticks/s) = "<<5000.0/t_tot<<std::endl;
+
+    bfrio.getGCForce(fq0, fq1, fq2);
+    std::cout<<"\nForceGC applied: "<<fq0<<", "<<fq1<<", "<<fq2;
 
     // Set force back to zero
     flag = flag && bfrio.readGCAnglesAndCommandGCForces(q0, q1, q2, 0, 0, 0);
