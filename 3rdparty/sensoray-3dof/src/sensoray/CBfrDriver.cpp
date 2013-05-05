@@ -30,7 +30,25 @@ namespace bfr
         fq0_grav_(0), fq1_grav_(0), fq2_grav_(0),
         flag_grav_compensation_enabled_(false),
         servo_ticks_(0)
-  { time_[0] = 0; time_[1] = 0; time_[2] = 0; }
+  {
+    time_[0] = 0; time_[1] = 0; time_[2] = 0;
+
+    //NOTE : Calibration parameters obtained on 2013-05-04 by Samir.
+    //When cold
+//    M_fq_mult_(0,0) = 1.3;    M_fq_mult_(0,1) = 0.0423;    M_fq_mult_(0,2) = -0.3114;    M_fq_mult_(0,3) = -0.0035;
+//    M_fq_mult_(1,0) = 0.2772;    M_fq_mult_(1,1) = 1.0887;    M_fq_mult_(1,2) = -0.1052;    M_fq_mult_(1,3) = -0.1215;
+//    M_fq_mult_(2,0) = -0.0480;   M_fq_mult_(2,1) = 0.0341;    M_fq_mult_(2,2) = 1.0848;     M_fq_mult_(2,3) = -0.0069;
+//    M_fq_mult_(3,0) = 0.0;       M_fq_mult_(3,1) = 0.0;       M_fq_mult_(3,2) = 0.0;        M_fq_mult_(3,3) = 1.0;
+
+    //When warm
+    M_fq_mult_(0,0) = 1.3147;    M_fq_mult_(0,1) = -0.154;    M_fq_mult_(0,2) = -0.0250;    M_fq_mult_(0,3) = 0.0173;
+    M_fq_mult_(1,0) = 0.1527;    M_fq_mult_(1,1) = 0.9554;    M_fq_mult_(1,2) = -0.0716;    M_fq_mult_(1,3) = -0.0505;
+    M_fq_mult_(2,0) = -0.0564;   M_fq_mult_(2,1) = 0.0395;    M_fq_mult_(2,2) = 1.0032;     M_fq_mult_(2,3) = -0.0076;
+    M_fq_mult_(3,0) = 0.0;       M_fq_mult_(3,1) = 0.0;       M_fq_mult_(3,2) = 0.0;        M_fq_mult_(3,3) = 1.0;
+
+    //Baseline
+    //M_fq_mult_.setIdentity();
+  }
 
   bool CBfrDriver::init()
   {
@@ -126,12 +144,17 @@ namespace bfr
       fq1_ = arg_fq1;
       fq2_ = arg_fq2;
     }
+    Eigen::Vector4d tmp_fq, tmp_fq_mult;
+    tmp_fq<<fq0_,fq1_,fq2_,1.0;
+    tmp_fq_mult = M_fq_mult_ * tmp_fq;
 
+    // ********************** GC TORQUES OBTAINED BY NOW ***********************
+    // ********************* REMAINING CALIB IS ELECTRICAL *********************
     // Transform the gc torques into driver inputs
     double i0,i1,i2;
-    i0 = motor0_polarity_ * fq0_ / (gear0_* maxon_tau_per_amp_ * i_to_a0_);
-    i1 = motor1_polarity_ * fq1_ / (gear1_* maxon_tau_per_amp_ * i_to_a1_);
-    i2 = motor2_polarity_ * fq2_ / (gear2_* maxon_tau_per_amp_ * i_to_a2_);
+    i0 = motor0_polarity_ * tmp_fq_mult(0) / (gear0_* maxon_tau_per_amp_ * i_to_a0_);
+    i1 = motor1_polarity_ * tmp_fq_mult(1) / (gear1_* maxon_tau_per_amp_ * i_to_a1_);
+    i2 = motor2_polarity_ * tmp_fq_mult(2) / (gear2_* maxon_tau_per_amp_ * i_to_a2_);
 
     // If one or more motors exceeded the max current, limit it to the max.
     if(fabs(i0) > max_amps_/i_to_a0_) { flag = false; i0>=0? i0 = max_amps_/i_to_a0_: i0 = -1*max_amps_/i_to_a0_; }

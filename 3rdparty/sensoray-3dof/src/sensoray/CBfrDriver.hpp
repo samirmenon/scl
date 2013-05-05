@@ -182,6 +182,7 @@ namespace bfr
     static const double encoder_counts_per_rev_ = 10000.0; //Includes quadrature (2500 * 4)
 
     // Regression Fits
+    Eigen::Matrix4d M_fq_mult_;
   };
 
 } /* namespace bfr */
