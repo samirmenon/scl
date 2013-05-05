@@ -37,6 +37,8 @@ void exit_handler(int s)
 
 // EXECUTABLE ////////////////////////////////////////////////////////////////////
 
+#define BFR_FILE_LOGGING
+
 int main()
 {
   //Set up the ctrl+c handler
@@ -47,7 +49,7 @@ int main()
   sigaction(SIGINT, &sigIntHandler, NULL);
 
   bool flag=true;
-  int   ctrl_cycles;  // Total control cycles
+  int   ctrl_cycles=0;  // Total control cycles
   double  t_start, t_tot;    // Benchmark start time.
 
   flag = sutil::CSystemClock::start();
@@ -66,6 +68,15 @@ int main()
   // TEST 2 : Test encoders
   double q0, q1, q2;
   double x, y, z;
+  double xi, yi, zi;
+  bfrio.getEEZeroPosition(xi,yi,zi);
+
+#ifdef BFR_FILE_LOGGING
+  FILE *fp;
+  fp = fopen("BFRPositionLog.txt","w");
+  if(NULL == fp)
+  {std::cout<<"\nCould not open log file\n"; bfrio.shutdown();  return 1;  }
+#endif
 
   //Set forces to zero at the start. (Just in case).
   bfrio.readGCAnglesAndCommandGCForces(q0, q1, q2, 0, 0, 0);
@@ -79,10 +90,25 @@ int main()
     //Get the joint angles (no servo tick)
     bfrio.getGCPosition(q0, q1, q2);
 
-    std::cout<<"\nAngles = "<<q0<<", "<<q1<<", "<<q2;
-    std::cout<<"\nEE Pos = "<<x<<", "<<y<<", "<<z;
+    t_tot = sutil::CSystemClock::getSysTime() - t_start;
+
+#ifdef BFR_FILE_LOGGING
+    fprintf(fp,"\n%lf %lf %lf %lf %lf %lf %lf", t_tot, q0, q1, q2, x-xi, y-yi, z-zi);
+#endif
+
+    ctrl_cycles++;
+    if(ctrl_cycles%50 == 0)
+    {
+      std::cout<<"\nAngles = "<<q0<<", "<<q1<<", "<<q2;
+      std::cout<<"\nEE Pos = "<<x-xi<<", "<<y-yi<<", "<<z-zi;
+      ctrl_cycles = 0;
+    }
   }
   t_tot = sutil::CSystemClock::getSysTime() - t_start;
+
+#ifdef BFR_FILE_LOGGING
+  fclose(fp);
+#endif
 
   std::cout<<"\nEnding encoder test. \nTime = "<<t_tot
       <<"\nServo rate (ticks/s) = "<<static_cast<double>(bfrio.getServoTicks())/t_tot<<std::endl;
