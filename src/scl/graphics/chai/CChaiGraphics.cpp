@@ -551,6 +551,60 @@ namespace scl {
     return true;
   }
 
+  sBool CChaiGraphics::addMeshToParentInRender(const std::string& arg_mesh_name,
+      const std::string& arg_parent_name,
+      const std::string& arg_mesh_file, const Eigen::Vector3d& arg_pos,
+      const Eigen::Matrix3d& arg_rot)
+  {
+    cMultiMesh* tmp_chai_mesh = S_NULL;
+    SGraphicsMesh* tmp_mesh_ds = S_NULL;
+    try
+    {
+      if(!has_been_init_) { return false; }
+
+      //1. Create a new chai mesh
+      tmp_chai_mesh = new cMultiMesh();
+      if(S_NULL == tmp_chai_mesh)
+      { throw(std::runtime_error("Could not create a chai mesh."));  }
+
+      //2. Load the mesh's graphics from a file.
+      if(false == cLoadFileOBJ(tmp_chai_mesh,arg_mesh_file))
+        if(false == cLoadFile3DS(tmp_chai_mesh,arg_mesh_file))
+        {
+          std::string err_str;
+          err_str = "Couldn't load obj/3ds graphics mesh file: "+ arg_mesh_file;
+          throw(std::runtime_error(err_str.c_str()));
+        }
+
+      //3. Initialize the mesh's position and orientation (relative to the origin)
+      tmp_chai_mesh->setLocalPos(arg_pos(0), arg_pos(1), arg_pos(2)); //Set position
+      tmp_chai_mesh->setLocalRot(arg_rot); //Set rotation
+
+      //4. Get mesh's parent data structure pointing to the chai object
+      SGraphicsMesh* tmp_parent_mesh_ds = S_NULL;
+      tmp_parent_mesh_ds = data_->meshes_rendered_.at(arg_parent_name);
+      if(S_NULL == tmp_parent_mesh_ds)
+      { throw(std::runtime_error("Could not find the parent mesh data structure."));  }
+
+      cGenericObject* tmp_parent_chai_mesh = tmp_parent_mesh_ds->graphics_obj_;
+      tmp_parent_chai_mesh->addChild(tmp_chai_mesh);
+
+      //5. Create a new mesh data structure on the pile pointing to this chai object
+      tmp_mesh_ds = data_->meshes_rendered_.create(arg_mesh_name);
+      if(S_NULL == tmp_mesh_ds)
+      { throw(std::runtime_error("Could not create a mesh data structure on the pile."));  }
+      tmp_mesh_ds->graphics_obj_ = tmp_chai_mesh;
+      tmp_mesh_ds->rotation_ = arg_rot;
+      tmp_mesh_ds->translation_ = arg_pos;
+    }
+    catch(std::exception& ee)
+    {
+      std::cerr<<"\nCChaiGraphics::addMeshToRender() : "<<ee.what();
+      return false;
+    }
+    return true;
+  }
+
   /** Removes a static mesh from the rendered scene. Indexed by its name.
    *
    * A mesh is defined as anything that DOESN"T obey the laws of

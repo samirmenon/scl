@@ -97,6 +97,12 @@ namespace scl_chai_glut_interface
       chai_glob_ds->cam_lookat_y_ = gr_parsed_ds->cam_lookat_(1);
       chai_glob_ds->cam_lookat_z_ = gr_parsed_ds->cam_lookat_(2);
 
+      //set the initial camera position:
+      chai_glob_ds->cam_sph_x_=(gr_parsed_ds->cam_pos_ - gr_parsed_ds->cam_lookat_).norm();
+      chai_glob_ds->cam_sph_v_= 180/M_PI*(std::asin(gr_parsed_ds->cam_pos_[2]/chai_glob_ds->cam_sph_x_));
+      chai_glob_ds->cam_sph_h_= 180/M_PI*(std::asin(gr_parsed_ds->cam_pos_[1]/
+          (chai_glob_ds->cam_sph_x_*cCosDeg(chai_glob_ds->cam_sph_v_))));
+
       if(S_NULL == chai_glob_ds->GLOB_chaiDbptr)
       { throw(std::runtime_error("Couldn't find the specified graphics instance")); }
 

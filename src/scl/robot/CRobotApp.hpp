@@ -109,7 +109,7 @@ namespace scl
 #endif
 
     /** Terminates the simulation and prints some statistics */
-    void terminate();
+    virtual void terminate();
 
     /** Runs a simulation using two threads:
      * Thread 1: Computes the robot dynamics

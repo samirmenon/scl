@@ -248,18 +248,6 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
         { arg_robot.flag_apply_actuator_acc_limits_ = false;  }
       }
 
-      xmlflags = _robot_handle.FirstChildElement( "flag_actuator_acc_limits" ).Element();
-      if ( xmlflags )
-      {
-        std::stringstream ss(xmlflags->FirstChild()->Value());
-        std::string sss;
-        ss>>sss;
-        if("true" == sss || "1" == sss)
-        { arg_robot.flag_apply_actuator_acc_limits_ = true;  }
-        else
-        { arg_robot.flag_apply_actuator_acc_limits_ = false;  }
-      }
-
       xmlflags = _robot_handle.FirstChildElement( "flag_controller_on" ).Element();
       if ( xmlflags )
       {
