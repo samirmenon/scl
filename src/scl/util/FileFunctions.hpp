@@ -65,7 +65,22 @@ bool writeEigenVecToFile(const Eigen::VectorXd & arg_vec,
  * x11 x12 ...
  * x21 x22 ...
  *
- * @param arg_mat : The data is loaded longo this matrix
+ * @param arg_mat : The data is loaded in to this matrix
+ * @param arg_file : The filename
+ * @return
+ */
+bool readEigenMatFromFile(Eigen::MatrixXd & arg_mat,
+    const std::string & arg_file);
+
+/** Reads an eigen matrix of doubles from a file
+ *
+ * The file should have a vector in each line:
+ * x11 x12 ...
+ * x21 x22 ...
+ *
+ * @param arg_mat : The data is loaded in to this matrix
+ * @param arg_rows : The number of rows to read
+ * @param arg_cols : The number of columns to read
  * @param arg_file : The filename
  * @return
  */

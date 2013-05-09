@@ -22,6 +22,13 @@ INCLUDE_DIRECTORIES(${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LI
 SET(SENSORAY_ALL_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_test.cpp
                      ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp)
 
+SET(SENSORAY_FX_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_test_fx.cpp
+                     ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp
+                     ${SENSORAY_INC_DIR}/sensoray/CBfrDriver.cpp)
+
+SET(SENSORAY_RAW_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_test_raw_input.cpp
+                     ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp)
+
 ######################END OF SRC DEFS##############
 #Add debug definitions
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -35,6 +42,9 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 #Define the libraries to be built (cmake sources + 3rdparty libs)
 ADD_EXECUTABLE(bfr_driver_test ${SENSORAY_ALL_SRC})
+ADD_EXECUTABLE(bfr_driver_fx ${SENSORAY_FX_SRC})
+ADD_EXECUTABLE(bfr_driver_raw_input ${SENSORAY_RAW_SRC})
+
 
 ###############SPECIAL CODE TO FIND AND LINK SENSORAY's LIB DIR ######################
 find_library( SENSORAY_LIBRARY_DEBUG NAMES sensoray-3dof
@@ -49,4 +59,7 @@ SET( SENSORAY_LIBRARY debug     ${SENSORAY_LIBRARY_DEBUG}
               optimized ${SENSORAY_LIBRARY_RELEASE} )
 
 target_link_libraries(bfr_driver_test ${SENSORAY_LIBRARY})
+target_link_libraries(bfr_driver_fx ${SENSORAY_LIBRARY})
+target_link_libraries(bfr_driver_raw_input ${SENSORAY_LIBRARY})
+
 

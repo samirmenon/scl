@@ -114,6 +114,90 @@ namespace scl_util
   }
 
   bool readEigenMatFromFile(Eigen::MatrixXd & arg_mat,
+      const std::string & arg_file)
+  {
+    try
+    {
+      // Open the file
+      FILE *infile = fopen(arg_file.c_str(), "r");
+      if(NULL == infile)
+      { throw(std::runtime_error("Could not open specified file to determine number of lines")); }
+
+      // Count the number of lines in the file
+      unsigned int number_of_lines = 0;
+      int ch;
+      while (EOF != (ch=getc(infile)))
+      { if ('\n' == ch){ ++number_of_lines; }   }
+
+      // Close file
+      int err = fclose(infile);
+      if(0!=err){ throw(std::runtime_error("Could not determine the number of lines in file")); }
+
+      /// Count the width of a single line.
+      unsigned int number_of_entries = 0;
+
+      ifstream ipfile;
+      ipfile.open(arg_file.c_str(),std::ios::in);//write//read only
+
+      if(!ipfile)
+      { throw(std::runtime_error("Could not open specified file to determine entries in a line")); }
+
+      // Get the first line.
+      std::string line;
+      std::getline(ipfile,line);
+
+      // To parse the line
+      std::istringstream reader(line);
+
+      // Count doubles in line.
+      while(!reader.eof()) {
+        double val; reader >> val;
+        if(reader.fail()) { break;  }
+        number_of_entries++;
+      }
+
+      // Resize the matrix! Onwards is the actual reading.
+      arg_mat.resize(number_of_lines,number_of_entries);//Size the matrix
+
+      for(unsigned int i=0;i<number_of_lines;++i)
+      {
+        std::istringstream lreader(line);
+        unsigned int tmp_line_sz = 0;//Error check to ensure that each line has same size
+        if(ipfile.eof())
+        {throw(std::runtime_error("Given file doesn't have data with specified dimensions")); }
+        // Read doubles from line.
+        while(!lreader.eof()) {
+          double val;
+          lreader >> val;
+          if(lreader.fail()) { break;  }
+
+          // Read in a double.
+          if(tmp_line_sz<number_of_entries)
+          { arg_mat(i,tmp_line_sz) = val; }
+
+          //Increment to count the row vars
+          tmp_line_sz++;
+        }
+        if(tmp_line_sz!=number_of_entries)
+        {
+          char buffer [50];
+          int n;
+          n = sprintf(buffer, "Insufficient entries in line %u (%u of %u)", i, tmp_line_sz, number_of_entries);
+          throw(std::runtime_error(std::string(buffer)));
+        }
+        //Get the next line.
+        std::getline(ipfile,line);
+      }
+    }
+    catch(std::exception& e)
+    {
+      std::cerr<<"\nreadEigenMatFromFile() : "<<e.what();
+      return false;
+    }
+    return true;
+  }
+
+  bool readEigenMatFromFile(Eigen::MatrixXd & arg_mat,
       unsigned long arg_rows, unsigned long arg_cols,
       const std::string & arg_file)
   {
