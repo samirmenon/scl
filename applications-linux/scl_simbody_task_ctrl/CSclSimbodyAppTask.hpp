@@ -39,11 +39,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/parser/lotusparser/CLotusParser.hpp>
+#include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
 #include <scl/dynamics/simbody/CSimbodyDynamics.hpp>
 #include <scl/control/task/CTaskController.hpp>
-#include <scl/control/task/tasks/COpPointTask.hpp>
+#include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/graphics/chai/CChaiGraphics.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/robot/CRobot.hpp>
@@ -58,10 +58,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <fstream>
 #include <stdexcept>
 #include <string>
-
-//User modified includes to suit your application
-#include <scl/control/task/tasks/COpPointTask.hpp>
-
 
 namespace scl_app
 {
@@ -80,8 +76,8 @@ namespace scl_app
     scl::CTaskController* ctrl;           //Use a task controller
 
     std::string op_link_name,op_link2_name;
-    scl::COpPointTask* tsk, *tsk2;
-    scl::SOpPointTask* tsk_ds, *tsk2_ds;
+    scl::CTaskOpPos* tsk, *tsk2;
+    scl::STaskOpPos* tsk_ds, *tsk2_ds;
     scl::sBool op_link_set, op_link2_set;
 
     /** Implement this function. Else you will get a linker error. */
