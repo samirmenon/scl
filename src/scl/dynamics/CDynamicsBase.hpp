@@ -136,6 +136,22 @@ public:
       /** The Jacobain will be saved here. */
       Eigen::MatrixXd& arg_J)=0;
 
+  /** Calculates the collision forces for the robot to which this dynamics
+   * object is assigned.
+   *
+   * Uses std::string based force lookup. The dynamics implementation should
+   * support this (maintain a map or something).
+   *
+   * NOTE : The dynamics engine may delete forces from the passed mapped list
+   * at will. Do not store pointers to them at random places in your code.
+   */
+  virtual sBool calculateContactExternalForces(/**
+          This is where the simulator will store the contact
+          forces. It may use the std::string to identify when
+          to remove or re-add forces.*/
+          sutil::CMappedList<std::string, SForce> & arg_contact_forces)
+  {   /** As of now, this is optional for dynamics engines */ return false; }
+
   /** Integrates the robot's state.
    * Uses the given applied forces, torques, positions and velocities
    * and its internal dynamic model to compute
@@ -151,6 +167,7 @@ public:
    *
    * Reads from:
    * arg_inputs_.sensors_.forces_external_
+   * arg_inputs_.sensors_.forces_external_transient_
    * arg_inputs_.sensors_.force_gc_measured_
    * arg_inputs_.actuators_.force_gc_commanded_
    */
