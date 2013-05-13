@@ -72,7 +72,7 @@ namespace scl
     Eigen::MatrixXd J_;
 
     //Constructor
-    SForce(): SObject("SForce"){}
+    SForce(): SObject("SForce"), link_id_(NULL){}
   };
 }
 

@@ -41,6 +41,7 @@ namespace scl
 
   SNonControlTaskBase::SNonControlTaskBase() : SObject("SNonControlTaskBase")
   {
+    parent_controller_ = NULL;
     name_ = "";
     has_been_init_ = false;
     has_been_activated_ = false;
