@@ -230,22 +230,22 @@ int main(int argc, char** argv)
           <<"\n<task-id> <time-at-completion> <time-duration> <x-des> <y-des> <z-des> <Fx-des> <Fy-des> <Fz-des>"
           <<"\n"<<state_task_selection_matrix<<"\n";
 
-      state = state_task_selection_matrix(0,0);
+      state = static_cast<fMRIState>(state_task_selection_matrix(0,0));
       if(FMRI_CENTER_INIT!=state)
       { throw(std::runtime_error("Simulation state machine must start at the center state"));  }
 
       /*****************************Chai Background Image************************************/
-      cImage *bkg_image = new cImage();
-      if(NULL == bkg_image)
-      { throw(std::runtime_error("Could not allocate memory for cImage object."));  }
-
-      flag = bkg_image->loadFromFile("./Screen1280x800.png");
+      cBackground bkg_image;
+      flag = bkg_image.loadFromFile("./Screen1280x800.png");
       if(false == flag)
       { throw(std::runtime_error("Could not load background image."));  }
 
-      chai_gr.getChaiData()->chai_cam_->m_backLayer->addChild(bkg_image);
+      // Attach the background to the camera's back layer. Chai's default
+      // is to support "widgets" like this on layers (see chai code for more).
+      chai_gr.getChaiData()->chai_cam_->m_backLayer->addChild(&bkg_image);
 
-      //bkg_image->setTransparency(1);
+      // Enable the background.
+      bkg_image.setEnabled(true,false);
 
       /*****************************Chai Background Text************************************/
       cFont *text_font = NEW_CFONTCALIBRI20();
@@ -421,8 +421,10 @@ int main(int argc, char** argv)
             }
 
             // ************** Background Color ******************
-//            if(1 == flag_display_background)
-//            { bkg_image->setTransparency(0); }
+            if(1 == flag_display_background)
+            { bkg_image.setEnabled(true,false); }
+            else
+            { bkg_image.setEnabled(false,false); }
 
             // ************** STATE MACHINE ******************
             // The first states are just to maintain the current status till time runs out
