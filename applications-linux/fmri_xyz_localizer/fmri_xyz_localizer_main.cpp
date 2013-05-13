@@ -155,7 +155,7 @@ int main(int argc, char** argv)
       const double box_scaling = 0.002;
 
       /** Render a box at the haptic point's desired position */
-      flag = chai_gr.addMeshToRender("haptic_box_red","./graphics/haptic_des_box_red.obj",
+      flag = chai_gr.addMeshToRender("haptic_box_red",db->dir_specs_ + std::string("fMRI/graphics/haptic_des_box_red.obj"),
           Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity());
       if(false == flag) { throw(std::runtime_error("Could not add mesh box at com desired pos"));  }
       chai_haptic_box_des_red = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_red")->graphics_obj_;
@@ -166,7 +166,7 @@ int main(int argc, char** argv)
       chai_haptic_box_des_red->setEnabled(false,true);
 
       /** Render a box at the haptic point's desired position */
-      flag = chai_gr.addMeshToRender("haptic_box_green","./graphics/haptic_des_box_green.obj",
+      flag = chai_gr.addMeshToRender("haptic_box_green",db->dir_specs_ + std::string("fMRI/graphics/haptic_des_box_green.obj"),
           Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity());
       if(false == flag) { throw(std::runtime_error("Could not add green mesh box at com desired pos"));  }
       chai_haptic_box_des_green = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_green")->graphics_obj_;
@@ -176,7 +176,7 @@ int main(int argc, char** argv)
       chai_haptic_box_des_green->setEnabled(false,true);
 
       /** Render a box at the haptic point's desired position */
-      flag = chai_gr.addMeshToRender("haptic_box_yellow","./graphics/haptic_des_box_yellow.obj",
+      flag = chai_gr.addMeshToRender("haptic_box_yellow",db->dir_specs_ + std::string("fMRI/graphics/haptic_des_box_yellow.obj"),
           Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity());
       if(false == flag) { throw(std::runtime_error("Could not add yellow mesh box at com desired pos"));  }
       chai_haptic_box_des_yellow = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_yellow")->graphics_obj_;
