@@ -70,6 +70,9 @@ namespace scl
      * translate an [fx, fy, fz] force vector into joint torques.
      */
     Eigen::MatrixXd J_;
+
+    //Constructor
+    SForce(): SObject("SForce"){}
   };
 }
 
