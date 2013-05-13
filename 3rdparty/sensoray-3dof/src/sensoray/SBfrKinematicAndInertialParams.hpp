@@ -8,9 +8,13 @@
 #ifndef SBFRKINEMATICANDINERTIALPARAMS_HPP_
 #define SBFRKINEMATICANDINERTIALPARAMS_HPP_
 
-#ifdef GCC_4.4.3
- #define constexpr const
+// NOTE : You can't use . in macros.
+// The regex is : [a-zA-Z_][a-zA-Z_0-9]* (*)
+#ifdef GCC_4_4
+ #define constexpr const 
 #endif
+
+
 
 namespace bfr
 {
