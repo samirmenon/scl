@@ -67,6 +67,17 @@ ${CDHD_INC_DIR} ${CGEL_INC_DIR} ${CGIFLIB_INC_DIR} ${CLIB3DS_INC_DIR} ${CLIBJPEG
 ${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR}
 ${RS232_INC_DIR})
 
+###############SPECIAL CODE TO SET CONSTEXPR FOR OLD GCC ######################
+EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+#STRING(REGEX MATCHALL "[0-9]+" GCC_VERSION_COMPONENTS ${GCC_VERSION})
+#list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
+#list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
+
+ADD_DEFINITIONS(-DGCC_${GCC_VERSION})
+
+###############################################################################
+
+
 #Set the compilation flags
 # NOTE : This is only to detect 32 vs 64 bit code.
 # The else is not really an else, just a continuation of the if. CMake syntax.
