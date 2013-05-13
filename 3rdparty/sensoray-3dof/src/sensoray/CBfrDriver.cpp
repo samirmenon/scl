@@ -25,6 +25,7 @@ namespace bfr
         q0_raw_init_(0), q1_raw_init_(0), q2_raw_init_(0),
         fq0_(0), fq1_(0), fq2_(0),
         x_ee_(0), y_ee_(0), z_ee_(0),
+        x_ee_zero_(0), y_ee_zero_(0), z_ee_zero_(0),
         dx_ee_(0), dy_ee_(0), dz_ee_(0),
         fx_ee_(0), fy_ee_(0), fz_ee_(0),
         fq0_grav_(0), fq1_grav_(0), fq2_grav_(0),
