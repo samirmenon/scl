@@ -20,6 +20,16 @@ SET(EIGEN_INC_DIR ${SENSORAY_BASE_DIR}../eigen3.1.2/)
 
 INCLUDE_DIRECTORIES(${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR} ${SUTIL_INC_DIR} ${EIGEN_INC_DIR})
 
+###############SPECIAL CODE TO SET CONSTEXPR FOR OLD GCC ######################
+EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+#STRING(REGEX MATCHALL "[0-9]+" GCC_VERSION_COMPONENTS ${GCC_VERSION})
+#list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
+#list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
+
+ADD_DEFINITIONS(-DGCC_${GCC_VERSION})
+
+###############################################################################
+
 #Set all the sources required for the library
 SET(BFR_FX_TEST_ALL_SRC ${SENSORAY_BFR_DEMO_DIR}/bfr_driver_hl_fx_test.cpp
                      ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp

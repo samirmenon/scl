@@ -8,6 +8,10 @@
 #ifndef SBFRKINEMATICANDINERTIALPARAMS_HPP_
 #define SBFRKINEMATICANDINERTIALPARAMS_HPP_
 
+#ifdef GCC_4.4.3
+ #define constexpr const
+#endif
+
 namespace bfr
 {
 
