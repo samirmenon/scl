@@ -52,7 +52,6 @@ int main(int argc, char** argv)
   bool flag;
   bool flag_trigger_scan = false;
   bool flag_display_timer = false;
-  const double NaN = 0.0/0.0;
   const double DIST_AT_GOAL_ACHIEVED = 0.025;
   std::string disp_filename("task.txt"); // Default
 
@@ -60,8 +59,9 @@ int main(int argc, char** argv)
   {
     std::cout<<"\nfmri_force_sensing demo application allows controlling a haptic device."
         <<"\n Optional : It can also trigger an fmri scan by setting : trigger_fmri_scan = 1 "
-        <<"\nThe command line input is: ./<executable> <config_file_name.xml> <optional : \"-trig\" to trigger_fmri_scan>"
-        <<" <optional : \"-timer\" to display a text timer> \n"
+        <<"\nThe command line input is: ./<executable> <config_file_name.xml> \n"
+        <<" <optional : \"-trig\"     to trigger_fmri_scan> \n"
+        <<" <optional : \"-timer\"    to display a text timer> \n"
         <<" <optional : \"-dispfile\" to specify the simulation file (default = ./task.txt)> \n";
     return 0;
   }
@@ -227,7 +227,7 @@ int main(int argc, char** argv)
       state_x_des_curr_task.setZero(state_task_selection_matrix.cols());
 
       std::cout<<"\nRunning task matrix:"
-          <<"\n<task-id> <time-at-completion> <time-duration> <x-des> <y-des> <z-des> <Fx-des> <Fy-des> <Fz-des>"
+          <<"\n<task-id> <time-at-completion> <background-enabled> <x-des> <y-des> <z-des> <Fx-des> <Fy-des> <Fz-des>"
           <<"\n"<<state_task_selection_matrix<<"\n";
 
       state = static_cast<fMRIState>(state_task_selection_matrix(0,0));
@@ -375,10 +375,18 @@ int main(int argc, char** argv)
             if(has_been_init_haptics)
             {
               //haptics_.getHapticDevicePosition(0,haptic_pos_);
-              bfr.readEEPositionAndCommandEEForce(haptic_pos_(0),haptic_pos_(1),haptic_pos_(2),
-                  state_task_selection_matrix(state_task_row_in_matrix,6),
-                  state_task_selection_matrix(state_task_row_in_matrix,7),
-                  state_task_selection_matrix(state_task_row_in_matrix,8));
+//              bfr.readEEPositionAndCommandEEForce(haptic_pos_(0),haptic_pos_(1),haptic_pos_(2),
+//                  state_task_selection_matrix(state_task_row_in_matrix,6),
+//                  state_task_selection_matrix(state_task_row_in_matrix,7),
+//                  state_task_selection_matrix(state_task_row_in_matrix,8));
+              const timespec ts = {0, 50000000};//Sleep for 50ms
+              nanosleep(&ts,NULL);
+
+              std::cout<<"\nBFR command. Pos: "<<haptic_pos_.transpose()<<". Force: "
+                  <<state_task_selection_matrix(state_task_row_in_matrix,6)<<", "
+                  <<state_task_selection_matrix(state_task_row_in_matrix,7)<<", "
+                  <<state_task_selection_matrix(state_task_row_in_matrix,8);
+              sleep(1.0);
               hpos = haptic_pos_;
             }
             // SET THE CURRENT POSITION OF THE DEVICE!!
