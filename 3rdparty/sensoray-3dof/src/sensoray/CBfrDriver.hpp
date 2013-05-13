@@ -160,26 +160,26 @@ namespace bfr
     // *****************************************************
     // *********       Calibration Params         **********
     // *****************************************************
-    static const double max_amps_ = 2.5;
+    static constexpr double max_amps_ = 2.5;
 
     //Amp output = i_to_a * i; //Amps per unit input
-    static const double i_to_a0_ = 1.9846; //Amps / unit-input
-    static const double i_to_a1_ = 1.9863;
-    static const double i_to_a2_ = 2.0338;
+    static constexpr double i_to_a0_ = 1.9846; //Amps / unit-input
+    static constexpr double i_to_a1_ = 1.9863;
+    static constexpr double i_to_a2_ = 2.0338;
 
     // Motor related params
-    static const double maxon_tau_per_amp_ = .0578;// = 57.8 / 1000
-    static const double motor0_polarity_ = -1.0;
-    static const double motor1_polarity_ = -1.0;
-    static const double motor2_polarity_ = 1.0;
+    static constexpr double maxon_tau_per_amp_ = .0578;// = 57.8 / 1000
+    static constexpr double motor0_polarity_ = -1.0;
+    static constexpr double motor1_polarity_ = -1.0;
+    static constexpr double motor2_polarity_ = 1.0;
 
     // Gearbox (capstan / shaft)
-    static const double gear0_ = 30.0;
-    static const double gear1_ = 20.0;
-    static const double gear2_ = 20.0;
+    static constexpr double gear0_ = 30.0;
+    static constexpr double gear1_ = 20.0;
+    static constexpr double gear2_ = 20.0;
 
     // Encoder params
-    static const double encoder_counts_per_rev_ = 10000.0; //Includes quadrature (2500 * 4)
+    static constexpr double encoder_counts_per_rev_ = 10000.0; //Includes quadrature (2500 * 4)
 
     // Regression Fits
     Eigen::Matrix4d M_fq_mult_;
