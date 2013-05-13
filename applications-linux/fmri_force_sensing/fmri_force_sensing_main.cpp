@@ -147,7 +147,7 @@ int main(int argc, char** argv)
       const double box_scaling = 0.002;
 
       /** Render a box at the haptic point's desired position */
-      flag = chai_gr.addMeshToRender("haptic_box_red","./graphics/haptic_des_box_red.obj",
+      flag = chai_gr.addMeshToRender("haptic_box_red", db->dir_specs_ + std::string("fMRI/graphics/haptic_des_box_red.obj"),
           Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity());
       if(false == flag) { throw(std::runtime_error("Could not add mesh box at com desired pos"));  }
       chai_haptic_box_des_red = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_red")->graphics_obj_;
@@ -158,7 +158,7 @@ int main(int argc, char** argv)
       chai_haptic_box_des_red->setEnabled(false,true);
 
       /** Render a box at the haptic point's desired position */
-      flag = chai_gr.addMeshToRender("haptic_box_green","./graphics/haptic_des_box_green.obj",
+      flag = chai_gr.addMeshToRender("haptic_box_green",db->dir_specs_ + std::string("fMRI/graphics/haptic_des_box_green.obj"),
           Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity());
       if(false == flag) { throw(std::runtime_error("Could not add green mesh box at com desired pos"));  }
       chai_haptic_box_des_green = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_green")->graphics_obj_;
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
       chai_haptic_box_des_green->setEnabled(false,true);
 
       /** Render a box at the haptic point's desired position */
-      flag = chai_gr.addMeshToRender("haptic_box_yellow","./graphics/haptic_des_box_yellow.obj",
+      flag = chai_gr.addMeshToRender("haptic_box_yellow",db->dir_specs_ + std::string("fMRI/graphics/haptic_des_box_yellow.obj"),
           Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity());
       if(false == flag) { throw(std::runtime_error("Could not add yellow mesh box at com desired pos"));  }
       chai_haptic_box_des_yellow = chai_gr.getChaiData()->meshes_rendered_.at("haptic_box_yellow")->graphics_obj_;
@@ -226,9 +226,11 @@ int main(int argc, char** argv)
       // Set it to match one row of the task selection matrix
       state_x_des_curr_task.setZero(state_task_selection_matrix.cols());
 
+#ifdef DEBUG
       std::cout<<"\nRunning task matrix:"
           <<"\n<task-id> <time-at-completion> <background-enabled> <x-des> <y-des> <z-des> <Fx-des> <Fy-des> <Fz-des>"
           <<"\n"<<state_task_selection_matrix<<"\n";
+#endif
 
       state = static_cast<fMRIState>(state_task_selection_matrix(0,0));
       if(FMRI_CENTER_INIT!=state)
@@ -374,19 +376,20 @@ int main(int argc, char** argv)
           {
             if(has_been_init_haptics)
             {
-              //haptics_.getHapticDevicePosition(0,haptic_pos_);
-//              bfr.readEEPositionAndCommandEEForce(haptic_pos_(0),haptic_pos_(1),haptic_pos_(2),
-//                  state_task_selection_matrix(state_task_row_in_matrix,6),
-//                  state_task_selection_matrix(state_task_row_in_matrix,7),
-//                  state_task_selection_matrix(state_task_row_in_matrix,8));
-              const timespec ts = {0, 50000000};//Sleep for 50ms
+              bfr.readEEPositionAndCommandEEForce(haptic_pos_(0),haptic_pos_(1),haptic_pos_(2),
+                  state_task_selection_matrix(state_task_row_in_matrix,6),
+                  state_task_selection_matrix(state_task_row_in_matrix,7),
+                  state_task_selection_matrix(state_task_row_in_matrix,8));
+#ifdef DEBUG
+              const timespec ts = {0, 25000000};//Sleep for 25ms
               nanosleep(&ts,NULL);
 
               std::cout<<"\nBFR command. Pos: "<<haptic_pos_.transpose()<<". Force: "
                   <<state_task_selection_matrix(state_task_row_in_matrix,6)<<", "
                   <<state_task_selection_matrix(state_task_row_in_matrix,7)<<", "
                   <<state_task_selection_matrix(state_task_row_in_matrix,8);
-              sleep(1.0);
+#endif
+
               hpos = haptic_pos_;
             }
             // SET THE CURRENT POSITION OF THE DEVICE!!
@@ -444,7 +447,9 @@ int main(int argc, char** argv)
                 //Transition to next state:
                 if(state_t_curr_task_max < state_t_curr)
                 {
+#ifdef DEBUG
                   std::cout<<"\n"<<state_t_curr<<" : Switching to : FMRI_INCREMENT_TASK_STATE"<<std::flush;
+#endif
                   state = FMRI_INCREMENT_TASK_STATE;
                 }
                 break;
@@ -453,7 +458,9 @@ int main(int argc, char** argv)
                 //Transition to next state:
                 if(state_t_curr_task_max < state_t_curr)
                 {
+#ifdef DEBUG
                   std::cout<<"\n"<<state_t_curr<<" : Switching to : FMRI_INCREMENT_TASK_STATE"<<std::flush;
+#endif
                   state = FMRI_INCREMENT_TASK_STATE;
                 }
                 break;
@@ -468,10 +475,12 @@ int main(int argc, char** argv)
                   switch(static_cast<int>(state_task_selection_matrix(state_task_row_in_matrix,0)))
                   {
                     case 0:
-                      state = FMRI_CENTER_INIT;
+                      if(FMRI_CENTER != state)
+                      { state = FMRI_CENTER_INIT; }
                       break;
                     case 1:
-                      state = FMRI_VISION_AND_FORCE_INIT;
+                      if(FMRI_VISION_AND_FORCE != state)
+                      { state = FMRI_VISION_AND_FORCE_INIT; }
                       break;
                   }
                 }
@@ -538,8 +547,15 @@ int main(int argc, char** argv)
               }
 
               // Log data at 1ms resolution
-              fprintf(fp,"\n%.3lf %.3lf %.3lf %.3lf %.3lf %.3lf %.3lf",curr_time - t_start,
-                  state_x_des_curr_task(0), state_x_des_curr_task(1), state_x_des_curr_task(2), hpos(0), hpos(1), hpos(2) );
+              fprintf(fp,"\n%.3lf %d %.3lf %d %.3lf %.3lf %.3lf %.3lf %.3lf %.3lf",
+                  curr_time - t_start, // Actual time
+                  static_cast<int>(state_x_des_curr_task(0)), //task id
+                  state_x_des_curr_task(1),
+                  static_cast<int>(state_x_des_curr_task(2)), //background on/off
+                  hpos(0), hpos(1), hpos(2),
+                  state_task_selection_matrix(state_task_row_in_matrix,6),
+                  state_task_selection_matrix(state_task_row_in_matrix,7),
+                  state_task_selection_matrix(state_task_row_in_matrix,8));
               last_log_time = curr_time;
             }
 #ifndef DEBUG
@@ -579,6 +595,7 @@ int main(int argc, char** argv)
       fprintf(fp,"\n*******************************************************************");
 
       /****************************Deallocate Memory And Exit*****************************/
+      bfr.shutdown();
       flag = chai_gr.destroyGraphics();
       if(false == flag) { throw(std::runtime_error("Error deallocating graphics pointers")); } //Sanity check.
 
