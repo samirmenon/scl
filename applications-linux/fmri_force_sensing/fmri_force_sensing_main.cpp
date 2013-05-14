@@ -202,7 +202,8 @@ int main(int argc, char** argv)
       int state_task_row_in_matrix=0;
       double state_t_curr = 0.0;
       double state_t_curr_task_max=-1.0;
-      int flag_display_background;
+      int flag_display_chequered_background;
+      double t_chequered_bkg_flip=0.0;
       Eigen::VectorXd state_x_des_curr_task;
       Eigen::MatrixXd state_task_selection_matrix;
 
@@ -233,21 +234,28 @@ int main(int argc, char** argv)
 #endif
 
       state = static_cast<fMRIState>(state_task_selection_matrix(0,0));
+      if(FMRI_CENTER == state)
+      { state = FMRI_CENTER_INIT; }
       if(FMRI_CENTER_INIT!=state)
       { throw(std::runtime_error("Simulation state machine must start at the center state"));  }
 
       /*****************************Chai Background Image************************************/
-      cBackground bkg_image;
+      cBackground bkg_image, bkg_noimage;
       flag = bkg_image.loadFromFile("./Screen1280x800.png");
       if(false == flag)
       { throw(std::runtime_error("Could not load background image."));  }
 
+      cColorf bkg_grey_color(0.5f,0.5f,0.5f);
+      bkg_noimage.setUniformColor(bkg_grey_color);
+
       // Attach the background to the camera's back layer. Chai's default
       // is to support "widgets" like this on layers (see chai code for more).
       chai_gr.getChaiData()->chai_cam_->m_backLayer->addChild(&bkg_image);
+      chai_gr.getChaiData()->chai_cam_->m_backLayer->addChild(&bkg_noimage);
 
       // Enable the background.
-      bkg_image.setEnabled(true,false);
+      bkg_image.setEnabled(false,false);
+      bkg_noimage.setEnabled(true,false);
 
       /*****************************Chai Background Text************************************/
       cFont *text_font = NEW_CFONTCALIBRI20();
@@ -404,7 +412,7 @@ int main(int argc, char** argv)
              * <task-id> <time-at-completion> <background-enabled> <x-des> <y-des> <z-des> <Fx-des> <Fy-des> <Fz-des> */
             // Max time in this state
             state_t_curr_task_max = state_task_selection_matrix(state_task_row_in_matrix,1);
-            flag_display_background = state_task_selection_matrix(state_task_row_in_matrix,2);
+            flag_display_chequered_background = state_task_selection_matrix(state_task_row_in_matrix,2);
 
             // Display target's position
             state_x_des_curr_task<<state_task_selection_matrix(state_task_row_in_matrix,3),
@@ -432,10 +440,26 @@ int main(int argc, char** argv)
             }
 
             // ************** Background Color ******************
-            if(1 == flag_display_background)
-            { bkg_image.setEnabled(true,false); }
+            // Flickers at 8Hz. http://www.jneurosci.org/content/16/13/4207.full
+            if(1 == flag_display_chequered_background)
+            {
+              int hz_ctr = static_cast<int>(1000*state_t_curr);
+              if(hz_ctr%250 < 125)
+              {//Show chequerboard
+                bkg_image.setEnabled(true,false);
+                bkg_noimage.setEnabled(false,false);
+              }
+              else
+              {//Hide chequerboard
+                bkg_image.setEnabled(false,false);
+                bkg_noimage.setEnabled(true,false);
+              }
+            }
             else
-            { bkg_image.setEnabled(false,false); }
+            {
+              bkg_image.setEnabled(false,false);
+              bkg_noimage.setEnabled(true,false);
+            }
 
             // ************** STATE MACHINE ******************
             // The first states are just to maintain the current status till time runs out
@@ -478,7 +502,7 @@ int main(int argc, char** argv)
                       if(FMRI_CENTER != state)
                       { state = FMRI_CENTER_INIT; }
                       break;
-                    case 1:
+                    default:
                       if(FMRI_VISION_AND_FORCE != state)
                       { state = FMRI_VISION_AND_FORCE_INIT; }
                       break;
