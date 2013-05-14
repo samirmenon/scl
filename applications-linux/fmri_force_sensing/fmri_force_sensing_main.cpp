@@ -277,11 +277,14 @@ int main(int argc, char** argv)
       scl::sBool has_been_init_haptics;
       Eigen::Vector3d haptic_pos_;
       Eigen::Vector3d haptic_base_pos_;
+      Eigen::Vector3d haptic_force_;
 
       //First set up the haptics
       has_been_init_haptics = bfr.init();
       if(false == has_been_init_haptics)
       { std::cout<<"\nWARNING : Could not connect to haptic device. Proceeding in kbd mode. \n\tDid you run as sudo?"; }
+
+      bfr.getEEZeroPosition(haptic_base_pos_(0),haptic_base_pos_(1),haptic_base_pos_(2));
 
       /****************************** Logging ************************************/
       FILE * fp;
@@ -384,10 +387,15 @@ int main(int argc, char** argv)
           {
             if(has_been_init_haptics)
             {
+              haptic_force_(0) += (state_task_selection_matrix(state_task_row_in_matrix,6) - haptic_force_(0))/5;
+              haptic_force_(1) += (state_task_selection_matrix(state_task_row_in_matrix,7) - haptic_force_(1))/5;
+              haptic_force_(2) += (state_task_selection_matrix(state_task_row_in_matrix,8) - haptic_force_(2))/5;
               bfr.readEEPositionAndCommandEEForce(haptic_pos_(0),haptic_pos_(1),haptic_pos_(2),
-                  state_task_selection_matrix(state_task_row_in_matrix,6),
-                  state_task_selection_matrix(state_task_row_in_matrix,7),
-                  state_task_selection_matrix(state_task_row_in_matrix,8));
+                  haptic_force_(0), haptic_force_(1), haptic_force_(2));
+//              bfr.readEEPositionAndCommandEEForce(haptic_pos_(0),haptic_pos_(1),haptic_pos_(2),
+//                  state_task_selection_matrix(state_task_row_in_matrix,6),
+//                  state_task_selection_matrix(state_task_row_in_matrix,7),
+//                  state_task_selection_matrix(state_task_row_in_matrix,8));
 #ifdef DEBUG
               const timespec ts = {0, 25000000};//Sleep for 25ms
               nanosleep(&ts,NULL);
@@ -398,7 +406,7 @@ int main(int argc, char** argv)
                   <<state_task_selection_matrix(state_task_row_in_matrix,8);
 #endif
 
-              hpos = haptic_pos_;
+              hpos = haptic_pos_ - haptic_base_pos_;
             }
             // SET THE CURRENT POSITION OF THE DEVICE!!
             chai_haptic_pos->setLocalPos(hpos);
