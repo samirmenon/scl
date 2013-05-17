@@ -49,17 +49,18 @@ int main(int argc, char** argv)
   bool flag;
   bool flag_trigger_scan = false;
   bool flag_display_timer = false;
-  int file_rows = 10;
-  int file_cols = 7;
   const double NaN = 0.0/0.0;
   const double DIST_AT_GOAL_ACHIEVED = 0.025;
+  std::string disp_filename("task.txt"); // Default
+
   if(argc < 2)
   {
     std::cout<<"\nfmri_xyz_localizer demo application allows controlling a haptic device."
         <<"\n Optional : It can also trigger an fmri scan by setting : trigger_fmri_scan = 1 "
-        <<"\nThe command line input is: ./<executable> <config_file_name.xml> <optional : \"-trig\" to trigger_fmri_scan>"
-        <<"\n\t<optional : \"-frows\" to specify file rows = 10> <optional : \"-fcols\" to specify file cols = 7>"
-        <<" <optional : \"-timer\" to display a text timer> \n";
+        <<"\nThe command line input is: ./<executable> <config_file_name.xml>\n"
+        <<" <optional : \"-trig\"     to trigger_fmri_scan> \n"
+        <<" <optional : \"-timer\"    to display a text timer> \n"
+        <<" <optional : \"-dispfile\" to specify the simulation file (default = ./task.txt)> \n";
     return 0;
   }
   else
@@ -77,22 +78,11 @@ int main(int argc, char** argv)
         { flag_trigger_scan = true; }
         if(str == "-timer")
         { flag_display_timer = true; }
-        if(str == "-frows")
+        if(str == "-dispfile")
         {
           if(i+1>=argc)
-          { throw("Argument '-frows' requires the number of rows to be entered");}
-          std::stringstream ss;
-          ss<<argv[i+1];
-          ss>>file_rows;
-          i = i+1;
-        }
-        if(str == "-fcols")
-        {
-          if(i+1>=argc)
-          { throw("Argument '-fcols' requires the number of cols to be entered");}
-          std::stringstream ss;
-          ss<<argv[i+1];
-          ss>>file_cols;
+          { throw("Argument '-dispfile' requires the display spec file name to be entered");}
+          disp_filename = argv[i+1];
           i = i+1;
         }
       }
@@ -229,7 +219,7 @@ int main(int argc, char** argv)
        *                ==      0.6 x 0.3 x 0.2 m (xyz in chai)
        *                ==      0.3 x 0.15 x 0. m (xyz displacements to reach cuboid edges from center)
        */
-      flag = scl_util::readEigenMatFromFile(state_task_selection_matrix, file_rows, file_cols, "task.txt");
+      flag = scl_util::readEigenMatFromFile(state_task_selection_matrix, disp_filename);
       if(false == flag)
       { throw(std::runtime_error("Could not open task input file"));  }
 
