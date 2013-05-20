@@ -126,7 +126,14 @@ SET(ALLSRC ${DB_SRC} ${UTIL_SRC} ${ROBOT_SRC}
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
   #Add debug definitions
   ADD_DEFINITIONS( -DASSERT=assert -DDEBUG=1)
-  SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wextra -Wno-unused-parameter -ggdb -O0 -pg -fopenmp")
+
+  # Disable vectorization on 32 bit DEBUG mode. Doesn't work yet. Eigen problem
+  #NOTE : Checks for 32 vs. 64 bit machine.
+  if ( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
+    SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wextra -Wno-unused-parameter -ggdb -O0 -pg -fopenmp")
+  elseif( "${CMAKE_SIZEOF_VOID_P}" EQUAL "4" )
+    SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wextra -Wno-unused-parameter -ggdb -O0 -pg -fopenmp -DEIGEN_DONT_ALIGN_STATICALLY")
+  endif()
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 IF(CMAKE_BUILD_TYPE MATCHES Release)
