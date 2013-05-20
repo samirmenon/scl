@@ -110,7 +110,7 @@ public:
   {
     STaskBase* t_ds = getTaskData();
     if(S_NULL == t_ds) { return false; } //Can't access task data.
-#ifdef DEBUG!
+#ifdef DEBUG
     if(!t_ds->has_been_init_)//If it is not initailized, it shouldn't be activated.
     { assert(!t_ds->has_been_activated_);  }
 #endif
