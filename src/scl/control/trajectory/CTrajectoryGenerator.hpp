@@ -85,7 +85,7 @@ namespace scl
         /** The file to read in a trajectory from */
         const std::string& arg_file,
         /** The number of time slices (waypoints) along the trajectory */
-        const sUInt arg_traj_slices,
+        const sLongLong arg_traj_slices,
         /** Is the first collumn of the trajectory time? */
         const sBool arg_has_time=true);
 
@@ -96,7 +96,7 @@ namespace scl
      * Returns false if the trajectory is impossible to achieve. */
     virtual sBool setTrajFromFunc(sFloat (*arg_func) (sFloat),
         /** The number of time slices of the required trajectory */
-        const sUInt arg_traj_slices,
+        const sLongLong arg_traj_slices,
         /** The time in which each trajectory slice should be achieved */
         const sFloat arg_time_per_slice,
         /** The starting position along the task's directions */
@@ -108,29 +108,54 @@ namespace scl
          * Ie. dof_i = sin(t)+arg_stagger(i); */
         const Eigen::Matrix<sFloat,task_dof_,1>& arg_stagger);
 
+    /** Generates an arbitrary function based trajectory
+     * along all the dofs.
+     *
+     * Verifies whether the trajectory is achievable.
+     * Returns false if there is no current goal (ie. traj is over). */
+    virtual sBool getCurrGoal(Eigen::Matrix<sFloat,task_dof_,1>& arg_pos_curr,
+        Eigen::Matrix<sFloat,task_dof_,1>& arg_vel_curr,
+        Eigen::Matrix<sFloat,task_dof_,1>& arg_acc_curr);
+
     /** Logs a step in the trajectory. Takes the passed configuration
      * and stores it in the achieved trajectory, indexed by a timestamp. */
-    virtual sBool logCurrConfig(
+    virtual sBool saveCurrState(
         /** The present config measured by the sensors */
-        const Eigen::Matrix<sFloat,task_dof_,1>& arg_config,
+        const Eigen::Matrix<sFloat,task_dof_,1>& arg_state,
         /** The present time */
         const sFloat arg_time);
+
+    /** Returns the stored trajectory so far in a mapped list indexed
+     * by the time at which the config was logged.
+     * Returns false if nothing has been logged yet. */
+    virtual sBool getLoggedPositions(
+        sutil::CMappedList<sFloat, Eigen::Matrix<sFloat,task_dof_,1> >& ret_traj);
 
   protected:
     /** The desired trajectory, indexed by time or numerical index */
     sutil::CMappedList<sFloat, Eigen::Matrix<sFloat,task_dof_,1> > traj_desired_;
-    /** The time taken to theoretically achieve the desired trajectory */
-    sFloat traj_desired_time_;
 
     /** The achieved trajectory, indexed by time */
     sutil::CMappedList<sFloat, Eigen::Matrix<sFloat,task_dof_,1> > traj_achieved_;
-    /** The time taken to actually achieve the desired trajectory */
-    sFloat traj_achieved_time_;
 
-    /** The current trajectory slice */
-    Eigen::Matrix<sFloat,task_dof_,1>* traj_curr_slice_;
+    /** The current trajectory position. Index into mapped list. */
+    Eigen::Matrix<sFloat,task_dof_,1>* traj_curr_pos_;
+    /** The current trajectory velocity. Computed on the fly. */
+    Eigen::Matrix<sFloat,task_dof_,1> traj_curr_vel_;
+    /** The current trajectory acceleration. Computed on the fly. */
+    Eigen::Matrix<sFloat,task_dof_,1> traj_curr_acc_;
+
+    /** The current trajectory position. Index into mapped list. */
+    Eigen::Matrix<sFloat,task_dof_,1>* traj_curr_pos_;
+    /** The current trajectory velocity. Computed on the fly. */
+    Eigen::Matrix<sFloat,task_dof_,1> traj_curr_vel_;
+    /** The current trajectory acceleration. Computed on the fly. */
+    Eigen::Matrix<sFloat,task_dof_,1> traj_curr_acc_;
+
     /** The current trajectory time */
     sFloat traj_curr_time_;
+    /** The current trajectory index */
+    sLongLong traj_curr_idx_;
 
     Eigen::Matrix<sFloat,task_dof_,1> max_pos_, max_vel_, max_acc_,
     min_pos_, min_vel_, min_acc_;
@@ -216,7 +241,7 @@ namespace scl
       /** The file to read in a trajectory from */
       const std::string& arg_file,
       /** The number of time slices (waypoints) along the trajectory */
-      const sUInt arg_traj_slices,
+      const sLongLong arg_traj_slices,
       /** Is the first collumn of the trajectory time? */
       const sBool arg_has_time)
   {
@@ -282,7 +307,7 @@ namespace scl
   template <sUInt task_dof_>
   sBool CTrajectoryGenerator<task_dof_>::setTrajFromFunc(sFloat (*arg_func) (sFloat),
       /** The number of time slices of the required trajectory */
-      const sUInt arg_traj_slices,
+      const sLongLong arg_traj_slices,
       /** The time in which each trajectory slice should be achieved */
       const sFloat arg_time_per_slice,
       /** The starting position along the task's directions */
@@ -331,16 +356,29 @@ namespace scl
     }
   }
 
+
   template <sUInt task_dof_>
-  sBool CTrajectoryGenerator<task_dof_>::logCurrConfig(
+  sBool CTrajectoryGenerator<task_dof_>::getCurrGoal(
+      Eigen::Matrix<sFloat,task_dof_,1>& arg_pos_curr,
+      Eigen::Matrix<sFloat,task_dof_,1>& arg_vel_curr,
+      Eigen::Matrix<sFloat,task_dof_,1>& arg_acc_curr)
+  {
+//    for(int i=0;i<task_dof_;++i)
+//    {
+//      otg_.GetNextMotionState_Position();
+//    }
+  }
+
+  template <sUInt task_dof_>
+  sBool CTrajectoryGenerator<task_dof_>::saveCurrState(
       /** The present config measured by the sensors */
-      const Eigen::Matrix<sFloat,task_dof_,1>& arg_config,
+      const Eigen::Matrix<sFloat,task_dof_,1>& arg_state,
       /** The present time */
       const sFloat arg_time)
   {
     Eigen::Matrix<sFloat,task_dof_,1> * vec = S_NULL;
     //Adds an entry to the trajectory logs
-    vec = traj_achieved_.create(arg_time,arg_config);
+    vec = traj_achieved_.create(arg_time,arg_state);
     if(S_NULL == vec)
     { return false; }
     else
