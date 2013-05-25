@@ -12,7 +12,7 @@
     <joint_name>left-ankle-lateral</joint_name>
     <parent_link_name>left-ankle</parent_link_name>
     <joint_type>ry</joint_type>
-    <joint_limits>0.650000 3.140000</joint_limits>
+    <joint_limits>-0.650000 3.140000</joint_limits>
     <default_joint_position>0.000000</default_joint_position>
     <graphics>
       <obj_file>
@@ -34,7 +34,7 @@
     <joint_name>left-ankle-straightward</joint_name>
     <parent_link_name>left-lower-leg</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>0.650000 3.140000</joint_limits>
+    <joint_limits>-0.650000 3.140000</joint_limits>
     <default_joint_position>-0.500000</default_joint_position>
     <graphics>
     </graphics>
@@ -71,7 +71,7 @@
     <joint_name>left-upper-leg-bending</joint_name>
     <parent_link_name>left-upper-leg-rolling</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>2.300000 3.140000</joint_limits>
+    <joint_limits>-2.300000 3.140000</joint_limits>
     <default_joint_position>0.000000</default_joint_position>
     <graphics>
       <obj_file>
@@ -93,7 +93,7 @@
     <joint_name>left-upper-leg-rolling</joint_name>
     <parent_link_name>hip</parent_link_name>
     <joint_type>ry</joint_type>
-    <joint_limits>0.400000 3.140000</joint_limits>
+    <joint_limits>-0.400000 3.140000</joint_limits>
     <default_joint_position>0.000000</default_joint_position>
     <graphics>
     </graphics>
@@ -108,7 +108,7 @@
     <joint_name>right-wrist-rolling</joint_name>
     <parent_link_name>right-lower-arm</parent_link_name>
     <joint_type>rz</joint_type>
-    <joint_limits>0.900000 3.140000</joint_limits>
+    <joint_limits>-0.900000 3.140000</joint_limits>
     <default_joint_position>0.300000</default_joint_position>
     <graphics>
       <obj_file>
@@ -152,7 +152,7 @@
     <joint_name>right-shoulder-rolling</joint_name>
     <parent_link_name>right-shoulder-lateral</parent_link_name>
     <joint_type>rz</joint_type>
-    <joint_limits>1.300000 3.140000</joint_limits>
+    <joint_limits>-1.300000 3.140000</joint_limits>
     <default_joint_position>-0.100000</default_joint_position>
     <graphics>
       <obj_file>
@@ -174,7 +174,7 @@
     <joint_name>right-shoulder-lateral</joint_name>
     <parent_link_name>right-shoulder-straightward</parent_link_name>
     <joint_type>ry</joint_type>
-    <joint_limits>0.790000 3.140000</joint_limits>
+    <joint_limits>-0.790000 3.140000</joint_limits>
     <default_joint_position>0.400000</default_joint_position>
     <graphics>
     </graphics>
@@ -190,7 +190,7 @@
     <joint_name>right-shoulder-straightward</joint_name>
     <parent_link_name>chest</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>1.800000 3.140000</joint_limits>
+    <joint_limits>-1.800000 3.140000</joint_limits>
     <default_joint_position>1.800000</default_joint_position>
     <graphics>
     </graphics>
@@ -205,7 +205,7 @@
     <joint_name>left-wrist-rolling</joint_name>
     <parent_link_name>left-lower-arm</parent_link_name>
     <joint_type>rz</joint_type>
-    <joint_limits>1.100000 3.140000</joint_limits>
+    <joint_limits>-1.100000 3.140000</joint_limits>
     <default_joint_position>-0.300000</default_joint_position>
     <graphics>
       <obj_file>
@@ -249,7 +249,7 @@
     <joint_name>left-shoulder-rolling</joint_name>
     <parent_link_name>left-shoulder-lateral</parent_link_name>
     <joint_type>rz</joint_type>
-    <joint_limits>0.200000 3.140000</joint_limits>
+    <joint_limits>-0.200000 3.140000</joint_limits>
     <default_joint_position>0.100000</default_joint_position>
     <graphics>
       <obj_file>
@@ -271,7 +271,7 @@
     <joint_name>left-shoulder-lateral</joint_name>
     <parent_link_name>left-shoulder-straightward</parent_link_name>
     <joint_type>ry</joint_type>
-    <joint_limits>0.000000 3.140000</joint_limits>
+    <joint_limits>-2.000000 3.140000</joint_limits>
     <default_joint_position>-0.400000</default_joint_position>
     <graphics>
     </graphics>
@@ -287,7 +287,7 @@
     <joint_name>left-shoulder-straightward</joint_name>
     <parent_link_name>chest</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>1.800000 3.140000</joint_limits>
+    <joint_limits>-1.800000 3.140000</joint_limits>
     <default_joint_position>1.800000</default_joint_position>
     <graphics>
     </graphics>
@@ -302,7 +302,7 @@
     <joint_name>head-lateral-turn</joint_name>
     <parent_link_name>head-straightward</parent_link_name>
     <joint_type>rz</joint_type>
-    <joint_limits>1.700000 3.140000</joint_limits>
+    <joint_limits>-1.700000 3.140000</joint_limits>
     <default_joint_position>0.000000</default_joint_position>
     <graphics>
       <obj_file>
@@ -324,7 +324,7 @@
     <joint_name>head-straightward-bending</joint_name>
     <parent_link_name>chest</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>0.790000 3.140000</joint_limits>
+    <joint_limits>-0.790000 3.140000</joint_limits>
     <default_joint_position>0.300000</default_joint_position>
     <graphics>
     </graphics>
@@ -339,7 +339,7 @@
     <joint_name>chest-twisting</joint_name>
     <parent_link_name>waist</parent_link_name>
     <joint_type>rz</joint_type>
-    <joint_limits>0.830000 3.140000</joint_limits>
+    <joint_limits>-0.830000 3.140000</joint_limits>
     <default_joint_position>0.000000</default_joint_position>
     <graphics>
       <obj_file>
@@ -361,7 +361,7 @@
     <joint_name>waist-rolling</joint_name>
     <parent_link_name>hip</parent_link_name>
     <joint_type>ry</joint_type>
-    <joint_limits>1.100000 3.140000</joint_limits>
+    <joint_limits>-1.100000 3.140000</joint_limits>
     <default_joint_position>0.000000</default_joint_position>
     <graphics>
     </graphics>
@@ -376,7 +376,7 @@
     <joint_name>right-upper-leg-rolling</joint_name>
     <parent_link_name>right-upper-leg-bending</parent_link_name>
     <joint_type>ry</joint_type>
-    <joint_limits>0.400000 3.140000</joint_limits>
+    <joint_limits>-0.400000 3.140000</joint_limits>
     <default_joint_position>0.000000</default_joint_position>
     <graphics>
       <obj_file>
@@ -398,7 +398,7 @@
     <joint_name>right-upper-leg-bending</joint_name>
     <parent_link_name>right-upper-leg</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>2.300000 3.140000</joint_limits>
+    <joint_limits>-2.300000 3.140000</joint_limits>
     <default_joint_position>0.630000</default_joint_position>
     <graphics>
     </graphics>
@@ -435,7 +435,7 @@
     <joint_name>right-ankle-straightward</joint_name>
     <parent_link_name>fixed-foot</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>0.650000 3.140000</joint_limits>
+    <joint_limits>-0.650000 3.140000</joint_limits>
     <default_joint_position>0.450000</default_joint_position>
     <graphics>
       <obj_file>
@@ -457,7 +457,7 @@
     <joint_name>right-ankle-lateral</joint_name>
     <parent_link_name>ground</parent_link_name>
     <joint_type>ry</joint_type>
-    <joint_limits>0.650000 3.140000</joint_limits>
+    <joint_limits>-0.650000 3.140000</joint_limits>
     <default_joint_position>0.000000</default_joint_position>
     <graphics>
       <obj_file>
