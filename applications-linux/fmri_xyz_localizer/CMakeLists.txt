@@ -89,6 +89,8 @@ SET(ALL_SRC ${EG_BASE_DIR}fmri_xyz_localizer_main.cpp
 						${SCL_INC_DIR}/haptics/chai/CChaiHaptics.cpp
             ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
+            ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp
+            ${SENSORAY_INC_DIR}/sensoray/CBfrDriver.cpp
             ${RS232_INC_DIR}/rs232.c)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)

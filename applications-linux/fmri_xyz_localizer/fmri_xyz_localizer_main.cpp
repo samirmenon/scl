@@ -24,6 +24,9 @@
 //Chai
 #include <chai3d.h>
 
+//Sensoray
+#include <sensoray/CBfrDriver.hpp>
+
 //Eigen 3rd party lib
 #include <Eigen/Dense>
 
@@ -248,26 +251,19 @@ int main(int argc, char** argv)
       /******************************Chai Haptics************************************/
       //For controlling op points with haptics
       //The app will support dual-mode control, with the haptics controlling op points.
-      scl::CChaiHaptics haptics_;
+      bfr::CBfrDriver bfr;
+
       scl::sBool has_been_init_haptics;
-      Eigen::VectorXd haptic_pos_;
-      Eigen::VectorXd haptic_base_pos_;
+      Eigen::Vector3d haptic_pos_;
+      Eigen::Vector3d haptic_base_pos_;
+      Eigen::Vector3d haptic_force_;
 
       //First set up the haptics
-      flag = haptics_.connectToDevices();
-      if(false == flag)
-      {
-        std::cout<<"\nWARNING : Could not connect to haptic device. Proceeding in kbd mode. \n\tDid you run as sudo?";
-      }
+      has_been_init_haptics = bfr.init();
+      if(false == has_been_init_haptics)
+      { std::cout<<"\nWARNING : Could not connect to haptic device. Proceeding in kbd mode. \n\tDid you run as sudo?"; }
 
-      //Set up haptic device
-      if(0 == haptics_.getNumDevicesConnected())
-      {
-        std::cout<<"\nWARNING: No haptic devices connected. Proceeding in keyboard mode";
-        has_been_init_haptics = false;
-      }
-      else
-      { has_been_init_haptics = true; }
+      bfr.getEEZeroPosition(haptic_base_pos_(0),haptic_base_pos_(1),haptic_base_pos_(2));
 
       /****************************** Logging ************************************/
       FILE * fp;
@@ -370,8 +366,11 @@ int main(int argc, char** argv)
             Eigen::Vector3d& hpos = db->s_gui_.ui_point_[0];
             if(has_been_init_haptics)
             {
-              haptics_.getHapticDevicePosition(0,haptic_pos_);
-              hpos = haptic_pos_;
+			  bfr.readEEPositionAndCommandEEForce(
+            	haptic_pos_(0),haptic_pos_(1),haptic_pos_(2),
+            	0.0, 0.0, 0.0);
+
+              hpos = haptic_pos_-haptic_base_pos_;
             }
             // SET THE CURRENT POSITION OF THE DEVICE!!
             chai_haptic_pos->setLocalPos(hpos);
@@ -599,6 +598,7 @@ int main(int argc, char** argv)
       fprintf(fp,"\n*******************************************************************");
 
       /****************************Deallocate Memory And Exit*****************************/
+      bfr.shutdown();
       flag = chai_gr.destroyGraphics();
       if(false == flag) { throw(std::runtime_error("Error deallocating graphics pointers")); } //Sanity check.
 
