@@ -28,6 +28,7 @@ SET(EIGEN_INC_DIR ${SCL_BASE_DIR}3rdparty/eigen3.1.2/)
 
 ###(c) Chai3D scenhapticraph
 SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/chai3d/)
+SET(CHAI_LIB_DIR ${CHAI_INC_DIR}../lib/)
 ADD_DEFINITIONS(-D_LINUX -DLINUX)
 
 ### (d) sUtil code
@@ -67,6 +68,17 @@ ${CDHD_INC_DIR} ${CGEL_INC_DIR} ${CGIFLIB_INC_DIR} ${CLIB3DS_INC_DIR} ${CLIBJPEG
 ${SENSORAY_INC_DIR} ${SENSORAY_COMMON_INC_DIR} ${SENSORAY_LINUX_INC_DIR}
 ${RS232_INC_DIR})
 
+###############SPECIAL CODE TO SET CONSTEXPR FOR OLD GCC ######################
+EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+STRING(REGEX MATCHALL "[0-9]+" GCC_VERSION_COMPONENTS ${GCC_VERSION})
+list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
+list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
+
+ADD_DEFINITIONS(-DGCC_${GCC_MAJOR}_${GCC_MINOR})
+
+###############################################################################
+
+
 #Set the compilation flags
 # NOTE : This is only to detect 32 vs 64 bit code.
 # The else is not really an else, just a continuation of the if. CMake syntax.
@@ -86,7 +98,6 @@ SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -DGRAPHICS_ON -DW_THREADING_ON -DNDE
 SET(EG_BASE_DIR ${SCL_BASE_DIR}/applications-linux/fmri_xyz_localizer/)
 
 SET(ALL_SRC ${EG_BASE_DIR}fmri_xyz_localizer_main.cpp
-						${SCL_INC_DIR}/haptics/chai/CChaiHaptics.cpp
             ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
             ${SENSORAY_INC_DIR}/sensoray/CSensoray3DofIODriver.cpp
@@ -111,23 +122,12 @@ SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
 target_link_libraries(fmri_xyz_localizer ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
-# NOTE : This is only to detect 32 vs 64 bit code.
-# The else is not really an else, just a continuation of the if. CMake syntax.
-# The bfr is supported only on 32 bit systems. Else use the Force Dim devices.
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  # 64 bit..
-  set( CHAI_LIB_PATH ${CHAI_INC_DIR}../lib_haptics/ )
-else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  # 32 bit..
-  set( CHAI_LIB_PATH ${CHAI_INC_DIR}../lib_bfr/ )
-endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-
 find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
-            PATHS   ${CHAI_LIB_PATH}
+            PATHS   ${CHAI_LIB_DIR}
             PATH_SUFFIXES debug )
 
 find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
-            PATHS   ${CHAI_LIB_PATH}
+            PATHS   ${CHAI_LIB_DIR}
             PATH_SUFFIXES release )
 
 SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
@@ -137,39 +137,17 @@ target_link_libraries(fmri_xyz_localizer ${CHAI_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK IMAGE LIB DIR ######################
 find_library( IMG_LIBRARY_DEBUG NAMES imageformats
-            PATHS   ${CHAI_LIB_PATH}
+            PATHS   ${CHAI_LIB_DIR}
             PATH_SUFFIXES debug )
 
 find_library( IMG_LIBRARY_RELEASE NAMES imageformats
-            PATHS   ${CHAI_LIB_PATH}
+            PATHS   ${CHAI_LIB_DIR}
             PATH_SUFFIXES release )
 
 SET( IMG_LIBRARY debug     ${IMG_LIBRARY_DEBUG}
               optimized ${IMG_LIBRARY_RELEASE} )
 
 target_link_libraries(fmri_xyz_localizer ${IMG_LIBRARY})
-
-###############SPECIAL CODE TO FIND AND LINK DHD LIB DIR ######################
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  # 64 bit..
-  set( DHD_LIB_SUFFIX "lin-x86_64" )
-else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  # 32 bit..
-  set( DHD_LIB_SUFFIX "lin-i686" )
-endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-
-find_library( CDHD_LIBRARY_DEBUG NAMES dhd
-            PATHS   ${CHAI_INC_DIR}../DHD/lib/
-            PATH_SUFFIXES ${DHD_LIB_SUFFIX} )
-
-find_library( CDHD_LIBRARY_RELEASE NAMES dhd
-            PATHS   ${CHAI_INC_DIR}../DHD/lib/
-            PATH_SUFFIXES ${DHD_LIB_SUFFIX} )
-
-SET( CDHD_LIBRARY debug     ${CDHD_LIBRARY_DEBUG}
-              optimized ${CDHD_LIBRARY_RELEASE} )
-
-target_link_libraries(fmri_xyz_localizer ${CDHD_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK SENSORAY LIB DIR ######################
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
