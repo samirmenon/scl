@@ -144,6 +144,7 @@ int main(int argc, char** argv)
 
       glutFullScreen();
 
+
       /*****************************Chai Control Points************************************/
       cGenericObject *chai_haptic_pos = S_NULL,*chai_haptic_pos_des = S_NULL;
       cGenericObject *chai_haptic_box_des_red = S_NULL, *chai_haptic_box_des_green = S_NULL,
@@ -483,6 +484,37 @@ int main(int argc, char** argv)
       { std::cout<<"\nWARNING : Could not connect to haptic device. Proceeding in kbd mode. \n\tDid you run as sudo?"; }
 
       bfr.getEEZeroPosition(haptic_base_pos_(0),haptic_base_pos_(1),haptic_base_pos_(2));
+
+//      /*********************** Chai Spot Light (for shadows) ******************************/
+//      cSpotLight *tmp_spotlight = new cSpotLight(chai_gr.getChaiData()->chai_world_);
+//      if(S_NULL==tmp_spotlight)
+//      { throw(std::runtime_error("Couldn't add a light to the world")); }
+//
+//      flag = chai_gr.getChaiData()->chai_world_->addChild(tmp_spotlight); // attach light to camera
+//      if(false==flag)
+//      { throw(std::runtime_error("Couldn't add a shadow light to the world")); }
+//
+//      //Enable the shadow light
+//      tmp_spotlight->setEnabled(true);                           // enable light source
+//      tmp_spotlight->setShadowMapEnabled(true);                  // enable shadow casting
+//      tmp_spotlight->setShadowMapProperties(0.0,10.0);           // set limits
+//
+//      //Position the shadow light
+//      cVector3d tmp_sp_pos(haptic_base_pos_(0), haptic_base_pos_(1), haptic_base_pos_(2)+0.5);
+//      cVector3d tmp_sp_lookat(haptic_base_pos_(0), haptic_base_pos_(1), haptic_base_pos_(2));
+//      cVector3d tmp_sp_dir = tmp_sp_lookat - tmp_sp_pos;
+//
+//      tmp_spotlight->setLocalPos(tmp_sp_pos);
+//      tmp_spotlight->setDir(tmp_sp_dir);                         // define the direction of the light beam
+//
+//      //Enable shadows
+//      if(!GLEE_ARB_depth_texture || !GLEE_ARB_shadow)
+//      { throw(std::runtime_error("Couldn't enable shadows in environment. Not supported by graphics card."));  }
+//
+//      if(tmp_spotlight->getShadowMapEnabled())
+//      { chai_gr.getChaiData()->chai_cam_->setUseShadowCasting(true);  }
+//      else
+//      { throw(std::runtime_error("Couldn't enable shadows in environment. Chai init failed."));  }
 
       /****************************** Logging ************************************/
       FILE * fp;
