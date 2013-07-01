@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,16 +39,20 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 368 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CPositionalLightH
 #define CPositionalLightH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "lighting/CGenericLight.h"
 //--------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CPositionalLight.h
 
@@ -56,109 +60,127 @@
     <b> Lighting </b> \n 
     Positional Light Source.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cPositionalLight
     \ingroup    lighting
 
-    \brief      
+    \brief
+    Positional light source
+
+    \details
     cPositionalLight describes a positional light source. 
 */
-//===========================================================================
+//==============================================================================
 
 class cPositionalLight : public virtual cGenericLight
 {
-  public:
-    
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Constructor of cPositionalLight.
     cPositionalLight(cWorld* a_world);
-	
+    
     //! Destructor of cPositionalLight.
     virtual ~cPositionalLight();
 
 
-	//-----------------------------------------------------------------------
-    // METHODS: (lighting properties)
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - LIGHTING PROPERTIES:
+    //-----------------------------------------------------------------------
 
-    //! Set my constant attenuation parameter.
+public:
+
+    //! Set the constant attenuation parameter.
     void setAttConstant(const GLfloat& a_value) { m_attConstant = cClamp(a_value, 0.0f, 1.0f); }
 
-    //! Read my constant attenuation parameter.
+    //! Read the constant attenuation parameter.
     GLfloat getAttConstant() const { return (m_attConstant); }
 
-    //! Set my linear attenuation parameter.
+    //! Set the linear attenuation parameter.
     void setAttLinear(const GLfloat& a_value) { m_attLinear = cClamp(a_value, 0.0f, 1.0f); }
 
-    //! Read my linear attenuation parameter.
+    //! Read the linear attenuation parameter.
     GLfloat getAttLinear() const { return (m_attLinear); }
 
-    //! Set my quadratic attenuation parameter.
+    //! Set the quadratic attenuation parameter.
     void setAttQuadratic(const GLfloat& a_value) { m_attQuadratic = cClamp(a_value, 0.0f, 1.0f); }
 
-    //! Read my quadratic attenuation parameter.
+    //! Read the quadratic attenuation parameter.
     GLfloat getAttQuadratic() const { return (m_attQuadratic); }
 
 
-	//-----------------------------------------------------------------------
-    // METHODS: (display model)
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // METHODS - DISPLAY MODEL:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Set display settings of light source. To be used for debugging purposes to display location of light source.
     void setDisplaySettings(const double& a_sourceRadius = 0.02,
-                            const bool a_displayEnabled = true);
+        const bool a_displayEnabled = true);
 
 
-  	//-----------------------------------------------------------------------
-    // MEMBERS: (display model)
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC MEMBERS - DISPLAY MODEL
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Color used for rendering the display model of the light source. 
     cColorf m_displaySourceColor;
 
 
-  protected:
-  
-  	//-----------------------------------------------------------------------
-    // MEMBERS: (lighting properties)
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PROTECTED MEMBERS - LIGHTING PROPERTIES:
+    //-----------------------------------------------------------------------
 
-	//! Constant attenuation parameter.
+protected:
+
+    //! Constant attenuation parameter.
     GLfloat m_attConstant;
     
-	//! Linear attenuation parameter.
+    //! Linear attenuation parameter.
     GLfloat m_attLinear;
     
-	//! Quadratic attenuation parameter.
+    //! Quadratic attenuation parameter.
     GLfloat m_attQuadratic;
 
 
-  	//-----------------------------------------------------------------------
-    // MEMBERS: (display model)
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PROTECTED MEMBERS - DISPLAY MODEL:
+    //-----------------------------------------------------------------------
 
-    //! Radius of display model representating light source.
+protected:
+
+    //! Radius of display model representing light source.
     double m_displaySourceRadius;
-    
 
-	//-----------------------------------------------------------------------
-	// METHODS:
-	//-----------------------------------------------------------------------
+
+    //-----------------------------------------------------------------------
+    // VIRTUAL PROTECTED METHODS:
+    //-----------------------------------------------------------------------
+
+protected:
 
     //! Render the lighting properties of this light source in OpenGL.
     virtual void renderLightSource(cRenderOptions& a_options);
 
-    //! Render a graphical representation (display model) of the light source. (used for debuging purposes typically).
+    //! Render a graphical representation (display model) of the light source. (used for debugging purposes typically).
     virtual void render(cRenderOptions& a_options);
 };
 
-//---------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

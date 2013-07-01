@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -40,12 +40,16 @@
     \author    Federico Barbagli
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 365 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "tools/CToolGripper.h"
 #include "graphics/CTriangle.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
 
 //==========================================================================
 /*!
@@ -54,7 +58,7 @@
     \fn       cToolGripper::cToolGripper(cWorld* a_parentWorld):cGenericTool(a_parentWorld)
     \param    a_world  World in which the tool will operate.
 */
-//===========================================================================
+//==============================================================================
 cToolGripper::cToolGripper(cWorld* a_parentWorld):cGenericTool(a_parentWorld)
 {
 	// default gripper workspace
@@ -79,7 +83,7 @@ cToolGripper::cToolGripper(cWorld* a_parentWorld):cGenericTool(a_parentWorld)
 
     \fn       cToolGripper::~cToolGripper()
 */
-//===========================================================================
+//==============================================================================
 cToolGripper::~cToolGripper()
 {
     delete  m_hapticPointThumb;
@@ -87,14 +91,14 @@ cToolGripper::~cToolGripper()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the interaction forces between the tool and the virtual
     object inside the virtual world.
 
     \fn       void cToolGripper::computeInteractionForces()
 */
-//===========================================================================
+//==============================================================================
 void cToolGripper::computeInteractionForces()
 {
 	// convert the angle of the gripper into a position in device cordinates. 
@@ -112,8 +116,8 @@ void cToolGripper::computeInteractionForces()
 		//gripperPositionFinger = 0.053 * cSinRad(m_deviceGripperAngle + cDegToRad(5.0));
         //gripperPositionThumb  = 0.053 * cSinRad(cDegToRad(-5.0));
 
-		gripperPositionFinger = 0.053 * cSinRad(m_deviceGripperAngle + cDegToRad(2.5));
-        gripperPositionThumb  = 0.053 * cSinRad(-m_deviceGripperAngle + cDegToRad(-2.5));
+		gripperPositionFinger = 0.040 * cSinRad(m_deviceGripperAngle + cDegToRad(2.5));
+        gripperPositionThumb  = 0.040 * cSinRad(-m_deviceGripperAngle + cDegToRad(-2.5));
 	}
 	else
 	{
@@ -150,13 +154,13 @@ void cToolGripper::computeInteractionForces()
                                                                           m_deviceGlobalAngVel);
 
 	// compute torques
-	double scale = 0.0;
+	double scl = 0.0;
 	double factor = m_gripperWorkspaceScale * m_workspaceScaleFactor;
 	if (factor > 0.0)
 	{
-		scale = 1.0 / factor;
+		scl = 1.0 / factor;
 	}
-	cVector3d torque = scale * cAdd(cCross(cSub(posThumb, m_deviceGlobalPos), forceThumb), cCross(cSub(posFinger, m_deviceGlobalPos), forceFinger));
+	cVector3d torque = scl * cAdd(cCross(cSub(posThumb, m_deviceGlobalPos), forceThumb), cCross(cSub(posFinger, m_deviceGlobalPos), forceFinger));
 
 	// compute gripper force
     double gripperForce = 0.0;
@@ -197,7 +201,7 @@ void cToolGripper::computeInteractionForces()
     \fn       void cToolGripper::render(cRenderOptions& a_options)
     \param    a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cToolGripper::render(cRenderOptions& a_options)
 {
     ///////////////////////////////////////////////////////////////////////
@@ -222,3 +226,7 @@ void cToolGripper::render(cRenderOptions& a_options)
     }
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

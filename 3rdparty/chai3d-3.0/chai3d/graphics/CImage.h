@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,18 +37,22 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 810 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1064 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CImageH
 #define CImageH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CColor.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CImage.h
 
@@ -56,27 +60,30 @@
     <b> Graphics </b> \n 
     2D Image Data Structure.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cImage
     \ingroup    graphics 
-    
-    \brief    
+
+    \brief
+    2D Image structure
+
+    \details    
     cImage provides a class to create support graphic files of the following 
     format: (GL_LUMINANCE, GL_RGB, GL_RGBA).
     Various file formats are also supported for loading and saving images 
     to disk. 
 */
-//===========================================================================
+//==============================================================================
 class cImage
 {
-  public:
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Default constructor of cImage
     cImage();
@@ -91,12 +98,14 @@ class cImage
     virtual ~cImage();
 
 
-    //-----------------------------------------------------------------------
-    // GENERAL COMMANDS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - GENERAL COMMANDS:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Create a copy of current object.
-	cImage* copy();
+    cImage* copy();
 
     //! Allocate a new image by defining its size, pixel format and pixel type.
     bool allocate(const unsigned int a_width, 
@@ -107,7 +116,7 @@ class cImage
     //! Free image from memory.
     void erase() { cleanup(); }
 
-    //! Returns \b true if the image has been allocated in memory, \b false otherwise.
+    //! Returns __true__ if the image has been allocated in memory, __false__ otherwise.
     inline bool isInitialized() const { return (m_allocated); }
 
     //! Set the size of image by defining the width and height.
@@ -148,9 +157,11 @@ class cImage
                                   const GLenum a_type);
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - MANIPULATING PIXELS:
     //-----------------------------------------------------------------------
+    // PUBLIC METHODS - MANIPULATING PIXELS:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Clear an image with black pixels.
     void clear();
@@ -160,102 +171,108 @@ class cImage
 
     //! Clear an image with a defined color.
     void clear(const unsigned char a_componentR,
-               const unsigned char a_componentG,
-               const unsigned char a_componentB);
+        const unsigned char a_componentG,
+        const unsigned char a_componentB);
 
     //! Clear an image with a defined level of gray.
     void clear(const unsigned char a_grayLevel);
 
     //! Get the color of a pixel by passing its x and y coordinate.
     bool getPixelColor(const unsigned int a_x, 
-                       const unsigned int a_y,
-                       cColorb& a_color);
+        const unsigned int a_y,
+        cColorb& a_color);
 
     //! Set the color of a pixel.
     void setPixelColor(const unsigned int a_x, 
-                       const unsigned int a_y, 
-                       const cColorb& a_color);
+        const unsigned int a_y, 
+        const cColorb& a_color);
 
     //! Set the color of a pixel.
     inline void setPixelColor(const unsigned int a_x, 
-							  const unsigned int a_y, 
-							  const unsigned char a_r,
-							  const unsigned char a_g,
-							  const unsigned char a_b) { cColorb color(a_r, a_g, a_b); setPixelColor(a_x, a_y, color); }
+        const unsigned int a_y, 
+        const unsigned char a_r,
+        const unsigned char a_g,
+        const unsigned char a_b) { cColorb color(a_r, a_g, a_b); setPixelColor(a_x, a_y, color); }
 
     //! Set the gray scale of a pixel.
     void setPixelColor(const unsigned int a_x, 
-                       const unsigned int a_y, 
-                       const unsigned char a_grayLevel);
+        const unsigned int a_y, 
+        const unsigned char a_grayLevel);
 
     //! Copy a section of this current image to another destination image
     void copyTo(const unsigned int a_sourcePosX,
-                const unsigned int a_sourcePosY,
-                const unsigned int a_sourceSizeX,
-                const unsigned int a_sourceSizeY,
-                cImage* a_destImage, 
-                const unsigned int a_destPosX = 0,
-                const unsigned int a_destPosY = 0);
+        const unsigned int a_sourcePosY,
+        const unsigned int a_sourceSizeX,
+        const unsigned int a_sourceSizeY,
+        cImage* a_destImage, 
+        const unsigned int a_destPosX = 0,
+        const unsigned int a_destPosY = 0);
 
     //! Copy the entire image to another destination image
     void copyTo(cImage* a_destImage, 
-                const unsigned int a_destPosX = 0,
-                const unsigned int a_destPosY = 0);
-
-	//! Define a pixel color to be transparent.
-	void setTransparentColor(const cColorb &a_color, 
-							 const unsigned char a_transparencyLevel);
+        const unsigned int a_destPosX = 0,
+        const unsigned int a_destPosY = 0);
 
     //! Define a pixel color to be transparent.
-	void setTransparentColor(const unsigned char a_r,
-							 const unsigned char a_g,
-							 const unsigned char a_b, 
-							 const unsigned char a_transparencyLevel);
+    void setTransparentColor(const cColorb &a_color, 
+        const unsigned char a_transparencyLevel);
+
+    //! Define a pixel color to be transparent.
+    void setTransparentColor(const unsigned char a_r,
+        const unsigned char a_g,
+        const unsigned char a_b, 
+        const unsigned char a_transparencyLevel);
 
     //! Define a transparent component to all image pixels.
-	void setTransparency(const unsigned char a_transparencyLevel);
+    void setTransparency(const unsigned char a_transparencyLevel);
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - MEMORY:
     //-----------------------------------------------------------------------
-    
+    // PUBLIC METHODS - MEMORY DATA:
+    //--------------------------------------------------------------------------
+
+public:
+
     //! Get a pointer to the actual image data. Use with care!
     inline unsigned char* getData() { return (m_data); }
 
     //! modify the pointer to the actual image data. Use with care!
     void setData(unsigned char* a_data, 
-                 const unsigned int a_dataSizeInBytes, 
-                 const bool a_dealloc = false);
+        const unsigned int a_dataSizeInBytes, 
+        const bool a_dealloc = false);
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - FILES:
     //-----------------------------------------------------------------------
+    // PUBLIC METHODS - FILES:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Load image file by passing image path and name as argument.
-    bool loadFromFile(const string& a_filename);
+    bool loadFromFile(const std::string& a_filename);
 
     //! Save image file by passing image path and name as argument.
-    bool saveToFile(const string& a_filename);
+    bool saveToFile(const std::string& a_filename);
 
     //! Get the filename from which this image was last loaded or saved.
-    string getFilename() const { return (m_filename); }
+    std::string getFilename() const { return (m_filename); }
     
 
-	//-----------------------------------------------------------------------
-    // MEMBERS:
     //-----------------------------------------------------------------------
+    // PUBLIC MEMBERS:
+    //--------------------------------------------------------------------------
 
-    //! Reference color for pixels outside the image.
+public:
+
+    //! Reference color for accessing pixels outside the image.
     cColorb m_borderColor;
 
 
-  protected:
-
-	//-----------------------------------------------------------------------
-    // METHODS:
     //-----------------------------------------------------------------------
+    // PROTECTED  METHODS:
+    //--------------------------------------------------------------------------
+
+protected:
 
     //! Initialize member variables.
     void defaults();
@@ -264,12 +281,14 @@ class cImage
     void cleanup();
 
 
-	//-----------------------------------------------------------------------
-    // MEMBERS:
     //-----------------------------------------------------------------------
+    // PROTECTED MEMBERS:
+    //--------------------------------------------------------------------------
+
+protected:
 
     //! Image filename.
-    string m_filename;
+    std::string m_filename;
 
     //! Width in pixels of the current image.
     unsigned int m_width;
@@ -292,13 +311,17 @@ class cImage
     //! Size of current image in bytes
     unsigned int m_memorySize;
 
-    //! If \b true, then the image has been allocated in memory, \b false otherwise.
+    //! If __true__, then the image has been allocated in memory, __false__ otherwise.
     bool m_allocated;
 
-    //! If \b true, then this object actually performed the memory allocation for this object.
+    //! If __true__, then this object actually performed the memory allocation for this object.
     bool m_responsibleForMemoryAllocation;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

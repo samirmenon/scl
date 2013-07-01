@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,18 +39,18 @@
     \author    Francois Conti
     \author    Dan Morris
     \author    Chris Sewell
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 846 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1077 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifdef _MSVC
 #pragma warning (disable : 4786)
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CMeshH
 #define CMeshH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CGenericObject.h"
 #include "materials/CMaterial.h"
 #include "materials/CTexture2d.h"
@@ -58,16 +58,19 @@
 #include "graphics/CEdge.h"
 #include <vector>
 #include <list>
-//---------------------------------------------------------------------------
-using std::list;
-using std::vector;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 class cWorld;
 class cTriangle;
 class cVertex;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     \file       CMesh.h
 
@@ -75,25 +78,28 @@ class cVertex;
     <b> Scenegraph </b> \n 
     Virtual Mesh.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!    
     \class      cMesh
     \ingroup    scenegraph
 
-    \brief      
+    \brief
+    3D Mesh object
+
+    \details
     cMesh represents a collection of vertices, triangles, materials,
     and texture properties that can be rendered graphically and haptically.
 */
-//===========================================================================
+//==============================================================================
 class cMesh : public cGenericObject
 {
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     
-    public:
+public:
 
     //! Constructor of cMesh.
     cMesh(cMaterial* a_material = NULL);
@@ -102,24 +108,24 @@ class cMesh : public cGenericObject
     virtual ~cMesh();
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - GENERAL
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - GENERAL
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Create a copy of itself.
     virtual cMesh* copy(const bool a_duplicateMaterialData = false,
                         const bool a_duplicateTextureData = false, 
                         const bool a_duplicateMeshData = false,
-                        const bool a_buildCollisionDetector = true);
+                        const bool a_buildCollisionDetector = false);
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - VERTICES
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - VERTICES
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Create a new vertex and add it to the vertex list.
     unsigned int newVertex(const double a_x = 0.0, 
@@ -141,9 +147,9 @@ class cMesh : public cGenericObject
                            const double a_normalX, 
                            const double a_normalY, 
                            const double a_normalZ,
-						   const double a_textureCoordX,
-						   const double a_textureCoordY,
-						   const double a_textureCoordZ = 0.0);
+                           const double a_textureCoordX,
+                           const double a_textureCoordY,
+                           const double a_textureCoordZ = 0.0);
 
     //! Create a new vertex and add it to the vertex list.
     unsigned int newVertex(const cVector3d& a_pos);
@@ -155,12 +161,12 @@ class cMesh : public cGenericObject
     //! Create a new vertex and add it to the vertex list.
     unsigned int newVertex(const cVector3d& a_pos, 
                            const cVector3d& a_normal,
-						   const cVector3d& a_textureCoord);
+                           const cVector3d& a_textureCoord);
 
     //! Create a new vertex and add it to the vertex list.
     unsigned int newVertex(const cVector3d& a_pos, 
                            const cVector3d& a_normal,
-						   const cVector3d& a_textureCoord,
+                           const cVector3d& a_textureCoord,
                            const cColorf& a_color);
 
     //! Add an array of vertices to the vertex list given an array of vertex positions.
@@ -171,17 +177,17 @@ class cMesh : public cGenericObject
     bool removeVertex(const unsigned int a_index);
 
     //! Access the vertex at the specified position in my vertex array (and maybe my childrens' arrays).
-	inline cVertex* getVertex(unsigned int a_index) { return (&m_vertices->at(a_index)); }
+    inline cVertex* getVertex(unsigned int a_index) { return (&m_vertices->at(a_index)); }
 
     //! Read the number of stored vertices.
-	inline unsigned int getNumVertices() const { return (unsigned int)(m_vertices->size()); }
+    inline unsigned int getNumVertices() const { return (unsigned int)(m_vertices->size()); }
 
     
-    //-----------------------------------------------------------------------
-    // METHODS - TRIANGLES
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - TRIANGLES
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Create a new triangle by passing vertex indices.
     unsigned int newTriangle(const unsigned int a_indexVertex0,
@@ -208,7 +214,7 @@ class cMesh : public cGenericObject
                              const cVector3d& a_normal0, 
                              const cVector3d& a_normal1,
                              const cVector3d& a_normal2,
-							 const cVector3d& a_textureCoord0, 
+                             const cVector3d& a_textureCoord0, 
                              const cVector3d& a_textureCoord1,
                              const cVector3d& a_textureCoord2);
 
@@ -219,7 +225,7 @@ class cMesh : public cGenericObject
                              const cVector3d& a_normal0, 
                              const cVector3d& a_normal1,
                              const cVector3d& a_normal2,
-							 const cVector3d& a_textureCoord0, 
+                             const cVector3d& a_textureCoord0, 
                              const cVector3d& a_textureCoord1,
                              const cVector3d& a_textureCoord2,
                              const cColorf& a_colorVertex0,
@@ -233,30 +239,30 @@ class cMesh : public cGenericObject
     cTriangle* getTriangle(unsigned int a_index);	
 
     //! Read the number of stored triangles.
-	unsigned int getNumTriangles();
+    unsigned int getNumTriangles();
 
     //! Clear all triangles and vertices of mesh.
     void clear();
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - EDGES
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - EDGES
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Create a list of edges by providing a threshold angle in degrees.
-    void computeAllEdges(double a_angleThresholdDEG = 40.0);
+    void computeAllEdges(double a_angleThresholdDeg = 40.0);
 
     //! Clear all edges
     void clearAllEdges();
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - GRAPHIC RENDERING
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - GRAPHIC RENDERING
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Invalidate any existing display lists, optionally propagating the operation to my children.
     virtual void invalidateDisplayList(const bool a_affectChildren = false);
@@ -276,7 +282,7 @@ class cMesh : public cGenericObject
     bool getUseVertexArrays() const { return (m_useVertexArrays); }
 
     //! Enable or disable the rendering of vertex normals.
-	void setShowNormals(const bool a_showNormals) { m_showNormals = a_showNormals; }
+    void setShowNormals(const bool a_showNormals) { m_showNormals = a_showNormals; }
 
     //! Returns whether rendering of normals is enabled.
     bool getShowNormals() const { return (m_showNormals); }
@@ -286,7 +292,7 @@ class cMesh : public cGenericObject
                               const cColorf& a_color);
 
     //! Enable or disable the rendering of edges.
-	void setShowEdges(const bool a_showEdges) { m_showEdges = a_showEdges; }
+    void setShowEdges(const bool a_showEdges) { m_showEdges = a_showEdges; }
 
     //! Returns whether rendering of edges is enabled.
     bool getShowEdges() const { return (m_showEdges); }
@@ -296,11 +302,11 @@ class cMesh : public cGenericObject
                            const cColorf& a_color);
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - COLLISION DETECTION:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - COLLISION DETECTION:
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Set up a brute force collision detector for this mesh.
     virtual void createBruteForceCollisionDetector();
@@ -308,43 +314,40 @@ class cMesh : public cGenericObject
     //! Set up an AABB collision detector for this mesh.
     virtual void createAABBCollisionDetector(const double a_radius);
 
-	//! Update the relationship between the tool and the current object.
-	void computeLocalInteraction(const cVector3d& a_toolPos,
+    //! Update the relationship between the tool and the current object.
+    void computeLocalInteraction(const cVector3d& a_toolPos,
                                  const cVector3d& a_toolVel,
                                  const unsigned int a_IDN);
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - MESH MANIPULATION:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - MESH MANIPULATION:
+    //--------------------------------------------------------------------------
 
-    public:
+public:
+
+    //! Scale this object by using different scale factors along X,Y and Z axes.
+    void scaleXYZ(const double a_scaleX, const double a_scaleY, const double a_scaleZ);
 
     //! Compute all triangle normals, optionally propagating the operation to my children.
     void computeAllNormals();
 
-	//! Shifts all vertex positions by the specified amount.
+    //! Reverse all normals on this model.
+    virtual void reverseAllNormals();
+
+    //! Shifts all vertex positions by the specified amount.
     virtual void offsetVertices(const cVector3d& a_offset, 
                                 const bool a_updateCollisionDetector = true);
-
-    //! Scale vertices and normals by the specified scale factors and re-normalize.
-    virtual void scaleObject(const double& a_scaleFactor);
 
     //! Compute the center of mass of this mesh, based on vertex positions.
     virtual cVector3d getCenterOfMass();
 
-    //! Reverse all normals on this model.
-    virtual void reverseAllNormals();
 
-	//! Render triangles, material and texture properties.
-    virtual void renderMesh(cRenderOptions& a_options);
+    //--------------------------------------------------------------------------
+    // PROTECTED METHODS - INTERNAL
+    //--------------------------------------------------------------------------
 
-
-    //-----------------------------------------------------------------------
-    // METHODS - INTERNAL
-    //-----------------------------------------------------------------------
-
-    protected:
+protected:
 
     //! Render the mesh itself.
     virtual void render(cRenderOptions& a_options);
@@ -355,26 +358,32 @@ class cMesh : public cGenericObject
     //! Draw all edges of mesh.
     virtual void renderEdges();
 
+    //! Render triangles, material and texture properties.
+    virtual void renderMesh(cRenderOptions& a_options);
+
     //! Update the global position of each of my vertices.
     virtual void updateGlobalPositions(const bool a_frameOnly);
 
     //! Update my boundary box dimensions based on my vertices.
     virtual void updateBoundaryBox();
 
+    //! Scale vertices and normals by the specified scale factors and re-normalize.
+    virtual void scaleObject(const double& a_scaleFactor);
 
-    //-----------------------------------------------------------------------
-    // MEMBERS - DISPLAY PROPERTIES:
-    //-----------------------------------------------------------------------
 
-    protected:
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS - DISPLAY PROPERTIES:
+    //--------------------------------------------------------------------------
 
-    //! If \b true, then normals are displayed.
+protected:
+
+    //! If __true__, then normals are displayed.
     bool m_showNormals;
 
     //! Length of each normal (for graphic rendering of normals).
     double m_normalsLength;
 
-    //! If \b true, then show edges.
+    //! If __true__, then show edges.
     bool m_showEdges;
 
     //! Width of edge lines.
@@ -387,7 +396,11 @@ class cMesh : public cGenericObject
     cDisplayList m_displayListEdges;
 
 
-    public:
+    //--------------------------------------------------------------------------
+    // PUBLIC MEMBERS - DISPLAY PROPERTIES:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Color used to render lines representing normals.
     cColorf m_normalsColor;
@@ -396,32 +409,40 @@ class cMesh : public cGenericObject
     cColorf m_edgeLineColor;
 
 
-    //-----------------------------------------------------------------------
-    // MEMBERS - TRIANGLE AND VERTEX DATA:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC MEMBERS - TRIANGLE AND VERTEX DATA:
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Array of vertices.
-    vector<cVertex> *m_vertices;
+    std::vector<cVertex> *m_vertices;
 
-	//! Array of triangles.
-    vector<cTriangle> *m_triangles;
+    //! Array of triangles.
+    std::vector<cTriangle> *m_triangles;
 
     //! Edges
-    vector<cEdge> *m_edges;
+    std::vector<cEdge> *m_edges;
 
 
-    private:
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS - TRIANGLE AND VERTEX DATA:
+    //--------------------------------------------------------------------------
+
+protected:
 
     //! List of free slots in the vertex array.
-    list<unsigned int> *m_freeVertices;
+    std::list<unsigned int> *m_freeVertices;
 
     //! List of free slots in the triangle array.
-    list<unsigned int> *m_freeTriangles;
+    std::list<unsigned int> *m_freeTriangles;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

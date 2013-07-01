@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -50,6 +50,10 @@
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
+namespace chai3d {
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
 enum cShaderType
 {
     Vertex          = 0x0001,
@@ -68,19 +72,22 @@ class cShader
     virtual ~cShader();
 
     bool compileSourceCode(const char *source);
-    bool compileSourceCode(const string& source);
-    bool compileSourceFile(const string& fileName);
+    bool compileSourceCode(const std::string& source);
+    bool compileSourceFile(const std::string& fileName);
 
 
     bool isCompiled() const;
     
-    string log() const;
+    std::string log() const;
 
     GLuint shaderId() const;
 
     static bool hasOpenGLShaders(cShaderType a_type);
 };
 
+//---------------------------------------------------------------------------
+} // namespace chai3d
+//---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
 #endif

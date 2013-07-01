@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,21 +37,26 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 839 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1055 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "devices/CGenericHapticDevice.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cGenericHapticDevice.
+
     Initialize basic parameters of generic haptic device.
 */
-//===========================================================================
-cGenericHapticDevice::cGenericHapticDevice() : cGenericDevice()
+//==============================================================================
+cGenericHapticDevice::cGenericHapticDevice(unsigned int a_deviceNumber) : cGenericDevice(a_deviceNumber)
 {
     m_specifications.m_manufacturerName              = "not defined";
     m_specifications.m_modelName                     = "not defined";
@@ -65,6 +70,7 @@ cGenericHapticDevice::cGenericHapticDevice() : cGenericDevice()
     m_specifications.m_maxAngularDamping			 = 0.0; // [N*m/(Rad/s)]
     m_specifications.m_maxGripperAngularDamping		 = 0.0; // [N*m/(Rad/s)]
     m_specifications.m_workspaceRadius               = 0.1; // [m]
+    m_specifications.m_gripperMaxAngleRad            = cDegToRad(0.0);
     m_specifications.m_sensedPosition                = false;
     m_specifications.m_sensedRotation                = false;
     m_specifications.m_sensedGripper                 = false;
@@ -74,19 +80,20 @@ cGenericHapticDevice::cGenericHapticDevice() : cGenericDevice()
     m_specifications.m_leftHand                      = false;
     m_specifications.m_rightHand                     = false;
 
+    // initialize variables about the state of the haptic device
     m_prevForce.zero();
     m_prevTorque.zero();
-    m_prevGripperForce                               = 0.0;
+    m_prevGripperForce = 0.0;
 
     m_angularVelocity.zero();
     m_linearVelocity.zero();
-    m_gripperAngularVelocity                         = 0.0;
+    m_gripperAngularVelocity = 0.0;
 
     // start the general clock of the device
     m_clockGeneral.reset();
     m_clockGeneral.start();
 
-    // reset history tables
+    // reset history tables for velocity estimation
     double time = m_clockGeneral.getCurrentTimeSeconds();
 
     m_indexHistoryPos       = 0;
@@ -113,63 +120,63 @@ cGenericHapticDevice::cGenericHapticDevice() : cGenericDevice()
         m_historyGripper[i].m_time = time;
     }
 
-    // Window time interval for measuring linear velocity
+    // set window time interval for measuring linear velocity
     m_linearVelocityWindowSize  = 0.015; // [s]
 
-    // Window time interval for measuring angular velocity
+    // set window time interval for measuring angular velocity
     m_angularVelocityWindowSize  = 0.030; // [s]
 
-    // Window time interval for measuring gripper linear velocity
-    m_gripperLinearVelocityWindowSize  = 0.015; // [s]
+    // set window time interval for measuring gripper linear velocity
+    m_gripperVelocityWindowSize  = 0.015; // [s]
 
-	// virtual user switch using real gripper
-	m_gripperUserSwitchEnabled			= false;
-	m_gripperUserSwitchAngleStart		= cDegToRad(10);
-	m_gripperUserSwitchAngleClick		= cDegToRad(5);
-	m_gripperUserSwitchForceClick		= 3;
-	m_gripperUserSwitchForceEngaged		= 2;
+    // set gripper settings to emulate user switch
+    m_gripperUserSwitchEnabled			= false;
+    m_gripperUserSwitchAngleStart		= cDegToRad(10);
+    m_gripperUserSwitchAngleClick		= cDegToRad(5);
+    m_gripperUserSwitchForceClick		= 3;
+    m_gripperUserSwitchForceEngaged		= 2;
 
-	// virtual gripper using real user switch
-	m_virtualGripperAngleMin			= cDegToRad(5.0);
-	m_virtualGripperAngleMax			= cDegToRad(25.0);
-	m_virtualGripperAngularVelocity		= cDegToRad(80.0);
-	m_virtualGripperAngle				= m_virtualGripperAngleMin;
-	m_virtualGripperClock.reset();
+    // set settings to emulate gripper with user switch
+    m_virtualGripperAngleMin			= cDegToRad(5.0);
+    m_virtualGripperAngleMax			= cDegToRad(25.0);
+    m_virtualGripperAngularVelocity		= cDegToRad(80.0);
+    m_virtualGripperAngle				= m_virtualGripperAngleMin;
+    m_virtualGripperClock.reset();
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Read the position and orientation of the device through a 
-    transformation matrix.
+    Read the position and orientation of the device through a transformation 
+    matrix.
 
-    \param  a_transform  Return transformation matrix.
+    \param  a_transform  Returned transformation matrix.
 
-    \return Return 0 if no error occurred.
+    \return Return C_SUCCESS if no error occurred, C_ERROR otherwise.
 */
-//===========================================================================
-int cGenericHapticDevice::getTransform(cTransform& a_transform)
+//==============================================================================
+bool cGenericHapticDevice::getTransform(cTransform& a_transform)
 {
-    int result;
     cVector3d pos(0,0,0);
     cMatrix3d rot;
     rot.identity();
-    result = getPosition(pos);
-    result = getRotation(rot);
+    
+    bool result0 = getPosition(pos);
+    bool result1 = getRotation(rot);
     a_transform.set(pos, rot);
+
+    bool result = result0 | result1;
     return (result);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Estimate the linear velocity by passing the latest position.
 
     \param  a_newPosition  New position of the device.
-
-    \return Return 0 if no error occurred.
 */
-//===========================================================================
+//==============================================================================
 void cGenericHapticDevice::estimateLinearVelocity(cVector3d& a_newPosition)
 {
     // get current time
@@ -216,13 +223,13 @@ void cGenericHapticDevice::estimateLinearVelocity(cVector3d& a_newPosition)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Estimate the angular velocity by passing the latest orientation frame.
 
     \param  a_newRotation  New orientation frame of the device.
 */
-//===========================================================================
+//==============================================================================
 void cGenericHapticDevice::estimateAngularVelocity(cMatrix3d& a_newRotation)
 {
     // get current time
@@ -254,7 +261,7 @@ void cGenericHapticDevice::estimateAngularVelocity(cMatrix3d& a_newRotation)
                 cMatrix3d mat = cMul(cTranspose(m_historyRot[m_indexHistoryRotWin].m_rot), m_historyRot[m_indexHistoryRot].m_rot); 
                 cVector3d axis;
                 double angle = 0;
-                mat.toAngleAxis(angle, axis);
+                mat.toAxisAngle(axis, angle);
                 angle = angle / interval; 
                 m_angularVelocity = cMul(a_newRotation, cMul(angle, axis));
                 completed = true;
@@ -272,13 +279,13 @@ void cGenericHapticDevice::estimateAngularVelocity(cMatrix3d& a_newRotation)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Estimate the velocity of the gripper by passing the latest gripper position.
 
     \param  a_newGripperPosition  New position of the gripper.
 */
-//===========================================================================
+//==============================================================================
 void cGenericHapticDevice::estimateGripperVelocity(double a_newGripperPosition)
 {
     // get current time
@@ -302,7 +309,7 @@ void cGenericHapticDevice::estimateGripperVelocity(double a_newGripperPosition)
     while ((i < C_DEVICE_HISTORY_SIZE) && (!completed))
     {
         double interval = time - m_historyGripper[m_indexHistoryGripperWin].m_time;
-        if ((interval < m_gripperLinearVelocityWindowSize) || (i == (C_DEVICE_HISTORY_SIZE-1)))
+        if ((interval < m_gripperVelocityWindowSize) || (i == (C_DEVICE_HISTORY_SIZE-1)))
         {
             // compute result
             if (interval > 0)
@@ -326,129 +333,134 @@ void cGenericHapticDevice::estimateGripperVelocity(double a_newGripperPosition)
 
 //==========================================================================
 /*!
-    Given the angular position and velocity of the gripper, compute a force
-	to simulate a haptic virtual user switch (button).
+    Given the angular position and velocity of the gripper, compute a 
+    haptic force that simulates a user switch (button).
 
-    \fn       double cGenericHapticDevice::computeGripperUserSwitchForce(const double& a_gripperPosition, 
-												           const double& a_gripperLinearVelocity)
-    \param    a_gripperPosition   Position of haptic device.
-	\param    a_gripperLinearVelocity   Linear velocity of haptic device.
+    \param    a_gripperAngle   Current position angle of gripper.
+    \param    a_gripperAngularVelocity   Current angular velocity of gripper.
+    \return   Returns the computed force to be applied to the gripper.
 */
-//===========================================================================
+//==============================================================================
 double cGenericHapticDevice::computeGripperUserSwitchForce(const double& a_gripperAngle, 
-												           const double& a_gripperAngularVelocity)
+                                                           const double& a_gripperAngularVelocity)
 {
-	if (m_gripperUserSwitchEnabled)
-	{
-		// compute damping term
-		double damping = 0.0;
-		double gripperAngularVelocity = 0.0;
-		getGripperAngularVelocity(gripperAngularVelocity);
-		damping = -0.1 * m_specifications.m_maxGripperAngularDamping * gripperAngularVelocity;
+    if (m_gripperUserSwitchEnabled)
+    {
+        // compute damping term
+        double damping = 0.0;
+        double gripperAngularVelocity = 0.0;
+        getGripperAngularVelocity(gripperAngularVelocity);
+        damping = -0.1 * m_specifications.m_maxGripperAngularDamping * gripperAngularVelocity;
 
-		// PHASE 0: outside of switch, zero force
-		if (a_gripperAngle > m_gripperUserSwitchAngleStart)
-		{ 
-			double force = 0.0;
-			return (force);
-		}
+        // PHASE 0: outside of switch, zero force
+        if (a_gripperAngle > m_gripperUserSwitchAngleStart)
+        { 
+            double force = 0.0;
+            return (force);
+        }
 
-		// PHASE 1: switch is being engaged. (Force is rising until "click")
-		else if ((a_gripperAngle <= m_gripperUserSwitchAngleStart) &&
-				 (a_gripperAngle > m_gripperUserSwitchAngleClick))
-		{
-			double force = (m_gripperUserSwitchAngleStart - a_gripperAngle) * ((m_gripperUserSwitchForceClick) / (m_gripperUserSwitchAngleStart - m_gripperUserSwitchAngleClick));
-			return (force + damping);
-		}
+        // PHASE 1: switch is being engaged. (Force is rising until "click")
+        else if ((a_gripperAngle <= m_gripperUserSwitchAngleStart) &&
+                 (a_gripperAngle > m_gripperUserSwitchAngleClick))
+        {
+            double force = (m_gripperUserSwitchAngleStart - a_gripperAngle) * ((m_gripperUserSwitchForceClick) / (m_gripperUserSwitchAngleStart - m_gripperUserSwitchAngleClick));
+            return (force + damping);
+        }
 
-		// PHASE 2: switch hase been engaged. (Force is constant)
-		else if (a_gripperAngle <= m_gripperUserSwitchAngleClick)
-		{
-			double force = m_gripperUserSwitchForceEngaged;
-			return (force + damping);
-		}
-	}
-	
-	return (0.0);
+        // PHASE 2: switch has been engaged. (Force is constant)
+        else if (a_gripperAngle <= m_gripperUserSwitchAngleClick)
+        {
+            double force = m_gripperUserSwitchForceEngaged;
+            return (force + damping);
+        }
+    }
+    
+    return (0.0);
 }
 
 
 //==========================================================================
 /*!
-    Given the angular position and velocity of the gripper, compute a force
-	to simulate a haptic virtual user switch (button).
+    If the gripper has been configured to simulate a user switch, this 
+    method will return __true__ if the gripper is closed, or __false__ if
+    it is open.
 
-    \fn			bool getGripperUserSwitch();
-
-    \return		Return \b true if user switch is enabled, \b false otherwise
+    \return		Return __true__ if gripper user switch is enabled, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cGenericHapticDevice::getGripperUserSwitch()
 {
     if (m_gripperUserSwitchEnabled && m_specifications.m_sensedGripper)
-	{
-		double gripperAngle;
-		if (getGripperAngleDeg(gripperAngle) >= 0)
-		{
-			if (gripperAngle < m_gripperUserSwitchAngleClick)
-			{
-				return (true);
-			}
-			else
-			{
-				return (false);
-			}
-		}
-		else
-		{
-			return (false);
-		}
-	}
-	else
-	{
-		return (false);
-	}
+    {
+        double gripperAngle;
+        if (getGripperAngleDeg(gripperAngle))
+        {
+            if (gripperAngle < m_gripperUserSwitchAngleClick)
+            {
+                return (true);
+            }
+            else
+            {
+                return (false);
+            }
+        }
+        else
+        {
+            return (false);
+        }
+    }
+    else
+    {
+        return (false);
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Read the gripper angle in radian.
 
     \param  a_angle  Return value.
 
-    \return Return 0 if no error occurred.
+    \return Return C_SUCCESS if no error occurred, C_ERROR otherwise.
 */
-//===========================================================================
-int cGenericHapticDevice::getGripperAngleRad(double& a_angle)
+//==============================================================================
+bool cGenericHapticDevice::getGripperAngleRad(double& a_angle)
 {
-	// get user switch
-	bool userSwitch = false;
-	getUserSwitch(0, userSwitch);
+    // get user switch
+    bool userSwitch = false;
+    getUserSwitch(0, userSwitch);
 
-	// read clock time
-	double timeElapsed = m_virtualGripperClock.stop();
-	m_virtualGripperClock.start(true);
+    // read clock time
+    double timeElapsed = m_virtualGripperClock.stop();
+    m_virtualGripperClock.start(true);
 
-	// update position
-	double nextAngle;
-	if (userSwitch)
-	{
-		// closing virtual gripper
-		nextAngle = m_virtualGripperAngle - m_virtualGripperAngularVelocity * timeElapsed;
-		m_gripperAngularVelocity = -m_virtualGripperAngularVelocity;
-	}
-	else
-	{
-		// opening virtual gripper
-		nextAngle = m_virtualGripperAngle + m_virtualGripperAngularVelocity * timeElapsed;
-		m_gripperAngularVelocity = m_virtualGripperAngularVelocity;
-	}
-	
-	// clamp and update new virtual gripper position
-	m_virtualGripperAngle = cClamp(nextAngle, m_virtualGripperAngleMin, m_virtualGripperAngleMax);
+    // update position
+    double nextAngle;
+    if (userSwitch)
+    {
+        // closing virtual gripper
+        nextAngle = m_virtualGripperAngle - m_virtualGripperAngularVelocity * timeElapsed;
+        m_gripperAngularVelocity = -m_virtualGripperAngularVelocity;
+    }
+    else
+    {
+        // opening virtual gripper
+        nextAngle = m_virtualGripperAngle + m_virtualGripperAngularVelocity * timeElapsed;
+        m_gripperAngularVelocity = m_virtualGripperAngularVelocity;
+    }
+    
+    // clamp and update new virtual gripper position
+    m_virtualGripperAngle = cClamp(nextAngle, m_virtualGripperAngleMin, m_virtualGripperAngleMax);
 
-	// return value
-	a_angle = m_virtualGripperAngle;
-	return (0);
+    // return value
+    a_angle = m_virtualGripperAngle;
+
+    // return success
+    return (C_SUCCESS);
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

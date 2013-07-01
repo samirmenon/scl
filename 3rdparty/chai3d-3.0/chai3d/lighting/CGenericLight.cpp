@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,20 +39,23 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 449 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "lighting/CGenericLight.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cGenericLight.
 
-    \fn     cGenericLight::cGenericLight(cWorld* a_world)
     \param  a_world  Parent world in which the light source is created.
 */
-//===========================================================================
+//==============================================================================
 cGenericLight::cGenericLight(cWorld* a_world)
 {   
     // set world parent
@@ -71,7 +74,7 @@ cGenericLight::cGenericLight(cWorld* a_world)
     // set default specular term
     m_specular.set(1.0f, 1.0f, 1.0f, 1.0f);
 
-  	// light is disabled by default
+    // light is disabled by default
     m_enabled = false;
                
     // disable two sided light model
@@ -83,26 +86,23 @@ cGenericLight::cGenericLight(cWorld* a_world)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cGenericLight.
-
-    \fn       cGenericLight::~cGenericLight()
 */
-//===========================================================================
+//==============================================================================
 cGenericLight::~cGenericLight()
 {
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Enable or disable two sided lighting mode.
 
-    \fn     void cGenericLight::setUseTwoSideLightModel(bool a_useTwoSideLightModel)
     \param  a_useTwoSideLightModel  Light mode
 */
-//===========================================================================
+//==============================================================================
 void cGenericLight::setUseTwoSideLightModel(bool a_useTwoSideLightModel)
 {
     if (a_useTwoSideLightModel)
@@ -116,15 +116,13 @@ void cGenericLight::setUseTwoSideLightModel(bool a_useTwoSideLightModel)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Get status of two sided lighting mode
+    Get status of two sided lighting mode.
 
-    \fn         bool cGenericLight::getUseTwoSideLightModel() const
-
-    \return     Return true if two-sided light mode is enabled. False otherwise.
+    \return Return __true__ if two-sided light mode is enabled. __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cGenericLight::getUseTwoSideLightModel() const
 {
     if (m_useTwoSideLightModel == GL_TRUE)
@@ -136,3 +134,8 @@ bool cGenericLight::getUseTwoSideLightModel() const
        return (false);
     }  
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

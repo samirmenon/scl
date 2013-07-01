@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,19 +37,24 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 803 $
+    \author    Sebastien Grange
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "system/CThread.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cThread.
 */
-//===========================================================================
+//==============================================================================
 cThread::cThread()
 {
     // no thread function has been defined yet
@@ -60,25 +65,25 @@ cThread::cThread()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cThread.
 */
-//===========================================================================
+//==============================================================================
 cThread::~cThread()
 {
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Creates a thread to execute within the address space of the calling process.
     Parameters include a pointer to the function and its priority level.
 
-    \param  a_function Pointer to thread function
-    \param  a_level Priority level of thread.
+    \param      a_function  Pointer to thread function.
+    \param      a_level  Priority level of thread.
 */
-//===========================================================================
+//==============================================================================
 void cThread::start(void(*a_function)(void), CThreadPriority a_level)
 {
     // create thread
@@ -107,16 +112,18 @@ void cThread::start(void(*a_function)(void), CThreadPriority a_level)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Creates a thread to execute within the address space of the calling process.
-    Parameters include a pointer to the function and its priority level.
+    Parameters include a pointer to the function, its priority level, and 
+    arguments passed to the function.
 
-    \param  a_function Pointer to thread function
-    \param  a_level Priority level of thread.
+    \param      a_function  Pointer to thread function.
+    \param      a_level  Priority level of thread.
+    \param      a_arg  Function arguments to pass when staring thread.
 */
-//===========================================================================
-void cThread::start(void(*a_function)(void*), CThreadPriority a_level, void *arg)
+//==============================================================================
+void cThread::start(void(*a_function)(void*), CThreadPriority a_level, void *a_arg)
 {
     // create thread
 #if defined(WIN32) | defined(WIN64)
@@ -124,7 +131,7 @@ void cThread::start(void(*a_function)(void*), CThreadPriority a_level, void *arg
           0,
           0,
           (LPTHREAD_START_ROUTINE)(a_function),
-          arg,
+          a_arg,
           0,
           &m_threadId
       );
@@ -135,7 +142,7 @@ void cThread::start(void(*a_function)(void*), CThreadPriority a_level, void *arg
           &m_handle,
           0,
           (void * (*)(void*)) a_function,
-          arg
+          a_arg
     );
 #endif
 
@@ -144,18 +151,14 @@ void cThread::start(void(*a_function)(void*), CThreadPriority a_level, void *arg
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Creates a thread to execute within the address space of the calling process.
-    Parameters include a pointer to the function and its priority level.
-
-    \param  a_function Pointer to thread function
-    \param  a_level Priority level of thread.
+     Terminate the thread (not recommended!).
 */
-//===========================================================================
+//==============================================================================
 void cThread::stop()
 {
-    // create thread
+    // terminate thread
 #if defined(WIN32) | defined(WIN64)
     TerminateThread(&m_threadId, 0);
 #endif
@@ -166,13 +169,13 @@ void cThread::stop()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Adjust the priority level of the thread.
 
-    \param  a_level  Priority level of the thread
+    \param      a_level  Priority level of the thread.
 */
-//===========================================================================
+//==============================================================================
 void cThread::setPriority(CThreadPriority a_level)
 {
     m_priorityLevel = a_level;
@@ -193,11 +196,11 @@ void cThread::setPriority(CThreadPriority a_level)
     switch (m_priorityLevel)
     {
         case CTHREAD_PRIORITY_GRAPHICS:
-        priority = THREAD_PRIORITY_NORMAL;
+        priority = THREAD_PRIORITY_ABOVE_NORMAL;
         break;
 
         case CTHREAD_PRIORITY_HAPTICS:
-        priority = THREAD_PRIORITY_ABOVE_NORMAL;
+        priority = THREAD_PRIORITY_HIGHEST;
         break;
     }
 
@@ -215,11 +218,11 @@ void cThread::setPriority(CThreadPriority a_level)
     switch (m_priorityLevel)
     {
         case CTHREAD_PRIORITY_GRAPHICS:
-        sp.sched_priority = 50;
+        sp.sched_priority = 75;
         break;
 
         case CTHREAD_PRIORITY_HAPTICS:
-        sp.sched_priority = 75;
+        sp.sched_priority = 99;
         break;
     }
 
@@ -227,3 +230,8 @@ void cThread::setPriority(CThreadPriority a_level)
 
 #endif
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

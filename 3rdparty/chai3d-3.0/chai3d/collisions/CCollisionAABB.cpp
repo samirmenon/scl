@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -38,20 +38,26 @@
     \author    <http://www.chai3d.org>
     \author    Chris Sewell
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 733 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "collisions/CCollisionAABB.h"
 #include <iostream>
 using namespace std;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 //! Pointer to first free location in array of AABB tree nodes.
 cCollisionAABBInternal* g_nextFreeNode;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     Constructor of cCollisionAABB.
 
@@ -59,7 +65,7 @@ cCollisionAABBInternal* g_nextFreeNode;
 
     \param    a_triangles     Pointer to array of triangles.
 */
-//===========================================================================
+//==============================================================================
 cCollisionAABB::cCollisionAABB(vector<cTriangle> *a_triangles)
 {
     // radius padding around triangles
@@ -75,13 +81,13 @@ cCollisionAABB::cCollisionAABB(vector<cTriangle> *a_triangles)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cCollisionAABB.
 
     \fn       cCollisionAABB::~cCollisionAABB()
 */
-//===========================================================================
+//==============================================================================
 cCollisionAABB::~cCollisionAABB()
 {
     // clear collision tree
@@ -106,7 +112,7 @@ cCollisionAABB::~cCollisionAABB()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Build the Axis-Aligned Bounding Box collision-detection tree.  Each
     leaf is associated with one triangle and with a bounding box of minimal
@@ -118,7 +124,7 @@ cCollisionAABB::~cCollisionAABB()
     \fn       void cCollisionAABB::initialize(const double a_radius)
     \param    a_radius radius to add around the triangles.
 */
-//===========================================================================
+//==============================================================================
 void cCollisionAABB::initialize(const double a_radius)
 {
     unsigned int i;
@@ -188,7 +194,7 @@ void cCollisionAABB::initialize(const double a_radius)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Check if the given line segment intersects any triangle of the mesh.  If so,
     return true, as well as (through the output parameters) pointers to the
@@ -215,7 +221,7 @@ void cCollisionAABB::initialize(const double a_radius)
 
     \return   Return true if a collision event has occurred.
 */
-//===========================================================================
+//==============================================================================
 bool cCollisionAABB::computeCollision(cGenericObject* a_object,
                                       cVector3d& a_segmentPointA, 
                                       cVector3d& a_segmentPointB,
@@ -247,15 +253,17 @@ bool cCollisionAABB::computeCollision(cGenericObject* a_object,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render the bounding boxes of the collision tree in OpenGL.
 
     \fn       void cCollisionAABB::render(cRenderOptions& a_options)
 */
-//===========================================================================
+//==============================================================================
 void cCollisionAABB::render(cRenderOptions& a_options)
 {
+#ifdef C_USE_OPENGL
+
     if (m_root != NULL)
     {
         // set rendering settings
@@ -269,7 +277,11 @@ void cCollisionAABB::render(cRenderOptions& a_options)
         // restore lighting settings
         glEnable(GL_LIGHTING);
     }
+
+#endif
 }
 
 
-
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

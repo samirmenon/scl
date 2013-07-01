@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,32 +37,34 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 846 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1067 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CShapeSphere.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#ifdef C_USE_OPENGL
 #ifdef MACOSX
 #include "OpenGL/glu.h"
 #else
 #include "GL/glu.h"
 #endif
-//---------------------------------------------------------------------------
-typedef GLUquadric GLUquadricObj;
-//---------------------------------------------------------------------------
+#endif
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cShapeSphere.
 
-    \fn     cShapeSphere::cShapeSphere(const double& a_radius, 
-                                       cMaterial* a_material = NULL)
-    \param  a_radius    Radius of sphere
+    \param  a_radius  Radius of sphere
     \param  a_material  Material property to be applied to object.
 */
-//===========================================================================
+//==============================================================================
 cShapeSphere::cShapeSphere(const double& a_radius, 
                            cMaterial* a_material)
 {
@@ -83,23 +85,18 @@ cShapeSphere::cShapeSphere(const double& a_radius,
 };
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a copy of itself.
 
-    \fn         cShapeSphere* cShapeSphere::copy(const bool a_duplicateMaterialData,
-                                 const bool a_duplicateTextureData, 
-                                 const bool a_duplicateMeshData,
-                                 const bool a_buildCollisionDetector)
+    \param  a_duplicateMaterialData  If __true__, material (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateTextureData  If __true__, texture data (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateMeshData  If __true__, mesh data (if available) is duplicated, otherwise it is shared.
+    \param  a_buildCollisionDetector  If __true__, collision detector (if available) is duplicated, otherwise it is shared.
 
-    \param      a_duplicateMaterialData  If \b true, material (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateTextureData  If \b true, texture data (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateMeshData  If \b true, mesh data (if available) is duplicated, otherwise it is shared.
-    \param      a_buildCollisionDetector  If \b true, collision detector (if available) is duplicated, otherwise it is shared.
-
-	\return		Return new object.
+    \return Return new object.
 */
-//===========================================================================
+//==============================================================================
 cShapeSphere* cShapeSphere::copy(const bool a_duplicateMaterialData,
                                  const bool a_duplicateTextureData, 
                                  const bool a_duplicateMeshData,
@@ -119,15 +116,13 @@ cShapeSphere* cShapeSphere::copy(const bool a_duplicateMaterialData,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set radius of sphere.
 
-    \fn          void cShapeSphere::setRadius(const double& a_radius) 
-
-    \param      a_radius  Radius of sphere.
+    \param  a_radius  Radius of sphere.
 */
-//===========================================================================
+//==============================================================================
 void cShapeSphere::setRadius(const double& a_radius) 
 { 
     // set new radius
@@ -141,16 +136,17 @@ void cShapeSphere::setRadius(const double& a_radius)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render sphere in OpenGL
 
-    \fn       void cShapeSphere::render(cRenderOptions& a_options)
-    \param    a_options  Render options
+    \param  a_options  Render options.
 */
-//===========================================================================
+//==============================================================================
 void cShapeSphere::render(cRenderOptions& a_options)
 {
+#ifdef C_USE_OPENGL
+
  	/////////////////////////////////////////////////////////////////////////
 	// Render parts that use material properties
 	/////////////////////////////////////////////////////////////////////////
@@ -163,7 +159,7 @@ void cShapeSphere::render(cRenderOptions& a_options)
 		}
     
 		// allocate a new OpenGL quadric object for rendering a sphere
-		GLUquadricObj *sphere;
+		GLUquadric *sphere;
 		sphere = gluNewQuadric ();
 
 		// set rendering style
@@ -200,23 +196,22 @@ void cShapeSphere::render(cRenderOptions& a_options)
             glDisable(GL_TEXTURE_2D);
 		}
 	}
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     From the position of the tool, search for the nearest point located
     at the surface of the current object. Decide if the point is located inside
     or outside of the object
 
-    \fn     void cShapeSphere::computeLocalInteraction(const cVector3d& a_toolPos,
-                                                      const cVector3d& a_toolVel,
-                                                      const unsigned int a_IDN)
     \param  a_toolPos  Position of the tool.
     \param  a_toolVel  Velocity of the tool.
     \param  a_IDN  Identification number of the force algorithm.
 */
-//===========================================================================
+//==============================================================================
 void cShapeSphere::computeLocalInteraction(const cVector3d& a_toolPos,
                                           const cVector3d& a_toolVel,
                                           const unsigned int a_IDN)
@@ -228,11 +223,14 @@ void cShapeSphere::computeLocalInteraction(const cVector3d& a_toolPos,
     // on the surface of the sphere
     if (distance > 0)
     {
-        m_interactionProjectedPoint = cMul( (m_radius/distance), a_toolPos);
+        m_interactionPoint = cMul( (m_radius/distance), a_toolPos);
+        m_interactionNormal = m_interactionPoint;
+        m_interactionNormal.normalize();
     }
     else
     {
-        m_interactionProjectedPoint = a_toolPos;
+        m_interactionPoint = a_toolPos;
+        m_interactionNormal.set(0,0,1);
     }
 
     // check if tool is located inside or outside of the sphere
@@ -247,13 +245,11 @@ void cShapeSphere::computeLocalInteraction(const cVector3d& a_toolPos,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update bounding box of current object.
-
-    \fn       void cShapeSphere::updateBoundaryBox()
 */
-//===========================================================================
+//==============================================================================
 void cShapeSphere::updateBoundaryBox()
 {
     m_boundaryBoxMin.set(-m_radius, -m_radius, -m_radius);
@@ -261,14 +257,13 @@ void cShapeSphere::updateBoundaryBox()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Scale sphere with a uniform scale factor.
 
-    \fn       void cShapeSphere::scaleObject(const double& a_scaleFactor)
-    \param    a_scaleFactor  Scale factor.
+    \param  a_scaleFactor  Scale factor.
 */
-//===========================================================================
+//==============================================================================
 void cShapeSphere::scaleObject(const double& a_scaleFactor)
 {
     // update radius
@@ -280,3 +275,8 @@ void cShapeSphere::scaleObject(const double& a_scaleFactor)
     // invalidate display list
     invalidateDisplayList();
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

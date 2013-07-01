@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,21 +39,25 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "widgets/CScope.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CPrimitives.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cScope.
 
     \fn     cScope::cScope()
 */
-//===========================================================================
+//==============================================================================
 cScope::cScope()
 {
     // clear signals
@@ -91,7 +95,7 @@ cScope::cScope()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set values for signals 0, 1, 2 and 3.
 
@@ -105,7 +109,7 @@ cScope::cScope()
     \param      a_signalValue2  Value for signal 2.
     \param      a_signalValue3  Value for signal 3.
 */
-//===========================================================================
+//==============================================================================
 void cScope::setSignalValues(const double a_signalValue0,
                              const double a_signalValue1,
                              const double a_signalValue2,
@@ -172,7 +176,7 @@ void cScope::setSignalValues(const double a_signalValue0,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Enable/Disable signals. On enabled signals are displayed to the Scope.
 
@@ -186,7 +190,7 @@ void cScope::setSignalValues(const double a_signalValue0,
     \param      a_signalEnabled2  Status for signal 2.
     \param      a_signalEnabled3  Status for signal 3.
 */
-//===========================================================================
+//==============================================================================
 void cScope::setSignalEnabled(const bool a_signalEnabled0,
                               const bool a_signalEnabled1,
                               const bool a_signalEnabled2,
@@ -199,13 +203,13 @@ void cScope::setSignalEnabled(const bool a_signalEnabled0,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Reset all signals from scope.
 
     \fn         void cScope::clearSignals()
 */
-//===========================================================================
+//==============================================================================
 void cScope::clearSignals()
 {
     m_index0 = 0;
@@ -213,7 +217,7 @@ void cScope::clearSignals()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the minimum and maximum values are displayed by the scope.
 
@@ -223,7 +227,7 @@ void cScope::clearSignals()
     \param      a_minValue  Minimum value.
     \param      a_maxValue  Maximum value.
 */
-//===========================================================================
+//==============================================================================
 void cScope::setRange(const double a_minValue, 
                       const double a_maxValue)
 {
@@ -239,7 +243,7 @@ void cScope::setRange(const double a_minValue,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the size of the scope by defining the width and height.
 
@@ -249,7 +253,7 @@ void cScope::setRange(const double a_minValue,
     \param      a_width  Width of scope.
     \param      a_height  Height of scope.
 */
-//===========================================================================
+//==============================================================================
 void cScope::setSize(const int a_width, 
                      const int a_height)
 {
@@ -263,19 +267,23 @@ void cScope::setSize(const int a_width,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render scope in OpenGL.
 
     \fn       void cScope::render(cRenderOptions& a_options)
     \param	a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cScope::render(cRenderOptions& a_options)
 {
-    // render background
-    cMesh::render(a_options);
+#ifdef C_USE_OPENGL
 
+    // render background panel
+    if (m_enabledPanel)
+    {
+        cMesh::render(a_options);
+    }
 
 	/////////////////////////////////////////////////////////////////////////
 	// Render parts that are always opaque
@@ -288,7 +296,7 @@ void cScope::render(cRenderOptions& a_options)
 	    glDisable(GL_LIGHTING);
 
         // set line width
-        glLineWidth(m_lineWidth);
+        glLineWidth((GLfloat)m_lineWidth);
 
         // render signal 0
         for (int i=0; i<4; i++)
@@ -304,7 +312,7 @@ void cScope::render(cRenderOptions& a_options)
                 }
 
                 int x = m_width;
-                int i0 = m_index1;
+                unsigned int i0 = m_index1;
                 int i1 = i0-1;
                 if (i1 < 0)
                 {
@@ -331,18 +339,25 @@ void cScope::render(cRenderOptions& a_options)
 	    // restore lighting to default value
 	    glEnable(GL_LIGHTING);
     }
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update bounding box of current object.
 
     \fn       void void cBitmap::updateBoundaryBox()
  */
-//===========================================================================
+//==============================================================================
 void cScope::updateBoundaryBox()
 {
     m_boundaryBoxMin.set(0.0, 0.0, 0.0);
     m_boundaryBoxMax.set(m_width, m_height, 0.0);
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

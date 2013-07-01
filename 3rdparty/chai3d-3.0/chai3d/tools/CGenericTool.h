@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,14 +37,14 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 846 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CGenericToolH
 #define CGenericToolH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "collisions/CGenericCollision.h"
 #include "devices/CGenericHapticDevice.h"
 #include "forces/CAlgorithmFingerProxy.h"
@@ -52,9 +52,13 @@
 #include "world/CGenericObject.h"
 #include "world/CWorld.h"
 #include "tools/CHapticPoint.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CGenericTool.h
 
@@ -62,9 +66,9 @@
     <b> Haptic Tools </b> \n 
     Base Class.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cGenericTool
     \ingroup    tools  
@@ -73,14 +77,14 @@
     cGenericTool describes a base class to create virtual tools inside a 
     virtual environment (cWorld) and connecting them to haptic devices.
 */
-//===========================================================================
+//==============================================================================
 class cGenericTool : public cGenericObject
 {
   public:
     
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Constructor of cGenericTool.
     cGenericTool(cWorld* a_parentWorld);
@@ -89,9 +93,9 @@ class cGenericTool : public cGenericObject
     virtual ~cGenericTool() {};
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS - SETUP
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Return the parent world to which the tool belongs too.
     cWorld* getParentWorld() { return (m_parentWorld); }
@@ -109,9 +113,9 @@ class cGenericTool : public cGenericObject
     virtual int stop();
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS - HAPTIC DEVICE
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Read the status of one of the user switches of the haptic device.
     virtual bool getUserSwitch(int a_switchIndex);
@@ -147,9 +151,9 @@ class cGenericTool : public cGenericObject
     virtual cTransform getDeviceGlobalTransform() { return (cTransform(m_deviceGlobalPos, m_deviceGlobalRot)); }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS - FORCE RENDERING
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Initialize the contact force models of the tool to its current position.
     virtual void initialize();
@@ -176,9 +180,9 @@ class cGenericTool : public cGenericObject
     virtual void enableDynamicObjects(bool a_enabled);
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS - INTERACTION POINTS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Check if the tool is touching a particular object.
     virtual bool isInContact(cGenericObject* a_object);
@@ -190,9 +194,9 @@ class cGenericTool : public cGenericObject
     cHapticPoint* getInteractionPoint(int a_index) { return (m_hapticPoints[a_index]); }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS - TOOL SETTINGS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Set the translational virtual workspace dimensions in which tool will be working.
     void setWorkspaceRadius(const double& a_workspaceRadius);
@@ -218,16 +222,16 @@ class cGenericTool : public cGenericObject
     //! Set radius size of the spheres used to display the proxies and goals positions
     virtual void setRadiusDisplay(double a_radiusDisplay); 
 
-    //! If set to \b true, then the tool waist for the simulation to compute a small force before sending it to the haptic device. This feature typically avoids having the device "jump" at the initialoization of an application.
+    //! If set to __true__, then the tool waist for the simulation to compute a small force before sending it to the haptic device. This feature typically avoids having the device "jump" at the initialoization of an application.
     inline void setWaitForSmallForce(bool a_value) { m_waitForSmallForce = a_value; }
 
     //! Get tool state about force handling.
     inline bool getWaitForSmallForce() { return (m_waitForSmallForce); }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS - GRAPHICS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Set display properties of contact points.
     virtual void setShowContactPoints(bool a_showProxy = true, 
@@ -238,20 +242,20 @@ class cGenericTool : public cGenericObject
     virtual void render(cRenderOptions& a_options) {};
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // MEMBERS 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Mesh model that can be used to image any 3D model of a tool. 
     cMesh* m_image;
 
     //! Contact points composing the tool.
-    vector <cHapticPoint*> m_hapticPoints;
+    std::vector <cHapticPoint*> m_hapticPoints;
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // MEMBERS - HAPTIC DEVICE:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
   protected:
 
@@ -261,13 +265,13 @@ class cGenericTool : public cGenericObject
     //! Status of the user switches of the device attached to the tool.
     int m_userSwitches;
 
-    //! If \b true then the tool has been started and is enabled. \b false otherwise.
+    //! If __true__ then the tool has been started and is enabled. __false__ otherwise.
     bool m_enabled;
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // MEMBERS - COMPUTED INTERACTION FORCES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
   public: 
 
@@ -290,9 +294,9 @@ class cGenericTool : public cGenericObject
     cVector3d m_lastComputedLocalTorque;
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // MEMBERS - TOOL POSE AND WORKSPACE SETTINGS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
   protected:
 
@@ -333,9 +337,9 @@ class cGenericTool : public cGenericObject
     double m_deviceGripperAngle;
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // MEMBERS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
   protected:
 
@@ -362,7 +366,11 @@ class cGenericTool : public cGenericObject
     int m_waitForSmallForceCounter;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

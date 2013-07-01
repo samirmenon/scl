@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -38,36 +38,40 @@
     \author    <http://www.chai3d.org>
     \author    Francois Conti
     \author    Dan Morris
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 827 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1064 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CDraw3D.h"
 #include "materials/CMaterial.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#ifdef C_USE_OPENGL
 #ifdef MACOSX
 #include "OpenGL/glu.h"
 #else
 #include "GL/glu.h"
 #endif
-//---------------------------------------------------------------------------
-typedef GLUquadric GLUquadricObj;
-//---------------------------------------------------------------------------
+#endif
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
-    Align the current -z axis with a reference frame; à la gluLookAt.
+    Align the current -z axis with a reference frame; ï¿½ la gluLookAt.
 
-    \fn     void cLookAt(const cVector3d& a_eye, const cVector3d& a_at, 
-                         const cVector3d& a_up)      
     \param  a_eye  Position of eye.
     \param  a_at  Lookat position.
     \param  a_up  Up direction.
 */
-//===========================================================================
+//==============================================================================
 void cLookAt(const cVector3d& a_eye, const cVector3d& a_at, const cVector3d& a_up)
 {
+#ifdef C_USE_OPENGL
+
     // Define our look vector (z axis)
     cVector3d look = a_at - a_eye;
     look.normalize();
@@ -104,24 +108,23 @@ void cLookAt(const cVector3d& a_eye, const cVector3d& a_at, const cVector3d& a_u
 
     // Push it onto the matrix stack
     glMultMatrixd(dm);
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Draw an X-Y-Z Frame. The red arrow corresponds to the X-Axis,
     green to the Y-Axis, and blue to the Z-Axis. \n
 
     The scale parameter determines the size of the arrows.
 
-    \fn       void cDrawFrame(const double& a_scale, 
-                const bool a_modifyMaterialState)
-
-    \param    a_scale  Length of each arrow
-    \param    a_modifyMaterialState  If \b true, this function sets GL to 
-              the preferred material state
+    \param  a_scale  Length of each arrow
+    \param  a_modifyMaterialState  If __true__, this function sets GL to 
+            the preferred material state
 */
-//===========================================================================
+//==============================================================================
 void cDrawFrame(const double& a_scale, 
                 const bool a_modifyMaterialState)
 {
@@ -129,27 +132,25 @@ void cDrawFrame(const double& a_scale,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Draw an X-Y-Z Frame. The red arrow corresponds to the X-Axis,
     green to the Y-Axis, and blue to the Z-Axis. \n
 
     The scale parameter determines the size of the arrows.
 
-    \fn       void cDrawFrame(const double& a_axisLengthScale, 
-                const double& a_axisThicknessScale,
-                const bool a_modifyMaterialState)
-
-    \param    a_axisLengthScale  Length of each arrow
-    \param    a_axisThicknessScale  Thickness factor of frame.
-    \param    a_modifyMaterialState  If \b true, this function sets GL to 
-              the preferred material state
+    \param  a_axisLengthScale  Length of each arrow
+    \param  a_axisThicknessScale  Thickness factor of frame.
+    \param  a_modifyMaterialState  If __true__, this function sets GL to 
+            the preferred material state
 */
-//===========================================================================
+//==============================================================================
 void cDrawFrame(const double& a_axisLengthScale, 
                 const double& a_axisThicknessScale,
                 const bool a_modifyMaterialState)
 {
+#ifdef C_USE_OPENGL
+
     // Triangle vertices:
     static int nTriangles = 8;
 
@@ -318,29 +319,29 @@ void cDrawFrame(const double& a_axisLengthScale,
     glDisable(GL_COLOR_MATERIAL);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Draw a line-based box with sides parallel to the x-y-z axes.
 
-    \fn       void cDrawWireBox(const double& a_xMin, const double& a_xMax,
-                  const double& a_yMin, const double& a_yMax,
-                  const double& a_zMin, const double& a_zMax)
-
-    \param    a_xMin  Box side x min position.
-    \param    a_xMax  Box side x max position.
-    \param    a_yMin  Box side y min position.
-    \param    a_yMax  Box side y max position.
-    \param    a_zMin  Box side z min position.
-    \param    a_zMax  Box side z max position.
+    \param  a_xMin  Box side x min position.
+    \param  a_xMax  Box side x max position.
+    \param  a_yMin  Box side y min position.
+    \param  a_yMax  Box side y max position.
+    \param  a_zMin  Box side z min position.
+    \param  a_zMax  Box side z max position.
 */
-//===========================================================================
+//==============================================================================
 void cDrawWireBox(const double& a_xMin, const double& a_xMax,
                   const double& a_yMin, const double& a_yMax,
                   const double& a_zMin, const double& a_zMax)
 {
+#ifdef C_USE_OPENGL
+
     // render lines for each edge of the box
     glBegin(GL_LINES);
         glVertex3d(a_xMin, a_yMin, a_zMin);
@@ -370,28 +371,28 @@ void cDrawWireBox(const double& a_xMin, const double& a_xMax,
         glVertex3d(a_xMax, a_yMax, a_zMin);
         glVertex3d(a_xMax, a_yMax, a_zMax);
     glEnd();
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render a sphere given a radius.
 
-    \fn       void cDrawSphere(const double& a_radius,
-                 const unsigned int a_numSlices, 
-                 const unsigned int a_numStacks)
-
-    \param    a_radius  Radius of the sphere
-    \param    a_numSlices  Specifies the number of subdivisions around the
-                            z axis (similar to lines of longitude)
-    \param    a_numStacks  Specifies the number of subdivisions along the
-                            x/y axes (similar to lines of latitude)
+    \param  a_radius  Radius of the sphere
+    \param  a_numSlices  Specifies the number of subdivisions around the
+            z axis (similar to lines of longitude)
+    \param  a_numStacks  Specifies the number of subdivisions along the
+            x/y axes (similar to lines of latitude)
 */
-//===========================================================================
+//==============================================================================
 void cDrawSphere(const double& a_radius,
                  const unsigned int a_numSlices, 
                  const unsigned int a_numStacks)
 {
+#ifdef C_USE_OPENGL
+
     // allocate a new OpenGL quadric object for rendering a sphere
     GLUquadricObj *quadObj;
     quadObj = gluNewQuadric ();
@@ -407,26 +408,26 @@ void cDrawSphere(const double& a_radius,
 
     // delete our quadric object
     gluDeleteQuadric(quadObj);
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Draw a pretty arrow on the z-axis using a cone and a cylinder.
 
-    \fn       void cDrawArrow(const cVector3d& a_arrowStart, 
-                const cVector3d& a_arrowTip, 
-                const double a_width)
-
-    \param    a_arrowStart  The location of the back of the arrow.
-    \param    a_arrowTip    The location of the tip of the arrow.
-    \param    a_width       The width (in GL units) of the arrow shaft.
+    \param  a_arrowStart  The location of the back of the arrow.
+    \param  a_arrowTip The location of the tip of the arrow.
+    \param  a_width  The width (in GL units) of the arrow shaft.
 */
-//===========================================================================
+//==============================================================================
 void cDrawArrow(const cVector3d& a_arrowStart, 
                 const cVector3d& a_arrowTip, 
                 const double a_width)
 {
+#ifdef C_USE_OPENGL
+
     glPushMatrix();
 
     // We don't really care about the up vector, but it can't
@@ -477,29 +478,28 @@ void cDrawArrow(const cVector3d& a_arrowStart,
     gluDeleteQuadric(quadObj);
 
     glPopMatrix();
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Draw a torus.
 
-    \fn       void cDrawSolidTorus(const double& a_innerRadius, 
-                     const double& a_outerRadius, 
-                     const int a_sides, 
-                     const int a_rings)
-
-    \param    a_innerRadius  Inner radius of the torus. 
-    \param    a_outerRadius  Outer radius of the torus. 
-    \param    a_sides  Number of sides for each radial section.        
-    \param    a_rings  Number of radial divisions for the torus.       
+    \param  a_innerRadius  Inner radius of the torus. 
+    \param  a_outerRadius  Outer radius of the torus. 
+    \param  a_sides  Number of sides for each radial section.        
+    \param  a_rings  Number of radial divisions for the torus.       
 */
-//===========================================================================
+//==============================================================================
 void cDrawSolidTorus(const double& a_innerRadius, 
                      const double& a_outerRadius, 
                      const int a_sides, 
                      const int a_rings)
 {
+#ifdef C_USE_OPENGL
+
     double  iradius = a_innerRadius, oradius = a_outerRadius, phi, psi, dpsi, dphi;
     double *vertex, *normal;
     int    i, j;
@@ -570,4 +570,11 @@ void cDrawSolidTorus(const double& a_innerRadius,
     free ( vertex ) ;
     free ( normal ) ;
     glPopMatrix();
+
+#endif
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

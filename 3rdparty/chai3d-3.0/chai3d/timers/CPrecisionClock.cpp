@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,22 +37,26 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 803 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "timers/CPrecisionClock.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cPrecisionClock. The clock is initialized to zero.
 */
-//===========================================================================
+//==============================================================================
 cPrecisionClock::cPrecisionClock()
 {
-    // clock is currently off
+    // clock is currently set OFF
     m_on = false;
 
 #if defined(WIN32) | defined(WIN64)
@@ -82,44 +86,36 @@ cPrecisionClock::cPrecisionClock()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Destructor of cPrecisionClock.
-*/
-//===========================================================================
-cPrecisionClock::~cPrecisionClock()
-{
-}
+    Reset clock with an initial time value in seconds. (Default value is 0 seconds).
 
-
-//===========================================================================
-/*!
-    Reset the clock to zero.
+    \param      a_currentTime  Time in seconds to initialize clock.
 */
-//===========================================================================
+//==============================================================================
 void cPrecisionClock::reset(const double a_currentTime)
 {
     // initialize clock
     m_timeAccumulated = a_currentTime;
 
-	// store current CPU time as starting time
+    // store current CPU time as starting time
     m_timeStart = getCPUTimeSeconds();
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Start or restart the clock. To read the latest time
-    from the clock, use method getCurrentTime.
+    Start or restart clock. To read clock time, call getCurrentTimeSeconds().
 
-    \param      a_resetClock  Should we start counting from zero?
+    \param      a_resetClock  If __true__ clock is initialized, otherwise 
+                resume counting.
 
-    \return     Returns the current clock time.
+    \return     Current clock time in seconds.
 */
-//===========================================================================
+//==============================================================================
 double cPrecisionClock::start(const bool a_resetClock)
 {
- 	// store current CPU time as starting time
+    // store current CPU time as starting time
     m_timeStart = getCPUTimeSeconds();
 
     if (a_resetClock)
@@ -129,17 +125,17 @@ double cPrecisionClock::start(const bool a_resetClock)
     m_on = true;
 
     // return time when timer was started.
-    return m_timeAccumulated;
+    return (m_timeAccumulated);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Stop the timer. To resume counting call start().
+    Stop clock and return elapsed time. To resume counting call start().
 
-    \return     Return time in \e seconds.
+    \return     Return time in seconds.
 */
-//===========================================================================
+//==============================================================================
 double cPrecisionClock::stop()
 {
 
@@ -150,31 +146,32 @@ double cPrecisionClock::stop()
     m_on = false;
 
     // return time when timer was stopped
-    return getCurrentTimeSeconds();
+    return ( getCurrentTimeSeconds() );
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Set the period in \e microseconds before timeout occurs. Do not forget
-    to set the timer on by calling method \e start()
+    Set the period in seconds before _timeout_ occurs. Do not forget
+    to enable the timer __ON__ by calling method start(). Monitoring 
+    for _timeout_ is performed by calling timeoutOccurred().
 
-    \param      a_timeoutPeriod  Timeout period in \e seconds.
+    \param      a_timeoutPeriod  Timeout period in seconds.
 */
-//===========================================================================
+//==============================================================================
 void cPrecisionClock::setTimeoutPeriodSeconds(const double a_timeoutPeriod)
 {
     m_timeoutPeriod = a_timeoutPeriod;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Check if timer has expired its timeout period. if so return \b true.
+    Check if timer has expired its _timeout_ period.
 
-    \return     Return \b true if timeout occurred, otherwise \b false.
+    \return     __true__ if _timeout_ occurred, otherwise __false__.
 */
-//===========================================================================
+//==============================================================================
 bool cPrecisionClock::timeoutOccurred() const 
 {
     // check if timeout has occurred
@@ -189,14 +186,13 @@ bool cPrecisionClock::timeoutOccurred() const
 }
 
 
-
-//===========================================================================
+//==============================================================================
 /*!
-    Read the current time of timer. Result is returned in \e seconds.
+    Read the current time of clock in seconds.
 
-    \return		Return current time in \e seconds
+    \return		Current time in seconds.
 */
-//===========================================================================
+//==============================================================================
 double cPrecisionClock::getCurrentTimeSeconds() const 
 {
     if (m_on)
@@ -208,13 +204,13 @@ double cPrecisionClock::getCurrentTimeSeconds() const
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    If all you want is something that tells you the time, this is your function...
+    Read raw CPU time in seconds.
 
-    \return     Return cpu clock in \e seconds.
+    \return     Raw CPU clock time in seconds.
 */
-//===========================================================================
+//==============================================================================
 double cPrecisionClock::getCPUTimeSeconds() const 
 {
 
@@ -237,10 +233,8 @@ double cPrecisionClock::getCPUTimeSeconds() const
 #ifdef LINUX
 
     struct timespec time;
-
     clock_gettime (CLOCK_MONOTONIC, &time);
-
-    return (double)(time.tv_sec + time.tv_nsec*1e-9);
+    return ( (double)(time.tv_sec + time.tv_nsec*1e-9) );
 
 #endif
 
@@ -248,14 +242,22 @@ double cPrecisionClock::getCPUTimeSeconds() const
 
     static double ratio = 0.0;
 
-    if (!ratio) {
-      mach_timebase_info_data_t info;
-      if(mach_timebase_info(&info) == KERN_SUCCESS) ratio = info.numer * 1e-9 * info.denom;
+    if (!ratio) 
+    {
+        mach_timebase_info_data_t info;
+        if (mach_timebase_info(&info) == KERN_SUCCESS) 
+        {
+            ratio = info.numer * 1e-9 * info.denom;
+        }
     }
 
-    return mach_absolute_time() * ratio;
+    return ( mach_absolute_time() * ratio );
 
 #endif
 
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

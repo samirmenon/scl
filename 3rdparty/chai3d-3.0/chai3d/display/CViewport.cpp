@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -38,21 +38,29 @@
     \author    <http://www.chai3d.org>
     \author    Francois Conti
     \author    Dan Morris
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 828 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #if defined(WIN32) | defined(WIN64)
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "display/CViewport.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#ifdef C_USE_OPENGL
 #include "GL/glu.h"
-//---------------------------------------------------------------------------
-cViewport* cViewport::lastActiveViewport = 0;
-//---------------------------------------------------------------------------
+#endif
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+cViewport* cViewport::lastActiveViewport = 0;
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cViewport.
 
@@ -60,11 +68,11 @@ cViewport* cViewport::lastActiveViewport = 0;
                 const bool a_stereoEnabled, PIXELFORMATDESCRIPTOR* a_pixelFormat=0)
     \param      a_winHandle    Handle to the actual win32 window.
     \param      a_camera       The camera through which this viewport should be rendered.
-    \param      a_stereoEnabled    If \b true, a stereo rendering context is created.
+    \param      a_stereoEnabled    If __true__, a stereo rendering context is created.
     \param      a_pixelFormat  If non-zero, this custom pixel format is used 
                                to initialize the viewport.
 */
-//===========================================================================
+//==============================================================================
 cViewport::cViewport(HWND a_winHandle, cCamera *a_camera, const bool a_stereoEnabled, PIXELFORMATDESCRIPTOR* a_pixelFormat)
 {
 
@@ -140,20 +148,20 @@ cViewport::cViewport(HWND a_winHandle, cCamera *a_camera, const bool a_stereoEna
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
         Destructor of cViewport.
 
         \fn     cViewport::~cViewport()
 */
-//===========================================================================
+//==============================================================================
 cViewport::~cViewport()
 {
     cleanup();
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Enable or disable stereo rendering on this viewport. \n
 
@@ -163,7 +171,7 @@ cViewport::~cViewport()
 
       \fn     cViewport::setStereoOn(bool a_stereoEnabled)
 */
-//===========================================================================
+//==============================================================================
 void cViewport::setStereoOn(bool a_stereoEnabled)
 {
     // check if new mode is not already active
@@ -185,13 +193,13 @@ void cViewport::setStereoOn(bool a_stereoEnabled)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
         Clean up the current rendering context.
 
         \fn     bool cViewport::cleanup()
 */
-//===========================================================================
+//==============================================================================
 bool cViewport::cleanup()
 {
     bool status = true;
@@ -210,7 +218,7 @@ bool cViewport::cleanup()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
         If the window has been modified, or just created, call this function
         to update the OpenGL display context.
@@ -219,7 +227,7 @@ bool cViewport::cleanup()
         \param      resizeOnly  If false (default), reinitializes the GL context.
         \return     Return true if operation succeeded.
 */
-//===========================================================================
+//==============================================================================
 bool cViewport::update(bool resizeOnly)
 {
 
@@ -323,14 +331,14 @@ bool cViewport::update(bool resizeOnly)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Call this method to render the OpenGL world inside the viewport.
 
     \fn         bool cViewport::render(int imageIndex)
-    \return     Return \b true if operation succeeded.
+    \return     Return __true__ if operation succeeded.
 */
-//===========================================================================
+//==============================================================================
 bool cViewport::render()
 {
     lastActiveViewport = this;
@@ -339,16 +347,18 @@ bool cViewport::render()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Renders the OpenGL scene.
 
     \fn         void cViewport::renderView(const int a_imageIndex)
-    \return     Return \b true if operation succeeded.
+    \return     Return __true__ if operation succeeded.
 */
-//===========================================================================
+//==============================================================================
 bool cViewport::renderView()
 {
+#ifdef C_USE_OPENGL
+
     // Make sure the viewport is really ready for rendering
     if ( (m_glReady == 0) || (m_enabled == 0) || (m_camera == NULL) ) return false;
 
@@ -424,10 +434,14 @@ bool cViewport::renderView()
 
     // operation succeeded
     return (true);
+
+#else
+    return (false);
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
      Select an object on displayed in the viewport. This method casts a
      virtual ray through the viewport and asks the world for the first
@@ -446,9 +460,9 @@ bool cViewport::renderView()
      \param     a_windowPosX  X coordinate position of mouse click.
      \param     a_windowPosY  Y coordinate position of mouse click.
      \param     a_collisionSettings  Settings used for performing collision detection.
-     \return    Return \b true if an object has been hit.
+     \return    Return __true__ if an object has been hit.
 */
-//===========================================================================
+//==============================================================================
 bool cViewport::select(const unsigned int a_windowPosX,
                        const unsigned int a_windowPosY,
                        cCollisionSettings* a_collisionSettings)
@@ -488,7 +502,7 @@ bool cViewport::select(const unsigned int a_windowPosX,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set camera. The viewport will now display the image filmed by this
     virtual camera.
@@ -496,7 +510,7 @@ bool cViewport::select(const unsigned int a_windowPosX,
     \fn     void cViewport::setCamera(cCamera *a_camera)
     \param  a_camera  Virtual camera in world.
 */
-//===========================================================================
+//==============================================================================
 void cViewport::setCamera(cCamera *a_camera)
 {
     // set camera
@@ -504,7 +518,7 @@ void cViewport::setCamera(cCamera *a_camera)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     You can use this to specify a specific rectangle to which you want this
     viewport to render within the window.  Supply -1 for each coordinate
@@ -514,14 +528,14 @@ void cViewport::setCamera(cCamera *a_camera)
     \fn     void cViewport::setRenderArea(RECT& r)
     \param  r  The rendering area within the GL context
 */
-//===========================================================================
+//==============================================================================
 void cViewport::setRenderArea(RECT& r)
 {
     m_forceRenderArea = r;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Clients should call this when the scene associated with
     this viewport may need re-initialization, e.g. after a
@@ -530,14 +544,14 @@ void cViewport::setRenderArea(RECT& r)
 
     \fn     void cViewport::onDisplayReset()
 */
-//===========================================================================
+//==============================================================================
 void cViewport::onDisplayReset()
 {
     if (m_camera) m_camera->onDisplayReset();
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Project a world-space point from 3D to 2D, using my viewport xform, my
     camera's projection matrix, and his world's modelview matrix.
@@ -546,9 +560,11 @@ void cViewport::onDisplayReset()
     \param  a_point     The point to transform
     \return             The transformed point in window space
 */
-//===========================================================================
+//==============================================================================
 cVector3d cViewport::projectPoint(cVector3d& a_point)
 {
+#ifdef C_USE_OPENGL
+
     cVector3d result;
 
     int* viewport = m_glViewport;
@@ -562,8 +578,17 @@ cVector3d cViewport::projectPoint(cVector3d& a_point)
 			   &result(0) ,&result(1) ,&result(2) );
 
     return (result);
+
+#else
+    return (cVector3d(0,0,0));
+#endif
 }
 
-//---------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif // WIN32
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

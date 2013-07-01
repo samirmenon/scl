@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,17 +37,23 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 846 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1056 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CMatrix3dH
 #define CMatrix3dH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "math/CConstants.h"
 #include "math/CVector3d.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 enum cEulerOrder 
 {
     C_EULER_ORDER_XYZ, 
@@ -63,71 +69,85 @@ enum cEulerOrder
     C_EULER_ORDER_ZYX, 
     C_EULER_ORDER_ZYZ  
 };
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     \file       CMatrix3d.h
 
     \brief
     <b> Math </b> \n
-    Matrix 3x3.
+    3D Matrix class.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \struct     cMatrix3d
     \ingroup    math
 
-    \brief    
-    cMatrix3d represents a 3x3 matrix. Each cell of the matrix is composed 
-    of a double. This matrix class also provides as simple set of methods 
-    to handle floating point arithmetic operations.
+    \brief
+    3D Matrix Class.
+
+    \details    
+    This matrix class provides storage for a 3x3 double precision 
+    floating point matrix as well as basic matrix and vector operations.
 */
-//===========================================================================
-struct cMatrix3d : public Eigen::Matrix3d
+//==============================================================================
+struct cMatrix3d
 {
+    //--------------------------------------------------------------------------
+    // CONSTRUCTOR & DESTRUCTOR:
+    //--------------------------------------------------------------------------
+
 public:
 
-    // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
         Constructor of cMatrix3d.
     */
-    //-----------------------------------------------------------------------
-    cMatrix3d(){}
+    //--------------------------------------------------------------------------
+    cMatrix3d() {}
 
 
-    //-----------------------------------------------------------------------
+#ifdef C_USE_EIGEN
+    //--------------------------------------------------------------------------
     /*!
         Constructor of cMatrix3d.
 
-        \param  a_matrix  Eigen 3x3 Matrix.
+        \param      a_matrix  Eigen 3d Matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     cMatrix3d(const Eigen::Matrix3d& a_matrix)
     { 
-        (*this) = a_matrix; 
+        (*this)(0,0) = a_matrix(0,0);
+        (*this)(0,1) = a_matrix(0,1);
+        (*this)(0,2) = a_matrix(0,2);
+        (*this)(1,0) = a_matrix(1,0);
+        (*this)(1,1) = a_matrix(1,1);
+        (*this)(1,2) = a_matrix(1,2);
+        (*this)(2,0) = a_matrix(2,0);
+        (*this)(2,1) = a_matrix(2,1);
+        (*this)(2,2) = a_matrix(2,2);
     }
+#endif
 
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Constructor of cMatrix3d.
-        Initialize a matrix bypassing as parameter values for each cell.
+        Constructor of cMatrix3d. \n
+        Initialize matrix bypassing as arguments values for each cell.
 
-        \param  a_m00  Matrix Component (0,0)
-        \param  a_m01  Matrix Component (0,1)
-        \param  a_m02  Matrix Component (0,2)
-        \param  a_m10  Matrix Component (1,0)
-        \param  a_m11  Matrix Component (1,1)
-        \param  a_m12  Matrix Component (1,2)
-        \param  a_m20  Matrix Component (2,0)
-        \param  a_m21  Matrix Component (2,1)
-        \param  a_m22  Matrix Component (2,2)
+        \param      a_m00  Matrix Component (0,0)
+        \param      a_m01  Matrix Component (0,1)
+        \param      a_m02  Matrix Component (0,2)
+        \param      a_m10  Matrix Component (1,0)
+        \param      a_m11  Matrix Component (1,1)
+        \param      a_m12  Matrix Component (1,2)
+        \param      a_m20  Matrix Component (2,0)
+        \param      a_m21  Matrix Component (2,1)
+        \param      a_m22  Matrix Component (2,2)
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     cMatrix3d(const double& a_m00, const double& a_m01, const double& a_m02,
               const double& a_m10, const double& a_m11, const double& a_m12,
               const double& a_m20, const double& a_m21, const double& a_m22)
@@ -138,16 +158,16 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Constructor of cMatrix3d.
-        Builds a rotation matrix from a set of column vectors.
+        Constructor of cMatrix3d. \n
+        Initialize matrix from a set of column vectors.
 
-        \param  a_colVector0  Column vector.
-        \param  a_colVector1  Column vector.
-        \param  a_colVector2  Column vector.
+        \param      a_colVector0  Column vector 0.
+        \param      a_colVector1  Column vector 1.
+        \param      a_colVector2  Column vector 2.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     cMatrix3d(const cVector3d& a_colVector0, 
               const cVector3d& a_colVector1, 
               const cVector3d& a_colVector2)
@@ -158,16 +178,17 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+#ifdef C_USE_EIGEN
+    //--------------------------------------------------------------------------
     /*!
         Constructor of cMatrix3d.
-        Builds a rotation matrix from a set of column vectors.
+        Initialize matrix from a set of Eigen column vectors.
 
-        \param  a_colVector0  Column vector.
-        \param  a_colVector1  Column vector.
-        \param  a_colVector2  Column vector.
+        \param      a_colVector0  Column vector 0.
+        \param      a_colVector1  Column vector 1.
+        \param      a_colVector2  Column vector 2.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     cMatrix3d(const Eigen::Vector3d& a_colVector0,
               const Eigen::Vector3d& a_colVector1,
               const Eigen::Vector3d& a_colVector2)
@@ -176,19 +197,23 @@ public:
         (*this)(1,0) = a_colVector0(1);  (*this)(1,1) = a_colVector1(1);  (*this)(1,2) = a_colVector2(1);
         (*this)(2,0) = a_colVector0(2);  (*this)(2,1) = a_colVector1(2);  (*this)(2,2) = a_colVector2(2);
     }
+#endif
 
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Constructor of cMatrix3d.
-        Builds a rotation matrix from a set of Euler angles and co-movinf axes of rotations.
+        Constructor of cMatrix3d. \n
+        Build a rotation matrix from a set of Euler angles and co-moving 
+        axes of rotations.
 
-        \param  a_angle1  Angle in radians of the first rotation in the sequence.
-        \param  a_angle2  Angle in radians of the second rotation in the sequence.
-        \param  a_angle3  Angle in radians of the thirs rotation in the sequence.
-        \param  a_eulerOrder  The order of the axes about which the rotations are to be applied
+        \param      a_angleRad1  Angle in radians of the first rotation in the sequence.
+        \param      a_angleRad2  Angle in radians of the second rotation in the sequence.
+        \param      a_angleRad3  Angle in radians of the third rotation in the sequence.
+        \param      a_eulerOrder  The order of the axes about which the rotations 
+                    are to be applied
+        \param      a_useIntrinsicEulerModel  If __true__ use _intrinsic_ Euler 
+                    model, if __false__ use _extrinsic_ Euler model.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     cMatrix3d(const double& a_angleRad1,
               const double& a_angleRad2,
               const double& a_angleRad3,
@@ -206,16 +231,15 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Constructor of cMatrix3d.
-        Builds a rotation matrix defined by a rotation axis and rotation
-        angle given in radian.
+        Constructor of cMatrix3d. \n
+        Build a rotation matrix from an __axis-angle__ representation.
 
-        \param  a_axis  Axis of rotation.
-        \param  a_angleRad  Rotation angle in Radian.
+        \param      a_axis  Axis vector.
+        \param      a_angleRad  Angle in radians.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     cMatrix3d(const cVector3d& a_axis, 
               const double& a_angleRad)
     {
@@ -223,18 +247,17 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Constructor of cMatrix3d.
-        Builds a rotation matrix defined by a rotation axis and rotation
-        angle given in radian.
+        Constructor of cMatrix3d. \n
+        Build a rotation matrix from an __axis-angle__ representation.
 
-        \param  a_axisX  X component of rotation axis.
-        \param  a_axisY  Y component of rotation axis.
-        \param  a_axisZ  Z component of rotation axis.
-        \param  a_angleRad  Rotation angle in Radian.
+        \param      a_axisX  __x__ component of axis.
+        \param      a_axisY  __y__ component of axis.
+        \param      a_axisZ  __z__ component of axis.
+        \param      a_angleRad  Angle in radian.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     cMatrix3d(const double& a_axisX,
               const double& a_axisY,
               const double& a_axisZ,
@@ -247,14 +270,53 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        Initialize a matrix with a scalar which is copied to each cell of
-        the matrix.
+#ifdef C_USE_EIGEN
 
-        \param  a_value  Value.
+    //! Convert this matrix to an Eigen Mector3d.
+    Eigen::Matrix3d eigen()
+    {
+        Eigen::Matrix3d m;
+        m(0,0) = (*this)(0,0);
+        m(0,1) = (*this)(0,1);
+        m(0,2) = (*this)(0,2);
+        m(1,0) = (*this)(1,0);
+        m(1,1) = (*this)(1,1);
+        m(1,2) = (*this)(1,2);
+        m(2,0) = (*this)(2,0);
+        m(2,1) = (*this)(2,1);
+        m(2,2) = (*this)(2,2);
+        return (m);
+    }
+
+#endif
+
+
+    //--------------------------------------------------------------------------
+    /*!
+        Build an identity matrix with ones on the main diagonal and zeros 
+        elsewhere.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    inline void identity()
+    {
+        (*this)(0,0) = 1.0;  (*this)(0,1) = 0.0;  (*this)(0,2) = 0.0;
+        (*this)(1,0) = 0.0;  (*this)(1,1) = 1.0;  (*this)(1,2) = 0.0;
+        (*this)(2,0) = 0.0;  (*this)(2,1) = 0.0;  (*this)(2,2) = 1.0;
+    }
+
+
+    //--------------------------------------------------------------------------
+    /*!
+        \brief
+        Initialize all elements of this matrix with an input scalar value
+        passed as argument.
+
+        \details
+        Initialize all element of this matrix with input value _a_value_
+
+        \param      a_value  Value.
+    */
+    //--------------------------------------------------------------------------
     inline void set(const double& a_value)
     {
         (*this)(0,0) = a_value;  (*this)(0,1) = a_value;  (*this)(0,2) = a_value;
@@ -263,13 +325,17 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Copy a table of doubles to current matrix
+        \brief
+        Initialize matrix with a table of __doubles__ passed as argument.
 
-        \param      a_source  table.
+        \details
+        Copy a table of __doubles__ to matrix
+
+        \param      a_source  Table of __doubles__.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void set(const double a_source[3][3])
     {
         (*this)(0,0) = a_source[0][0];
@@ -284,21 +350,25 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Initialize a matrix bypassing as parameter values for each cell.
+        \brief
+        Initialize matrix with individual elements passed as arguments.
 
-        \param  a_m00  Matrix Component (0,0)
-        \param  a_m01  Matrix Component (0,1)
-        \param  a_m02  Matrix Component (0,2)
-        \param  a_m10  Matrix Component (1,0)
-        \param  a_m11  Matrix Component (1,1)
-        \param  a_m12  Matrix Component (1,2)
-        \param  a_m20  Matrix Component (2,0)
-        \param  a_m21  Matrix Component (2,1)
-        \param  a_m22  Matrix Component (2,2)
+        \details
+        Initialize matrix by passing as argument values for each cell.
+
+        \param      a_m00  Matrix Component (0,0)
+        \param      a_m01  Matrix Component (0,1)
+        \param      a_m02  Matrix Component (0,2)
+        \param      a_m10  Matrix Component (1,0)
+        \param      a_m11  Matrix Component (1,1)
+        \param      a_m12  Matrix Component (1,2)
+        \param      a_m20  Matrix Component (2,0)
+        \param      a_m21  Matrix Component (2,1)
+        \param      a_m22  Matrix Component (2,2)
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void set(const double& a_m00, const double& a_m01, const double& a_m02,
                     const double& a_m10, const double& a_m11, const double& a_m12,
                     const double& a_m20, const double& a_m21, const double& a_m22)
@@ -309,16 +379,20 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Initialize a matrix by passing as parameter 3 column vectors. \n
-        M = (V0,V1,V2).
+        \brief
+        Initialize matrix with column vectors passed as arguments.
 
-        \param  a_vectCol0  Vector Column 0.
-        \param  a_vectCol1  Vector Column 1.
-        \param  a_vectCol2  Vector Column 2.
+        \details
+        Initialize matrix by passing three column vectors as arguments. \n
+        <em> M = (V0, V1, V2) </em>
+
+        \param      a_vectCol0  Vector Column 0.
+        \param      a_vectCol1  Vector Column 1.
+        \param      a_vectCol2  Vector Column 2.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void setCol(const cVector3d& a_vectCol0, 
                        const cVector3d& a_vectCol1,
                        const cVector3d& a_vectCol2)
@@ -329,13 +403,17 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Set column 0 of matrix with vector passed as parameter.
+        \brief
+        Initialize column 0 of matrix.
 
-        \param  a_vectCol  Vector Column 0.
+        \details
+        Set column 0 of matrix by passing an input vector as argument.
+
+        \param      a_vectCol  Vector Column 0.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void setCol0(const cVector3d& a_vectCol)
     {
         (*this)(0,0) = a_vectCol(0);  
@@ -344,13 +422,17 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Set column 1 of matrix with vector passed as parameter.
+        \brief
+        Initialize column 1 of matrix.
 
-        \param  a_vectCol  Vector Column 1.
+        \details
+        Set column 1 of matrix by passing an input vector as argument.
+
+        \param      a_vectCol  Vector Column 1.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void setCol1(const cVector3d& a_vectCol)
     {
         (*this)(0,1) = a_vectCol(0);  
@@ -359,13 +441,17 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Set column 2 of matrix with vector passed as parameter.
+        \brief
+        Initialize column 2 of matrix.
 
-        \param  a_vectCol  Vector Column 2.
+        \details
+        Set column 2 of matrix by passing an input vector as argument.
+
+        \param      a_vectCol  Vector Column 2.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void setCol2(const cVector3d& a_vectCol)
     {
         (*this)(0,2) = a_vectCol(0);  
@@ -374,13 +460,18 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Copy current matrix values to a table of doubles.
+        \brief
+        Read matrix elements through a table of __doubles__
 
-        \param      a_destination  table.
+        \details
+        Copy matrix values to an external table _a_destination_ of __doubles__ 
+        passed as argument.
+
+        \param      a_destination  Table of doubles.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void get(double* a_destination[])
     {
         *a_destination[0] = (*this)(0,0);
@@ -395,13 +486,17 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
+        \brief
         Read column vector 0 of matrix.
 
-        \return  Return vector 0 of current matrix.
+        \details
+        Read column vector 0 of matrix.
+
+        \return     Column vector 0 of matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline cVector3d getCol0() const
     {
         cVector3d result;
@@ -412,13 +507,17 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
+        \brief
         Read column vector 1 of matrix.
 
-        \return  Return vector 1 of current matrix.
+        \details
+        Read column vector 1 of matrix.
+
+        \return     Column vector 1 of matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline cVector3d getCol1() const
     {
         cVector3d result;
@@ -429,13 +528,17 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
+        \brief
         Read column vector 2 of matrix.
 
-        \return  Return vector 2 of current matrix.
+        \details
+        Read column vector 2 of matrix.
+
+        \return     Column vector 2 of matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline cVector3d getCol2() const
     {
         cVector3d result;
@@ -446,103 +549,148 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Read a row of this matrix.
+        \brief
+        Read the _i_ th row of matrix.
 
-        \return  Return a row of this matrix... not a valid l-value; this
-        does not return a reference into this matrix.
+        \details
+        Read the _i_ th of matrix. The three components are returned 
+        through a cVector3d data structure.
+        
+        \param      a_index  Index of row. (0,1 or 2)
+        \return     _i_ th row of matrix.
     */
-    //-----------------------------------------------------------------------
-    inline cVector3d getRow(const unsigned int& index) const
+    //--------------------------------------------------------------------------
+    inline cVector3d getRow(const unsigned int& a_index) const
     {
         cVector3d result;
-        result(0) = (*this)(index,0);   
-        result(1) = (*this)(index,1);     
-        result(2) = (*this)(index,2);
+        result(0) = (*this)(a_index, 0);   
+        result(1) = (*this)(a_index, 1);     
+        result(2) = (*this)(a_index, 2);
         return (result);
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Copy current matrix values to an external matrix passed as parameter.
+        \brief
+        Copy matrix. <em> a_destination = this </em>
+
+        \details
+        Copy matrix data to an external matrix _a_destination_ passed as 
+        argument.
 
         \param      a_destination  Destination matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void copyto(cMatrix3d& a_destination) const
     {
         a_destination = (*this);
     }
 
 
-    //-----------------------------------------------------------------------
+#ifdef C_USE_EIGEN
+    //--------------------------------------------------------------------------
     /*!
-        Copy current matrix values to an external matrix passed as parameter.
+        \brief
+        Copy matrix. <em> a_destination = this </em>
+
+        \details
+        Copy matrix data to an external Eigen matrix _a_destination_ passed 
+        as argument.
 
         \param      a_destination  Destination matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void copyto(Eigen::Matrix3d& a_destination) const
     {
         a_destination(0,0) = (*this)(0,0);	a_destination(0,1) = (*this)(0,1);	a_destination(0,2) = (*this)(0,2);
         a_destination(1,0) = (*this)(1,0);	a_destination(1,1) = (*this)(1,1);	a_destination(1,2) = (*this)(1,2);
         a_destination(2,0) = (*this)(2,0);	a_destination(2,1) = (*this)(2,1);	a_destination(2,2) = (*this)(2,2);
     }
+#endif
 
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Copy values from an external matrix passed as parameter to current
-        matrix.
+        \brief
+        Copy matrix. <em> this = a_source </em>
 
-        \param    a_source  Source matrix.
+        \details
+        Copy values from an external matrix _a_source_ passed as argument to 
+        this matrix.
+
+        \param      a_source  Source matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void copyfrom(const cMatrix3d& a_source)
     {
         (*this) = a_source;
     }
 
 
-    //-----------------------------------------------------------------------
+#ifdef C_USE_EIGEN
+    //--------------------------------------------------------------------------
     /*!
-        Copy values from an external matrix passed as parameter to current
-        matrix.
+        \brief
+        Copy matrix. <em> this = a_source </em>
+
+        \details
+        Copy values from an external Eigen matrix _a_source_ passed as argument 
+        to this matrix.
 
         \param    a_source  Source matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void copyfrom(const Eigen::Matrix3d& a_source)
     {
         (*this)(0,0) = a_source(0,0);	(*this)(0,1) = a_source(0,1);	(*this)(0,2) = a_source(0,2);
         (*this)(1,0) = a_source(1,0);	(*this)(1,1) = a_source(1,1);	(*this)(1,2) = a_source(1,2);
         (*this)(2,0) = a_source(2,0);	(*this)(2,1) = a_source(2,1);	(*this)(2,2) = a_source(2,2);
     }
+#endif
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Set the identity matrix.
+        \brief
+        Equality test.
+
+        \details
+        Compare two matrices. Return __true__ if both matrices are equal,
+        otherwise __false__.
+
+        \param      a_matrix   Matrix to compare with.
+
+        \return     __true__ if elements of both matrices are equal, 
+                    otherwise __false__.
     */
-    //-----------------------------------------------------------------------
-    inline void identity()
+    //--------------------------------------------------------------------------
+    inline bool equals(cMatrix3d& a_matrix) const
     {
-        (*this)(0,0) = 1.0;  (*this)(0,1) = 0.0;  (*this)(0,2) = 0.0;
-        (*this)(1,0) = 0.0;  (*this)(1,1) = 1.0;  (*this)(1,2) = 0.0;
-        (*this)(2,0) = 0.0;  (*this)(2,1) = 0.0;  (*this)(2,2) = 1.0;
+        for(int i=0; i<3; i++)
+        {
+            for(int j=0; j<3; j++)
+            {
+                if (a_matrix(i,j) != (*this)(i,j)) return (false);
+            }
+        }
+        return (true);
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Multiply current matrix with an external matrix. M = M * a_matrix.
-        Result is stored in current matrix.
+        \brief
+        Multiplication: <em> this = this * a_matrix </em>
 
-        \param    a_matrix  Matrix with which multiplication is performed.
+        \details
+        Multiply matrix with an external matrix _a_matrix_ passed as argument. \n
+        Result from operation overwrites this matrix.
+
+        \param      a_matrix  Input matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void mul(const cMatrix3d& a_matrix)
     {
         // compute multiplication between both matrices
@@ -563,18 +711,21 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Multiply current matrix with an external matrix.\n 
-        \e result = \e M * \e matrix. \n
-        Result is stored in \e result matrix.
+        \brief
+        Multiplication: <em> a_result = this * a_matrix </em>
 
-        \param  a_matrix  Matrix with which multiplication is performed.
-        \param  a_result  Result matrix.
+        \details
+        Multiply matrix with an external matrix _a_matrix_ passed as argument. \n
+        Result is stored in matrix _a_result_ passed as second argument.
+
+        \param      a_matrix  Input matrix.
+        \param      a_result  Result of operation.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void mulr(const cMatrix3d& a_matrix, 
-        cMatrix3d& a_result) const
+                     cMatrix3d& a_result) const
     {
         // compute multiplication between both matrices
         a_result(0,0) = (*this)(0,0) * a_matrix(0,0) + (*this)(0,1) * a_matrix(1,0) + (*this)(0,2) * a_matrix(2,0);
@@ -589,16 +740,19 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Multiply current matrix with an external vector passed as parameter. \n 
-        \e vector = \e M * \e vector. \n
-        Result is stored in same vector.
+        \brief
+        Multiplication: <em> a_vector = this * a_vector </em>
 
-        \param  a_vector  Vector with which multiplication is performed. \n
-        Result is stored is same vector.
+        \details
+        Multiply matrix with input vector _a_vector_ passed as argument. \n 
+        Result is stored back in the input vector _a_vector_ overwriting original
+        values.
+
+        \param      a_vector  Input vector and return result.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void mul(cVector3d& a_vector) const
     {
         // compute multiplication
@@ -613,16 +767,19 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Multiply current matrix with a vector. \n
-        \e result = \e M * \e vector. \n
-        Result is stored in result vector \e result.
+        \brief
+        Multiplication: <em> a_result = this * a_vector </em>
 
-        \param  a_vector  Vector with which multiplication is performed.
-        \param  a_result  Result of multiplication is stored here.
+        \details
+        Multiply matrix with input vector _a_vector_ passed as argument. \n 
+        Result is stored in output _a_result_ vector passed as second argument.
+
+        \param      a_vector  Input vector
+        \param      a_result  Result of operation.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void mulr(const cVector3d& a_vector, 
                      cVector3d& a_result) const
     {
@@ -632,30 +789,38 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the determinant of  current matrix.
+        \brief
+        Determinant: <em> det(this) </em>
 
-        \return Returns determinant of current matrix.
+        \details
+        Compute the determinant of this matrix.
+
+        \return     Determinant.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline double det() const
     {
         return (+ (*this)(0,0) * (*this)(1,1) * (*this)(2,2)
-            + (*this)(0,1) * (*this)(1,2) * (*this)(2,0)
-            + (*this)(0,2) * (*this)(1,0) * (*this)(2,1)
-            - (*this)(2,0) * (*this)(1,1) * (*this)(0,2)
-            - (*this)(2,1) * (*this)(1,2) * (*this)(0,0)
-            - (*this)(2,2) * (*this)(1,0) * (*this)(0,1));
+                + (*this)(0,1) * (*this)(1,2) * (*this)(2,0)
+                + (*this)(0,2) * (*this)(1,0) * (*this)(2,1)
+                - (*this)(2,0) * (*this)(1,1) * (*this)(0,2)
+                - (*this)(2,1) * (*this)(1,2) * (*this)(0,0)
+                - (*this)(2,2) * (*this)(1,0) * (*this)(0,1));
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the transpose of current matrix. \n
-        Result is stored in current matrix.
+        \brief
+        Transpose: <em> this = this^T </em>
+
+        \details
+        Compute the transpose of this matrix. \n
+        Result is stored in current matrix overwriting previous values.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void trans()
     {
         double t;
@@ -665,14 +830,18 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the transpose of current matrix. \n
-        Result is stored in \e result matrix.
+        \brief
+        Transpose: <em> a_result = this^T </em>
 
-        \param  a_result  Result is stored here.
+        \details
+        Compute the transpose of this matrix. \n
+        Result is stored in output _a_result_ matrix passed as argument.
+
+        \param  a_result  Output matrix.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void transr(cMatrix3d& a_result) const
     {
         a_result(0,0) = (*this)(0,0);
@@ -689,26 +858,30 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the inverse of current matrix. \n
-        If the operation succeeds, result is stored in current matrix.
+        \brief
+        Inverse: <em> this = this^-1 </em>
 
-        \return Returns \b true if matrix was inverted successfully,
-        otherwise return \b false.
+        \details
+        Compute the inverse of this matrix. \n
+        If operation succeeds, result is stored in current matrix.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     bool invert()
     {
-        double det = (	+ (*this)(0,0) * (*this)(1,1) * (*this)(2,2)
-            + (*this)(0,1) * (*this)(1,2) * (*this)(2,0)
-            + (*this)(0,2) * (*this)(1,0) * (*this)(2,1)
-            - (*this)(2,0) * (*this)(1,1) * (*this)(0,2)
-            - (*this)(2,1) * (*this)(1,2) * (*this)(0,0)
-            - (*this)(2,2) * (*this)(1,0) * (*this)(0,1));
+        // compute determinant
+        double d = ( + (*this)(0,0) * (*this)(1,1) * (*this)(2,2)
+                     + (*this)(0,1) * (*this)(1,2) * (*this)(2,0)
+                     + (*this)(0,2) * (*this)(1,0) * (*this)(2,1)
+                     - (*this)(2,0) * (*this)(1,1) * (*this)(0,2)
+                     - (*this)(2,1) * (*this)(1,2) * (*this)(0,0)
+                     - (*this)(2,2) * (*this)(1,0) * (*this)(0,1));
 
         // check if determinant null
-        if ((det < C_TINY) && (det > -C_TINY))
+        if ((d < C_TINY) && (d > -C_TINY))
         {
             // determinant null, matrix inversion could not be performed
             return (false);
@@ -716,17 +889,17 @@ public:
         else
         {
             // compute inverted matrix
-            double m00 =  ((*this)(1,1) * (*this)(2,2) - (*this)(2,1)*(*this)(1,2)) / det;
-            double m01 = -((*this)(0,1) * (*this)(2,2) - (*this)(2,1)*(*this)(0,2)) / det;
-            double m02 =  ((*this)(0,1) * (*this)(1,2) - (*this)(1,1)*(*this)(0,2)) / det;
+            double m00 =  ((*this)(1,1) * (*this)(2,2) - (*this)(2,1)*(*this)(1,2)) / d;
+            double m01 = -((*this)(0,1) * (*this)(2,2) - (*this)(2,1)*(*this)(0,2)) / d;
+            double m02 =  ((*this)(0,1) * (*this)(1,2) - (*this)(1,1)*(*this)(0,2)) / d;
 
-            double m10 = -((*this)(1,0) * (*this)(2,2) - (*this)(2,0)*(*this)(1,2)) / det;
-            double m11 =  ((*this)(0,0) * (*this)(2,2) - (*this)(2,0)*(*this)(0,2)) / det;
-            double m12 = -((*this)(0,0) * (*this)(1,2) - (*this)(1,0)*(*this)(0,2)) / det;
+            double m10 = -((*this)(1,0) * (*this)(2,2) - (*this)(2,0)*(*this)(1,2)) / d;
+            double m11 =  ((*this)(0,0) * (*this)(2,2) - (*this)(2,0)*(*this)(0,2)) / d;
+            double m12 = -((*this)(0,0) * (*this)(1,2) - (*this)(1,0)*(*this)(0,2)) / d;
 
-            double m20 =  ((*this)(1,0) * (*this)(2,1) - (*this)(2,0)*(*this)(1,1)) / det;
-            double m21 = -((*this)(0,0) * (*this)(2,1) - (*this)(2,0)*(*this)(0,1)) / det;
-            double m22 =  ((*this)(0,0) * (*this)(1,1) - (*this)(1,0)*(*this)(0,1)) / det;
+            double m20 =  ((*this)(1,0) * (*this)(2,1) - (*this)(2,0)*(*this)(1,1)) / d;
+            double m21 = -((*this)(0,0) * (*this)(2,1) - (*this)(2,0)*(*this)(0,1)) / d;
+            double m22 =  ((*this)(0,0) * (*this)(1,1) - (*this)(1,0)*(*this)(0,1)) / d;
 
             // return values to current matrix
             (*this)(0,0) = m00;  (*this)(0,1) = m01;  (*this)(0,2) = m02;
@@ -739,29 +912,31 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the inverse of current matrix.
-        If the operation succeeds, result is stored in \e result matrix passed
-        as parameter.
+        \brief
+        Inverse: <em> a_result = this^-1 </em>
 
-        \param  a_result  Result is stored here.
+        \details
+        Compute the inverse of this matrix. \n
+        If operation succeeds, result is stored in output _a_result_ matrix 
+        passed as argument.
 
-        \return Returns \b true if matrix was inverted successfully,
-        otherwise return \b false.
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     bool invertr(cMatrix3d& a_result) const
     {
-        double det = (+ (*this)(0,0) * (*this)(1,1) * (*this)(2,2)
-            + (*this)(0,1) * (*this)(1,2) * (*this)(2,0)
-            + (*this)(0,2) * (*this)(1,0) * (*this)(2,1)
-            - (*this)(2,0) * (*this)(1,1) * (*this)(0,2)
-            - (*this)(2,1) * (*this)(1,2) * (*this)(0,0)
-            - (*this)(2,2) * (*this)(1,0) * (*this)(0,1));
+        // compute determinant
+        double d = ( + (*this)(0,0) * (*this)(1,1) * (*this)(2,2)
+                     + (*this)(0,1) * (*this)(1,2) * (*this)(2,0)
+                     + (*this)(0,2) * (*this)(1,0) * (*this)(2,1)
+                     - (*this)(2,0) * (*this)(1,1) * (*this)(0,2)
+                     - (*this)(2,1) * (*this)(1,2) * (*this)(0,0)
+                     - (*this)(2,2) * (*this)(1,0) * (*this)(0,1));
 
         // check if determinant null.
-        if ((det < C_TINY) && (det > -C_TINY))
+        if ((d < C_TINY) && (d > -C_TINY))
         {
             // determinant null, matrix inversion can not be performed
             return (false);
@@ -769,17 +944,17 @@ public:
         else
         {
             // compute inverted matrix
-            a_result(0,0) =  ((*this)(1,1) * (*this)(2,2) - (*this)(2,1)*(*this)(1,2)) / det;
-            a_result(0,1) = -((*this)(0,1) * (*this)(2,2) - (*this)(2,1)*(*this)(0,2)) / det;
-            a_result(0,2) =  ((*this)(0,1) * (*this)(1,2) - (*this)(1,1)*(*this)(0,2)) / det;
+            a_result(0,0) =  ((*this)(1,1) * (*this)(2,2) - (*this)(2,1)*(*this)(1,2)) / d;
+            a_result(0,1) = -((*this)(0,1) * (*this)(2,2) - (*this)(2,1)*(*this)(0,2)) / d;
+            a_result(0,2) =  ((*this)(0,1) * (*this)(1,2) - (*this)(1,1)*(*this)(0,2)) / d;
 
-            a_result(1,0) = -((*this)(1,0) * (*this)(2,2) - (*this)(2,0)*(*this)(1,2)) / det;
-            a_result(1,1) =  ((*this)(0,0) * (*this)(2,2) - (*this)(2,0)*(*this)(0,2)) / det;
-            a_result(1,2) = -((*this)(0,0) * (*this)(1,2) - (*this)(1,0)*(*this)(0,2)) / det;
+            a_result(1,0) = -((*this)(1,0) * (*this)(2,2) - (*this)(2,0)*(*this)(1,2)) / d;
+            a_result(1,1) =  ((*this)(0,0) * (*this)(2,2) - (*this)(2,0)*(*this)(0,2)) / d;
+            a_result(1,2) = -((*this)(0,0) * (*this)(1,2) - (*this)(1,0)*(*this)(0,2)) / d;
 
-            a_result(2,0) =  ((*this)(1,0) * (*this)(2,1) - (*this)(2,0)*(*this)(1,1)) / det;
-            a_result(2,1) = -((*this)(0,0) * (*this)(2,1) - (*this)(2,0)*(*this)(0,1)) / det;
-            a_result(2,2) =  ((*this)(0,0) * (*this)(1,1) - (*this)(1,0)*(*this)(0,1)) / det;
+            a_result(2,0) =  ((*this)(1,0) * (*this)(2,1) - (*this)(2,0)*(*this)(1,1)) / d;
+            a_result(2,1) = -((*this)(0,0) * (*this)(2,1) - (*this)(2,0)*(*this)(0,1)) / d;
+            a_result(2,2) =  ((*this)(0,0) * (*this)(1,1) - (*this)(1,0)*(*this)(0,1)) / d;
 
             // return success
             return (true);
@@ -787,19 +962,22 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Build a rotation matrix defined by a rotation axis and rotation
-        angle given in radian. These values are passed as parameters. \n
+        \brief
+        Build a rotation matrix from an __axis-angle__ representation.
+
+        \details
+        Build a rotation matrix from an input _axis_ and _angle_ defined in 
+        radians. \n 
         Result is stored in current matrix.
 
-        \param  a_axis  Axis of rotation.
-        \param  a_angleRad  Rotation angle in radians.
+        \param      a_axis  Axis of rotation.
+        \param      a_angleRad  Angle in radians.
 
-        \return Returns \b true if operation succeeded. Otherwise
-        return \b false.
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool setAxisAngleRotationRad(const cVector3d& a_axis, 
                                         const double& a_angleRad)
     {
@@ -833,19 +1011,22 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Build a rotation matrix defined by a rotation axis and rotation
-        angle given in radian. These values are passed as parameters. \n
+        \brief
+        Build a rotation matrix from an __axis-angle__ representation.
+
+        \details
+        Build a rotation matrix from an input _axis_ and _angle_ defined in 
+        degrees. \n 
         Result is stored in current matrix.
 
-        \param  a_axis  Axis of rotation.
-        \param  a_angleRad  Rotation angle in degrees.
+        \param      a_axis  Axis of rotation.
+        \param      a_angleDeg  Angle in degrees.
 
-        \return Returns \b true if operation succeeded. Otherwise
-        return \b false.
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool setAxisAngleRotationDeg(const cVector3d& a_axis, 
                                         const double& a_angleDeg)
     {
@@ -853,21 +1034,24 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Build a rotation matrix defined by an axis of rotation and an
-        angle defined in radian. These values are passed as parameters. \n
+        \brief
+        Build a rotation matrix from an __axis-angle__ representation.
+
+        \details
+        Build a rotation matrix from an input _axis_ and _angle_ defined in 
+        radians. \n 
         Result is stored in current matrix.
 
-        \param  a_axisX  X component of axis.
-        \param  a_axisY  Y component of axis.
-        \param  a_axisZ  Z component of axis.
-        \param  a_angleRad  Rotation angle in radians.
+        \param      a_axisX  Component __x__ of axis.
+        \param      a_axisY  Component __y__ of axis.
+        \param      a_axisZ  Component __z__ of axis.
+        \param      a_angleRad  Angle in radians.
 
-        \return Returns \b true if operation succeeded. Otherwise
-        return \b false.
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool setAxisAngleRotationRad(const double& a_axisX,
                                         const double& a_axisY,
                                         const double& a_axisZ,
@@ -877,21 +1061,23 @@ public:
     }
 
 
-        //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Build a rotation matrix defined by an axis of rotation and an
-        angle defined in radian. These values are passed as parameters. \n
+        \brief
+        Build a rotation matrix from __axis-angle__ representation.
+
+        \details
+        Build a rotation matrix from an _axis_ and _angle_ defined in degrees. \n
         Result is stored in current matrix.
 
-        \param  a_axisX  X component of axis.
-        \param  a_axisY  Y component of axis.
-        \param  a_axisZ  Z component of axis.
-        \param  a_angleRad  Rotation angle in degrees.
+        \param      a_axisX  Component __x__ of axis.
+        \param      a_axisY  Component __y__ of axis.
+        \param      a_axisZ  Component __z__ of axis.
+        \param      a_angleDeg  Angle in degrees.
 
-        \return Returns \b true if operation succeeded. Otherwise
-        return \b false.
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool setAxisAngleRotationDeg(const double& a_axisX,
                                         const double& a_axisY,
                                         const double& a_axisZ,
@@ -901,16 +1087,21 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Builds a rotation matrix from a set of Euler angles and fixed axes of rotations.
+        \brief
+        Build a rotation matrix from an Euler angle representation.
 
-        \param  a_angle1  Angle in radians of the first rotation in the sequence.
-        \param  a_angle2  Angle in radians of the second rotation in the sequence.
-        \param  a_angle3  Angle in radians of the thirs rotation in the sequence.
-        \param  a_eulerOrder  The order of the axes about which the rotations are to be applied.
+        \details
+        Build a rotation matrix from a set of Euler angles and fixed axes of rotations.
+
+        \param      a_angle1  Angle in radians of the first rotation in the sequence.
+        \param      a_angle2  Angle in radians of the second rotation in the sequence.
+        \param      a_angle3  Angle in radians of the third rotation in the sequence.
+        \param      a_eulerOrder  The order of the axes about which the rotations 
+                    are to be applied.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void setExtrinsicEulerRotationRad(const double& a_angle1,
                                              const double& a_angle2,
                                              const double& a_angle3,
@@ -969,16 +1160,21 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Builds a rotation matrix from a set of Euler angles and fixed axes of rotations.
+        \brief
+        Build a rotation matrix from an Euler angle representation.
 
-        \param  a_angle1  Angle in degrees of the first rotation in the sequence.
-        \param  a_angle2  Angle in degrees of the second rotation in the sequence.
-        \param  a_angle3  Angle in degrees of the thirs rotation in the sequence.
-        \param  a_eulerOrder  The order of the axes about which the rotations are to be applied.
+        \details
+        Build a rotation matrix from a set of Euler angles and fixed axes of rotations.
+
+        \param      a_angle1  Angle in degrees of the first rotation in the sequence.
+        \param      a_angle2  Angle in degrees of the second rotation in the sequence.
+        \param      a_angle3  Angle in degrees of the third rotation in the sequence.
+        \param      a_eulerOrder  The order of the axes about which the rotations 
+                    are to be applied.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void setExtrinsicEulerRotationDeg(const double& a_angle1,
                                              const double& a_angle2,
                                              const double& a_angle3,
@@ -991,16 +1187,22 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Builds a rotation matrix from a set of Euler angles and co-moving axes of rotations.
+        \brief
+        Build a rotation matrix from an Euler angle representation.
 
-        \param  a_angle1  Angle in radians of the first rotation in the sequence.
-        \param  a_angle2  Angle in radians of the second rotation in the sequence.
-        \param  a_angle3  Angle in radians of the thirs rotation in the sequence.
-        \param  a_eulerOrder  The order of the axes about which the rotations are to be applied.
+        \details
+        Build a rotation matrix from a set of Euler angles and co-moving axes of 
+        rotations.
+
+        \param      a_angle1  Angle in radians of the first rotation in the sequence.
+        \param      a_angle2  Angle in radians of the second rotation in the sequence.
+        \param      a_angle3  Angle in radians of the third rotation in the sequence.
+        \param      a_eulerOrder  The order of the axes about which the rotations 
+                    are to be applied.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void setIntrinsicEulerRotationRad(const double& a_angle1,
                                              const double& a_angle2,
                                              const double& a_angle3,
@@ -1090,16 +1292,22 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Builds a rotation matrix from a set of Euler angles and co-moving axes of rotations.
+        \brief
+        Build a rotation matrix from an Euler angle representation.
 
-        \param  a_angle1  Angle in degrees of the first rotation in the sequence.
-        \param  a_angle2  Angle in degrees of the second rotation in the sequence.
-        \param  a_angle3  Angle in degrees of the thirs rotation in the sequence.
-        \param  a_eulerOrder  The order of the axes about which the rotations are to be applied.
+        \details
+        Builds a rotation matrix from a set of Euler angles and co-moving axes 
+        of rotations.
+
+        \param      a_angle1  Angle in degrees of the first rotation in the sequence.
+        \param      a_angle2  Angle in degrees of the second rotation in the sequence.
+        \param      a_angle3  Angle in degrees of the third rotation in the sequence.
+        \param      a_eulerOrder  The order of the axes about which the rotations 
+                    are to be applied.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void setIntrinsicEulerRotationDeg(const double& a_angle1,
                                              const double& a_angle2,
                                              const double& a_angle3,
@@ -1112,16 +1320,20 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Rotate current matrix around a global axis.
+        \brief
+        Rotate current matrix around an axis described in global coordinates. 
 
-        \param  a_axis  Axis of rotation.
-        \param  a_angleRad  Rotation angle in radians.
+        \details
+        Rotate current matrix around an axis described in global coordinates.
 
-        \return Returns \b true if operation succeeded. Otherwise return \b false.
+        \param      a_axis  Axis of rotation.
+        \param      a_angleRad  Angle in radians.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool rotateAboutGlobalAxisRad(const cVector3d& a_axis, 
                                          const double& a_angleRad)
     {
@@ -1158,16 +1370,20 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Rotate current matrix around a global axis.
+        \brief
+        Rotate current matrix around an axis described in global coordinates.
 
-        \param  a_axis  Axis of rotation.
-        \param  a_angleDeg  Rotation angle in degrees.
+        \details
+        Rotate current matrix around an axis described in global coordinates.
 
-        \return Returns \b true if operation succeeded. Otherwise return \b false.
+        \param      a_axis  Axis of rotation.
+        \param      a_angleDeg  Angle in degrees.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool rotateAboutGlobalAxisDeg(const cVector3d& a_axis, 
                                          const double& a_angleDeg)
     {
@@ -1175,18 +1391,22 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Rotate current matrix around a global axis.
+        \brief
+        Rotate current matrix around an axis described in global coordinates.
 
-        \param  a_axisX  X component of axis.
-        \param  a_axisY  Y component of axis.
-        \param  a_axisZ  Z component of axis.
-        \param  a_angleRad  Rotation angle in radians.
+        \details
+        Rotate current matrix around an axis described in global coordinates.
 
-        \return Returns \b true if operation succeeded. Otherwise return \b false.
+        \param      a_axisX  __x__ component of axis.
+        \param      a_axisY  __y__ component of axis.
+        \param      a_axisZ  __z__ component of axis.
+        \param      a_angleRad  Angle in radians.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool rotateAboutGlobalAxisRad(const double& a_axisX,
                                          const double& a_axisY,
                                          const double& a_axisZ,
@@ -1196,18 +1416,22 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Rotate current matrix around a global axis.
+        \brief
+        Rotate current matrix around an axis described in global coordinates.
 
-        \param  a_axisX  X component of axis.
-        \param  a_axisY  Y component of axis.
-        \param  a_axisZ  Z component of axis.
-        \param  a_angleDeg  Rotation angle in degrees.
+        \details
+        Rotate current matrix around an axis described in global coordinates.
 
-        \return Returns \b true if operation succeeded. Otherwise return \b false.
+        \param      a_axisX  __x__ component of axis.
+        \param      a_axisY  __y__ component of axis.
+        \param      a_axisZ  __z__ component of axis.
+        \param      a_angleDeg  Angle in degrees.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool rotateAboutGlobalAxisDeg(const double& a_axisX,
                                          const double& a_axisY,
                                          const double& a_axisZ,
@@ -1217,16 +1441,20 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Rotate current matrix around an local axis.
+        \brief
+        Rotate current matrix around an axis described in local coordinates.
 
-        \param  a_axis  Axis of rotation.
-        \param  a_angleRad  Rotation angle in radians.
+        \details
+        Rotate current matrix around an axis described in local coordinates.
 
-        \return Returns \b true if operation succeeded. Otherwise return \b false.
+        \param      a_axis  Axis of rotation.
+        \param      a_angleRad  Angle in radians.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool rotateAboutLocalAxisRad(const cVector3d& a_axis, 
                                         const double& a_angleRad)
     {
@@ -1263,16 +1491,20 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Rotate current matrix around an local axis.
+        \brief
+        Rotate current matrix around an axis described in local coordinates.
 
-        \param  a_axis  Axis of rotation.
-        \param  a_angleDeg  Rotation angle in degrees.
+        \details
+        Rotate current matrix around an axis described in local coordinates.
 
-        \return Returns \b true if operation succeeded. Otherwise return \b false.
+        \param      a_axis  Axis of rotation.
+        \param      a_angleDeg  Angle in degrees.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool rotateAboutLocalAxisDeg(const cVector3d& a_axis, 
                                         const double& a_angleDeg)
     {
@@ -1280,18 +1512,22 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Rotate current matrix around a local axis.
+        \brief
+        Rotate current matrix around an axis described in local coordinates.
 
-        \param  a_axisX  X component of axis.
-        \param  a_axisY  Y component of axis.
-        \param  a_axisZ  Z component of axis.
-        \param  a_angleRad  Rotation angle in radians.
+        \details
+        Rotate current matrix around an axis described in local coordinates.
 
-        \return Returns \b true if operation succeeded. Otherwise return \b false.
+        \param      a_axisX  __x__ component of axis.
+        \param      a_axisY  __y__ component of axis.
+        \param      a_axisZ  __z__ component of axis.
+        \param      a_angleRad  Angle in radians.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool rotateAboutLocalAxisRad(const double& a_axisX,
                                         const double& a_axisY,
                                         const double& a_axisZ,
@@ -1301,18 +1537,22 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Rotate current matrix around a local axis.
+        \brief
+        Rotate current matrix around an axis described in local coordinates.
 
-        \param  a_axisX  X component of axis.
-        \param  a_axisY  Y component of axis.
-        \param  a_axisZ  Z component of axis.
-        \param  a_angleDeg  Rotation angle in degrees.
+        \details
+        Rotate current matrix around an axis described in local coordinates.
 
-        \return Returns \b true if operation succeeded. Otherwise return \b false.
+        \param      a_axisX  __x__ component of axis.
+        \param      a_axisY  __y__ component of axis.
+        \param      a_axisZ  __z__ component of axis.
+        \param      a_angleDeg  Angle in degrees.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool rotateAboutLocalAxisDeg(const double& a_axisX,
                                         const double& a_axisY,
                                         const double& a_axisZ,
@@ -1322,88 +1562,22 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Convert current matrix into a string.
+        \brief
+        Convert rotation matrix to an __axis-angle__ representation.
 
-        \param    a_precision  Number of digits.
+        \details
+        Convert rotation matrix to an __axis-angle__ representation.
 
-        \return   Return output string.
+        \param      a_axis    Output axis.
+        \param      a_angle   Output angle.
+
+        \return     __true__ if operation succeeds, __false__ otherwise.    
     */
-    //-----------------------------------------------------------------------
-    inline string str(const unsigned int a_precision = 2) const
-    {
-        string result;
-        result.append("( ");
-
-        for (int i=0; i<3; i++)
-        {
-            result.append("( ");
-            for (int j=0; j<3; j++)
-            {
-                result.append(cStr((*this)(j,i), a_precision));
-                if (j<2)
-                {
-                    result.append(", ");
-                }
-            }
-            result.append(" ) ");
-        }
-        result.append(")");
-
-        return (result);
-    }
-
-
-    //-----------------------------------------------------------------------
-    /*!
-        Print the current matrix using the cPrint macro.
-
-        \param    a_precision  Number of digits.
-    */
-    //-----------------------------------------------------------------------
-    inline void print(const unsigned int a_precision = 2) const
-    {
-        string s = str(a_precision);
-        cPrint("%s\n",s.c_str());
-    }
-
-
-    //-----------------------------------------------------------------------
-    /*!
-        Compare two matrices. Return \b true if both matrices are equal,
-        otherwise return \b false.
-
-        \param    a_matrix   Matrix to compare with.
-
-        \return   Returns \b true if matrices are equal, otherwise \b false.
-    */
-    //-----------------------------------------------------------------------
-    inline bool equals(cMatrix3d& a_matrix) const
-    {
-        for(int i=0; i<3; i++)
-        {
-            for(int j=0; j<3; j++)
-            {
-                if (a_matrix(i,j) != (*this)(i,j)) return (false);
-            }
-        }
-        return (true);
-    }
-
-
-    //-----------------------------------------------------------------------
-    /*!
-        Convert the rotation to an angle axis
-
-        \param    a_angle   Angle result
-        \param    a_axis    Axis result
-
-        \return   Returns \b true if operation succeeded. Otherwise return \b false.
-    */
-    //-----------------------------------------------------------------------
-    bool toAngleAxis(double& a_angle, 
-                     cVector3d& a_axis)
+    //--------------------------------------------------------------------------
+    bool toAxisAngle(cVector3d& a_axis, 
+                     double& a_angle) const
     {
         double angle,x,y,z;		// variables for result
         double epsilon1 = 0.01;	// margin to allow for rounding errors
@@ -1415,7 +1589,7 @@ public:
         {
             // singularity found
             // first check for identity matrix which must have +1 for all terms
-            //  in leading diagonal and zero in other terms
+            // in leading diagonal and zero in other terms
             if ( (abs((*this)(0,1) + (*this)(1,0)) < epsilon2) &&
                  (abs((*this)(0,2) + (*this)(2,0)) < epsilon2) &&
                  (abs((*this)(1,2) + (*this)(2,1)) < epsilon2) &&
@@ -1447,7 +1621,7 @@ public:
                 } 
                 else 
                 {
-                    x = std::sqrt(xx);
+                    x = sqrt(xx);
                     y = xy/x;
                     z = xz/x;
                 }
@@ -1463,7 +1637,7 @@ public:
                 } 
                 else 
                 {
-                    y = std::sqrt(yy);
+                    y = sqrt(yy);
                     x = xy/y;
                     z = yz/y;
                 }	
@@ -1479,7 +1653,7 @@ public:
                 } 
                 else 
                 {
-                    z = std::sqrt(zz);
+                    z = sqrt(zz);
                     x = xz/z;
                     y = yz/z;
                 }
@@ -1491,7 +1665,7 @@ public:
         }
 
         // as we have reached here there are no singularities so we can handle normally
-        double s = std::sqrt(((*this)(2,1) - (*this)(1,2))*((*this)(2,1) - (*this)(1,2)) +
+        double s = sqrt(((*this)(2,1) - (*this)(1,2))*((*this)(2,1) - (*this)(1,2)) + 
                         ((*this)(0,2) - (*this)(2,0))*((*this)(0,2) - (*this)(2,0)) + 
                         ((*this)(1,0) - (*this)(0,1))*((*this)(1,0) - (*this)(0,1))); 
 
@@ -1512,11 +1686,63 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        An overloaded *= operator for matrix/scalar multiplication.
+        \brief
+        String conversion.
+
+        \details
+        Convert current matrix into a string. The output springs displays the
+        three column vectors of matrix.
+
+        \param      a_precision  Number of digits.
+
+        \return     Output string.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    inline std::string str(const unsigned int a_precision = 2) const
+    {
+        std::string result;
+        result.append("[ ");
+
+        for (int i=0; i<3; i++)
+        {
+            result.append("( ");
+            for (int j=0; j<3; j++)
+            {
+                result.append(cStr((*this)(j,i), a_precision));
+                if (j<2)
+                {
+                    result.append(", ");
+                }
+            }
+            result.append(" ) ");
+        }
+        result.append("]");
+
+        return (result);
+    }
+
+
+    //--------------------------------------------------------------------------
+    /*!
+        \brief
+        Print string.
+
+        \details
+        Print the current matrix using the __cPrint__ macro.
+
+        \param      a_precision  Number of digits.
+    */
+    //--------------------------------------------------------------------------
+    inline void print(const unsigned int a_precision = 2) const
+    {
+        std::string s = str(a_precision);
+        cPrint("%s\n",s.c_str());
+    }
+
+
+    //! An overloaded <b> *= </b> operator for matrix/scalar multiplication.
     inline void operator*= (const double& a_val)
     {
         (*this)(0,0) *= a_val; (*this)(0,1) *= a_val; (*this)(0,2) *= a_val;
@@ -1525,11 +1751,7 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded * operator for matrix/vector multiplication.
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> * </b> operator for matrix/vector multiplication.
     inline cVector3d operator* (const cVector3d& a_val)
     {
         cVector3d result;
@@ -1538,11 +1760,7 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded * operator for matrix/matrix multiplication.
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> * </b> operator for matrix/matrix multiplication.
     inline cMatrix3d operator* (const cMatrix3d& a_val)
     {
         cMatrix3d result;
@@ -1551,22 +1769,14 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded *= operator for matrix/matrix multiplication.
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> *= </b> operator for matrix/matrix multiplication.
     inline void operator*= (const cMatrix3d& a_val)
     {
         (*this).mul(a_val);
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded += operator for matrix/matrix addition.
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> += </b> operator for matrix/matrix addition.
     inline void operator+= (const cMatrix3d& a_input)
     {
         (*this)(0,0) += a_input(0,0);
@@ -1583,11 +1793,7 @@ public:
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded -= operator for matrix/matrix subtraction.
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> -= </b> operator for matrix/matrix subtraction.
     inline void operator-= (const cMatrix3d& a_input)
     {
         (*this)(0,0) -= a_input(0,0);
@@ -1602,18 +1808,38 @@ public:
         (*this)(2,1) -= a_input(2,1);
         (*this)(2,2) -= a_input(2,2);
     }
+
+   
+    //! An overloaded () operator.
+    inline double& operator() (const int a_index0, const int a_index1)
+    {
+        return m_data[a_index0][a_index1];  
+    }
+
+
+    //! An overloaded () operator.
+    inline const double& operator() (const int a_index0, const int a_index1) const
+    {
+        return m_data[a_index0][a_index1];  
+    }
+
+
+    //--------------------------------------------------------------------------
+    // PRIVATE MEMBERS
+    //--------------------------------------------------------------------------
+    
+private:
+
+    //! Vector data.
+    double m_data[3][3];
 };
 
 
-//===========================================================================
-// Operators on cMatrix3d
-//===========================================================================
+//==============================================================================
+// OPERATORS
+//==============================================================================
 
-//---------------------------------------------------------------------------
-/*!
-    An overloaded * operator for matrix/vector multiplication.
-*/
-//---------------------------------------------------------------------------
+//! An overloaded <b> * </b> operator for matrix/vector multiplication.
 inline cVector3d operator*(const cMatrix3d& a_matrix, 
                            const cVector3d& a_vector)
 {
@@ -1623,11 +1849,7 @@ inline cVector3d operator*(const cMatrix3d& a_matrix,
 }
 
 
-//---------------------------------------------------------------------------
-/*!
-    An overloaded * operator for matrix/matrix multiplication.
-*/
-//---------------------------------------------------------------------------
+//! An overloaded <b> * </b> operator for matrix/matrix multiplication.
 inline cMatrix3d operator*(const cMatrix3d& a_matrix1, 
                            const cMatrix3d& a_matrix2)
 {
@@ -1637,6 +1859,10 @@ inline cMatrix3d operator*(const cMatrix3d& a_matrix1,
 }
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -40,12 +40,12 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 322 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CFileModelOBJH
 #define CFileModelOBJH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "math/CMatrix3d.h"
 #include "math/CVector3d.h"
 #include "graphics/CVertex.h"
@@ -58,51 +58,56 @@
 #include <string>
 #include <stdio.h>
 #include <map>
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CFileModelOBJ.h
 
     \brief    
     <b> Files </b> \n 
-    OBJ Format 3D Model Loader.
+    OBJ Format 3D Model Handler.
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
-// GLOBAL UTILITY FUNCTIONS:
-//--------------------------------------------------------------------------- 
-
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 /*!
     \ingroup    files
     \brief
-    Loads a OBJ image by providing a filename and multimesh in which 
+    Loads and saves a 3D model of type OBJ providing a filename and multimesh in which 
     the object is loaded.
 */
-//---------------------------------------------------------------------------
-bool cLoadFileOBJ(cMultiMesh* a_object, const string& a_fileName);
+//------------------------------------------------------------------------------
+
+//! Load an OBJ model file.
+bool cLoadFileOBJ(cMultiMesh* a_object, const std::string& a_filename);
+
+//! Save an OBJ model file.
+bool cSaveFileOBJ(cMultiMesh* a_object, const std::string& a_filename);
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 /*!
     Clients can use this to tell the OBJ file loader how to behave in terms
     of vertex merging. \n
-    If \b true (default), loaded OBJ files will have three _distinct_ vertices
+    If __true__ (default), loaded OBJ files will have three _distinct_ vertices
     per triangle, with no vertex re-use.
 */
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 extern bool g_objLoaderShouldGenerateExtraVertices;
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 // INTERNAL DEFINITIONS FOR OBJ FILE LOADER:
-//=========================================================================== 
+//============================================================================== 
 
 //! A face vertex, as defined in an .obj file (a vertex/normal/texture set)
 struct vertexIndexSet 
@@ -124,11 +129,12 @@ struct vertexIndexSet
     vertexIndexSet(int vIndex) 
     {
         this->vIndex = vIndex;
-        nIndex = tIndex = 0;
+        this->nIndex = 0;
+        this->tIndex = 0;
     }
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 struct ltVertexIndexSet
 {
@@ -143,15 +149,15 @@ struct ltVertexIndexSet
     }
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 typedef std::map<vertexIndexSet,unsigned int,ltVertexIndexSet> vertexIndexSet_uint_map;
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 //  INTERNAL IMPLEMENTATION
-//===========================================================================
+//==============================================================================
 
 // OBJ maximum length of a path
 #define C_OBJ_SIZE_PATH		255
@@ -185,28 +191,28 @@ typedef std::map<vertexIndexSet,unsigned int,ltVertexIndexSet> vertexIndexSet_ui
 // Image File information.
 struct cOBJFileInfo
 {
-	unsigned int m_vertexCount;
-	unsigned int m_texCoordCount;
-	unsigned int m_normalCount;
-	unsigned int m_faceCount;
-	unsigned int m_materialCount;
+    unsigned int m_vertexCount;
+    unsigned int m_texCoordCount;
+    unsigned int m_normalCount;
+    unsigned int m_faceCount;
+    unsigned int m_materialCount;
 };
 
 // Information about a surface face.
 struct cFace
 {
-	unsigned int	m_numVertices;
-	unsigned int	m_materialIndex;
+    unsigned int	m_numVertices;
+    unsigned int	m_materialIndex;
 
   // Which 'g ...' group does this face belong to?  -1 indicates no group.
   int  m_groupIndex;
 
-	int			*m_pVertexIndices;
-	cVector3d	*m_pVertices;
+    int			*m_pVertexIndices;
+    cVector3d	*m_pVertices;
   int			*m_pNormalIndices;
-	cVector3d	*m_pNormals;
+    cVector3d	*m_pNormals;
   int			*m_pTextureIndices;
-	cVector3d	*m_pTexCoords;
+    cVector3d	*m_pTexCoords;
 };
 
 // Information about a material property
@@ -236,20 +242,20 @@ struct cMaterialInfo
 };
 
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cOBJModel
     \ingroup    files  
 
     \brief      
-    Implenentation of an OBJ file loader.
+    Implementation of an OBJ file loader.
 */
-//===========================================================================
+//==============================================================================
 class cOBJModel
 {    
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     public:
 
@@ -259,43 +265,43 @@ class cOBJModel
     //! Destructor of cOBJModel.
     ~cOBJModel();
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Load model file.
     bool LoadModel(const char szFileName[]);
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // MEMBERS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     
     //! List of vertices.
-  	cVector3d* m_pVertices;
+    cVector3d* m_pVertices;
     
     //! List of faces.
-	cFace* m_pFaces;
+    cFace* m_pFaces;
     
     //! List of normals.
-	cVector3d* m_pNormals;
+    cVector3d* m_pNormals;
     
     //! List of texture coordinates.
-	cVector3d* m_pTexCoords;
+    cVector3d* m_pTexCoords;
     
     //! List of material and texture properties.
-	cMaterialInfo* m_pMaterials;
+    cMaterialInfo* m_pMaterials;
     
     //! Information about image file.
-	cOBJFileInfo m_OBJInfo;
+    cOBJFileInfo m_OBJInfo;
 
     //! List of names obtained from 'g' commands, with the most recent at the back...
-    vector<char*> m_groupNames;
+    std::vector<char*> m_groupNames;
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     private:
 
@@ -326,10 +332,14 @@ unsigned int getVertexIndex(cMesh* a_Mesh,
                             vertexIndexSet_uint_map* a_VertexMap, 
                             vertexIndexSet& vis);
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #endif  // DOXYGEN_SHOULD_SKIP_THIS
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
-
-
+//------------------------------------------------------------------------------

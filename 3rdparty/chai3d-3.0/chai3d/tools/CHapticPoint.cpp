@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,21 +39,26 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 322 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "tools/CHapticPoint.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "tools/CGenericTool.h"
-//---------------------------------------------------------------------------
+#include "world/CMultiMesh.h"
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cHapticPoint
 
     \fn       cAlgorithmPotentialField::cAlgorithmPotentialField()
 */
-//===========================================================================
+//==============================================================================
 cHapticPoint::cHapticPoint(cGenericTool* a_parentTool)
 {
     // set parent tool
@@ -95,13 +100,13 @@ cHapticPoint::cHapticPoint(cGenericTool* a_parentTool)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cHapticPoint.
 
     \fn     cHapticPoint::~cHapticPoint() {};
 */
-//===========================================================================
+//==============================================================================
 cHapticPoint::~cHapticPoint() 
 {
     // delete force rendering algorithms
@@ -114,7 +119,7 @@ cHapticPoint::~cHapticPoint()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Read the current desired goal position of the contact point in world
     global coordinates.
@@ -122,14 +127,14 @@ cHapticPoint::~cHapticPoint()
     \fn     cVector3d cHapticPoint::getGlobalPosGoal()
     \return Return the goal position.  
 */
-//===========================================================================
+//==============================================================================
 cVector3d cHapticPoint::getGlobalPosGoal()
 {
     return(m_algorithmFingerProxy->getDeviceGlobalPosition());
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
      Read the current proxy position of the contact point in world 
      global coordinates.
@@ -137,14 +142,14 @@ cVector3d cHapticPoint::getGlobalPosGoal()
     \fn     cVector3d cHapticPoint::getGlobalPosProxy()
     \return Return the proxy position. 
 */
-//===========================================================================
+//==============================================================================
 cVector3d cHapticPoint::getGlobalPosProxy()
 {
     return(m_algorithmFingerProxy->getProxyGlobalPosition());
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Read the current desired goal position of the contact point in local
     tool coordinates.
@@ -152,7 +157,7 @@ cVector3d cHapticPoint::getGlobalPosProxy()
     \fn     cVector3d cHapticPoint::getLocalPosGoal()
     \return Return the goal position.  
 */
-//===========================================================================
+//==============================================================================
 cVector3d cHapticPoint::getLocalPosGoal()
 {
     cMatrix3d rot;
@@ -167,7 +172,7 @@ cVector3d cHapticPoint::getLocalPosGoal()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
      Read the current proxy position of the contact point in local 
      tool coordinates.
@@ -175,7 +180,7 @@ cVector3d cHapticPoint::getLocalPosGoal()
     \fn     cVector3d cHapticPoint::getLocalPosProxy()
     \return Return the proxy position. 
 */
-//===========================================================================
+//==============================================================================
 cVector3d cHapticPoint::getLocalPosProxy()
 {
     cMatrix3d rot;
@@ -190,13 +195,13 @@ cVector3d cHapticPoint::getLocalPosProxy()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Reset the position of the proxy to be at the desired goal position.
 
     \fn     void cHapticPoint::initialize()
 */
-//===========================================================================
+//==============================================================================
 void cHapticPoint::initialize()
 {
     // reset finger proxy algorithm by placing the proxy and the same position 
@@ -208,14 +213,14 @@ void cHapticPoint::initialize()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Initialize the position of the goal and proxy at a new given position.
 
     \fn     void cHapticPoint::initialize(cVector3d a_globalPos)
     \param  a_globalPos  New position to apply to goal and proxy.
 */
-//===========================================================================
+//==============================================================================
 void cHapticPoint::initialize(cVector3d a_globalPos)
 {
     // initialize proxy algorithm.
@@ -227,7 +232,7 @@ void cHapticPoint::initialize(cVector3d a_globalPos)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set radius size of contact point. The radius affects the physical 
     radius of the proxy and spheres used to render the goal and proxy 
@@ -236,7 +241,7 @@ void cHapticPoint::initialize(cVector3d a_globalPos)
     \fn     void cHapticPoint::setRadius(double a_radius)
     \param  a_radius  New radius for display and contact computation.
 */
-//===========================================================================
+//==============================================================================
 void cHapticPoint::setRadius(double a_radius)
 {
     m_radiusContact = a_radius;
@@ -252,7 +257,7 @@ void cHapticPoint::setRadius(double a_radius)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
    Set radius size of the display spheres (goal and proxy) and physical contact 
    sphere (proxy) used to compute the contact forces. Setting the a_radiusContact
@@ -263,7 +268,7 @@ void cHapticPoint::setRadius(double a_radius)
     \param  a_radiusDisplay  New radius for display of spheres (proxy and goal).
     \param  a_radiusContact  New radius for contact computation (proxy).
 */
-//===========================================================================
+//==============================================================================
 void cHapticPoint::setRadius(double a_radiusDisplay, double a_radiusContact)
 {
     m_radiusContact = a_radiusContact;
@@ -279,14 +284,14 @@ void cHapticPoint::setRadius(double a_radiusDisplay, double a_radiusContact)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set radius size of the physical proxy.
 
     \fn     void cHapticPoint::setRadiusContact(double a_radiusContact)
     \param  a_radiusContact  New radius for contact computation (proxy).
 */
-//===========================================================================
+//==============================================================================
 void cHapticPoint::setRadiusContact(double a_radiusContact)
 {
     m_radiusContact = a_radiusContact;
@@ -296,14 +301,14 @@ void cHapticPoint::setRadiusContact(double a_radiusContact)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set radius size of the sphere used to display the proxy and goal position.
 
     \fn     void cHapticPoint::setRadiusDisplay(double a_radiusDisplay)
     \param  a_radiusDisplay  New radius for display of spheres (proxy and goal).
 */
-//===========================================================================
+//==============================================================================
 void cHapticPoint::setRadiusDisplay(double a_radiusDisplay)
 {
     m_radiusDisplay = a_radiusDisplay;
@@ -315,7 +320,7 @@ void cHapticPoint::setRadiusDisplay(double a_radiusDisplay)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set display options of the goal and proxy spheres. If both spheres are 
     enabled, a small line is drawn between both spheres.
@@ -324,11 +329,11 @@ void cHapticPoint::setRadiusDisplay(double a_radiusDisplay)
                                 bool a_showGoal, 
                                 cColorf a_colorLine)
 
-    \param  a_showProxy If \b true, then the proxy sphere is displayed.
-    \param  a_showGoal If \b true, then the goal sphere is displayed.
+    \param  a_showProxy If __true__, then the proxy sphere is displayed.
+    \param  a_showGoal If __true__, then the goal sphere is displayed.
     \param  a_colorLine  Color of line connecting proxy to goal spheres.
 */
-//===========================================================================
+//==============================================================================
 void cHapticPoint::setShow(bool a_showProxy, 
                            bool a_showGoal, 
                            cColorf a_colorLine)
@@ -340,7 +345,7 @@ void cHapticPoint::setShow(bool a_showProxy,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute all interaction forces between the tool contact points and the 
     virtual environment.
@@ -353,7 +358,7 @@ void cHapticPoint::setShow(bool a_showProxy,
 
     \return Return computed interaction force in world coordinates.
 */
-//===========================================================================
+//==============================================================================
 cVector3d cHapticPoint::computeInteractionForces(cVector3d& a_globalPos, 
                                                  cMatrix3d& a_globalRot,
                                                  cVector3d& a_globalLinVel,
@@ -370,6 +375,13 @@ cVector3d cHapticPoint::computeInteractionForces(cVector3d& a_globalPos,
         if (m_meshProxyContacts[i] != NULL)
 	    {
 		    m_meshProxyContacts[i]->m_interactionInside = false;
+
+            cMultiMesh* multiMesh = dynamic_cast<cMultiMesh*>(m_meshProxyContacts[i]->getOwner());
+            if (multiMesh != NULL)
+            {
+                multiMesh->m_interactionInside = false;
+            }
+
 		    m_meshProxyContacts[i] = NULL;
 	    }
     }
@@ -384,9 +396,21 @@ cVector3d cHapticPoint::computeInteractionForces(cVector3d& a_globalPos,
     {
         if (m_algorithmFingerProxy->m_collisionEvents[i]->m_object != NULL)
 	    {
+            
 		    m_meshProxyContacts[i] = m_algorithmFingerProxy->m_collisionEvents[i]->m_object;
-		    m_meshProxyContacts[i]->m_interactionInside = true;
-		    m_meshProxyContacts[i]->m_interactionProjectedPoint = m_algorithmFingerProxy->m_collisionEvents[i]->m_localPos;
+            cGenericObject* object = m_meshProxyContacts[i];
+
+		    object->m_interactionInside = true;
+		    object->m_interactionPoint = m_algorithmFingerProxy->m_collisionEvents[i]->m_localPos;
+            object->m_interactionNormal = m_algorithmFingerProxy->m_collisionEvents[i]->m_localNormal;
+
+            cMultiMesh* multiMesh = dynamic_cast<cMultiMesh*>(m_meshProxyContacts[i]->getOwner());
+            if (multiMesh != NULL)
+            {
+		        multiMesh->m_interactionInside = true;
+                multiMesh->m_interactionPoint = cAdd(object->getLocalPos(), cMul(object->getLocalRot(),object->m_interactionPoint));
+                multiMesh->m_interactionNormal = cMul(object->getLocalRot(), object->m_interactionNormal);
+            }
 	    }
     }
 
@@ -413,16 +437,16 @@ cVector3d cHapticPoint::computeInteractionForces(cVector3d& a_globalPos,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Check if the tool is touching a particular object.
 
     \fn     bool cHapticPoint::isInContact(cGenericObject* a_object)
     \param  a_object  Object to checked for possible contact.
-    \return Return \b true if a_object is in contact with tool, 
-            \b false otherwise.
+    \return Return __true__ if a_object is in contact with tool, 
+            __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cHapticPoint::isInContact(cGenericObject* a_object)
 {
     /////////////////////////////////////////////////////////////////////
@@ -472,16 +496,18 @@ bool cHapticPoint::isInContact(cGenericObject* a_object)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render the tool graphicaly in OpenGL.
 
     \fn     void cHapticPoint::render(cRenderOptions& a_options)
     \param  a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cHapticPoint::render(cRenderOptions& a_options)
 {
+#ifdef C_USE_OPENGL
+
 	/////////////////////////////////////////////////////////////////////////
 	// Render parts that are always opaque
 	/////////////////////////////////////////////////////////////////////////
@@ -521,10 +547,12 @@ void cHapticPoint::render(cRenderOptions& a_options)
 
     // render proxy algorithm (debug purposes)
     //m_algorithmFingerProxy->render(a_options);
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update the position of the spheres in tool coordinates. The position of
     the actual proxy and goal spheres need to be expressed in the tool's 
@@ -534,10 +562,10 @@ void cHapticPoint::render(cRenderOptions& a_options)
 
     \fn     bool cHapticPoint::isInContact(cGenericObject* a_object)
     \param  a_object  Object to checked for possible contact.
-    \return Return \b true if a_object is in contact with tool, 
-            \b false otherwise.
+    \return Return __true__ if a_object is in contact with tool, 
+            __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 void cHapticPoint::updateSpherePositions()
 {
     // sanity check
@@ -560,3 +588,8 @@ void cHapticPoint::updateSpherePositions()
     pos = getLocalPosGoal();
     m_sphereGoal->setLocalPos(pos);
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

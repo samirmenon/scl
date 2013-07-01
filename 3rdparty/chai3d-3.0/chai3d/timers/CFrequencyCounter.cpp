@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,22 +39,30 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 456 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "timers/CFrequencyCounter.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cFrequencyCounter.
 
-    \param  a_timePeriod  Time period. 
+    \param  a_timePeriod  Time period in seconds. 
 */
-//===========================================================================
+//==============================================================================
 cFrequencyCounter::cFrequencyCounter(const double a_timePeriod)
 {
-    // set time period
+    // initialize values
+    m_counter = 0;
+    m_frequency = 0;
+
+    // sanity check and set time period
     if (a_timePeriod > 0.0)
     {
         m_clock.setTimeoutPeriodSeconds(a_timePeriod);
@@ -69,30 +77,33 @@ cFrequencyCounter::cFrequencyCounter(const double a_timePeriod)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Reset the frequency to zero.
+    Reset the frequency counter to zero.
 */
-//===========================================================================
+//==============================================================================
 void cFrequencyCounter::reset()
 {
     // reset counter
     m_counter = 0;
+    m_frequency = 0;
 
     // reset clock
     m_clock.start(true);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Signal one of more events.
+    Signal one of more events (The default value is 1). The reported events are 
+    added to the event counter and the frequency is estimated from the time 
+    reported by the high precision clock.
 
-    \param      a_numEvents  Number of new events. In principle 1.
+    \param      a_numEvents  Number of new events.
 
-    \return     Returns the last computed frequency.
+    \return     Most recent estimated frequency value in Hertz.
 */
-//===========================================================================
+//==============================================================================
 double cFrequencyCounter::signal(const unsigned int a_numEvents)
 {
     if (m_clock.timeoutOccurred())
@@ -100,7 +111,7 @@ double cFrequencyCounter::signal(const unsigned int a_numEvents)
         double time = m_clock.getCurrentTimeSeconds();
         double timeout = m_clock.getTimeoutPeriodSeconds();
 
-        // if timeout period has occured, compute frequency
+        // if timeout period has occurred, compute new frequency
         m_frequency = (double)(m_counter) / (double)(m_clock.getTimeoutPeriodSeconds());
 
         // restart clock and set first events
@@ -117,16 +128,16 @@ double cFrequencyCounter::signal(const unsigned int a_numEvents)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the time period of the frequency counter.
 
-    \param      a_timePeriodInSeconds  Time period in seconds.
+    \param      a_timePeriod  Time period in seconds.
 */
-//===========================================================================
+//==============================================================================
 void cFrequencyCounter::setTimePeriod(const double& a_timePeriod)
 {
-    // set time period
+    // sanity check and set time period
     if (a_timePeriod > 0.0)
     {
         m_clock.setTimeoutPeriodSeconds(a_timePeriod);
@@ -136,3 +147,8 @@ void cFrequencyCounter::setTimePeriod(const double& a_timePeriod)
         m_clock.setTimeoutPeriodSeconds(1.0);
     }
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

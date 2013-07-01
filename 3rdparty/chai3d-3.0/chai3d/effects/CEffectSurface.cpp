@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,31 +37,34 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "effects/CEffectSurface.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CGenericObject.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     Constructor of cEffectSurface.
 
     \fn  cEffectSurface::cEffectSurface(cGenericObject* a_parent):cGenericEffect(a_parent)
     \param  a_parent Parent object.
 */
-//===========================================================================
+//==============================================================================
 cEffectSurface::cEffectSurface(cGenericObject* a_parent):cGenericEffect(a_parent)
 {
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the resulting force effect.
 
@@ -75,7 +78,7 @@ cEffectSurface::cEffectSurface(cGenericObject* a_parent):cGenericEffect(a_parent
     \param  a_reactionForce  Return the computed force here.
     \return  Return false if no interaction force is computed.
 */
-//===========================================================================
+//==============================================================================
 bool cEffectSurface::computeForce(const cVector3d& a_toolPos,
                                   const cVector3d& a_toolVel,
                                   const unsigned int& a_toolID,
@@ -86,7 +89,7 @@ bool cEffectSurface::computeForce(const cVector3d& a_toolPos,
         // the tool is located inside the object,
         // we compute a reaction force using Hooke's law
         double stiffness = m_parent->m_material->getStiffness();
-        a_reactionForce = cMul(stiffness, cSub(m_parent->m_interactionProjectedPoint, a_toolPos));
+        a_reactionForce = cMul(stiffness, cSub(m_parent->m_interactionPoint, a_toolPos));
         return (true);
     }
     else
@@ -97,4 +100,8 @@ bool cEffectSurface::computeForce(const cVector3d& a_toolPos,
     }
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
 

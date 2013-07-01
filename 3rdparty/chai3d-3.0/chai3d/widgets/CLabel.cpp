@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,42 +37,54 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 760 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "CLabel.h"
-//---------------------------------------------------------------------------
+using namespace std;
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
       Constructor of cLabel.
 
       \fn       cLabel::cLabel()
 */
-//===========================================================================
+//==============================================================================
 cLabel::cLabel(cFont* a_font)
 {
     m_fontScale = 1.0;
     m_string = "";
     m_font = a_font;
+
+    // set default settings for background panel
+    setCorners(0,0,0,0);
+    cColorf color;
+    color.setGrayLevel(0.2f);
+    setColorPanel(color);
+    setEnabledPanel(false);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Destructor of cLabel.
 
       \fn       cLabel::~cLabel()
 */
-//===========================================================================
+//==============================================================================
 cLabel::~cLabel()
 {
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
 	Create a copy of itself.
 
@@ -81,14 +93,14 @@ cLabel::~cLabel()
 					 const bool a_duplicateMeshData,
 					 const bool a_buildCollisionDetector)
 
-    \param      a_duplicateMaterialData  If \b true, material (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateTextureData  If \b true, texture data (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateMeshData  If \b true, mesh data (if available) is duplicated, otherwise it is shared.
-    \param      a_buildCollisionDetector  If \b true, collision detector (if available) is duplicated, otherwise it is shared.
+    \param      a_duplicateMaterialData  If __true__, material (if available) is duplicated, otherwise it is shared.
+    \param      a_duplicateTextureData  If __true__, texture data (if available) is duplicated, otherwise it is shared.
+    \param      a_duplicateMeshData  If __true__, mesh data (if available) is duplicated, otherwise it is shared.
+    \param      a_buildCollisionDetector  If __true__, collision detector (if available) is duplicated, otherwise it is shared.
 
 	\return		Return new object.
 */
-//===========================================================================
+//==============================================================================
 cLabel* cLabel::copy(const bool a_duplicateMaterialData,
 					 const bool a_duplicateTextureData, 
 					 const bool a_duplicateMeshData,
@@ -109,16 +121,24 @@ cLabel* cLabel::copy(const bool a_duplicateMaterialData,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Render the label in OpenGL.
 
       \fn       void cLabel::render(cRenderOptions& a_options)
 	  \param	a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cLabel::render(cRenderOptions& a_options)
 {
+#ifdef C_USE_OPENGL
+
+    // render background panel
+    if (m_enabledPanel)
+    {
+        cMesh::render(a_options);
+    }
+
 	/////////////////////////////////////////////////////////////////////////
 	// Render parts that are always opaque
 	/////////////////////////////////////////////////////////////////////////
@@ -136,17 +156,19 @@ void cLabel::render(cRenderOptions& a_options)
         // enable lighting  properties
         glEnable(GL_LIGHTING);
     }
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Set String.
 
       \fn       void cLabel::setString(const string a_string)
 	  \param	a_string  String.
 */
-//===========================================================================
+//==============================================================================
 void cLabel::setString(const string a_string)
 {
     // copy string
@@ -157,14 +179,14 @@ void cLabel::setString(const string a_string)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Set the font scale factor.
 
       \fn       void cLabel::setFontScale(const double a_scale
 	  \param	a_scale  Scale factor.
 */
-//===========================================================================
+//==============================================================================
 void cLabel::setFontScale(const double a_scale) 
 { 
     // update scale factor
@@ -175,14 +197,14 @@ void cLabel::setFontScale(const double a_scale)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Get width of current string in pixels.
 
       \fn       double cLabel::getWidth() const
 	  \return   Return length of string in pixels.
 */
-//===========================================================================
+//==============================================================================
 double cLabel::getWidth() const
 {
     if (m_font == NULL)
@@ -196,14 +218,14 @@ double cLabel::getWidth() const
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Get height of current string in pixels.
 
       \fn       double cLabel::getHeight() const
 	  \return   Return width of string in pixels.
 */
-//===========================================================================
+//==============================================================================
 double cLabel::getHeight() const
 {
     if (m_font == NULL)
@@ -217,15 +239,24 @@ double cLabel::getHeight() const
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update bounding box of current object.
 
     \fn       void void cBitmap::updateBoundaryBox()
  */
-//===========================================================================
+//==============================================================================
 void cLabel::updateBoundaryBox()
 {
+    double w = m_fontScale * getWidth();
+    double h = m_fontScale * getHeight();
+
     m_boundaryBoxMin.set(0.0, 0.0, 0.0);
-    m_boundaryBoxMax.set(m_fontScale * getHeight(), m_fontScale * getWidth(), 0.0);
+    m_boundaryBoxMax.set(w, h, 0.0);
+    setPanelSize(w, h);
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,22 +39,25 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 449 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "lighting/CDirectionalLight.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     When creating an OpenGL light source, an identity number between 0 and 7
     is attributed to the light. This number is used during the
-    rendering process. Lights are automatically created inside class cWorld.
+    rendering process. Lights are automatically placed inside class cWorld.
 
-    \fn     cDirectionalLight::cDirectionalLight()
     \param  a_world  Parent world in which the light source is created.
 */
-//===========================================================================
+//==============================================================================
 cDirectionalLight::cDirectionalLight(cWorld* a_world):cGenericLight(a_world)
 {
     // set default direction
@@ -62,26 +65,23 @@ cDirectionalLight::cDirectionalLight(cWorld* a_world):cGenericLight(a_world)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cDirectionalLight.
-
-    \fn       cDirectionalLight::~cDirectionalLight()
 */
-//===========================================================================
+//==============================================================================
 cDirectionalLight::~cDirectionalLight()
 {
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the direction of light beam.
 
-    \fn       void cDirectionalLight::setDir(const cVector3d& a_direction)
-    \param    a_direction  Direction of light beam
+    \param  a_direction  Direction of light beam
 */
-//===========================================================================
+//==============================================================================
 void cDirectionalLight::setDir(const cVector3d& a_direction)
 {
 
@@ -101,20 +101,20 @@ void cDirectionalLight::setDir(const cVector3d& a_direction)
 
     // compute 2 vector perpendicular to a_direction
     t0.set(0.0, 0.0, 1.0);
-	t1.set(0.0, 1.0, 0.0);
-	double a0 = cAngle(c0, t0);
-	double a1 = cAngle(c0, t1);
+    t1.set(0.0, 1.0, 0.0);
+    double a0 = cAngle(c0, t0);
+    double a1 = cAngle(c0, t1);
 
-	if (sin(a0) > sin(a1))
-	{
-		c0.crossr(t0, c1);
-		c0.crossr(c1, c2);
-	}
-	else
-	{
-		c0.crossr(t1, c1);
-		c0.crossr(c1, c2);
-	}
+    if (sin(a0) > sin(a1))
+    {
+        c0.crossr(t0, c1);
+        c0.crossr(c1, c2);
+    }
+    else
+    {
+        c0.crossr(t1, c1);
+        c0.crossr(c1, c2);
+    }
 
     c1.normalize();
     c2.normalize();
@@ -124,35 +124,34 @@ void cDirectionalLight::setDir(const cVector3d& a_direction)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the direction of the light beam.
 
-    \fn       void cDirectionalLight::setDir(const double a_x, const double a_y,
-                                             const double a_z)
-    \param    a_x   X Coordinate of light beam.
-    \param    a_y   Y Coordinate of light beam.
-    \param    a_z   Z Coordinate of light beam.
+    \param  a_x  X Coordinate of light beam.
+    \param  a_y  Y Coordinate of light beam.
+    \param  a_z  Z Coordinate of light beam.
 */
-//===========================================================================
+//==============================================================================
 void cDirectionalLight::setDir(const double a_x, const double a_y, const double a_z)
 {
     setDir(cVector3d(a_x, a_y, a_z));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render this light source in OpenGL.
 
-    \fn     void cDirectionalLight::renderLightSource(cRenderOptions& a_options)
-	\param	a_options  Rendering options.
+    \param  a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cDirectionalLight::renderLightSource(cRenderOptions& a_options)
 {
-	// check if light sources should be rendered
-	if ((!a_options.m_enable_lighting) || (!m_enabled))
+#ifdef C_USE_OPENGL
+
+    // check if light sources should be rendered
+    if ((!a_options.m_enable_lighting) || (!m_enabled))
     {
         // disable OpenGL light source
         glDisable(m_glLightNumber);
@@ -169,22 +168,22 @@ void cDirectionalLight::renderLightSource(cRenderOptions& a_options)
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, m_useTwoSideLightModel);
 
     // set lighting components
-	if (a_options.m_rendering_shadow)
-	{
-		cColorf diffuse((GLfloat)(a_options.m_shadow_light_level * m_diffuse.getR()),
-						        (GLfloat)(a_options.m_shadow_light_level * m_diffuse.getG()),
-						        (GLfloat)(a_options.m_shadow_light_level * m_diffuse.getB()));
-		cColorf specular(0.0, 0.0, 0.0);
-		glLightfv(m_glLightNumber, GL_AMBIENT,  m_ambient.pColor());
-		glLightfv(m_glLightNumber, GL_DIFFUSE,  diffuse.pColor() );
-		glLightfv(m_glLightNumber, GL_SPECULAR, specular.pColor());
-	}
-	else
-	{	
-		glLightfv(m_glLightNumber, GL_AMBIENT,  m_ambient.pColor());
-		glLightfv(m_glLightNumber, GL_DIFFUSE,  m_diffuse.pColor() );
-		glLightfv(m_glLightNumber, GL_SPECULAR, m_specular.pColor());
-	}
+    if (a_options.m_rendering_shadow)
+    {
+        cColorf diffuse((GLfloat)(a_options.m_shadow_light_level * m_diffuse.getR()),
+                                (GLfloat)(a_options.m_shadow_light_level * m_diffuse.getG()),
+                                (GLfloat)(a_options.m_shadow_light_level * m_diffuse.getB()));
+        cColorf specular(0.0, 0.0, 0.0);
+        glLightfv(m_glLightNumber, GL_AMBIENT,  m_ambient.pColor());
+        glLightfv(m_glLightNumber, GL_DIFFUSE,  diffuse.pColor() );
+        glLightfv(m_glLightNumber, GL_SPECULAR, specular.pColor());
+    }
+    else
+    {	
+        glLightfv(m_glLightNumber, GL_AMBIENT,  m_ambient.pColor());
+        glLightfv(m_glLightNumber, GL_DIFFUSE,  m_diffuse.pColor() );
+        glLightfv(m_glLightNumber, GL_SPECULAR, m_specular.pColor());
+    }
 
     // disable cutoff angle
     glLightf(m_glLightNumber, GL_SPOT_CUTOFF, 180);
@@ -200,6 +199,12 @@ void cDirectionalLight::renderLightSource(cRenderOptions& a_options)
     position[2] = (float)-dir(2) ;
     position[3] = 0.0f; // defines light to be of type directional
     glLightfv(m_glLightNumber, GL_POSITION, (const float *)&position);
+
+#endif
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
 

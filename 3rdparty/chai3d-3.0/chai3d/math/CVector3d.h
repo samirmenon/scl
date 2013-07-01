@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -38,70 +38,76 @@
     \author    <http://www.chai3d.org>
     \author    Francois Conti
     \author    Dan Morris
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 825 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1077 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CVector3dH
 #define CVector3dH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "system/CString.h"
 #include "system/CGlobals.h"
 #include "math/CConstants.h"
 #include <ostream>
 #include <cmath>
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CVector3d.h
 
     \brief  
     <b> Math </b> \n 
-    3D Vectors.
+    3D Vector class.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \struct     cVector3d
     \ingroup    math  
     
     \brief    
+    3D Vector class.
+
+    \details
     This vector class provides storage for a 3 dimensional double precision 
-    floating point vector as well as simple floating point arithmetic 
+    floating point vector as well as basic floating point arithmetic 
     operations.
 */
-//===========================================================================
-struct cVector3d : public Eigen::Vector3d
+//==============================================================================
+struct cVector3d
 {
-    public:
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    //-----------------------------------------------------------------------
+public:
+
+    //--------------------------------------------------------------------------
     /*!
-        Constructors of cVector3d.
+        Constructors of cVector3d. \n
 
         You can initialize a cVector3d from any of the following: \n
 
-        char*                     \n
-        string                    \n
-        double,double,double      \n
-        cVector3d                 \n
-        Vector3d (Eigen)          \n
-        double*                   \n
+        - char*                     \n
+        - string                    \n
+        - double, double, double    \n
+        - cVector3d                 \n
+        - Vector3d (Eigen)          \n
+        - double*                   \n
 
-        See the set(char*) function for a description of the acceptable
-        string formats.
+        See the set(const char *a_initStr) function for a description of the 
+        acceptable string formats.
     */
-    //-----------------------------------------------------------------------
-    cVector3d():Eigen::Vector3d()
-    {
-    }
+    //--------------------------------------------------------------------------
+    //! Constructor.
+    cVector3d() {}
 
     //! Constructor by passing three doubles to initialize vector.
     cVector3d(const double a_x, const double a_y, const double a_z)
@@ -111,15 +117,17 @@ struct cVector3d : public Eigen::Vector3d
         (*this)(2) = a_z; 
     }
 
+#ifdef C_USE_EIGEN
+
     //! Constructor by passing a cVector3d vector to initialize vector.
-    cVector3d (const cVector3d &other) : Eigen::Vector3d(other)
+    cVector3d (const cVector3d &other)
     {
-        (*this)(0) = other(0) ;
-        (*this)(1) = other(1) ;
-        (*this)(2) = other(2) ;
+        (*this)(0) = other(0);
+        (*this)(1) = other(1);
+        (*this)(2) = other(2);
     }
 
-    //! Constructor by passing an Eigen Vector3d vector to initialize vector.
+    //! Constructor by passing an __Eigen Vector3d__ vector to initialize vector.
     cVector3d (const Eigen::Vector3d &other)
     {
         (*this)(0) = other(0);
@@ -127,74 +135,82 @@ struct cVector3d : public Eigen::Vector3d
         (*this)(2) = other(2);
     }
 
-    //! Constructor by passing a string to initialize vector.
+#else
+
+    //! Constructor by passing a cVector3d vector to initialize vector.
+    cVector3d (const cVector3d &other)
+    {
+        (*this)(0) = other(0) ;
+        (*this)(1) = other(1) ;
+        (*this)(2) = other(2) ;
+    }
+
+#endif
+
+    //! Constructor by passing an __ANSI string__ to initialize vector.
     cVector3d(const char* a_initstr)
     { 
         set(a_initstr); 
     }
 
-    //! Constructor by passing a string to initialize vector.
-    cVector3d(const string& a_initstr)
+    //! Constructor by passing a __string__ to initialize vector.
+    cVector3d(const std::string& a_initstr)
     { 
         set(a_initstr); 
     }
 
 
-    //-----------------------------------------------------------------------
-    // OPERATION METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - OPERATIONS:
+    //--------------------------------------------------------------------------
 
-    //-----------------------------------------------------------------------
-    /*!
-        Get vector components.
-    */
-    //-----------------------------------------------------------------------
+#ifdef C_USE_EIGEN
+
+    //! Convert this vector to an Eigen Vector3d.
+    Eigen::Vector3d eigen()
+    {
+        return (Eigen::Vector3d((*this)(0), (*this)(1), (*this)(2)));
+    }
+
+#endif
+
+    //! Get vector component __x__. 
     inline double x() const
     { 
         return((*this)(0)); 
     }
     
-    
+    //! Get vector component __y__. 
     inline double y() const
     { 
         return((*this)(1)); 
     }
     
-    
+    //! Get vector component __z__. 
     inline double z() const
     {
         return((*this)(2)); 
     }
     
-
-    //-----------------------------------------------------------------------
-    /*!
-        Set vector components.
-    */
-    //-----------------------------------------------------------------------
+    //! Set vector component __x__.
     inline void x(const double a_value) 
     { 
         (*this)(0) = a_value; 
     }
     
-    
+    //! Set vector component __y__.
     inline void y(const double a_value) 
     { 
         (*this)(1) = a_value; 
     }
     
-    
+    //! Set vector component __z__.
     inline void z(const double a_value) 
     { 
         (*this)(2) = a_value; 
     }
 
-
-    //-----------------------------------------------------------------------
-    /*!
-        Clear vector with zeros.
-    */
-    //-----------------------------------------------------------------------
+    //! Clear all vector components with zeros.
     inline void zero()
     {
         (*this)(0) = 0.0;
@@ -203,27 +219,35 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Return the i th component of the vector. \e component = 0 return x,
-        \e component = 1 returns y, \e component = 2 returns z.
+        \brief
+        Return the _i_ th component of the vector.
 
-        \param  a_component  component number
+        \details
+        Return the _i_ th component of the vector. \n
+        - if _a_component_ = 0, then return __x__,
+        - if _a_component_ = 1, then return __y__,
+        - if _a_component_ = 2, then return __z__,
 
-        \return selected vector component
+        \param      a_component  Component index number (0,1,2).
+
+        \return     Selected vector component.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline double get(const unsigned int& a_component) const
     {
         return ((double*)(this))[a_component];
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded /= operator for vector/scalar division
-    */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // OPERATORS:
+    //--------------------------------------------------------------------------
+
+public:
+
+    //! An overloaded <b> /= </b> operator for vector/scalar division.
     inline void operator/= (const double& a_val)
     {
         double factor = 1.0 / a_val;
@@ -232,12 +256,7 @@ struct cVector3d : public Eigen::Vector3d
         (*this)(2) *= factor;
     }
 
-
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded *= operator for vector/scalar multiplication
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> *= </b> operator for vector/scalar multiplication.
     inline void operator*= (const double& a_val)
     {
         (*this)(0) *= a_val;
@@ -246,11 +265,7 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded += operator for vector/vector addition
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> += </b> operator for vector/vector addition.
     inline void operator+= (const cVector3d& a_input)
     {
         (*this)(0) += a_input(0);
@@ -259,11 +274,7 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded -= operator for vector/vector subtraction
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> -= </b> operator for vector/vector subtraction.
     inline void operator-= (const cVector3d& a_input)
     {
         (*this)(0) -= a_input(0);
@@ -272,29 +283,36 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        An overloaded = operator
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> = </b> operator.
     inline void operator= (const cVector3d& a_input)
     {
-        //Vector3d::operator=(a_input);
         (*this)(0) = a_input(0);
         (*this)(1) = a_input(1);
         (*this)(2) = a_input(2);  
     }
-  
 
-    //-----------------------------------------------------------------------
-    /*!
-        Initialize 3 dimensional vector with parameters \e x, \e y, and \e z.
 
-        \param  a_x  X component.
-        \param  a_y  Y component.
-        \param  a_z  Z component.
-    */
-    //-----------------------------------------------------------------------
+    //! An overloaded <b> () </b> operator.
+    inline double& operator() (const int a_index)
+    {
+        return m_data[a_index];  
+    }
+
+
+    //! An overloaded <b> () </b> operator.
+    inline const double& operator() (const int a_index) const
+    {
+        return m_data[a_index];  
+    }
+
+
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
+
+public:
+
+    //! Initialize vector with components __x__, __y__, and __z__ passed as arguments.
     inline void set(const double& a_x, const double& a_y, const double& a_z)
     {
         (*this)(0) = a_x;
@@ -303,28 +321,31 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Initialize a vector from a string of the form (x,y,z), the
-        same form produced by str().  Will actually accept any of the
-        following forms:\n
+        \brief
+        Initialize vector from input __ANSI spring__.
 
-        (4.3,23,54) \n
-        4.3 54 2.1  \n
-        4.5,7.8,9.1 \n
+        \details
+        Initialize vector from an input string of the form <b> (x,y,z) </b>. The function 
+        accepts any of the following formats:\n
 
-        ...i.e., it expects three numbers, optionally preceded
-        by '(' and whitespace, and separated by commas or whitespace.
+        - (4.3,23,54) \n
+        - 4.3 54 2.1  \n
+        - 4.5,7.8,9.1 \n
 
-        \param   a_initStr The string to convert
+        The methods expects three numbers, optionally preceded by '(' and 
+        whitespace, and separated by commas or whitespace.
 
-        \return  \b true if conversion was successful.
+        \param      a_initStr The string to convert
+
+        \return     __true__ if conversion was successful, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool set(const char* a_initStr)
     {
         // sanity check
-        if (a_initStr == 0) return false;
+        if (a_initStr == 0) return (false);
 
         // look for a valid-format string. ignore leading whitespace and ('s
         const char* curpos = a_initStr;
@@ -351,29 +372,45 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Initialize a vector from a string of the form (x,y,z) (the
-        same form produced by str() )
+        \brief
+        Initialize vector from input __spring__.
 
-        \param   a_initStr The string to convert
+        \details
+        Initialize vector from an input string of the form <b> (x,y,z) </b>. The function 
+        accepts any of the following formats:\n
 
-        \return  \b true if conversion was successful.
+        - (4.3,23,54) \n
+        - 4.3 54 2.1  \n
+        - 4.5,7.8,9.1 \n
+
+        The methods expects three numbers, optionally preceded by '(' and 
+        whitespace, and separated by commas or whitespace.
+
+        \param      a_initStr The string to convert
+
+        \return     __true__ if conversion was successful, __false__ otherwise.
     */
-    //-----------------------------------------------------------------------
-    inline bool set(const string& a_initStr)
+    //--------------------------------------------------------------------------
+    inline bool set(const std::string& a_initStr)
     {
         return ( set(a_initStr.c_str()) );
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Copy current vector to external vector as parameter.
+        \brief
+        Copy: <em> a_destination = this </em>
 
-        \param  a_destination  Destination vector.
+        \details
+        Copy components (__x__, __y__, __z__), of current vector to a vector 
+        passed as argument.
+
+        \param      a_destination  Destination vector where data is copied.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void copyto(cVector3d& a_destination) const
     {
         a_destination(0) = (*this)(0);
@@ -382,13 +419,18 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Copy external vector as parameter to current vector.
+        \brief
+        Copy: <em> this = a_source </em>
 
-        \param  a_source  Source vector.
+        \details
+        Copy components (__x__, __y__, __z__) of a vector passed as argument 
+        to current one.
+
+        \param      a_source  Source vector from where data is copied.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void copyfrom(const cVector3d &a_source)
     {
         (*this)(0) = a_source(0);
@@ -397,35 +439,42 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Addition between current vector and  external vector passed as
-        parameter. \n
-        Result is stored in current vector.
+        \brief
+        Addition: <em> this = this + a_vector </em>
+    
+        \details
+        Addition between current vector and external vector passed as
+        argument. \n
+        Result is stored in current vector. \n
 
-        \param  a_vector  This vector is added to the current one.
+        \param      a_vector  Vector to be added to current one.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void add(const cVector3d& a_vector)
     {
-     
         (*this)(0) = (*this)(0) + a_vector(0);
         (*this)(1) = (*this)(1) + a_vector(1);
         (*this)(2) = (*this)(2) + a_vector(2);
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
+        \brief
+        Addition: <em> this = this + cVector3d(a_x, a_y, a_z) </em>
+    
+        \details
         Addition between current vector and external vector passed as
-        parameter. \n
+        argument. \n
         Result is stored in current vector.
 
-        \param  a_x  X component.
-        \param  a_y  Y component.
-        \param  a_z  Z component.
+        \param      a_x  __x__ component.
+        \param      a_y  __y__ component.
+        \param      a_z  __z__ component.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void add(const double& a_x, 
                     const double& a_y, 
                     const double& a_z)
@@ -436,35 +485,46 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
+        \brief
+        Addition: <em> a_result = this + a_vector </em>
+    
+        \details
         Addition between current vector and external vector passed as
-        parameter.\n  Result is stored in external \e result vector.
+        argument. \n
+        Result is stored in output _a_result_ vector passed as second argument.
 
-        \param  a_vector  Vector which is added to current one.
-        \param  a_result  Vector where result is stored.
+        \param      a_vector  Vector to be added to current one.
+        \param      a_result  Result of operation.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void addr(const cVector3d& a_vector, 
                      cVector3d& a_result) const
     {
-        a_result(0)  = (*this)(0) + a_vector(0) ;
-        a_result(1)  = (*this)(1) + a_vector(1) ;
-        a_result(2)  = (*this)(2) + a_vector(2) ;
+        a_result(0)  = (*this)(0) + a_vector(0);
+        a_result(1)  = (*this)(1) + a_vector(1);
+        a_result(2)  = (*this)(2) + a_vector(2);
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Addition between current vector and vector passed by parameter.\n
-        Result is stored in \e result vector.
+        \brief
+        Addition: <em> a_result = this + cVector3d(a_x, a_y, a_z) </em>
+    
+        \details
+        Addition between current vector and external vector passed as
+        argument. \n
+        Result is stored in output _a_result_ vector passed as last argument.
 
-        \param  a_x  X component.
-        \param  a_y  Y component.
-        \param  a_z  Z component.
-        \param  a_result  Vector where result is stored.
+
+        \param      a_x  __x__ component.
+        \param      a_y  __y__ component.
+        \param      a_z  __z__ component.
+        \param      a_result  Result of operation.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void addr(const double& a_x, 
                      const double& a_y, 
                      const double& a_z, 
@@ -476,33 +536,42 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Subtraction between current vector and an external vector
-        passed as parameter.\n
+        \brief
+        Subtraction: <em> this = this - a_vector </em>
+    
+        \details
+        Subtraction between current vector and external vector passed as
+        argument. \n
         Result is stored in current vector.
 
-        \param  a_vector  Vector which is subtracted from current one.
+        \param      a_vector  Vector to be subtracted from current one.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void sub(const cVector3d& a_vector)
     {
-        (*this)(0) = (*this)(0) - a_vector(0) ;
-        (*this)(1) = (*this)(1) - a_vector(1) ;
-        (*this)(2) = (*this)(2) - a_vector(2) ;
+        (*this)(0) = (*this)(0) - a_vector(0);
+        (*this)(1) = (*this)(1) - a_vector(1);
+        (*this)(2) = (*this)(2) - a_vector(2);
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Subtract an external vector passed as parameter from current
-        vector. \n Result is stored in current vector.
+        \brief
+        Subtraction: <em> this = this - cVector3d(a_x, a_y, a_z) </em>
 
-        \param  a_x  X component.
-        \param  a_y  Y component.
-        \param  a_z  Z component.
+        \details
+        Subtraction between current vector and external vector passed as
+        argument. \n
+        Result is stored in current vector.
+
+        \param      a_x  __x__ component.
+        \param      a_y  __y__ component.
+        \param      a_z  __z__ component.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void sub(const double& a_x, 
                     const double& a_y, 
                     const double& a_z)
@@ -513,35 +582,45 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Subtraction between current vector and external vector passed as
-        parameter.\n  Result is stored in external \e a_result vector.
+        \brief
+        Subtraction: <em> a_result = this - a_vector </em>
 
-        \param  a_vector  Vector which is subtracted from current one.
-        \param  a_result  Vector where result is stored.
+        \details
+        Subtraction between current vector and external vector passed as
+        argument. \n
+        Result is stored in output _a_result_ vector passed as second argument.
+
+        \param      a_vector  Vector to be subtracted from current one.
+        \param      a_result  Result of operation.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void subr(const cVector3d& a_vector, 
                      cVector3d& a_result) const
     {
-        a_result(0)  = (*this)(0) - a_vector(0) ;
-        a_result(1)  = (*this)(1) - a_vector(1) ;
-        a_result(2)  = (*this)(2) - a_vector(2) ;
+        a_result(0)  = (*this)(0) - a_vector(0);
+        a_result(1)  = (*this)(1) - a_vector(1);
+        a_result(2)  = (*this)(2) - a_vector(2);
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Subtract current vector from vector passed by parameter.\n
-        Result is stored in \e result vector.
+        \brief
+        Subtraction: <em> a_result = this - cVector3d(a_x, a_y, a_z) </em>
+    
+        \details
+        Subtraction between current vector and external vector passed as
+        argument. \n
+        Result is stored in output _a_vector_ passed as last argument.
 
-        \param  a_x  X component.
-        \param  a_y  Y component.
-        \param  a_z  Z component.
-        \param  a_result  Vector where result is stored.
+        \param      a_x  __x__ component.
+        \param      a_y  __y__ component.
+        \param      a_z  __z__ component.
+        \param      a_result  Result of operation.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void subr(const double& a_x, 
                      const double& a_y, 
                      const double& a_z,
@@ -553,14 +632,18 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
+        \brief
+        Multiplication: <em> this = a_scalar * this </em>
+
+        \details
         Multiply current vector by a scalar. \n
         Result is stored in current vector.
 
-        \param  a_scalar  Scalar value.
+        \param      a_scalar  Scalar value.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void mul(const double &a_scalar)
     {
         (*this)(0) = a_scalar * (*this)(0);
@@ -569,15 +652,43 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Multiply current vector by a scalar. \n
-        Result is stored in \e result vector.
+        \brief
+        Multiplication: <em> this = scalars * this </em>
 
-        \param  a_scalar  Scalar value.
-        \param  a_result  Result vector.
+        \details
+        Multiply each component of vector by a different scalar. \n
+        Result is stored in current vector.
+
+        \param      a_scalar0  Scalar value for component 0.
+        \param      a_scalar1  Scalar value for component 1.
+        \param      a_scalar2  Scalar value for component 2.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    inline void mul(const double &a_scalar0, 
+                    const double &a_scalar1, 
+                    const double &a_scalar2)
+    {
+        (*this)(0) = a_scalar0 * (*this)(0);
+        (*this)(1) = a_scalar1 * (*this)(1);
+        (*this)(2) = a_scalar2 * (*this)(2);
+    }
+
+
+    //--------------------------------------------------------------------------
+    /*!
+        \brief
+        Multiplication: <em> a_result = a_scalar * this </em>
+
+        \details
+        Multiply current vector by a scalar. \n
+        Result is stored in output _a_result_ vector passed as second argument.
+
+        \param      a_scalar  Scalar value.
+        \param      a_result  Result of operation.
+    */
+    //--------------------------------------------------------------------------
     inline void mulr(const double& a_scalar, 
                      cVector3d& a_result) const
     {
@@ -587,16 +698,44 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Divide current vector by a scalar. No check for divide-by-zero
-        is performed.
+        \brief
+        Multiplication: <em> a_result = scalars * this </em>
 
+        \details
+        Multiply each component of vector by a different scalar. \n
+        Result is stored in output _a_result_ vector passed as second argument.
+
+        \param      a_scalar0  Scalar value for component 0.
+        \param      a_scalar1  Scalar value for component 1.
+        \param      a_scalar2  Scalar value for component 2.
+        \param      a_result  Result of operation.
+    */
+    //--------------------------------------------------------------------------
+    inline void mulr(const double &a_scalar0, 
+                     const double &a_scalar1, 
+                     const double &a_scalar2,
+                     cVector3d& a_result) const
+    {
+        a_result(0)  = a_scalar0 * (*this)(0);
+        a_result(1)  = a_scalar1 * (*this)(1);
+        a_result(2)  = a_scalar2 * (*this)(2);
+    }
+
+
+    //--------------------------------------------------------------------------
+    /*!
+        \brief
+        Division: <em> this = (1.0 / a_scalar) * this </em>
+
+        \details
+        Divide current vector by a scalar. \n
         Result is stored in current vector.
 
-        \param  a_scalar  Scalar value.
+        \param      a_scalar  Scalar value.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void div(const double& a_scalar)
     {
         double factor = 1.0 / a_scalar;
@@ -606,15 +745,19 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Divide current vector by a scalar. \n
-        Result is stored in \e result vector.
+        \brief
+        Division: <em> a_result = (1.0 / a_scalar) * this </em>
 
-        \param  a_scalar  Scalar value.
-        \param  a_result  Result vector.
+        \details
+        Divide current vector by a scalar. \n
+        Result is stored in output _a_result_ vector passed as second argument.
+
+        \param      a_scalar  Scalar value.
+        \param      a_result  Result of operation.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void divr(const double& a_scalar, 
                      cVector3d& a_result) const
     {
@@ -625,12 +768,16 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
+        \brief
+        Opposite: <em> this = -this </em>
+
+        \details
         Negate current vector. \n
         Result is stored in current vector.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void negate()
     {
         (*this)(0) = -(*this)(0);
@@ -639,14 +786,18 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Negate current vector. \n
-        Result is stored in \e result vector.
+        \brief
+        Opposite: <em> a_result = -this </em>
 
-        \param  a_result  Result vector.
+        \details
+        Negate current vector. \n
+        Result is stored in output _a_result_ vector passed as second argument.
+
+        \param      a_result  Result vector.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void negater(cVector3d& a_result) const
     {
         a_result(0)  = -(*this)(0);
@@ -655,14 +806,19 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the cross product between current vector and an external
-        vector. \n Result is stored in current vector.
+        \brief
+        Cross product: <em> this = this X a_vector </em>
 
-        \param  a_vector  Vector with which cross product is computed with.
+        \details
+        Compute the cross product between current vector and external
+        vector passed as argument. \n 
+        Result is stored in current vector.
+
+        \param      a_vector  Input vector.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void cross(const cVector3d& a_vector)
     {
         // compute cross product
@@ -677,37 +833,20 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the cross product between current vector and an
-        external vector passed as parameter. \n
+        \brief
+        Cross product: <em> a_result = this X a_vector </em>
 
-        Result is returned.  Performance-wise, cross() and crossr() are usually
-        preferred, since this version creates a new stack variable.
+        \details
+        Compute the cross product between current vector and external vector 
+        passed as argument. \n
+        Result is stored in output _a_result_ vector passed as second argument.
 
-        \param  a_vector  Vector with which cross product is computed.
-
-        \return Resulting cross product.
+        \param      a_vector  Input vector.
+        \param      a_result  Resulting cross product.
     */
-    //-----------------------------------------------------------------------
-    inline cVector3d crossAndReturn(const cVector3d& a_vector) const
-    {
-        cVector3d r;
-        crossr(a_vector,r);
-        return (r);
-    }
-
-
-    //-----------------------------------------------------------------------
-    /*!
-        Compute the cross product between current vector and an
-        external vector passed as parameter. \n
-        Result is stored in \e a_result vector.
-
-        \param  a_vector  Vector with which cross product is computed.
-        \param  a_result  Vector where result is stored.
-    */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void crossr(const cVector3d& a_vector, 
                        cVector3d& a_result) const
     {
@@ -717,30 +856,64 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the dot product between current vector and an external vector
-        passed as parameter.
+        \brief
+        Cross product: <em> this X a_vector </em>
 
-        \param  a_vector  Vector with which dot product is computed.
+        \details
+        Return the cross product between current vector and an external vector 
+        passed as argument. \n
 
-        \return Dot product computed between both vectors.
+        Result is returned.  Performance-wise, cross() and crossr() are usually
+        preferred, since this version creates a new stack variable.
+
+        \param      a_vector  Input vector.
+
+        \return     Resulting cross product.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    inline cVector3d crossAndReturn(const cVector3d& a_vector) const
+    {
+        cVector3d result;
+        crossr(a_vector, result);
+        return (result);
+    }
+
+
+    //--------------------------------------------------------------------------
+    /*!
+        \brief
+        Dot product: <em> this . a_vector </em>
+
+        \details
+        Compute the dot product between current vector and external vector
+        passed as argument. \n
+
+        \param      a_vector  Input vector.
+
+        \return     Dot product between both vectors.
+    */
+    //--------------------------------------------------------------------------
     inline double dot(const cVector3d& a_vector) const
     {
         return(((*this)(0) * a_vector(0) ) + ((*this)(1) * a_vector(1) ) + ((*this)(2) * a_vector(2) ));
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the element-by-element product between current vector and an external
-        vector and store in the current vector.
+        \brief
+        Element multiplication
 
-        \param  a_vector  Vector with which product is computed.
+        \details
+        Compute the element-by-element product between current vector and an external
+        vector. \n 
+        Result is stored in current vector.\n
+        
+        \param  a_vector  Input vector.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void elementMul(const cVector3d& a_vector)
     {
         (*this)(0)*=a_vector(0) ;
@@ -749,15 +922,20 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the element-by-element product between current vector and an external
-        vector and store in the supplied output vector.
+        \brief
+        Element multiplication
 
-        \param  a_vector  Vector with which product is computed.
-        \param  a_result  Resulting vector.
+        \details
+        Compute the element-by-element product between current vector and an external
+        vector. \n
+        Result is stored in output _a_result_ vector passed as second argument.
+
+        \param  a_vector  Input vector.
+        \param  a_result  Result of operation.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void elementMulr(const cVector3d& a_vector, 
                             cVector3d& a_result) const
     {
@@ -767,47 +945,59 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the length of current vector.
+        \brief
+        Euclidean norm: <em> |this| </em>
 
-        \return   Returns length of current vector.
+        \details
+        Return the Euclidean norm of current vector.
+
+        \return     Euclidean norm of current vector.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline double length() const
     {
-        return(std::sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2))));
+        return(sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2))));
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the square length of current vector.
+        \brief
+        Square of Euclidean norm: <em> |this|^2 </em>
 
-        \return   Returns square length of current vector.
+        \details
+        Compute the square of the Euclidean norm of current vector.
+
+        \return     Square of Euclidean norm of current vector.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline double lengthsq() const
     {
         return(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Normalize current vector to become a vector of length one.\n
-        \b Warning: \n
-        Vector should not be equal to (0,0,0) or a division
-        by zero error will occur. \n
-        Result is stored in current vector.
+        \brief
+        Normalization: <em> this = (1.0 / |this|) * this </em>
+
+        \details
+        Normalize current vector length one.\n \n
+
+        __WARNING:__ \n
+        Vector should not be equal to (0,0,0) or a division by zero error 
+        will occur. \n Result is stored in current vector.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void normalize()
     {
         // compute length of vector
-        double length = std::sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
-        if (length == 0.0) { return; }
-        double factor = 1.0 / length;
+        double len = sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
+        if (len == 0.0) { return; }
+        double factor = 1.0 / len;
 
         // divide current vector by its length
         (*this)(0) = (*this)(0) * factor;
@@ -816,48 +1006,25 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Clamp the vector to a maximum desired length. Vectors that are smaller
-        than a_maxLength are not affected.
+        \brief
+        Normalization: <em> a_result = (1.0 / |this|) * this </em>
 
-        \param  a_maxLength  Maximum desired length for vector.
+        \details
+        Normalize current vector to unit length.\n
+        Result is stored in output _a_result_ vector passed as second argument.
+
+        __WARNING:__ \n
+        Vector should not be equal to (0,0,0) or a division by zero error 
+        will occur.
     */
-    //-----------------------------------------------------------------------
-    inline void clamp(const double& a_maxLength)
-    {
-        double length = std::sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
-        if (a_maxLength == 0)
-        {
-            (*this)(0) = 0.0;
-            (*this)(1) = 0.0;
-            (*this)(2) = 0.0;
-        }
-        else if (length > a_maxLength)
-        {
-            double factor = a_maxLength / length;
-            (*this)(0) = (*this)(0) * factor;
-            (*this)(1) = (*this)(1) * factor;
-            (*this)(2) = (*this)(2) * factor;              
-        }
-    }
-
-
-    //-----------------------------------------------------------------------
-    /*!
-        Normalize current vector to become a vector of length one. \n
-        \b WARNING: Vector should not be equal to (0,0,0) or a division
-        by zero error will occur. \n
-        Result is stored in \e result vector.
-
-        \param  a_result  Vector where result is stored.
-    */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void normalizer(cVector3d& a_result) const
     {
         // compute length of vector
-        double length = std::sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
-        double factor = 1.0 / length;
+        double len = sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
+        double factor = 1.0 / len;
 
         // divide current vector by its length
         a_result(0)  = (*this)(0) * factor;
@@ -866,16 +1033,51 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the distance between current point and an external point
-        passed as parameter.
+        \brief
+        Clamp current vector to a maximum desired length.
 
-        \param  a_vector  Point to which the distance is measured
+        \details
+        Clamp current vector to a maximum desired length. Vectors that are shorter
+        than _a_maxLength_ are not affected.
 
-        \return Distance between the points
+        \param      a_maxLength  Maximum length value.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    inline void clamp(const double& a_maxLength)
+    {
+        double len = sqrt(((*this)(0) * (*this)(0)) + ((*this)(1) * (*this)(1)) + ((*this)(2) * (*this)(2)));
+        if (a_maxLength == 0)
+        {
+            (*this)(0) = 0.0;
+            (*this)(1) = 0.0;
+            (*this)(2) = 0.0;
+        }
+        else if (len > a_maxLength)
+        {
+            double factor = a_maxLength / len;
+            (*this)(0) = (*this)(0) * factor;
+            (*this)(1) = (*this)(1) * factor;
+            (*this)(2) = (*this)(2) * factor;              
+        }
+    }
+
+
+    //--------------------------------------------------------------------------
+    /*!
+        \brief
+        Distance between two points.
+
+        \details
+        Return the distance between current point and external point
+        passed as argument.
+
+        \param      a_vector  Input point.
+
+        \return     Distance between two points.
+    */
+    //--------------------------------------------------------------------------
     inline double distance(const cVector3d& a_vector) const
     {
         // compute distance between both points
@@ -884,20 +1086,24 @@ struct cVector3d : public Eigen::Vector3d
         double dz = (*this)(2) - a_vector(2) ;
 
         // return result
-        return(std::sqrt( dx * dx + dy * dy + dz * dz ));
+        return(sqrt(dx*dx + dy*dy + dz*dz));
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Compute the square distance between the current point and an external
-        point.
+        \brief
+        Square of distance between two points.
 
-        \param  a_vector  Point to which squared distance is measured
+        \details
+        Return the square distance between current point and external
+        point passed as argument.
 
-        \return Squared distance between the points
+        \param      a_vector  Input point.
+
+        \return     Square of distance between the points
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline double distancesq(const cVector3d& a_vector) const
     {
         // compute distance between both points
@@ -906,28 +1112,32 @@ struct cVector3d : public Eigen::Vector3d
         double dz = (*this)(2) - a_vector(2) ;
 
         // return result
-        return( dx * dx + dy * dy + dz * dz );
+        return(dx*dx + dy*dy + dz*dz);
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Test whether the current vector and an external vector are equal.
+        \brief
+        Equality test.
 
-        \param    a_vector  Vector with which equality is checked.
-        \param    epsilon  Two vectors will be considered equal if each
-                  component is within epsilon units.  Defaults
-                  to zero.
+        \details
+        Test whether the current vector and external vector passed as 
+        argument are both equal. Two vectors are considered equal if each
+        of their components are distant within an distance _epsilon_ defined
+        by the second argument. By default, _epsilon_ is set to zero.
 
-        \return   \b true if both vectors are equal, otherwise
-                  returns \b false.
+        \param      a_vector Input vector.
+        \param      a_epsilon  Tolerance error.
+
+        \return     __true__ if both vectors are equal, otherwise __false__.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline bool equals(const cVector3d& a_vector, 
-                       const double epsilon = 0.0) const
+                       const double a_epsilon = 0.0) const
     {
         // Accelerated path for exact equality
-        if (epsilon == 0.0)
+        if (a_epsilon == 0.0)
         {
             if ( ((*this)(0) == a_vector(0) ) && ((*this)(1) == a_vector(1) ) && ((*this)(2) == a_vector(2) ) )
             {
@@ -939,9 +1149,9 @@ struct cVector3d : public Eigen::Vector3d
             }
         }
 
-        if ((fabs(a_vector(0) - (*this)(0)) < epsilon) &&
-            (fabs(a_vector(1) - (*this)(1)) < epsilon) &&
-            (fabs(a_vector(2) - (*this)(2)) < epsilon))
+        if ((fabs(a_vector(0) - (*this)(0)) < a_epsilon) &&
+            (fabs(a_vector(1) - (*this)(1)) < a_epsilon) &&
+            (fabs(a_vector(2) - (*this)(2)) < a_epsilon))
         {
             return (true);
         }
@@ -952,316 +1162,176 @@ struct cVector3d : public Eigen::Vector3d
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
+        \brief
+        String conversion.
+
+        \details
         Convert current vector into a string.
 
-        \param   a_precision  Number of digits.
+        \param      a_precision    Number of digits.
 
-        \return  Return output string.
+        \return     Output string.
     */
-    //-----------------------------------------------------------------------
-    inline string str(const unsigned int a_precision = 2) const
+    //--------------------------------------------------------------------------
+    inline std::string str(const unsigned int a_precision = 2) const
     {
-        string result;
-        result = ("( ") + cStr((*this)(0), a_precision) + ", "
-                        + cStr((*this)(1), a_precision) + ", "
-                        + cStr((*this)(2), a_precision) + " )";
+        std::string result;
+        result = (cStr((*this)(0), a_precision) + ", " +
+                  cStr((*this)(1), a_precision) + ", " +
+                  cStr((*this)(2), a_precision));
         return (result);
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Print the current vector using the cPrint macro.
+        \brief
+        Print string.
 
-        \param    a_precision  Number of digits.
+        \details
+        Print the current vector using the __cPrint__ macro.
+
+        \param      a_precision  Number of digits.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void print(const unsigned int a_precision = 2) const
     {
-        string s = str(a_precision);
+        std::string s = str(a_precision);
         cPrint("%s\n", s.c_str());
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*!
-        Decompose me into components parallel and perpendicular to the input
-        vector.
+        \brief
+        Decomposition of current vector into two orthogonal vectors.
 
-        \param    a_input         Reference vector.
-        \param    a_parallel      Parallel component
-        \param    a_perpendicular Perpendicular component
+        \details
+        Decompose current vector into two orthogonal vectors. The first output vector is parallel to input
+        vector, and the second output vector is orthogonal. \n
+        <em> this =  a_parallel + a_perpendicular </em>
+
+        \param      a_input  Reference vector.
+        \param      a_parallel  Output vector parallel to _a_input_.
+        \param      a_orthogonal  Output vector perpendicular to _a_input_.
     */
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     inline void decompose(const cVector3d& a_input, 
                           cVector3d& a_parallel, 
-                          cVector3d& a_perpendicular) const
+                          cVector3d& a_orthogonal) const
     {
         double scale = (this->dot(a_input) / (a_input.dot(a_input)));
         a_parallel = a_input;
         a_parallel.mul(scale);
-        this->subr(a_parallel,a_perpendicular);
+        this->subr(a_parallel, a_orthogonal);
     }
 
 
-    //-----------------------------------------------------------------------
-    /*!
-        Spherically linearly interpolate between two vectors and store in this vector.
-        Vectors should have the same length
 
-        \param    a_level         Fraction of distance to a_vector2 (0 is fully at a_vector1, 1.0 is fully at a_vector2)
-        \param    a_vector1       First vector to interpolate from
-        \param    a_vector2       Second vector to interpolate from
-    */
-    //-----------------------------------------------------------------------
-    inline void slerp(double a_level, 
-                      cVector3d const& a_vector1, 
-                      cVector3d a_vector2)
-    {
-        // a_vector2 is passed in by value so that we may scale it
-        double a_vec1lensq = a_vector1.lengthsq();
-        double cosomega = a_vector1.dot(a_vector2)/(a_vec1lensq);
-        if ((cosomega-1.0) > -1e-4 && (cosomega-1.0) < 1e-4) {
-            // vectors are (almost) parallel
-            // linearly interpolate
-            *this = a_vector1;
-            this->mul(1.0-a_level);
-            a_vector2.mul(a_level);
-            this->operator +=(a_vector2);
-            this->mul(std::sqrt(a_vec1lensq/this->lengthsq()));
-        } else {
-            if (cosomega < 0.0) {
-                cosomega = -cosomega;
-                a_vector2.negate();
-            }
-            double ratio1, ratio2;
-            if ((cosomega+1.0) > -1e-4 && (cosomega+1.0) < 1e-4) {
-                // vectors are 180 degrees apart
-                // there is no unique path between them
-                if ((a_vector1(0)  < a_vector1(1) ) && (a_vector1(0)  < a_vector1(2) )){
-                    // x component is the smallest
-                    a_vector2(0)  = 0;
-                    a_vector2(1)  = -a_vector1(2) ;
-                    a_vector2(2)  = a_vector1(1) ;
-                } else if (a_vector1(1)  < a_vector1(2) ) {
-                    // y component is the smallest
-                    a_vector2(0)  = -a_vector1(2) ;
-                    a_vector2(1)  = 0;
-                    a_vector2(2)  = a_vector1(0) ;
-                } else {
-                    // z component is the smallest
-                    a_vector2(0)  = -a_vector1(1) ;
-                    a_vector2(1)  = a_vector1(0) ;
-                    a_vector2(2)  = 0;
-                }
-                // scale it so it is the same length as before
-                a_vector2.mul(std::sqrt(a_vec1lensq/a_vector2.lengthsq()));
-
-                ratio1 = ::sin(C_PI*(0.5-a_level));
-                ratio2 = ::sin(C_PI*a_level);
-            } else {
-                double omega = acos(cosomega);
-                double sinomega = ::sin(omega);
-                ratio1 = ::sin(omega*(1.0-a_level))/sinomega;
-                ratio2 = ::sin(omega*a_level)/sinomega;
-            }
-            *this = a_vector1;
-            this->mul(ratio1);
-            a_vector2.mul(ratio2);
-            this->add(a_vector2);
-        }
-    }
-};
-
-
-//===========================================================================
-// Operators on cVector3d
-//===========================================================================
-
-//---------------------------------------------------------------------------
-/*!
-    An overloaded * operator for vector/scalar multiplication.
-*/
-//---------------------------------------------------------------------------
-inline cVector3d operator*(const cVector3d& v, const double a_input)
-{
-    return (cVector3d(v(0) *a_input,v(1) *a_input,v(2) *a_input));
-}
-
-
-//---------------------------------------------------------------------------
-/*!
-    An overloaded / operator for vector/scalar division.
-*/
-//---------------------------------------------------------------------------
-inline cVector3d operator/(const cVector3d& v, const double a_input)
-{
-    return (cVector3d(v(0)/a_input, v(1)/a_input, v(2)/a_input));
-}
-
-
-//---------------------------------------------------------------------------
-/*!
-    An overloaded * operator for scalar/vector multiplication.
-*/
-//---------------------------------------------------------------------------
-inline cVector3d operator*(const double a_input, const cVector3d& v)
-{
-    return cVector3d(v(0)*a_input, v(1)*a_input, v(2)*a_input);
-}
-
-
-//---------------------------------------------------------------------------
-/*!
-    An overloaded + operator for vector/vector addition.
-*/
-//---------------------------------------------------------------------------
-inline cVector3d operator+(const cVector3d& v1, const cVector3d& v2)
-{
-    return cVector3d(v1(0)+v2(0), v1(1)+v2(1), v1(2)+v2(2));
-}
-
-
-//---------------------------------------------------------------------------
-/*!
-    An overloaded - operator for vector/vector subtraction.
-*/
-//---------------------------------------------------------------------------
-inline cVector3d operator-(const cVector3d& v1, const cVector3d& v2)
-{
-    return cVector3d(v1(0) -v2(0) ,v1(1) -v2(1) ,v1(2) -v2(2) );
-}
-
-
-//---------------------------------------------------------------------------
-/*!
-    An overloaded * operator for vector/vector dotting.
-*/
-//---------------------------------------------------------------------------
-inline double operator*(const cVector3d& v1, const cVector3d& v2)
-{
-    return v1(0) *v2(0) +v1(1) *v2(1) +v1(2) *v2(2) ;
-}
-
-
-//---------------------------------------------------------------------------
-/*!
-    An overloaded = operator for Eigen vectors.
-*/
-//---------------------------------------------------------------------------
-inline Eigen::Vector3d operator-(const cVector3d& v)
-{
-    return (Eigen::Vector3d(v(0), v(1), v(2)));
-}
-
-
-//---------------------------------------------------------------------------
-/*!
-    ostream operator. \n
-    Outputs the vector's components separated by commas.
-*/
-//---------------------------------------------------------------------------
-static inline std::ostream &operator << (std::ostream &a_os, cVector3d const& a_vec)
-{
-    a_os << a_vec(0)  << ", " << a_vec(1)  << ", " << a_vec(2) ;
-    return a_os;
-}
-
-
-//===========================================================================
-/*!
-    \struct     cRay3d
-    \ingroup    math  
-
-    \brief    
-    cRay3d represents a 3D vector with an origin.
-*/
-//===========================================================================
-struct cRay3d
-{
-    //! Vector representing ray origin.
-    cVector3d m_origin;
-
-    //! Unit vector representing ray direction.
-    cVector3d m_direction;
-
-    //! Constructor of cRay3d.
-    cRay3d();
-
-    //! This constructor assumes that a_direction is normalized already.
-    cRay3d(const cVector3d& a_origin, 
-           const cVector3d& a_direction) :
-           m_origin(a_origin), 
-           m_direction(a_direction){}
-};
-
-
-//===========================================================================
-/*!
-    \struct     cSegment3d
-    \ingroup    math  
+    //--------------------------------------------------------------------------
+    // PRIVATE MEMBERS
+    //--------------------------------------------------------------------------
     
-    \brief    
-    cSegment3d represents a line segment with a start and an end.
-*/
-//===========================================================================
-struct cSegment3d
-{
-    //! Constructor of cSegment3d.
-    cSegment3d(const cVector3d& a_start, 
-               const cVector3d& a_end) :
-               m_start(a_start), 
-               m_end(a_end){}
+private:
 
-    //! Start point of segment.
-    cVector3d m_start;
-
-    //! End point of segment
-    cVector3d m_end;
-
-
-    //-----------------------------------------------------------------------
-    /*!
-        Returns the squared distance from this segment to a_point and the
-        position along the segment (from 0.0 to 1.0) of the closest point.
-
-        \param    a_point Point to test.
-        \param    a_t return value for the position along the segment.
-        \param    a_closestPoint The closest point on this segment to the supplied point.
-
-        \return   The distance from a_point to this segment.
-    */
-    //-----------------------------------------------------------------------
-    double distanceSquaredToPoint(const cVector3d& a_point,
-                                  double& a_t,
-                                  cVector3d* a_closestPoint)
-    {
-        double mag = m_start.distance(m_end);
-
-        // Project this point onto the line
-        a_t = (a_point - m_start) * (m_end - m_start) / (mag * mag);
-
-        // Clip to segment endpoints
-        if (a_t < 0.0)
-            a_t = 0.0;
-        else if (a_t > 1.0)
-            a_t = 1.0;
-
-        // Find the intersection point
-        cVector3d intersection = m_start + a_t * (m_end - m_start);
-        if (a_closestPoint)
-        {
-            *a_closestPoint = intersection;
-        }
-
-        // Compute distance
-        return a_point.distancesq(intersection);
-    }
+    //! Vector data.
+    double m_data[3];
 };
 
 
-//---------------------------------------------------------------------------
+//==============================================================================
+// OPERATORS ON CVECTOR3D:
+//==============================================================================
+
+
+//! An overloaded <b> * </b> operator for vector/scalar multiplication.
+inline cVector3d operator*(const cVector3d& a_vector, const double a_scale)
+{
+    return (cVector3d(a_vector(0) * a_scale,
+                      a_vector(1) * a_scale,
+                      a_vector(2) * a_scale));
+}
+
+
+//! An overloaded <b> * </b> operator for scalar/vector multiplication.
+inline cVector3d operator*(const double a_scale, const cVector3d& a_vector)
+{
+    return (cVector3d(a_vector(0) * a_scale,
+                      a_vector(1) * a_scale,
+                      a_vector(2) * a_scale));
+}
+
+
+//! An overloaded <b> / </b> operator for vector/scalar division.
+inline cVector3d operator/(const cVector3d& a_vector, const double a_scale)
+{
+    return (cVector3d(a_vector(0) / a_scale,
+                      a_vector(1) / a_scale,
+                      a_vector(2) / a_scale));
+}
+
+
+//! An overloaded <b> + </b> operator for vector/vector addition.
+inline cVector3d operator+(const cVector3d& a_vector0, const cVector3d& a_vector1)
+{
+    return cVector3d(a_vector0(0) + a_vector1(0), 
+                     a_vector0(1) + a_vector1(1), 
+                     a_vector0(2) + a_vector1(2));
+}
+
+
+//! An overloaded <b> - </b> operator for vector/vector subtraction.
+inline cVector3d operator-(const cVector3d& a_vector0, const cVector3d& a_vector1)
+{
+    return cVector3d(a_vector0(0) - a_vector1(0), 
+                     a_vector0(1) - a_vector1(1), 
+                     a_vector0(2) - a_vector1(2));
+}
+
+
+//! An overloaded <b> - </b> operator for vector negation.
+inline cVector3d operator-(const cVector3d& a_vector0)
+{
+    return cVector3d(-a_vector0(0), 
+                     -a_vector0(1), 
+                     -a_vector0(2));
+}
+
+
+//! An overloaded <b> * </b> operator for vector/vector dotting.
+inline double operator*(const cVector3d& a_vector0, const cVector3d& a_vector1)
+{
+    return (a_vector0(0) * a_vector1(0) + 
+            a_vector0(1) * a_vector1(1) + 
+            a_vector0(2) * a_vector1(2));
+}
+
+
+#ifdef C_USE_EIGEN
+
+//! An overloaded = operator for Eigen vectors.
+inline Eigen::Vector3d operator-(const cVector3d& a_vector)
+{
+    return (Eigen::Vector3d(a_vector(0), a_vector(1), a_vector(2)));
+}
+
 #endif
-//---------------------------------------------------------------------------
+
+
+//! <b> ostream <b> operator. Outputs the vector's components separated by commas.
+static inline std::ostream &operator << (std::ostream &a_os, cVector3d const& a_vector)
+{
+    a_os << a_vector(0)  << ", " << a_vector(1)  << ", " << a_vector(2) ;
+    return (a_os);
+}
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+#endif
+//------------------------------------------------------------------------------

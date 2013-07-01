@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,19 +39,21 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 473 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "materials/CMaterial.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cMaterial.
-
-    \fn     cMaterial::cMaterial()
 */
-//===========================================================================
+//==============================================================================
 cMaterial::cMaterial()
 {
     // default graphic settings
@@ -64,7 +66,7 @@ cMaterial::cMaterial()
     // default haptic settings
     m_viscosity             = 0.0;
     m_stiffness             = 0.0;
-    m_dampingLevel          = 0.0;
+    m_damping               = 0.0;
     m_staticFriction        = 0.0;
     m_dynamicFriction       = 0.0;
     m_textureLevel          = 0.0;
@@ -76,28 +78,27 @@ cMaterial::cMaterial()
     m_useHapticFriction             = false;
     m_useHapticTexture              = false;
     m_useHapticShading              = false;
-    m_renderFrontSideOfTriangles    = true;
-    m_renderBackSideOfTriangles     = false;
+    m_hapticFrontSideOfTriangles    = true;
+    m_hapticBackSideOfTriangles     = false;
 
     // set all modification flags to false
     setModificationFlags(false);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create copy of current instance.
 
-    \fn     cMaterial* cMaterial::copy()
-	\return Return point to new instance.
+    \return Return point to new instance.
 */
-//===========================================================================
+//==============================================================================
 cMaterial* cMaterial::copy()
 {
-	// create new instance
-	cMaterial* obj = new cMaterial();
+    // create new instance
+    cMaterial* obj = new cMaterial();
 
-	// copy material properties
+    // copy material properties
     obj->m_ambient				= m_ambient;
     obj->m_diffuse				= m_diffuse;
     obj->m_specular				= m_specular;
@@ -105,7 +106,7 @@ cMaterial* cMaterial::copy()
     obj->m_shininess			= m_shininess;
     obj->m_viscosity			= m_viscosity;
     obj->m_stiffness			= m_stiffness;
-    obj->m_dampingLevel         = m_dampingLevel;
+    obj->m_damping              = m_damping;
     obj->m_staticFriction		= m_staticFriction;
     obj->m_dynamicFriction		= m_dynamicFriction;
     obj->m_textureLevel			= m_textureLevel;
@@ -119,29 +120,28 @@ cMaterial* cMaterial::copy()
     obj->m_useHapticFriction                = m_useHapticFriction;
     obj->m_useHapticTexture                 = m_useHapticTexture;
     obj->m_useHapticShading                 = m_useHapticShading;
-    obj->m_flag_renderFrontSideOfTriangles  = m_flag_renderFrontSideOfTriangles;
-    obj->m_flag_renderBackSideOfTriangles   = m_flag_renderBackSideOfTriangles;
+    obj->m_flag_hapticFrontSideOfTriangles  = m_flag_hapticFrontSideOfTriangles;
+    obj->m_flag_hapticBackSideOfTriangles   = m_flag_hapticBackSideOfTriangles;
 
-	// reset all flags
-	obj->setModificationFlags(false);
+    // reset all flags
+    obj->setModificationFlags(false);
 
-	// return
-	return (obj);
+    // return
+    return (obj);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the transparency level (by setting the alpha value for all color 
     properties).
 
-    \fn     void cMaterial::setTransparencyLevel(const float a_levelTransparency)
     \param  a_levelTransparency  Level of transparency.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setTransparencyLevel(const float a_levelTransparency)
 {
-    // make sur value is in range [0.0 - 1.0]
+    // check that value is within range [0.0 - 1.0]
     float level = cClamp(a_levelTransparency, 0.0f, 1.0f);
 
     // apply new value
@@ -152,17 +152,16 @@ void cMaterial::setTransparencyLevel(const float a_levelTransparency)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Set the level of shininess. Value are clamped to range from 0 --> 128.
+    Set the level of shininess. Value are clamped to range from 0 -> 128.
 
-    \fn     void cMaterial::setShininess(const GLuint a_shininess)
     \param  a_shininess  Level of shininess
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setShininess(const GLuint a_shininess)
 {
-    // update value
+    // update value and check range
     m_shininess = cClamp(a_shininess, (GLuint)0, (GLuint)128);
 
     // mark variable as modified
@@ -170,20 +169,16 @@ void cMaterial::setShininess(const GLuint a_shininess)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Define the color properties of the material.
+    Define the color properties of the material. 
 
-    \fn     void cMaterial::setColorf(const float a_R, 
-                                      const float a_G, 
-                                      const float a_B, 
-                                      const float a_A)
     \param  a_red    Red component
     \param  a_green  Green component
     \param  a_blue   Blue component
     \param  a_alpha  Alpha component
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setColorf(const GLfloat a_red, 
                           const GLfloat a_green, 
                           const GLfloat a_blue,
@@ -194,13 +189,13 @@ void cMaterial::setColorf(const GLfloat a_red,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define the color properties of the material.
 
     \param  a_color  Color.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setColor(cColorf& a_color)
 {
     m_diffuse = a_color;
@@ -208,13 +203,13 @@ void cMaterial::setColor(cColorf& a_color)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define the color properties of the material.
 
     \param  a_color  Color.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setColor(cColorb& a_color)
 {
     m_diffuse = a_color.getColorf();
@@ -222,16 +217,15 @@ void cMaterial::setColor(cColorb& a_color)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    If a new color is defined for the material by calling methods such as
-    setColorf() or setColorRed(), the color is first set to the diffuse component.
-    This function then updates the ambient color by setting it at percentage
-    of the 
+    When a new color is defined by calling methods such as setColorf() or 
+    setColorRed(), the selected color is first set to the diffuse component.
+    This function updates the ambient component by setting it equal to 50%
+    of the diffuse color. The specular color is finaly set to pure white.
 
-    \fn     void cMaterial::updateColors()
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::updateColors()
 {
     float level = 0.5;
@@ -243,14 +237,13 @@ void cMaterial::updateColors()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the level of stiffness. Clamped to be a non-negative value.
 
-    \fn     void cMaterial::setStiffness(const double a_stiffness)
     \param  a_stiffness  Level of stiffness.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setStiffness(const double a_stiffness)
 {
     // update value
@@ -261,34 +254,30 @@ void cMaterial::setStiffness(const double a_stiffness)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Set the level of damping between 0 and 1. The force algorithm will adjust
-    the output value based on the maximum damping level supported by the 
-    haptic device.
+    Set the level of damping.
 
-    \fn     void cMaterial::setDampingLevel(const double a_dampingLevel)
-    \param  a_dampingLevel  Level of damping.
+    \param  a_damping  Level of damping.
 */
-//===========================================================================
-void cMaterial::setDampingLevel(const double a_dampingLevel)
+//==============================================================================
+void cMaterial::setDamping(const double a_damping)
 {
     // update value
-    m_dampingLevel = cClamp0(a_dampingLevel);
+    m_damping = a_damping;
 
     // mark variable as modified
-    m_flag_dampingLevel = true;
+    m_flag_damping = true;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the level of static friction. Clamped to be a non-negative value.
 
-    \fn     void cMaterial::setStaticFriction(const double a_friction)
     \param  a_friction  Level of friction.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setStaticFriction(const double a_friction)
 {
     // update value
@@ -309,14 +298,13 @@ void cMaterial::setStaticFriction(const double a_friction)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the level of dynamic friction. Clamped to be a non-negative value.
 
-    \fn     void cMaterial::setDynamicFriction(const double a_friction)
     \param  a_friction  Level of friction.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setDynamicFriction(const double a_friction)
 {
     // update value
@@ -337,14 +325,13 @@ void cMaterial::setDynamicFriction(const double a_friction)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Set the intensity at which the texure map of an object will be perceived. 
+    Set the intensity at which the texture map of an object will be perceived. 
 
-    \fn     void cMaterial::setTextureLevel(const double a_textureLevel)
     \param  a_textureLevel  Intensity level.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setTextureLevel(const double a_textureLevel)
 {
     // update value
@@ -365,14 +352,13 @@ void cMaterial::setTextureLevel(const double a_textureLevel)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the level of viscosity. Clamped to be a non-negative value.
 
-    \fn     void cMaterial::setViscosity(const double a_viscosity)
     \param  a_viscosity  Level of viscosity.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setViscosity(const double a_viscosity)
 {
     // update value
@@ -383,14 +369,13 @@ void cMaterial::setViscosity(const double a_viscosity)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the frequency of vibration. Clamped to be a non-negative value.
 
-    \fn     void cMaterial::setVibrationFrequency(const double a_vibrationFrequency)
     \param  a_vibrationFrequency  Frequency of vibration [Hz].
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setVibrationFrequency(const double a_vibrationFrequency)
 {
     // update value
@@ -401,14 +386,13 @@ void cMaterial::setVibrationFrequency(const double a_vibrationFrequency)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the amplitude of vibration. Clamped to be a non-negative value.
 
-    \fn     void cMaterial::setVibrationAmplitude(double a_vibrationAmplitude)
     \param  a_vibrationAmplitude  Amplitude of vibration [N].
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setVibrationAmplitude(const double a_vibrationAmplitude)
 {
     // update value
@@ -419,14 +403,13 @@ void cMaterial::setVibrationAmplitude(const double a_vibrationAmplitude)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the maximum force applied by the magnet [N].
 
-    \fn     void cMaterial::setMagnetMaxForce(const double a_magnetMaxForce)
     \param  a_magnetMaxForce  Maximum force of magnet.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setMagnetMaxForce(const double a_magnetMaxForce)
 {
     // update value
@@ -437,15 +420,14 @@ void cMaterial::setMagnetMaxForce(const double a_magnetMaxForce)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the maximum distance from the object where the force can be perceived [m]
 
-    \fn     void cMaterial::setMagnetMaxDistance(const double a_magnetMaxDistance)
     \param  a_magnetMaxDistance  Maximum distance from object where 
                                  magnet is active.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setMagnetMaxDistance(const double a_magnetMaxDistance)
 {
     // update value
@@ -456,14 +438,13 @@ void cMaterial::setMagnetMaxDistance(const double a_magnetMaxDistance)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the maximum force threshold for the stick and slip model [N].
 
-    \fn     void cMaterial::setStickSlipForceMax(const double a_stickSlipForceMax)
     \param  a_stickSlipForceMax  Maximum force threshold.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setStickSlipForceMax(const double a_stickSlipForceMax)
 {
     // update value
@@ -474,14 +455,13 @@ void cMaterial::setStickSlipForceMax(const double a_stickSlipForceMax)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Set the stiffness for the stick and slip model [N/m]
+    Set the stiffness for the stick and slip model [N/m].
 
-    \fn     void cMaterial::setStickSlipStiffness(const double a_stickSlipStiffness)
     \param  a_stickSlipStiffness  Stiffness property.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setStickSlipStiffness(const double a_stickSlipStiffness)
 {
     // update value
@@ -492,14 +472,13 @@ void cMaterial::setStickSlipStiffness(const double a_stickSlipStiffness)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Enable/Disable rendering of haptic friction.
 
-    \fn     void cMaterial::setUseHapticFriction(const bool a_useHapticFriction)
-    \param  a_useHapticFriction  If \b true, haptic friction rendering in enabled.
+    \param  a_useHapticFriction  If __true__, haptic friction rendering in enabled.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setUseHapticFriction(const bool a_useHapticFriction)
 {
     // update value
@@ -510,14 +489,13 @@ void cMaterial::setUseHapticFriction(const bool a_useHapticFriction)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Enable/Disable rendering of textures haptically.
+    Enable or disable rendering of textures haptically.
 
-    \fn     void cMaterial::setStickSlipStiffness(const double a_stickSlipStiffness)
-    \param  a_useHapticTexture  If \b true, haptic texture rendering in enabled.
+    \param  a_useHapticTexture  If __true__, haptic texture rendering in enabled.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setUseHapticTexture(const bool a_useHapticTexture)
 {
     // update value
@@ -528,14 +506,13 @@ void cMaterial::setUseHapticTexture(const bool a_useHapticTexture)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Enable/Disable haptic shading.
+    Enable or disable haptic shading.
 
-    \fn     void cMaterial::setUseHapticShading(const bool a_useHapticShading)
-    \param  a_useHapticShading  If \b true, haptic shading in enabled.
+    \param  a_useHapticShading  If __true__, haptic shading in enabled.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setUseHapticShading(const bool a_useHapticShading)
 {
     // update value
@@ -546,103 +523,99 @@ void cMaterial::setUseHapticShading(const bool a_useHapticShading)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Enable/disable if haptic rendering occurs on front side of Mesh triangles.
-    This option applies to Mesh objects which are rendered using the
-    proxy force algorithm.
+    If a_enabled is set to __true__, then haptic rendering occurs on front 
+    side of triangles. This option applies to Mesh objects which are rendered 
+    using the proxy force algorithm.
 
-    \fn     void cMaterial::setRenderFrontSideOfTriangles(const bool a_enabled)
-    \param  a_enabled  If \b true, then haptic rendering is enabled.
+    \param  a_enabled  If __true__, then haptic rendering is enabled.
 */
-//===========================================================================
-void cMaterial::setRenderFrontSideOfTriangles(const bool a_enabled)
+//==============================================================================
+void cMaterial::setHapticTriangleFrontSide(const bool a_enabled)
 {
     // update value
-    m_renderFrontSideOfTriangles = a_enabled;
+    m_hapticFrontSideOfTriangles = a_enabled;
     
     // mark variable as modified
-    m_flag_renderFrontSideOfTriangles = true;
+    m_flag_hapticFrontSideOfTriangles = true;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Enable/disable if haptic rendering occurs on back side of Mesh triangles.
-    This option applies to Mesh objects which are rendered using the
-    proxy force algorithm.
+    If a_enabled is set to __true__, then haptic rendering occurs on back 
+    side of triangles. This option applies to Mesh objects which are rendered 
+    using the proxy force algorithm.
 
-    \fn     void cMaterial::setRenderBackSideOfTriangles(const bool a_enabled)
-    \param  a_enabled  If \b true, then haptic rendering is enabled.
+    \param  a_enabled  If __true__, then haptic rendering is enabled.
 */
-//===========================================================================
-void cMaterial::setRenderBackSideOfTriangles(const bool a_enabled)
+//==============================================================================
+void cMaterial::setHapticTriangleBackSide(const bool a_enabled)
 {
     // update value
-    m_renderBackSideOfTriangles = a_enabled;
+    m_hapticBackSideOfTriangles = a_enabled;
     
     // mark variable as modified
-    m_flag_renderBackSideOfTriangles = true;
+    m_flag_hapticBackSideOfTriangles = true;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Enable/Disable rendering of front and back sides of mesh triangles.
+    Defines which sides haptic rendering must occur on triangles.
 
-    \fn     void cMaterial::setRenderTriangles(const bool a_enableFrontSide, 
-                                   const bool a_enableBackSide)
-    \param  a_enableFrontSide  If \b true, then haptic rendering is enabled for front sides.
-    \param  a_enableBackSide  If \b true, then haptic rendering is enabled for back sides.
+    \param  a_enableFrontSide  If __true__, then haptic rendering is enabled for front sides.
+    \param  a_enableBackSide  If __true__, then haptic rendering is enabled for back sides.
 */
-//===========================================================================
-void cMaterial::setRenderTriangles(const bool a_enableFrontSide, 
-                                   const bool a_enableBackSide)
+//==============================================================================
+void cMaterial::setHapticTriangleSides(const bool a_enableFrontSide, 
+    const bool a_enableBackSide)
 {
     // update front side
-    setRenderFrontSideOfTriangles(a_enableFrontSide);
+    setHapticTriangleFrontSide(a_enableFrontSide);
     
     // update back side
-    setRenderBackSideOfTriangles(a_enableBackSide);
+    setHapticTriangleBackSide(a_enableBackSide);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render this material in OpenGL.
 
-    \fn     void cMaterial::render(cRenderOptions& a_options)
-	\param	a_options  Rendering options.
+    \param	a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::render(cRenderOptions& a_options)
 {
-	// check if materials should be rendered
-	if (!a_options.m_render_materials) { return; }
+    // check if materials should be rendered
+    if (!a_options.m_render_materials) { return; }
 
-	// render material
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (const float *)&m_ambient);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (const float *)&m_diffuse);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (const float *)&m_specular);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, (const float *)&m_emission);
-	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, m_shininess);
+    // render material
+#ifdef C_USE_OPENGL
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (const float *)&m_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (const float *)&m_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (const float *)&m_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, (const float *)&m_emission);
+    glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, m_shininess);
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Sets all the modification flags to a desired value.
 
-    \fn     void cMaterial::setModificationFlags(const bool a_value)
-	\param	a_value  Value to be assigned to modification flags.
+    \param	a_value  Value to be assigned to modification flags.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::setModificationFlags(const bool a_value)
 {
     m_flag_shininess                    = a_value;
     m_flag_viscosity                    = a_value;
     m_flag_stiffness                    = a_value;
-    m_flag_dampingLevel                 = a_value;
+    m_flag_damping                      = a_value;
     m_flag_staticFriction               = a_value;
     m_flag_dynamicFriction              = a_value;
     m_flag_textureLevel                 = a_value;
@@ -654,8 +627,8 @@ void cMaterial::setModificationFlags(const bool a_value)
     m_flag_stickSlipStiffness           = a_value;
     m_flag_useHapticTexture             = a_value;
     m_flag_useHapticShading             = a_value;
-    m_flag_renderFrontSideOfTriangles   = a_value;
-    m_flag_renderBackSideOfTriangles    = a_value;
+    m_flag_hapticFrontSideOfTriangles   = a_value;
+    m_flag_hapticBackSideOfTriangles    = a_value;
 
 
     m_ambient.setModificationFlags(a_value);
@@ -665,28 +638,26 @@ void cMaterial::setModificationFlags(const bool a_value)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Copy modified variables to another material object.
 
-    \fn     void cMaterial::copyTo(cMaterial& a_material)
-	\param	a_material  Destination material where values are copied to.
+    \param	a_material  Destination material where values are copied to.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::copyTo(cMaterial& a_material)
 {
    copyTo(&a_material);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Copy modified variables to another material object.
 
-    \fn     void cMaterial::copyTo(cMaterial* a_material)
-	\param	a_material  Destination material where values are copied to.
+    \param	a_material  Destination material where values are copied to.
 */
-//===========================================================================
+//==============================================================================
 void cMaterial::copyTo(cMaterial* a_material)
 {
     if (m_flag_shininess)         
@@ -695,8 +666,8 @@ void cMaterial::copyTo(cMaterial* a_material)
         a_material->setViscosity(m_viscosity); 
     if (m_flag_stiffness)      
         a_material->setStiffness(m_stiffness);
-    if (m_flag_dampingLevel)      
-        a_material->setDampingLevel(m_dampingLevel);
+    if (m_flag_damping)      
+        a_material->setDamping(m_flag_damping);
     if (m_flag_staticFriction)  
         a_material->setStaticFriction(m_staticFriction);
     if (m_flag_dynamicFriction)    
@@ -715,10 +686,10 @@ void cMaterial::copyTo(cMaterial* a_material)
         a_material->setStickSlipForceMax(m_stickSlipForceMax);
     if (m_flag_stickSlipStiffness)  
         a_material->setStickSlipStiffness(m_stickSlipStiffness);
-    if (m_flag_renderFrontSideOfTriangles)
-        a_material->setRenderFrontSideOfTriangles(m_renderFrontSideOfTriangles);
-    if (m_flag_renderBackSideOfTriangles)
-        a_material->setRenderBackSideOfTriangles(m_renderBackSideOfTriangles);
+    if (m_flag_hapticFrontSideOfTriangles)
+        a_material->setHapticTriangleFrontSide(m_hapticFrontSideOfTriangles);
+    if (m_flag_hapticBackSideOfTriangles)
+        a_material->setHapticTriangleBackSide(m_hapticBackSideOfTriangles);
 
     m_ambient.copyTo(a_material->m_ambient);
     m_diffuse.copyTo(a_material->m_diffuse);
@@ -726,3 +697,7 @@ void cMaterial::copyTo(cMaterial* a_material)
     m_emission.copyTo(a_material->m_emission);
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

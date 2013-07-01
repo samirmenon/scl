@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,115 +37,127 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 724 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1064 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CRenderOptionsH
 #define CRenderOptionsH
-//---------------------------------------------------------------------------
-class cCamera;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+class cCamera;
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CRenderOptions.h
     
-    \brief  
+    \brief
     <b> Graphics </b> \n 
     World rendering options.
 */
-//===========================================================================
+//==============================================================================
 
 
-//===========================================================================
+//==============================================================================
 /*!
-      \class      cRenderOptions
-      \ingroup    graphics
+    \class      cRenderOptions
+    \ingroup    graphics
 
-      \brief      
-      cRenderOptions provides a description on what elements need to
-	  be rendered in the world during a pass. \n
+    \brief
+    Rendering options (For internal OpenGL use).
+
+    \details
+    cRenderOptions provides a description on what elements need to
+    be rendered in the world during a rendering pass. \n
 */
-//===========================================================================
+//==============================================================================
 struct cRenderOptions
 {
     //! Pointer to the current camera from which the scene is being rendered.
     cCamera* m_camera;
 
     //! Is set to true if the scene is rendered in a single pass only (Scene with no transparent objects)
-	bool m_single_pass_only;
+    bool m_single_pass_only;
 
     //! When using multiple rendering passes, set to true to render opaque objects only.
-	bool m_render_opaque_objects_only;
+    bool m_render_opaque_objects_only;
 
     //! When using multiple rendering passes, set to true to render front faces of transparent objects only.
     bool m_render_transparent_front_faces_only;
-	
+    
     //! When using multiple rendering passes, set to true to render back faces of transparent objects only.
     bool m_render_transparent_back_faces_only;
 
     //! If set to true, then enabled light sources are activated.
-	bool m_enable_lighting;
+    bool m_enable_lighting;
 
     //! If set to true then material properties are rendered.
-	bool m_render_materials;
+    bool m_render_materials;
 
     //! If set to true then texture properties are rendered.
     bool m_render_textures;
 
     //! If set to true then this means that a depth map is being rendered for shadow casting.
-	bool m_creating_shadow_map;
+    bool m_creating_shadow_map;
 
     //! If set to true, then shadows are being rendered if enabled.
-	bool m_rendering_shadow;
+    bool m_rendering_shadow;
 
     //! Temp - To be defined!
-	double m_shadow_light_level;
+    double m_shadow_light_level;
 
     //! If set to true, the position of objects are frozen,
-	bool m_storeObjectPositions;
+    bool m_storeObjectPositions;
 
     //! If set to true, then reset display lists and texture objects.
     bool m_resetDisplay;
 };
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Returns \b true if parts using material properties with/without 
+    Returns __true__ if parts using material properties with/without 
     transparency can be rendered.
 
     \param  a_options  Rendering options
     \param  a_useTransparency  Indicates if current object uses transparency.
     \return Return result as described above.
 */
-//===========================================================================
+//==============================================================================
 inline bool SECTION_RENDER_PARTS_WITH_MATERIALS(cRenderOptions a_options, bool a_useTransparency)
 {
-	return (!(
-		((a_options.m_render_opaque_objects_only) && (a_useTransparency)) ||
-		((a_options.m_render_transparent_front_faces_only || a_options.m_render_transparent_back_faces_only) && (!a_useTransparency))
-		));
+    return (!(
+        ((a_options.m_render_opaque_objects_only) && (a_useTransparency)) ||
+        ((a_options.m_render_transparent_front_faces_only || a_options.m_render_transparent_back_faces_only) && (!a_useTransparency))
+        ));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Returns \b true if opaque parts only can be rendered.
+    Returns __true__ if opaque parts only can be rendered.
 
     \param  a_options  Rendering options
     \return Return result as described above.
 */
-//===========================================================================
+//==============================================================================
 inline bool SECTION_RENDER_OPAQUE_PARTS_ONLY(cRenderOptions a_options)
 {
-	return(!(a_options.m_render_transparent_back_faces_only ||
-		     a_options.m_render_transparent_front_faces_only));
+    return(!(a_options.m_render_transparent_back_faces_only ||
+             a_options.m_render_transparent_front_faces_only));
 }
 
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

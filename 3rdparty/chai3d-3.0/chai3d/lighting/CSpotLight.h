@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,17 +39,21 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 368 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CSpotLightH
 #define CSpotLightH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "lighting/CPositionalLight.h"
 #include "lighting/CDirectionalLight.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CSpotLight.h
 
@@ -57,46 +61,48 @@
     <b> Lighting </b> \n 
     Spot Light.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cSpotLight
     \ingroup    lighting
 
-    \brief      
+    \brief
+    Spot light source
+
+    \details
     cSpotLight describes a spot light. 
 */
-//===========================================================================
+//==============================================================================
 
 class cSpotLight : public cPositionalLight, public cDirectionalLight
 {
-  public:
-    
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Constructor of cSpotLight.
     cSpotLight(cWorld* a_world);
-	
+    
     //! Destructor of cSpotLight.
     virtual ~cSpotLight();
 
 
-  	//-----------------------------------------------------------------------
-    // MEMBERS: (shadows)
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - SHADOW CASTING:
+    //-----------------------------------------------------------------------
 
-    //! Shadow map.
-	cShadowMap* m_shadowMap;
+public:
 
     //! Update shadow map.
-    void updateShadowMap();
+    bool updateShadowMap(double a_mirrorH = 1.0, double a_mirrorV = 1.0);
 
     //! Define the near and near clipping planes of the shadow.
-    void setShadowMapProperties(const double& a_nearClippingPlane, 
-                                const double& a_farClippingPlane);
+    void setShadowMapProperties(const double& a_nearClippingPlane,
+        const double& a_farClippingPlane);
 
     //! Set the status of the shadow map.
     void setShadowMapEnabled(const bool a_enabled);
@@ -105,9 +111,21 @@ class cSpotLight : public cPositionalLight, public cDirectionalLight
     bool getShadowMapEnabled() const;
 
 
-	//-----------------------------------------------------------------------
-    // METHODS: (lighting properties)
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC MEMBERS - SHADOW CASTING:
+    //-----------------------------------------------------------------------
+
+public:
+
+    //! Shadow map.
+    cShadowMap* m_shadowMap;
+
+
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - LIGHTING PROPERTIES:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Set concentration level of the light.
     void setSpotExponent(const GLfloat& a_value) { m_spotExponent = cClamp(a_value, 0.0f, 100.0f); }
@@ -119,43 +137,50 @@ class cSpotLight : public cPositionalLight, public cDirectionalLight
     void setCutOffAngleDeg(const GLfloat& a_angleDeg);
 
     //! Read Cut off angle.
-    GLfloat getCutOffAngleDEG() const { return (m_cutOffAngleDEG); }
+    GLfloat getCutOffAngleDeg() const { return (m_cutOffAngleDeg); }
 
 
-	//-----------------------------------------------------------------------
-    // METHODS: (display model)
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - DISPLAY MODEL:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Set display settings of light source. To be used for debugging purposes to display location and direction of light source.
     void setDisplaySettings(const double& a_sourceRadius = 0.02, 
-                            const double& a_coneLength = 1.0, 
-                            const bool a_displayEnabled = true);
+        const double& a_coneLength = 1.0, 
+        const bool a_displayEnabled = true);
 
 
-  	//-----------------------------------------------------------------------
-    // MEMBERS:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC MEMBERS - DISPLAY MODEL:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Color used for rendering the light cone of the display model.
     cColorf m_displayConeColor;
 
-  protected:
-  
-  	//-----------------------------------------------------------------------
-    // MEMBERS: (lighting properties)
-	//-----------------------------------------------------------------------
-    
-	//! Concentration of the light.
+
+    //-----------------------------------------------------------------------
+    // PROTECTED MEMBERS - LIGHTING PROPERTIES
+    //-----------------------------------------------------------------------
+
+protected:
+
+    //! Concentration of the light.
     GLfloat m_spotExponent;
     
-	//! Cut off angle (for spot lights only). Only values in the range 0 to 90 degrees
-    GLfloat m_cutOffAngleDEG;
+    //! Cut off angle (for spot lights only). Only values in the range 0 to 90 degrees
+    GLfloat m_cutOffAngleDeg;
 
 
-    //-----------------------------------------------------------------------
-    // MEMBERS: (shadow map)
-    //-----------------------------------------------------------------------
-    
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS - SHADOW CASTING
+    //--------------------------------------------------------------------------
+
+protected:
+
     //! Shadow map near clipping plane.
     double m_shadowNearClippingPlane;
 
@@ -163,17 +188,21 @@ class cSpotLight : public cPositionalLight, public cDirectionalLight
     double m_shadowFarClippingPlane;
 
 
-  	//-----------------------------------------------------------------------
-    // MEMBERS: (display model)
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PROTECTED MEMBERS - DISPLAY MODEL:
+    //-----------------------------------------------------------------------
+
+protected:
 
     //! Length of light cone for display model.
     double m_displayConeLength;
 
 
-	//-----------------------------------------------------------------------
-	// METHODS:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PROTECTED VIRTUAL METHODS:
+    //-----------------------------------------------------------------------
+
+protected:
 
     //! Render the lighting properties of this light source in OpenGL.
     virtual void renderLightSource(cRenderOptions& a_options);
@@ -182,7 +211,11 @@ class cSpotLight : public cPositionalLight, public cDirectionalLight
     virtual void render(cRenderOptions& a_options);
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

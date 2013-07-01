@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,7 +37,7 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 836 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1067 $
 */
 //===========================================================================
 
@@ -59,25 +59,13 @@
 //---------------------------------------------------------------------------
 //!     \defgroup   devices  Devices
 //---------------------------------------------------------------------------
-#include "devices/CCallback.h"
 #include "devices/CGenericDevice.h"
+#include "devices/CGenericHapticDevice.h"
 #include "devices/CHapticDeviceHandler.h"
 #include "devices/CMyCustomDevice.h"
-
-#if defined(WIN32) | defined(WIN64)
 #include "devices/CDeltaDevices.h"     
-#include "devices/CFalconDevice.h"
 #include "devices/CPhantomDevices.h"
-#include "devices/CVirtualDevice.h"
-#endif
-
-#if defined(LINUX)
-#include "devices/CDeltaDevices.h"
-#endif
-
-#if defined(MACOSX)
-#include "devices/CDeltaDevices.h"
-#endif
+#include "devices/CSixenseDevices.h"
 
 
 //---------------------------------------------------------------------------
@@ -140,8 +128,13 @@
 #include "world/CShapeLine.h"
 #include "world/CShapeSphere.h"
 #include "world/CShapeTorus.h"
-#include "world/CShapeBeltedEllipsoid.h"
 #include "world/CWorld.h"
+
+
+//---------------------------------------------------------------------------
+//!     \defgroup   display  Camera
+//---------------------------------------------------------------------------  
+#include "display/CCamera.h"
 
 
 //---------------------------------------------------------------------------
@@ -168,7 +161,6 @@
 //---------------------------------------------------------------------------
 #include "effects/CGenericEffect.h"
 #include "effects/CEffectMagnet.h"
-#include "effects/CEffectPotentialField.h"
 #include "effects/CEffectSurface.h"
 #include "effects/CEffectStickSlip.h"
 #include "effects/CEffectViscosity.h"
@@ -237,17 +229,10 @@
 #include "resources/CFontCalibri26.h"
 #include "resources/CFontCalibri28.h"
 #include "resources/CFontCalibri32.h"
-#include "resources/CFontMetaCorr36.h"
-
-
-//---------------------------------------------------------------------------
-//!     \defgroup   display  Viewports
-//---------------------------------------------------------------------------
-#include "display/CCamera.h"
-
-#if defined(WIN32) | defined(WIN64)
-#include "display/CViewport.h"
-#endif
+#include "resources/CFontCalibri36.h"
+#include "resources/CFontCalibri40.h"
+#include "resources/CFontCalibri72.h"
+#include "resources/CFontCalibri144.h"
 
 
 //---------------------------------------------------------------------------

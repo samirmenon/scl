@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,23 +39,27 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CDisplayList.h"
-//---------------------------------------------------------------------------
-#include "graphics/GLee.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#ifdef C_USE_OPENGL
+#include "GL/glew.h"
+#endif
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
-   Constructor of cDisplayList. The display list is set to zero as it has
-   not yert been create. We also initialize the flag which tells us if a 
-   display list is currently being created.
-   
-   \fn          cDisplayList::cDisplayList()
+    Constructor of cDisplayList. \n
+    The display list is set to zero as it has not been created. We also 
+    initialize the flag which tells us if a display list is currently being created.
 */
-//===========================================================================
+//==============================================================================
 cDisplayList::cDisplayList()
 {
     m_displayList = 0;
@@ -63,13 +67,11 @@ cDisplayList::cDisplayList()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-   Destructor of cDisplayList.
-
-   \fn          cDisplayList::~cDisplayList()
+    Destructor of cDisplayList.
 */
-//===========================================================================
+//==============================================================================
 cDisplayList::~cDisplayList()
 {
     // delete display list
@@ -77,21 +79,21 @@ cDisplayList::~cDisplayList()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-   Invalidate current display list. We inform the display list that it will
-   need to be update the next time the object is rendered. We free any 
-   graphic card memory which contains the current display list.
-
-   \fn          void cDisplayList::update()
+    Invalidate current display list. We inform the display list that it will
+    need to be update the next time the object is rendered. We free any 
+    graphic card memory which contains the current display list.
 */
-//===========================================================================
+//==============================================================================
 void cDisplayList::invalidate()
 {
     // delete any allocated display lists
     if (m_displayList != 0)
     {
+        #ifdef C_USE_OPENGL
         glDeleteLists(m_displayList, 1);
+        #endif
     }
 
     // display list is invalid
@@ -100,26 +102,27 @@ void cDisplayList::invalidate()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-   Render display list. We pass a boolean from the object which will
-   check if the display list should be used. If the display list is valid
-   and used for rendering the object, the method returns \b true, otherwise
-   \b false.
+    Render display list. We pass a boolean from the object which will
+    check if the display list should be used. If the display list is valid
+    and used for rendering the object, the method returns __true__, otherwise
+    __false__.
 
-   \fn          bool cDisplayList::render()
+    \param  a_useDisplayList  If __true__, then display list is rendered.
 
-      \param       a_useDisplayList  If \b true, then display list is rendered.
-
-   \return      Return \b true is display list was rendered, otherwise \b false
-                if display list was invalid. 
+    \return Return __true__ is display list was rendered, otherwise __false__
+            if display list was invalid. 
 */
-//===========================================================================
+//==============================================================================
 bool cDisplayList::render(const bool a_useDisplayList)
 {
     if ((a_useDisplayList) && (m_displayList != 0))
     {
+        #ifdef C_USE_OPENGL
         glCallList(m_displayList);
+        #endif
+
         return (true);
     }
     else
@@ -129,18 +132,16 @@ bool cDisplayList::render(const bool a_useDisplayList)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-   Begin creating a display list. 
+    Begin creating a display list. 
 
-   \fn          bool cDisplayList::begin()
+    \param  a_useDisplayList  If __true__, then display list is created.
 
-   \param       a_useDisplayList  If \b true, then display list is created.
-
-   \return      Return \b true if the OpenGL display list has been allocated
-                successfully.
+    \return Return __true__ if the OpenGL display list has been allocated
+            successfully.
 */
-//===========================================================================
+//==============================================================================
 bool cDisplayList::begin(const bool a_useDisplayList)
 {
     if (a_useDisplayList)
@@ -149,7 +150,9 @@ bool cDisplayList::begin(const bool a_useDisplayList)
         invalidate();
 
         // create an OpenGL display list
+        #ifdef C_USE_OPENGL
         m_displayList = glGenLists(1);
+        #endif
 
         // verify result
         if (m_displayList == 0) 
@@ -162,7 +165,9 @@ bool cDisplayList::begin(const bool a_useDisplayList)
             // On some machines, GL_COMPILE_AND_EXECUTE totally blows for some reason,
             // so even though it's more complex on the first rendering pass, we use
             // GL_COMPILE (and _repeat_ the first rendering pass)
+            #ifdef C_USE_OPENGL
             glNewList(m_displayList, GL_COMPILE);
+            #endif
 
             // we are now creating a display list
             m_flagCreatingDisplayList = true;
@@ -175,26 +180,26 @@ bool cDisplayList::begin(const bool a_useDisplayList)
     {
         return (false);
     }
-
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-   Finalize and compile the display list. Optionally render the display list
-   as nothing will have yet been rendered at the screen during display
-   list compilation which began after calling method begin().
+    Finalize and compile the display list. Optionally render the display list
+    as nothing will have yet been rendered at the screen during display
+    list compilation which began after calling method begin().
    
-   \fn          void cDisplayList::end(bool a_executeDisplayList)
-   \param       a_executeDisplayList  If \b true, render display list.
+    \param  a_executeDisplayList  If __true__, render display list.
 */
-//===========================================================================
+//==============================================================================
 void cDisplayList::end(const bool a_executeDisplayList)
 {
     if (m_flagCreatingDisplayList)
     {
         // finalize list
+        #ifdef C_USE_OPENGL
         glEndList();
+        #endif
 
         // display list has been finalized
         m_flagCreatingDisplayList = false;
@@ -206,3 +211,8 @@ void cDisplayList::end(const bool a_executeDisplayList)
         }
     }
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

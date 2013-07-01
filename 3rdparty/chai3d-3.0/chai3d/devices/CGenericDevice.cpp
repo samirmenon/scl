@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,48 +37,36 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 799 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1015 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "devices/CGenericDevice.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cGenericDevice.
 */
-//===========================================================================
-cGenericDevice::cGenericDevice()
+//==============================================================================
+cGenericDevice::cGenericDevice(unsigned int a_deviceNumber)
 {
     // the device is not yet available
     m_deviceAvailable = false;
 
-    // the system is not yet ready to receive commands
+    // the device is not yet ready to receive commands
     m_deviceReady = false;
 
-    // No call back has been defined
-    m_callback = NULL;
+    // the device ID has not yet been defined
+    m_deviceNumber = -1;
 };
 
 
-//===========================================================================
-/*!
-    Ask the device to call me back periodically.  If this device supports
-    timed callbacks, this function will return 'true' and will call the
-    supplied m_callback method at haptic rates.  If not, this function will
-    return 'false', and you should create your own haptic thread.
-
-    \param  m_callback  The callback to trigger periodically, or 0 to cancel
-                        an existing callback. 
-
-    \return Returns \b true if this device supports callbacks, \b false 
-            otherwise.                          
-*/
-//===========================================================================
-bool cGenericDevice::setCallback(cCallback* a_callback)
-{
-    m_callback = a_callback;
-    return (true);
-}
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

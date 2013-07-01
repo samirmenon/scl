@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,40 +37,58 @@
 
     \author    <http://www.chai3d.org>
     \author    Sebastien Grange
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1065 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CFileImagePNGH
 #define CFileImagePNGH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CImage.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
-    \file       CFilePNG.h
+    \file       CFileImagePNG.h
 
     \brief
     <b> Files </b> \n 
     PNG File Image Handler.
 */
-//===========================================================================
+//==============================================================================
 
-//! Load a PNG image file.
-bool cLoadFilePNG(cImage* a_image, string a_filename);
+#ifdef C_USE_FILE_PNG
 
-//! Load a PNG image buffer.
-bool cLoadPNG (cImage *a_image, const unsigned char *a_buffer, unsigned int a_len);
+    //! Load a PNG image file.
+    bool cLoadFilePNG(cImage* a_image, std::string a_filename);
 
-//! Save a PNG image file. 
-bool cSaveFilePNG(cImage* a_image, string a_filename);
+    //! Load a PNG image buffer.
+    bool cLoadPNG (cImage *a_image, const unsigned char *a_buffer, unsigned int a_len);
 
-//! Save a PNG image buffer.
-bool cSavePNG (cImage *a_image, unsigned char **a_buffer, unsigned int *a_len);
+    //! Save a PNG image file. 
+    bool cSaveFilePNG(cImage* a_image, std::string a_filename);
 
+    //! Save a PNG image buffer.
+    bool cSavePNG (cImage *a_image, unsigned char **a_buffer, unsigned int *a_len);
 
-//---------------------------------------------------------------------------
+#else
+
+    inline bool cLoadFilePNG(cImage* a_image, std::string a_filename) { return (false); }
+    inline bool cLoadPNG (cImage *a_image, const unsigned char *a_buffer, unsigned int a_len) { return (false); }
+    inline bool cSaveFilePNG(cImage* a_image, std::string a_filename) { return (false); }
+    inline bool cSavePNG (cImage *a_image, unsigned char **a_buffer, unsigned int *a_len) { return (false); }
+
 #endif
-//---------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+#endif
+//------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -38,20 +38,24 @@
     \author    <http://www.chai3d.org>
     \author    Federico Barbagli
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 793 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1057 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CPhantomDevicesH
 #define CPhantomDevicesH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #if defined(C_ENABLE_PHANTOM_DEVICE_SUPPORT)
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "devices/CGenericHapticDevice.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CPhantomDevices.h
 
@@ -59,24 +63,26 @@
     <b> Devices </b> \n 
     Phantom Haptic Device.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cPhantomDevice
     \ingroup    devices  
-    
-    \brief  
-    cPhantomDevice describes an interface to the Phantom haptic devices 
-    from Sensable Technologies.
+
+    \brief
+    Interface to Sensable/Geomagic Phantom haptic devices.
+
+    \details
+    cPhantomDevice implements an interface for all Sensable/Geomagic haptic devices.
 */
-//===========================================================================
+//==============================================================================
 class cPhantomDevice : public cGenericHapticDevice
 {
   public:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Constructor of cPhantomDevice.
     cPhantomDevice(unsigned int a_deviceNumber);
@@ -85,55 +91,87 @@ class cPhantomDevice : public cGenericHapticDevice
     ~cPhantomDevice();
 
 
-    //-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
 
     //! Open connection to haptic device (0 indicates success).
-    int open();
+    virtual bool open();
 
     //! Close connection to haptic device (0 indicates success).
-    int close();
+    virtual bool close();
 
     //! Calibrate haptic device (0 indicates success).
-    int calibrate();
-
-    //! Returns the number of devices available from this class of device.
-    unsigned int getNumDevices();
+    virtual bool calibrate(bool a_forceCalibration = false);
 
     //! Read the position of the device. Units are meters [m].
-    int getPosition(cVector3d& a_position);
+    virtual bool getPosition(cVector3d& a_position);
 
-    //! Read the linear velocity of the device. Units are meters per second [m/s].
-    int getLinearVelocity(cVector3d& a_linearVelocity);
+    //! Read orientation frame (3x3 matrix) of the haptic device end-effector.
+    virtual bool getRotation(cMatrix3d& a_rotation);
 
-    //! Read the orientation frame of the device end-effector.
-    int getRotation(cMatrix3d& a_rotation);
+    //! Send force [N] to haptic device.
+    virtual bool setForce(const cVector3d& a_force);
 
-    //! Send a force [N] to the haptic device.
-    int setForce(const cVector3d& a_force);
+    //! Send force [N] and torque [N*m] to haptic device.
+    virtual bool setForceAndTorque(const cVector3d& a_force, const cVector3d& a_torque);
 
-    //! Send a force [N] and a torque [N*m] to the haptic device.
-    int setForceAndTorque(const cVector3d& a_force, const cVector3d& a_torque);
-
-    //! read the status of the user switch [\b true = \b ON / \b false = \b OFF].
-    int getUserSwitch(int a_switchIndex, bool& a_status);
+    //! Read status of user switch [__true__ = __ON__ / __false__ = __OFF__].
+    virtual bool getUserSwitch(int a_switchIndex, bool& a_status);
 
 
-  private:
-    //! counter.
-    static int m_dllcount;
+    //--------------------------------------------------------------------------
+    // PUBLIC STATIC METHODS:
+    //--------------------------------------------------------------------------
 
-    //! Device ID number.
+public: 
+
+    //! Get number of haptic devices available for this class of devices.
+    static unsigned int getNumDevices();
+
+
+    //--------------------------------------------------------------------------
+    // PROTECTED METHODS - DEVICE LIBRARY INITIALIZATION:
+    //--------------------------------------------------------------------------
+
+protected:
+
+    //! Open libraries for this class of devices.
+    static bool openLibraries();
+
+    //! Close libraries for this class of devices.
+    static bool closeLibraries();
+
+
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS - DEVICE LIBRARIES:
+    //--------------------------------------------------------------------------
+
+protected:
+
+    //! Allocation table for devices of this class. __true__ means that the device has been allocated, __false__ means free.
+    static bool s_allocationTable[C_MAX_DEVICES];
+
+    //! Number of instances for this class of devices currently using the libraries.
+    static unsigned int s_libraryCounter;
+
+
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS
+    //--------------------------------------------------------------------------
+
+protected:
+
+    //! Device ID number among the Phantom devices connected to the computer.
     int m_deviceID;
-
-    //! Are the Phantom drivers installed and available.
-    bool m_driverInstalled;
 };
 
-//---------------------------------------------------------------------------
-#endif // _ENABLE_PHANTOM_SUPPORT
-//---------------------------------------------------------------------------
-#endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+#endif // C_ENABLE_PHANTOM_DEVICE_SUPPORT
+//------------------------------------------------------------------------------
+#endif
+//------------------------------------------------------------------------------

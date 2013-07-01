@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,23 +37,28 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 831 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "widgets/CBackground.h"
-//---------------------------------------------------------------------------
+using namespace std;
+//------------------------------------------------------------------------------
 #include "display/CCamera.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cBackground.
 
     \fn     cBackground::cBackground()
 */
-//===========================================================================
+//==============================================================================
 cBackground::cBackground()
 {
     // create vertices at each corner
@@ -90,14 +95,14 @@ cBackground::cBackground()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render the background object in OpenGL.
 
     \fn       void cBackground::render(cRenderOptions& a_options)
     \param	a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cBackground::render(cRenderOptions& a_options)
 {
     // update the width and height of background in case window size has changed
@@ -110,7 +115,7 @@ void cBackground::render(cRenderOptions& a_options)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Updates the dimensions of the backgound based on the display dimensions.
 
@@ -123,7 +128,7 @@ void cBackground::render(cRenderOptions& a_options)
     \param  a_topRightX	    X coordinate of top right point.
     \param  a_topRightY	    Y coordinate of top right point.
 */
-//===========================================================================
+//==============================================================================
 void cBackground::update(const unsigned int a_bottomLeftX,
                          const unsigned int a_bottomLeftY,
                          const unsigned int a_topRightX,
@@ -231,14 +236,14 @@ void cBackground::update(const unsigned int a_bottomLeftX,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define an uniform color for the current background.
 
     \fn       void cBackground::setUniformColor(cColorf a_color)
     \param	a_color  Color.
 */
-//===========================================================================
+//==============================================================================
 void cBackground::setUniformColor(cColorf a_color)
 {
     // retrieve pointer to vertices
@@ -259,7 +264,7 @@ void cBackground::setUniformColor(cColorf a_color)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define a vertical gradient colored background. The gradient is defined
     by the top and bottom colors.
@@ -269,7 +274,7 @@ void cBackground::setUniformColor(cColorf a_color)
     \param	a_topColor  Top color.
     \param	a_bottomColor  Bottom color.
 */
-//===========================================================================
+//==============================================================================
 void cBackground::setVerticalLinearGradient(cColorf a_topColor, 
                                             cColorf a_bottomColor)
 {
@@ -291,7 +296,7 @@ void cBackground::setVerticalLinearGradient(cColorf a_topColor,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define a horizontal gradient colored background. The gradient is defined
     by the left and right colors.
@@ -301,7 +306,7 @@ void cBackground::setVerticalLinearGradient(cColorf a_topColor,
     \param	a_leftColor  Top color.
     \param	a_rightColor  Bottom color.
 */
-//===========================================================================
+//==============================================================================
 void cBackground::setHorizontalLinearGradient(cColorf a_leftColor, 
                                               cColorf a_rightColor)
 {
@@ -323,7 +328,7 @@ void cBackground::setHorizontalLinearGradient(cColorf a_leftColor,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define a color at each corner of the background. The color distribution
     is interpolated throughout the background.
@@ -337,7 +342,7 @@ void cBackground::setHorizontalLinearGradient(cColorf a_leftColor,
     \param	a_topLeftColor  Color at bottom left corner.
     \param	a_topLeftColor  Color at bottom right corner.
 */
-//===========================================================================
+//==============================================================================
 void cBackground::setCornerColors(cColorf a_topLeftColor,
                                   cColorf a_topRightColor, 
                                   cColorf a_bottomLeftColor,    
@@ -361,7 +366,7 @@ void cBackground::setCornerColors(cColorf a_topLeftColor,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Load a texture image as background. Depending of the size of the image
       a 1D or 2D texture map is created.
@@ -369,7 +374,7 @@ void cBackground::setCornerColors(cColorf a_topLeftColor,
       \fn       bool cBackground::loadFromFile(string a_filename)
 	  \param	a_filename  Filename of image.
 */
-//===========================================================================
+//==============================================================================
 bool cBackground::loadFromFile(string a_filename)
 {
 	// create image if not yet allocated
@@ -419,7 +424,7 @@ bool cBackground::loadFromFile(string a_filename)
 
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Load a texture image as background. Depending of the size of the image
       a 1D or 2D texture map is created.
@@ -427,7 +432,7 @@ bool cBackground::loadFromFile(string a_filename)
       \fn       bool cBackground::loadFromImage(cImage *a_image)
       \param    a_filename  Filename of image.
 */
-//===========================================================================
+//==============================================================================
 bool cBackground::loadFromImage(cImage *a_image)
 {
     // delete current texture
@@ -466,3 +471,8 @@ bool cBackground::loadFromImage(cImage *a_image)
     // success
     return (true);
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

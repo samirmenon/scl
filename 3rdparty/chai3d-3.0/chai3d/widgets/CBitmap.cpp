@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,21 +37,25 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 773 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "widgets/CBitmap.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
       Constructor of cBitmap.
 
       \fn       cBitmap::cBitmap()
 */
-//===========================================================================
+//==============================================================================
 cBitmap::cBitmap()
 {
 	// create image structure
@@ -66,19 +70,19 @@ cBitmap::cBitmap()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Destructor of cBitmap.
 
       \fn       cBitmap::~cBitmap()
 */
-//===========================================================================
+//==============================================================================
 cBitmap::~cBitmap()
 {
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a copy of itself.
 
@@ -87,14 +91,14 @@ cBitmap::~cBitmap()
                        const bool a_duplicateMeshData,
                        const bool a_buildCollisionDetector)
 
-    \param      a_duplicateMaterialData  If \b true, material (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateTextureData  If \b true, texture data (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateMeshData  If \b true, mesh data (if available) is duplicated, otherwise it is shared.
-    \param      a_buildCollisionDetector  If \b true, collision detector (if available) is duplicated, otherwise it is shared.
+    \param      a_duplicateMaterialData  If __true__, material (if available) is duplicated, otherwise it is shared.
+    \param      a_duplicateTextureData  If __true__, texture data (if available) is duplicated, otherwise it is shared.
+    \param      a_duplicateMeshData  If __true__, mesh data (if available) is duplicated, otherwise it is shared.
+    \param      a_buildCollisionDetector  If __true__, collision detector (if available) is duplicated, otherwise it is shared.
 
 	\return		Return new object.
 */
-//===========================================================================
+//==============================================================================
 cBitmap* cBitmap::copy(const bool a_duplicateMaterialData,
                        const bool a_duplicateTextureData, 
                        const bool a_duplicateMeshData,
@@ -129,7 +133,7 @@ cBitmap* cBitmap::copy(const bool a_duplicateMaterialData,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Render bitmap in OpenGL
 
@@ -137,9 +141,11 @@ cBitmap* cBitmap::copy(const bool a_duplicateMaterialData,
 
 	  \param	a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cBitmap::render(cRenderOptions& a_options)
 {
+#ifdef C_USE_OPENGL
+
     glDisable(GL_LIGHTING);
 
     // transparency is used
@@ -175,16 +181,18 @@ void cBitmap::render(cRenderOptions& a_options)
     glEnable(GL_LIGHTING);
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update bounding box of current object.
 
     \fn       void void cBitmap::updateBoundaryBox()
  */
-//===========================================================================
+//==============================================================================
 void cBitmap::updateBoundaryBox()
 {
     m_boundaryBoxMin.zero();
@@ -202,7 +210,7 @@ void cBitmap::updateBoundaryBox()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Set zoom factors for the horizontal and vertical directions
 
@@ -212,7 +220,7 @@ void cBitmap::updateBoundaryBox()
       \param    a_zoomHorizontal Zoom factor along the horizontal direction
       \param    a_zoomVertical Zoom factor along the vertical direction
 */
-//===========================================================================
+//==============================================================================
 void cBitmap::setZoom(const float a_zoomWidth, 
 				      const float a_zoomHeight)
 {
@@ -221,14 +229,14 @@ void cBitmap::setZoom(const float a_zoomWidth,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Cleanly remove existing image and set a new, existing image as the bitmap source
 
       \fn       void cBitmap::setImage(cImage *a_image);
       \param    a_image a pointer to the new image
 */
-//===========================================================================
+//==============================================================================
 bool cBitmap::setImage(cImage *a_image)
 {
     if (!a_image) return false;
@@ -243,3 +251,7 @@ bool cBitmap::setImage(cImage *a_image)
     return true;
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

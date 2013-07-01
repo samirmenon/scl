@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -38,15 +38,20 @@
     \author    <http://www.chai3d.org>
     \author    Chris Sewell
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 714 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "collisions/CCollisionBrute.h"
-//---------------------------------------------------------------------------
+using namespace std;
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cCollisionBrute.
 
@@ -54,7 +59,7 @@
 
     \param  a_triangles  List of triangles.
 */
-//===========================================================================
+//==============================================================================
 cCollisionBrute::cCollisionBrute(vector<cTriangle> *a_triangles)
 {
     // radius padding around triangles
@@ -65,7 +70,7 @@ cCollisionBrute::cCollisionBrute(vector<cTriangle> *a_triangles)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Check if the given line segment intersects any triangle of the mesh. This
     method is called "brute force" because all triangles are checked by
@@ -86,7 +91,7 @@ cCollisionBrute::cCollisionBrute(vector<cTriangle> *a_triangles)
 
     \return   Return true if the line segment intersects one or more triangles.
 */
-//===========================================================================
+//==============================================================================
 bool cCollisionBrute::computeCollision(cGenericObject* a_object,
                                        cVector3d& a_segmentPointA,
                                        cVector3d& a_segmentPointB,
@@ -117,4 +122,6 @@ bool cCollisionBrute::computeCollision(cGenericObject* a_object,
 }
 
 
-
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

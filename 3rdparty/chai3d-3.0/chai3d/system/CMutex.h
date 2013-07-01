@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,44 +37,59 @@
 
     \author    <http://www.chai3d.org>
     \author    Sebastien Grange
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 799 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CMutexH
 #define CMutexH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "system/CGlobals.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CMutex.h
     \ingroup    system
 
     \brief
     <b> System </b> \n
-    Mutex.
+    Mutex Class.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class	    cMutex
     \ingroup    system
 
     \brief	
-    cThread provides a class to manage threads.
+    Synchronization mechanism for enforcing limits on access to a resource.
+
+    \details
+    A mutex object is a synchronization object whose state is set to 
+    signaled when it is not owned by any thread, and non-signaled when
+    it is owned. Only one thread at a time can own a mutex object, whose 
+    name comes from the fact that it is useful in coordinating mutually 
+    exclusive access to a shared resource. For example, to prevent two 
+    threads from writing to shared memory at the same time, each thread 
+    waits for ownership of a mutex object before executing the code that 
+    accesses the memory. After writing to the shared memory, the thread 
+    releases the mutex object.
 */
-//===========================================================================
+//==============================================================================
 class cMutex
 {
-  public:
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Constructor of cMutex.
     cMutex();
@@ -83,32 +98,43 @@ class cMutex
     virtual ~cMutex();
 
 
-    //-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
 
-    //! Acquire the mutex
+public:
+
+    //! Acquire the mutex.
     bool acquire();
 
-    //! Acquire the mutex only if it is not owned by another thread
+    //! Acquire the mutex only if it is not owned by another thread.
     bool tryAcquire();
 
     //! Release the mutex.
     void release();
 
-  protected:
+
+    //--------------------------------------------------------------------------
+    // PROTECTED METHODS:
+    //--------------------------------------------------------------------------
+
+protected:
 
 #if defined(WIN32) | defined(WIN64)
-    //! Mutex handle
+    //! Mutex handle.
     CRITICAL_SECTION m_mutex;
 #endif
 
 #if defined(LINUX) || defined(MACOSX)
-    //! Mutex handle
+    //! Mutex handle.
     pthread_mutex_t m_mutex;
 #endif
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

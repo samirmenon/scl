@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,23 +37,22 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 799 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1055 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CGenericDeviceH
 #define CGenericDeviceH
-//---------------------------------------------------------------------------
-#include "system/CGlobals.h"
-#include "devices/CCallback.h"
-#include <string>
-#include <stdio.h>
-//---------------------------------------------------------------------------
-using std::string;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#include "math/CConstants.h"
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CGenericDevice.h
 
@@ -61,70 +60,104 @@ using std::string;
     <b> Devices </b> \n 
     Device Base Class.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//------------------------------------------------------------------------------
+const unsigned int C_MAX_DEVICES = 16;
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \class      cGenericDevice
     \ingroup    devices  
 
-    \brief  
-    cGenericDevice Provides an general interface to communicate with hardware 
-    devices. 
+    \brief
+    Abstract class for hardware devices.
 
+    \details
+    cGenericDevice Provides an general interface to communicate with hardware 
+    devices. The device can be opened or closed by calling methods open() and 
+    close() respectively. A static method getNumDevices() is used to query the 
+    number of available devices for its class of devices. 
 */
-//===========================================================================
+//==============================================================================
 class cGenericDevice
-{
-  public:
-    
-    //-----------------------------------------------------------------------
+{    
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Constructor of cGenericDevice.
-    cGenericDevice();
+    cGenericDevice(unsigned int a_deviceNumber = 0);
 
     //! Destructor of cGenericDevice.
     virtual ~cGenericDevice() {};
 
 
-    //-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
 
-    //! Open connection to device (0 indicates success).
-    virtual int open() { return -1; }
+public:
 
-    //! Close connection to device (0 indicates success).
-    virtual int close() { return -1; }
+    //! Open connection to device.
+    virtual bool open() { return (C_ERROR); }
 
-    //! Initialize or calibrate device (0 indicates success).
-    virtual int calibrate() { return -1; }
+    //! Close connection to device.
+    virtual bool close() { return (C_ERROR); }
 
-    //! Returns the number of devices available from this class of device.
-    virtual unsigned int getNumDevices() { return (0); }
-
-    //! Returns true if the device is available for communication.
+    //! Returns __true__ if the device is available for communication, __false__ otherwise.
     bool isDeviceAvailable() { return (m_deviceAvailable); }
 
-    //! Returns true if the connection to the device has been created.
+    //! Returns __true__ if the connection to the device has been established by calling method open(), __false__ otherwise.
     bool isDeviceReady() { return (m_deviceReady); }
 
-    //! Ask the device to call me back periodically.
-    virtual bool setCallback(cCallback* a_callback);
 
-  protected:
-    //! Flag that indicates if the hardware device is available to the computer.
+    //--------------------------------------------------------------------------
+    // PUBLIC STATIC METHODS:
+    //--------------------------------------------------------------------------
+
+public:
+
+    //! Get number of haptic devices available for this class of devices.
+    static unsigned int getNumDevices() { return (0); }
+
+
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS:
+    //--------------------------------------------------------------------------
+
+protected:
+
+    //! Flag that indicates if the device is available to the computer.
     bool m_deviceAvailable;
 
-    //! Flag that indicates if connection to device was opened successfully.
+    //! Flag that indicates if connection to device was opened successfully by calling method open().
     bool m_deviceReady;
 
-    //! A callback method for this device (or zero if none has been registered).
-    cCallback* m_callback;
+    //! Device number ID for this category of devices. Value must be equal or bigger than __0__. A value of __-1__ means that the ID has not yet been defined.
+    int m_deviceNumber;
+
+
+    //--------------------------------------------------------------------------
+    // PROTECTED STATIC METHODS - DEVICE LIBRARY INITIALIZATION:
+    //--------------------------------------------------------------------------
+
+protected:
+
+    //! Open libraries for this class of devices.
+    static bool openLibraries() { return (C_SUCCESS); }
+
+    //! Close libraries for this class of devices.
+    static bool closeLibraries() { return (C_SUCCESS); }
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

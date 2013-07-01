@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -40,290 +40,519 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 322 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "files/CFileModelOBJ.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#include <iostream>
+#include <iomanip>
+#include <ostream>
+#include <fstream>
+#include <algorithm>
+#include <string>
+#include <cstring>
+using namespace std;
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 bool g_objLoaderShouldGenerateExtraVertices = false;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
-    Load a Wavefront OBJ file format image into a mesh.
+    Load an OBJ model file.
 
-    \fn         bool cLoadFileOBJ(cMesh* a_mesh, const string& a_fileName)
-    \param      a_mesh         Mesh in which image file is loaded
-    \param      a_fileName     Name of image file.
-    \return     Return \b true if image was loaded successfully, otherwise
-                return \b false.
+    \param  a_object  Multimesh object in which model is loaded.
+    \param  a_filename  Filename.
+
+    \return Return __true__ if operation succeeds, __false__ otherwise.
 */
-//===========================================================================
-bool cLoadFileOBJ(cMultiMesh* a_object, const string& a_fileName)
+//==============================================================================
+bool cLoadFileOBJ(cMultiMesh* a_object, const string& a_filename)
 {
-    cOBJModel fileObj;
-
-    // load file into memory. If an error occurs, exit.
-    if (!fileObj.LoadModel(a_fileName.c_str())) { return (false); };
-
-    // clear all vertices and triangle of current mesh
-	a_object->deleteAllMeshes();	
-
-    // get information about file
-    int numMaterials = fileObj.m_OBJInfo.m_materialCount;
-    int numNormals   = fileObj.m_OBJInfo.m_normalCount;
-    int numTexCoord  = fileObj.m_OBJInfo.m_texCoordCount;
-
-    // extract materials
-    vector<cMaterial> materials;
-
-    // object has no material properties
-    if (numMaterials == 0)
+    try
     {
-        // create a new child
-        cMesh *newMesh = a_object->newMesh();
+        cOBJModel fileObj;
 
-        // Give him a default color
-        newMesh->setVertexColor(cColorf(1.0,1.0,1.0,1.0));
-        newMesh->setUseVertexColors(true);
-        newMesh->setUseMaterial(false);
-        newMesh->setUseTransparency(false);
-    }
+        // load file into memory. If an error occurs, exit.
+        if (!fileObj.LoadModel(a_filename.c_str())) { return (false); };
 
-    // object has material properties. Create a child for each material
-    // property.
-    else
-    {
+        // clear all vertices and triangle of current mesh
+        a_object->deleteAllMeshes();	
 
-        int i = 0;
-        bool found_transparent_material = false;
+        // get information about file
+        int numMaterials = fileObj.m_OBJInfo.m_materialCount;
+        int numNormals   = fileObj.m_OBJInfo.m_normalCount;
+        int numTexCoord  = fileObj.m_OBJInfo.m_texCoordCount;
 
-        while (i < numMaterials)
+        // extract materials
+        vector<cMaterial> materials;
+
+        // object has no material properties
+        if (numMaterials == 0)
         {
             // create a new child
             cMesh *newMesh = a_object->newMesh();
 
-            // get next material
-            cMaterial newMaterial;
-            cMaterialInfo material = fileObj.m_pMaterials[i];
+            // Give him a default color
+            newMesh->setVertexColor(cColorf(1.0,1.0,1.0,1.0));
+            newMesh->setUseVertexColors(true);
+            newMesh->setUseMaterial(false);
+            newMesh->setUseTransparency(false);
+        }
 
-            int textureId = material.m_textureID;
-            if (textureId >= 1)
+        // object has material properties. Create a child for each material
+        // property.
+        else
+        {
+
+            int i = 0;
+            bool found_transparent_material = false;
+
+            while (i < numMaterials)
             {
-                cTexture2d *newTexture = new cTexture2d();
-                int result = newTexture->loadFromFile(material.m_texture);
+                // create a new child
+                cMesh *newMesh = a_object->newMesh();
 
-                // If this didn't work out, try again in the obj file's path
-                if (result == 0) 
+                // get next material
+                cMaterial newMaterial;
+                cMaterialInfo material = fileObj.m_pMaterials[i];
+
+                int textureId = material.m_textureID;
+                if (textureId >= 1)
                 {
-                    string model_dir = cFindDirectory(a_fileName);
+                    cTexture2d *newTexture = new cTexture2d();
+                    int result = newTexture->loadFromFile(material.m_texture);
 
-                    char new_texture_path[1024];
-                    sprintf(new_texture_path,"%s/%s",model_dir.c_str(),material.m_texture);
+                    // If this didn't work out, try again in the obj file's path
+                    if (result == 0) 
+                    {
+                        string model_dir = cGetDirectory(a_filename);
 
-                    result = newTexture->loadFromFile(new_texture_path);
+                        char new_texture_path[1024];
+                        sprintf(new_texture_path,"%s/%s",model_dir.c_str(),material.m_texture);
+
+                        result = newTexture->loadFromFile(new_texture_path);
+                    }
+
+                    if (result)
+                    {
+                        newMesh->setTexture(newTexture);
+                        newMesh->setUseTexture(true);
+                    }
                 }
 
-                if (result)
+                float alpha = material.m_alpha;
+                if (alpha < 1.0) 
                 {
-                    newMesh->setTexture(newTexture);
-                    newMesh->setUseTexture(true);
+                    newMesh->setUseTransparency(true, false);
+                    found_transparent_material = true;
                 }
+
+                // get ambient component:
+                newMesh->m_material->m_ambient.setR(material.m_ambient[0]);
+                newMesh->m_material->m_ambient.setG(material.m_ambient[1]);
+                newMesh->m_material->m_ambient.setB(material.m_ambient[2]);
+                newMesh->m_material->m_ambient.setA(alpha);
+
+                // get diffuse component:
+                newMesh->m_material->m_diffuse.setR(material.m_diffuse[0]);
+                newMesh->m_material->m_diffuse.setG(material.m_diffuse[1]);
+                newMesh->m_material->m_diffuse.setB(material.m_diffuse[2]);
+                newMesh->m_material->m_diffuse.setA(alpha);
+
+                // get specular component:
+                newMesh->m_material->m_specular.setR(material.m_specular[0]);
+                newMesh->m_material->m_specular.setG(material.m_specular[1]);
+                newMesh->m_material->m_specular.setB(material.m_specular[2]);
+                newMesh->m_material->m_specular.setA(alpha);
+
+                // get emissive component:
+                newMesh->m_material->m_emission.setR(material.m_emmissive[0]);
+                newMesh->m_material->m_emission.setG(material.m_emmissive[1]);
+                newMesh->m_material->m_emission.setB(material.m_emmissive[2]);
+                newMesh->m_material->m_emission.setA(alpha);
+
+                // get shininess
+                newMaterial.setShininess((GLuint)(material.m_shininess));
+
+                i++;
             }
 
-            float alpha = 1.0; // material.m_alpha;
-            if (alpha < 1.0) 
+            // Enable material property rendering
+            a_object->setUseVertexColors(false, true);
+            a_object->setUseMaterial(true, true);
+
+            // Mark the presence of transparency in the root mesh; don't
+            // modify the value stored in children...
+            a_object->setUseTransparency(found_transparent_material, false);
+        }
+
+        // Keep track of vertex mapping in each mesh; maps "old" vertices
+        // to new vertices
+        int nMeshes = a_object->getNumMeshes();
+        vertexIndexSet_uint_map* vertexMaps = new vertexIndexSet_uint_map[nMeshes];
+        vertexIndexSet_uint_map::iterator vertexMapIter;
+
+        // build object
+        {
+            int i = 0;
+
+            // get triangles
+            int numTriangles = fileObj.m_OBJInfo.m_faceCount;
+            int j = 0;
+            while (j < numTriangles)
             {
-                newMesh->setUseTransparency(true, false);
-                found_transparent_material = true;
+                // get next face
+                cFace face = fileObj.m_pFaces[j];
+
+                // get material index attributed to the face
+                int objIndex = face.m_materialIndex;
+
+                // the mesh that we're reading this triangle into
+                cMesh* curMesh = a_object->getMesh(objIndex);
+
+                // create a name for this mesh if necessary (over-writing a previous
+                // name if one has been written)
+                if ( (face.m_groupIndex >= 0) && (fileObj.m_groupNames.size() > 0) )
+                {
+                    curMesh->m_name = fileObj.m_groupNames[face.m_groupIndex];
+                }
+
+                // get the vertex map for this mesh
+                vertexIndexSet_uint_map* curVertexMap = &(vertexMaps[objIndex]);
+
+                // number of vertices on face
+                int vertCount = face.m_numVertices;
+
+                if (vertCount >= 3) 
+                {
+                    int indexV1 = face.m_pVertexIndices[0];
+
+                    if (g_objLoaderShouldGenerateExtraVertices==false) 
+                    {
+                        vertexIndexSet vis(indexV1);
+                        if (numNormals  > 0) vis.nIndex = face.m_pNormalIndices[0];
+                        if (numTexCoord > 0) vis.tIndex = face.m_pTextureIndices[0];
+                        indexV1 = getVertexIndex(curMesh, &fileObj, curVertexMap, vis);
+                    }                
+
+                    for (int triangleVert = 2; triangleVert < vertCount; triangleVert++)
+                    {
+                        int indexV2 = face.m_pVertexIndices[triangleVert-1];
+                        int indexV3 = face.m_pVertexIndices[triangleVert];
+                        if (g_objLoaderShouldGenerateExtraVertices==false) 
+                        {
+                            vertexIndexSet vis(indexV2);
+                            if (numNormals  > 0) vis.nIndex = face.m_pNormalIndices[triangleVert-1];
+                            if (numTexCoord > 0) vis.tIndex = face.m_pTextureIndices[triangleVert-1];
+                            indexV2 = getVertexIndex(curMesh, &fileObj, curVertexMap, vis);
+                            vis.vIndex = indexV3;
+                            if (numNormals  > 0) vis.nIndex = face.m_pNormalIndices[triangleVert];
+                            if (numTexCoord > 0) vis.tIndex = face.m_pTextureIndices[triangleVert];
+                            indexV3 = getVertexIndex(curMesh, &fileObj, curVertexMap, vis);
+                        }                      
+
+                        // For debugging, I want to look for degenerate triangles, but
+                        // I don't want to assert here.
+                        if (indexV1 == indexV2 || indexV2 == indexV3 || indexV1 == indexV3) 
+                        {  
+                        }
+
+                        unsigned int indexTriangle;
+
+                        // create triangle:
+                        if (g_objLoaderShouldGenerateExtraVertices==false) 
+                        {                    
+                            indexTriangle =
+                                curMesh->newTriangle(indexV1,indexV2,indexV3);
+                        }
+                        else 
+                        {
+                            indexTriangle =
+                                curMesh->newTriangle(
+                                fileObj.m_pVertices[indexV1],
+                                fileObj.m_pVertices[indexV2],
+                                fileObj.m_pVertices[indexV3]
+                            );
+                        }
+
+                        cTriangle* curTriangle = curMesh->getTriangle(indexTriangle);
+
+                        // assign normals:
+                        if (numNormals > 0)
+                        {
+                            // set normals
+                            curTriangle->getVertex0()->setNormal(face.m_pNormals[0]);
+                            curTriangle->getVertex1()->setNormal(face.m_pNormals[triangleVert-1]);
+                            curTriangle->getVertex2()->setNormal(face.m_pNormals[triangleVert]);
+                        }
+
+                        // assign texture coordinates
+                        if (numTexCoord > 0)
+                        {
+                            // set texture coordinates
+                            curTriangle->getVertex0()->setTexCoord(face.m_pTexCoords[0]);
+                            curTriangle->getVertex1()->setTexCoord(face.m_pTexCoords[triangleVert-1]);
+                            curTriangle->getVertex2()->setTexCoord(face.m_pTexCoords[triangleVert]);
+                        }
+                    }
+                }
+                else 
+                {
+                    // This faces doesn't have 3 vertices... this line is just
+                    // here for debugging, since this should never happen, but
+                    // I don't want to assert here.         
+                }
+                j++;
             }
-
-            // get ambient component:
-            newMesh->m_material->m_ambient.setR(material.m_ambient[0]);
-            newMesh->m_material->m_ambient.setG(material.m_ambient[1]);
-            newMesh->m_material->m_ambient.setB(material.m_ambient[2]);
-            newMesh->m_material->m_ambient.setA(alpha);
-
-            // get diffuse component:
-            newMesh->m_material->m_diffuse.setR(material.m_diffuse[0]);
-            newMesh->m_material->m_diffuse.setG(material.m_diffuse[1]);
-            newMesh->m_material->m_diffuse.setB(material.m_diffuse[2]);
-            newMesh->m_material->m_diffuse.setA(alpha);
-
-            // get specular component:
-            newMesh->m_material->m_specular.setR(material.m_specular[0]);
-            newMesh->m_material->m_specular.setG(material.m_specular[1]);
-            newMesh->m_material->m_specular.setB(material.m_specular[2]);
-            newMesh->m_material->m_specular.setA(alpha);
-
-            // get emissive component:
-            newMesh->m_material->m_emission.setR(material.m_emmissive[0]);
-            newMesh->m_material->m_emission.setG(material.m_emmissive[1]);
-            newMesh->m_material->m_emission.setB(material.m_emmissive[2]);
-            newMesh->m_material->m_emission.setA(alpha);
-
-            // get shininess
-            newMaterial.setShininess((GLuint)(material.m_shininess));
-
             i++;
         }
 
-        // Enable material property rendering
-        a_object->setUseVertexColors(false, true);
-        a_object->setUseMaterial(true, true);
+        delete [] vertexMaps;
 
-        // Mark the presence of transparency in the root mesh; don't
-        // modify the value stored in children...
-        a_object->setUseTransparency(found_transparent_material, false);
-    }
-
-    // Keep track of vertex mapping in each mesh; maps "old" vertices
-    // to new vertices
-    int nMeshes = a_object->getNumMeshes();
-    vertexIndexSet_uint_map* vertexMaps = new vertexIndexSet_uint_map[nMeshes];
-    vertexIndexSet_uint_map::iterator vertexMapIter;
-
-    // build object
-    {
-        int i = 0;
-
-        // get triangles
-        int numTriangles = fileObj.m_OBJInfo.m_faceCount;
-        int j = 0;
-        while (j < numTriangles)
+        // if no normals were specified in the file, compute them
+        // based on triangle faces
+        if (numNormals == 0) 
         {
-            // get next face
-            cFace face = fileObj.m_pFaces[j];
-
-            // get material index attributed to the face
-            int objIndex = face.m_materialIndex;
-
-            // the mesh that we're reading this triangle into
-            cMesh* curMesh = a_object->getMesh(objIndex);
-
-            // create a name for this mesh if necessary (over-writing a previous
-            // name if one has been written)
-            if ( (face.m_groupIndex >= 0) && (fileObj.m_groupNames.size() > 0) )
-            {
-                curMesh->m_name = fileObj.m_groupNames[face.m_groupIndex];
-            }
-
-            // get the vertex map for this mesh
-            vertexIndexSet_uint_map* curVertexMap = &(vertexMaps[objIndex]);
-
-            // number of vertices on face
-            int vertCount = face.m_numVertices;
-
-            if (vertCount >= 3) 
-            {
-                int indexV1 = face.m_pVertexIndices[0];
-
-                if (g_objLoaderShouldGenerateExtraVertices==false) 
-                {
-                    vertexIndexSet vis(indexV1);
-                    if (numNormals  > 0) vis.nIndex = face.m_pNormalIndices[0];
-                    if (numTexCoord > 0) vis.tIndex = face.m_pTextureIndices[0];
-                    indexV1 = getVertexIndex(curMesh, &fileObj, curVertexMap, vis);
-                }                
-
-                for (int triangleVert = 2; triangleVert < vertCount; triangleVert++)
-                {
-                    int indexV2 = face.m_pVertexIndices[triangleVert-1];
-                    int indexV3 = face.m_pVertexIndices[triangleVert];
-                    if (g_objLoaderShouldGenerateExtraVertices==false) 
-                    {
-                        vertexIndexSet vis(indexV2);
-                        if (numNormals  > 0) vis.nIndex = face.m_pNormalIndices[triangleVert-1];
-                        if (numTexCoord > 0) vis.tIndex = face.m_pTextureIndices[triangleVert-1];
-                        indexV2 = getVertexIndex(curMesh, &fileObj, curVertexMap, vis);
-                        vis.vIndex = indexV3;
-                        if (numNormals  > 0) vis.nIndex = face.m_pNormalIndices[triangleVert];
-                        if (numTexCoord > 0) vis.tIndex = face.m_pTextureIndices[triangleVert];
-                        indexV3 = getVertexIndex(curMesh, &fileObj, curVertexMap, vis);
-                    }                      
-
-                    // For debugging, I want to look for degenerate triangles, but
-                    // I don't want to assert here.
-                    if (indexV1 == indexV2 || indexV2 == indexV3 || indexV1 == indexV3) 
-                    {  
-                    }
-
-                    unsigned int indexTriangle;
-
-                    // create triangle:
-                    if (g_objLoaderShouldGenerateExtraVertices==false) 
-                    {                    
-                        indexTriangle =
-                        curMesh->newTriangle(indexV1,indexV2,indexV3);
-                    }
-                    else 
-                    {
-                        indexTriangle =
-                        curMesh->newTriangle(
-                        fileObj.m_pVertices[indexV1],
-                        fileObj.m_pVertices[indexV2],
-                        fileObj.m_pVertices[indexV3]
-                        );
-                    }
-                    
-                    cTriangle* curTriangle = curMesh->getTriangle(indexTriangle);
-
-                    // assign normals:
-                    if (numNormals > 0)
-                    {
-                        // set normals
-                        curTriangle->getVertex0()->setNormal(face.m_pNormals[0]);
-                        curTriangle->getVertex1()->setNormal(face.m_pNormals[triangleVert-1]);
-                        curTriangle->getVertex2()->setNormal(face.m_pNormals[triangleVert]);
-                    }
-
-                    // assign texture coordinates
-                    if (numTexCoord > 0)
-                    {
-                        // set texture coordinates
-                        curTriangle->getVertex0()->setTexCoord(face.m_pTexCoords[0]);
-                        curTriangle->getVertex1()->setTexCoord(face.m_pTexCoords[triangleVert-1]);
-                        curTriangle->getVertex2()->setTexCoord(face.m_pTexCoords[triangleVert]);
-                    }
-                }
-            }
-            else 
-            {
-              // This faces doesn't have 3 vertices... this line is just
-              // here for debugging, since this should never happen, but
-              // I don't want to assert here.         
-            }
-            j++;
+            a_object->computeAllNormals();
         }
-        i++;
+
+        // compute boundary boxes
+        a_object->computeBoundaryBox(true);
+
+        // update global position in world
+        a_object->computeGlobalPositionsFromRoot(true);
+
+        // return success
+        return (true);
     }
-
-    delete [] vertexMaps;
-
-    // if no normals were specified in the file, compute them
-    // based on triangle faces
-    if (numNormals == 0) 
+    catch (...)
     {
-        a_object->computeAllNormals();
+        return (false);
+    }
+}
+
+
+//==============================================================================
+/*!
+    Save an OBJ model file.
+
+    \param  a_object  Multimesh object to be saved.
+    \param  a_filename  Filename.
+
+    \return Return __true__ if operation succeeds, __false__ otherwise.
+*/
+//==============================================================================
+bool cSaveFileOBJ(cMultiMesh* a_object, const string& a_filename)
+{
+    /////////////////////////////////////////////////////////////////////////
+    // INITIALIZATION
+    /////////////////////////////////////////////////////////////////////////
+
+    // get number of mesh objects composing multimesh
+    unsigned int numMeshes = a_object->getNumMeshes();
+
+    // get name of file. remove path and file extension
+    string fileName = cGetFilename(a_filename, false);
+    if (fileName == "") { return (false); }
+
+    // get path
+    string filePath = cGetDirectory(a_filename);
+
+
+    /////////////////////////////////////////////////////////////////////////
+    // MATERIAL FILE
+    /////////////////////////////////////////////////////////////////////////
+
+    // create material file
+    string str = filePath + fileName + ".mat";
+
+    // create file
+    ofstream fileMat(str.c_str());
+
+    fileMat << "#" << endl;
+    fileMat << "# Wavefront material file" << endl;
+    fileMat << "# CHAI3D" << endl;
+    fileMat << "# http://www.chai3d.org" << endl;
+    fileMat << "#" << endl;
+    fileMat << endl << endl;
+
+    // copy data from all material files
+    for (unsigned int i=0; i<numMeshes; i++)
+    {
+        cMesh* mesh = a_object->getMesh(i);
+        cMaterial* mat = mesh->m_material;
+
+        string textureName = "";
+        cTexture1d* texture = mesh->m_texture;
+        if (texture != NULL)
+        {
+            cImage* image = texture->m_image;
+            if (image != NULL)
+            {
+                textureName = fileName  + "-" + cStr(i) + ".png";
+            }
+        }
+
+        if (mat != NULL)
+        {
+            fileMat << "newmtl MATERIAL"+cStr(i) << endl;
+            fileMat << "Ka " << cStr(mat->m_ambient.getR(), 3) << " " << cStr(mat->m_ambient.getG(), 3) << " " << cStr(mat->m_ambient.getB(), 3) << endl;
+            fileMat << "Kd " << cStr(mat->m_diffuse.getR(), 3) << " " << cStr(mat->m_diffuse.getG(), 3) << " " << cStr(mat->m_diffuse.getB(), 3) << endl;
+            fileMat << "Ks " << cStr(mat->m_specular.getR(), 3) << " " << cStr(mat->m_specular.getG(), 3) << " " << cStr(mat->m_specular.getB(), 3) << endl;
+            fileMat << "Ns " << cStr(mat->getShininess()) << endl;
+
+            float transparency = mat->m_ambient.getA();
+            if (transparency < 1.0)
+            {
+                fileMat << "d" << cStr(transparency, 3);
+            }
+            
+            fileMat << "illum 2" << endl;
+            fileMat << "map_Kd " << textureName << endl;
+            fileMat << "map_bump" << endl;
+            fileMat << "bump" << endl;
+            fileMat << "map_opacity" << endl;
+            fileMat << "map_d" << endl;
+            fileMat << "refl" << endl;
+            fileMat << "map_kS" << endl;
+            fileMat << "map_kA" << endl;
+            fileMat << "map_Ns" << endl;
+            fileMat << endl;
+        }
     }
 
-    // compute boundary boxes
-    a_object->computeBoundaryBox(true);
+    // close file
+    fileMat.close();
 
-    // update global position in world
-    a_object->computeGlobalPositionsFromRoot(true);
+    /////////////////////////////////////////////////////////////////////////
+    // TEXTURE FILES
+    /////////////////////////////////////////////////////////////////////////
 
-    // return success
+    // save image files
+    for (unsigned int i=0; i<numMeshes; i++)
+    {
+        cMesh* mesh = a_object->getMesh(i);
+        cTexture1d* texture = mesh->m_texture;
+        if (texture != NULL)
+        {
+            cImage* image = texture->m_image;
+            if (image != NULL)
+            {
+                string textureFileName = filePath + fileName + "-" + cStr(i) + ".png";
+                image->saveToFile(textureFileName);
+            }
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////
+    // MESH DATA
+    /////////////////////////////////////////////////////////////////////////
+
+    // vertex counter
+    int vertexCounter = 0;
+    int texcoordCounter = 0;
+
+    // compute global positions for all vertices.
+    a_object->computeGlobalPositions(false);
+
+    // create OBJ file
+    str = filePath + fileName + ".obj";
+    ofstream fileObj(str.c_str());
+
+    fileObj << "#" << endl;
+    fileObj << "# Wavefront object file" << endl;
+    fileObj << "# CHAI3D" << endl;
+    fileObj << "# http://www.chai3d.org" << endl;
+    fileObj << "#" << endl;
+    fileObj << endl << endl;
+
+    // basic information
+    fileObj << "mtllib " << fileName << ".mat" << endl;
+    fileObj << "# object " << fileName << endl;
+    fileObj << "g " << fileName << endl << endl;
+
+    // copy mesh data
+    for (unsigned int i=0; i<numMeshes; i++)
+    {
+        // get next mesh object
+        cMesh* mesh = a_object->getMesh(i);
+        unsigned int numVertices = mesh->getNumVertices();
+
+        // store vertex positions
+        fileObj << "# mesh-" << cStr(i) << ": vertices" << endl;
+        for (unsigned int j=0; j<numVertices; j++)
+        {
+            cVector3d pos = mesh->getVertex(j)->getGlobalPos();
+            fileObj << "v " << cStr(pos(0), 5) << " " << cStr(pos(1), 5) << " " << cStr(pos(2), 5) << endl;
+        }
+        fileObj << endl;
+
+        // store texture coordinates
+        fileObj << "# mesh-" << cStr(i) << ": texture coordinates" << endl;
+        for (unsigned int j=0; j<numVertices; j++)
+        {
+            cVector3d pos = mesh->getVertex(j)->getTexCoord();
+            fileObj << "vt " << cStr(pos(0), 5) << " " << cStr(pos(1), 5) << endl;//" " << cStr(pos[2], 6) << endl;
+        }
+        fileObj << endl;
+
+        // store normals
+        fileObj << "# mesh-" << cStr(i) << ": normals" << endl;
+        for (unsigned int j=0; j<numVertices; j++)
+        {
+            cVector3d normal = cMul(mesh->getLocalRot(), mesh->getVertex(j)->getNormal());
+            fileObj << "vn " << cStr(normal(0), 5) << " " << cStr(normal(1), 5) << " " << cStr(normal(2), 5) << endl;
+        }
+        fileObj << endl;
+
+        // faces
+        fileObj << "# mesh-" << cStr(i) << ": faces" << endl;
+        fileObj << "usemtl MATERIAL" << cStr(i) << endl;
+        unsigned numTriangles = mesh->getNumTriangles();
+        for (unsigned int j=0; j<numTriangles; j++)
+        {  
+            cTriangle* triangle = mesh->getTriangle(j);
+            int indexV0 = triangle->getIndexVertex0() + vertexCounter + 1;
+            int indexV1 = triangle->getIndexVertex1() + vertexCounter + 1;
+            int indexV2 = triangle->getIndexVertex2() + vertexCounter + 1;
+            int indexT0 = indexV0;
+            int indexT1 = indexV1;
+            int indexT2 = indexV2;
+            int indexN0 = indexV0;
+            int indexN1 = indexV1;
+            int indexN2 = indexV2;
+
+            fileObj << "f " << cStr(indexV0) << "/" << cStr(indexT0) << "/" << cStr(indexN0) << " " << cStr(indexV1 ) << "/" << cStr(indexT1) << "/" << cStr(indexN1) << " " << cStr(indexV2) << "/" << cStr(indexT2) << "/" << cStr(indexN2) << endl;
+        }
+
+        fileObj << endl;
+
+        // update vertex counter
+        vertexCounter = vertexCounter + mesh->getNumVertices();
+    }
+
+
+    // close file
+    fileObj.close();
+
     return (true);
 }
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-//---------------------------------------------------------------------------
-//===========================================================================
+//------------------------------------------------------------------------------
+//==============================================================================
 // OBJ PARSER IMPLEMENTATION:
-//===========================================================================
+//==============================================================================
 
 cOBJModel::cOBJModel()
 {
@@ -334,7 +563,7 @@ cOBJModel::cOBJModel()
     m_pMaterials = NULL;
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 cOBJModel::~cOBJModel()
 {
@@ -361,7 +590,7 @@ cOBJModel::~cOBJModel()
     }
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool cOBJModel::LoadModel(const char a_fileName[])
 {
@@ -541,17 +770,17 @@ bool cOBJModel::LoadModel(const char a_fileName[])
         }
     }
 
-    // Close OBJ file
+    // close OBJ file
     fclose(hFile);
 
     //----------------------------------------------------------------------
-    // Success
+    // success
     //----------------------------------------------------------------------
 
     return (true);
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void cOBJModel::parseFaceString(char a_faceString[], cFace *a_faceOut,
                 const cVector3d *a_pVertices,
@@ -687,7 +916,7 @@ void cOBJModel::parseFaceString(char a_faceString[], cFace *a_faceOut,
     }
  }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool cOBJModel::loadMaterialLib(const char a_fileName[],
                 cMaterialInfo* a_pMaterials,
@@ -721,6 +950,8 @@ bool cOBJModel::loadMaterialLib(const char a_fileName[],
     // Quit reading when end of file has been reached
     while (!feof(hFile))
     {
+        int nScanReturn = 0;  // Return value of fscanf
+
         // Get next string
         readNextString(str, sizeof(str), hFile);
 
@@ -748,14 +979,14 @@ bool cOBJModel::loadMaterialLib(const char a_fileName[],
         )
         {
             // Read into current material
-            fscanf(hFile, "%f", &m_pMaterials[*a_curMaterialIndex].m_alpha);
+            nScanReturn = fscanf(hFile, "%f", &m_pMaterials[*a_curMaterialIndex].m_alpha);
         }
 
         // Ambient material properties
         if (!strncmp(str, C_OBJ_MTL_AMBIENT_ID, sizeof(C_OBJ_MTL_AMBIENT_ID)))
         {
             // Read into current material
-            fscanf(hFile, "%f %f %f",
+            nScanReturn = fscanf(hFile, "%f %f %f",
                 &m_pMaterials[*a_curMaterialIndex].m_ambient[0],
                 &m_pMaterials[*a_curMaterialIndex].m_ambient[1],
                 &m_pMaterials[*a_curMaterialIndex].m_ambient[2]);
@@ -765,7 +996,7 @@ bool cOBJModel::loadMaterialLib(const char a_fileName[],
         if (!strncmp(str, C_OBJ_MTL_DIFFUSE_ID, sizeof(C_OBJ_MTL_DIFFUSE_ID)))
         {
             // Read into current material
-            fscanf(hFile, "%f %f %f",
+            nScanReturn = fscanf(hFile, "%f %f %f",
                 &m_pMaterials[*a_curMaterialIndex].m_diffuse[0],
                 &m_pMaterials[*a_curMaterialIndex].m_diffuse[1],
                 &m_pMaterials[*a_curMaterialIndex].m_diffuse[2]);
@@ -775,7 +1006,7 @@ bool cOBJModel::loadMaterialLib(const char a_fileName[],
         if (!strncmp(str, C_OBJ_MTL_SPECULAR_ID, sizeof(C_OBJ_MTL_SPECULAR_ID)))
         {
             // Read into current material
-            fscanf(hFile, "%f %f %f",
+            nScanReturn = fscanf(hFile, "%f %f %f",
                 &m_pMaterials[*a_curMaterialIndex].m_specular[0],
                 &m_pMaterials[*a_curMaterialIndex].m_specular[1],
                 &m_pMaterials[*a_curMaterialIndex].m_specular[2]);
@@ -803,7 +1034,7 @@ bool cOBJModel::loadMaterialLib(const char a_fileName[],
         if (!strncmp(str, C_OBJ_MTL_SHININESS_ID, sizeof(C_OBJ_MTL_SHININESS_ID)))
         {
             // Read into current material
-            fscanf(hFile, "%f",
+            nScanReturn = fscanf(hFile, "%f",
                 &m_pMaterials[*a_curMaterialIndex].m_shininess);
 
             // OBJ files use a shininess from 0 to 1000; Scale for OpenGL
@@ -821,7 +1052,7 @@ bool cOBJModel::loadMaterialLib(const char a_fileName[],
     return (true);
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void cOBJModel::getFileInfo(FILE *a_hStream, cOBJFileInfo *a_info, const char a_constBasePath[])
 {
@@ -885,7 +1116,7 @@ void cOBJModel::getFileInfo(FILE *a_hStream, cOBJFileInfo *a_info, const char a_
                 while (!feof(hMaterialLib))
                 {
                     // Read next string
-                    fscanf(hMaterialLib, "%s" ,str);
+                    int nScanReturn = fscanf(hMaterialLib, "%s" ,str);
 
                     // Is it a "new material" identifier ?
                     if (!strncmp(str, C_OBJ_NEW_MTL_ID, sizeof(C_OBJ_NEW_MTL_ID)))
@@ -903,7 +1134,7 @@ void cOBJModel::getFileInfo(FILE *a_hStream, cOBJFileInfo *a_info, const char a_
     }
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void cOBJModel::readNextString(char *a_str, int a_size, FILE *a_hStream)
 {
@@ -926,7 +1157,7 @@ void cOBJModel::readNextString(char *a_str, int a_size, FILE *a_hStream)
         if (!strncmp(a_str, C_OBJ_COMMENT_ID, sizeof(C_OBJ_COMMENT_ID)))
         {
             // Skip the rest of the line
-            fgets(a_str, a_size, a_hStream);
+            char *ret = fgets(a_str, a_size, a_hStream);
             bSkipLine = true;
         }
         else
@@ -937,7 +1168,7 @@ void cOBJModel::readNextString(char *a_str, int a_size, FILE *a_hStream)
     while (bSkipLine == true);
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void cOBJModel::makePath(char a_fileAndPath[])
 {
@@ -965,7 +1196,7 @@ void cOBJModel::makePath(char a_fileAndPath[])
     a_fileAndPath[0] = char('\0');
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void cOBJModel::getTokenParameter(char a_str[],
                                   const unsigned int a_strSize, 
@@ -978,7 +1209,7 @@ void cOBJModel::getTokenParameter(char a_str[],
     //----------------------------------------------------------------------
 
     // Read the parameter after the token
-    fgets(str, C_OBJ_MAX_STR_SIZE, a_hFile);
+    char *ret = fgets(str, C_OBJ_MAX_STR_SIZE, a_hFile);
 
     // Remove newline character after the token
     int len = (int)(strlen(str));
@@ -992,7 +1223,7 @@ void cOBJModel::getTokenParameter(char a_str[],
     strcpy (a_str, first_non_whitespace_character);
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 unsigned int getVertexIndex(cMesh* a_mesh, cOBJModel* a_model,
                             vertexIndexSet_uint_map* a_vertexMap, vertexIndexSet& vis) 
@@ -1018,6 +1249,11 @@ unsigned int getVertexIndex(cMesh* a_mesh, cOBJModel* a_model,
     }
 }
 
-//---------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif  // DOXYGEN_SHOULD_SKIP_THIS
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

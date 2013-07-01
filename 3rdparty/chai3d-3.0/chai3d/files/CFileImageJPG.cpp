@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,47 +37,63 @@
 
     \author    <http://www.chai3d.org>
     \author    Sebastien Grange
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1065 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "files/CFileImageJPG.h"
-//---------------------------------------------------------------------------
-#ifndef NO_DOC
+//------------------------------------------------------------------------------
+#ifdef C_USE_FILE_JPG
+//------------------------------------------------------------------------------
+using namespace std;
+//------------------------------------------------------------------------------
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+//------------------------------------------------------------------------------
+
 #include <setjmp.h>
-extern "C" {
-#include "jpeglib.h"
+extern "C" 
+{
+    #include "jpeglib.h"
 }
-struct my_error_mgr {
-  struct jpeg_error_mgr pub;
-  jmp_buf setjmp_buffer;
+struct my_error_mgr 
+{
+    struct jpeg_error_mgr pub;
+    jmp_buf setjmp_buffer;
 };
+
 typedef struct my_error_mgr *my_error_ptr;
-METHODDEF (void) my_error_warn (j_common_ptr cinfo) {
+
+METHODDEF (void) my_error_warn (j_common_ptr cinfo) 
+{
     char buffer[JMSG_LENGTH_MAX];
     my_error_ptr myerr = (my_error_ptr) cinfo->err;
     myerr->pub.format_message (cinfo, buffer);
     printf ("jpeg error: %s\n", buffer);
     longjmp (myerr->setjmp_buffer, 1);
 }
-#endif
-//---------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+#endif // DOXYGEN_SHOULD_SKIP_THIS
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Load a JPG image from a file into a cImage structure. 
-    If the operation succeeds, then the functions returns \b true and the 
+    If the operation succeeds, then the functions returns __true__ and the 
     image data is loaded into image structure a_image. 
-    If the operation fails, then the function returns \b false. 
+    If the operation fails, then the function returns __false__. 
     In both cases, previous image information stored in a_image is erased.
 
-    \fn     bool cLoadFileJPG(cImage* a_image, string a_filename)
     \param  a_image  Image structure. 
     \param  a_fileName  Filename.
-    \return Returns \b true in case of success, \b false otherwise.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cLoadFileJPG(cImage* a_image, string a_filename)
 {
     struct jpeg_decompress_struct cinfo;
@@ -167,19 +183,18 @@ bool cLoadFileJPG(cImage* a_image, string a_filename)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Save a JPG image from a cImage structure to a file. 
-    If the operation succeeds, then the functions returns \b true and the 
+    If the operation succeeds, then the functions returns __true__ and the 
     image data is saved to a file. 
-    If the operation fails, then the function returns \b false. 
+    If the operation fails, then the function returns __false__. 
 
-    \fn     bool cSaveFileJPG(cImage* a_image, string a_filename)
     \param  a_image  Image structure. 
     \param  a_fileName  Filename.
-    \return Returns \b true in case of success, \b false otherwise.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cSaveFileJPG(cImage* a_image, string a_filename)
 {
     const int quality = 80;
@@ -269,3 +284,10 @@ bool cSaveFileJPG(cImage* a_image, string a_filename)
   
     return true;
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+#endif // C_USE_FILE_JPG
+//------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,32 +39,39 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 474 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CMaterialH
 #define CMaterialH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CColor.h"
 #include "graphics/CRenderOptions.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
-    \file       CMaterial.h
+    \file    CMaterial.h
     
     \brief  
     <b> Materials </b> \n 
     Material Properties.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
       \class      cMaterial
       \ingroup    materials
 
       \brief      
+      Material properties.
+
+      \details
       cMaterial provide a description for handling OpenGL graphic material 
       properties. These include: ambient color, diffuse color, specular color, 
       emissive color, and shininess. \n
@@ -75,14 +82,14 @@
       material properties of an object to compute the desired force rendering
       effect.
 */
-//===========================================================================
+//==============================================================================
 struct cMaterial
 {
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
  
-    public:
+public:
 
     //! Constructor of cMaterial.
     cMaterial();
@@ -90,45 +97,45 @@ struct cMaterial
     //! Destructor of cMaterial.
     virtual ~cMaterial() {};
 
-    //! Render the material in OpenGL.
+    //! Render material in OpenGL.
     virtual void render(cRenderOptions& a_options);
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - COPY:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - COPY:
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
-	//! Create a copy of current object.
-	cMaterial* copy();
+    //! Create a copy of current object.
+    cMaterial* copy();
 
-    //! Set value to all modification flags.
+    //! Set value to all modification flags. 
     void setModificationFlags(const bool a_value);
 
-    //! Copy modified variables to another material object
+    //! Copy all modified members to another material object.
     void copyTo(cMaterial* a_material);
 
-	//! Copy modified variables to another material object
+    //! Copy all modified members to another material object.
     void copyTo(cMaterial& a_material);
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - GRAPHIC PROPERTIES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - GRAPHIC PROPERTIES:
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Set shininess (the exponent used for specular lighting).
     void setShininess(const GLuint a_shininess);
 
-    //! Get shininess.
+    //! Get shininess level.
     GLuint getShininess() const { return (m_shininess); }
 
-    //! set transparency level (sets the alpha value for all color properties).
+    //! Set transparency level (alpha value) of all color components.
     void setTransparencyLevel(const float a_levelTransparency);
 
-    //! tells you whether this material includes partial transparency.
+    //! Returns __true__ if material includes partial or full transparency components.
     inline bool isTransparent() const
     {
         return (m_ambient[4] < 1.0 ||
@@ -146,7 +153,7 @@ struct cMaterial
         m_emission.backup();
     }
 
-    //! Restor color properties from backup.
+    //! Restore color properties from values stored in the backup members.
     inline void restoreColors()
     {
         m_ambient.restore();
@@ -155,11 +162,12 @@ struct cMaterial
         m_emission.restore();
     }
 
-    //-----------------------------------------------------------------------
-    // MEMBERS - GRAPHIC PROPERTIES:
-    //-----------------------------------------------------------------------
 
-    public:
+    //--------------------------------------------------------------------------
+    // PUBLIC MEMBERS - GRAPHIC PROPERTIES:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Ambient color.
     cColorf m_ambient;
@@ -170,147 +178,153 @@ struct cMaterial
     //! Specular color.
     cColorf m_specular;
 
-    //! Emissive color.
+    //! Emission color.
     cColorf m_emission;
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - HAPTIC PROPERTIES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - HAPTIC EFFECTS PROPERTIES:
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
-    //! Set stiffness level [N/m]
+    //! Set general stiffness level [N/m].
     void setStiffness(const double a_stiffness);
 
-    //! Get stiffness level [N/m]
+    //! Get general stiffness level [N/m].
     inline double getStiffness() const { return (m_stiffness); }
 
-    //! Set static friction level
-    void setStaticFriction(const double a_friction);
-
-    //! Get static friction level
-    inline double getStaticFriction() const { return (m_staticFriction); }
-
-    //! Set damping level
-    void setDampingLevel(const double a_dampingLevel);
-
-    //! Get static friction level
-    inline double getDampingLevel() const { return (m_dampingLevel); }
-
-    //! Set dynamic friction level
-    void setDynamicFriction(const double a_friction);
-
-    //! Get dynamic friction level
-    inline double getDynamicFriction() const { return (m_dynamicFriction); }
-
-    //! Set texture level
-    void setTextureLevel(const double a_textureLevel);
-
-    //! Get texture level
-    inline double getTextureLevel() const { return (m_textureLevel); }
-
-    //! Set level of viscosity
+    //! Set level of viscosity.
     void setViscosity(const double a_viscosity);
 
-    //! Get level of viscosity
+    //! Get level of viscosity.
     inline double getViscosity() const { return (m_viscosity); }
 
-    //! Set vibration frequency [Hz]
+    //! Set active vibration frequency [Hz].
     void setVibrationFrequency(const double a_vibrationFrequency);
 
-    //! Get vibration frequency [Hz]
+    //! Get active vibration frequency [Hz].
     inline double getVibrationFrequency() const {return (m_vibrationFrequency); }
 
-    //! Set vibration amplitude [max N]
-    void  setVibrationAmplitude(const double a_vibrationAmplitude);
+    //! Set active vibration force amplitude [N].
+    void setVibrationAmplitude(const double a_vibrationAmplitude);
 
-    //! Get vibration amplitude [max N]
-    inline double getVibrationAmplitude() const {return (m_vibrationAmplitude); }
+    //! Get active vibration force amplitude [N].
+    inline double getVibrationAmplitude() const { return (m_vibrationAmplitude); }
 
-    //! Set the maximum force applied by the magnet [N]
+    //! Set maximum force applied by the magnet [N]
     void setMagnetMaxForce(const double a_magnetMaxForce);
 
-    //! Get the maximum force applied by the magnet [N]
+    //! Get maximum force applied by the magnet [N]
     inline double getMagnetMaxForce() const { return (m_magnetMaxForce); }
 
-    //! Set the maximum distance from the object where the force can be perceived [m]
+    //! Set maximum distance threshold from where magnetic force is perceived [m].
     void setMagnetMaxDistance(const double a_magnetMaxDistance);
 
-    //! Get the maximum distance from the object where the force can be perceived [m]
+    //! Get maximum distance threshold from where magnetic force is perceived [m].
     inline double getMagnetMaxDistance() const { return (m_magnetMaxDistance); }
 
-    //! Set the maximum force threshold for the stick and slip model [N]
+    //! Set maximum force threshold of stick and slip model [N].
     void setStickSlipForceMax(const double a_stickSlipForceMax);
 
-    //! Get the maximum force threshold for the stick and slip model [N]
+    //! Get maximum force threshold of stick and slip model [N].
     inline double getStickSlipForceMax() const { return (m_stickSlipForceMax); }
 
-    //! Set the stiffness for the stick and slip model [N/m]
+    //! Set stiffness of stick and slip model [N/m]
     void setStickSlipStiffness(double const a_stickSlipStiffness);
 
-    //! Get the stiffness for the stick and slip model [N/m]
+    //! Get stiffness of stick and slip model [N/m]
     inline double getStickSlipStiffness() const { return (m_stickSlipStiffness); }
 
-    //! render haptic friction
+
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - HAPTIC PROPERTIES (MESH OBJECTS ONLY)
+    //--------------------------------------------------------------------------
+
+public:
+
+    //! Set damping coefficient.
+    void setDamping(const double a_dampingCoefficient);
+
+    //! Get damping coefficient.
+    inline double getDamping() const { return (m_damping); }
+
+    //! \b Enable or \b disable haptic friction. (Applies to mesh objects only).
     void setUseHapticFriction(const bool a_useHapticFriction);
 
-    //! check if haptic friction is enabled
+    //! Get status of haptic friction. (Applies to mesh objects only).
     inline bool getUseHapticFriction() const { return (m_useHapticFriction); }
 
-    //! render haptic texture
+    //! Set static friction level [N].
+    void setStaticFriction(const double a_friction);
+
+    //! Get static friction level [N].
+    inline double getStaticFriction() const { return (m_staticFriction); }
+
+    //! Set dynamic friction level.
+    void setDynamicFriction(const double a_friction);
+
+    //! Get dynamic friction level.
+    inline double getDynamicFriction() const { return (m_dynamicFriction); }
+
+    //! \b Enable or \b disable haptic texture. (Applies to mesh objects only).
     void setUseHapticTexture(const bool a_useHapticTexture);
 
-    //! check if haptic texture is enabled
+    //! Get status of haptic texture. (Applies to mesh objects only).
     inline bool getUseHapticTexture() const { return (m_useHapticTexture); }
 
-    //! use haptic texture
+    //! Set texture level.
+    void setTextureLevel(const double a_textureLevel);
+
+    //! Get texture level.
+    inline double getTextureLevel() const { return (m_textureLevel); }
+
+    //! \b Enable or \b disable haptic shading. (Applies to mesh objects only).
     void setUseHapticShading(const bool a_useHapticShading);
 
-    //! check if haptic shading is enabled
+    //! Get status of haptic shading. (Applies to mesh objects only).
     inline bool getUseHapticShading() const { return (m_useHapticShading); }
 
-    //! Enable/Disable rendering of front side of mesh triangles.
-    void setRenderFrontSideOfTriangles(const bool a_enabled);
+    //! \b Enable or \b disable haptic rendering on \b front side of mesh triangles.
+    void setHapticTriangleFrontSide(const bool a_enabled);
 
-    //! If \b true then front side of mesh triangles are rendered.
-    inline bool getRenderFrontSideOfTriangles() const { return (m_renderFrontSideOfTriangles); }
-
-    //! If \b true then back side of mesh triangles are rendered.
-    inline bool getRenderBackSideOfTriangles() const { return (m_renderBackSideOfTriangles); }
+    //! Get status about front side triangle haptic rendering. (Applies to mesh objects only).
+    inline bool getHapticTriangleFrontSide() const { return (m_hapticFrontSideOfTriangles); }
 
     //! Enable/Disable rendering of back side of mesh triangles.
-    void setRenderBackSideOfTriangles(const bool a_enabled);
+    void setHapticTriangleBackSide(const bool a_enabled);
+
+    //! If __true__ then back side of mesh triangles are rendered.
+    inline bool getHapticTriangleBackSide() const { return (m_hapticBackSideOfTriangles); }
 
     //! Enable/Disable rendering of front and back sides of mesh triangles.
-    void setRenderTriangles(const bool a_enableFrontSide, 
-                            const bool a_enableBackSide);
+    void setHapticTriangleSides(const bool a_enableFrontSide, const bool a_enableBackSide);
 
 
-    //-----------------------------------------------------------------------
-    // MEMBERS - COLOR PROPERTIES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - COLOR PROPERTIES:
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
-    //! Define the material by setting its color.
+    //! Define some color properties for material.
     void setColor(cColorf& a_color);
 
-    //! Define the material by setting its color.
+    //! Define some color properties for material.
     void setColor(cColorb& a_color);
 
-    //! Define the material by setting its color and transparency level.
+    //! Define some color properties for material.
     void setColorf(const GLfloat a_red, 
-                   const GLfloat a_green, 
-                   const GLfloat a_blue,
-                   const GLfloat a_alpha = 1.0f); 
+        const GLfloat a_green, 
+        const GLfloat a_blue,
+        const GLfloat a_alpha = 1.0f); 
 
 
-    //-----------------------------------------------------------------------
-    // RED COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //PUBLIC METHODS - RED COLORS
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Set color to Red Indian.
     inline void setRedIndian()              { m_diffuse.setb(0xCD, 0x5C, 0x5C); updateColors();} 
@@ -340,9 +354,9 @@ struct cMaterial
     inline void setRedDark()                { m_diffuse.setb(0x8B, 0x00, 0x00); updateColors();}
 
     
-    //-----------------------------------------------------------------------
-    // PINK COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - PINK COLORS
+    //--------------------------------------------------------------------------
 
     //! Set color to Pink.
     inline void setPink() 	                { m_diffuse.setb(0xFF, 0xC0, 0xCB); updateColors();}
@@ -363,9 +377,9 @@ struct cMaterial
     inline void setPinkPaleVioletRed() 	    { m_diffuse.setb(0xDB, 0x70, 0x93); updateColors();}
 
    
-    //-----------------------------------------------------------------------
-    // ORANGE COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - ORANGE COLORS
+    //--------------------------------------------------------------------------
 
     //! Set color to Orange Light Salmon.
     inline void setOrangeLightSalmon() 	    { m_diffuse.setb(0xFF, 0xA0, 0x7A); updateColors();}
@@ -386,9 +400,9 @@ struct cMaterial
     inline void setOrange() 	            { m_diffuse.setb(0xFF, 0xA5, 0x00); updateColors();}
 
 
-    //-----------------------------------------------------------------------
-    // YELLOW COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - YELLOW COLORS
+    //--------------------------------------------------------------------------
 
     //! Set color to Gold.
     inline void setYellowGold() 	        { m_diffuse.setb(0xFF, 0xD7, 0x00); updateColors();}
@@ -424,9 +438,9 @@ struct cMaterial
     inline void setYellowDarkKhaki() 	    { m_diffuse.setb(0xBD, 0xB7, 0x6B); updateColors();}
 
 
-    //-----------------------------------------------------------------------
-    // PURPLE COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - PURPLE COLORS
+    //--------------------------------------------------------------------------
 
     //! Set color to Lavendar.
     inline void setPurpleLavender() 	    { m_diffuse.setb(0xE6, 0xE6, 0xFA); updateColors();}
@@ -486,9 +500,9 @@ struct cMaterial
     inline void setPurpleMediumSlateBlue() 	{ m_diffuse.setb(0x7B, 0x68, 0xEE); updateColors();}
 
 
-    //-----------------------------------------------------------------------
-    // GREEN COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - GREEN COLORS
+    //--------------------------------------------------------------------------
 
     //! Set color to Green Yellow.
     inline void setGreenYellow() 	        { m_diffuse.setb(0xAD, 0xFF, 0x2F); updateColors();}
@@ -560,9 +574,9 @@ struct cMaterial
     inline void setGreenTeal() 	            { m_diffuse.setb(0x00, 0x80, 0x80); updateColors();}
 
 
-    //-----------------------------------------------------------------------
-    // BLUE COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - BLUE COLORS
+    //--------------------------------------------------------------------------
 
     //! Set color to Aqua.
     inline void setBlueAqua() 	            { m_diffuse.setb(0x00, 0xFF, 0xFF); updateColors();}
@@ -640,9 +654,9 @@ struct cMaterial
     inline void setBlueMidnight() 	        { m_diffuse.setb(0x19, 0x19, 0x70); updateColors();}
 
 
-    //-----------------------------------------------------------------------
-    // BROWN COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - BROWN COLORS
+    //--------------------------------------------------------------------------
 
     //! Set color to Cornsilk.
     inline void setBrownCornsilk() 	        { m_diffuse.setb(0xFF, 0xF8, 0xDC); updateColors();}
@@ -696,9 +710,9 @@ struct cMaterial
     inline void setBrownMaroon() 	        { m_diffuse.setb(0x80, 0x00, 0x00); updateColors();}
 
 
-    //-----------------------------------------------------------------------
-    // WHITE COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - WHITE COLORS
+    //--------------------------------------------------------------------------
 
     //! Set color to White.
     inline void setWhite() 	                { m_diffuse.setb(0xFF, 0xFF, 0xFF); updateColors();}
@@ -752,9 +766,9 @@ struct cMaterial
     inline void setWhiteMistyRose() 	    { m_diffuse.setb(0xFF, 0xE4, 0xE1); updateColors();}
 
 
-    //-----------------------------------------------------------------------
-    // GRAY COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - GRAY COLORS
+    //--------------------------------------------------------------------------
 
     //! Set color to Gainsboro.
     inline void setGrayGainsboro() 	        { m_diffuse.setb(0xDC, 0xDC, 0xDC); updateColors();}
@@ -787,42 +801,44 @@ struct cMaterial
     inline void setBlack() 	                { m_diffuse.setb(0x00, 0x00, 0x00); updateColors();}
 
 
-    //-----------------------------------------------------------------------
-    // CUSTOM GRAY COLOR
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS -CUSTOM GRAY COLOR
+    //--------------------------------------------------------------------------
 
-    // Set a custom gray level
+public:
+
+    // Set custom gray level.
     inline void setGrayLevel(const GLfloat a_level) { m_diffuse.set(a_level, a_level, a_level); updateColors(); }
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - GRAPHICS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PROTECTED METHODS - GRAPHICS:
+    //--------------------------------------------------------------------------
     
-    protected:
+protected:
 
-    //! Takes the current diffuse color and updates the ambiant and specular components.
+    //! Takes current \b diffuse color and updates \b ambient and \b specular components.
     void updateColors();
 
 
-    //-----------------------------------------------------------------------
-    // MEMBERS - GRAPHICS PROPERTIES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS - GRAPHICS PROPERTIES:
+    //--------------------------------------------------------------------------
 
-    protected:
+protected:
 
-    //! OpenGL shininess
+    //! Material shininess level.
     GLuint m_shininess;
 
     //! Flag to track if the member has been modified.
     bool m_flag_shininess;
 
 
-    //-----------------------------------------------------------------------
-    // MEMBERS - HAPTIC PROPERTIES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS - HAPTIC PROPERTIES:
+    //--------------------------------------------------------------------------
 
-    protected:
+protected:
 
     //! Level of viscosity.
     double m_viscosity;
@@ -830,25 +846,25 @@ struct cMaterial
     //! Flag to track if related member has been modified.
     bool m_flag_viscosity;
 
-    //! Stiffness [Netwons per meter].
+    //! Stiffness [N/m].
     double m_stiffness;
 
     //! Flag to track if related member has been modified.
     bool m_flag_stiffness;
 
-    // Damping level
-    double m_dampingLevel;
+    // Damping level.
+    double m_damping;
 
     //! Flag to track if related member has been modified.
-    bool m_flag_dampingLevel;
+    bool m_flag_damping;
 
-    //! Static friction constant.
+    //! Static friction constant [N].
     double m_staticFriction;
 
     //! Flag to track if related member has been modified.
     bool m_flag_staticFriction;
 
-    //! Dynamic friction constant.
+    //! Dynamic friction constant [N].
     double m_dynamicFriction;
 
     //! Flag to track if related member has been modified.
@@ -860,19 +876,19 @@ struct cMaterial
     //! Flag to track if related member has been modified.
     bool m_flag_textureLevel;
 
-    //! Frequency of vibrations.
+    //! Frequency of vibrations [Hz].
     double m_vibrationFrequency;
 
     //! Flag to track if related member has been modified.
     bool m_flag_vibrationFrequency;
 
-    //! Amplitude of vibrations.
+    //! Amplitude of vibrations [Hz].
     double m_vibrationAmplitude;
 
     //! Flag to track if related member has been modified.
     bool m_flag_vibrationAmplitude;
 
-    //! Maximum force applied by magnet effect.
+    //! Maximum force applied by magnetic effect [N].
     double m_magnetMaxForce;
 
     //! Flag to track if related member has been modified.
@@ -884,50 +900,54 @@ struct cMaterial
     //! Flag to track if related member has been modified.
     bool m_flag_magnetMaxDistance;
 
-    //! Force threshold for stick and slip effect.
+    //! Force threshold for stick and slip effect [N].
     double m_stickSlipForceMax;
 
     //! Flag to track if related member has been modified.
     bool m_flag_stickSlipForceMax;
 
-    //! Spring stiffness of stick slip model.
+    //! Stiffness of stick slip model.
     double m_stickSlipStiffness;
 
     //! Flag to track if related member has been modified.
     bool m_flag_stickSlipStiffness;
 
-    //! If \b true, haptic friction rendering is enabled.
+    //! If __true__, haptic friction rendering is enabled.
     bool m_useHapticFriction;
 
     //! Flag to track if related member has been modified.
     bool m_flag_useHapticFriction;
 
-    //! If \b true, haptic texture rendering is enabled.
+    //! If __true__, haptic texture rendering is enabled.
     bool m_useHapticTexture;
 
     //! Flag to track if related member has been modified.
     bool m_flag_useHapticTexture;
 
-    //! If \b true, haptic shading is enabled.
+    //! If __true__, haptic shading is enabled.
     bool m_useHapticShading;
 
     //! Flag to track if related member has been modified.
     bool m_flag_useHapticShading;
 
-    //! If \b true, then front side of triangles are rendered haptically (used by the proxy algorithm).
-    bool m_renderFrontSideOfTriangles;
+    //! If __true__, then front side of triangles are rendered haptically (used by the proxy algorithm).
+    bool m_hapticFrontSideOfTriangles;
 
     //! Flag to track if related member has been modified.
-    bool m_flag_renderFrontSideOfTriangles;
+    bool m_flag_hapticFrontSideOfTriangles;
 
-    //! If \b true, then back side of triangles are rendered haptically (used by the proxy algorithm).
-    bool m_renderBackSideOfTriangles;
+    //! If __true__, then back side of triangles are rendered haptically (used by the proxy algorithm).
+    bool m_hapticBackSideOfTriangles;
 
     //! Flag to track if related member has been modified.
-    bool m_flag_renderBackSideOfTriangles;
+    bool m_flag_hapticBackSideOfTriangles;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

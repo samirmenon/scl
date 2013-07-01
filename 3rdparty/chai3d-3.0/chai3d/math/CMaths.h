@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,19 +37,23 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 831 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1052 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CMathsH
 #define CMathsH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "math/CTransform.h"
 #include <math.h>
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CMaths.h
     \ingroup    math
@@ -58,24 +62,24 @@
     <b> Math </b> \n 
     General Utility Functions.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     Check if \e value is equal or near zero.
 
     \param    a_value  Value to be checked.
 
-    \return   Returns \b true if it's almost zero, otherwise \b false.
+    \return   Returns __true__ if it's almost zero, otherwise __false__.
 */
-//===========================================================================
+//==============================================================================
 inline bool cZero(const double& a_value)
 {
     return ((a_value < C_TINY) && (a_value > -C_TINY));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Check if \e value is strictly positive and less than \e maxBound in case
     \e maxBound is positive.
@@ -83,11 +87,11 @@ inline bool cZero(const double& a_value)
     \param    a_value  Value to be checked.
     \param    a_boundMax  Positive bound.
 
-    \return   Return \b true if \e value is greater than 0 and either
+    \return   Return __true__ if \e value is greater than 0 and either
               \e maxBound is negative, or \e value is less than\e maxBound.
-              Otherwise return \b false.
+              Otherwise return __false__.
 */
-//===========================================================================
+//==============================================================================
 inline bool cPositiveBound(const double& a_value, 
                            const double& a_boundMax)
 {
@@ -95,7 +99,7 @@ inline bool cPositiveBound(const double& a_value,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute absolute value.
 
@@ -103,14 +107,14 @@ inline bool cPositiveBound(const double& a_value,
 
     \return   Return the absolute value of \e value.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cAbs(const T& a_value)
 {
     return (a_value >= 0 ? a_value : -a_value);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the sign of a value.
 
@@ -118,21 +122,21 @@ template<class T> inline T cAbs(const T& a_value)
 
     \return   Return 1 is the value is zero or positive, return -1 otherwise.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline double cSign(const T& a_value)
 {
     if (a_value < 0) 
-	{
-		return (-1);
-	}
-	else
-	{	
-		return (1);
-	}
+    {
+        return (-1);
+    }
+    else
+    {	
+        return (1);
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute maximum between two values.
 
@@ -144,7 +148,7 @@ template<class T> inline double cSign(const T& a_value)
     Note that this function should \e not be modified to take inputs by
     reference.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cMax(const T& a_value1, 
                                 const T& a_value2)
 {
@@ -152,7 +156,7 @@ template<class T> inline T cMax(const T& a_value1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute minimum between two values.
 
@@ -164,7 +168,7 @@ template<class T> inline T cMax(const T& a_value1,
     Note that this function should \e not be modified to take inputs by
     reference.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cMin(const T& a_value1, 
                                 const T& a_value2)
 {
@@ -172,17 +176,17 @@ template<class T> inline T cMin(const T& a_value1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Compute maximum of 3 values.
+    Return maximum of 3 values.
 
-    \param    a_value1  First value.
-    \param    a_value2  Second value.
-    \param    a_value3  Third value.
+    \param      a_value1  First value.
+    \param      a_value2  Second value.
+    \param      a_value3  Third value.
 
-    \return   Return maximum of a_value1, a_value2 and a_value3.
+    \return     Return maximum of a_value1, a_value2 and a_value3.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cMax3(const T& a_value1, 
                                  const T& a_value2, 
                                  const T& a_value3)
@@ -191,7 +195,7 @@ template<class T> inline T cMax3(const T& a_value1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Return minimum of 3 values.
 
@@ -201,7 +205,7 @@ template<class T> inline T cMax3(const T& a_value1,
 
     \return   Return minimum of a_value1, a_value2 and a_value3.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cMin3(const T& a_value1, 
                                  const T& a_value2, 
                                  const T& a_value3)
@@ -210,7 +214,7 @@ template<class T> inline T cMin3(const T& a_value1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute maximum of absolute values of 2 numbers.
 
@@ -222,7 +226,7 @@ template<class T> inline T cMin3(const T& a_value1,
     Note that this function should \e not be modified to take inputs by
     reference.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cMaxAbs(const T& a_value1, 
                                    const T& a_value2)
 {
@@ -230,7 +234,7 @@ template<class T> inline T cMaxAbs(const T& a_value1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute minimum of absolute values of 2 values.
 
@@ -242,7 +246,7 @@ template<class T> inline T cMaxAbs(const T& a_value1,
     Note that this function should \e not be modified to take inputs by
     reference.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cMinAbs(const T& a_value1, 
                                    const T& a_value2)
 {
@@ -250,7 +254,7 @@ template<class T> inline T cMinAbs(const T& a_value1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute maximum of absolute values of 3 values.
 
@@ -260,7 +264,7 @@ template<class T> inline T cMinAbs(const T& a_value1,
 
     \return   Return max(abs(p), abs(q), abs(r)).
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cMax3Abs(const T& a_value1, 
                                     const T& a_value2, 
                                     const T& a_value3)
@@ -269,7 +273,7 @@ template<class T> inline T cMax3Abs(const T& a_value1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute minimum of absolute values of 3 values.
 
@@ -279,7 +283,7 @@ template<class T> inline T cMax3Abs(const T& a_value1,
 
     \return   Return min(abs(p), abs(q), abs(r)).
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cMin3Abs(const T& a_value1, 
                                     const T& a_value2, 
                                     const T& a_value3)
@@ -288,14 +292,14 @@ template<class T> inline T cMin3Abs(const T& a_value1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Swap two elements.
 
     \param    a_value1  First value.
     \param    a_value2  Second value.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline void cSwap(T& a_value1, 
                                     T& a_value2)
 {
@@ -305,7 +309,7 @@ template<class T> inline void cSwap(T& a_value1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Linear interpolation from \e value0 (when a=0) to \e value1 (when a=1).
 
@@ -315,7 +319,7 @@ template<class T> inline void cSwap(T& a_value1,
 
     \return   Return an interpolated result: (1-a_level) * a_value1 + a_level * a_value2
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cLerp(const double& a_level, 
                                  const T& a_value1, 
                                  const T& a_value2)
@@ -324,7 +328,7 @@ template<class T> inline T cLerp(const double& a_level,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Clamp the input to the specified range.
 
@@ -337,7 +341,7 @@ template<class T> inline T cLerp(const double& a_level,
     Note that this function should \e not be modified to take inputs by
     reference.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cClamp(const T& a_value, 
                                   const T& a_low, 
                                   const T& a_high)
@@ -346,7 +350,7 @@ template<class T> inline T cClamp(const T& a_value,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Clamp the input to the range 0 - \e infinity.
 
@@ -354,14 +358,14 @@ template<class T> inline T cClamp(const T& a_value,
 
     \return   Return clamped value.
 */
-//===========================================================================
+//==============================================================================
 template<class T> inline T cClamp0(const T& a_value)
 {
     return cMax<T>(0, a_value);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Clamp the input to the range [0,1].
 
@@ -369,14 +373,14 @@ template<class T> inline T cClamp0(const T& a_value)
 
     \return   Return clamped value.
 */
-//===========================================================================
+//==============================================================================
 inline double cClamp01(const double& a_value)
 {
     return (cClamp(a_value, 0.0, 1.0));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Check whether \e value is in the range of [low, high].
 
@@ -384,10 +388,10 @@ inline double cClamp01(const double& a_value)
     \param    a_low  Low boundary.
     \param    a_high  High boundary.
 
-    \return   Return \b true if \e value is in the rage of [low, high]
-				and \b false otherwise.
+    \return   Return __true__ if \e value is in the rage of [low, high]
+                and __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 template<class T, class V> inline bool cContains(const T& a_value, 
                                                  const V& a_low, 
                                                  const V& a_high)
@@ -396,7 +400,7 @@ template<class T, class V> inline bool cContains(const T& a_value,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the square of a scalar.
 
@@ -404,14 +408,14 @@ template<class T, class V> inline bool cContains(const T& a_value,
 
     \return   Return (/e value * /e value).
 */
-//===========================================================================
+//==============================================================================
 inline double cSqr(const double& a_value)
 {
     return(a_value*a_value);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the cosine of an angle defined in degrees.
 
@@ -419,14 +423,14 @@ inline double cSqr(const double& a_value)
 
     \return   Return the cosine of angle.
 */
-//===========================================================================
+//==============================================================================
 inline double cCosDeg(const double& a_angleDeg)
 {
     return (cos(a_angleDeg * C_DEG2RAD));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the sine of an angle defined in degrees.
 
@@ -434,14 +438,14 @@ inline double cCosDeg(const double& a_angleDeg)
 
     \return   Return the sine of angle.
 */
-//===========================================================================
+//==============================================================================
 inline double cSinDeg(const double& a_angleDeg)
 {
     return (sin(a_angleDeg * C_DEG2RAD));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the tangent of an angle defined in degrees.
 
@@ -449,14 +453,14 @@ inline double cSinDeg(const double& a_angleDeg)
 
     \return   Return the tangent of angle.
 */
-//===========================================================================
+//==============================================================================
 inline double cTanDeg(const double& a_angleDeg)
 {
     return (tan(a_angleDeg * C_DEG2RAD));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Return the cosine of an angle defined in radians.
 
@@ -464,14 +468,14 @@ inline double cTanDeg(const double& a_angleDeg)
 
     \return   Return the cosine of angle.
 */
-//===========================================================================
+//==============================================================================
 inline double cCosRad(const double& a_angleRad)
 {
     return (cos(a_angleRad));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Return the sine of an angle defined in radians.
 
@@ -479,14 +483,14 @@ inline double cCosRad(const double& a_angleRad)
 
     \return   Return the sine of angle a_value.
 */
-//===========================================================================
+//==============================================================================
 inline double cSinRad(const double& a_value)
 {
     return (sin(a_value));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Return the tangent of an angle defined in radians.
 
@@ -494,14 +498,14 @@ inline double cSinRad(const double& a_value)
 
     \return   Return the tangent of angle a_value.
 */
-//===========================================================================
+//==============================================================================
 inline double cTanRad(const double& a_value)
 {
     return (tan(a_value));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Convert an angle from degrees to radians.
 
@@ -509,14 +513,14 @@ inline double cTanRad(const double& a_value)
 
     \return   Return angle in radians.
 */
-//===========================================================================
+//==============================================================================
 inline double cDegToRad(const double& a_angleDeg)
 {
     return (a_angleDeg * C_DEG2RAD);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Convert an angle from radians to degrees
 
@@ -524,14 +528,14 @@ inline double cDegToRad(const double& a_angleDeg)
 
     \return   Return angle in degrees.
 */
-//===========================================================================
+//==============================================================================
 inline double cRadToDeg(const double& a_angleRad)
 {
     return (a_angleRad * C_RAD2DEG);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the addition between two vectors. \n
     \e Result = \e Vector1 + \e Vector2
@@ -541,7 +545,7 @@ inline double cRadToDeg(const double& a_angleRad)
 
     \return   Return the addition of both vectors.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cAdd(const cVector3d& a_vector1, 
                       const cVector3d& a_vector2)
 {
@@ -552,7 +556,7 @@ inline cVector3d cAdd(const cVector3d& a_vector1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the addition between three vectors. \n
     \e Result = \e Vector1 + \e Vector2 + \e Vector3
@@ -563,7 +567,7 @@ inline cVector3d cAdd(const cVector3d& a_vector1,
 
     \return   Return the addition of all three vectors.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cAdd(const cVector3d& a_vector1, 
                       const cVector3d& a_vector2, 
                       const cVector3d& a_vector3)
@@ -575,7 +579,7 @@ inline cVector3d cAdd(const cVector3d& a_vector1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the subtraction between two vectors. \n
     \e Result = \e Vector1 - \e Vector2
@@ -585,7 +589,7 @@ inline cVector3d cAdd(const cVector3d& a_vector1,
 
     \return   Return result of subtraction.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cSub(const cVector3d& a_vector1, 
                       const cVector3d& a_vector2)
 {
@@ -596,7 +600,7 @@ inline cVector3d cSub(const cVector3d& a_vector1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the negated vector of a input vector.
 
@@ -604,14 +608,16 @@ inline cVector3d cSub(const cVector3d& a_vector1,
 
     \return   Return (-a_vector).
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cNegate(const cVector3d& a_vector)
 {
-    return cVector3d(a_vector(0) *-1.0,a_vector(1) *-1.0,a_vector(2) *-1.0);
+    return cVector3d(a_vector(0) *-1.0,
+        a_vector(1) *-1.0,
+        a_vector(2) *-1.0);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Multiply a vector by a scalar.
 
@@ -620,15 +626,17 @@ inline cVector3d cNegate(const cVector3d& a_vector)
 
     \return   Returns result of multiplication.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cMul(const double& a_value, 
                       const cVector3d& a_vector)
 {
-    return cVector3d(a_vector(0) *a_value,a_vector(1) *a_value,a_vector(2) *a_value);
+    return cVector3d(a_vector(0) *a_value,
+        a_vector(1) *a_value,
+        a_vector(2) *a_value);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Divide a vector by a scalar.
 
@@ -637,15 +645,17 @@ inline cVector3d cMul(const double& a_value,
 
     \return   Returns result of division.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cDiv(const double& a_value, 
                       const cVector3d& a_vector)
 {
-    return cVector3d(a_vector(0) /a_value,a_vector(1) /a_value,a_vector(2) /a_value);
+    return cVector3d(a_vector(0) /a_value,
+        a_vector(1) /a_value,
+        a_vector(2) /a_value);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Divide a scalar by components of a 3D vector and return vector
 
@@ -654,17 +664,17 @@ inline cVector3d cDiv(const double& a_value,
 
     \return   Returns a vector. \e result = \e value / \e vector.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cDivVect(const double& a_value, 
                           const cVector3d& a_vector)
 {
-    return cVector3d(
-      a_value / a_vector(0) ,a_value / a_vector(1) ,a_value / a_vector(2) 
-      );
+    return cVector3d( a_value / a_vector(0),
+        a_value / a_vector(1),
+        a_value / a_vector(2));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the cross product between two 3D vectors.
 
@@ -673,7 +683,7 @@ inline cVector3d cDivVect(const double& a_value,
 
     \return   Returns the cross product between \e Vector1 and \e Vector2.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cCross(const cVector3d& a_vector1, 
                         const cVector3d& a_vector2)
 {
@@ -683,7 +693,7 @@ inline cVector3d cCross(const cVector3d& a_vector1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the dot product between two vectors.
 
@@ -692,7 +702,7 @@ inline cVector3d cCross(const cVector3d& a_vector1,
 
     \return   Returns the dot product between between both vectors.
 */
-//===========================================================================
+//==============================================================================
 inline double cDot(const cVector3d& a_vector1, 
                    const cVector3d& a_vector2)
 {
@@ -700,7 +710,7 @@ inline double cDot(const cVector3d& a_vector1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the normalized vector (\e length = 1) of an input vector.
 
@@ -708,7 +718,7 @@ inline double cDot(const cVector3d& a_vector1,
 
     \return   Returns the normalized vector.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cNormalize(const cVector3d& a_vector)
 {
     cVector3d result;
@@ -717,7 +727,7 @@ inline cVector3d cNormalize(const cVector3d& a_vector)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the distance between two points.
 
@@ -726,7 +736,7 @@ inline cVector3d cNormalize(const cVector3d& a_vector)
 
     \return   Return distance between points
 */
-//===========================================================================
+//==============================================================================
 inline double cDistance(const cVector3d& a_point1, 
                         const cVector3d& a_point2)
 {
@@ -734,7 +744,7 @@ inline double cDistance(const cVector3d& a_point1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the squared distance between two points.
 
@@ -743,7 +753,7 @@ inline double cDistance(const cVector3d& a_point1,
 
     \return   Return squared distance between points.
 */
-//===========================================================================
+//==============================================================================
 inline double cDistanceSq(const cVector3d& a_point1, 
                           const cVector3d& a_point2)
 {
@@ -751,7 +761,7 @@ inline double cDistanceSq(const cVector3d& a_point1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
      Determine whether two vectors represent the same point.
 
@@ -766,31 +776,36 @@ inline double cDistanceSq(const cVector3d& a_point1,
 
      \return   Return whether the two vectors represent the same point.
 */
-//===========================================================================
+//==============================================================================
 bool inline cEqualPoints(const cVector3d& v1,
                          const cVector3d& v2,
                          const double epsilon = C_SMALL)
 {
     // Accelerated path for exact equality
-    if (epsilon == 0.0) {
-        if ( (v1(0)  == v2(0) ) && (v1(1)  == v2(1) ) && (v1(2)  == v2(2) ) ) return true;
-        else return false;
+    if (epsilon == 0.0) 
+    {
+        if ( (v1(0)  == v2(0) ) && (v1(1)  == v2(1) ) && (v1(2)  == v2(2) ) ) 
+            return true;
+        else 
+            return false;
     }
 
     if ((fabs(v1(0) -v2(0) ) < epsilon) &&
         (fabs(v1(1) -v2(1) ) < epsilon) &&
-        (fabs(v1(2) -v2(2) ) < epsilon)) return true;
-    else return false;
+        (fabs(v1(2) -v2(2) ) < epsilon)) 
+        return true;
+    else 
+        return false;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Return the Identity Matrix .
 
     \return   Return the identity matrix.
 */
-//===========================================================================
+//==============================================================================
 inline cMatrix3d cIdentity3d(void)
 {
     cMatrix3d result;
@@ -799,7 +814,125 @@ inline cMatrix3d cIdentity3d(void)
 }
 
 
-//===========================================================================
+//==============================================================================
+/*!
+    Build a rotation matrix from a set of Euler angles and co-moving 
+    axes of rotations.
+
+    \param      a_angleRad1  Angle in radians of the first rotation in the sequence.
+    \param      a_angleRad2  Angle in radians of the second rotation in the sequence.
+    \param      a_angleRad3  Angle in radians of the third rotation in the sequence.
+    \param      a_eulerOrder  The order of the axes about which the rotations 
+                are to be applied
+    \param      a_useIntrinsicEulerModel  If __true__ use _intrinsic_ Euler 
+                model, if __false__ use _extrinsic_ Euler model.
+*/
+//==============================================================================
+inline cMatrix3d cRotEulerRad(const double& a_angleRad1,
+    const double& a_angleRad2,
+    const double& a_angleRad3,
+    const cEulerOrder a_eulerOrder,
+    const bool a_useIntrinsicEulerModel = true)
+{
+    // create matrix
+    cMatrix3d rot;
+    if (a_useIntrinsicEulerModel)
+        rot.setIntrinsicEulerRotationRad(a_angleRad1, a_angleRad2, a_angleRad3, a_eulerOrder);
+    else
+        rot.setExtrinsicEulerRotationRad(a_angleRad1, a_angleRad2, a_angleRad3, a_eulerOrder);
+
+    // return result
+    return (rot);
+}
+
+
+//==============================================================================
+/*!
+    Build a rotation matrix from a set of Euler angles and co-moving 
+    axes of rotations.
+
+    \param      a_angleDeg1  Angle in degrees of the first rotation in the sequence.
+    \param      a_angleDeg2  Angle in degrees of the second rotation in the sequence.
+    \param      a_angleDeg3  Angle in degrees of the third rotation in the sequence.
+    \param      a_eulerOrder  The order of the axes about which the rotations 
+                are to be applied
+    \param      a_useIntrinsicEulerModel  If __true__ use _intrinsic_ Euler 
+                model, if __false__ use _extrinsic_ Euler model.
+*/
+//==============================================================================
+inline cMatrix3d cRotEulerDeg(const double& a_angleDeg1,
+    const double& a_angleDeg2,
+    const double& a_angleDeg3,
+    const cEulerOrder a_eulerOrder,
+    const bool a_useIntrinsicEulerModel = true)
+{
+    // create matrix
+    cMatrix3d rot;
+    if (a_useIntrinsicEulerModel)
+        rot.setExtrinsicEulerRotationDeg(a_angleDeg1, a_angleDeg2, a_angleDeg3, a_eulerOrder);
+    else
+        rot.setExtrinsicEulerRotationDeg(a_angleDeg1, a_angleDeg2, a_angleDeg3, a_eulerOrder);
+
+    // return result
+    return (rot);
+}
+
+
+//==============================================================================
+/*!
+    Build a rotation matrix from an __axis-angle__ representation.
+
+    \param      a_axisX  __x__ component of axis.
+    \param      a_axisY  __y__ component of axis.
+    \param      a_axisZ  __z__ component of axis.
+    \param      a_angleRad  Angle in radian.
+*/
+//==============================================================================
+inline cMatrix3d cRotAxisAngleRad(const double& a_axisX,
+    const double& a_axisY,
+    const double& a_axisZ,
+    const double& a_angleRad)
+{
+    // create matrix
+    cMatrix3d rot;
+    rot.setAxisAngleRotationRad(a_axisX,
+                                a_axisY,
+                                a_axisZ,
+                                a_angleRad);
+
+    // return result
+    return (rot);
+}
+
+
+//==============================================================================
+/*!
+    Build a rotation matrix from an __axis-angle__ representation.
+
+    \param      a_axisX  __x__ component of axis.
+    \param      a_axisY  __y__ component of axis.
+    \param      a_axisZ  __z__ component of axis.
+    \param      a_angleDeg  Angle in degrees.
+*/
+//==============================================================================
+inline cMatrix3d cRotAxisAngleDeg(const double& a_axisX,
+    const double& a_axisY,
+    const double& a_axisZ,
+    const double& a_angleDeg)
+{
+    // create matrix
+    cMatrix3d rot;
+    rot.setAxisAngleRotationDeg(a_axisX,
+                                a_axisY,
+                                a_axisZ,
+                                a_angleDeg);
+
+    // return result
+    return (rot);
+}
+
+
+//==============================================================================
 /*!
     Compute the multiplication between two matrices.
 
@@ -808,7 +941,7 @@ inline cMatrix3d cIdentity3d(void)
 
     \return   Returns multiplication of /e matrix1 * /e matrix2.
 */
-//===========================================================================
+//==============================================================================
 inline cMatrix3d cMul(const cMatrix3d& a_matrix1, 
                       const cMatrix3d& a_matrix2)
 {
@@ -818,7 +951,7 @@ inline cMatrix3d cMul(const cMatrix3d& a_matrix1,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the multiplication of a matrix and a vector.
 
@@ -827,7 +960,7 @@ inline cMatrix3d cMul(const cMatrix3d& a_matrix1,
 
     \return   Returns the multiplication of the matrix and vector.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cMul(const cMatrix3d& a_matrix, 
                       const cVector3d& a_vector)
 {
@@ -837,7 +970,7 @@ inline cVector3d cMul(const cMatrix3d& a_matrix,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the transpose of a matrix
 
@@ -845,7 +978,7 @@ inline cVector3d cMul(const cMatrix3d& a_matrix,
 
     \return   Returns the transpose of the input matrix.
 */
-//===========================================================================
+//==============================================================================
 inline cMatrix3d cTranspose(const cMatrix3d& a_matrix)
 {
     cMatrix3d result;
@@ -854,7 +987,7 @@ inline cMatrix3d cTranspose(const cMatrix3d& a_matrix)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the inverse of a matrix.
 
@@ -862,7 +995,7 @@ inline cMatrix3d cTranspose(const cMatrix3d& a_matrix)
 
     \return   Returns the inverse of the input matrix.
 */
-//===========================================================================
+//==============================================================================
 inline cMatrix3d cInverse(const cMatrix3d& a_matrix)
 {
     cMatrix3d result;
@@ -871,7 +1004,7 @@ inline cMatrix3d cInverse(const cMatrix3d& a_matrix)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the angle in radians between two vectors.
 
@@ -880,7 +1013,7 @@ inline cMatrix3d cInverse(const cMatrix3d& a_matrix)
 
     \return   Returns the angle in radians between the input vectors.
 */
-//===========================================================================
+//==============================================================================
 inline double cAngle(const cVector3d& a_vector0, 
                      const cVector3d& a_vector1)
 {
@@ -892,7 +1025,7 @@ inline double cAngle(const cVector3d& a_vector0,
     // check if lengths of vectors are not zero
     if (cAbs(val) < C_SMALL)
     {
-        return (0);
+        return (0.0);
     }
 
     // compute angle
@@ -904,7 +1037,7 @@ inline double cAngle(const cVector3d& a_vector0,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the cosine of the angle between two vectors.
 
@@ -913,7 +1046,7 @@ inline double cAngle(const cVector3d& a_vector0,
 
     \return   Returns the cosine of the angle between the input vectors.
 */
-//===========================================================================
+//==============================================================================
 inline double cCosAngle(const cVector3d& a_vector0, 
                         const cVector3d& a_vector1)
 {
@@ -925,7 +1058,7 @@ inline double cCosAngle(const cVector3d& a_vector0,
     // check if lengths of vectors are not zero
     if (cAbs(val) < C_SMALL)
     {
-        return (0);
+        return (0.0);
     }
 
     // compute angle
@@ -933,7 +1066,7 @@ inline double cCosAngle(const cVector3d& a_vector0,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the projection of a point on a plane. the plane is expressed
     by a point and a surface normal.
@@ -944,7 +1077,7 @@ inline double cCosAngle(const cVector3d& a_vector0,
 
     \return   Returns the projection of \e point on \e plane.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cProjectPointOnPlane(const cVector3d& a_point,
                                       const cVector3d& a_planePoint,
                                       const cVector3d& n)
@@ -953,9 +1086,10 @@ inline cVector3d cProjectPointOnPlane(const cVector3d& a_point,
     cMatrix3d projectionMatrix;
 
     projectionMatrix.set(
-      (n(1)  * n(1) ) + (n(2)  * n(2) ), -(n(0)  * n(1) ), -(n(0)  * n(2) ),
-      -(n(1)  * n(0) ), (n(0)  * n(0) ) + (n(2)  * n(2) ), -(n(1)  * n(2) ),
-      -(n(2)  * n(0) ), -(n(2)  * n(1) ), (n(0)  * n(0) ) + (n(1)  * n(1) ) );
+       (n(1) * n(1)) + (n(2) * n(2)), -(n(0) * n(1) ),-(n(0) * n(2)),
+      -(n(1) * n(0)), (n(0) * n(0)) + (n(2) * n(2) ),-(n(1) * n(2)),
+      -(n(2) * n(0)),-(n(2) * n(1)), (n(0) * n(0) ) + (n(1) * n(1))
+      );
 
     // project point on plane and return projected point.
     cVector3d point;
@@ -968,7 +1102,7 @@ inline cVector3d cProjectPointOnPlane(const cVector3d& a_point,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the area of a triangle by passing the position of its three
     vertices.
@@ -979,7 +1113,7 @@ inline cVector3d cProjectPointOnPlane(const cVector3d& a_point,
 
     \return   Returns the area of the triangle.
 */
-//===========================================================================
+//==============================================================================
 inline double cTriangleArea(const cVector3d& a_vertex0,
                             const cVector3d& a_vertex1,
                             const cVector3d& a_vertex2)
@@ -991,7 +1125,7 @@ inline double cTriangleArea(const cVector3d& a_vertex0,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the projection of a point on a plane. the plane is expressed
     by a set of three points.
@@ -1003,7 +1137,7 @@ inline double cTriangleArea(const cVector3d& a_vertex0,
 
     \return   Returns the projection of \e point on \e plane.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cProjectPointOnPlane(const cVector3d& a_point,
                                       const cVector3d& a_planePoint0, 
                                       const cVector3d& a_planePoint1,
@@ -1024,11 +1158,11 @@ inline cVector3d cProjectPointOnPlane(const cVector3d& a_point,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Projects a 3D point on a plane composed of three points. \n
     This function returns two parameters \e v01 and \e v02 which correspond 
-    to the factord which express the following relation: 
+    to the factors that expressed the following relation: 
     \e projectedPoint = \e planePoint0 + \e v01 * \e V01 + \e v02 * \e V02 \n
     where: \n
     \e V01 = \e planePoint1 - \e planePoint0, and \n
@@ -1041,7 +1175,7 @@ inline cVector3d cProjectPointOnPlane(const cVector3d& a_point,
     \param    a_v01  returned factor.
     \param    a_v02  returned factor.
 */
-//===========================================================================
+//==============================================================================
 inline void cProjectPointOnPlane(const cVector3d& a_point,
                                  const cVector3d& a_planePoint0, 
                                  const cVector3d& a_planePoint1,
@@ -1054,15 +1188,15 @@ inline void cProjectPointOnPlane(const cVector3d& a_point,
     cVector3d point = cSub(a_point, a_planePoint0);
 
     // matrix
-    double m00 = v01(0)  * v01(0)  + v01(1)  * v01(1)  + v01(2)  * v01(2) ;
-    double m01 = v01(0)  * v02(0)  + v01(1)  * v02(1)  + v01(2)  * v02(2) ;
+    double m00 = v01(0) * v01(0) + v01(1) * v01(1) + v01(2) * v01(2);
+    double m01 = v01(0) * v02(0) + v01(1) * v02(1) + v01(2) * v02(2);
     double m10 = m01;
-    double m11 = v02(0)  * v02(0)  + v02(1)  * v02(1)  + v02(2)  * v02(2) ;
+    double m11 = v02(0) * v02(0) + v02(1) * v02(1) + v02(2) * v02(2);
     double det = m00 * m11 - m10 * m01;
 
     // vector
-    double vm0 = v01(0)  * point(0)  + v01(1)  * point(1)  + v01(2)  * point(2) ;
-    double vm1 = v02(0)  * point(0)  + v02(1)  * point(1)  + v02(2)  * point(2) ;
+    double vm0 = v01(0) * point(0) + v01(1) * point(1) + v01(2) * point(2);
+    double vm1 = v02(0) * point(0) + v02(1) * point(1) + v02(2) * point(2);
 
     // inverse
     a_v01 = (1.0 / det) * ( m11 * vm0 - m01 * vm1);
@@ -1070,7 +1204,7 @@ inline void cProjectPointOnPlane(const cVector3d& a_point,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the projection of a point on a line. the line is expressed
     by a point located on the line and a direction vector.
@@ -1081,7 +1215,7 @@ inline void cProjectPointOnPlane(const cVector3d& a_point,
 
     \return   Returns the projection of \e a_point on the line.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cProjectPointOnLine(const cVector3d& a_point,
                                      const cVector3d& a_pointOnLine, 
                                      const cVector3d& a_directionOfLine)
@@ -1092,24 +1226,24 @@ inline cVector3d cProjectPointOnLine(const cVector3d& a_point,
     // compute norm of line direction
     double lengthDirSq = a_directionOfLine.lengthsq();
 
-	if (lengthDirSq > 0.0)
-	{
-		a_point.subr(a_pointOnLine, point);
+    if (lengthDirSq > 0.0)
+    {
+        a_point.subr(a_pointOnLine, point);
 
-		a_directionOfLine.mulr( (point.dot(a_directionOfLine) / (lengthDirSq)),
+        a_directionOfLine.mulr( (point.dot(a_directionOfLine) / (lengthDirSq)),
                                 result);
 
-		result.add(a_pointOnLine);
-		return (result);
-	}
-	else
-	{
-		return (a_pointOnLine);
-	}
+        result.add(a_pointOnLine);
+        return (result);
+    }
+    else
+    {
+        return (a_pointOnLine);
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the projection of a point on a segment. the segment is described
     by its two extremity points.
@@ -1120,7 +1254,7 @@ inline cVector3d cProjectPointOnLine(const cVector3d& a_point,
 
     \return   Returns the projection of \e a_point on the segment.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cProjectPointOnSegment(const cVector3d& a_point,
                                         const cVector3d& a_segmentPointA,
                                         const cVector3d& a_segmentPointB)
@@ -1158,19 +1292,18 @@ inline cVector3d cProjectPointOnSegment(const cVector3d& a_point,
 }
 
 
-
-//===========================================================================
+//==============================================================================
 /*!
     Compute the projection of a point on a disk lying in the XY plane.
-    The disk is described by its Z coord and its radius.
+    The disk is described by its Z coordinate and its radius.
 
     \param    a_point   Point that is projected.
-    \param    a_height  Z coord of disk.
+    \param    a_height  Z coordinate of disk.
     \param    a_radius  Radius of disk.
 
     \return   Returns the projection of \e a_point on the disk.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cProjectPointOnDiskXY (const cVector3d& a_point,
                                         const double& a_height,
                                         const double& a_radius)
@@ -1192,8 +1325,7 @@ inline cVector3d cProjectPointOnDiskXY (const cVector3d& a_point,
 }
 
 
-
-//===========================================================================
+//==============================================================================
 /*!
     Project a vector \e V0 onto a second vector \e V1.
 
@@ -1202,7 +1334,7 @@ inline cVector3d cProjectPointOnDiskXY (const cVector3d& a_point,
 
     \return   Returns the projection of \e V0 onto \e V1.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cProject(const cVector3d& a_vector0, 
                           const cVector3d& a_vector1)
 {
@@ -1218,27 +1350,27 @@ inline cVector3d cProject(const cVector3d& a_vector0,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the distance between a point and a line described by two points.
 
     \param    a_point  Point.
-    \param    a_pointLine1  Line point 1.
-	\param    a_pointLine1  Line point 1.
+    \param    a_linePoint1  Line point 1.
+    \param    a_linePoint2  Line point 1.
 
     \return   Return distance between points
 */
-//===========================================================================
+//==============================================================================
 inline double cDistanceToLine(const cVector3d& a_point, 
-							  const cVector3d& a_linePoint1,
-							  const cVector3d& a_linePoint2)
+                              const cVector3d& a_linePoint1,
+                              const cVector3d& a_linePoint2)
 {
-	cVector3d point = cProjectPointOnLine(a_point, a_linePoint1, cSub(a_linePoint2, a_linePoint1));
+    cVector3d point = cProjectPointOnLine(a_point, a_linePoint1, cSub(a_linePoint2, a_linePoint1));
     return (cDistance(a_point, point));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the normal of a surface defined by three point passed as
     parameters.
@@ -1249,7 +1381,7 @@ inline double cDistanceToLine(const cVector3d& a_point,
 
     \return     Return surface normal.
 */
-//===========================================================================
+//==============================================================================
 inline cVector3d cComputeSurfaceNormal(const cVector3d& a_surfacePoint0,
                                        const cVector3d& a_surfacePoint1, 
                                        const cVector3d& a_surfacePoint2)
@@ -1269,7 +1401,8 @@ inline cVector3d cComputeSurfaceNormal(const cVector3d& a_surfacePoint0,
     return (result);
 }
 
-//===========================================================================
+
+//==============================================================================
 /*!
     Returns true if \e point is contained in the bounding box defined by min and max
 
@@ -1279,7 +1412,7 @@ inline cVector3d cComputeSurfaceNormal(const cVector3d& a_surfacePoint0,
 
     \return   Returns true if p is in [box_min,box_max], inclusive
 */
-//===========================================================================
+//==============================================================================
 inline bool cBoxContains(const cVector3d& a_point, 
                          const cVector3d& box_min, 
                          const cVector3d& box_max)
@@ -1292,7 +1425,7 @@ inline bool cBoxContains(const cVector3d& a_point,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Returns the number of intersection points between a segment AB and
     a sphere of radius \e R. \n
@@ -1312,7 +1445,7 @@ inline bool cBoxContains(const cVector3d& a_point,
 
     \return   Returns the number of intersection points found.
 */
-//===========================================================================
+//==============================================================================
 inline int cIntersectionSegmentSphere(const cVector3d& a_segmentPointA,
                                       const cVector3d& a_segmentPointB,
                                       const cVector3d& a_spherePos,
@@ -1435,7 +1568,7 @@ inline int cIntersectionSegmentSphere(const cVector3d& a_segmentPointA,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Returns the number of intersection points between a segment AB and
     a open topless cylinder of radius \e R. \n
@@ -1458,7 +1591,7 @@ inline int cIntersectionSegmentSphere(const cVector3d& a_segmentPointA,
 
     \return   Returns the number of intersection points found
 */
-//===========================================================================
+//==============================================================================
 inline int cIntersectionSegmentToplessCylinder(const cVector3d& a_segmentPointA,
                                                const cVector3d& a_segmentPointB,
                                                const cVector3d& a_cylinderPointA,
@@ -1604,24 +1737,33 @@ inline int cIntersectionSegmentToplessCylinder(const cVector3d& a_segmentPointA,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Returns true if segment AB intersects triangle defined by
+    Returns __true__ if the segment AB intersects the triangle defined by
     its three vertices (\e V0, \e V1, \e V2).
 
-    \param    a_segmentPointA   First point of segment AB
-    \param    a_segmentPointB   Second point of segment AB
-    \param    a_triangleVertex0 Vertex 0 of triangle
-    \param    a_triangleVertex1 Vertex 1 of triangle
-    \param    a_triangleVertex2 Vertex 2 of triangle
-    \param    a_collisionPoint  If a collision occurs, collision point is returned here
-    \param    a_collisionNormal Surface normal at the point where the collision occurred
-    \param    a_collisionPosVertex01  Collision point projected on segment described by vertices a_triangleVertex0 and a_triangleVertex1
-    \param    a_collisionPosVertex02  Collision point projected on segment described by vertices a_triangleVertex0 and a_triangleVertex2
+    \param    a_segmentPointA  First point of segment AB.
+    \param    a_segmentPointB  Second point of segment AB.
+    
+    \param    a_triangleVertex0  Vertex 0 of triangle
+    \param    a_triangleVertex1  Vertex 1 of triangle
+    \param    a_triangleVertex2  Vertex 2 of triangle
+    
+    \param    a_reportFrontSideCollision  If __true__, then reports collision when triangle is facing segment with front side.
+    \param    a_reportBackSideCollision   If __true__, then reports collision when triangle is facing segment with back side.
 
-    \return   Return true id collision occurs, otherwise return false
+    \param    a_collisionPoint   If a collision occurs, collision point is returned here.
+    \param    a_collisionNormal  If a collision occurs, surface normal is reported here
+    
+    \param    a_collisionPosVertex01  Collision point projected on segment described 
+              by vertices a_triangleVertex0 and a_triangleVertex1
+    
+    \param    a_collisionPosVertex02  Collision point projected on segment described 
+              by vertices a_triangleVertex0 and a_triangleVertex2
+
+    \return   Return __true__ if collision occurs, otherwise return __false__
 */
-//===========================================================================
+//==============================================================================
 inline bool cIntersectionSegmentTriangle(const cVector3d& a_segmentPointA,
                                          const cVector3d& a_segmentPointB,
                                          const cVector3d& a_triangleVertex0,
@@ -1710,9 +1852,12 @@ inline bool cIntersectionSegmentTriangle(const cVector3d& a_segmentPointA,
     return (false);
 }
 
+//------------------------------------------------------------------------------
+}       // namespace chai3d
+//------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------
-#endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#endif  // CMathsH
+//------------------------------------------------------------------------------
 
 

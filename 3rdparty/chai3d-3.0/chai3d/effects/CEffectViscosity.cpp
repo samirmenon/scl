@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,31 +37,34 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "effects/CEffectViscosity.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CGenericObject.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     Constructor of cEffectViscosity.
 
     \fn  cEffectViscosity::cEffectViscosity(cGenericObject* a_parent):cGenericEffect(a_parent)
     \param  a_parent Parent object.
 */
-//===========================================================================
+//==============================================================================
 cEffectViscosity::cEffectViscosity(cGenericObject* a_parent):cGenericEffect(a_parent)
 {
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the resulting force effect.
 
@@ -73,9 +76,9 @@ cEffectViscosity::cEffectViscosity(cGenericObject* a_parent):cGenericEffect(a_pa
     \param  a_toolVel Velocity of tool.
     \param  a_toolID  Identification number of the force algorithm stored in the tool.
     \param  a_reactionForce  Return the computed force here.
-    \return  Return \b false if no interaction force is computed.
+    \return  Return __false__ if no interaction force is computed.
 */
-//===========================================================================
+//==============================================================================
 bool cEffectViscosity::computeForce(const cVector3d& a_toolPos,
                                     const cVector3d& a_toolVel,
                                     const unsigned int& a_toolID,
@@ -96,4 +99,8 @@ bool cEffectViscosity::computeForce(const cVector3d& a_toolPos,
     }
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
 

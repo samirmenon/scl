@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,23 +39,29 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 322 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "forces/CInteractionBasics.h"
 #include "forces/CAlgorithmPotentialField.h"
 #include "world/CWorld.h"
-//---------------------------------------------------------------------------
-unsigned int cAlgorithmPotentialField::m_IDNcounter = 0;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+unsigned int cAlgorithmPotentialField::m_IDNcounter = 0;
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cAlgorithmPotentialField
 
     \fn       cAlgorithmPotentialField::cAlgorithmPotentialField()
 */
-//===========================================================================
+//==============================================================================
 cAlgorithmPotentialField::cAlgorithmPotentialField()
 {
     // define an identification number for this force algorithm
@@ -66,7 +72,7 @@ cAlgorithmPotentialField::cAlgorithmPotentialField()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute forces for all potential field based objects (cGenericPotentialField).
 
@@ -75,7 +81,7 @@ cAlgorithmPotentialField::cAlgorithmPotentialField()
     \param    a_toolPos  Position of tool.
 	\param    a_toolVel  Velocity of tool.
 */
-//===========================================================================
+//==============================================================================
 cVector3d cAlgorithmPotentialField::computeForces(const cVector3d& a_toolPos,
                                                   const cVector3d& a_toolVel)
 {
@@ -98,3 +104,7 @@ cVector3d cAlgorithmPotentialField::computeForces(const cVector3d& a_toolPos,
     return (force);
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

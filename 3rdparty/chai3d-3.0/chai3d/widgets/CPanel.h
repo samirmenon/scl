@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,16 +39,20 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 733 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CPanelH
 #define CPanelH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "widgets/CGenericWidget.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CPanel.h
 
@@ -56,9 +60,9 @@
     <b> Widgets </b> \n 
     A plain 2D Panel.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cPanel
     \ingroup    widgets
@@ -66,12 +70,12 @@
     \brief      
     Implementation of a 2D Panel.
 */
-//===========================================================================
+//==============================================================================
 class cPanel : public cGenericWidget
 {    
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     public:
 
@@ -82,9 +86,9 @@ class cPanel : public cGenericWidget
     virtual ~cPanel() {};
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     public:
 
@@ -119,14 +123,31 @@ class cPanel : public cGenericWidget
                     const double& a_marginLeft = 0,
                     const double& a_marginRight = 0);
 
-    //! Set Panel colors.
+    //! Set Panel color.
     void setColorPanel(const cColorf& a_colorPanel);
 
-    //! Set Panel colors.
-    //void setColorPanel(const cColorf& a_colorPanel);
+    //! Set Panel color components for all four corners.
+    void setColorPanel(const cColorf& a_colorPanelTopLeft, 
+                       const cColorf& a_colorPanelTopRight, 
+                       const cColorf& a_colorPanelBottomLeft, 
+                       const cColorf& a_colorPanelBottomRight);
 
-    //! Get Panel color.
+    //! Get Panel color at top left corner.
     inline cColorf getColorTopLeft() const { return (m_colorPanelTopLeft); }
+
+    //! Get color at top right corner.
+    inline cColorf getColorTopRight() const { return (m_colorPanelTopRight); }
+
+    //! Get color at to left corner.
+    inline cColorf getColorBottomLeft() const { return (m_colorPanelBottomLeft); }
+
+    //! Get color at to left corner.
+    inline cColorf getColorBottomRight() const { return (m_colorPanelBottomRight); }
+
+    //! Assign a transparency level for the scope background.
+    void setTransparencyLevel(const float a_level, 
+                              const bool a_applyToTextures = false,
+                              const bool a_affectChildren = false);
 
     //! Enable or Disable modelling of Panel
     void setEnabledPanel(const bool a_enabled) { m_enabledPanel = a_enabled; }
@@ -135,9 +156,9 @@ class cPanel : public cGenericWidget
     bool getEnabledPanel() {return (m_enabledPanel); }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // MEMBERS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     protected:
 
@@ -177,13 +198,13 @@ class cPanel : public cGenericWidget
     //! Position along Z-axis when Panel plane is drawn.
     double m_offsetPanelModelZ;
 
-    //! If \b true, Panel modelling is enabled. 
+    //! If __true__, Panel modelling is enabled. 
     bool m_enabledPanel;
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     protected:
 
@@ -203,6 +224,10 @@ class cPanel : public cGenericWidget
     cColorf m_colorPanelBottomRight;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,22 +37,24 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 846 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1067 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CShapeLine.h"
 #include "graphics/CDraw3D.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cShapeLine.
-
-    \fn     cShapeLine::cShapeLine()
 */
-//===========================================================================
+//==============================================================================
 cShapeLine::cShapeLine()
 {
     // default line width
@@ -72,15 +74,14 @@ cShapeLine::cShapeLine()
 };
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Constructor of cShapeLine.
 
-    \fn     cShapeLine::cShapeLine(const cVector3d& a_pointA, const cVector3d& a_pointB)
-	\param	a_pointA  Point A of line.
-	\param	a_pointB  Point B of line.
+    \param  a_pointA  Point A of line.
+    \param  a_pointB  Point B of line.
 */
-//===========================================================================
+//==============================================================================
 cShapeLine::cShapeLine(const cVector3d& a_pointA, const cVector3d& a_pointB)
 {
     // default line width
@@ -91,31 +92,27 @@ cShapeLine::cShapeLine(const cVector3d& a_pointA, const cVector3d& a_pointB)
     m_pointB.copyfrom(a_pointB);
 
     // set color properties
-    m_colorPointA.set(1.0, 1.0, 1.0, 1.0);
-    m_colorPointB.set(1.0, 1.0, 1.0, 1.0);
+    m_colorPointA.set(0.7f, 0.7f, 0.7f, 1.0f);
+    m_colorPointB.set(0.7f, 0.7f, 0.7f, 1.0f);
+
     // initialize stippling settings
     m_stippleFactor = 1;
     m_stipplePattern = 0xFFFF;
 };
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a copy of itself.
 
-    \fn     cShapeLine* cShapeLine::copy(const bool a_duplicateMaterialData,
-                             const bool a_duplicateTextureData, 
-                             const bool a_duplicateMeshData,
-                             const bool a_buildCollisionDetector)
+    \param  a_duplicateMaterialData  If __true__, material (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateTextureData  If __true__, texture data (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateMeshData  If __true__, mesh data (if available) is duplicated, otherwise it is shared.
+    \param  a_buildCollisionDetector  If __true__, collision detector (if available) is duplicated, otherwise it is shared.
 
-    \param      a_duplicateMaterialData  If \b true, material (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateTextureData  If \b true, texture data (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateMeshData  If \b true, mesh data (if available) is duplicated, otherwise it is shared.
-    \param      a_buildCollisionDetector  If \b true, collision detector (if available) is duplicated, otherwise it is shared.
-
-	\return		Return new object.
+    \return Return new object.
 */
-//===========================================================================
+//==============================================================================
 cShapeLine* cShapeLine::copy(const bool a_duplicateMaterialData,
                              const bool a_duplicateTextureData, 
                              const bool a_duplicateMeshData,
@@ -123,8 +120,8 @@ cShapeLine* cShapeLine::copy(const bool a_duplicateMaterialData,
 {
     // create new instance
     cShapeLine* obj = new cShapeLine(m_pointA, m_pointB);
-	obj->m_colorPointA = m_colorPointA;
-	obj->m_colorPointB = m_colorPointB;
+    obj->m_colorPointA = m_colorPointA;
+    obj->m_colorPointB = m_colorPointB;
     obj->m_stippleFactor = m_stippleFactor;
     obj->m_stipplePattern = m_stipplePattern;
 
@@ -136,27 +133,27 @@ cShapeLine* cShapeLine::copy(const bool a_duplicateMaterialData,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render line in OpenGL
 
-    \fn       void cShapeLine::render(cRenderOptions& a_options)
-
-    \param    a_options  Render options.
+    \param  a_options  Render options.
 */
-//===========================================================================
+//==============================================================================
 void cShapeLine::render(cRenderOptions& a_options)
 {
-	/////////////////////////////////////////////////////////////////////////
-	// Render parts that are always opaque
-	/////////////////////////////////////////////////////////////////////////
-	if (SECTION_RENDER_OPAQUE_PARTS_ONLY(a_options))
-	{
-		// disable lighting
-		glDisable(GL_LIGHTING);
+#ifdef C_USE_OPENGL
+
+    /////////////////////////////////////////////////////////////////////////
+    // Render parts that are always opaque
+    /////////////////////////////////////////////////////////////////////////
+    if (SECTION_RENDER_OPAQUE_PARTS_ONLY(a_options))
+    {
+        // disable lighting
+        glDisable(GL_LIGHTING);
 
         // set line width
-        glLineWidth(m_lineWidth);
+        glLineWidth((GLfloat)m_lineWidth);
 
         // set stipple settings
         if (m_stipplePattern == 0xFFFF)
@@ -170,36 +167,35 @@ void cShapeLine::render(cRenderOptions& a_options)
         }
 
 
-		// draw line
-		glBegin(GL_LINES);
-			m_colorPointA.render();
-			glVertex3dv(&m_pointA(0) );
-			m_colorPointB.render();
-			glVertex3dv(&m_pointB(0) );
-		glEnd();
+        // draw line
+        glBegin(GL_LINES);
+            m_colorPointA.render();
+            glVertex3dv(&m_pointA(0) );
+            m_colorPointB.render();
+            glVertex3dv(&m_pointB(0) );
+        glEnd();
 
        
-		// restore OpenGL to default value
-		glEnable(GL_LIGHTING);
+        // restore OpenGL to default value
+        glEnable(GL_LIGHTING);
         glDisable(GL_LINE_STIPPLE);
-	}
+    }
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     From the position of the tool, search for the nearest point located
     at the surface of the current object. Decide if the point is located inside
     or outside of the object
 
-    \fn     void cShapeLine::computeLocalInteraction(const cVector3d& a_toolPos,
-                                                      const cVector3d& a_toolVel,
-                                                      const unsigned int a_IDN)
     \param  a_toolPos  Position of the tool.
     \param  a_toolVel  Velocity of the tool.
     \param  a_IDN  Identification number of the force algorithm.
 */
-//===========================================================================
+//==============================================================================
 void cShapeLine::computeLocalInteraction(const cVector3d& a_toolPos,
                                          const cVector3d& a_toolVel,
                                          const unsigned int a_IDN)
@@ -208,19 +204,29 @@ void cShapeLine::computeLocalInteraction(const cVector3d& a_toolPos,
     m_interactionInside = false;
 
     // if both point are equal
-    m_interactionProjectedPoint = cProjectPointOnSegment(a_toolPos,
-                                                         m_pointA,
-                                                         m_pointB);
+    m_interactionPoint = cProjectPointOnSegment(a_toolPos,
+                                                m_pointA,
+                                                m_pointB);
+
+    // compute normal
+    cVector3d normal = a_toolPos - m_interactionPoint;
+    if (normal.lengthsq() > 0.0)
+    {
+        normal.normalize();
+        m_interactionNormal = normal;
+    }
+    else
+    {
+        m_interactionNormal.set(0,0,1);
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update bounding box of current object.
-
-    \fn       void cShapeLine::updateBoundaryBox()
 */
-//===========================================================================
+//==============================================================================
 void cShapeLine::updateBoundaryBox()
 {
     m_boundaryBoxMin.set(cMin(m_pointA(0) , m_pointB(0) ), 
@@ -233,14 +239,13 @@ void cShapeLine::updateBoundaryBox()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Scale line with a uniform scale factor.
 
-    \fn       void cShapeLine::scaleObject(const double& a_scaleFactor)
-    \param    a_scaleFactor  Scale factor.
+    \param  a_scaleFactor  Scale factor.
 */
-//===========================================================================
+//==============================================================================
 void cShapeLine::scaleObject(const double& a_scaleFactor)
 {
     m_pointA.mul(a_scaleFactor);
@@ -249,10 +254,10 @@ void cShapeLine::scaleObject(const double& a_scaleFactor)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Specify the line stipple pattern. 
-    
+
     a_stippleFactor Specifies a multiplier for each bit in the line stipple 
     pattern. If factor is 3, for example, each bit in the pattern is used 
     three times before the next bit in the pattern is used. factor is 
@@ -262,14 +267,18 @@ void cShapeLine::scaleObject(const double& a_scaleFactor)
     which fragments of a line will be drawn when the line is rasterized.
     Bit zero is used first; the default pattern is all 1's.
 
-
     \param    a_stippleFactor  Scale factor.
     \param    a_stipplePattern  Scale factor.
 */
-//===========================================================================
+//==============================================================================
 void cShapeLine::setLineStipple(const GLint a_stippleFactor, 
     const GLushort a_stipplePattern)
 {
     m_stippleFactor = a_stippleFactor;
     m_stipplePattern = a_stipplePattern;
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

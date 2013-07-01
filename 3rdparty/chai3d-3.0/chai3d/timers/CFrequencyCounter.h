@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,49 +39,57 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 456 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CFrequencyCounterH
 #define CFrequencyCounterH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "timers/CPrecisionClock.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CFrequencyCounter.h
 
     \brief
     <b> Timers </b> \n 
-    High Precision Frequency Counter.
+    Frequency counter class.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
-  \class      cFrequencyCounter
-  \ingroup    timers
+    \class      cFrequencyCounter
+    \ingroup    timers
 
-  \brief
-    cFrequencyCounter provides a class for measuring frequency. Frequency is 
-    defined as the number of events of a particular sort occurring in a set 
-    period of time. The period of time is adjustable but is set at 1 second
-    as a default value.
+    \brief
+    Frequency counter.
 
-    By calling the method signal() a counter is incremented. When the internal
-    clock  reaches the programmed timeout period (1 second for instance),
+    \details
+    __cFrequencyCounter__ is a basic frequency counter. Frequency is defined 
+    as the number of events of a particular sort occurring in a set period of 
+    time. The period of time is adjustable but is set at 1 second as a default 
+    value.\n
+
+    By calling the method _signal()_ a counter is incremented. When the internal
+    clock reaches the programmed timeout period (1 second for instance),
     the frequency value is computed and updated.
 */
-//===========================================================================
+//==============================================================================
+
 class cFrequencyCounter
 {
-  public:
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
-    
+    //--------------------------------------------------------------------------
+   
+public:
+
     //! Constructor of cFrequencyCounter.
     cFrequencyCounter(const double a_timePeriod = 1.0);
 
@@ -89,38 +97,48 @@ class cFrequencyCounter
     virtual ~cFrequencyCounter() {}
 
 
-    //-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
 
-    //! Set period in seconds.
+public: 
+
+    //! Set the time period in seconds.
     void setTimePeriod(const double& a_timePeriod);
 
-    //! Start counting time; optionally reset the clock to zero.
+    //! Get time period value is seconds.
     inline double getTimePeriod() const { return (m_clock.getTimeoutPeriodSeconds()); }
 
-    //! Stop counting time; return the elapsed time.
+    //! Get the most recent estimated frequency value in Hertz.
     inline double getFrequency() const { return (m_frequency); }
 
     //! Reset the frequency counter.
     void reset();
 
-    //! Signal the frequency counter of a new event. The current frequency is returned.
+    //! Signal the frequency counter of a new event.
     double signal(const unsigned int a_numEvents = 1);
 
 
-  private:
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS:
+    //--------------------------------------------------------------------------
+
+protected:
 
     //! High precision clock.
     cPrecisionClock m_clock;
 
-    //! Frequency
+    //! Estimated frequency value in Hertz.
     double m_frequency;
 
-    //! Event counter
+    //! Event counter.
     unsigned int m_counter;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

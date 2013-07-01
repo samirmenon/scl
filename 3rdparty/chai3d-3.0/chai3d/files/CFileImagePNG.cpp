@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,24 +37,35 @@
 
     \author    <http://www.chai3d.org>
     \author    Sebastien Grange
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1065 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#include "files/CFileImagePNG.h"
+//------------------------------------------------------------------------------
+#ifdef C_USE_FILE_PNG
+//------------------------------------------------------------------------------
 #include <iostream>
 #include <fstream>
+//------------------------------------------------------------------------------
 using namespace std;
-//---------------------------------------------------------------------------
-#include "files/CFileImagePNG.h"
-//---------------------------------------------------------------------------
-extern "C" {
+//------------------------------------------------------------------------------
+extern "C" 
+{
 #include "png.h"
 }
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     PNG decompressor, used by
     \ref bool cLoadPNG(cImage* a_image, void *a_buffer, int a_len) and
@@ -62,9 +73,9 @@ extern "C" {
     \param a_png_ptr   a pointer to a PNG engine.
     \param a_info_ptr  a pointer to a PNG information structure.
     \param a_image     the source image to receive the decompressed PNG data.
-    \return Returns \b true in case of success, \b false otherwise.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 static bool _decompressPNG(png_structp a_png_ptr, png_infop a_info_ptr, cImage* a_image)
 {
     int j;
@@ -134,7 +145,7 @@ static bool _decompressPNG(png_structp a_png_ptr, png_infop a_info_ptr, cImage* 
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     PNG compressor, used by
     \ref bool cSavePNG(cImage* a_image, char **a_buffer, int *a_len) and
@@ -142,9 +153,9 @@ static bool _decompressPNG(png_structp a_png_ptr, png_infop a_info_ptr, cImage* 
     \param a_png_ptr   a pointer to a PNG engine.
     \param a_info_ptr  a pointer to a PNG information structure.
     \param a_image     the source image to compress to PNG data.
-    \return Returns \b true in case of success, \b false otherwise.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 static bool _compressPNG(png_structp a_png_ptr, png_infop a_info_ptr, cImage* a_image)
 {
     int         bpp;
@@ -202,13 +213,13 @@ static bool _compressPNG(png_structp a_png_ptr, png_infop a_info_ptr, cImage* a_
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     \fn _readFromBuffer(png_structp a_png_ptr, png_bytep a_data, png_size_t a_count)
     Helper function to \ref bool cLoadPNG(cImage* a_image, void *a_buffer, int a_len).
     See libpng documentation on <i>png_set_read_fn()</i> for details.
 */
-//===========================================================================
+//==============================================================================
 
 struct _PNGReadBuf
 {
@@ -225,13 +236,13 @@ static void _readFromBuffer(png_structp a_png_ptr, png_bytep a_data, png_size_t 
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     \fn _writeToBuffer(png_structp a_png_ptr, png_bytep a_data, png_size_t a_count)
     Helper function to \ref bool cSavePNG(cImage* a_image, char **a_buffer, int *a_len).
     See libpng documentation on <i>png_set_write_fn()</i> for details.
 */
-//===========================================================================
+//==============================================================================
 
 struct _PNGWriteBuf
 {
@@ -253,24 +264,25 @@ static void _writeToBuffer(png_structp a_png_ptr, png_bytep a_data, png_size_t a
 
 static void _flushBuffer(png_structp a_png_ptr)
 {
-    ;
 }
 
+//------------------------------------------------------------------------------
+#endif  // DOXYGEN_SHOULD_SKIP_THIS
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     Load a PNG image from a file into a cImage structure. 
-    If the operation succeeds, then the functions returns \b true and the 
+    If the operation succeeds, then the functions returns __true__ and the 
     image data is loaded into image structure a_image. 
-    If the operation fails, then the function returns \b false. 
+    If the operation fails, then the function returns __false__. 
     In both cases, previous image information stored in a_image is erased.
 
-    \fn     bool cLoadFilePNG(cImage* a_image, string a_filename)
     \param  a_image  Image structure. 
     \param  a_fileName  Filename.
-    \return Returns \b true in case of success, \b false otherwise.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cLoadFilePNG(cImage* a_image, string a_filename)
 {
     png_structp  png_ptr;
@@ -325,21 +337,20 @@ bool cLoadFilePNG(cImage* a_image, string a_filename)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Load a PNG image from a memory buffer into a cImage structure.
-    If the operation succeeds, then the functions returns \b true and the
+    If the operation succeeds, then the functions returns __true__ and the
     image data is loaded into image structure a_image.
-    If the operation fails, then the function returns \b false.
+    If the operation fails, then the function returns __false__.
     In both cases, previous image information stored in a_image is erased.
 
-    \fn     bool cLoadPNG(cImage* a_image, void *a_buffer, int a_len)
     \param  a_image    Image structure.
     \param  a_buffer   Memory buffer containing PNG data.
     \param  a_len      Buffer size in bytes.
-    \return Returns \b true in case of success, \b false otherwise.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cLoadPNG(cImage* a_image, const unsigned char *a_buffer, unsigned int a_len)
 {
     png_structp  png_ptr;
@@ -389,19 +400,18 @@ bool cLoadPNG(cImage* a_image, const unsigned char *a_buffer, unsigned int a_len
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Save a PNG image from a cImage structure to a file. 
-    If the operation succeeds, then the functions returns \b true and the 
+    If the operation succeeds, then the functions returns __true__ and the 
     image data is saved to a file. 
-    If the operation fails, then the function returns \b false. 
+    If the operation fails, then the function returns __false__. 
 
-    \fn     bool cSaveFilePNG(cImage* a_image, string a_filename)
     \param  a_image  Image structure. 
-    \param  a_fileName  Filename.
-    \return Returns \b true in case of success, \b false otherwise.
+    \param  a_filename  Filename.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cSaveFilePNG(cImage* a_image, string a_filename)
 {
     FILE       *fp;
@@ -453,19 +463,18 @@ bool cSaveFilePNG(cImage* a_image, string a_filename)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Save a PNG image from a cImage structure to a memory buffer.
-    If the operation succeeds, then the functions returns \b true and the
+    If the operation succeeds, then the functions returns __true__ and the
     image data is saved to a file.
-    If the operation fails, then the function returns \b false.
+    If the operation fails, then the function returns __false__.
 
-    \fn     bool cSaveFilePNG(cImage* a_image, string a_filename)
     \param  a_image  Image structure.
-    \param  a_fileName  Filename.
-    \return Returns \b true in case of success, \b false otherwise.
+    \param  a_filename  Filename.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cSavePNG(cImage* a_image, unsigned char **a_buffer, unsigned int *a_len)
 {
     png_structp png_ptr;
@@ -514,6 +523,11 @@ bool cSavePNG(cImage* a_image, unsigned char **a_buffer, unsigned int *a_len)
 }
 
 
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+#endif // C_USE_FILE_PNG
+//------------------------------------------------------------------------------
 
 
 

@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -40,20 +40,34 @@
     \author    Dan Morris
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 403 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CCameraH
 #define CCameraH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CGenericObject.h"
 #include "math/CMaths.h"
 #include "graphics/CImage.h"
-//---------------------------------------------------------------------------
-class cWorld;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+class cWorld;
+//------------------------------------------------------------------------------
+
+enum cStereoMode 
+{
+    C_STEREO_DISABLED,
+    C_STEREO_ACTIVE,
+    C_STEREO_PASSIVE_LEFT_RIGHT,
+    C_STEREO_PASSIVE_TOP_BOTTOM
+};
+
+//==============================================================================
 /*!
     \file       CCamera.h
 
@@ -61,30 +75,41 @@ class cWorld;
     <b> Scenegraph </b> \n 
     Virtual Camera.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
-      \class      cCamera
-      \ingroup    scenegraph
-      \brief      cCamera describes a virtual Camera located inside the world.
-                  Its job in life is to set up the OpenGL projection matrix
-                  for the current OpenGL rendering context.  The default camera
-                  looks down the negative x-axis.  OpenGL folks may wonder why
-                  we chose the negative x-axis... it turns out that's a better
-                  representation of the standard conventions used in general
-                  robotics.
+    \class      cCamera
+    \ingroup    scenegraph
+
+    \brief
+    3D Camera.
+
+    \brief      
+    cCamera describes a virtual Camera located inside the world. Its job in 
+    life is to set up the OpenGL projection matrix for the current 
+    OpenGL rendering context. The default camera looks down the negative 
+    x-axis. OpenGL folks may wonder why we chose the negative x-axis... 
+    it turns out that's a better representation of the standard conventions 
+    used in general robotics. \n\n
+
+    cCamera also inludes a front and back layers for rendering 2D widgets.
+    The back layer is rendered first, followed by the main scenegraph 
+    (world) containing all 3d objects. Finally the front layer is rendered 
+    at the very end. Layers are rendered through an orthographic projection matrix, 
+    so the positive z axis faces the camera. Depth is currently not used.  
+    Lighting is disabled during rendering.
 */
-//===========================================================================
+//==============================================================================
 class cCamera : public cGenericObject
 {
-  friend class cWorld;
+    friend class cWorld;
 
-  public:
-    
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Constructor of cCamera
     cCamera(cWorld* iParent);
@@ -93,48 +118,61 @@ class cCamera : public cGenericObject
     virtual ~cCamera() {};
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - MOUSE SELECTION:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - GENERAL:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Get pointer to parent world.
     cWorld* getParentWorld() { return (m_parentWorld); }
+
+
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - MOUSE SELECTION:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Query whether the specified position is 'pointing at' any objects in the world.
     virtual bool select(const int a_windowPosX, const int a_windowPosY,
                         const int a_windowWidth, const int a_windowHeight,
                         cCollisionRecorder& a_collisionRecorder,
-						cCollisionSettings& a_collisionSettings);
+                        cCollisionSettings& a_collisionSettings);
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - POSITION & ORIENTATION:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - POSITION & ORIENTATION:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Set the position and orientation of the camera.
     virtual bool set(const cVector3d& a_localPosition,
-					 const cVector3d& a_localLookAt,
-					 const cVector3d& a_localUp);
+                     const cVector3d& a_localLookAt,
+                     const cVector3d& a_localUp);
 
-	//! Get the camera "look at" position vector for this camera.
+    //! Get the camera "look at" position vector for this camera.
     cVector3d getLookVector()  const { return m_localRot.getCol0(); }
 
-	//! Get the  "up" vector for this camera.
+    //! Get the  "up" vector for this camera.
     cVector3d getUpVector()    const { return m_localRot.getCol2(); }
 
-	//! Get the "right direction" vector for this camera.
+    //! Get the "right direction" vector for this camera.
     cVector3d getRightVector() const { return m_localRot.getCol1(); }
 
     //! Projection matrix of camera.
     cTransform m_projectionMatrix;
 
-	//! Modelview matrix of camera.
+    //! Modelview matrix of camera.
     cTransform m_modelviewMatrix;
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - CLIPPING PLANES:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - CLIPPING PLANES:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Set near and far clipping planes.
     void setClippingPlanes(const double a_distanceNear, const double a_distanceFar);
@@ -149,22 +187,26 @@ class cCamera : public cGenericObject
     void adjustClippingPlanes();
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - SHADOW CASTING:
-	//-----------------------------------------------------------------------
-    
-	//! Enable or disable shadow rendering.
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - SHADOW CASTING:
+    //-----------------------------------------------------------------------
+
+public:
+
+    //! Enable or disable shadow rendering.
     void setUseShadowCasting(bool a_enabled);
 
     //! Read if shadow rendering is enabled.
     bool getUseShadowCastring() { return(m_useShadowCasting); }
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - FIELD OF VIEW & OPTICS: 
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - FIELD OF VIEW & OPTICS: 
+    //-----------------------------------------------------------------------
 
-    //! Set camera is orthographic mode
+public:
+
+    //! Set camera in orthographic mode
     void setOrthographicView(double a_viewWidth);
 
     //! Set field of view angle (in degrees).
@@ -173,8 +215,8 @@ class cCamera : public cGenericObject
     //! Read field of view angle (in degrees).
     double getFieldViewAngle() { return (m_fieldViewAngle); }
 
-	//! Return aspect ratio.
-	double getAspectRatio();
+    //! Return aspect ratio.
+    double getAspectRatio();
 
     //! Set stereo focal length.
     void setStereoFocalLength(double a_stereoFocalLength);
@@ -189,9 +231,11 @@ class cCamera : public cGenericObject
     double getStereoEyeSeparation() { return (m_stereoEyeSeparation); }
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - RENDERING AND IMAGING:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - RENDERING AND IMAGING:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Render the camera in OpenGL (i.e. set up the projection matrix)...
     virtual void renderView(const int a_windowWidth, const int a_windowHeight);
@@ -205,12 +249,6 @@ class cCamera : public cGenericObject
     //! Read if multipass rendering is enabled.
     bool getUseMultipassTransparency() { return (m_useMultipassTransparency); }
 
-    //! Enable or disable 3D stereo rendering.
-    virtual void setUseStereo(bool a_enabled = true);
-
-    //! Read if 3D stereo is enabled.
-    bool getUseStereo() { return (m_useStereo); }
-
     //! Get the width of the current window display in pixels. 
     int getDisplayWidth() { return (m_lastDisplayWidth); }
 
@@ -221,34 +259,56 @@ class cCamera : public cGenericObject
     virtual void onDisplayReset();
 
 
-	//-----------------------------------------------------------------------
-    // MEMBERS - FRONT AND BACK PLANES:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - STEREO:
+    //-----------------------------------------------------------------------
 
-	/*
-		These are special 'children' of the camera that are rendered independently of
-		all other objects, intended to contain 2d objects only.  The 'back' scene is
-		rendered before the 3d objects; the 'front' scene is rendered after the
-		3d object.  These are made public variables to allow convenient access to
-		the scenegraph management functions.
+public:
 
-		These objects are rendered through an orthographic projection matrix, so the
-		positive z axis faces the camera.  Depth is currently not used.  Lighting
-		is disabled during rendering.
-    */
+    //! Enable or disable 3D stereo rendering.
+    virtual void setStereoMode(cStereoMode a_stereoMode);
 
-	//! Front plane scenegraph which can be used to attach widgets.
-	cWorld* m_frontLayer;
+    //! Read the stereo mode currently used.
+    cStereoMode getStereoMode() { return (m_stereoMode); }
 
-	//! Black plane scenegraph which can be used to attach widgets.
+
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - MIRRORING:
+    //-----------------------------------------------------------------------
+
+public:
+
+    //! Enable or disable output image mirroring horizontally.
+    void setMirrorHorizontal(bool a_enabled);
+
+    //! Enable or disable output image mirroring horizontally.
+    void setMirrorVertical(bool a_enabled);
+
+    //! If __true__ then output image is mirrored horizontally.
+    bool getMirrorHorizontal() { return (m_mirrorHorizontal); }
+
+    //! If __true__ then output image is mirrored vertically.
+    bool getMirrorVertical() { return (m_mirrorVertical); }
+
+
+    //-----------------------------------------------------------------------
+    // PUBLIC MEMBERS - FRONT AND BACK PLANES: (WIDGETS)
+    //-----------------------------------------------------------------------
+
+public: 
+
+    //! Front plane scenegraph which can be used to attach widgets.
+    cWorld* m_frontLayer;
+
+    //! Black plane scenegraph which can be used to attach widgets.
     cWorld* m_backLayer;
 
 
-	//-----------------------------------------------------------------------
-    // MEMBERS:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PROTECTED MEMBERS:
+    //-----------------------------------------------------------------------
 
-    protected:
+protected:
 
     //! Parent world.
     cWorld *m_parentWorld;
@@ -265,14 +325,14 @@ class cCamera : public cGenericObject
     //! Width of orthographic view
     double m_orthographicWidth;
 
-    //! If \b true, then camera is in perspective mode. If \b false, then camera is of orthographic mode.
+    //! If __true__, then camera is in perspective mode. If __false__, then camera is of orthographic mode.
     bool m_perspectiveMode;
 
     //! If true, three rendering passes are performed to approximate back-front sorting (see long comment)
     bool m_useMultipassTransparency;
 
-	//! If true, then use shadow casting.
-	bool m_useShadowCasting;
+    //! If true, then use shadow casting.
+    bool m_useShadowCasting;
 
     //! Focal length.
     double m_stereoFocalLength;
@@ -281,32 +341,51 @@ class cCamera : public cGenericObject
     double m_stereoEyeSeparation;
 
     //! If true, then use stereo display rendering.
-    bool m_useStereo;
+    cStereoMode m_stereoMode;
 
     //! last width size of the window.
     unsigned int m_lastDisplayWidth;
 
-	//! last height size of the window.
+    //! last height size of the window.
     unsigned int m_lastDisplayHeight;
 
-    //! if \b true then display reset has been requested.
+    //! if __true__ then display reset has been requested.
     bool m_resetDisplay;
 
+    //! If __true__ then output image is mirrored horizontally.
+    bool m_mirrorHorizontal;
 
-	//-----------------------------------------------------------------------
-    // METHODS:
-	//-----------------------------------------------------------------------
+    //! If __true__ then output image is mirrored vertically.
+    bool m_mirrorVertical;
 
-    protected:
+    //! Is equal to __true__ if only one of the axes is mirrored.
+    bool m_mirrorStatus;
+
+    //! Scale factor used for horizontal mirroring. (-1.0 or 1.0)
+    double m_scaleH;
+
+    //! Scale factor used for vertical mirroring. (-1.0 or 1.0)
+    double m_scaleV;
+
+
+    //-----------------------------------------------------------------------
+    // PROTECTED METHODS:
+    //-----------------------------------------------------------------------
+
+protected:
 
     //! Render a 2d scene within this camera's view.
     void renderLayer(cGenericObject* a_graph, int a_width, int a_height);
 
-	//! Verifies if shadow casting is supported on this hardware.
-	bool isShadowCastingSupported();
+    //! Verifies if shadow casting is supported on this hardware.
+    bool isShadowCastingSupported();
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

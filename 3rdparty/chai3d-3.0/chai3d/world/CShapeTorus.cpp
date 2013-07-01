@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,28 +37,27 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 738 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1067 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CShapeTorus.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cShapeTorus.
-
-    \fn     cShapeTorus::cShapeTorus(
-                const double& a_innerRadius, 
-                const double& a_outerRadius, 
-                cMaterial* a_material)
 
     \param  a_innerRadius  Inside radius of torus.
     \param  a_outerRadius  Outside radius of torus.
     \param  a_material  Material property to be applied to object.
 */
-//===========================================================================
+//==============================================================================
 cShapeTorus::cShapeTorus(const double& a_innerRadius, 
                          const double& a_outerRadius, 
                          cMaterial* a_material)
@@ -89,23 +88,18 @@ cShapeTorus::cShapeTorus(const double& a_innerRadius,
 };
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a copy of itself.
 
-    \fn     cShapeTorus* cShapeTorus::copy(const bool a_duplicateMaterialData,
-                               const bool a_duplicateTextureData, 
-                               const bool a_duplicateMeshData,
-                               const bool a_buildCollisionDetector)
+    \param  a_duplicateMaterialData  If __true__, material (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateTextureData  If __true__, texture data (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateMeshData  If __true__, mesh data (if available) is duplicated, otherwise it is shared.
+    \param  a_buildCollisionDetector  If __true__, collision detector (if available) is duplicated, otherwise it is shared.
 
-    \param      a_duplicateMaterialData  If \b true, material (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateTextureData  If \b true, texture data (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateMeshData  If \b true, mesh data (if available) is duplicated, otherwise it is shared.
-    \param      a_buildCollisionDetector  If \b true, collision detector (if available) is duplicated, otherwise it is shared.
-
-	\return		Return new object.
+    \return Return new object.
 */
-//===========================================================================
+//==============================================================================
 cShapeTorus* cShapeTorus::copy(const bool a_duplicateMaterialData,
                                const bool a_duplicateTextureData, 
                                const bool a_duplicateMeshData,
@@ -122,17 +116,14 @@ cShapeTorus* cShapeTorus::copy(const bool a_duplicateMaterialData,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Set dimensins of torus.
+    Set dimensions of torus.
 
-    \fn          void cShapeTorus::setSize(const double& a_innerRadius, 
-                           const double& a_outerRadius) 
-
-    \param      a_innerRadius  Inside radius of torus.
-    \param      a_outerRadius  Outside radius of torus.
+    \param  a_innerRadius  Inside radius of torus.
+    \param  a_outerRadius  Outside radius of torus.
 */
-//===========================================================================
+//==============================================================================
  void cShapeTorus::setSize(const double& a_innerRadius, 
                            const double& a_outerRadius) 
  {
@@ -149,31 +140,32 @@ cShapeTorus* cShapeTorus::copy(const bool a_duplicateMaterialData,
 
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render torus in OpenGL
 
-    \fn       void cShapeTorus::render(cRenderOptions& a_options)
-    \param    a_options  See cGenericObject::render()
+    \param  a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cShapeTorus::render(cRenderOptions& a_options)
 {
-	/////////////////////////////////////////////////////////////////////////
-	// Render parts that use material properties
-	/////////////////////////////////////////////////////////////////////////
-	if (SECTION_RENDER_PARTS_WITH_MATERIALS(a_options, m_useTransparency))
-	{
-		// render material properties
-		if (m_useMaterialProperty)
-		{
-			m_material->render(a_options);
-		}
+#ifdef C_USE_OPENGL
 
-		// render texture property if defined
+    /////////////////////////////////////////////////////////////////////////
+    // Render parts that use material properties
+    /////////////////////////////////////////////////////////////////////////
+    if (SECTION_RENDER_PARTS_WITH_MATERIALS(a_options, m_useTransparency))
+    {
+        // render material properties
+        if (m_useMaterialProperty)
+        {
+            m_material->render(a_options);
+        }
+
+        // render texture property if defined
         bool usedTexture = false;
-		if ((m_texture != NULL) && (m_useTextureMapping))
-		{
+        if ((m_texture != NULL) && (m_useTextureMapping))
+        {
             // the torus can only be rendered with texture if environmental mapping
             // is used. This limitation comes from the fact that the current implementation of
             // cDrawSolidTorus() does not generate any texture coordinates. 
@@ -185,11 +177,11 @@ void cShapeTorus::render(cRenderOptions& a_options)
                 usedTexture = true;
 
                 // activate texture
-			    m_texture->render(a_options);
+                m_texture->render(a_options);
             }
-		}
+        }
 
-		// draw torus
+        // draw torus
         if (!m_displayList.render(m_useDisplayList))
         {
             // create display list if requested
@@ -202,37 +194,37 @@ void cShapeTorus::render(cRenderOptions& a_options)
             m_displayList.end(true);
         }
   
-		// turn off texture rendering if it has been used
-		if (usedTexture)
-		{
-			glActiveTextureARB(GL_TEXTURE1_ARB);
-			glDisable(GL_TEXTURE_1D);
+        // turn off texture rendering if it has been used
+        if (usedTexture)
+        {
+            glActiveTextureARB(GL_TEXTURE1_ARB);
+            glDisable(GL_TEXTURE_1D);
             glDisable(GL_TEXTURE_2D);
-		}
-	}
+        }
+    }
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     From the position of the tool, search for the nearest point located
     at the surface of the current object. Decide if the point is located inside
     or outside of the object
 
-    \fn     void cShapeTorus::computeLocalInteraction(const cVector3d& a_toolPos,
-                                                      const cVector3d& a_toolVel,
-                                                      const unsigned int a_IDN)
     \param  a_toolPos  Position of the tool.
     \param  a_toolVel  Velocity of the tool.
     \param  a_IDN  Identification number of the force algorithm.
 */
-//===========================================================================
+//==============================================================================
 void cShapeTorus::computeLocalInteraction(const cVector3d& a_toolPos,
                                           const cVector3d& a_toolVel,
                                           const unsigned int a_IDN)
 {
     cVector3d toolProjection = a_toolPos;
-    toolProjection(2)  = 0;
+    toolProjection.z(0.0);
+    m_interactionNormal.set(0,0,1);
 
     // search for the nearest point on the torus medial axis
     if (a_toolPos.lengthsq() > C_SMALL)
@@ -243,6 +235,13 @@ void cShapeTorus::computeLocalInteraction(const cVector3d& a_toolPos,
         cVector3d vectTorusTool = cSub(a_toolPos, pointAxisTorus);
 
         double distance = vectTorusTool.length();
+
+        // normal
+        if (distance > 0.0)
+        {
+            m_interactionNormal = vectTorusTool;
+            m_interactionNormal.normalize();
+        }
 
         // tool is located inside the torus
         if ((distance < m_innerRadius) && (distance > 0.001))
@@ -263,23 +262,21 @@ void cShapeTorus::computeLocalInteraction(const cVector3d& a_toolPos,
             vectTorusTool.mul(1/dist);
         }
         vectTorusTool.mul(m_innerRadius);
-        pointAxisTorus.addr(vectTorusTool, m_interactionProjectedPoint);
+        pointAxisTorus.addr(vectTorusTool, m_interactionPoint);
     }
     else
     {
         m_interactionInside = false;
-        m_interactionProjectedPoint = a_toolPos;
+        m_interactionPoint = a_toolPos;
     }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update bounding box of current object.
-
-    \fn       void cShapeTorus::updateBoundaryBox()
 */
-//===========================================================================
+//==============================================================================
 void cShapeTorus::updateBoundaryBox()
 {
     m_boundaryBoxMin.set(-m_outerRadius, -m_outerRadius, -(m_outerRadius - m_innerRadius));
@@ -287,14 +284,13 @@ void cShapeTorus::updateBoundaryBox()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Scale torus with a uniform scale factor.
 
-    \fn       void cShapeTorus::scaleObject(const double& a_scaleFactor)
-    \param    a_scaleFactor  Scale factor.
+    \param  a_scaleFactor  Scale factor.
 */
-//===========================================================================
+//==============================================================================
 void cShapeTorus::scaleObject(const double& a_scaleFactor)
 {
     // update dimensions
@@ -307,3 +303,8 @@ void cShapeTorus::scaleObject(const double& a_scaleFactor)
     // invalidate display list
     invalidateDisplayList();
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

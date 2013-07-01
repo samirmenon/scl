@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -38,18 +38,24 @@
     \author    <http://www.chai3d.org>
     \author    Chris Sewell
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 831 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "collisions/CCollisionAABBTree.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 //! Pointer for creating new AABB tree nodes, declared in CCollisionAABB.cpp.
 extern cCollisionAABBInternal* g_nextFreeNode;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     Determine whether the two given boxes intersect each other.
 
@@ -58,7 +64,7 @@ extern cCollisionAABBInternal* g_nextFreeNode;
     \param    a_1   Second box; may intersect with first box.
     \return   Return whether there is any overlap of the two boxes.
 */
-//===========================================================================
+//==============================================================================
 inline bool intersect(const cCollisionAABBBox& a_0, const cCollisionAABBBox& a_1)
 {
     // check for overlap along each axis
@@ -74,7 +80,7 @@ inline bool intersect(const cCollisionAABBBox& a_0, const cCollisionAABBBox& a_1
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render bounding box of leaf node if it is at level a_depth in the tree.
 
@@ -82,9 +88,10 @@ inline bool intersect(const cCollisionAABBBox& a_0, const cCollisionAABBBox& a_1
     \param    a_depth  Only draw nodes at this depth in the tree.
                        a_depth < 0 render _up to_ abs(a_depth).
 */
-//===========================================================================
+//==============================================================================
 void cCollisionAABBLeaf::render(int a_depth)
 {
+#ifdef C_USE_OPENGL
     if ( ( (a_depth < 0) && (abs(a_depth) >= m_depth) ) || a_depth == m_depth)
     {
         if (a_depth < 0)
@@ -94,10 +101,11 @@ void cCollisionAABBLeaf::render(int a_depth)
         }
         m_bbox.render();
     }
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Create a bounding box to enclose the three vertices of the triangle
       belonging to the leaf node.
@@ -105,7 +113,7 @@ void cCollisionAABBLeaf::render(int a_depth)
       \fn       void cCollisionAABBLeaf::fitBBox(double a_radius)
       \param    a_radius Radius around the triangle
 */
-//===========================================================================
+//==============================================================================
 void cCollisionAABBLeaf::fitBBox(double a_radius)
 {
     // empty box
@@ -127,7 +135,7 @@ void cCollisionAABBLeaf::fitBBox(double a_radius)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Determine whether the given line intersects the triangle belonging to
     this leaf node by calling the triangle's collision detection method.
@@ -147,9 +155,9 @@ void cCollisionAABBLeaf::fitBBox(double a_radius)
     \param    a_recorder  Stores all collision events.
     \param    a_settings  Contains collision settings information.
 
-    \return   Return \b true if the line segment intersects the leaf's triangle.
+    \return   Return __true__ if the line segment intersects the leaf's triangle.
 */
-//===========================================================================
+//==============================================================================
 bool cCollisionAABBLeaf::computeCollision(cGenericObject* a_owner,
                                           cVector3d& a_segmentPointA,
                                           cVector3d& a_segmentPointB,
@@ -173,7 +181,7 @@ bool cCollisionAABBLeaf::computeCollision(cGenericObject* a_owner,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Draw the edges of the bounding box for an internal tree node if it is
     at depth a_depth in the tree, and call the draw function for its children.
@@ -182,9 +190,10 @@ bool cCollisionAABBLeaf::computeCollision(cGenericObject* a_owner,
     \param    a_depth   Only draw nodes at this level in the tree.
                         a_depth < 0 render _up to_ this level.
 */
-//===========================================================================
+//==============================================================================
 void cCollisionAABBInternal::render(int a_depth)
 {
+#ifdef C_USE_OPENGL
     // render current node
     if ( ( (a_depth < 0) && (abs(a_depth) >= m_depth) ) || a_depth == m_depth)
     {
@@ -201,10 +210,11 @@ void cCollisionAABBInternal::render(int a_depth)
 
     // render right sub tree
     m_rightSubTree->render(a_depth);
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Initialize an internal AABB tree node.
 
@@ -216,7 +226,7 @@ void cCollisionAABBInternal::render(int a_depth)
                         first leaf under this internal node.
     \param    a_depth  Depth of this node in the collision tree.
 */
-//===========================================================================
+//==============================================================================
 void cCollisionAABBInternal::initialize(unsigned int a_numLeaves,
                                         cCollisionAABBLeaf *a_leaves,
                                         unsigned int a_depth)
@@ -318,7 +328,7 @@ void cCollisionAABBInternal::initialize(unsigned int a_numLeaves,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Determine whether the given ray intersects the bounding box.  Based on code
     by Andrew Woo from "Graphics Gems", Academic Press, 1990.
@@ -331,7 +341,7 @@ void cCollisionAABBInternal::initialize(unsigned int a_numLeaves,
     \param    a_dir[3]    Direction of the ray.
     \return   Return true if line segment intersects the bounding box.
 */
-//===========================================================================
+//==============================================================================
 bool hitBoundingBox(const double a_minB[3], const double a_maxB[3], const double a_origin[3], const double a_end[3])
 {
     const int RIGHT	= 0;
@@ -415,7 +425,7 @@ bool hitBoundingBox(const double a_minB[3], const double a_maxB[3], const double
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Determine whether the given line intersects the mesh covered by the
     AABB Tree rooted at this internal node.  If so, return (in the output
@@ -437,9 +447,9 @@ bool hitBoundingBox(const double a_minB[3], const double a_maxB[3], const double
     \param    a_recorder  Stores all collision events.
     \param    a_settings  Contains collision settings information.
 
-    \return   Return \b true if line segment intersects a triangle in the subtree.
+    \return   Return __true__ if line segment intersects a triangle in the subtree.
 */
-//===========================================================================
+//==============================================================================
 bool cCollisionAABBInternal::computeCollision(cGenericObject* a_owner,
                                               cVector3d& a_segmentPointA,
                                               cVector3d& a_segmentPointB,
@@ -502,14 +512,14 @@ bool cCollisionAABBInternal::computeCollision(cGenericObject* a_owner,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Return whether this node contains the specified triangle tag.
 
     \fn       void cCollisionAABBInternal::contains_triangle(int tag)
     \param    tag  Tag to inquire about
 */
-//===========================================================================
+//==============================================================================
 bool cCollisionAABBInternal::contains_triangle(int a_tag)
 {
     return (m_leftSubTree->contains_triangle(a_tag) ||
@@ -517,7 +527,7 @@ bool cCollisionAABBInternal::contains_triangle(int a_tag)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Sets this node's parent pointer and optionally propagate
     assignments to its children (setting their parent pointers to this node).
@@ -527,10 +537,15 @@ bool cCollisionAABBInternal::contains_triangle(int a_tag)
     \param    a_parent     Pointer to this node's parent.
     \param    a_recursive  Propagate assignment down the tree?
 */
-//===========================================================================
+//==============================================================================
 void cCollisionAABBInternal::setParent(cCollisionAABBNode* a_parent, int a_recursive)
 {
     m_parent = a_parent;
     if (m_leftSubTree && a_recursive)  m_leftSubTree->setParent(this,1);
     if (m_rightSubTree && a_recursive) m_rightSubTree->setParent(this,1);
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

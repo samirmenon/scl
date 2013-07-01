@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,17 +39,21 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 423 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CFogH
 #define CFogH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CColor.h"
 #include "graphics/CRenderOptions.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CFog.h
     
@@ -57,28 +61,31 @@
     <b> Graphics </b> \n 
     Fog.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cFog
     \ingroup    graphics
 
-    \brief      
-    cFog implements support for OpenGL's fog capabilitiy. When fog is enabled,
-	objects that are farther from the viewpoint begin to fade into the fog 
-	color. You can control the density of the fog, which determines the rate
-	at which objects fade as the distance increases, as well as the fog's color.
+    \brief
+    Fog property inside world.
+
+    \details
+    cFog implements support for OpenGL's fog capability. When fog is enabled,
+    objects that are farther from the viewpoint begin to fade into the fog 
+    color. You can control the density of the fog, which determines the rate
+    at which objects fade as the distance increases, as well as the fog's color.
 */
-//===========================================================================
+//==============================================================================
 class cFog
 {
-  public:
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
-    
+    //--------------------------------------------------------------------------
+
+public:
+
     //! Constructor of cFog.
     cFog();
 
@@ -86,71 +93,79 @@ class cFog
     virtual ~cFog() {};
 
 
-	//-----------------------------------------------------------------------
-    // METHODS:
     //-----------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Fog rendering.
     virtual void render(cRenderOptions& a_options);
 
-	//! Enable of disable for property.
-	void setEnabled(const bool a_enabled) { m_enabled = a_enabled; }
+    //! Enable of disable for property.
+    void setEnabled(const bool a_enabled) { m_enabled = a_enabled; }
 
-	//! Returns \b true if fog is enabled, \b false otherwise.
-	bool getEnabled() const { return(m_enabled); }
+    //! Returns __true__ if fog is enabled, __false__ otherwise.
+    bool getEnabled() const { return(m_enabled); }
 
-	//! Set fog mode by passing the OpenGL fog mode constant as parameter.
-	void setFogMode(const GLint a_fogMode) { m_fogMode = a_fogMode; }
+    //! Set fog mode by passing the OpenGL fog mode constant as parameter.
+    void setFogMode(const GLint a_fogMode) { m_fogMode = a_fogMode; }
 
-	//! Set fog mode to GL_LINEAR.
-	void setFogModeLINEAR() { m_fogMode = GL_LINEAR; }
+    //! Set fog mode to GL_LINEAR.
+    void setFogModeLINEAR() { m_fogMode = GL_LINEAR; }
 
-	//! Set fog mode to GL_EXP.
-	void setFogModeEXP() { m_fogMode = GL_EXP; }
+    //! Set fog mode to GL_EXP.
+    void setFogModeEXP() { m_fogMode = GL_EXP; }
 
-	//! Set fog mode to GL_EXP2.
-	void setFogModeEXP2() { m_fogMode = GL_EXP2; }
+    //! Set fog mode to GL_EXP2.
+    void setFogModeEXP2() { m_fogMode = GL_EXP2; }
 
-	//! Get the current fog mode.
-	GLint getFogMode() { return (m_fogMode); }
+    //! Get the current fog mode.
+    GLint getFogMode() { return (m_fogMode); }
 
-	//! Set fog properties.
-	void setProperties(const double a_start, 
-                       const double a_end, 
-                       const double a_density);
+    //! Set fog properties.
+    void setProperties(const double a_start,
+        const double a_end, 
+        const double a_density);
 
 
-	//-----------------------------------------------------------------------
-    // MEMBERS:
     //-----------------------------------------------------------------------
+    // PUBLIC MEMBERS:
+    //--------------------------------------------------------------------------
 
-	//! Fog color.
-	cColorf m_color;
+public:
+
+    //! Fog color.
+    cColorf m_color;
 
 
-  protected:
-
-	//-----------------------------------------------------------------------
-    // MEMBERS:
     //-----------------------------------------------------------------------
+    // PROTECTED MEMBERS:
+    //--------------------------------------------------------------------------
 
-	//! If \b true, then fog is enabled, \b false otherwise.
-	bool m_enabled;
+protected:
 
-	//! Fog mode.
-	GLint m_fogMode;
+    //! If __true__, then fog is enabled, __false__ otherwise.
+    bool m_enabled;
 
-	//! Fog start distance.
-	float m_start;
+    //! Fog mode.
+    GLint m_fogMode;
 
-	//! Fog end distance.
-	float m_end;
+    //! Fog start distance.
+    float m_start;
 
-	//! Fog density.
-	float m_density;
+    //! Fog end distance.
+    float m_end;
+
+    //! Fog density.
+    float m_density;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

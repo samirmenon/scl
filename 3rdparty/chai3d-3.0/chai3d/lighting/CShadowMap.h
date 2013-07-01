@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,21 +39,25 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 435 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CShadowMapH
 #define CShadowMapH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CImage.h"
 #include "graphics/CColor.h"
 #include "materials/CTexture2d.h"
 #include "world/CWorld.h"
 #include <string>
 #include <stdio.h>
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*! 
     \file       CShadowMap.h
 
@@ -61,24 +65,27 @@
     <b> Lighting </b> \n 
     Shadow Map.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cShadowMap
     \ingroup    lighting
     
-    \brief      
+    \brief
+    Shadow map for Spot light.
+
+    \details
     cShadowMap implements a shadow map texture. 
 */
-//===========================================================================
+//==============================================================================
 class cShadowMap : public cTexture2d
 {
-  public:
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Constructor of cShadowMap.
     cShadowMap();
@@ -87,49 +94,72 @@ class cShadowMap : public cTexture2d
     virtual ~cShadowMap();
 
 
-	//-----------------------------------------------------------------------
-    // METHODS:
     //-----------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
 
-    //! Set the size of the shadowmap by defining the width and height in pixels.
-    void setSize(const unsigned int a_width, const unsigned int a_height);
+public:
+
+    //! Set the size of the shadow map by defining the width and height in pixels.
+    void setResolutionCustom(const unsigned int a_width, const unsigned int a_height);
+
+    //! Set the shadow map resolution to 256 x 256 pixels.
+    void setResolutionVeryLow() { setResolutionCustom(256, 256); }
+
+    //! Set the shadow map resolution to 512 x 512 pixels.
+    void setResolutionLow() { setResolutionCustom(512, 512); }
+
+    //! Set the shadow map resolution to 1024 x 1024 pixels.
+    void setResolutionMedium() { setResolutionCustom(1024, 1024); }
+
+    //! Set the shadow map resolution to 2048 x 2048 pixels.
+    void setResolutionHigh() { setResolutionCustom(2048, 2048); }
+
+    //! Set the shadow map resolution to 4096 x 4095 pixels.
+    void setResolutionVeryHigh() { setResolutionCustom(4096, 4096); }
 
     //! Enable texturing and set this texture as the current texture.
     virtual void render(cRenderOptions& a_options);
-	
-	//! Call this to force texture re-initialization.
+    
+    //! Call this to force texture re-initialization.
     virtual void markForUpdate() { m_updateTextureFlag = true; }
 
-	//! Update the shadow map by passing a reference to the related light source.
-	bool updateMap(cWorld* a_world, 
-				   const cVector3d& a_lightPos, 
-				   const cVector3d& a_lightLookat, 
-				   const cVector3d& a_lightUp, 
-				   const double a_lightFieldViewAngle,
-				   const double a_distanceNear,
-				   const double a_distanceFar);
+    //! Update the shadow map by passing a reference to the related light source.
+    bool updateMap(cWorld* a_world, 
+                   const cVector3d& a_lightPos, 
+                   const cVector3d& a_lightLookat, 
+                   const cVector3d& a_lightUp, 
+                   const double a_lightFieldViewAngle,
+                   const double a_distanceNear,
+                   const double a_distanceFar,
+                   const double a_mirrorH, 
+                   const double a_mirrorV);
 
-    //! Copy shadowmap from GPU memory to m_image object in RAM memory.
+    //! Copy shadow map from GPU memory to m_image object in RAM memory.
     bool copyMapFromGPUtoImage();
 
-    //! Copy shadowmap from GPU memory to an image object in RAM memory.
+    //! Copy shadow map from GPU memory to an image object in RAM memory.
     bool copyMapFromGPUtoImage(cImage* a_image);
 
-	//-----------------------------------------------------------------------
-    // MEMBERS:
+
     //-----------------------------------------------------------------------
-	
-	//! Projection matrix of the light source creating this shadow.
-	cTransform m_lightProjectionMatrix;
+    // PUBLIC MEMBERS:
+    //--------------------------------------------------------------------------
+    
+public:
 
-	//! View matrix of the light source creating this shadow.
-	cTransform m_lightViewMatrix;
+    //! Projection matrix of the light source creating this shadow.
+    cTransform m_lightProjectionMatrix;
 
-  private:
+    //! View matrix of the light source creating this shadow.
+    cTransform m_lightViewMatrix;
 
-	//-----------------------------------------------------------------------
-    // METHODS:
+
     //-----------------------------------------------------------------------
+    // PROTECTED METHODS:
+    //--------------------------------------------------------------------------
+
+protected:
 
     //! Reset internal variables. This function should be called only by constructors.
     void reset();
@@ -138,15 +168,21 @@ class cShadowMap : public cTexture2d
     void update();
 
 
-    //-----------------------------------------------------------------------
-    // MEMBERS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS:
+    //--------------------------------------------------------------------------
 
-    //! OpenGL framebuffer used to render the shadowmap.
+protected:
+
+    //! OpenGL framebuffer used to render the shadow map.
     GLuint m_fbo;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

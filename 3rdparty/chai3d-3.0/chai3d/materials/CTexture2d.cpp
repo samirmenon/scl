@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -40,64 +40,60 @@
     \author    Dan Morris
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 492 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "materials/CTexture2d.h"
-//---------------------------------------------------------------------------
-#ifdef MACOSX
-#include "OpenGL/glu.h"
-#else
-#include "GL/glu.h"
-#endif
-//---------------------------------------------------------------------------
+using namespace std;
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
-    A texture contains a 2D bitmap which can be projected onto the
-    polygons of a 3D solid.
-
-    \fn         cTexture2d::cTexture2d()
+    Constructor of cTexture2d.
 */
-//===========================================================================
+//==============================================================================
 cTexture2d::cTexture2d()
 {
     // set default texture unit
     m_textureUnit = GL_TEXTURE1_ARB;
 
-	// create image
-	m_image = new cImage();
+    // create image
+    m_image = new cImage();
 
     // initialize internal variables
     reset();    
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cTexture2d.
-
-    \fn         cTexture2d::~cTexture2d()
 */
-//===========================================================================
+//==============================================================================
 cTexture2d::~cTexture2d()
 {
     if (m_textureID != 0)
     {
+        #ifdef C_USE_OPENGL
         glDeleteTextures(1, &m_textureID);
+        #endif
+
         m_textureID = 0;
     }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Creates a copy of itself.
 
-    \fn     cTexture2d* cTexture2d::copy()
     \return Return pointer to new object.
 */
-//===========================================================================
+//==============================================================================
 cTexture2d* cTexture2d::copy()
 {
     // create new instance
@@ -112,8 +108,8 @@ cTexture2d* cTexture2d::copy()
     obj->m_textureID                = m_textureID;
     obj->m_wrapSmode                = m_wrapSmode;
     obj->m_wrapTmode                = m_wrapTmode;
-    obj->m_magnificationFunction    = m_magnificationFunction;
-    obj->m_minifyingFunction        = m_minifyingFunction;
+    obj->m_magFunction              = m_magFunction;
+    obj->m_minFunction              = m_minFunction;
     obj->m_useMipmaps               = m_useMipmaps;
     obj->m_useSphericalMapping      = m_useSphericalMapping;
     obj->m_environmentMode          = m_environmentMode;
@@ -123,13 +119,11 @@ cTexture2d* cTexture2d::copy()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Reset internal variables. This function should be called only by constructors.
-
-    \fn         void cTexture2d::reset()
 */
-//===========================================================================
+//==============================================================================
 void cTexture2d::reset()
 {
     // id number provided by OpenGL once texture is stored in graphics
@@ -158,54 +152,56 @@ void cTexture2d::reset()
     m_useMipmaps = false;
 
     // default settings
-    m_magnificationFunctionMipmapsOFF   = GL_LINEAR;
-    m_minifyingFunctionMipmapsOFF       = GL_LINEAR;
-    m_magnificationFunctionMipmapsON    = GL_LINEAR;
-    m_minifyingFunctionMipmapsON        = GL_LINEAR_MIPMAP_LINEAR;
+    m_magFunctionMipmapsOFF = GL_LINEAR;
+    m_minFunctionMipmapsOFF = GL_LINEAR;
+    m_magFunctionMipmapsON  = GL_LINEAR;
+    m_minFunctionMipmapsON  = GL_LINEAR_MIPMAP_LINEAR;
 
     // set the magnification function. (GL_NEAREST or GL_LINEAR)
-    m_magnificationFunction = m_magnificationFunctionMipmapsOFF;
+    m_magFunction = m_magFunctionMipmapsOFF;
 
     // set the minifying function. (GL_NEAREST or GL_LINEAR)
-    m_minifyingFunction = m_minifyingFunctionMipmapsOFF; 
+    m_minFunction = m_minFunctionMipmapsOFF; 
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Enable texturing and set this texture as the current texture
 
-      \fn       void cTexture2d::render(cRenderOptions& a_options)
-	  \param	a_options Rendering options
+      \param	a_options Rendering options
 */
-//===========================================================================
+//==============================================================================
 void cTexture2d::render(cRenderOptions& a_options)
 {
-	// check if texture is enabled
-	if (!m_enabled) { return; }
+#ifdef C_USE_OPENGL
 
-	// check if materials should be rendered
-	if (!a_options.m_render_textures) { return; }
+    // check if texture is enabled
+    if (!m_enabled) { return; }
 
-	// check image texture
+    // check if materials should be rendered
+    if (!a_options.m_render_textures) { return; }
+
+    // check image texture
     if (m_image->isInitialized() == 0) return;
 
     // Only check residency in memory if we weren't going to
     // update the texture anyway...
     if (m_updateTextureFlag == false)
     {
-        GLboolean texture_is_resident;
-        glAreTexturesResident(1, &m_textureID, &texture_is_resident);
-
-        if (texture_is_resident == false)
+        if (m_textureID != 0)
         {
-            m_updateTextureFlag = true;
+            if (glIsTexture(m_textureID) == false)
+            {
+                m_textureID = 0;
+                m_updateTextureFlag = true;
+            }
         }
     }
     
-	// setup texture settings
+    // setup texture settings
     glActiveTextureARB(GL_TEXTURE1_ARB);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
 
     glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_REPLACE);
     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_PREVIOUS_EXT);
@@ -253,10 +249,10 @@ void cTexture2d::render(cRenderOptions& a_options)
     glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_WRAP_T, m_wrapTmode);
 
     // Set the texture magnification function to either GL_NEAREST or GL_LINEAR.
-    glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_MAG_FILTER, m_magnificationFunction);
+    glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_MAG_FILTER, m_magFunction);
 
     // Set the texture minifying function to either GL_NEAREST or GL_LINEAR.
-    glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_MIN_FILTER, m_minifyingFunction);
+    glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_MIN_FILTER, m_minFunction);
 
     // set the environment mode (GL_MODULATE, GL_DECAL, GL_BLEND, GL_REPLACE)
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, m_environmentMode);
@@ -266,85 +262,105 @@ void cTexture2d::render(cRenderOptions& a_options)
 
     // set default vertex color which combined with the texture (white).
     glColor4f(1.0, 1.0, 1.0, 1.0);
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Load a texture image file.
 
-      \fn       bool cTexture2d::loadFromFile(const string& a_fileName)
       \param    a_fileName  Filename.
 */
-//===========================================================================
+//==============================================================================
 bool cTexture2d::loadFromFile(const string& a_fileName)
 {
     return (m_image->loadFromFile(a_fileName));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Save current texture to file.
 
-      \fn       bool cTexture2d::saveToFile(const string& a_fileName)
       \param    a_fileName  Filename
 */
-//===========================================================================
+//==============================================================================
 bool cTexture2d::saveToFile(const string& a_fileName)
 {
     return (m_image->saveToFile(a_fileName));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Generate texture from memory data, to prepare for rendering.
-
-      \fn         void cTexture2d::update()
 */
-//===========================================================================
+//==============================================================================
 void cTexture2d::update()
 {
-    if (m_textureID != 0)
+#ifdef C_USE_OPENGL
+
+    if (m_textureID == 0)
     {
-        // Deletion can make for all kinds of new hassles, particularly
-        // when re-initializing a whole display context, since opengl
-        // automatically starts re-assigning texture ID's.
-        glDeleteTextures(1, &m_textureID);
-        m_textureID = 0;
+        glGenTextures(1, &m_textureID);
+        glBindTexture(GL_TEXTURE_2D, m_textureID);
+
+        glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_WRAP_S, m_wrapSmode);
+        glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_WRAP_T, m_wrapTmode);
+        glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_MAG_FILTER, m_magFunction);
+        glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_MIN_FILTER, m_minFunction);
+
+        glTexImage2D(GL_TEXTURE_2D,
+            0,
+            GL_RGBA,
+            m_image->getWidth(),
+            m_image->getHeight(),
+            0,
+            m_image->getFormat(),
+            m_image->getType(),
+            m_image->getData()
+            );
     }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D, m_textureID);
 
-    // Generate a texture ID and bind to it
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glGenTextures(1, &m_textureID);
-    glBindTexture(GL_TEXTURE_2D, m_textureID);
+        glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_WRAP_S, m_wrapSmode);
+        glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_WRAP_T, m_wrapTmode);
+        glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_MAG_FILTER, m_magFunction);
+        glTexParameteri(GL_TEXTURE_2D ,GL_TEXTURE_MIN_FILTER, m_minFunction);
 
+        glTexSubImage2D(GL_TEXTURE_2D, 
+                        0, 
+                        0, 
+                        0, 
+                        m_image->getWidth(), 
+                        m_image->getHeight(), 
+                        m_image->getFormat(), 
+                        m_image->getType(), 
+                        m_image->getData());
+    }
+    
+    /*
     glPixelStorei(GL_UNPACK_ALIGNMENT,   4);
     glPixelStorei(GL_UNPACK_ROW_LENGTH,  0);
     glPixelStorei(GL_UNPACK_SKIP_ROWS,   0);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+    */
 
-    glTexImage2D(GL_TEXTURE_2D,
-                    0,
-                    GL_RGBA,
-                    m_image->getWidth(),
-                    m_image->getHeight(),
-                    0,
-                    m_image->getFormat(),
-                    m_image->getType(),
-                    m_image->getData()
-        );
-   
     if (m_useMipmaps)
     {
         glEnable (GL_TEXTURE_2D);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
       Sets the wrap parameter for texture coordinate s to either GL_CLAMP or
       GL_REPEAT. GL_CLAMP causes s coordinates to be clamped to the
@@ -355,13 +371,16 @@ void cTexture2d::update()
       if wrapping is set to GL_CLAMP. Initially, GL_TEXTURE_WRAP_S is set
       to GL_REPEAT.
 
-      \fn       void cTexture2d::setWrapMode(const GLint& a_wrapMode)
       \param    a_wrapMode  value shall be either GL_REPEAT or GL_CLAMP
 */
-//===========================================================================
+//==============================================================================
 void cTexture2d::setWrapMode(const GLint& a_wrapMode)
 {
     m_wrapSmode = a_wrapMode;
-	m_wrapTmode = a_wrapMode;
+    m_wrapTmode = a_wrapMode;
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

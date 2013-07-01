@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -36,66 +36,91 @@
     POSSIBILITY OF SUCH DAMAGE. 
 
     \author    <http://www.chai3d.org>
-    \author    Sebastien Grange
+    \author    Francois Conti
+    \author    Dan Morris
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 387 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "system/CString.h"
 #include "math/CMaths.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#include <algorithm>
+#include <string>
 #include <iostream>
+#include <sstream>
 #include <iomanip>
 using namespace std;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
-	Compute the length of a string up to 255 characters. If the end of string
-    cannot be found, then -1 is returned as a result.
+    Compute the length of an __ANSI string__ of up to 255 characters. 
+    If the end of the string cannot be found, then -1 is returned as a result.
 
-	\param		a_string  Input string. Pointer to a char.
-	
-    \return		Return the length of the string.
+    \param      a_input  Input __ANSI string__. (Pointer to first character).
+    
+    \return		Length of input string, otherwise -1;
 */
-//===========================================================================
-int cStringLength(const char* a_input)
+//==============================================================================
+int cStrLength(const char* a_input)
 {
     return (int)(strlen(a_input));
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Convert a string into lower case.
-
-    \param  a_string  Input string 
+    Discards the path component of a filename and returns the filename itself,
+    optionally including the file extension.
     
-    \return  Returns the output string.
+    \param      a_input  Input string containing path and filename.
+    \param      a_includeFileExtension  If __true__, then file extension is 
+                include. 
+    
+    \return     Filename with or without file extension.
 */
-//===========================================================================
-string cStringToLower(const string& a_input)
+//==============================================================================
+std::string cGetFilename(const std::string& a_input, const bool a_includeFileExtension)
 {
+    int pos;
     string result = a_input;
-    transform(result.begin(), result.end(), result.begin(), ::tolower);
+    
+    pos= (int)(result.find_last_of("\\"));
+    if (pos > -1) result = result.substr(pos+1, result.length()-pos-1);
+    
+    pos = (int)(result.find_last_of("/"));
+    if (pos > -1) result = result.substr(pos+1, result.length()-pos-1);
+    
+    if (!a_includeFileExtension)
+    {
+        pos = (int)(result.find_last_of("."));
+        result = result.substr(0, pos);
+    }
+
     return (result);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Finds the extension in a filename.
+    Extract the file extension of a file, optionally include the dot at 
+    the beginning of the extension. \n
+    Example: .jpg
 
-    \param  a_input  Input filename.
-    \param  a_includeDot  If \b true, include the dot at the beginning of 
-                          the extension. (example: ".jpg")
+    \param      a_input  Input filename string with or without path.
+    \param      a_includeDot  If __true__, include the dot at the beginning of 
+                the extension.
     
-    \return  Returns a string containing the extension.
+    \return     File extension with or without leading dot.
 */
-//===========================================================================
-string cFindFileExtension(const string& a_input, 
-		                  const bool a_includeDot)
+//==============================================================================
+std::string cGetFileExtension(const std::string& a_input, const bool a_includeDot)
 {
     int pos = (int)(a_input.find_last_of("."));
     if (pos < 0) return "";
@@ -110,104 +135,78 @@ string cFindFileExtension(const string& a_input,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Discards the path component of a filename and returns the filename itself,
-    optionally including the extension.
+    Extract the directory path portion of the source, and include
+    trailing '/'.  If there are no '/'s found, then the function 
+    returns an empty string.
 
-    \param  a_input   Input string containing path and filename
-    \param  a_includeExtension  Should the output include the extension?
+    \param      a_input  Input string including directory path and filename.
     
-    \return  Returns the output string.
+    \return     Directory path.
 */
-//===========================================================================
-string cFindFilename(const string& a_input, 
-                     const bool a_includeFileExtension)
+//==============================================================================
+std::string cGetDirectory(const std::string& a_input)
+{
+    return (a_input.substr(0, a_input.length() - cGetFilename(a_input, true).length()));
+}
+
+
+//==============================================================================
+/*!
+    Replaces the file extension of a filename with a new extension name.
+
+    \param      a_input  Input string including path and filename.
+    \param      a_extension  New file extension.
+
+    \return     Filename and path.
+*/
+//==============================================================================
+std::string cReplaceFileExtension(const std::string& a_input, const std::string& a_extension)
 {
     string result = a_input;
-    int pos = (int)(result.find_last_of("\\"));
-    if (pos > -1) result = result.substr(pos+1, result.length()-pos-1);
-    pos = (int)(result.find_last_of("/"));
-    if (pos > -1) result = result.substr(pos+1, result.length()-pos-1);
-    if (!a_includeFileExtension)
+    string extension = cGetFileExtension(a_extension);
+    int pos = (int)(result.find_last_of("."));
+    if (pos < 0) return a_input;
+    result.replace(pos+1, result.length(), extension);
+    return (result);
+}
+
+
+//=================================================================================
+/*!
+    Convert a __boolean__ into a __string__.
+                
+    \param      a_value  Input value of type __boolean__.
+    
+    \return     Converted value in __string__ format.
+*/
+//=================================================================================
+std::string cStr(const bool a_value)
+{
+    string result;
+    if (a_value) 
     {
-        pos = (int)(result.find_last_of("."));
-        result = result.substr(0, pos);
+        result = "true";
+    }
+    else 
+    {
+        result = "false";   
     }
     return (result);
 }
 
 
-//===========================================================================
+//=================================================================================
 /*!
-    Returns the string a_filename by replacing its extension with a new
-    string provided by parameter a_extension.
+    Convert an __integer__ into a __string__.
 
-    \param      a_filename The input filename
-    \param      a_extension  The extension to replace a_input's extension with
-
-    \return     Returns the output string.
-*/
-//===========================================================================
-string cReplaceFileExtension(const string& a_filename, 
-                             const string& a_extension)
-{
-    string result = a_filename;
-    int pos = (int)(result.find_last_of("."));
-    if (pos < 0) return a_filename;
-    result.replace(pos+1, result.length(), a_extension);
-    return (result);
-}
-
-
-//===========================================================================
-/*!
-    Finds only the _path_ portion of source, and copies it with
-    _no_ trailing '\\'.  If there's no /'s or \\'s, writes an
-    empty string.
-
-    \param      a_dest    String which will contain the directory name.
-    \param      a_source  Input string containing path and filename.
+    \param      a_value  Input value of type __integer__.
     
-    \return     Return \b true for success, \b false if there's no separator.
+    \return     Converted value in __string__ format.
 */
-//===========================================================================
-string cFindDirectory(const string& a_input)
-{
-    return (a_input.substr(0, a_input.length() - cFindFilename(a_input, true).length()));
-}
-
-
-//===========================================================================
-/*!
-    Convert a \e boolean into a \e string.
-
-    \param    a_value  Input value of type \e boolean.
-    
-    \return   Return output string.
-*/
-//===========================================================================
-string cStr(const bool a_value)
-{
-    string result;
-    if (a_value) 
-        result = "true";
-    else 
-        result = "false";   
-    return (result);
-}
-
-
-//===========================================================================
-/*!
-    Convert an \e integer into a \e string.
-
-    \param    a_value  Input value of type \e integer.
-    
-    \return   Return output string.
-*/
-//===========================================================================
-string cStr(const int a_value)
+//==============================================================================
+std::string cStr(const int a_value)
 {
     ostringstream result;
     result << a_value;
@@ -215,39 +214,76 @@ string cStr(const int a_value)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Convert a \e float into a \e string.
+    Convert an __unsigned integer__ into a __string__.
 
-    \param    a_value  Input value of type \e float.
-    \param    a_precision  Number of digits displayed after the decimal point.
-
-    \return   Return output string.
+    \param      a_value  Input value of type __unsigned integer__.
+    
+    \return     Converted value in __string__ format.
 */
-//===========================================================================
-string cStr(const float a_value, 
-            const unsigned int a_precision)
+//==============================================================================
+std::string cStr(const unsigned int a_value)
 {
     ostringstream result;
-    result << fixed << setprecision(a_precision) << a_value;
+    result << a_value;
     return (result.str());
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Convert a \e double into a \e string.
+    Convert a __float__ into a __string__.
 
-    \param      a_value  Input value of type \e double.
+    \param      a_value  Input value of type __float__.
     \param      a_precision  Number of digits displayed after the decimal point.
 
-    \return     Return output string.
+    \return     Converted value in __string__ format.
 */
-//===========================================================================
-string cStr(const double& a_value, 
-            const unsigned int a_precision)
+//==============================================================================
+std::string cStr(const float a_value, const unsigned int a_precision)
 {
     ostringstream result;
     result << fixed << setprecision(a_precision) << a_value;
     return (result.str());
 }
+
+
+//==============================================================================
+/*!
+    Convert a \b double into a \b string.
+
+    \param      a_value  Input value of type __double__.
+    \param      a_precision  Number of digits displayed after the decimal point.
+
+    \return     Converted value in __string__ format.
+*/
+//==============================================================================
+std::string cStr(const double a_value, const unsigned int a_precision)
+{
+    ostringstream result;
+    result << fixed << setprecision(a_precision) << a_value;
+    return (result.str());
+}
+
+
+//==============================================================================
+/*!
+    Convert a string into lower case.
+
+    \param      a_input  Input string to be converted.
+    
+    \return     Converted string.
+*/
+//==============================================================================
+std::string cStrToLower(const std::string& a_input)
+{
+    string result = a_input;
+    transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return (result);
+}
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

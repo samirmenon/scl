@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,77 +37,86 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-	\author	Dan Morris
+    \author    Dan Morris
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 423 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CStringH
 #define CStringH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include <string>
 #include <stdio.h>
-//---------------------------------------------------------------------------
-using std::string;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CString.h
     \ingroup    system
 
     \brief
     <b> System </b> \n
-    Strings.
+    Functions for handling strings.
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
-// ANSI STRINGS
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// ANSI STRINGS:
+//------------------------------------------------------------------------------
 
-//! Compute the length of an ANSI string.
-int cStringLength(const char* a_input);
-
-
-//---------------------------------------------------------------------------
-// FILE NAMES
-//---------------------------------------------------------------------------
-
-//! Find the file extension of a file.
-string cFindFileExtension(const string& a_input, const bool a_includeDot = false);
-
-//! Replace the file extension of a filename.
-string cReplaceFileExtension(const string& a_input, const string& a_extension);
-
-//! Find the filename.
-string cFindFilename(const string& a_input, const bool a_includeFileExtension = true);
-
-//! Find the directory.
-string cFindDirectory(const string& a_input);
+//! Compute the length of an __ANSI string__.
+int cStrLength(const char* a_input);
 
 
-//---------------------------------------------------------------------------
-// STRING CONVERSIONS
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// FILENAME TOOLS:
+//------------------------------------------------------------------------------
 
-//! Convert a string to lower case.
-string cStringToLower(const string& a_input);
+//! Extract the __filename__ with or without its extension.
+std::string cGetFilename(const std::string& a_input, const bool a_includeFileExtension = true);
 
-//! Convert a boolean into a string.
-string cStr(const bool a_value);
+//! Extract the __file extension__ of a file.
+std::string cGetFileExtension(const std::string& a_input, const bool a_includeDot = false);
 
-//! Convert an integer into a string.
-string cStr(const int a_value);
+//! Extract the __directory path__ from the full file path.
+std::string cGetDirectory(const std::string& a_input);
 
-//! Convert a float into a string.
-string cStr(const float a_value, const unsigned int a_precision = 2);
-
-//! Convert a double into a string.
-string cStr(const double& a_value, const unsigned int a_precision = 2);
+//! Replace the __file extension__ of a filename with a new extension name.
+std::string cReplaceFileExtension(const std::string& a_input, const std::string& a_extension);
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// CONVERTING VALUES TO STRINGS:
+//------------------------------------------------------------------------------
+
+//! Convert a __boolean__ into a __string__.
+std::string cStr(const bool a_value);
+
+//! Convert an __integer__ into a __string__.
+std::string cStr(const int a_value);
+
+//! Convert an __unsigned integer__ into a __string__.
+std::string cStr(const unsigned int a_value);
+
+//! Convert a __float__ into a __string__.
+std::string cStr(const float a_value, const unsigned int a_precision = 2);
+
+//! Convert a __double__ into a __string__.
+std::string cStr(const double a_value, const unsigned int a_precision = 2);
+
+//! Convert a __string__ to __lower case__.
+std::string cStrToLower(const std::string& a_input);
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

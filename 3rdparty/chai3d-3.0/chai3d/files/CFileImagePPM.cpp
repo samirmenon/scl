@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,28 +37,33 @@
 
     \author    <http://www.chai3d.org>
     \author    Sebastien Grange
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1065 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "files/CFileImagePPM.h"
-//---------------------------------------------------------------------------
+using namespace std;
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Load a PPM image from a file into a cImage structure. 
-    If the operation succeeds, then the functions returns \b true and the 
+    If the operation succeeds, then the functions returns __true__ and the 
     image data is loaded into image structure a_image. 
-    If the operation fails, then the function returns \b false. 
+    If the operation fails, then the function returns __false__. 
     In both cases, previous image information stored in a_image is erased.
 
     \fn     bool cLoadFilePPM(cImage* a_image, string a_filename)
     \param  a_image  Image structure. 
-    \param  a_fileName  Filename.
-    \return Returns \b true in case of success, \b false otherwise.
+    \param  a_filename  Filename.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cLoadFilePPM(cImage* a_image, string a_filename)
 {
     int            i, j;
@@ -88,37 +93,39 @@ bool cLoadFilePPM(cImage* a_image, string a_filename)
     // skip any lines not whitespace & comments
     while (1)
     {
-      do
-      {
-        i = fgetc(pFp);
-      }
-      while (isspace(i));
-
-      if (isdigit(i)) {
-        ungetc(i, pFp);
-        break;
-      }
-      else
-      {
         do
         {
-          i = fgetc(pFp);
+            i = fgetc(pFp);
         }
-        while (i != '\n');
-      }
+        while (isspace(i));
+
+        if (isdigit(i)) 
+        {
+            ungetc(i, pFp);
+            break;
+        }
+        else
+        {
+            do
+            {
+                i = fgetc(pFp);
+            }
+            while (i != '\n');
+        }
     }
 
     // read image parameters
     if (3 != fscanf(pFp, "%d %d %d", &width, &height, &maxval))
     {
-      fclose(pFp);
-      return false;
+        fclose(pFp);
+        return false;
     }
 
     // check ceiling value
-    if (maxval != 255) {
-      fclose(pFp);
-      return false;
+    if (maxval != 255)
+    {
+        fclose(pFp);
+        return false;
     }
 
     // we allocate memory for image. By default we shall use OpenGL's RGB mode.
@@ -146,23 +153,23 @@ bool cLoadFilePPM(cImage* a_image, string a_filename)
 
     for (j=height-1; j>=0; j--)
     {
-      // read PPM data one line at a time (this is MUCH faster than one RGB
-      // pixel at a time and slightly faster than the whole image at once)
-      if (bytesLine != fread((void *) buffer, sizeof(unsigned char), bytesLine, pFp))
-      {
-        fclose(pFp);
-        free(buffer);
-        return NULL;
-      }
+        // read PPM data one line at a time (this is MUCH faster than one RGB
+        // pixel at a time and slightly faster than the whole image at once)
+        if (bytesLine != fread((void *) buffer, sizeof(unsigned char), bytesLine, pFp))
+        {
+            fclose(pFp);
+            free(buffer);
+            return NULL;
+        }
 
-      int            index = 3*j*width;
-      unsigned char *p     = buffer;
-      for (i=0; i<(width); i++)
-      {
-        data[index++] = (unsigned char) *p++;
-        data[index++] = (unsigned char) *p++;
-        data[index++] = (unsigned char) *p++;
-      }
+        int index = 3*j*width;
+        unsigned char *p = buffer;
+        for (i=0; i<(width); i++)
+        {
+            data[index++] = (unsigned char) *p++;
+            data[index++] = (unsigned char) *p++;
+            data[index++] = (unsigned char) *p++;
+        }
     }
 
     // cleanup
@@ -173,19 +180,19 @@ bool cLoadFilePPM(cImage* a_image, string a_filename)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Save a BMP image from a cImage structure to a file. 
-    If the operation succeeds, then the functions returns \b true and the 
+    If the operation succeeds, then the functions returns __true__ and the 
     image data is saved to a file. 
-    If the operation fails, then the function returns \b false. 
+    If the operation fails, then the function returns __false__. 
 
     \fn     bool cSaveFilePPM(cImage* a_image, string a_filename)
     \param  a_image  Image structure. 
-    \param  a_fileName  Filename.
-    \return Returns \b true in case of success, \b false otherwise.
+    \param  a_filename  Filename.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cSaveFilePPM(cImage* a_image, string a_filename)
 {
     FILE          *pFp;
@@ -248,3 +255,8 @@ bool cSaveFilePPM(cImage* a_image, string a_filename)
 
     return true;
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

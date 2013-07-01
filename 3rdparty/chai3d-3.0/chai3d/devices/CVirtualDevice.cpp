@@ -1,4 +1,4 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
     Copyright (c) 2003-2012, CHAI3D.
@@ -37,16 +37,21 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 799 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 993 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "system/CGlobals.h"
 #include "devices/CVirtualDevice.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #if defined(C_ENABLE_VIRTUAL_DEVICE_SUPPORT)
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
 
 void CALLBACK internal_timer_callback(UINT uTimerID, 
                                       UINT uMsg, 
@@ -58,11 +63,11 @@ void CALLBACK internal_timer_callback(UINT uTimerID,
     SetEvent(device->m_sync);
 }
 
-//===========================================================================
+//==============================================================================
 /*!
     Constructor of cVirtualDevice.
 */
-//===========================================================================
+//==============================================================================
 cVirtualDevice::cVirtualDevice()
 {
     // settings:
@@ -157,11 +162,11 @@ cVirtualDevice::cVirtualDevice()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cVirtualDevice.
 */
-//===========================================================================
+//==============================================================================
 cVirtualDevice::~cVirtualDevice()
 {
     if (m_deviceAvailable)
@@ -176,65 +181,65 @@ cVirtualDevice::~cVirtualDevice()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Open connection to virtual device.
 
-    \return Return 0 is operation succeeds, -1 if an error occurs.
+    \return Return 0 is operation succeeds, C_ERROR if an error occurs.
 */
-//===========================================================================
-int cVirtualDevice::open()
+//==============================================================================
+bool cVirtualDevice::open()
 {
     if (m_deviceAvailable)
     {
         m_deviceReady = true;
     }
-    return (0);
+    return (C_SUCCESS);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Close connection to virtual device
 
-    \return Return 0 is operation succeeds, -1 if an error occurs.
+    \return Return 0 is operation succeeds, C_ERROR if an error occurs.
 */
-//===========================================================================
-int cVirtualDevice::close()
+//==============================================================================
+bool cVirtualDevice::close()
 {
     m_deviceReady = false;
 
-    return (0);
+    return (C_SUCCESS);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Calibrate virtual device.  
 
-    \return Return 0 is operation succeeds, -1 if an error occurs.
+    \return Return 0 is operation succeeds, C_ERROR if an error occurs.
 */
-//===========================================================================
-int cVirtualDevice::calibrate()
+//==============================================================================
+bool cVirtualDevice::calibrate()
 {
     if (m_deviceReady)
     {
-        return (0);
+        return (C_SUCCESS);
     }
     else
     {
-        return (-1);
+        return (C_ERROR);
     }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Returns the number of devices available from this class of device.
 
     \return  Returns the result
 */
-//===========================================================================
+//==============================================================================
 unsigned int cVirtualDevice::getNumDevices()
 {
     // only one device can be enabled
@@ -251,19 +256,19 @@ unsigned int cVirtualDevice::getNumDevices()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Read the position of the device. Units are meters [m].
 
     \param  a_position  Return value.
 */
-//===========================================================================
-int cVirtualDevice::getPosition(cVector3d& a_position)
+//==============================================================================
+bool cVirtualDevice::getPosition(cVector3d& a_position)
 {
     if (!m_deviceReady)
     {
         a_position.set(0, 0, 0);
-        return (-1);
+        return (C_ERROR);
     }
 
     double x,y,z;
@@ -272,41 +277,41 @@ int cVirtualDevice::getPosition(cVector3d& a_position)
     z = (double)(*m_pDevice).PosZ;
     a_position.set(x, y, z);
 
-    return (0);
+    return (C_SUCCESS);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Read the orientation frame of the device end-effector.
 
     \param  a_rotation  Return value.
 */
-//===========================================================================
-int cVirtualDevice::getRotation(cMatrix3d& a_rotation)
+//==============================================================================
+bool cVirtualDevice::getRotation(cMatrix3d& a_rotation)
 {
     if (!m_deviceReady)
     {
         a_rotation.identity();
-        return (-1);
+        return (C_ERROR);
     }
 
     a_rotation.identity();
 
-    return (0);
+    return (C_SUCCESS);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Send a force [N] to the haptic device.
 
     \param  a_force  Force command to be applied to device.
 */
-//===========================================================================
-int cVirtualDevice::setForce(const cVector3d& a_force)
+//==============================================================================
+bool cVirtualDevice::setForce(const cVector3d& a_force)
 {
-    if (!m_deviceReady) return (-1);
+    if (!m_deviceReady) return (C_ERROR);
 
 	// wait for synchronization event
 	WaitForSingleObject(m_sync, 1000);
@@ -315,56 +320,60 @@ int cVirtualDevice::setForce(const cVector3d& a_force)
     ((*m_pDevice).ForceY) = a_force(1) ;
     ((*m_pDevice).ForceZ) = a_force(2) ;
 
-    return (0);
+    return (C_SUCCESS);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Return the last force sent to the device.
 
     \param  a_force  Return value.
 */
-//===========================================================================
-int cVirtualDevice::getForce(cVector3d& a_force)
+//==============================================================================
+bool cVirtualDevice::getForce(cVector3d& a_force)
 {
     if (!m_deviceReady)
     {
         a_force.set(0,0,0);
-        return (-1);
+        return (C_ERROR);
     }
 
     a_force(0)  = ((*m_pDevice).ForceX);
     a_force(1)  = ((*m_pDevice).ForceY);
     a_force(2)  = ((*m_pDevice).ForceZ);
 
-    return (0);
+    return (C_SUCCESS);
 }
 
-//===========================================================================
+//==============================================================================
 /*!
-    Read the status of the user switch [\b true = \e ON / \b false = \e OFF].
+    Read the status of the user switch [__true__ = \e ON / __false__ = \e OFF].
 
     \param  a_switchIndex  index number of the switch.
     \param  a_status result value from reading the selected input switch.
 */
-//===========================================================================
-int cVirtualDevice::getUserSwitch(int a_switchIndex, bool& a_status)
+//==============================================================================
+bool cVirtualDevice::getUserSwitch(int a_switchIndex, bool& a_status)
 {
     if (!m_deviceReady)
     {
         a_status = false;
-        return (-1);
+        return (C_ERROR);
     }
 
     a_status = ((bool)(*m_pDevice).Button0);
 
-    return (0);
+    return (C_SUCCESS);
 }
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif  // C_ENABLE_VIRTUAL_DEVICE_SUPPORT
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 

@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,57 +37,74 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 799 $
+    \author    Sebastien Grange
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1055 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CThreadH
 #define CThreadH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "system/CGlobals.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CThread.h
     \ingroup    system
 
     \brief
     <b> System </b> \n
-    Threads.
+    Thread Class.
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 /*!
-    Defines thread priority for handling \e graphics and \e haptics
-    rendering loops.
+    Defines two basic thread priorities for handling __graphics__ and 
+    __haptics__ rendering loops.
 */
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 enum CThreadPriority
 {
-    CTHREAD_PRIORITY_GRAPHICS,
-    CTHREAD_PRIORITY_HAPTICS
+    CTHREAD_PRIORITY_GRAPHICS,    // lower priority
+    CTHREAD_PRIORITY_HAPTICS      // higher priority
 };
 
 
-//===========================================================================
+//==============================================================================
 /*!
     \class	    cThread
     \ingroup    system
 
-    \brief	
-    cThread provides a class to manage threads.
+    \brief
+    Creates and controls a thread, sets its priority, and gets its status.
+
+    \details
+    A process can create one or more threads to execute a portion of the 
+    program code associated with the process. Use method start() to specify 
+    the program code executed by a thread. The method also allows you to 
+    pass data to the thread procedure.\n
+    
+    A scheduling priority level, as defined in __CThreadPriority__, can be 
+    requested for a thread, but is not guaranteed to be honored by the 
+    operating system.
+
 */
-//===========================================================================
+//==============================================================================
+
 class cThread
 {
-  public:
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    
+public:
 
     //! Constructor of cThread.
     cThread();
@@ -96,15 +113,19 @@ class cThread
     virtual ~cThread();
 
 
-    //-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Set the thread parameters (and start it).
     void start(void(*a_function)(void ), const CThreadPriority a_level);
-    void start(void(*a_function)(void*), const CThreadPriority a_level, void *arg);
 
-    //! Terminate the thread (not recommended)
+    //! Set the thread parameters (and start it).
+    void start(void(*a_function)(void*), const CThreadPriority a_level, void *a_arg);
+
+    //! Terminate the thread (not recommended!).
     void stop();
 
     //! Set the thread priority level.
@@ -114,15 +135,19 @@ class cThread
     CThreadPriority getPriority() const { return (m_priorityLevel); }
 
 
-  protected:
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS:
+    //--------------------------------------------------------------------------
+
+protected:
 
 #if defined(WIN32) | defined(WIN64)
-    //! Thread handle
+    //! Thread handle.
     DWORD m_threadId;
 #endif
 
 #if defined(LINUX) || defined(MACOSX)
-    //! Thread handle
+    //! Thread handle.
     pthread_t m_handle;
 #endif
 
@@ -133,6 +158,10 @@ class cThread
     CThreadPriority m_priorityLevel;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

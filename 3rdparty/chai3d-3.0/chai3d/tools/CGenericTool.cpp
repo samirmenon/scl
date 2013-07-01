@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,13 +37,17 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 846 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "tools/CGenericTool.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
 
 //==========================================================================
 /*!
@@ -52,7 +56,7 @@
     \fn     cGenericTool::cGenericTool(cWorld* a_parentWorld)
     \param  a_parentWorld  Parent world in which the tool belongs.
 */
-//===========================================================================
+//==============================================================================
 cGenericTool::cGenericTool(cWorld* a_parentWorld)
 {
     // set parent world
@@ -98,7 +102,7 @@ cGenericTool::cGenericTool(cWorld* a_parentWorld)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set radius size of all contact points. The radius affects the physical 
     radius of the proxy and spheres used to render the goal and proxy 
@@ -107,7 +111,7 @@ cGenericTool::cGenericTool(cWorld* a_parentWorld)
     \fn     void cGenericTool::setRadius(double a_radius)
     \param  a_radius  New radius for display and contact computation.
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::setRadius(double a_radius)
 {
     for (unsigned int i=0; i<m_hapticPoints.size(); i++)
@@ -117,7 +121,7 @@ void cGenericTool::setRadius(double a_radius)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
    Set radius size of the display spheres (goal and proxy) and physical contact 
    sphere (proxy) used to compute the contact forces. Setting the a_radiusContact
@@ -128,7 +132,7 @@ void cGenericTool::setRadius(double a_radius)
     \param  a_radiusDisplay  New radius for display of spheres (proxy and goal).
     \param  a_radiusContact  New radius for contact computation (proxy).
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::setRadius(double a_radiusDisplay, double a_radiusContact)
 {
     for (unsigned int i=0; i< m_hapticPoints.size(); i++)
@@ -138,7 +142,7 @@ void cGenericTool::setRadius(double a_radiusDisplay, double a_radiusContact)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set radius size of the physical proxy. The change is affect to all
     contact points composing the tool.
@@ -146,7 +150,7 @@ void cGenericTool::setRadius(double a_radiusDisplay, double a_radiusContact)
     \fn     void cGenericTool::setRadiusContact(double a_radiusContact)
     \param  a_radiusContact  New radius for contact computation (proxy).
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::setRadiusContact(double a_radiusContact)
 {
     for (unsigned int i=0; i< m_hapticPoints.size(); i++)
@@ -156,14 +160,14 @@ void cGenericTool::setRadiusContact(double a_radiusContact)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set radius size of the sphere used to display the proxy and goal position.
 
     \fn     void cGenericTool::setRadiusDisplay(double a_radiusDisplay)
     \param  a_radiusDisplay  New radius for display of spheres (proxy and goal).
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::setRadiusDisplay(double a_radiusDisplay)
 {
     for (unsigned int i=0; i< m_hapticPoints.size(); i++)
@@ -173,7 +177,7 @@ void cGenericTool::setRadiusDisplay(double a_radiusDisplay)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set display options of the goal and proxy spheres. If both spheres are 
     enabled, a small line is drawn between both spheres.
@@ -182,11 +186,11 @@ void cGenericTool::setRadiusDisplay(double a_radiusDisplay)
                                         bool a_showGoal, 
                                         cColorf a_colorLine)
 
-    \param  a_showProxy If \b true, then the proxy sphere is displayed.
-    \param  a_showGoal If \b true, then the goal sphere is displayed.
+    \param  a_showProxy If __true__, then the proxy sphere is displayed.
+    \param  a_showGoal If __true__, then the goal sphere is displayed.
     \param  a_colorLine  Color of line connecting proxy to goal spheres.
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::setShowContactPoints(bool a_showProxy, 
                                         bool a_showGoal, 
                                         cColorf a_colorLine)
@@ -198,7 +202,7 @@ void cGenericTool::setShowContactPoints(bool a_showProxy,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Enable or disable the dynamic proxy algorithm to support dynamic objects.
     This option must be enabled if you have cMesh object which move inside
@@ -209,11 +213,11 @@ void cGenericTool::setShowContactPoints(bool a_showProxy,
     detecting any collision.
 
     \fn     void cGenericTool::setShowContactPoints(bool a_showProxy, bool a_showGoal)
-    \param  a_showProxy If \b true, then the proxy sphere is displayed.
-    \param  a_showGoal If \b true, then the goal sphere is displayed.
+    \param  a_showProxy If __true__, then the proxy sphere is displayed.
+    \param  a_showGoal If __true__, then the goal sphere is displayed.
 
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::enableDynamicObjects(bool a_enabled)
 {
     for (unsigned int i=0; i< m_hapticPoints.size(); i++)
@@ -230,9 +234,9 @@ void cGenericTool::enableDynamicObjects(bool a_enabled)
 
     \fn       bool cGenericTool::getUserSwitch(int a_switchIndex)
     \param    a_switchIndex Index number of the switch.
-    \return   Return \b true if switch is active, otherwise return \b false.
+    \return   Return __true__ if switch is active, otherwise return __false__.
 */
-//===========================================================================
+//==============================================================================
 bool cGenericTool::getUserSwitch(int a_switchIndex)
 {
     // check if tool is currently enabled
@@ -261,7 +265,7 @@ bool cGenericTool::getUserSwitch(int a_switchIndex)
     \fn       int cGenericTool::start()
     \return   0 indicates success, non-zero indicates an error
 */
-//===========================================================================
+//==============================================================================
 int cGenericTool::start()
 {
     // check if device is available
@@ -271,7 +275,7 @@ int cGenericTool::start()
     }
 
     // open connection to device
-    if (m_hapticDevice->open() >= 0)
+    if (m_hapticDevice->open())
     {
         m_enabled = true;
     }
@@ -302,7 +306,7 @@ int cGenericTool::start()
     \fn       void cToolCursor::stop()
     \return   0 indicates success, non-zero indicates an error
 */
-//===========================================================================
+//==============================================================================
 int cGenericTool::stop()
 {
     // check if tool is currently enabled
@@ -313,14 +317,14 @@ int cGenericTool::stop()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Reset all force models according to the current position of the 
     haptic device.
 
     \fn     void cGenericTool::initialize()
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::initialize()
 {
     // update position from haptic device
@@ -340,7 +344,7 @@ void cGenericTool::initialize()
 
     \fn       void cGenericTool::updatePose()
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::updatePose()
 {
     // check if device is available
@@ -411,13 +415,13 @@ void cGenericTool::updatePose()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update the position and orientation of the tool image.
 
     \fn       void cGenericTool::computeInteractionForces()
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::updateToolImagePosition()
 {
     // set the position and orientation of the tool image to be equal to the 
@@ -429,14 +433,14 @@ void cGenericTool::updateToolImagePosition()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the interaction forces between the tool and the virtual
     object inside the virtual world.
 
     \fn       void cGenericTool::computeInteractionForces()
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::computeInteractionForces()
 {
     // for each contact point contact point compute the interaction force
@@ -480,7 +484,7 @@ void cGenericTool::computeInteractionForces()
 
     \fn       void cGenericTool::applyForces()
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::applyForces()
 {
     // check if device is available
@@ -531,7 +535,7 @@ void cGenericTool::applyForces()
     \return   0 indicates success, non-zero indicates an error
 
 */
-//===========================================================================
+//==============================================================================
 int cGenericTool::setForcesON()
 {
     // check if device is available
@@ -557,7 +561,7 @@ int cGenericTool::setForcesON()
     \fn       void cGenericTool::setForcesOFF()
     \return   0 indicates success, non-zero indicates an error
 */
-//===========================================================================
+//==============================================================================
 int cGenericTool::setForcesOFF()
 {
     // check if device is available
@@ -588,7 +592,7 @@ int cGenericTool::setForcesOFF()
     \fn       bool cGenericTool::isInContact(cGenericObject* a_object)
     \return   Return \e true if the tool is interacting with the object
 */
-//===========================================================================
+//==============================================================================
 bool cGenericTool::isInContact(cGenericObject* a_object)
 {
     for (unsigned int i=0; i<m_hapticPoints.size(); i++)
@@ -609,7 +613,7 @@ bool cGenericTool::isInContact(cGenericObject* a_object)
     \fn       void cGenericTool::setWorkspaceRadius(const double& a_workspaceRadius)
     \param    a_workspaceRadius   Radius of the workspace.
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::setWorkspaceRadius(const double& a_workspaceRadius)
 {
     // check if device is available
@@ -644,7 +648,7 @@ void cGenericTool::setWorkspaceRadius(const double& a_workspaceRadius)
     \fn       void cGenericTool::setWorkspaceScaleFactor(const double& a_workspaceScaleFactor)
     \param    a_workspaceScaleFactor   Workspace scale factor.
 */
-//===========================================================================
+//==============================================================================
 void cGenericTool::setWorkspaceScaleFactor(const double& a_workspaceScaleFactor)
 {
     // check if device is available
@@ -666,3 +670,8 @@ void cGenericTool::setWorkspaceScaleFactor(const double& a_workspaceScaleFactor)
     // in order to avoid a possible force spike coming from the proxy models.
     initialize();
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,87 +39,89 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 449 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "lighting/CSpotLight.h"
+//------------------------------------------------------------------------------
+#ifdef C_USE_OPENGL
 #ifdef MACOSX
 #include "OpenGL/glu.h"
 #else
 #include "GL/glu.h"
 #endif
-//---------------------------------------------------------------------------
+#endif
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cSpotLight.
-
-    \fn       cSpotLight::cSpotLight(cWorld* a_world):
-                cGenericLight(a_world),
-                cPositionalLight(a_world),
-                cDirectionalLight(a_world)
 */
-//===========================================================================
+//==============================================================================
 cSpotLight::cSpotLight(cWorld* a_world):cGenericLight(a_world),cPositionalLight(a_world),cDirectionalLight(a_world)
 {   
     // set default cutoff angle
-    m_cutOffAngleDEG = 45.0;
+    m_cutOffAngleDeg = 45.0;
 
     // set default spot exponent
     m_spotExponent = 1.0;
 
-	// create shadow map
-	m_shadowMap = new cShadowMap();
+    // create shadow map
+    m_shadowMap = new cShadowMap();
     m_shadowNearClippingPlane = 0.1;
     m_shadowFarClippingPlane = 10.0;
 
     // set color properties of display model of light source
     m_displaySourceColor.setYellowGold();
-	m_displayConeColor.setGrayDarkSlate();
+    m_displayConeColor.setGrayDarkSlate();
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cSpotLight.
 
     \fn       cSpotLight::~cSpotLight()
 */
-//===========================================================================
+//==============================================================================
 cSpotLight::~cSpotLight()
 {
     // delete shadow map
-	delete m_shadowMap;
+    delete m_shadowMap;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the cutoff angle (in degrees) of the light beam. Accepted values
     range from 0 to 90 degrees for spot lights.
 
-    \fn       void cSpotLight::setCutOffAngleDEG(const GLfloat& a_angleDEG)
-    \param    a_angleDEG  Cutoff angle of light beam in degrees.
+    \param  a_angleDeg  Cutoff angle of light beam in degrees.
 */
-//===========================================================================
+//==============================================================================
 void cSpotLight::setCutOffAngleDeg(const GLfloat& a_angleDeg)
 {
-    m_cutOffAngleDEG = cClamp(a_angleDeg, (GLfloat)0.0, (GLfloat)90.0);
+    m_cutOffAngleDeg = cClamp(a_angleDeg, (GLfloat)0.0, (GLfloat)90.0);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render this light source in OpenGL.
 
-    \fn     void cSpotLight::renderLightSource(cRenderOptions& a_options)
-	\param	a_options  Rendering options.
+    \param  a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cSpotLight::renderLightSource(cRenderOptions& a_options)
 {
-	// check if light sources should be rendered
-	if ((!a_options.m_enable_lighting) || (!m_enabled))
+#ifdef C_USE_OPENGL
+
+    // check if light sources should be rendered
+    if ((!a_options.m_enable_lighting) || (!m_enabled))
     {
         // disable OpenGL light source
         glDisable(m_glLightNumber);
@@ -136,22 +138,22 @@ void cSpotLight::renderLightSource(cRenderOptions& a_options)
     computeGlobalPositionsFromRoot();
 
     // set lighting components
-	if (a_options.m_rendering_shadow)
-	{
-		cColorf diffuse((GLfloat)(a_options.m_shadow_light_level * m_diffuse.getR()),
-						(GLfloat)(a_options.m_shadow_light_level * m_diffuse.getG()),
-						(GLfloat)(a_options.m_shadow_light_level * m_diffuse.getB()));
-		cColorf specular(0.0, 0.0, 0.0);
-		glLightfv(m_glLightNumber, GL_AMBIENT,  m_ambient.pColor());
-		glLightfv(m_glLightNumber, GL_DIFFUSE,  diffuse.pColor() );
-		glLightfv(m_glLightNumber, GL_SPECULAR, specular.pColor());
-	}
-	else
-	{	
-		glLightfv(m_glLightNumber, GL_AMBIENT,  m_ambient.pColor());
-		glLightfv(m_glLightNumber, GL_DIFFUSE,  m_diffuse.pColor() );
-		glLightfv(m_glLightNumber, GL_SPECULAR, m_specular.pColor());
-	}
+    if (a_options.m_rendering_shadow)
+    {
+        cColorf diffuse((GLfloat)(a_options.m_shadow_light_level * m_diffuse.getR()),
+                        (GLfloat)(a_options.m_shadow_light_level * m_diffuse.getG()),
+                        (GLfloat)(a_options.m_shadow_light_level * m_diffuse.getB()));
+        cColorf specular(0.0, 0.0, 0.0);
+        glLightfv(m_glLightNumber, GL_AMBIENT,  m_ambient.pColor());
+        glLightfv(m_glLightNumber, GL_DIFFUSE,  diffuse.pColor() );
+        glLightfv(m_glLightNumber, GL_SPECULAR, specular.pColor());
+    }
+    else
+    {	
+        glLightfv(m_glLightNumber, GL_AMBIENT,  m_ambient.pColor());
+        glLightfv(m_glLightNumber, GL_DIFFUSE,  m_diffuse.pColor() );
+        glLightfv(m_glLightNumber, GL_SPECULAR, m_specular.pColor());
+    }
 
     // define the position of the light source. 
     float position[4];
@@ -173,24 +175,22 @@ void cSpotLight::renderLightSource(cRenderOptions& a_options)
     glLightf(m_glLightNumber, GL_SPOT_EXPONENT, m_spotExponent);   
 
     // set cutoff angle
-    glLightf(m_glLightNumber, GL_SPOT_CUTOFF, m_cutOffAngleDEG); 
+    glLightf(m_glLightNumber, GL_SPOT_CUTOFF, m_cutOffAngleDeg); 
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set display settings of light source. To be used for debugging purposes 
     to display location and direction of light source.
 
-    \fn       void cSpotLight::setDisplaySettings(const double& a_sourceRadius, 
-                                    const double& a_coneLength, 
-                                    const bool a_displayEnabled)
-
-    \param    a_sourceRadius  Radius of displayed light source.
-    \param    a_coneLength  Length of cone light.
-    \param    a_displayEnabled  Display status.
+    \param  a_sourceRadius  Radius of displayed light source.
+    \param  a_coneLength  Length of cone light.
+    \param  a_displayEnabled  Display status.
 */
-//===========================================================================
+//==============================================================================
 void cSpotLight::setDisplaySettings(const double& a_sourceRadius, 
                                     const double& a_coneLength, 
                                     const bool a_displayEnabled)
@@ -201,32 +201,33 @@ void cSpotLight::setDisplaySettings(const double& a_sourceRadius,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render a graphic representation of the light spot in OpenGL.
-    This is used for debuging purposes when one wants to display 
+    This is used for debugging purposes when one wants to display 
     the cone illuminated by the light
 
-    \fn       void cSpotLight::render(cRenderOptions& a_options)
-    \param    a_options  Render options.
+    \param  a_options  Render options.
 */
-//===========================================================================
+//==============================================================================
 void cSpotLight::render(cRenderOptions& a_options)
 {
+#ifdef C_USE_OPENGL
+
     // is display rendering of light source enabled?
     if (!m_displayEnabled) { return; }
 
-	/////////////////////////////////////////////////////////////////////////
-	// Render parts that are always opaque
-	/////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
+    // Render parts that are always opaque
+    /////////////////////////////////////////////////////////////////////////
     if (SECTION_RENDER_OPAQUE_PARTS_ONLY(a_options) && (!a_options.m_creating_shadow_map))
-	{      
+    {      
         // disable lighting
-		glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHTING);
 
         // render cone
-        double sizeS = m_displayConeLength * cSinDeg(m_cutOffAngleDEG);
-        double sizeX = m_displayConeLength * cCosDeg(m_cutOffAngleDEG);
+        double sizeS = m_displayConeLength * cSinDeg(m_cutOffAngleDeg);
+        double sizeX = m_displayConeLength * cCosDeg(m_cutOffAngleDeg);
 
         glLineWidth(1.0);
         m_displayConeColor.render();
@@ -236,7 +237,7 @@ void cSpotLight::render(cRenderOptions& a_options)
         glLineStipple (1, 0xF0F0);
 
         glBegin(GL_LINES);
-			glVertex3d( 0.0, 0.0, 0.0);
+            glVertex3d( 0.0, 0.0, 0.0);
             glVertex3d( sizeX, sizeS, sizeS);
             glVertex3d( 0.0, 0.0, 0.0);
             glVertex3d( sizeX,-sizeS, sizeS);
@@ -253,7 +254,7 @@ void cSpotLight::render(cRenderOptions& a_options)
             glVertex3d( sizeX, sizeS,-sizeS);
             glVertex3d( sizeX, sizeS,-sizeS);
             glVertex3d( sizeX, sizeS, sizeS);
-		glEnd();
+        glEnd();
 
         glPopAttrib();
         glDisable(GL_LINE_STIPPLE);
@@ -265,53 +266,57 @@ void cSpotLight::render(cRenderOptions& a_options)
             glColor3f(0.2f, 0.2f, 0.2f);
         cDrawSphere(m_displaySourceRadius, 8, 8);
 
-		// enable lighting again
-		glEnable(GL_LIGHTING);
-	}
+        // enable lighting again
+        glEnable(GL_LIGHTING);
+    }
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Update shadow map for current light source.
+    Update shadow map for this light source.
 
-    \fn       void cSpotLight::updateShadowMap()
-    \return   Returns nothing.
+    \param  a_mirrorH  Horizontal mirror scale factor (-1.0 or 1.0).
+    \param  a_mirrorV  Vertical mirror scale factor (-1.0 or 1.0).
+    \return Returns nothing.
 */
-//===========================================================================
-void cSpotLight::updateShadowMap()
+//==============================================================================
+bool cSpotLight::updateShadowMap(double a_mirrorH, double a_mirrorV)
 {
     // sanity check
-    if ((!m_enabled) || (m_shadowMap == NULL)) { return; }
+    if ((!m_enabled) || (m_shadowMap == NULL)) { return (false); }
 
     // update shadow map
     cVector3d tmp0 = getGlobalPos();
     cVector3d tmp1 = cAdd(getGlobalPos(), getGlobalRot().getCol0());
     cVector3d tmp2 = getGlobalRot().getCol2();
     
-    m_shadowMap->updateMap(m_worldParent,
+    bool result = m_shadowMap->updateMap(m_worldParent,
                            tmp0,
                            tmp1,
                            tmp2,
-                           m_cutOffAngleDEG,
+                           m_cutOffAngleDeg,
                            m_shadowNearClippingPlane,
-                           m_shadowFarClippingPlane);
+                           m_shadowFarClippingPlane,
+                           a_mirrorH,
+                           a_mirrorV);
+
+    return (result);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define the near and far clipping planes of the shadow map. For higher 
     quality rendering, it is important to set the values accordingly to the
     size of the environment.
 
-    \fn       void cSpotLight::setShadowMapProperties(const double& a_nearClippingPlane, 
-                                        const double& a_farClippingPlane)
-
-    \param    a_nearClippingPlane  
-    \param    a_farClippingPlane  
+    \param  a_nearClippingPlane  Near clipping plane of shadow.
+    \param  a_farClippingPlane  Far clipping plane of shadow.
 */
-//===========================================================================
+//==============================================================================
 void cSpotLight::setShadowMapProperties(const double& a_nearClippingPlane, 
                                         const double& a_farClippingPlane)
 {
@@ -320,15 +325,13 @@ void cSpotLight::setShadowMapProperties(const double& a_nearClippingPlane,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Enable of Disable the shadow map for current spot light.
+    Enable of disable the shadow map for current spot light.
 
-    \fn       void cSpotLight::setMapShadowEnabled(const bool a_enabled)
-
-    \param    a_enabled  Shadow status.
+    \param  a_enabled  Shadow map status.
 */
-//===========================================================================
+//==============================================================================
 void cSpotLight::setShadowMapEnabled(const bool a_enabled)
 {
     if (m_shadowMap != NULL)
@@ -338,20 +341,26 @@ void cSpotLight::setShadowMapEnabled(const bool a_enabled)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Read status of current shadow map.
 
-    \fn       bool cSpotLight::getShadowMapEnabled() const
-
-    \return   Return shadowmap status.
+    \return Returns __true__ if the shadow map is enabled, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cSpotLight::getShadowMapEnabled() const
 {
     if (m_shadowMap != NULL)
     {
         return((m_enabled) && (m_shadowMap->getEnabled()));
-    }  
-    return(false);
+    }
+    else
+    {
+        return(false);
+    }
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

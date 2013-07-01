@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,21 +39,28 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "widgets/CPanel.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CPrimitives.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#include <vector>
+using namespace std;
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cPanel.
 
     \fn         cPanel::cPanel()
 */
-//===========================================================================
+//==============================================================================
 cPanel::cPanel()
 {
     // use vertex colors
@@ -96,7 +103,7 @@ cPanel::cPanel()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the width, height and radius for each corner of Panel.
 
@@ -114,7 +121,7 @@ cPanel::cPanel()
     \param      a_radiusBottomLeft  Radius of bottom left corner.
     \param      a_radiusBottomRight  Radius of bottom right corner.
 */
-//===========================================================================
+//==============================================================================
 void cPanel::set(const double& a_width, 
                  const double& a_height,
                  const double& a_radiusTopLeft,
@@ -142,7 +149,7 @@ void cPanel::set(const double& a_width,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the width and height of Panel.
 
@@ -152,7 +159,7 @@ void cPanel::set(const double& a_width,
     \param      a_width  Width of Panel.
     \param      a_height  Height of Panel.
 */
-//===========================================================================
+//==============================================================================
 void cPanel::setPanelSize(const double& a_width, 
                           const double& a_height)
 {
@@ -170,7 +177,7 @@ void cPanel::setPanelSize(const double& a_width,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the top, bottom, left and right margins.
 
@@ -184,7 +191,7 @@ void cPanel::setPanelSize(const double& a_width,
     \param      a_radiusBottomLeft  Radius of bottom left corner.
     \param      a_radiusBottomRight  Radius of bottom right corner.
 */
-//===========================================================================
+//==============================================================================
 void cPanel::setMargins(const double& a_marginTop,
                         const double& a_marginBottom,
                         const double& a_marginLeft,
@@ -201,7 +208,7 @@ void cPanel::setMargins(const double& a_marginTop,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set radius for each corner of Panel.
 
@@ -215,7 +222,7 @@ void cPanel::setMargins(const double& a_marginTop,
     \param      a_radiusBottomLeft  Radius of bottom left corner.
     \param      a_radiusBottomRight  Radius of bottom right corner.
 */
-//===========================================================================
+//==============================================================================
 void cPanel::setCorners(const double& a_radiusTopLeft,
                         const double& a_radiusTopRight,
                         const double& a_radiusBottomLeft,
@@ -241,7 +248,7 @@ void cPanel::setCorners(const double& a_radiusTopLeft,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
    Set color of Panel.
 
@@ -249,13 +256,13 @@ void cPanel::setCorners(const double& a_radiusTopLeft,
 
     \param      a_colorPanel  Color of Panel.
 */
-//===========================================================================
+//==============================================================================
 void cPanel::setColorPanel(const cColorf& a_colorPanel)
 {
     // assign new color
-    m_colorPanelTopLeft = a_colorPanel;
-    m_colorPanelTopRight = a_colorPanel;
-    m_colorPanelBottomLeft = a_colorPanel;
+    m_colorPanelTopLeft     = a_colorPanel;
+    m_colorPanelTopRight    = a_colorPanel;
+    m_colorPanelBottomLeft  = a_colorPanel;
     m_colorPanelBottomRight = a_colorPanel;
 
     // update model of panel
@@ -263,13 +270,101 @@ void cPanel::setColorPanel(const cColorf& a_colorPanel)
 }
 
 
-//===========================================================================
+//==============================================================================
+/*!
+    Set Panel color components for all four corners.
+
+    \param      a_colorPanelTopLeft  Color of top left corner.
+    \param      a_colorPanelTopRight  Color of top right corner.
+    \param      a_colorPanelBottomLeft  Color of bottom left corner.
+    \param      a_colorPanelBottomRight  Color of bottom right corner.
+*/
+//==============================================================================
+void cPanel::setColorPanel(const cColorf& a_colorPanelTopLeft, 
+                           const cColorf& a_colorPanelTopRight, 
+                           const cColorf& a_colorPanelBottomLeft, 
+                           const cColorf& a_colorPanelBottomRight)
+{
+    // assign new colors
+    m_colorPanelTopLeft     = a_colorPanelTopLeft;
+    m_colorPanelTopRight    = a_colorPanelTopRight;
+    m_colorPanelBottomLeft  = a_colorPanelBottomLeft;
+    m_colorPanelBottomRight = a_colorPanelBottomRight;
+
+    // update model of panel
+    updatePanelModel();
+}
+
+//==============================================================================
+/*!
+     Assign a transparency level for the scope background.
+
+     \param     a_level  Level of transparency ranging from 0.0 to 1.0.
+     \param     a_applyToTextures  If __true__, then apply changes to texture.
+     \param     a_affectChildren  If __true__, then children are updated too.
+*/
+//==============================================================================
+void cPanel::setTransparencyLevel(const float a_level, 
+                                  const bool a_applyToTextures,
+                                  const bool a_affectChildren)
+{
+    // if the transparency level is equal to 1.0, then do not apply transparency
+    // otherwise enable it.
+    if (a_level < 1.0)
+    {
+        setUseTransparency(true);
+    }
+    else
+    {
+        setUseTransparency(false);
+    }
+
+    // apply new value to material
+    if (m_material != NULL)
+    {
+        m_material->setTransparencyLevel(a_level);
+    }
+
+    // apply new value to texture
+    if (m_texture != NULL)
+    {
+        if (m_texture->m_image != NULL)
+        {
+            unsigned char level = (unsigned char)(255.0 * a_level);
+            m_texture->m_image->setTransparency(level);   
+        }
+    }
+
+    // assign transparency level to vertex colors
+    m_colorPanelTopLeft.setA(a_level);
+    m_colorPanelTopRight.setA(a_level);
+    m_colorPanelBottomLeft.setA(a_level);
+    m_colorPanelBottomRight.setA(a_level);
+
+    // update panel
+    setPanelSize(m_widthPanel, m_heightPanel);
+
+    // apply change to children
+    if (a_affectChildren)
+    {
+	    vector<cGenericObject*>::iterator it;
+	    for (it = m_children.begin(); it < m_children.end(); it++)
+	    {
+            (*it)->setTransparencyLevel(a_level,
+                                        a_applyToTextures,
+                                        true);
+        }
+    }
+}
+
+
+//==============================================================================
 /*!
     Update mesh of Panel.
 
     \fn         void cPanel::updatePanelModel()
 */
-//===========================================================================
+//==============================================================================
 void cPanel::updatePanelModel()
 {
     // clear all triangle
@@ -294,3 +389,8 @@ void cPanel::updatePanelModel()
                   m_colorPanelBottomLeft
                   );
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

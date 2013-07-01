@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,16 +39,20 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 676 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CMultiMeshH
 #define CMultiMeshH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CMesh.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CMultiMesh.h
 
@@ -56,27 +60,30 @@
     <b> Scenegraph </b> \n 
     Virtual MultiMesh.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!    
     \class      cMultiMesh
     \ingroup    scenegraph
 
-    \brief      
+    \brief
+    3D Multi-Mesh object.
+
+    \details
     cMultiMesh represents a collection of cMesh objects. Each cMesh object 
-	includes one material and texture properties with a set of vertices 
-	and triangles. cMultiMesh allows the user to build complex mesh objects 
-	composed of different materials and sets of triangles.
+    includes one material and texture properties with a set of vertices 
+    and triangles. cMultiMesh allows the user to build complex mesh objects 
+    composed of different materials and sets of triangles.
 */
-//===========================================================================
+//==============================================================================
 class cMultiMesh : public cGenericObject
 {
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    public:
+public:
 
     //! Constructor of cMultiMesh.
     cMultiMesh();
@@ -85,21 +92,25 @@ class cMultiMesh : public cGenericObject
     virtual ~cMultiMesh();
 
 
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - GENERAL:
+    //--------------------------------------------------------------------------
+
+public:
+
+    //! Enable or Disable an object. When an object is disable, haptic and graphic rendering no longer occur.
+    virtual void setEnabled(bool a_enabled,
+                            const bool a_affectChildren = false);
+
+    //! Read status of object.
+    bool getEnabled() { return (m_enabled); }
+
+
     //-----------------------------------------------------------------------
-    // DISABLE / ENABLE:
+    // PUBLIC METHODS - COPY:
     //-----------------------------------------------------------------------
 
-	//! Enable or Disable an object. When an object is disable, haptic and graphic rendering no longer occur.
-	virtual void setEnabled(bool a_enabled,
-							const bool a_affectChildren = false);
-
-	//! Read status of object.
-	bool getEnabled() { return (m_enabled); }
-
-
-	//-----------------------------------------------------------------------
-    // METHODS - COPY:
-	//-----------------------------------------------------------------------
+public:
 
     //! Create a copy of itself.
     virtual cMultiMesh* copy(const bool a_duplicateMaterialData = false,
@@ -108,38 +119,42 @@ class cMultiMesh : public cGenericObject
                              const bool a_buildCollisionDetector = true);
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - HAPTIC PROPERTIES:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - HAPTIC PROPERTIES:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Allow this object to be felt (when visible), optionally propagating the change to children.
     virtual void setHapticEnabled(const bool a_hapticEnabled, 
-								  const bool a_affectChildren = false);
+                                  const bool a_affectChildren = false);
 
     //! Set the haptic stiffness, possibly recursively affecting children.
     virtual void setStiffness(const double a_stiffness, 
-							  const bool a_affectChildren = false);
+                              const bool a_affectChildren = false);
 
     //! Set the static and dynamic friction for this mesh, possibly recursively affecting children.
     virtual void setFriction(double a_staticFriction, 
-							 double a_dynamicFriction, 
-							 const bool a_affectChildren = false);
+                             double a_dynamicFriction, 
+                             const bool a_affectChildren = false);
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - GRAPHIC PROPERTIES:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - GRAPHIC PROPERTIES:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Show or hide this object, optionally propagating the change to children.
     virtual void setShowEnabled(const bool a_show, 
-								const bool a_affectChildren = false);
+                                const bool a_affectChildren = false);
 
     //! Read the display status of object (true means it's visible).
     inline bool getShowEnabled() const { return (m_showEnabled); }
 
     //! Enable or disable transparency.
     virtual void setUseTransparency(const bool a_useTransparency, 
-									const bool a_affectChildren = true);
+                                    const bool a_affectChildren = true);
 
     //! Is transparency enabled for this mesh?
     inline bool getUseTransparency() const { return m_useTransparency; }
@@ -151,33 +166,33 @@ class cMultiMesh : public cGenericObject
 
     //! Enable or disable wireframe rendering, optionally propagating the operation to my children.
     virtual void setWireMode(const bool a_showWireMode, 
-							 const bool a_affectChildren = true);
+                             const bool a_affectChildren = true);
 
     //! Return whether wireframe rendering is enabled.
     inline bool getWireMode() const { return (m_triangleMode == GL_LINE); }
 
     //! Enable or disabling face-culling, optionally propagating the operation to my children.
     virtual void setUseCulling(const bool a_useCulling, 
-							   const bool a_affectChildren=true);
+                               const bool a_affectChildren=true);
 
     //! Is face-culling currently enabled?
     inline bool getUseCulling() const { return (m_cullingEnabled); }
 
     //! Enable or disable the use of per-vertex colors, optionally propagating the operation to my children.
     virtual void setUseVertexColors(const bool a_useColors, 
-									const bool a_affectChildren=true);
+                                    const bool a_affectChildren=true);
 
-	//! Are per-vertex properties currently enabled?
-	inline bool getUseVertexColors() const { return (m_useVertexColors); }
+    //! Are per-vertex properties currently enabled?
+    inline bool getUseVertexColors() const { return (m_useVertexColors); }
 
 
     //! Backup color properties of object, optionally propagating the operation to my children.
     virtual void backupColors(const bool a_material_properties_only = false, 
-							  const bool a_affectChildren = false);
+                              const bool a_affectChildren = false);
 
     //! Restore color properties of object, optionally propagating the operation to my children.
     virtual void restoreColors(const bool a_material_properties_only = false, 
-							   const bool a_affectChildren = false);
+                               const bool a_affectChildren = false);
 
 
     //! Enable or disable the use of a display list for rendering, optionally propagating the operation to my children.
@@ -189,13 +204,15 @@ class cMultiMesh : public cGenericObject
     virtual void invalidateDisplayList(const bool a_affectChildren = false);
 
 
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - MATERIAL:
     //-----------------------------------------------------------------------
-    // METHODS - MATERIAL:
-	//-----------------------------------------------------------------------
+
+public:
 
     //! Enable or disable the use of material properties, optionally propagating the operation to my children.
     virtual void setUseMaterial(const bool a_useMaterial, 
-								const bool a_affectChildren = true);
+                                const bool a_affectChildren = true);
 
     //! Are material properties currently enabled?
     inline bool getUseMaterial() const { return (m_useMaterialProperty); }
@@ -203,36 +220,40 @@ class cMultiMesh : public cGenericObject
 
     //! Set material to this object, possibly recursively affecting children.
     virtual void setMaterial(cMaterial* a_mat, 
-							 const bool a_affectChildren = false);
+                             const bool a_affectChildren = false);
 
     //! Set material to this object, possibly recursively affecting children.
     virtual void setMaterial(cMaterial& a_mat, 
-							 const bool a_affectChildren = false);
+                             const bool a_affectChildren = false);
 
 
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - TEXTURE:
     //-----------------------------------------------------------------------
-    // METHODS - TEXTURE:
-	//-----------------------------------------------------------------------
+
+public:
 
     //! Enable or disable the use of texture-mapping, optionally propagating the operation to my children.
     virtual void setUseTexture(const bool a_useTexture, 
-							   const bool a_affectChildren = true);
+                               const bool a_affectChildren = true);
 
     //! Is texture-mapping enabled?
     inline bool getUseTexture() const { return (m_useTextureMapping); }
 
     //! Set texture to this object, possibly recursively affecting children.
     virtual void setTexture(cTexture1d* a_texture, 
-							const bool a_affectChildren = false);
+                            const bool a_affectChildren = false);
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - BOUNDARY BOX:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - BOUNDARY BOX:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Show or hide the boundary box for this object, optionally propagating the change to children.
     virtual void setShowBoundaryBox(const bool a_showBoundaryBox, 
-									const bool a_affectChildren = false);
+                                    const bool a_affectChildren = false);
 
     //! Read the display status of boundary box. (true means it's visible).
     inline bool getShowBoundaryBox() const { return (m_showBoundaryBox); }
@@ -246,79 +267,87 @@ class cMultiMesh : public cGenericObject
     //! Compute the center of this object's boundary box.
     inline cVector3d getBoundaryCenter() const { return (m_boundaryBoxMax + m_boundaryBoxMin)/2.0; }
 
-    //! Re-compute this object's bounding box, optionally forcing it to bound child objects.
-    virtual void computeBoundaryBox(const bool a_includeChildren = true);
+    //! Update bounding box of current object.
+    virtual void updateBoundaryBox();
 
 
-	//-----------------------------------------------------------------------
-    // METHODS - COLLISION DETECTION:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS - COLLISION DETECTION:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Delete any existing collision detector and set the current cd to null (no collisions).
     virtual void deleteCollisionDetector(const bool a_affectChildren = false);
 
     //! Compute collision detection using collision detectors.
     virtual bool computeCollisionDetection(cVector3d& a_segmentPointA,
-										   cVector3d& a_segmentPointB,
-										   cCollisionRecorder& a_recorder,
-										   cCollisionSettings& a_settings);
+                                           cVector3d& a_segmentPointB,
+                                           cCollisionRecorder& a_recorder,
+                                           cCollisionSettings& a_settings);
 
     //! Show or hide the collision tree for this object, optionally propagating the change to children.
     virtual void setShowCollisionDetector(const bool a_showCollisionDetector, 
-										  const bool a_affectChildren = false);
+                                          const bool a_affectChildren = false);
 
      //! Set collision rendering properties.
     virtual void setCollisionDetectorProperties(unsigned int a_displayDepth, 
-												cColorf& a_color, 
-												const bool a_affectChildren = false);
+                                                cColorf& a_color, 
+                                                const bool a_affectChildren = false);
 
 
-    //-----------------------------------------------------------------------
-    // MEMBERS - MESH PRIMITIVES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC MEMBERS - MESH PRIMITIVES:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Array of meshes.
-    vector<cMesh*> *m_meshes;
+    std::vector<cMesh*> *m_meshes;
 
-	//! Create a new mesh primitive.
-	cMesh* newMesh();
+    //! Create a new mesh primitive.
+    cMesh* newMesh();
 
-	//! Add an existing mesh primitives to list of meshes
-	bool addMesh(cMesh* a_mesh);
+    //! Add an existing mesh primitives to list of meshes
+    bool addMesh(cMesh* a_mesh);
 
-	//! Remove a mesh primitive.
-	bool removeMesh(cMesh* a_mesh);
+    //! Remove a mesh primitive.
+    bool removeMesh(cMesh* a_mesh);
 
-	//! Remove all mesh primitive.
-	bool removeAllMesh();
+    //! Remove all mesh primitive.
+    bool removeAllMesh();
 
-	//! Delete a mesh primitive.
-	bool deleteMesh(cMesh* a_mesh);
+    //! Delete a mesh primitive.
+    bool deleteMesh(cMesh* a_mesh);
 
-	//! Delete all meshes
-	bool deleteAllMeshes();
+    //! Delete all meshes
+    bool deleteAllMeshes();
 
-	//! Retrieve the number of mesh primitives composing the multimesh.
-	int getNumMeshes();
+    //! Retrieve the number of mesh primitives composing the multimesh.
+    int getNumMeshes();
 
-	//! Get access to an individual mesh primitive by passing its index number.
-	cMesh* getMesh(unsigned int a_index);
+    //! Get access to an individual mesh primitive by passing its index number.
+    cMesh* getMesh(unsigned int a_index);
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - VERTICES
-    //-----------------------------------------------------------------------
-	
-    //! Access the vertex at the specified position in my vertex array (and maybe my childrens' arrays).
-	cVertex* getVertex(unsigned int a_index);
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - VERTICES
+    //--------------------------------------------------------------------------
+    
+public:
+
+    //! Access the vertex at the specified position in my vertex array (and maybe my children's arrays).
+    cVertex* getVertex(unsigned int a_index);
 
     //! Read the number of stored vertices, optionally including those of my children.
-	unsigned int getNumVertices() const;
+    unsigned int getNumVertices() const;
 
-  
-    //-----------------------------------------------------------------------
-    // METHODS - TRIANGLES
-    //-----------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - TRIANGLES
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Access the triangle at the specified position in my triangle array.
     cTriangle* getTriangle(unsigned int a_index);
@@ -330,9 +359,11 @@ class cMultiMesh : public cGenericObject
     void clear();
 
    
-    //-----------------------------------------------------------------------
-    // METHODS - GRAPHIC MESH OPTIONS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - GRAPHIC MESH OPTIONS
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Set color of each vertex, optionally propagating the operation to my children.
     void setVertexColor(const cColorf& a_color);
@@ -348,22 +379,24 @@ class cMultiMesh : public cGenericObject
                               const cColorf& a_color);
 
     //! Enable or disable the rendering of edges.
-	void setShowEdges(const bool a_showEdges);
+    void setShowEdges(const bool a_showEdges);
 
     //! Set graphic properties for edge-rendering.
     void setEdgeProperties(const double a_width, 
                            const cColorf& a_color);
 
     //! Create a list of edges by providing a threshold angle in degrees.
-    void computeAllEdges(double a_angleThresholdDEG = 40.0);
+    void computeAllEdges(double a_angleThresholdDeg = 40.0);
 
     //! Clear all edges
     void clearAllEdges();
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - COLLISION DETECTION:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC VIRTUAL METHODS - COLLISION DETECTION:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Set up a brute force collision detector for this mesh and (optionally) for its children.
     virtual void createBruteForceCollisionDetector();
@@ -372,29 +405,44 @@ class cMultiMesh : public cGenericObject
     virtual void createAABBCollisionDetector(const double a_radius);
 
 
-    //-----------------------------------------------------------------------
-    // METHODS - COMMANDS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC VIRTUAL METHODS - FILES:
+    //--------------------------------------------------------------------------
 
-    //! Load a 3D object file.
-    virtual bool loadFromFile(string a_filename);
+public:
+
+    //! Load a 3D object from a file.
+    virtual bool loadFromFile(std::string a_filename);
+
+    //! Save 3D object to a file.
+    virtual bool saveToFile(std::string a_filename);
+
+
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS - GEOMETRY:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Scale this object by a_scaleFactor (uniform scale).
     virtual void scale(const double& a_scaleFactor, 
                        const bool a_affectChildren = true);
 
+    //! Scale this object by using different factors along X,Y and Z axes.
+    void scaleXYZ(const double a_scaleX, const double a_scaleY, const double a_scaleZ);
+
     //! Compute all triangle normals, optionally propagating the operation to my children.
     void computeAllNormals();
 
     //! Reverse all normals on this model.
-    virtual void reverseAllNormals();
+    void reverseAllNormals();
 
 
-  protected:
+    //--------------------------------------------------------------------------
+    // PROTECTED METHODS:
+    //--------------------------------------------------------------------------
 
-    //-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
+protected:
 
     //! Render the mesh itself.
     virtual void render(cRenderOptions& a_options);
@@ -403,13 +451,13 @@ class cMultiMesh : public cGenericObject
     virtual void updateGlobalPositions(const bool a_frameOnly);
 
 
-	//-----------------------------------------------------------------------
-    // MEMBERS - GENERAL
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC VIRTUAL METHODS - INTERACTIONS
+    //-----------------------------------------------------------------------
 
-  public:
+public:
 
-	//! Computer haptic interaction.
+    //! Computer haptic interaction.
     virtual cVector3d computeInteractions(const cVector3d& a_toolPos,
                                           const cVector3d& a_toolVel,
                                           const unsigned int a_IDN,
@@ -417,7 +465,11 @@ class cMultiMesh : public cGenericObject
 
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

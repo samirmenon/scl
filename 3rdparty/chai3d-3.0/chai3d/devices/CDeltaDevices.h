@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -38,32 +38,38 @@
     \author    <http://www.chai3d.org>
     \author    Francois Conti
     \author    Force Dimension - www.forcedimension.com
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 849 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1055 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CDeltaDevicesH
 #define CDeltaDevicesH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #if defined(C_ENABLE_DELTA_DEVICE_SUPPORT)
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "devices/CGenericHapticDevice.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CDeltaDevices.h
 
     \brief
     <b> Devices </b> \n 
-    Delta & Omega Haptic Device.
+    Force Dimension Haptic Devices.
 */
-//===========================================================================
+//==============================================================================
 
+//------------------------------------------------------------------------------
 #if defined(WIN32) | defined(WIN64)
-
+//------------------------------------------------------------------------------
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+//------------------------------------------------------------------------------
 
 /* devices */
 #define DHD_DEVICE_NONE              0
@@ -86,6 +92,8 @@
 #define DHD_DEVICE_DLR331_LEFT     103
 #define DHD_DEVICE_SIGMA331        104
 #define DHD_DEVICE_SIGMA331_LEFT   105
+#define DHD_DEVICE_SIGMA33P        106
+#define DHD_DEVICE_SIGMA33P_LEFT   107
 
 /* status */
 #define DHD_ON                     1
@@ -124,28 +132,33 @@
 #define DHD_VELOCITY_WINDOWING     0
 #define DHD_VELOCITY_AVERAGING     1
 
+//------------------------------------------------------------------------------
 #endif  // DOXYGEN_SHOULD_SKIP_THIS
+//------------------------------------------------------------------------------
 #endif  // WIN32
+//------------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------
-
-//===========================================================================
+//==============================================================================
 /*!
     \class      cDeltaDevice
     \ingroup    devices  
     
-    \brief  
-    cDeltaDevice implements an interface to  the omega(0)  and delta(0) 
-    haptic devices from Force Dimension.
+    \brief
+    Interface to Force Dimension haptic devices.
+
+    \details
+    cDeltaDevice implements an interface for all Force Dimension haptic devices
+    that include the omega.x, delta.x, sigm.x and Novint Falcon.
 */
-//===========================================================================
+//==============================================================================
 class cDeltaDevice : public cGenericHapticDevice
 {
-  public:
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+ 
+public:
+
     //! Constructor of cDeltaDevice.
     cDeltaDevice(unsigned int a_deviceNumber = 0);
 
@@ -153,115 +166,164 @@ class cDeltaDevice : public cGenericHapticDevice
     virtual ~cDeltaDevice();
 
 
-    //-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
 
-    //! Open connection to haptic device (0 indicates success).
-    int open();
+public:
 
-    //! Close connection to haptic device (0 indicates success).
-    int close();
+    //! Open connection to haptic device.
+    virtual bool open();
 
-    //! Calibrate haptic device (0 indicates success).
-    int calibrate();
+    //! Close connection to haptic device.
+    virtual bool close();
 
-    //! Returns the number of devices available from this class of device.
-    unsigned int getNumDevices();
+    //! Calibrate haptic device.
+    virtual bool calibrate(bool a_forceCalibration = false);
 
-    //! Read the position of the device. Units are meters [m].
-    int getPosition(cVector3d& a_position);
+    //! Read position of haptic device. Units are meters [m].
+    virtual bool getPosition(cVector3d& a_position);
 
-    //! Read the linear velocity of the device. Units are meters per second [m/s].
-    int getLinearVelocity(cVector3d& a_linearVelocity);
+    //! Read linear velocity of haptic device. Units are meters per second [m/s].
+    virtual bool getLinearVelocity(cVector3d& a_linearVelocity);
 
-    //! Read the orientation frame of the device end-effector.
-    int getRotation(cMatrix3d& a_rotation);
+    //! Read orientation frame (3x3 matrix) of the haptic device end-effector.
+    virtual bool getRotation(cMatrix3d& a_rotation);
 
-    //! Read the gripper angle in radian.
-    int getGripperAngleRAD(double& a_angle);
+    //! Read gripper angle in radian [rad].
+    virtual bool getGripperAngleRad(double& a_angle);
 
-    //! Send a force [N] to the haptic device.
-    int setForce(const cVector3d& a_force);
+    //! Send force [N] to haptic device.
+    virtual bool setForce(const cVector3d& a_force);
 
-    //! Send a force [N] and a torque [N*m] to the haptic device.
-    int setForceAndTorque(const cVector3d& a_force, const cVector3d& a_torque);
+    //! Send force [N] and torque [N*m] to haptic device.
+    virtual bool setForceAndTorque(const cVector3d& a_force, const cVector3d& a_torque);
 
-    //! Send a force [N] and a torque [N*m] and force [N] to the gripper.
-    int setForceAndTorqueAndGripperForce(const cVector3d& a_force, const cVector3d& a_torque, double a_gripperForce);
+    //! Send force [N], torque [N*m], and gripper force [N] to haptic device.
+    virtual bool setForceAndTorqueAndGripperForce(const cVector3d& a_force, const cVector3d& a_torque, double a_gripperForce);
 
-    //! read the status of the user switch [\b true = \b ON / \b false = \b OFF].
-    int getUserSwitch(int a_switchIndex, bool& a_status);
+    //! Read status of user switch [__true__ = __ON__ / __false__ = __OFF__].
+    virtual bool getUserSwitch(int a_switchIndex, bool& a_status);
 
 
-    //-----------------------------------------------------------------------
-    // METHODS RESTRICTED TO FORCE DIMENSION DEVICES ONLY:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC  STATIC METHODS:
+    //--------------------------------------------------------------------------
 
-    //! Return the Force Dimension type of the current device.
-    int getDeviceType() { return m_deviceType; }
+public: 
 
-    //! Overrides the force button switch located at the base of the device.
-    int enableForces(bool a_value);
+    //! Get number of haptic devices available for this class of devices.
+    static unsigned int getNumDevices();
 
-  protected:
 
-    //! Reference count used to control access to the dhd dll.
-    static int m_activeDeltaDevices;
+    //--------------------------------------------------------------------------
+    // PROTECTED METHODS - DEVICE LIBRARY INITIALIZATION:
+    //--------------------------------------------------------------------------
 
-    //! Device number in the list of Force Dimension devices connected to the computer
-    int m_deviceNumber;
+protected:
 
-    //! Device ID number.
+    //! Open libraries for this class of devices.
+    static bool openLibraries();
+
+    //! Close libraries for this class of devices.
+    static bool closeLibraries();
+
+
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS - DEVICE LIBRARIES:
+    //--------------------------------------------------------------------------
+
+protected:
+
+    //! Allocation table for devices of this class. __true__ means that the device has been allocated, __false__ means free.
+    static bool s_allocationTable[C_MAX_DEVICES];
+
+    //! Number of instances for this class of devices currently using the libraries.
+    static unsigned int s_libraryCounter;
+
+
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS RESTRICTED TO FORCE DIMENSION DEVICES ONLY:
+    //--------------------------------------------------------------------------
+
+public:
+
+    //! Return type of haptic device.
+    int getDeviceType() { return (m_deviceType); }
+
+    //! Enables or disables forces.
+    bool enableForces(bool a_value);
+
+
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS
+    //--------------------------------------------------------------------------
+  
+protected:
+
+    //! Device ID number among the Force Dimension devices connected to the computer.
     int m_deviceID;
 
-    //! Which FD device is actually instantiated here?
+    //! Device type among the Force Dimension devices.
     int m_deviceType;
 
-    //! structure for modeling a low-pass filter user switches.
+    //! Data structure for simulating a low-pass filter on user switches.
     int m_userSwitchCount[8];
 
     //! Last state of user switch.
     int m_userSwitchStatus[8];
 
-    //! Timeguard for user switch.
+    //! Time guard for user switch.
     cPrecisionClock m_userSwitchClock[8];
 
     //! Have forces been enable yet since the connection to the device was opened?
     bool statusEnableForcesFirstTime;
 
-    //! status of DHD API calls.
+    //--------------------------------------------------------------------------
     #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    static bool sdhdGetDeviceCount;
-    static bool sdhdGetDeviceID;
-    static bool sdhdGetSystemType;
-    static bool sdhdOpenID;
-    static bool sdhdClose;
-    static bool sdhdReset;
-    static bool sdhdGetButton;
-    static bool sdhdGetPosition;
-    static bool sdhdGetLinearVelocity;
-    static bool sdhdGetOrientationRad;
-    static bool sdhdSetTorque;
-    static bool sdhdGetOrientationFrame;
-    static bool sdhdSetForce;
-    static bool sdhdSetForceAndTorque;
-    static bool sdhdSetForceAndGripperForce;
-    static bool sdhdSetForceAndTorqueAndGripperForce;
-    static bool sdhdGetGripperThumbPos;
-    static bool sdhdGetGripperFingerPos;
-    static bool sdhdGetGripperAngleRad;
-    static bool sdhdEnableExpertMode;
-    static bool sdhdDisableExpertMode;
-    static bool sdhdEnableForce;
-    static bool sdhdIsLeftHanded;
-    static bool sdhdSetBaseAngleZDeg;
-    static bool sdhdSetVelocityThreshold;
+    //--------------------------------------------------------------------------
+    //! status of DHD API calls.
+    static bool s_dhdGetDeviceCount;
+    static bool s_dhdGetDeviceID;
+    static bool s_dhdGetSystemType;
+    static bool s_dhdOpenID;
+    static bool s_dhdClose;
+    static bool s_dhdReset;
+    static bool s_dhdGetButton;
+    static bool s_dhdGetPosition;
+    static bool s_dhdGetLinearVelocity;
+    static bool s_dhdGetOrientationRad;
+    static bool s_dhdSetTorque;
+    static bool s_dhdGetOrientationFrame;
+    static bool s_dhdSetForce;
+    static bool s_dhdSetForceAndTorque;
+    static bool s_dhdSetForceAndGripperForce;
+    static bool s_dhdSetForceAndTorqueAndGripperForce;
+    static bool s_dhdGetGripperThumbPos;
+    static bool s_dhdGetGripperFingerPos;
+    static bool s_dhdGetGripperAngleRad;
+    static bool s_dhdEnableExpertMode;
+    static bool s_dhdDisableExpertMode;
+    static bool s_dhdEnableForce;
+    static bool s_dhdIsLeftHanded;
+    static bool s_dhdSetBaseAngleZDeg;
+    static bool s_dhdSetVelocityThreshold;
+    static bool s_drdOpenID;
+    static bool s_drdClose;
+    static bool s_drdIsInitialized;
+    static bool s_drdAutoInit;
+    static bool s_drdStop;
+    //--------------------------------------------------------------------------
     #endif  // DOXYGEN_SHOULD_SKIP_THIS
+    //--------------------------------------------------------------------------
 };
 
-//---------------------------------------------------------------------------
-#endif //_DISABLE_DELTA_DEVICE_SUPPORT
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+#endif // C_ENABLE_DELTA_DEVICE_SUPPORT
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

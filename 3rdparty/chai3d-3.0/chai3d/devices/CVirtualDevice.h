@@ -1,4 +1,4 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
     Copyright (c) 2003-2012, CHAI3D.
@@ -37,22 +37,26 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 846 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 994 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CVirtualDeviceH
 #define CVirtualDeviceH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "devices/CGenericHapticDevice.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #if defined(C_ENABLE_VIRTUAL_DEVICE_SUPPORT)
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include <mmsystem.h>
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CVirtualDevice.h
 
@@ -60,7 +64,7 @@
     <b> Devices </b> \n 
     Virtual Haptic Device.
 */
-//===========================================================================
+//==============================================================================
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 struct cVirtualDeviceData
 {
@@ -82,7 +86,7 @@ struct cVirtualDeviceData
 };
 
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void CALLBACK internal_timer_callback(UINT uTimerID, 
                                       UINT uMsg, 
@@ -90,11 +94,11 @@ void CALLBACK internal_timer_callback(UINT uTimerID,
                                       DWORD_PTR dw1, 
                                       DWORD_PTR dw2);
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 #endif  // DOXYGEN_SHOULD_SKIP_THIS 
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cVirtualDevice
     \ingroup    devices  
@@ -102,14 +106,14 @@ void CALLBACK internal_timer_callback(UINT uTimerID,
     \brief      
     Class which interfaces with the virtual device
 */
-//===========================================================================
+//==============================================================================
 class cVirtualDevice : public cGenericHapticDevice
 {
   public:
     
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     //! Constructor of cVirtualDevice.
     cVirtualDevice();
@@ -118,35 +122,35 @@ class cVirtualDevice : public cGenericHapticDevice
     virtual ~cVirtualDevice();
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     //! Open connection to virtual device.
-    int open();
+    bool open();
 
     //! Close connection to virtual device.
-    int close();
+    bool close();
 
     //! Calibrate virtual device.
-    int calibrate();
+    bool calibrate(bool a_forceCalibration = false);
 
     //! Returns the number of devices available from this class of device.
     unsigned int getNumDevices();
 
     //! Read the position of the device. Units are meters [m].
-    int getPosition(cVector3d& a_position);
+    bool getPosition(cVector3d& a_position);
 
     //! Read the orientation frame of the device end-effector.
-    int getRotation(cMatrix3d& a_rotation);
+    bool getRotation(cMatrix3d& a_rotation);
 
-    //! Read the status of the user switch [\b true = \e ON / \b false = \e OFF].
-    int getUserSwitch(int a_switchIndex, bool& a_status);
+    //! Read the status of the user switch [__true__ = \e ON / __false__ = \e OFF].
+    bool getUserSwitch(int a_switchIndex, bool& a_status);
 
     //! Send a force [N] to the haptic device.
-    int setForce(const cVector3d& a_force);
+    bool setForce(const cVector3d& a_force);
 
     //! Return the last force [N] sent to the device.
-    int getForce(cVector3d& a_force);
+    bool getForce(cVector3d& a_force);
 
   private:
     //! Shared memory connection to virtual haptic device.
@@ -175,9 +179,13 @@ class cVirtualDevice : public cGenericHapticDevice
     HANDLE m_sync;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #endif // C_ENABLE_VIRTUAL_DEVICE_SUPPORT
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

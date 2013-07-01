@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,13 +39,13 @@
     \author    Francois Conti
     \author    Dan Morris
     \author    Chris Sewell
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 846 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1077 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CMesh.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "collisions/CGenericCollision.h"
 #include "collisions/CCollisionBrute.h"
 #include "collisions/CCollisionAABB.h"
@@ -56,23 +56,20 @@
 #include <list>
 #include <utility>
 #include <set>
-#include <set>
-//---------------------------------------------------------------------------
-using std::vector;
-using std::pair;
-using std::set;
-using std::multiset;
-//---------------------------------------------------------------------------
+using namespace std;
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cMesh.
 
-    \fn     cMesh::cMesh(cMaterial* a_material)
-
     \param  a_material  Material property to be applied to object.
 */
-//===========================================================================
+//==============================================================================
 cMesh::cMesh(cMaterial* a_material)
 {
     // create array of vertices
@@ -136,13 +133,11 @@ cMesh::cMesh(cMaterial* a_material)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cMesh.
-
-    \fn     cMesh::~cMesh()
 */
-//===========================================================================
+//==============================================================================
 cMesh::~cMesh()
 {
     // clear vertex array
@@ -163,23 +158,18 @@ cMesh::~cMesh()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a copy of itself.
 
-    \fn         cMesh* cMesh::copy(const bool a_duplicateMaterialData,
-                   const bool a_duplicateTextureData, 
-                   const bool a_duplicateMeshData,
-                   const bool a_buildCollisionDetector)
+    \param  a_duplicateMaterialData  If __true__, material (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateTextureData  If __true__, texture data (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateMeshData  If __true__, mesh data (if available) is duplicated, otherwise it is shared.
+    \param  a_buildCollisionDetector  If __true__, collision detector (if available) is duplicated, otherwise it is shared.
 
-    \param      a_duplicateMaterialData  If \b true, material (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateTextureData  If \b true, texture data (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateMeshData  If \b true, mesh data (if available) is duplicated, otherwise it is shared.
-    \param      a_buildCollisionDetector  If \b true, collision detector (if available) is duplicated, otherwise it is shared.
-
-	\return		Return new object.
+    \return Return new object.
 */
-//===========================================================================
+//==============================================================================
 cMesh* cMesh::copy(const bool a_duplicateMaterialData,
                    const bool a_duplicateTextureData, 
                    const bool a_duplicateMeshData,
@@ -198,7 +188,7 @@ cMesh* cMesh::copy(const bool a_duplicateMaterialData,
         obj->m_vertices->reserve(m_vertices->size());
         {
             vector<cVertex>::iterator it = obj->m_vertices->begin();
-		    for (it = m_vertices->begin(); it < m_vertices->end(); it++)
+            for (it = m_vertices->begin(); it < m_vertices->end(); it++)
             {
                 obj->m_vertices->push_back(*it);
             }
@@ -207,7 +197,7 @@ cMesh* cMesh::copy(const bool a_duplicateMaterialData,
         obj->m_triangles->reserve(m_triangles->size());
         {
             vector<cTriangle>::iterator it;
-		    for (it = m_triangles->begin(); it < m_triangles->end(); it++)
+            for (it = m_triangles->begin(); it < m_triangles->end(); it++)
             {
                 obj->m_triangles->push_back(*it);
             }
@@ -254,15 +244,13 @@ cMesh* cMesh::copy(const bool a_duplicateMaterialData,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-	Compute the center of mass of this mesh, based on vertex positions.
+    Compute the center of mass of this mesh, based on vertex positions.
 
-	\fn		cVector3d cMesh::getCenterOfMass()
-
-	\return	Return center of mass.		
+    \return Return center of mass.
 */
-//===========================================================================
+//==============================================================================
 cVector3d cMesh::getCenterOfMass()
 {
     cVector3d centerOfMass(0,0,0);
@@ -282,20 +270,18 @@ cVector3d cMesh::getCenterOfMass()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     This enables the use of vertex arrays for mesh rendering. This
-     mode can be faster than the classical approach, however crashes
-     sometime occur on certain types of graphic cards.
+    This enables the use of vertex arrays for mesh rendering. This
+    mode can be faster than the classical approach, however crashes
+    sometime occur on certain types of graphic cards.
 
-     In general, if you aren't having problems with rendering performance,
-     don't bother with this.
+    In general, if you aren't having problems with rendering performance,
+    don't bother with this.
 
-     \fn       void cMesh::setUseVertexArrays(const bool a_useVertexArrays)
-
-     \param    a_useVertexArrays  If \b true, this mesh will be rendered using vertex array technique.
+    \param a_useVertexArrays  If __true__, this mesh will be rendered using vertex array technique.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::setUseVertexArrays(const bool a_useVertexArrays)
 {
     // update changes to object
@@ -303,59 +289,51 @@ void cMesh::setUseVertexArrays(const bool a_useVertexArrays)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Retrieve a pointer to a given triangle by passing its index number.
+    Retrieve a pointer to a given triangle by passing its index number.
 
-     \fn		cTriangle* cMesh::getTriangle(unsigned int a_index)
-
-     \param		a_index  Index number of triangle.
-
-	 \return	Return tointer to triangle.
+    \param  a_index  Index number of triangle.
+    \return Return pointer to requested triangle.
 */
-//===========================================================================
+//==============================================================================
 cTriangle* cMesh::getTriangle(unsigned int a_index)	
 { 
-	if (a_index < m_triangles->size()) 
-	{ 
-		return (&(m_triangles->at(a_index))); 
-	}
-	else 
-	{ 
-		return (NULL); 
-	}
+    if (a_index < m_triangles->size()) 
+    { 
+        return (&(m_triangles->at(a_index))); 
+    }
+    else 
+    { 
+        return (NULL); 
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Return the number of stored triangles.
+    Return the number of stored triangles.
 
-     \fn		unsigned int cMesh::getNumTriangles()
-
-	 \return	Return the number of triangles.
+    \return Return the number of triangles.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::getNumTriangles()
 { 
-	return (unsigned int)(m_triangles->size()); 
+    return (unsigned int)(m_triangles->size()); 
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a new vertex and add it to the vertex list.
 
-    \fn         unsigned int cMesh::newVertex(const double a_x, 
-										   	  const double a_y, 
-											  const double a_z)
-    \param      a_x  X coordinate of vertex.
-    \param      a_y  Y coordinate of vertex.
-    \param      a_z  Z coordinate of vertex.
+    \param  a_x  X coordinate of vertex.
+    \param  a_y  Y coordinate of vertex.
+    \param  a_z  Z coordinate of vertex.
 
-    \return     Return index position in vertices list of new vertex.
+    \return Return index position in vertices list of new vertex.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newVertex(const double a_x, const double a_y, const double a_z)
 {
     unsigned int index;
@@ -367,14 +345,14 @@ unsigned int cMesh::newVertex(const double a_x, const double a_y, const double a
         m_freeVertices->erase(m_freeVertices->begin());
     }
 
-    // No vertex is available on the free list so create a new one from the array
+    // no vertex is available on the free list so create a new one from the array
     else
     {
         // allocate new vertex
         index = (unsigned int)(m_vertices->size());
-        cVertex newVertex(a_x, a_y, a_z);
-        newVertex.m_index = index;
-        m_vertices->push_back(newVertex);
+        cVertex newVert(a_x, a_y, a_z);
+        newVert.m_index = index;
+        m_vertices->push_back(newVert);
     }
 
     // return the index at which I inserted this vertex in my vertex array
@@ -382,27 +360,20 @@ unsigned int cMesh::newVertex(const double a_x, const double a_y, const double a
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a new vertex and add it to the vertex list.
 
-    \fn         unsigned int cMesh::newVertex(const double a_x, 
-                              const double a_y, 
-                              const double a_z,
-                              const double a_normalX, 
-                              const double a_normalY, 
-                              const double a_normalZ)
+    \param  a_x  X coordinate of vertex.
+    \param  a_y  Y coordinate of vertex.
+    \param  a_z  Z coordinate of vertex.
+    \param  a_normalX  X coordinate of normal associated with vertex.
+    \param  a_normalY  Y coordinate of normal associated with vertex.
+    \param  a_normalZ  Z coordinate of normal associated with vertex.
 
-    \param      a_x  X coordinate of vertex.
-    \param      a_y  Y coordinate of vertex.
-    \param      a_z  Z coordinate of vertex.
-    \param      a_normalX  X coordinate of normal associated with vertex.
-    \param      a_normalY  Y coordinate of normal associated with vertex.
-    \param      a_normalZ  Z coordinate of normal associated with vertex.
-
-    \return     Return index position in vertices list of new vertex.
+    \return Return index position in vertices list of new vertex.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newVertex(const double a_x, 
                               const double a_y, 
                               const double a_z,
@@ -416,61 +387,49 @@ unsigned int cMesh::newVertex(const double a_x,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a new vertex and add it to the vertex list.
 
-    \fn         unsigned int cMesh::newVertex(const double a_x, 
-							  const double a_y, 
-							  const double a_z,
-							  const double a_normalX, 
-							  const double a_normalY, 
-							  const double a_normalZ,
-							  const double a_textureCoordX,
-							  const double a_textureCoordY,
-							  const double a_textureCoordZ)
+    \param  a_x  X coordinate of vertex.
+    \param  a_y  Y coordinate of vertex.
+    \param  a_z  Z coordinate of vertex.
+    \param  a_normalX  X coordinate of normal associated with vertex.
+    \param  a_normalY  Y coordinate of normal associated with vertex.
+    \param  a_normalZ  Z coordinate of normal associated with vertex.
+    \param  a_textureCoordX  X component of texture coordinate.
+    \param  a_textureCoordY  Y component of texture coordinate.
+    \param  a_textureCoordZ  Z component of texture coordinate.
 
-    \param      a_x  X coordinate of vertex.
-    \param      a_y  Y coordinate of vertex.
-    \param      a_z  Z coordinate of vertex.
-    \param      a_normalX  X coordinate of normal associated with vertex.
-    \param      a_normalY  Y coordinate of normal associated with vertex.
-    \param      a_normalZ  Z coordinate of normal associated with vertex.
-    \param      a_textureCoordX  X component of texture coordinate.
-    \param      a_textureCoordY  Y component of texture coordinate.
-    \param      a_textureCoordZ  Z component of texture coordinate.
-
-    \return     Return index position in vertices list of new vertex.
+    \return Return index position in vertices list of new vertex.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newVertex(const double a_x, 
-							  const double a_y, 
-							  const double a_z,
-							  const double a_normalX, 
-							  const double a_normalY, 
-							  const double a_normalZ,
-							  const double a_textureCoordX,
-							  const double a_textureCoordY,
-							  const double a_textureCoordZ)
+                              const double a_y, 
+                              const double a_z,
+                              const double a_normalX, 
+                              const double a_normalY, 
+                              const double a_normalZ,
+                              const double a_textureCoordX,
+                              const double a_textureCoordY,
+                              const double a_textureCoordZ)
 {
     unsigned int index = newVertex(a_x, a_y, a_z);
     m_vertices->at(index).m_normal.set(a_normalX, a_normalY, a_normalZ);
-	m_vertices->at(index).m_texCoord.set(a_textureCoordX, a_textureCoordY, a_textureCoordZ);
+    m_vertices->at(index).m_texCoord.set(a_textureCoordX, a_textureCoordY, a_textureCoordZ);
     return (index);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a new vertex and add it to the vertex list.
 
-    \fn         unsigned int cMesh::newVertex(const cVector3d& a_pos)
+    \param  a_pos  Position of new vertex.
 
-    \param      a_pos  Position of new vertex.
-
-    \return     Return index position in vertices list of new vertex.
+    \return Return index position in vertices list of new vertex.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newVertex(const cVector3d& a_pos) 
 { 
     unsigned int index;
@@ -482,14 +441,14 @@ unsigned int cMesh::newVertex(const cVector3d& a_pos)
         m_freeVertices->erase(m_freeVertices->begin());
     }
 
-    // No vertex is available on the free list so create a new one from the array
+    // no vertex is available on the free list so create a new one from the array
     else
     {
         // allocate new vertex
         index = (unsigned int)(m_vertices->size());
-        cVertex newVertex;
-        newVertex.m_index = index;
-        m_vertices->push_back(newVertex);
+        cVertex newVert;
+        newVert.m_index = index;
+        m_vertices->push_back(newVert);
     }
 
     // set data
@@ -501,21 +460,18 @@ unsigned int cMesh::newVertex(const cVector3d& a_pos)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a new vertex and add it to the vertex list.
 
-    \fn         unsigned int cMesh::newVertex(const cVector3d& a_pos, 
-							  const cVector3d& a_normal) 
+    \param  a_pos  Position of new vertex
+    \param  a_normal  Normal vector associated with new vertex.
 
-    \param      a_pos  Position of new vertex
-    \param      a_normal  Normal vector associated with new vertex
-
-    \return     Return index position in vertices list of new vertex.
+    \return Return index position in vertices list of new vertex.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newVertex(const cVector3d& a_pos, 
-							  const cVector3d& a_normal) 
+                              const cVector3d& a_normal) 
 { 
     unsigned int index;
 
@@ -526,14 +482,14 @@ unsigned int cMesh::newVertex(const cVector3d& a_pos,
         m_freeVertices->erase(m_freeVertices->begin());
     }
 
-    // No vertex is available on the free list so create a new one from the array
+    // no vertex is available on the free list so create a new one from the array
     else
     {
         // allocate new vertex
         index = (unsigned int)(m_vertices->size());
-        cVertex newVertex;
-        newVertex.m_index = index;
-        m_vertices->push_back(newVertex);
+        cVertex newVert;
+        newVert.m_index = index;
+        m_vertices->push_back(newVert);
     }
 
     // set data
@@ -546,24 +502,20 @@ unsigned int cMesh::newVertex(const cVector3d& a_pos,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a new vertex and add it to the vertex list.
 
-    \fn         unsigned int cMesh::newVertex(const cVector3d& a_pos, 
-							  const cVector3d& a_normal,
-							  const cVector3d& a_textureCoord)
+    \param  a_pos  Position of new vertex.
+    \param  a_normal  Normal vector associated with new vertex.
+    \param  a_textureCoord  Texture coordinate.
 
-    \param      a_pos  Position of new vertex.
-    \param      a_normal  Normal vector associated with new vertex
-	\param		a_textureCoord  Texture coordinate.
-
-    \return     Return index position in vertices list of new vertex.
+    \return Return index position in vertices list of new vertex.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newVertex(const cVector3d& a_pos, 
-							  const cVector3d& a_normal,
-							  const cVector3d& a_textureCoord)
+                              const cVector3d& a_normal,
+                              const cVector3d& a_textureCoord)
 {
     unsigned int index;
 
@@ -574,14 +526,14 @@ unsigned int cMesh::newVertex(const cVector3d& a_pos,
         m_freeVertices->erase(m_freeVertices->begin());
     }
 
-    // No vertex is available on the free list so create a new one from the array
+    // no vertex is available on the free list so create a new one from the array
     else
     {
         // allocate new vertex
         index = (unsigned int)(m_vertices->size());
-        cVertex newVertex;
-        newVertex.m_index = index;
-        m_vertices->push_back(newVertex);
+        cVertex newVert;
+        newVert.m_index = index;
+        m_vertices->push_back(newVert);
     }
 
     // set data
@@ -595,26 +547,21 @@ unsigned int cMesh::newVertex(const cVector3d& a_pos,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a new vertex and add it to the vertex list.
 
-    \fn         unsigned int cMesh::newVertex(const cVector3d& a_pos, 
-                              const cVector3d& a_normal,
-						      const cVector3d& a_textureCoord,
-                              const cColorf& a_color)
+    \param  a_pos  Position of new vertex.
+    \param  a_normal  Normal vector associated with new vertex.
+    \param  a_textureCoord  Texture coordinate.
+    \param  a_color  Color.
 
-    \param      a_pos  Position of new vertex.
-    \param      a_normal  Normal vector associated with new vertex
-	\param		a_textureCoord  Texture coordinate.
-    \param      a_color  Color.
-
-    \return     Return index position in vertices list of new vertex.
+    \return Return index position in vertices list of new vertex.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newVertex(const cVector3d& a_pos, 
                               const cVector3d& a_normal,
-						      const cVector3d& a_textureCoord,
+                              const cVector3d& a_textureCoord,
                               const cColorf& a_color)
 {
     unsigned int index;
@@ -626,14 +573,14 @@ unsigned int cMesh::newVertex(const cVector3d& a_pos,
         m_freeVertices->erase(m_freeVertices->begin());
     }
 
-    // No vertex is available on the free list so create a new one from the array
+    // no vertex is available on the free list so create a new one from the array
     else
     {
         // allocate new vertex
         index = (unsigned int)(m_vertices->size());
-        cVertex newVertex;
-        newVertex.m_index = index;
-        m_vertices->push_back(newVertex);
+        cVertex newVert;
+        newVert.m_index = index;
+        m_vertices->push_back(newVert);
     }
 
     // set data
@@ -648,19 +595,16 @@ unsigned int cMesh::newVertex(const cVector3d& a_pos,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a new vertex for each supplied position and add it to the vertex list.
 
-    \fn         void cMesh::addVertices(const cVector3d* a_vertexPositions,
-						const unsigned int& a_numVertices)
-
-    \param      a_vertexPositions List of vertex positions to add
-    \param      a_numVertices Number of vertices in a_vertexPositions
+    \param  a_vertexPositions  List of vertex positions to add.
+    \param  a_numVertices  Number of vertices in a_vertexPositions.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::addVertices(const cVector3d* a_vertexPositions,
-						const unsigned int& a_numVertices)
+                        const unsigned int& a_numVertices)
 {
     const cVector3d* end = a_vertexPositions + a_numVertices;
     while(a_vertexPositions != end) 
@@ -671,24 +615,23 @@ void cMesh::addVertices(const cVector3d* a_vertexPositions,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Remove the vertex at the specified position in my vertex array. A vertex
-	can only be removed if it is longer part of a triangle composing the mesh.
+    can only be removed if it is longer part of a triangle composing the mesh.
 
-    \fn       bool cMesh::removeVertex(const unsigned int a_index)
     \param    a_index  Index number of vertex.
 
-    \return   Return \b true if operation succeeded.
+    \return   Return __true__ if operation succeeded.
 */
-//===========================================================================
+//==============================================================================
 bool cMesh::removeVertex(const unsigned int a_index)
 {
     // get vertex to be removed
     cVertex* vertex = &m_vertices->at(a_index);
 
-	// verify that current vertex is not currently used by any triangles
-	if (vertex->m_nTriangles > 0) { return (false); }
+    // verify that current vertex is not currently used by any triangles
+    if (vertex->m_nTriangles > 0) { return (false); }
 
     // check if vertex has not already been removed
     if (vertex->m_allocated == false) { return (false); }
@@ -696,27 +639,23 @@ bool cMesh::removeVertex(const unsigned int a_index)
     // deactivate vertex
     vertex->m_allocated = false;
 
-	// reset position of vertex
-	vertex->setLocalPos(0.0, 0.0, 0.0);
+    // reset position of vertex
+    vertex->setLocalPos(0.0, 0.0, 0.0);
 
     // add vertex to free list
     m_freeVertices->push_back(a_index);
 
-	// mark mesh for update
-	invalidateDisplayList();
+    // mark mesh for update
+    invalidateDisplayList();
 
     // return success
     return (true);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Create a new triangle by passing vertex indices
-
-    \fn         unsigned int cMesh::newTriangle(const unsigned int a_indexVertex0, 
-                                const unsigned int a_indexVertex1,
-                                const unsigned int a_indexVertex2)
+    Create a new triangle by passing vertex indices.
 
     \param      a_indexVertex0   index position of vertex 0.
     \param      a_indexVertex1   index position of vertex 1.
@@ -724,7 +663,7 @@ bool cMesh::removeVertex(const unsigned int a_index)
 
     \return     Return the index of the new triangle in my triangle array.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newTriangle(const unsigned int a_indexVertex0, 
                                 const unsigned int a_indexVertex1,
                                 const unsigned int a_indexVertex2)
@@ -746,10 +685,10 @@ unsigned int cMesh::newTriangle(const unsigned int a_indexVertex0,
     {
         // allocate new triangle
         index = (unsigned int)(m_triangles->size());
-        cTriangle newTriangle(this, a_indexVertex0, a_indexVertex1, a_indexVertex2);
-        newTriangle.m_index = index;
-        newTriangle.m_allocated = true;
-        m_triangles->push_back(newTriangle);
+        cTriangle newTriang(this, a_indexVertex0, a_indexVertex1, a_indexVertex2);
+        newTriang.m_index = index;
+        newTriang.m_allocated = true;
+        m_triangles->push_back(newTriang);
     }
 
     m_vertices->at(a_indexVertex0).m_allocated = true;
@@ -759,29 +698,25 @@ unsigned int cMesh::newTriangle(const unsigned int a_indexVertex0,
     m_vertices->at(a_indexVertex2).m_allocated = true;
     m_vertices->at(a_indexVertex2).m_nTriangles++;
 
-	// mark mesh for update
-	invalidateDisplayList();
+    // mark mesh for update
+    invalidateDisplayList();
 
     // return the index at which I inserted this triangle in my triangle array
     return (index);
 }
 
    
-//===========================================================================
+//==============================================================================
 /*!
-     Create a new triangle and three new vertices by passing vertex positions
+    Create a new triangle and three new vertices by passing vertex positions.
 
-     \fn       unsigned int cMesh::newTriangle(const cVector3d& a_vertex0, 
-                                const cVector3d& a_vertex1,
-                                const cVector3d& a_vertex2)
+    \param    a_vertex0   Position of vertex 0.
+    \param    a_vertex1   Position of vertex 1.
+    \param    a_vertex2   Position of vertex 2.
 
-     \param    a_vertex0   Position of vertex 0.
-     \param    a_vertex1   Position of vertex 1.
-     \param    a_vertex2   Position of vertex 2.
-
-     \return   Return index position of new triangle.
+    \return   Return index position of new triangle.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newTriangle(const cVector3d& a_vertex0, 
                                 const cVector3d& a_vertex1,
                                 const cVector3d& a_vertex2)
@@ -794,36 +729,29 @@ unsigned int cMesh::newTriangle(const cVector3d& a_vertex0,
     // create new triangle
     unsigned int indexTriangle = newTriangle(indexVertex0, indexVertex1, indexVertex2);
 
-	// mark mesh for update
-	invalidateDisplayList();
+    // mark mesh for update
+    invalidateDisplayList();
 
     // return index of new triangle.
     return (indexTriangle);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a new triangle and three new vertices by passing vertex indices
     and normals.
 
-    \fn         unsigned int cMesh::newTriangle(const cVector3d& a_vertex0, 
-                                const cVector3d& a_vertex1,
-                                const cVector3d& a_vertex2,
-                                const cVector3d& a_normal0, 
-                                const cVector3d& a_normal1,
-                                const cVector3d& a_normal2)
-
-    \param      a_indexVertex0   Index number of vertex 0.
-    \param      a_indexVertex1   Index number of vertex 1.
-    \param      a_indexVertex2   Index number of vertex 2.
-    \param      a_normal0   Normal of vertex 0.
-    \param      a_normal1   Normal position of vertex 1.
-    \param      a_normal2   Normal position of vertex 2.
+    \param  a_vertex0  Position of vertex 0.
+    \param  a_vertex1  Position of vertex 1.
+    \param  a_vertex2  Position of vertex 2.
+    \param  a_normal0  Normal of vertex 0.
+    \param  a_normal1  Normal of vertex 1.
+    \param  a_normal2  Normal of vertex 2.
 
     \return     Return the index of the new triangle in my triangle array.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newTriangle(const cVector3d& a_vertex0, 
                                 const cVector3d& a_vertex1,
                                 const cVector3d& a_vertex2,
@@ -836,165 +764,140 @@ unsigned int cMesh::newTriangle(const cVector3d& a_vertex0,
     m_triangles->at(index).getVertex1()->setNormal(a_normal1);
     m_triangles->at(index).getVertex2()->setNormal(a_normal2);
 
-	// mark mesh for update
-	invalidateDisplayList();
+    // mark mesh for update
+    invalidateDisplayList();
 
     // return result
     return (index);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-	 Create a new triangle and three new vertices by passing vertex 
-	 positions, normals and texture coordinates.
+     Create a new triangle and three new vertices by passing vertex 
+     positions, normals and texture coordinates.
 
-	 \fn       unsigned int cMesh::newTriangle(const cVector3d& a_vertex0, 
-								const cVector3d& a_vertex1,
-								const cVector3d& a_vertex2,
-								const cVector3d& a_normal0, 
-								const cVector3d& a_normal1,
-								const cVector3d& a_normal2,
-								const cVector3d& a_textureCoord0, 
-								const cVector3d& a_textureCoord1,
-								const cVector3d& a_textureCoord2)
+    \param  a_vertex0  Position of vertex 0.
+    \param  a_vertex1  Position of vertex 1.
+    \param  a_vertex2  Position of vertex 2.
+    \param  a_normal0  Normal of vertex 0.
+    \param  a_normal1  Normal position of vertex 1.
+    \param  a_normal2  Normal position of vertex 2.
+    \param  a_textureCoord0  Texture coordinate of vertex 0.
+    \param  a_textureCoord1  Texture coordinate of vertex 1.
+    \param  a_textureCoord2  Texture coordinate of vertex 2.
 
-	\param		a_vertex0   Position of vertex 0.
-	\param		a_vertex1   Position of vertex 1.
-	\param		a_vertex2   Position of vertex 2.
-	\param		a_normal0   Normal of vertex 0.
-	\param		a_normal1   Normal position of vertex 1.
-	\param		a_normal2   Normal position of vertex 2.
-	\param		a_textureCoord0   Texture coordinate of vertex 0.
-	\param		a_textureCoord1   Texture coordinate of vertex 1.
-	\param		a_textureCoord2   Texture coordinate of vertex 2.
-
-	\return		Return index position of new triangle.
+    \return Return index position of new triangle.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newTriangle(const cVector3d& a_vertex0, 
-								const cVector3d& a_vertex1,
-								const cVector3d& a_vertex2,
-								const cVector3d& a_normal0, 
-								const cVector3d& a_normal1,
-								const cVector3d& a_normal2,
-								const cVector3d& a_textureCoord0, 
-								const cVector3d& a_textureCoord1,
-								const cVector3d& a_textureCoord2)
+                                const cVector3d& a_vertex1,
+                                const cVector3d& a_vertex2,
+                                const cVector3d& a_normal0, 
+                                const cVector3d& a_normal1,
+                                const cVector3d& a_normal2,
+                                const cVector3d& a_textureCoord0, 
+                                const cVector3d& a_textureCoord1,
+                                const cVector3d& a_textureCoord2)
 {
     cVertex* vertex;
 
-	// create new triangle
-	unsigned int index = newTriangle(a_vertex0, a_vertex1, a_vertex2);
+    // create new triangle
+    unsigned int index = newTriangle(a_vertex0, a_vertex1, a_vertex2);
     
-	// set attributes
-	vertex = m_triangles->at(index).getVertex0();
-	vertex->setNormal(a_normal0);
-	vertex->setTexCoord(a_textureCoord0);
+    // set attributes
+    vertex = m_triangles->at(index).getVertex0();
+    vertex->setNormal(a_normal0);
+    vertex->setTexCoord(a_textureCoord0);
 
-	vertex = m_triangles->at(index).getVertex1();
-	vertex->setNormal(a_normal1);
-	vertex->setTexCoord(a_textureCoord1);
+    vertex = m_triangles->at(index).getVertex1();
+    vertex->setNormal(a_normal1);
+    vertex->setTexCoord(a_textureCoord1);
 
-	vertex = m_triangles->at(index).getVertex2();
-	vertex->setNormal(a_normal2);
-	vertex->setTexCoord(a_textureCoord2);
+    vertex = m_triangles->at(index).getVertex2();
+    vertex->setNormal(a_normal2);
+    vertex->setTexCoord(a_textureCoord2);
 
-	// mark mesh for update
-	invalidateDisplayList();
+    // mark mesh for update
+    invalidateDisplayList();
 
     // return result
     return (index);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-	 Create a new triangle and three new vertices by passing vertex 
-	 positions, normals and texture coordinates.
+    Create a new triangle and three new vertices by passing vertex 
+    positions, normals and texture coordinates.
 
-	 \fn       unsigned int cMesh::newTriangle(const cVector3d& a_vertex0, 
-								const cVector3d& a_vertex1,
-								const cVector3d& a_vertex2,
-								const cVector3d& a_normal0, 
-								const cVector3d& a_normal1,
-								const cVector3d& a_normal2,
-								const cVector3d& a_textureCoord0, 
-								const cVector3d& a_textureCoord1,
-								const cVector3d& a_textureCoord2,
-                                const cColorf& a_colorVertex0,
-                                const cColorf& a_colorVertex1,
-                                const cColorf& a_colorVertex2)
+    \param  a_vertex0  Position of vertex 0.
+    \param  a_vertex1  Position of vertex 1.
+    \param  a_vertex2  Position of vertex 2.
+    \param  a_normal0  Normal of vertex 0.
+    \param  a_normal1  Normal position of vertex 1.
+    \param  a_normal2  Normal position of vertex 2.
+    \param  a_textureCoord0  Texture coordinate of vertex 0.
+    \param  a_textureCoord1  Texture coordinate of vertex 1.
+    \param  a_textureCoord2  Texture coordinate of vertex 2.
+    \param  a_colorVertex0  Color at vertex 0.
+    \param  a_colorVertex1  Color at vertex 1.
+    \param  a_colorVertex2  Color at vertex 2.
 
-	\param		a_vertex0   Position of vertex 0.
-	\param		a_vertex1   Position of vertex 1.
-	\param		a_vertex2   Position of vertex 2.
-	\param		a_normal0   Normal of vertex 0.
-	\param		a_normal1   Normal position of vertex 1.
-	\param		a_normal2   Normal position of vertex 2.
-	\param		a_textureCoord0   Texture coordinate of vertex 0.
-	\param		a_textureCoord1   Texture coordinate of vertex 1.
-	\param		a_textureCoord2   Texture coordinate of vertex 2.
-    \param      a_colorVertex0  Color at vertex 0.
-    \param      a_colorVertex1  Color at vertex 1.
-    \param      a_colorVertex2  Color at vertex 2.
-
-	\return		Return index position of new triangle.
+    \return Return index position of new triangle.
 */
-//===========================================================================
+//==============================================================================
 unsigned int cMesh::newTriangle(const cVector3d& a_vertex0, 
-								const cVector3d& a_vertex1,
-								const cVector3d& a_vertex2,
-								const cVector3d& a_normal0, 
-								const cVector3d& a_normal1,
-								const cVector3d& a_normal2,
-								const cVector3d& a_textureCoord0, 
-								const cVector3d& a_textureCoord1,
-								const cVector3d& a_textureCoord2,
+                                const cVector3d& a_vertex1,
+                                const cVector3d& a_vertex2,
+                                const cVector3d& a_normal0, 
+                                const cVector3d& a_normal1,
+                                const cVector3d& a_normal2,
+                                const cVector3d& a_textureCoord0, 
+                                const cVector3d& a_textureCoord1,
+                                const cVector3d& a_textureCoord2,
                                 const cColorf& a_colorVertex0,
                                 const cColorf& a_colorVertex1,
                                 const cColorf& a_colorVertex2)
 {
     cVertex* vertex;
 
-	// create new triangle
-	unsigned int index = newTriangle(a_vertex0, a_vertex1, a_vertex2);
+    // create new triangle
+    unsigned int index = newTriangle(a_vertex0, a_vertex1, a_vertex2);
     
-	// set attributes
-	vertex = m_triangles->at(index).getVertex0();
-	vertex->setNormal(a_normal0);
-	vertex->setTexCoord(a_textureCoord0);
+    // set attributes
+    vertex = m_triangles->at(index).getVertex0();
+    vertex->setNormal(a_normal0);
+    vertex->setTexCoord(a_textureCoord0);
     vertex->setColor(a_colorVertex0);
 
-	vertex = m_triangles->at(index).getVertex1();
-	vertex->setNormal(a_normal1);
-	vertex->setTexCoord(a_textureCoord1);
+    vertex = m_triangles->at(index).getVertex1();
+    vertex->setNormal(a_normal1);
+    vertex->setTexCoord(a_textureCoord1);
     vertex->setColor(a_colorVertex1);
 
-	vertex = m_triangles->at(index).getVertex2();
-	vertex->setNormal(a_normal2);
-	vertex->setTexCoord(a_textureCoord2);
+    vertex = m_triangles->at(index).getVertex2();
+    vertex->setNormal(a_normal2);
+    vertex->setTexCoord(a_textureCoord2);
     vertex->setColor(a_colorVertex2);
 
-	// mark mesh for update
-	invalidateDisplayList();
+    // mark mesh for update
+    invalidateDisplayList();
 
     // return result
     return (index);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Remove a vertex from the vertex array by passing its index number.
+    Remove a vertex from the vertex array by passing its index number.
 
-     \fn       bool cMesh::removeTriangle(const unsigned int a_index)
+    \param  a_index  Index number of vertex.
 
-     \param    a_index  Index number of vertex.
-
-     \return   Return \b true if operation succeeded.
+    \return Return __true__ if operation succeeded.
 */
-//===========================================================================
+//==============================================================================
 bool cMesh::removeTriangle(const unsigned int a_index)
 {
     // get triangle to be removed
@@ -1006,40 +909,38 @@ bool cMesh::removeTriangle(const unsigned int a_index)
     // deactivate triangle
     triangle->m_allocated = false;
 
-	// reduce triangle counter for each vertex
+    // reduce triangle counter for each vertex
     m_vertices->at(triangle->m_indexVertex0).m_nTriangles--;
     m_vertices->at(triangle->m_indexVertex1).m_nTriangles--;
     m_vertices->at(triangle->m_indexVertex2).m_nTriangles--;
 
-	// reset index to vertices
-	triangle->m_indexVertex0 = 0;
-	triangle->m_indexVertex1 = 0;
-	triangle->m_indexVertex2 = 0;
+    // reset index to vertices
+    triangle->m_indexVertex0 = 0;
+    triangle->m_indexVertex1 = 0;
+    triangle->m_indexVertex2 = 0;
 
     // add triangle to free list
     m_freeTriangles->push_back(a_index);
 
-	// mark mesh for update
-	invalidateDisplayList();
+    // mark mesh for update
+    invalidateDisplayList();
 
     // return success
     return (true);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Create a list of edges by providing a threshold angle in degrees. All
-     triangles for which the angle between their respective surface normals 
-     are greater than the select angle threshold are added to the list of 
-     edges.
+    Create a list of edges by providing a threshold angle in degrees. All
+    triangles for which the angle between their respective surface normals 
+    are greater than the select angle threshold are added to the list of 
+    edges.
 
-     \fn        void cMesh::computeAllEdges(double a_angleThresholdDEG)
-
-     \param     a_angleThresholdDEG  Threshold angle in degrees.
+    \param  a_angleThresholdDeg  Threshold angle in degrees.
 */
-//===========================================================================
-void cMesh::computeAllEdges(double a_angleThresholdDEG)
+//==============================================================================
+void cMesh::computeAllEdges(double a_angleThresholdDeg)
 {
     // clear current list of edges.
     clearAllEdges();
@@ -1054,7 +955,7 @@ void cMesh::computeAllEdges(double a_angleThresholdDEG)
     multiset<cEdge>::iterator it;
 
     // setup angle threshold
-    double ANGLE_THRESHOLD = cDegToRad(a_angleThresholdDEG);
+    double ANGLE_THRESHOLD = cDegToRad(a_angleThresholdDeg);
 
     // process all triangles
     for (int i=0; i<numtriangles; i++)
@@ -1097,8 +998,8 @@ void cMesh::computeAllEdges(double a_angleThresholdDEG)
                     }
                 }
 
-				// remove edge as we have already found it dual
-				edges.erase(it);
+                // remove edge as we have already found it dual
+                edges.erase(it);
             }
             else
             {
@@ -1126,8 +1027,8 @@ void cMesh::computeAllEdges(double a_angleThresholdDEG)
                     }
                 }
 
-				// remove edge as we have already found it dual
-				edges.erase(it);
+                // remove edge as we have already found it dual
+                edges.erase(it);
             }
             else
             {
@@ -1154,8 +1055,8 @@ void cMesh::computeAllEdges(double a_angleThresholdDEG)
                     }
                 }
 
-				// remove edge as we have already found it dual
-				edges.erase(it);
+                // remove edge as we have already found it dual
+                edges.erase(it);
             }
             else
             {
@@ -1164,22 +1065,20 @@ void cMesh::computeAllEdges(double a_angleThresholdDEG)
         }
     }
 
-	// store all edges whith no dual in the edge list
-	multiset<cEdge>::iterator it2;
-	for (it2 = edges.begin(); it2 != edges.end(); it2++)
-	{
-		m_edges->push_back(*it2);
-	}
+    // store all edges whith no dual in the edge list
+    multiset<cEdge>::iterator it2;
+    for (it2 = edges.begin(); it2 != edges.end(); it2++)
+    {
+        m_edges->push_back(*it2);
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Clear all edges.
-
-     \fn       void cMesh::clearAllEdges()
+    Clear all edges.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::clearAllEdges()
 {
     // clear all edges
@@ -1188,13 +1087,11 @@ void cMesh::clearAllEdges()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Clear all triangles and vertices.
-
-     \fn       void cMesh::clear()
+    Clear all triangles and vertices.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::clear()
 {
     // clear all triangles
@@ -1214,71 +1111,89 @@ void cMesh::clear()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Compute surface normals for every vertex in the mesh, by averaging
-     the face normals of the triangle that include each vertex.
-
-     \fn       void cMesh::computeAllNormals()
+    Compute surface normals for every vertex in the mesh, by averaging
+    the face normals of the triangle that include each vertex.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::computeAllNormals()
 {
-	// read number of vertices and triangles of object
-	unsigned int numTriangles = (unsigned int)(m_triangles->size());
-	unsigned int numVertices = (unsigned int)(m_vertices->size());
+    // read number of vertices and triangles of object
+    unsigned int numTriangles = (unsigned int)(m_triangles->size());
+    unsigned int numVertices = (unsigned int)(m_vertices->size());
 
-	// initialize all normals to zero
-	for (unsigned int i=0; i<numVertices; i++)
-	{
-		m_vertices->at(i).setNormal(0.0, 0.0, 0.0);
-	}
+    // initialize all normals to zero
+    for (unsigned int i=0; i<numVertices; i++)
+    {
+        m_vertices->at(i).setNormal(0.0, 0.0, 0.0);
+    }
 
-	// compute the normal of each triangle, add contribution to each vertex
-	for (unsigned int i=0; i<numTriangles; i++)
-	{
-		cTriangle* nextTriangle = getTriangle(i);
-		cVector3d vertex0 = nextTriangle->getVertex0()->getLocalPos();
+    // compute the normal of each triangle, add contribution to each vertex
+    for (unsigned int i=0; i<numTriangles; i++)
+    {
+        cTriangle* nextTriangle = getTriangle(i);
+        cVector3d vertex0 = nextTriangle->getVertex0()->getLocalPos();
         cVector3d vertex1 = nextTriangle->getVertex1()->getLocalPos();
         cVector3d vertex2 = nextTriangle->getVertex2()->getLocalPos();
 
-		// compute normal vector
+        // compute normal vector
         cVector3d normal, v01, v02;
         vertex1.subr(vertex0, v01);
         vertex2.subr(vertex0, v02);
         v01.crossr(v02, normal);
         double length = normal.length();
-		if (length > 0.0)
-		{
-			normal.div(length);
-			nextTriangle->getVertex0()->m_normal.add(normal);
-			nextTriangle->getVertex1()->m_normal.add(normal);
-			nextTriangle->getVertex2()->m_normal.add(normal);
-		}
-	}
+        if (length > 0.0)
+        {
+            normal.div(length);
+            nextTriangle->getVertex0()->m_normal.add(normal);
+            nextTriangle->getVertex1()->m_normal.add(normal);
+            nextTriangle->getVertex2()->m_normal.add(normal);
+        }
+    }
 
-	// normalize all triangles
-	for (unsigned int i=0; i<numVertices; i++)
-	{
-		if (m_vertices->at(i).getNormal().length() < 0.000000001)
-		{
-			bool error = true;
-		}
-		m_vertices->at(i).m_normal.normalize();
-	}
+    // normalize all triangles
+    for (unsigned int i=0; i<numVertices; i++)
+    {
+        if (m_vertices->at(i).getNormal().length() < 0.000000001)
+        {
+            bool error = true;
+        }
+        m_vertices->at(i).m_normal.normalize();
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Compute the global position of all vertices
+    Scale this object by using different scale factors along X,Y and Z axes.
 
-     \fn       void cMesh::updateGlobalPositions(const bool a_frameOnly)
-
-     \param    a_frameOnly  If \b false, the global position of all vertices.
-               is computed, otherwise this function does nothing.
+    \param  a_scaleX  Scale factor along X axis.
+    \param  a_scaleY  Scale factor along Y axis.
+    \param  a_scaleZ  Scale factor along Z axis.
 */
-//===========================================================================
+//==============================================================================
+void cMesh::scaleXYZ(const double a_scaleX, const double a_scaleY, const double a_scaleZ)
+{
+    vector<cVertex>::iterator it = m_vertices->begin();
+    for (it = m_vertices->begin(); it < m_vertices->end(); it++)
+    {
+        (*it).m_localPos.mul(a_scaleX, a_scaleY, a_scaleZ);
+    }
+
+    m_boundaryBoxMax.mul(a_scaleX, a_scaleY, a_scaleZ);
+    m_boundaryBoxMin.mul(a_scaleX, a_scaleY, a_scaleZ);
+}
+
+
+//==============================================================================
+/*!
+    Compute the global position of all vertices
+
+    \param  a_frameOnly  If __false__, the global position of all vertices.
+            is computed, otherwise this function does nothing.
+*/
+//==============================================================================
 void cMesh::updateGlobalPositions(const bool a_frameOnly)
 {
     if (a_frameOnly) return;
@@ -1292,16 +1207,14 @@ void cMesh::updateGlobalPositions(const bool a_frameOnly)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Invalidate any existing display lists.  You should call this on if you're using
-     display lists and you modify mesh options, vertex positions, etc.
+    Invalidate any existing display lists.  You should call this on if you are 
+    using display lists and you modify mesh options, vertex positions, etc.
 
-     \fn        void cMesh::invalidateDisplayList(const bool a_affectChildren)
-
-     \param     a_affectChildren  If \b true, then children are updated too.
+    \param  a_affectChildren  If __true__, then children are updated too.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::invalidateDisplayList(const bool a_affectChildren)
 {
     cGenericObject::invalidateDisplayList(a_affectChildren);
@@ -1311,26 +1224,22 @@ void cMesh::invalidateDisplayList(const bool a_affectChildren)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Set the alpha value at each vertex, in all of my material colors,
-     optionally propagating the operation to my children.
+    Set the alpha value at each vertex, in all of my material colors,
+    optionally propagating the operation to my children.
 
-     \fn	    void cMesh::setTransparencyLevel(const float a_level,
-                                 const bool a_applyToTextures,
-                                 const bool a_affectChildren)
-
-     \param     a_level  Level of transparency ranging from 0.0 to 1.0.
-     \param     a_applyToTextures  If \b true, then apply changes to texture.
-     \param     a_affectChildren  If \b true, then children are updated too.
+    \param  a_level  Level of transparency ranging from 0.0 to 1.0.
+    \param  a_applyToTextures  If __true__, then apply changes to texture.
+    \param  a_affectChildren  If __true__, then children are updated too.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::setTransparencyLevel(const float a_level,
                                  const bool a_applyToTextures,
                                  const bool a_affectChildren)
 {
     cGenericObject::setTransparencyLevel(a_level, a_applyToTextures, a_affectChildren);
-                                        
+
     // apply the new value to all vertex colors
     unsigned int i, numItems;
     numItems = (unsigned int)(m_vertices->size());
@@ -1344,15 +1253,13 @@ void cMesh::setTransparencyLevel(const float a_level,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Set color of each vertex.
+    Set color of each vertex.
 
-     \fn        void cMesh::setVertexColor(const cColorf& a_color)
-
-     \param     a_color   New color to be applied to each vertex.
+    \param  a_color  New color to be applied to each vertex.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::setVertexColor(const cColorf& a_color)
 {
     // apply color to all vertex colors
@@ -1366,19 +1273,16 @@ void cMesh::setVertexColor(const cColorf& a_color)
 
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Shifts all vertex positions by the specified amount.
 
-    \fn			void cMesh::offsetVertices(const cVector3d& a_offset,
-						   const bool a_updateCollisionDetector)
-
-    \param		a_offset  Translation to apply to each vertex.
-	\param		a_updateCollisionDetector  If \b true, then update collision detector.
+    \param  a_offset  Translation to apply to each vertex.
+    \param  a_updateCollisionDetector  If __true__, then update collision detector.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::offsetVertices(const cVector3d& a_offset,
-						   const bool a_updateCollisionDetector)
+                           const bool a_updateCollisionDetector)
 {
     // offset all vertices
     int vertexcount = (int)(m_vertices->size());
@@ -1387,70 +1291,64 @@ void cMesh::offsetVertices(const cVector3d& a_offset,
         m_vertices->at(i).m_localPos.add(a_offset);
     }
 
-	// update boundary box
+    // update boundary box
     m_boundaryBoxMin+=a_offset;
     m_boundaryBoxMax+=a_offset;
 
-	// update collision detector if requested
+    // update collision detector if requested
     if (a_updateCollisionDetector && m_collisionDetector)
-	{
+    {
         m_collisionDetector->initialize();
-	}
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Reverse the normal for every vertex on this model.  Useful for models
     that started with inverted faces and thus gave inward-pointing normals.
 
     \fn        void cMesh::reverseAllNormals()
 */
-//===========================================================================
+//==============================================================================
 void cMesh::reverseAllNormals()
 {
-	// reverse normals for this object
-	if (m_vertices->size() > 0)
-	{
-		int numVertices = (int)(m_vertices->size());
-		for(int i=0; i<numVertices; i++)
-		{
-			m_vertices->at(i).m_normal.mul(-1.0);
-		}
-	}
+    // reverse normals for this object
+    if (m_vertices->size() > 0)
+    {
+        int numVertices = (int)(m_vertices->size());
+        for(int i=0; i<numVertices; i++)
+        {
+            m_vertices->at(i).m_normal.mul(-1.0);
+        }
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Define the way normals are graphically rendered.
+    Define the way normals are graphically rendered.
 
-     \fn        void cMesh::setNormalsProperties(const double a_length, 
-								 const cColorf& a_color)
-
-     \param     a_length  Length of normals
-     \param     a_color  Color of normals
+    \param  a_length  Length of normals.
+    \param  a_color  Color of normals.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::setNormalsProperties(const double a_length, 
-								 const cColorf& a_color)
+                                 const cColorf& a_color)
 {
     m_normalsLength = cClamp0(a_length);
     m_normalsColor = a_color;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Set graphic properties for edge-rendering.
+    Set graphic properties for edge-rendering.
 
-     \fn        void cMesh::setEdgeProperties(const double a_lineWidth, 
-                              const cColorf& a_lineColor)
-
-     \param     a_lineWidth  Width of edge lines.
-     \param     a_lineColor  Color of edge lines.
+    \param  a_lineWidth  Width of edge lines.
+    \param  a_lineColor  Color of edge lines.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::setEdgeProperties(const double a_lineWidth, 
                               const cColorf& a_lineColor)
 {
@@ -1460,20 +1358,19 @@ void cMesh::setEdgeProperties(const double a_lineWidth,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Compute the axis-aligned boundary box that encloses all triangles 
-	 in this mesh.
-
-     \fn       void cMesh::updateBoundaryBox()
+    Compute the axis-aligned boundary box that encloses all triangles 
+    in this mesh.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::updateBoundaryBox()
 {
     if (m_triangles->size() == 0)
     {
         m_boundaryBoxMin.zero();
         m_boundaryBoxMax.zero();
+        m_boundaryBoxEmpty = true;
         return;
     }
 
@@ -1482,7 +1379,8 @@ void cMesh::updateBoundaryBox()
     double zMin = C_LARGE;
     double xMax = -C_LARGE;
     double yMax = -C_LARGE;
-    double zMax = -C_LARGE;;
+    double zMax = -C_LARGE;
+    bool flag = false;
 
     // loop over all my triangles
     for(unsigned int i=0; i<m_triangles->size(); i++)
@@ -1515,31 +1413,33 @@ void cMesh::updateBoundaryBox()
             xMax = cMax(tVertex2(0) , xMax);
             yMax = cMax(tVertex2(1) , yMax);
             zMax = cMax(tVertex2(2) , zMax);
+
+            flag = true;
         }
     }
 
-    if (m_triangles->size() > 0)
+    if (flag)
     {
         m_boundaryBoxMin.set(xMin, yMin, zMin);
         m_boundaryBoxMax.set(xMax, yMax, zMax);
+        m_boundaryBoxEmpty = false;
     }
     else
     {
         m_boundaryBoxMin.zero();
         m_boundaryBoxMax.zero();
+        m_boundaryBoxEmpty = true;
     }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Scale mesh with a uniform scale factor.
 
-    \fn       void cMesh::scaleObject(const double& a_scaleFactor)
-
-    \param    a_scaleFactor  Scale factor.
+    \param  a_scaleFactor  Scale factor.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::scaleObject(const double& a_scaleFactor)
 {
     unsigned int i, numItems;
@@ -1555,13 +1455,11 @@ void cMesh::scaleObject(const double& a_scaleFactor)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
      Set up a Brute Force collision detector for this mesh.
-
-     \fn       void cMesh::createBruteForceCollisionDetector()
 */
-//===========================================================================
+//==============================================================================
 void cMesh::createBruteForceCollisionDetector()
 {
     // delete previous collision detector
@@ -1575,20 +1473,18 @@ void cMesh::createBruteForceCollisionDetector()
     cCollisionBrute* col = new cCollisionBrute(m_triangles);
     col->initialize();
 
-	// assign new collision detector
+    // assign new collision detector
     m_collisionDetector = col;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Set up an AABB collision detector for this mesh.
+    Set up an AABB collision detector for this mesh.
 
-     \fn       void cMesh::createAABBCollisionDetector(const double a_radius)
-
-	 \param	   a_radius  Bounding radius.
+    \param  a_radius  Bounding radius.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::createAABBCollisionDetector(const double a_radius)
 {
     // delete previous collision detector
@@ -1602,28 +1498,24 @@ void cMesh::createAABBCollisionDetector(const double a_radius)
     cCollisionAABB* col = new cCollisionAABB(m_triangles);
     col->initialize(a_radius);
 
-	// assign new collision detector
+    // assign new collision detector
     m_collisionDetector = col;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-	For mesh objects, this information is computed by the virtual tool
-	when computing the finger-proxy model. More information can be found in 
-	file cToolCursor.cpp undr methof computeInteractionForces()
-	Both variables m_interactionProjectedPoint and m_interactionInside are
-	assigned values based on the objects encountered by the proxy.
-
-    \fn     void cMesh::computeLocalInteraction(const cVector3d& a_toolPos,
-                                                const cVector3d& a_toolVel,
-                                                const unsigned int a_IDN)
+    For mesh objects, this information is computed by the virtual tool
+    when computing the finger-proxy model. More information can be found in 
+    file cToolCursor.cpp undr methof computeInteractionForces()
+    Both variables m_interactionProjectedPoint and m_interactionInside are
+    assigned values based on the objects encountered by the proxy.
 
     \param  a_toolPos  Position of the tool.
     \param  a_toolVel  Velocity of the tool.
     \param  a_IDN  Identification number of the force algorithm.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::computeLocalInteraction(const cVector3d& a_toolPos,
                                     const cVector3d& a_toolVel,
                                     const unsigned int a_IDN)
@@ -1633,56 +1525,55 @@ void cMesh::computeLocalInteraction(const cVector3d& a_toolPos,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Render this mesh in OpenGL.  This method actually just prepares some
-     OpenGL state, and uses renderMesh to actually do the rendering.
+    Render this mesh in OpenGL.  This method actually just prepares some
+    OpenGL state, and uses renderMesh to actually do the rendering.
 
-     \fn       void cMesh::render(cRenderOptions& a_options)
-     \param    a_options  Rendering options
+    \param    a_options  Rendering options
 */
-//===========================================================================
+//==============================================================================
 void cMesh::render(cRenderOptions& a_options)
 {
-	/////////////////////////////////////////////////////////////////////////
-	// Render parts that are always opaque
-	/////////////////////////////////////////////////////////////////////////
-	if (SECTION_RENDER_OPAQUE_PARTS_ONLY(a_options))
+    /////////////////////////////////////////////////////////////////////////
+    // Render parts that are always opaque
+    /////////////////////////////////////////////////////////////////////////
+    if (SECTION_RENDER_OPAQUE_PARTS_ONLY(a_options))
     {
         // render normals
-		// (note that we will not render the normals if we are currently creating
-		// a shadow map). 
+        // (note that we will not render the normals if we are currently creating
+        // a shadow map). 
         if (m_showNormals && !a_options.m_creating_shadow_map) 
-		{
-			renderNormals();
-		}
+        {
+            renderNormals();
+        }
 
         // render edges
         if (m_showEdges && !a_options.m_creating_shadow_map)
-		{
-			renderEdges();
-		}
+        {
+            renderEdges();
+        }
     }
 
- 	/////////////////////////////////////////////////////////////////////////
-	// Render parts that use material properties
-	/////////////////////////////////////////////////////////////////////////
-	if (SECTION_RENDER_PARTS_WITH_MATERIALS(a_options, m_useTransparency))
-	{
+    /////////////////////////////////////////////////////////////////////////
+    // Render parts that use material properties
+    /////////////////////////////////////////////////////////////////////////
+    if (SECTION_RENDER_PARTS_WITH_MATERIALS(a_options, m_useTransparency))
+    {
         renderMesh(a_options);
-	}
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Render a graphic representation of each normal of the mesh.
-
-     \fn       void cMesh::renderNormals()
+    Render a graphic representation of each normal of the mesh.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::renderNormals()
 {
+#ifdef C_USE_OPENGL
+
     // check if any normals to render
     if ((m_vertices->size() == 0))
     {
@@ -1699,37 +1590,39 @@ void cMesh::renderNormals()
     glColor4fv( (const float *)&m_normalsColor);
 
     // render normals
-	unsigned int nvertices = (unsigned int)(m_vertices->size());
-	glBegin(GL_LINES);
-	for(unsigned int i=0; i<nvertices; i++) 
-	{
-		if (m_vertices->at(i).m_allocated)
-		{
-			cVector3d v = m_vertices->at(i).m_localPos;
-			cVector3d n = m_vertices->at(i).m_normal;
-			glVertex3d(v(0) ,v(1) ,v(2) );
+    unsigned int nvertices = (unsigned int)(m_vertices->size());
+    glBegin(GL_LINES);
+    for(unsigned int i=0; i<nvertices; i++) 
+    {
+        if (m_vertices->at(i).m_allocated)
+        {
+            cVector3d v = m_vertices->at(i).m_localPos;
+            cVector3d n = m_vertices->at(i).m_normal;
+            glVertex3d(v(0) ,v(1) ,v(2) );
 
-			n.mul(m_normalsLength);
-			n.add(v);
-			glVertex3d(n(0) ,n(1) ,n(2) );
-		}
-	}
-	glEnd();
+            n.mul(m_normalsLength);
+            n.add(v);
+            glVertex3d(n(0) ,n(1) ,n(2) );
+        }
+    }
+    glEnd();
 
     // enable lighting
     glEnable(GL_LIGHTING);
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Render all edges.
-
-     \fn       void cMesh::renderEdges()
+    Render all edges.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::renderEdges()
 {
+#ifdef C_USE_OPENGL
+
     if (m_edges->size() == 0) { return; }
 
     /////////////////////////////////////////////////////////////////////////
@@ -1743,7 +1636,7 @@ void cMesh::renderEdges()
     m_edgeLineColor.render();
 
     // width of line edges
-    glLineWidth(m_edgeLineWidth);
+    glLineWidth((GLfloat)m_edgeLineWidth);
 
     // render all edges as triangles so that we can perform polygon offset
     glEnable(GL_POLYGON_OFFSET_LINE); 
@@ -1782,40 +1675,42 @@ void cMesh::renderEdges()
     /////////////////////////////////////////////////////////////////////////
     
     if (m_cullingEnabled)
-	{
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-	}
-	else
-	{
-		glDisable(GL_CULL_FACE);
-	}
+    {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+    }
+    else
+    {
+        glDisable(GL_CULL_FACE);
+    }
 
-    // restore OpenGL preoperties
+    // restore OpenGL properties
     glDisable(GL_POLYGON_OFFSET_LINE);
-	glPolygonOffset(0.0, 0.0);
+    glPolygonOffset(0.0, 0.0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_LIGHTING);
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-     Render the mesh itself.  This function is declared public to allow
-     sharing of data among meshes, which is not possible given most
-     implementations of 'protected'.  But it should only be accessed
-     from within render() or derived versions of render().
+    Render the mesh itself.  This function is declared public to allow
+    sharing of data among meshes, which is not possible given most
+    implementations of 'protected'.  But it should only be accessed
+    from within render() or derived versions of render().
 
-     \fn        void cMesh::renderMesh(cRenderOptions& a_options)
-
-	 \param		a_options  Rendering options.
+    \param  a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cMesh::renderMesh(cRenderOptions& a_options)
 {
-    //-----------------------------------------------------------------------
+#ifdef C_USE_OPENGL
+
+    //--------------------------------------------------------------------------
     // INITIALIZATION
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     // check if object contains any triangles or vertices
     if ((m_vertices->size() == 0) || (m_triangles->size() == 0))
@@ -1841,24 +1736,24 @@ void cMesh::renderMesh(cRenderOptions& a_options)
         glDisableClientState(GL_NORMAL_ARRAY);    
     }
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // RENDER MATERIAL
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     // render material properties if enabled
-	if (m_useMaterialProperty && a_options.m_render_materials)
+    if (m_useMaterialProperty && a_options.m_render_materials)
     {
         m_material->render(a_options);
     }
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // RENDER TEXTURE
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     // render texture if enabled
     if ((m_texture != NULL) && (m_useTextureMapping) && (a_options.m_render_materials))
     {
-		glActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
 
         if (m_useVertexArrays)
         {
@@ -1872,9 +1767,9 @@ void cMesh::renderMesh(cRenderOptions& a_options)
     }
 
         
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // RENDER VERTEX COLORS
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     /*
     if vertex colors (m_useVertexColors) is enabled, we render the colors 
     defined for each individual vertex.
@@ -1890,7 +1785,7 @@ void cMesh::renderMesh(cRenderOptions& a_options)
     if (m_useVertexColors && a_options.m_render_materials)
     {
         // Clear the effects of material properties...
-        if (m_useMaterialProperty)
+        if (m_useMaterialProperty || a_options.m_rendering_shadow)
         {
             // enable vertex colors
             glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -1914,33 +1809,33 @@ void cMesh::renderMesh(cRenderOptions& a_options)
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // FOR OBJECTS WITH NO DEFINED COLOR/MATERIAL SETTINGS
-    //-----------------------------------------------------------------------
-	/*
+    //--------------------------------------------------------------------------
+    /*
     A default color for objects that don't have vertex colors or
     material properties (otherwise they're invisible)...
-	If texture mapping is enabled, then just turn off lighting
-	*/
+    If texture mapping is enabled, then just turn off lighting
+    */
 
     if (((!m_useVertexColors) && (!m_useMaterialProperty)) && a_options.m_render_materials)
     {
-		if (m_useTextureMapping)
-		{
-			glDisable(GL_LIGHTING);
-		}
-		else
-		{
-			glEnable(GL_COLOR_MATERIAL);
-			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-			glColor4f(1.0,1.0,1.0,1.0);
-		}
+        if (m_useTextureMapping && !a_options.m_rendering_shadow)
+        {
+            glDisable(GL_LIGHTING);
+        }
+        else
+        {
+            glEnable(GL_COLOR_MATERIAL);
+            glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+            glColor4f(1.0,1.0,1.0,1.0);
+        }
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // DISPLAY LIST
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     
     if (!m_displayList.render(m_useDisplayList))   
     {
@@ -1971,9 +1866,9 @@ void cMesh::renderMesh(cRenderOptions& a_options)
 
             // render all active triangles
             vector<cTriangle>::iterator it;
-		    for (it = m_triangles->begin(); it < m_triangles->end(); it++)
-		    {
-			    if ((*it).m_allocated)
+            for (it = m_triangles->begin(); it < m_triangles->end(); it++)
+            {
+                if ((*it).m_allocated)
                 {
                     unsigned int index0 = (*it).m_indexVertex0;
                     unsigned int index1 = (*it).m_indexVertex1;
@@ -2000,118 +1895,118 @@ void cMesh::renderMesh(cRenderOptions& a_options)
             // render all active triangles
             if (((!m_useTextureMapping) && (!m_useVertexColors)))
             {
-			    vector<cTriangle>::iterator it;
-			    for (it = m_triangles->begin(); it < m_triangles->end(); it++)
-			    {
-				    if ((*it).m_allocated)
-				    {
-					    // get pointers to vertices
-					    cVertex* v0 = (*it).getVertex0();
-					    cVertex* v1 = (*it).getVertex1();
-					    cVertex* v2 = (*it).getVertex2();
+                vector<cTriangle>::iterator it;
+                for (it = m_triangles->begin(); it < m_triangles->end(); it++)
+                {
+                    if ((*it).m_allocated)
+                    {
+                        // get pointers to vertices
+                        cVertex* v0 = (*it).getVertex0();
+                        cVertex* v1 = (*it).getVertex1();
+                        cVertex* v2 = (*it).getVertex2();
 
-					    // render vertex 0
-					    glNormal3dv(&v0->m_normal(0) );
-					    glVertex3dv(&v0->m_localPos(0) );
+                        // render vertex 0
+                        glNormal3dv(&v0->m_normal(0) );
+                        glVertex3dv(&v0->m_localPos(0) );
 
-					    // render vertex 1
-					    glNormal3dv(&v1->m_normal(0) );
-					    glVertex3dv(&v1->m_localPos(0) );
+                        // render vertex 1
+                        glNormal3dv(&v1->m_normal(0) );
+                        glVertex3dv(&v1->m_localPos(0) );
 
-					    // render vertex 2
-					    glNormal3dv(&v2->m_normal(0) );
-					    glVertex3dv(&v2->m_localPos(0) );
-				    }
+                        // render vertex 2
+                        glNormal3dv(&v2->m_normal(0) );
+                        glVertex3dv(&v2->m_localPos(0) );
+                    }
                 }
             }
             else if ((m_useTextureMapping) && (!m_useVertexColors))
             {
-			    vector<cTriangle>::iterator it;
-			    for (it = m_triangles->begin(); it < m_triangles->end(); it++)
-			    {
-				    if ((*it).m_allocated)
-				    {
-					    // get pointers to vertices
-					    cVertex* v0 = (*it).getVertex0();
-					    cVertex* v1 = (*it).getVertex1();
-					    cVertex* v2 = (*it).getVertex2();
+                vector<cTriangle>::iterator it;
+                for (it = m_triangles->begin(); it < m_triangles->end(); it++)
+                {
+                    if ((*it).m_allocated)
+                    {
+                        // get pointers to vertices
+                        cVertex* v0 = (*it).getVertex0();
+                        cVertex* v1 = (*it).getVertex1();
+                        cVertex* v2 = (*it).getVertex2();
 
-					    // render vertex 0
-					    glNormal3dv(&v0->m_normal(0) );
-					    glMultiTexCoord2dv(GL_TEXTURE1, &v0->m_texCoord(0) );
-					    glVertex3dv(&v0->m_localPos(0) );
+                        // render vertex 0
+                        glNormal3dv(&v0->m_normal(0) );
+                        glMultiTexCoord2dv(GL_TEXTURE1, &v0->m_texCoord(0) );
+                        glVertex3dv(&v0->m_localPos(0) );
 
-					    // render vertex 1
-					    glNormal3dv(&v1->m_normal(0) );
-					    glMultiTexCoord2dv(GL_TEXTURE1, &v1->m_texCoord(0) );
-					    glVertex3dv(&v1->m_localPos(0) );
+                        // render vertex 1
+                        glNormal3dv(&v1->m_normal(0) );
+                        glMultiTexCoord2dv(GL_TEXTURE1, &v1->m_texCoord(0) );
+                        glVertex3dv(&v1->m_localPos(0) );
 
-					    // render vertex 2
-					    glNormal3dv(&v2->m_normal(0) );
-					    glMultiTexCoord2dv(GL_TEXTURE1, &v2->m_texCoord(0) );
-					    glVertex3dv(&v2->m_localPos(0) );
-				    }
-			    }
+                        // render vertex 2
+                        glNormal3dv(&v2->m_normal(0) );
+                        glMultiTexCoord2dv(GL_TEXTURE1, &v2->m_texCoord(0) );
+                        glVertex3dv(&v2->m_localPos(0) );
+                    }
+                }
             }
             else if ((!m_useTextureMapping) && (m_useVertexColors))
             {
-			    vector<cTriangle>::iterator it;
-			    for (it = m_triangles->begin(); it < m_triangles->end(); it++)
-			    {
-				    if ((*it).m_allocated)
-				    {
-					    // get pointers to vertices
-					    cVertex* v0 = (*it).getVertex0();
-					    cVertex* v1 = (*it).getVertex1();
-					    cVertex* v2 = (*it).getVertex2();
+                vector<cTriangle>::iterator it;
+                for (it = m_triangles->begin(); it < m_triangles->end(); it++)
+                {
+                    if ((*it).m_allocated)
+                    {
+                        // get pointers to vertices
+                        cVertex* v0 = (*it).getVertex0();
+                        cVertex* v1 = (*it).getVertex1();
+                        cVertex* v2 = (*it).getVertex2();
 
-					    // render vertex 0
-					    glNormal3dv(&v0->m_normal(0) );
-					    glColor4fv(v0->m_color.pColor());
-					    glVertex3dv(&v0->m_localPos(0) );
+                        // render vertex 0
+                        glNormal3dv(&v0->m_normal(0) );
+                        glColor4fv(v0->m_color.pColor());
+                        glVertex3dv(&v0->m_localPos(0) );
 
-					    // render vertex 1
-					    glNormal3dv(&v1->m_normal(0) );
-					    glColor4fv(v1->m_color.pColor());
-					    glVertex3dv(&v1->m_localPos(0) );
+                        // render vertex 1
+                        glNormal3dv(&v1->m_normal(0) );
+                        glColor4fv(v1->m_color.pColor());
+                        glVertex3dv(&v1->m_localPos(0) );
 
-					    // render vertex 2
-					    glNormal3dv(&v2->m_normal(0) );
-					    glColor4fv(v2->m_color.pColor());
-					    glVertex3dv(&v2->m_localPos(0) );
-				    }
+                        // render vertex 2
+                        glNormal3dv(&v2->m_normal(0) );
+                        glColor4fv(v2->m_color.pColor());
+                        glVertex3dv(&v2->m_localPos(0) );
+                    }
                 }
             }
             else if ((m_useTextureMapping) && (m_useVertexColors))
             {
-			    vector<cTriangle>::iterator it;
-			    for (it = m_triangles->begin(); it < m_triangles->end(); it++)
-			    {
-				    if ((*it).m_allocated)
-				    {
-					    // get pointers to vertices
-					    cVertex* v0 = (*it).getVertex0();
-					    cVertex* v1 = (*it).getVertex1();
-					    cVertex* v2 = (*it).getVertex2();
+                vector<cTriangle>::iterator it;
+                for (it = m_triangles->begin(); it < m_triangles->end(); it++)
+                {
+                    if ((*it).m_allocated)
+                    {
+                        // get pointers to vertices
+                        cVertex* v0 = (*it).getVertex0();
+                        cVertex* v1 = (*it).getVertex1();
+                        cVertex* v2 = (*it).getVertex2();
 
-					    // render vertex 0
-					    glNormal3dv(&v0->m_normal(0) );
-					    glColor4fv(v0->m_color.pColor());
-					    glTexCoord2dv(&v0->m_texCoord(0) );
-					    glVertex3dv(&v0->m_localPos(0) );
+                        // render vertex 0
+                        glNormal3dv(&v0->m_normal(0) );
+                        glColor4fv(v0->m_color.pColor());
+                        glTexCoord2dv(&v0->m_texCoord(0) );
+                        glVertex3dv(&v0->m_localPos(0) );
 
-					    // render vertex 1
-					    glNormal3dv(&v1->m_normal(0) );
-					    glColor4fv(v1->m_color.pColor());
-					    glTexCoord2dv(&v1->m_texCoord(0) );
-					    glVertex3dv(&v1->m_localPos(0) );
+                        // render vertex 1
+                        glNormal3dv(&v1->m_normal(0) );
+                        glColor4fv(v1->m_color.pColor());
+                        glTexCoord2dv(&v1->m_texCoord(0) );
+                        glVertex3dv(&v1->m_localPos(0) );
 
-					    // render vertex 2
-					    glNormal3dv(&v2->m_normal(0) );
-					    glColor4fv(v2->m_color.pColor());
-					    glTexCoord2dv(&v2->m_texCoord(0) );
-					    glVertex3dv(&v2->m_localPos(0) );
-				    }
+                        // render vertex 2
+                        glNormal3dv(&v2->m_normal(0) );
+                        glColor4fv(v2->m_color.pColor());
+                        glTexCoord2dv(&v2->m_texCoord(0) );
+                        glVertex3dv(&v2->m_localPos(0) );
+                    }
                 }
             }
 
@@ -2128,21 +2023,21 @@ void cMesh::renderMesh(cRenderOptions& a_options)
     }
 
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // RESTORE OPENGL
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     // turn off any array variables I might have turned on...
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
    
-	if (m_useTextureMapping)
-	{
-		glActiveTexture(GL_TEXTURE1);
-		glDisable(GL_TEXTURE_1D);
-		glDisable(GL_TEXTURE_2D);
-	}
+    if (m_useTextureMapping)
+    {
+        glActiveTexture(GL_TEXTURE1);
+        glDisable(GL_TEXTURE_1D);
+        glDisable(GL_TEXTURE_2D);
+    }
 
     if (m_useVertexArrays)
     {
@@ -2151,4 +2046,11 @@ void cMesh::renderMesh(cRenderOptions& a_options)
         glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
+
+#endif
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

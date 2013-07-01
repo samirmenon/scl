@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,11 +37,11 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 810 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1064 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CImage.h"
 #include "files/CFileImageBMP.h"
 #include "files/CFileImageGIF.h"
@@ -49,15 +49,18 @@
 #include "files/CFileImagePNG.h"
 #include "files/CFileImagePPM.h"
 #include "files/CFileImageRAW.h"
-//---------------------------------------------------------------------------
+using namespace std;
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Default constructor of cImage.
-
-    \fn     cImage::cImage()
 */
-//===========================================================================
+//==============================================================================
 cImage::cImage()
 {
     // init internal variables
@@ -65,22 +68,17 @@ cImage::cImage()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Constructor of cImage. Allocate image by passing width, height and 
     pixel format.
 
-    \fn     cImage::cImage(const unsigned int a_width, 
-                           const unsigned int a_height,
-                           const GLenum a_format,
-                           const GLenum a_type)
-
-    \param  a_width     Width of image
-    \param  a_height    Height of image
-    \param  a_format    Pixel format. Accepted values are for instance (GL_LUMINANCE, GL_RGB, GL_RGBA)
-    \param  a_type      Pixel type. Accepted values are for instance (GL_UNSIGNED_BYTE, GL_UNSIGNED_INT)
+    \param  a_width  Width of image
+    \param  a_height  Height of image
+    \param  a_format  Pixel format. Accepted values are for instance (GL_LUMINANCE, GL_RGB, GL_RGBA)
+    \param  a_type  Pixel type. Accepted values are for instance (GL_UNSIGNED_BYTE, GL_UNSIGNED_INT)
 */
-//===========================================================================
+//==============================================================================
 cImage::cImage(const unsigned int a_width, 
                const unsigned int a_height,
                const GLenum a_format,
@@ -94,13 +92,11 @@ cImage::cImage(const unsigned int a_width,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Destructor of cImage.
-
-    \fn     cImage::~cImage()
 */
-//===========================================================================
+//==============================================================================
 cImage::~cImage()
 {
     // clean up memory
@@ -108,13 +104,11 @@ cImage::~cImage()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Initializes internal variables.
-
-    \fn     void cImage::defaults()
 */
-//===========================================================================
+//==============================================================================
 void cImage::defaults()
 {
     // no filename defined
@@ -145,14 +139,12 @@ void cImage::defaults()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Free memory that was used for image data, and re-initialize
     internal variables.
-
-    \fn     void cImage::cleanup()
 */
-//===========================================================================
+//==============================================================================
 void cImage::cleanup()
 {
     // delete image data
@@ -166,21 +158,16 @@ void cImage::cleanup()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Allocate a new image by defining its width, height and pixel format.
 
-    \fn     bool cImage::allocate(const unsigned int a_width, 
-                                  const unsigned int a_height,
-                                  const GLenum a_format,
-                                  const GLenum a_type)
-
-    \param  a_width     Width of image
-    \param  a_height    Height of image
-    \param  a_format    Pixel format. Accepted values are for instance (GL_LUMINANCE, GL_RGB, GL_RGBA)
-    \param  a_type      Pixel type. Accepted values are for instance (GL_UNSIGNED_BYTE, GL_UNSIGNED_INT)
+    \param  a_width  Width of image
+    \param  a_height  Height of image
+    \param  a_format  Pixel format. Accepted values are for instance (GL_LUMINANCE, GL_RGB, GL_RGBA)
+    \param  a_type  Pixel type. Accepted values are for instance (GL_UNSIGNED_BYTE, GL_UNSIGNED_INT)
 */
-//===========================================================================
+//==============================================================================
 bool cImage::allocate(const unsigned int a_width, 
                       const unsigned int a_height,
                       const GLenum a_format,
@@ -233,14 +220,14 @@ bool cImage::allocate(const unsigned int a_width,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the size of image by defining the width and height.
 
-    \param  a_width     Width of image.
-    \param  a_height    Height of image.
+    \param  a_width  Width of image.
+    \param  a_height  Height of image.
 */
-//===========================================================================
+//==============================================================================
 void cImage::setSize(const unsigned int a_width, const unsigned int a_height)
 {
     allocate(a_width, 
@@ -250,14 +237,13 @@ void cImage::setSize(const unsigned int a_width, const unsigned int a_height)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Creates a copy of itself.
 
-    \fn     cImage* cImage::copy()
     \return Return pointer to new object.
 */
-//===========================================================================
+//==============================================================================
 cImage* cImage::copy()
 {
     // allocate new image
@@ -272,18 +258,15 @@ cImage* cImage::copy()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Query the number of bytes per pixel for a given format.
 
-    \fn       int cImage::queryBytesPerPixel(const GLenum a_format, 
-                               const GLenum a_type)
-
-    \param    a_format  Pixel format of image.
-    \param    a_type  Pixel data type of image.
-    \return   Returns the number of bytes used for storing a single pixel.
+    \param  a_format  Pixel format of image.
+    \param  a_type  Pixel data type of image.
+    \return  Returns the number of bytes used for storing a single pixel.
 */
-//===========================================================================
+//==============================================================================
 int cImage::queryBytesPerPixel(const GLenum a_format, 
                                const GLenum a_type)
 {
@@ -359,20 +342,18 @@ int cImage::queryBytesPerPixel(const GLenum a_format,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Convert current image into a new pixel format.
 
-    \fn     bool cImage::convert(unsigned int a_newFormat)
+    \param  a_newFormat  New desired pixel format. (GL_LUMINANCE, GL_RGB, GL_RGBA)
 
-    \param  a_format  New desired pixel format. (GL_LUMINANCE, GL_RGB, GL_RGBA)
-
-    \return Returns \e true if success, \e false otherwise.
+    \return Returns __true__ if success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cImage::convert(unsigned int a_newFormat)
 {
-    // verify if new format is dfferent
+    // verify if new format is different
     if (a_newFormat == m_format) { return (true); }
 
     // allocate memory for converted image
@@ -391,7 +372,7 @@ bool cImage::convert(unsigned int a_newFormat)
 
     // assign new values to current image
     setData(data, size);
-	setProperties(image->getWidth(), image->getHeight(), image->getFormat(), GL_UNSIGNED_BYTE);
+    setProperties(image->getWidth(), image->getHeight(), image->getFormat(), GL_UNSIGNED_BYTE);
 
     // current object will be responsible for freeing memory
     m_responsibleForMemoryAllocation = true;
@@ -406,23 +387,19 @@ bool cImage::convert(unsigned int a_newFormat)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Assign new properties including width, height and pixel format to the image. 
     If the requested image properties do not match the exact amount of allocated data 
     image, then the operation fails and the desired properties are ignored. 
 
-    \fn     bool cImage::setProperties(const unsigned int a_width, 
-                           const unsigned int a_height, 
-                           const GLenum a_format,
-                           const GLenum a_type)
-
-    \param  a_width     Width of new image.
-    \param  a_height    Height of new image.
-    \param  a_format    Pixel format. Accepted values are (GL_LUMINANCE, GL_RGB, GL_RGBA).
-    \return Returns \e true if success, \e false otherwise.
+    \param  a_width  Width of new image.
+    \param  a_height  Height of new image.
+    \param  a_format  Pixel format. Accepted values are (GL_LUMINANCE, GL_RGB, GL_RGBA).
+    \param  a_type  Pixel data type. (GL_UNSIGNED_BYTE, GL_UNSIGNED_INT for instance).
+    \return Returns __true__ if success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cImage::setProperties(const unsigned int a_width, 
                            const unsigned int a_height, 
                            const GLenum a_format,
@@ -451,18 +428,10 @@ bool cImage::setProperties(const unsigned int a_width,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Copy a section of this current image to a different location or onto 
     a different destination image. 
-
-    \fn     void cImage::copyTo(const unsigned int a_sourcePosX,
-                    const unsigned int a_sourcePosY,
-                    const unsigned int a_sourceSizeX,
-                    const unsigned int a_sourceSizeY,
-                    cImage* a_destImage, 
-                    const unsigned int a_destPosX,
-                    const unsigned int a_destPosY)
 
     \param  a_sourcePosX  X coordinate of top left pixel to copy.
     \param  a_sourcePosY  Y coordinate of top left pixel to copy.
@@ -472,7 +441,7 @@ bool cImage::setProperties(const unsigned int a_width,
     \param  a_destPosX  X coordinate of top left pixel on destination image where area is pasted.
     \param  a_destPosY  Y coordinate of top left pixel on destination image where area is pasted.
 */
-//===========================================================================
+//==============================================================================
 void cImage::copyTo(const unsigned int a_sourcePosX,
                     const unsigned int a_sourcePosY,
                     const unsigned int a_sourceSizeX,
@@ -565,12 +534,12 @@ void cImage::copyTo(const unsigned int a_sourcePosX,
         {
             int dst_bpp = 3;
             int dst_offset = dst_w * dst_bpp;
-			src_offset = src_w * src_bpp;
+            src_offset = src_w * src_bpp;
             unsigned int dst_index = dst_bpp * (dst_x + dst_y * dst_w);
             unsigned char* dst_data = &(dst_img_data[dst_index]);
             for (i=0; i<src_dy; i++)
             {
-				memcpy(dst_data, src_data, src_segment_size);
+                memcpy(dst_data, src_data, src_segment_size);
                 src_data += src_offset;
                 dst_data += dst_offset;
             }
@@ -653,13 +622,13 @@ void cImage::copyTo(const unsigned int a_sourcePosX,
         if (dst_format == GL_RGBA)
         {
             int dst_bpp = 4;
-			int dst_offset = dst_w * dst_bpp;
-			src_offset = src_w * src_bpp;
+            int dst_offset = dst_w * dst_bpp;
+            src_offset = src_w * src_bpp;
             unsigned int dst_index = dst_bpp * (dst_x + dst_y * dst_w);
             unsigned char* dst_data = &(dst_img_data[dst_index]);
             for (i=0; i<src_dy; i++)
             {
-				memcpy(dst_data, src_data, src_segment_size);
+                memcpy(dst_data, src_data, src_segment_size);
                 src_data += src_offset;
                 dst_data += dst_offset;
             }
@@ -745,12 +714,12 @@ void cImage::copyTo(const unsigned int a_sourcePosX,
         {
             int dst_bpp = 1;
             int dst_offset = dst_w * dst_bpp;
-			src_offset = src_w * src_bpp;
+            src_offset = src_w * src_bpp;
             unsigned int dst_index = dst_bpp * (dst_x + dst_y * dst_w);
             unsigned char* dst_data = &(dst_img_data[dst_index]);
             for (i=0; i<src_dy; i++)
             {
-				memcpy(dst_data, src_data, src_segment_size);
+                memcpy(dst_data, src_data, src_segment_size);
                 src_data += src_offset;
                 dst_data += dst_offset;
             }
@@ -765,11 +734,11 @@ void cImage::copyTo(const unsigned int a_sourcePosX,
 }
 
 //! 
-//===========================================================================
+//==============================================================================
 /*!
     Copy this entire image to another destination image. If the destination 
-	images is smaller than the source, the copied area is cropped before being 
-	copied.
+    images is smaller than the source, the copied area is cropped before being 
+    copied.
 
     \fn     void cImage::copyTo(cImage* a_destImage, 
                     const unsigned int a_destPosX,
@@ -779,7 +748,7 @@ void cImage::copyTo(const unsigned int a_sourcePosX,
     \param  a_destPosX  X coordinate of top left pixel on destination image where area is pasted.
     \param  a_destPosY  Y coordinate of top left pixel on destination image where area is pasted.
 */
-//===========================================================================
+//==============================================================================
 void cImage::copyTo(cImage* a_destImage, 
                     const unsigned int a_destPosX,
                     const unsigned int a_destPosY)
@@ -788,20 +757,18 @@ void cImage::copyTo(cImage* a_destImage,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Assign a different memory location for the image data. Use with care!
-	Make sure to call function setProperties() afterwards in order to correctly
-	set the dimension and pixel format of the image described by the new data.
+    Make sure to call function setProperties() afterwards in order to correctly
+    set the dimension and pixel format of the image described by the new data.
 
-    \fn     void cImage::setData(unsigned char* a_data, 
-                     const unsigned int a_dataSizeInBytes, 
-                     const bool a_dealloc)
-
-	\param	Pointer to new image data.
-	\param  Size in byte of the image data.
+    \param  a_data  Pointer to new image data.
+    \param  a_dataSizeInBytes Size in byte of the image data.
+    \param  a_dealloc  If __true__ then this class is responsible for deallocating
+            image data when class is deleted.
 */
-//===========================================================================
+//==============================================================================
 void cImage::setData(unsigned char* a_data, 
                      const unsigned int a_dataSizeInBytes, 
                      const bool a_dealloc)
@@ -822,20 +789,20 @@ void cImage::setData(unsigned char* a_data,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Clear an image with defaults data.
 
     \fn     void cImage::clear()
 */
-//===========================================================================
+//==============================================================================
 void cImage::clear()
 {
     clear(m_borderColor);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Clear an image with a defined color
 
@@ -843,7 +810,7 @@ void cImage::clear()
 
     \param  a_color  new color of the image
 */
-//===========================================================================
+//==============================================================================
 void cImage::clear(const cColorb& a_color)
 {
     // check if image exists
@@ -894,7 +861,7 @@ void cImage::clear(const cColorb& a_color)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Get the color of a pixel by passing its x and y coordinate
 
@@ -905,9 +872,9 @@ void cImage::clear(const cColorb& a_color)
     \param  a_x X coordinate of the pixel
     \param  a_y Y coordinate of the pixel
     \param  a_color  Return the color of the pixel
-    \return return \b true if operation succeeds, \b false otherwise.
+    \return return __true__ if operation succeeds, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cImage::getPixelColor(const unsigned int a_x, 
                            const unsigned int a_y, 
                            cColorb& a_color)
@@ -963,7 +930,7 @@ bool cImage::getPixelColor(const unsigned int a_x,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the color of a pixel
 
@@ -975,7 +942,7 @@ bool cImage::getPixelColor(const unsigned int a_x,
     \param  a_y  Y coordinate of the pixel.
     \param  a_color  New color of the pixel.
 */
-//===========================================================================
+//==============================================================================
 void cImage::setPixelColor(const unsigned int a_x, 
                            const unsigned int a_y, 
                            const cColorb& a_color)
@@ -1015,21 +982,18 @@ void cImage::setPixelColor(const unsigned int a_x,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define a pixel color to be transparent. If the image is not in GL_RGBA 
-	format, it is first converted in order to enable pixel transparency
-	capabilities.
-
-    \fn     void cImage::setTransparentColor(const cColorb &a_color, 
-								 const unsigned char a_transparencyLevel)
+    format, it is first converted in order to enable pixel transparency
+    capabilities.
 
     \param  a_color Selected pixel color.
-	\param  a_transparencyLevel  Transparency level.
+    \param  a_transparencyLevel  Transparency level.
 */
-//===========================================================================
+//==============================================================================
 void cImage::setTransparentColor(const cColorb &a_color, 
-								 const unsigned char a_transparencyLevel)
+                                 const unsigned char a_transparencyLevel)
 {
     // check if image exists
     if (!m_allocated) { return; }
@@ -1037,42 +1001,40 @@ void cImage::setTransparentColor(const cColorb &a_color,
     // image size
     unsigned int size = m_width * m_height;
 
-	// verify format, convert otherwise
-	if (m_format != GL_RGBA)
-	{
-		convert(GL_RGBA);
-	}
+    // verify format, convert otherwise
+    if (m_format != GL_RGBA)
+    {
+        convert(GL_RGBA);
+    }
 
-	// format: RGBA
-	if (m_format == GL_RGBA)
-	{
-		unsigned char r = a_color.getR();
+    // format: RGBA
+    if (m_format == GL_RGBA)
+    {
+        unsigned char r = a_color.getR();
         unsigned char g = a_color.getG();
         unsigned char b = a_color.getB();
         unsigned char* data = (unsigned char*)m_data;
         unsigned int i;
         for (i=0; i<size; i++)
         {
-			if ((data[0] == r) && (data[1] == g) && (data[2] == b))
-			{
-				data[3] = a_transparencyLevel;
-			}
+            if ((data[0] == r) && (data[1] == g) && (data[2] == b))
+            {
+                data[3] = a_transparencyLevel;
+            }
             
             data+=4;
         }
-	}
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define a transparent component to all image pixels.
 
-    \fn     void cImage::setTransparency(const unsigned char a_transparencyLevel)
-
-	\param  a_transparencyLevel  Transparency level.
+    \param  a_transparencyLevel  Transparency level.
 */
-//===========================================================================
+//==============================================================================
 void cImage::setTransparency(const unsigned char a_transparencyLevel)
 {
     // check if image exists
@@ -1081,71 +1043,66 @@ void cImage::setTransparency(const unsigned char a_transparencyLevel)
     // image size
     unsigned int size = m_width * m_height;
 
-	// verify format, convert otherwise
-	if (m_format != GL_RGBA)
-	{
-		convert(GL_RGBA);
-	}
+    // verify format, convert otherwise
+    if (m_format != GL_RGBA)
+    {
+        convert(GL_RGBA);
+    }
 
-	// format: RGBA
-	if (m_format == GL_RGBA)
-	{
-		unsigned char* data = &m_data[3];
+    // format: RGBA
+    if (m_format == GL_RGBA)
+    {
+        unsigned char* data = &m_data[3];
         unsigned int i;
         for (i=0; i<size; i++)
         {
-			*data = a_transparencyLevel;
+            *data = a_transparencyLevel;
             data+=4;
         }
-	}
+    }
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Define a pixel color to be transparent. If the image is not in GL_RGBA 
-	format, it is first converted in order to enable pixel transparency
-	capabilities.
-
-    \fn     void cImage::setTransparentColor(const unsigned char a_r,
-								 const unsigned char a_g,
-								 const unsigned char a_b, 
-								 const unsigned char a_transparencyLevel)
+    format, it is first converted in order to enable pixel transparency
+    capabilities.
 
     \param  a_r Red component of selected pixel color.
-	\param  a_r Green component of selected pixel color.
-	\param  a_r Blue component of selected pixel color.
-	\param  a_transparencyLevel  Transparency level.
+    \param  a_g Green component of selected pixel color.
+    \param  a_b Blue component of selected pixel color.
+    \param  a_transparencyLevel  Transparency level.
 */
-//===========================================================================
+//==============================================================================
 void cImage::setTransparentColor(const unsigned char a_r,
-								 const unsigned char a_g,
-								 const unsigned char a_b, 
-								 const unsigned char a_transparencyLevel)
+    const unsigned char a_g,
+    const unsigned char a_b, 
+    const unsigned char a_transparencyLevel)
 {
-	cColorb color(a_r, a_g, a_b);
-	setTransparentColor(color, a_transparencyLevel);
+    cColorb color(a_r, a_g, a_b);
+    setTransparentColor(color, a_transparencyLevel);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Loads this image from the specified file.  Returns true if all
     goes well.  Note that regardless of whether it succeeds, 
     this over-writes any image that had previously been loaded by this object.    
     Always converts the resulting image to RGB.    
 
-    \fn     bool cImage::loadFromFile(const string& a_filename)
     \param  a_filename  Image filename
+    \return Return __true__ if file loaded successfully, __false__ otherwize.
 */
-//===========================================================================
+//==============================================================================
 bool cImage::loadFromFile(const string& a_filename)
 {
     // cleanup previous image
     cleanup();
 
     // find extension
-    string extension = cFindFileExtension(a_filename);
+    string extension = cGetFileExtension(a_filename);
 
     // we need a file extension to figure out file type
     if (extension.length() == 0)
@@ -1154,7 +1111,7 @@ bool cImage::loadFromFile(const string& a_filename)
     }
 
     // convert string to lower extension
-    string fileType = cStringToLower(extension);
+    string fileType = cStrToLower(extension);
 
     // result for loading file
     bool result = false;
@@ -1211,19 +1168,18 @@ bool cImage::loadFromFile(const string& a_filename)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Saves this image from the specified file.  Returns 0 if all
+    Saves this image from the specified file.  Returns __true__ if all
     goes well. All images are saved in RGB format. 
 
-    \fn     bool cImage::saveToFile(const string& a_filename)
     \param  a_filename  Image filename
 */
-//===========================================================================
+//==============================================================================
 bool cImage::saveToFile(const string& a_filename)
 {
     // find extension
-    string extension = cFindFileExtension(a_filename);
+    string extension = cGetFileExtension(a_filename);
 
     // we need a file extension to figure out file type
     if (extension.length() == 0)
@@ -1232,7 +1188,7 @@ bool cImage::saveToFile(const string& a_filename)
     }
 
     // convert string to lower extension
-    string fileType = cStringToLower(extension);
+    string fileType = cStrToLower(extension);
 
     // image
     cImage* image = this;
@@ -1292,3 +1248,6 @@ bool cImage::saveToFile(const string& a_filename)
 }
 
 
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

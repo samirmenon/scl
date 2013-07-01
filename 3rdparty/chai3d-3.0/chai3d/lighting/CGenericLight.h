@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,19 +39,23 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 368 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CGenericLightH
 #define CGenericLightH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CColor.h"
 #include "math/CMaths.h"
 #include "lighting/CShadowMap.h"
 #include "world/CGenericObject.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CGenericLight.h
 
@@ -59,37 +63,42 @@
     <b> Lighting </b> \n 
     Generic Light Source.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cGenericLight
     \ingroup    lighting
 
-    \brief      
+    \brief
+    Abstract class for light sources.
+
+    \details
     CGenericLight is a base class for describing light sources.
 */
-//===========================================================================
+//==============================================================================
 class cGenericLight : public cGenericObject
 {
-  friend class cWorld;
-
-  public:
+    friend class cWorld;
     
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    //! Constructor of cLight.
+public:
+
+    //! Constructor of cGenericLight.
     cGenericLight(cWorld* a_world);
-	
-    //! Destructor of cLight.
+    
+    //! Destructor of cGenericLight.
     virtual ~cGenericLight();
 
 
-    //-----------------------------------------------------------------------
-    // GENERAL METHODS:
-    //----------------------------------------------------------------------- 
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //-------------------------------------------------------------------------- 
+
+public:
 
     //! Enable or disable light source.
     inline void setEnabled(const bool a_enabled) { m_enabled = a_enabled; }
@@ -116,54 +125,62 @@ class cGenericLight : public cGenericObject
     inline GLint getGLLightNumber() const { return(m_glLightNumber); }
 
 
-	//-----------------------------------------------------------------------
-    // MEMBERS:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC MEMBERS:
+    //-----------------------------------------------------------------------
+
+public:
 
     //! Ambient light component.
     cColorf m_ambient;
-	
+    
     //! Diffuse light component.
     cColorf m_diffuse;
     
-	//! Specular light component.
+    //! Specular light component.
     cColorf m_specular;
 
 
-	//-----------------------------------------------------------------------
-	// METHODS:
-	//-----------------------------------------------------------------------
-    
+    //-----------------------------------------------------------------------
+    // VIRTUAL PROTECTED METHODS:
+    //-----------------------------------------------------------------------
+
+protected:
+
     //! Render the lighting properties of this light source in OpenGL.
     virtual void renderLightSource(cRenderOptions& a_options){}
 
-    //! Render a graphical representation (display model) of the light source. (used for debuging purposes typically).
+    //! Render a graphical representation (display model) of the light source. (used for debugging purposes typically).
     virtual void render(cRenderOptions& a_options){}
 
 
-  protected:
-  
-  	//-----------------------------------------------------------------------
-    // MEMBERS:
-	//-----------------------------------------------------------------------
-	
+    //-----------------------------------------------------------------------
+    // PROTECTED MEMBERS:
+    //-----------------------------------------------------------------------
+
+protected:
+
     //! Parent world in which light source is located.
     cWorld* m_worldParent;
 
-  	//! Enable light source (ON/OFF).
+    //! Enable light source (ON/OFF).
     bool m_enabled;
                
     //! OpenGL reference number for the current light source. This number ranges from 0 to 7.
     GLint m_glLightNumber;
 
-    //! If \b true then a two sided light source model is used.
+    //! If __true__ then a two sided light source model is used.
     GLint m_useTwoSideLightModel;
 
-    //! If \b true then a graphical representation of the light source is rendered.
+    //! If __true__ then a graphical representation of the light source is rendered.
     bool m_displayEnabled;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

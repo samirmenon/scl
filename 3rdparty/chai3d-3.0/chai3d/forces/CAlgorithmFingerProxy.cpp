@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,20 +39,24 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 349 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "forces/CAlgorithmFingerProxy.h"
 #include "world/CWorld.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cAlgorithmFingerProxy.
 
     \fn       cAlgorithmFingerProxy::cAlgorithmFingerProxy()
 */
-//===========================================================================
+//==============================================================================
 cAlgorithmFingerProxy::cAlgorithmFingerProxy()
 {
     // initialize world pointer
@@ -113,7 +117,7 @@ cAlgorithmFingerProxy::cAlgorithmFingerProxy()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Initialize the algorithm, including setting the pointer to the world
     in which the algorithm is to operate, and setting the initial position
@@ -124,7 +128,7 @@ cAlgorithmFingerProxy::cAlgorithmFingerProxy()
     \param    a_world  Pointer to world in which force algorithm is operating.
     \param    a_initialGlobalPosition  Initial position of the device.
 */
-//===========================================================================
+//==============================================================================
 void cAlgorithmFingerProxy::initialize(cWorld* a_world, const cVector3d& a_initialGlobalPosition)
 {
     // reset some variables
@@ -148,13 +152,13 @@ void cAlgorithmFingerProxy::initialize(cWorld* a_world, const cVector3d& a_initi
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Reset the algorithm. Set the proxy position to the device position.
 
     \fn       void cAlgorithmFingerProxy::reset()
 */
-//===========================================================================
+//==============================================================================
 void cAlgorithmFingerProxy::reset()
 {
     // reset some variables
@@ -174,14 +178,14 @@ void cAlgorithmFingerProxy::reset()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the epsilon value which is used during geometry computation of the
     proxy model.
 
     \fn       void cAlgorithmFingerProxy::setEpsilonBaseValue(double a_value)
 */
-//===========================================================================
+//==============================================================================
 void cAlgorithmFingerProxy::setEpsilonBaseValue(double a_value)
 {
     m_epsilonBaseValue = a_value;
@@ -191,7 +195,7 @@ void cAlgorithmFingerProxy::setEpsilonBaseValue(double a_value)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     This method computes the force to add to the device due to any collisions
     with meshes by calling computeNextBestProxyPosition() to update the
@@ -206,7 +210,7 @@ void cAlgorithmFingerProxy::setEpsilonBaseValue(double a_value)
     \return   Return the force to add to the device due to any collisions
               with meshes.
 */
-//===========================================================================
+//==============================================================================
 cVector3d cAlgorithmFingerProxy::computeForces(const cVector3d& a_toolPos,
                                               const cVector3d& a_toolVel)
 {
@@ -237,7 +241,7 @@ cVector3d cAlgorithmFingerProxy::computeForces(const cVector3d& a_toolPos,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Given the new position of the device and considering the current
     position of the proxy, this function attempts to move the proxy towards
@@ -251,7 +255,7 @@ cVector3d cAlgorithmFingerProxy::computeForces(const cVector3d& a_toolPos,
     \fn		void cAlgorithmFingerProxy::computeNextBestProxyPosition(const cVector3d& a_goal)
 	\param  a_goal  The goal towards which to move the proxy, subject to constraints
 */
-//===========================================================================
+//==============================================================================
 void cAlgorithmFingerProxy::computeNextBestProxyPosition(const cVector3d& a_goal)
 {
     if (m_useDynamicProxy)
@@ -292,7 +296,7 @@ void cAlgorithmFingerProxy::computeNextBestProxyPosition(const cVector3d& a_goal
     }
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints0(const cVector3d& a_goalGlobalPos)
 {
@@ -435,9 +439,9 @@ bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints0(const cVecto
     // a first collision has occurred
     m_algoCounter = 1;
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // FIRST COLLISION OCCURES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     // We want the center of the proxy to move as far toward the triangle as it can,
     // but we want it to stop when the _sphere_ representing the proxy hits the
@@ -492,7 +496,7 @@ bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints0(const cVecto
     return (true);
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints1(const cVector3d& a_goalGlobalPos)
 {
@@ -609,9 +613,9 @@ bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints1(const cVecto
     // a second collision has occurred
     m_algoCounter = 2;
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // SECOND COLLISION OCCURES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // We want the center of the proxy to move as far toward the triangle as it can,
     // but we want it to stop when the _sphere_ representing the proxy hits the
     // triangle.  We want to compute how far the proxy center will have to
@@ -665,7 +669,7 @@ bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints1(const cVecto
     return (true);
 }
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints2(const cVector3d& a_goalGlobalPos)
 {
@@ -774,9 +778,9 @@ bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints2(const cVecto
         return (false);
     }
 
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // THIRD COLLISION OCCURES:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // We want the center of the proxy to move as far toward the triangle as it can,
     // but we want it to stop when the _sphere_ representing the proxy hits the
     // triangle.  We want to compute how far the proxy center will have to
@@ -828,7 +832,7 @@ bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints2(const cVecto
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Test whether the proxy has reached the goal point, allowing for subclass-
     specific approximations.
@@ -838,7 +842,7 @@ bool cAlgorithmFingerProxy::computeNextProxyPositionWithContraints2(const cVecto
     \param    a_proxy       The current position of the proxy
     \return   true is the proxy has effectively reached the goal
 */
-//===========================================================================
+//==============================================================================
 bool cAlgorithmFingerProxy::goalAchieved(const cVector3d& a_proxy, const cVector3d& a_goal) const
 {
     if (m_useDynamicProxy)
@@ -852,7 +856,7 @@ bool cAlgorithmFingerProxy::goalAchieved(const cVector3d& a_proxy, const cVector
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Attempt to move the proxy, subject to friction constraints.  This is called
     from computeNextBestProxyPosition when the proxy is ready to move along a
@@ -867,7 +871,7 @@ bool cAlgorithmFingerProxy::goalAchieved(const cVector3d& a_proxy, const cVector
     \param    a_normal      The surface normal at the obstructing surface
     \param    a_parent      The surface along which we're moving
 */
-//===========================================================================
+//==============================================================================
 void cAlgorithmFingerProxy::testFrictionAndMoveProxy(const cVector3d& a_goal, 
 													const cVector3d& a_proxy,
 													cVector3d& a_normal, 
@@ -982,7 +986,7 @@ void cAlgorithmFingerProxy::testFrictionAndMoveProxy(const cVector3d& a_goal,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     This method uses the information computed earlier in
     computeNextProxyPosition() to determine the force to apply to the device.
@@ -992,7 +996,7 @@ void cAlgorithmFingerProxy::testFrictionAndMoveProxy(const cVector3d& a_goal,
 
     \fn       void cAlgorithmFingerProxy::updateForce()
 */
-//===========================================================================
+//==============================================================================
 void cAlgorithmFingerProxy::updateForce()
 {
     // initialize variables
@@ -1087,9 +1091,9 @@ void cAlgorithmFingerProxy::updateForce()
                 double v01 = m_collisionEvents[i]->m_trianglePosV01;
                 double v02 = m_collisionEvents[i]->m_trianglePosV02;
 
-                //--------------------------------------------------------------------------------------
+                //--------------------------------------------------------------------------------------------
                 // TEXTURE RENDERING
-                //--------------------------------------------------------------------------------------
+                //--------------------------------------------------------------------------------------------
 
 				// check texture coordinates
 				bool textureAvailable = false;		
@@ -1195,14 +1199,14 @@ void cAlgorithmFingerProxy::updateForce()
 							    double c01 = f * ( m11 * dtx - m01 * dty);
 							    double c02 = f * (-m10 * dtx + m00 * dty);
 
-                                cVector3d v01 = vertex1 - vertex0;
-                                cVector3d v02 = vertex2 - vertex0;
-                                double v01_length = v01.length();
-                                double v02_length = v02.length();
+                                cVector3d vert01 = vertex1 - vertex0;
+                                cVector3d vert02 = vertex2 - vertex0;
+                                double v01_length = vert01.length();
+                                double v02_length = vert02.length();
                                 
                                 if ((v01_length > 0.0) && (v02_length > 0.0))
                                 {
-                                    gradientSurface = (c01 / cSqr(v01_length)) * v01 + (c02 / cSqr(v02_length)) * v02;
+                                    gradientSurface = (c01 / cSqr(v01_length)) * vert01 + (c02 / cSqr(v02_length)) * vert02;
                                 }
                                 else
                                 {
@@ -1253,13 +1257,13 @@ void cAlgorithmFingerProxy::updateForce()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     TBC
 
     \fn       cVector3d cAlgorithmFingerProxy::computeAdjustedSurfaceNormal(cCollisionEvent* a_contactPoint
 */
-//===========================================================================
+//==============================================================================
 cVector3d cAlgorithmFingerProxy::computeShadedSurfaceNormal(cCollisionEvent* a_contactPoint)
 {
     // get triangle physical normal
@@ -1310,9 +1314,9 @@ cVector3d cAlgorithmFingerProxy::computeShadedSurfaceNormal(cCollisionEvent* a_c
 			}
 
 
-            //--------------------------------------------------------------------------------------
+            //--------------------------------------------------------------------------------------------
             // FORCE SHADING
-            //--------------------------------------------------------------------------------------
+            //--------------------------------------------------------------------------------------------
             if (useForceShading)
             {
                 // compute angles between normals
@@ -1354,16 +1358,18 @@ cVector3d cAlgorithmFingerProxy::computeShadedSurfaceNormal(cCollisionEvent* a_c
     return (normal);
 }
 
-//===========================================================================
+//==============================================================================
 /*!
     Render the force algorithm graphicaly in OpenGL.
 
     \fn     void cAlgorithmFingerProxy::render(cRenderOptions& a_options)
     \param  a_options  Rendering options.
 */
-//===========================================================================
+//==============================================================================
 void cAlgorithmFingerProxy::render(cRenderOptions& a_options)
 {
+#ifdef C_USE_OPENGL
+
 	if (!m_showEnabled) { return; }
 
 	/////////////////////////////////////////////////////////////////////////
@@ -1389,5 +1395,11 @@ void cAlgorithmFingerProxy::render(cRenderOptions& a_options)
 	    // restore lighting to default value
 	    glEnable(GL_LIGHTING);
 	}
+
+#endif
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

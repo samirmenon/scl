@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,67 +37,54 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 800 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1064 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CHapticDeviceHandlerH
 #define CHapticDeviceHandlerH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#include "devices/CGenericHapticDevice.h"
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     \file       CHapticDeviceHandler.h
 
     \brief
-    <b> Devices </b> \n 
+    <b> Devices </b> \n
     Universal Haptic Device Handler.
 */
-//===========================================================================
+//==============================================================================
 
-#include "devices/CGenericHapticDevice.h"
-
-#if defined(C_ENABLE_VIRTUAL_DEVICE_SUPPORT)
-#include "devices/CVirtualDevice.h"
-#endif
-
-#if defined(C_ENABLE_DELTA_DEVICE_SUPPORT)
-#include "devices/CDeltaDevices.h"
-#endif
-
-#if defined(C_ENABLE_FALCON_DEVICE_SUPPORT)
-#include "devices/CFalconDevice.h"
-#endif
-
-#if defined(C_ENABLE_PHANTOM_DEVICE_SUPPORT)
-#include "devices/CPhantomDevices.h"
-#endif
-
-#if defined(C_ENABLE_CUSTOM_DEVICE_SUPPORT)
-#include "devices/CMyCustomDevice.h"
-#endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 //! Maximum number of devices that can be connected at the same time.
 const unsigned int C_MAX_HAPTIC_DEVICES = 16;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cHapticDeviceHandler
     \ingroup    devices  
 
     \brief
+    Universal haptic device manager.
+
+    \details
     This class implements a manager which lists the different devices
     available on your computer and provides handles to them.
 */
-//===========================================================================
+//==============================================================================
 class cHapticDeviceHandler
 {
-  public:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Constructor of cHapticDeviceHandler.
     cHapticDeviceHandler();
@@ -106,9 +93,11 @@ class cHapticDeviceHandler
     virtual ~cHapticDeviceHandler();
 
 
-    //-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Returns the number of devices connected to your computer.
     unsigned int getNumDevices() { return (m_numDevices); }
@@ -116,16 +105,20 @@ class cHapticDeviceHandler
     //! Updates information regarding the devices that are connected to your computer.
     void update();
 
-    //! Returns the specifications of the ith device.
+    //! Returns the specifications of the i-th device.
     int getDeviceSpecifications(cHapticDeviceInfo& a_deviceSpecifications, 
-								unsigned int a_index = 0);
+                                unsigned int a_index = 0);
 
-    //! Returns a handle to the ith device if available.
+    //! Returns a handle to the i-th device if available.
     int getDevice(cGenericHapticDevice*& a_hapticDevice, 
-				  unsigned int a_index = 0);
+                  unsigned int a_index = 0);
 
 
-  private:
+    //--------------------------------------------------------------------------
+    // PRIVATE MEMBERS:
+    //--------------------------------------------------------------------------
+
+private:
 
     //! Number of devices.
     unsigned int m_numDevices;
@@ -137,6 +130,10 @@ class cHapticDeviceHandler
     cGenericHapticDevice* m_nullHapticDevice;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

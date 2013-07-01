@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,17 +37,18 @@
 
     \author    <http://www.chai3d.org>
     \author    Sebastien Grange
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 699 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1065 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "files/CFileImageBMP.h"
-//---------------------------------------------------------------------------
+using namespace std;
+//------------------------------------------------------------------------------
 #include <cstring>
 #include <fstream>
 using namespace std;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 #if defined (WIN32) | defined (WIN64)
 
@@ -112,21 +113,25 @@ typedef enum
 
 #endif
 
-//---------------------------------------------------------------------------
-//===========================================================================
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Load a BMP image from a file into a cImage structure. 
-    If the operation succeeds, then the functions returns \b true and the 
+    If the operation succeeds, then the functions returns __true__ and the 
     image data is loaded into image structure a_image. 
-    If the operation fails, then the function returns \b false. 
+    If the operation fails, then the function returns __false__. 
     In both cases, previous image information stored in a_image is erased.
 
-    \fn     bool cLoadFileBMP(cImage* a_image, string a_filename)
     \param  a_image  Image structure. 
-    \param  a_fileName  Filename.
-    \return Returns \b true in case of success, \b false otherwise.
+    \param  a_filename  Filename.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cLoadFileBMP(cImage* a_image, string a_filename)
 {
     BITMAPINFOHEADER  bmih;
@@ -353,19 +358,18 @@ bool cLoadFileBMP(cImage* a_image, string a_filename)
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Save a BMP image from a cImage structure to a file. 
-    If the operation succeeds, then the functions returns \b true and the 
+    If the operation succeeds, then the functions returns __true__ and the 
     image data is saved to a file. 
-    If the operation fails, then the function returns \b false. 
+    If the operation fails, then the function returns __false__. 
 
-    \fn     bool cSaveFileBMP(cImage* a_image, string a_filename)
     \param  a_image  Image structure. 
-    \param  a_fileName  Filename.
-    \return Returns \b true in case of success, \b false otherwise.
+    \param  a_filename  Filename.
+    \return Returns __true__ in case of success, __false__ otherwise.
 */
-//===========================================================================
+//==============================================================================
 bool cSaveFileBMP(cImage* a_image, string a_filename)
 {
     BITMAPINFOHEADER   bmih;
@@ -553,3 +557,8 @@ bool cSaveFileBMP(cImage* a_image, string a_filename)
 
     return true;
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

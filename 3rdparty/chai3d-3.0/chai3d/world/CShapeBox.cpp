@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,25 +37,28 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 738 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1067 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CShapeBox.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cShapeBox.
 
-    \fn     cShapeBox::cShapeBox(const double& a_radius)
     \param  a_sizeX    size of box along axis X.
     \param  a_sizeY    size of box along axis Y.
     \param  a_sizeZ    size of box along axis Z.
     \param  a_material  Material property to be applied to object.
 */
-//===========================================================================
+//==============================================================================
 cShapeBox::cShapeBox(const double& a_sizeX, 
                      const double& a_sizeY, 
                      const double& a_sizeZ,
@@ -83,23 +86,18 @@ cShapeBox::cShapeBox(const double& a_sizeX,
 };
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a copy of itself.
 
-        \fn     cShapeBox* cShapeBox::copy(const bool a_duplicateMaterialData,
-                           const bool a_duplicateTextureData, 
-                           const bool a_duplicateMeshData,
-                           const bool a_buildCollisionDetector)
+    \param  a_duplicateMaterialData  If __true__, material (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateTextureData  If __true__, texture data (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateMeshData  If __true__, mesh data (if available) is duplicated, otherwise it is shared.
+    \param  a_buildCollisionDetector  If __true__, collision detector (if available) is duplicated, otherwise it is shared.
 
-    \param      a_duplicateMaterialData  If \b true, material (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateTextureData  If \b true, texture data (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateMeshData  If \b true, mesh data (if available) is duplicated, otherwise it is shared.
-    \param      a_buildCollisionDetector  If \b true, collision detector (if available) is duplicated, otherwise it is shared.
-
-	\return		Return new object.
+    \return Return new object.
 */
-//===========================================================================
+//==============================================================================
 cShapeBox* cShapeBox::copy(const bool a_duplicateMaterialData,
                            const bool a_duplicateTextureData, 
                            const bool a_duplicateMeshData,
@@ -118,22 +116,21 @@ cShapeBox* cShapeBox::copy(const bool a_duplicateMaterialData,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Set the dimensions of the box along each axis.
 
-    \fn     void cShapeBox::setSize(const double& a_sizeX, const double& a_sizeY, const double& a_sizeZ)
-    \param  a_sizeX    size of box along axis X.
-    \param  a_sizeY    size of box along axis Y.
-    \param  a_sizeZ    size of box along axis Z.
+    \param  a_sizeX  Size of box along axis X.
+    \param  a_sizeY  Size of box along axis Y.
+    \param  a_sizeZ  Size of box along axis Z.
 */
-//===========================================================================
+//==============================================================================
 void cShapeBox::setSize(const double& a_sizeX, const double& a_sizeY, const double& a_sizeZ)
 {
     // set dimensions
     m_hSizeX = 0.5 * cAbs(a_sizeX);
-	m_hSizeY = 0.5 * cAbs(a_sizeY);
-	m_hSizeZ = 0.5 * cAbs(a_sizeZ);
+    m_hSizeY = 0.5 * cAbs(a_sizeY);
+    m_hSizeZ = 0.5 * cAbs(a_sizeZ);
 
     // update bounding box
     updateBoundaryBox();
@@ -143,26 +140,27 @@ void cShapeBox::setSize(const double& a_sizeX, const double& a_sizeY, const doub
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Render box in OpenGL
 
-    \fn       void cShapeBox::render(cRenderOptions& a_options)
-    \param    a_options  Render options
+    \param  a_options  Render options.
 */
-//===========================================================================
+//==============================================================================
 void cShapeBox::render(cRenderOptions& a_options)
 {
-	/////////////////////////////////////////////////////////////////////////
-	// Render parts that use material properties
-	/////////////////////////////////////////////////////////////////////////
-	if (SECTION_RENDER_PARTS_WITH_MATERIALS(a_options, m_useTransparency))
-	{
-		// render material properties
-		if (m_useMaterialProperty)
-		{
-			m_material->render(a_options);
-		}
+#ifdef C_USE_OPENGL
+
+    /////////////////////////////////////////////////////////////////////////
+    // Render parts that use material properties
+    /////////////////////////////////////////////////////////////////////////
+    if (SECTION_RENDER_PARTS_WITH_MATERIALS(a_options, m_useTransparency))
+    {
+        // render material properties
+        if (m_useMaterialProperty)
+        {
+            m_material->render(a_options);
+        }
 
 
         if (!m_displayList.render(m_useDisplayList))
@@ -170,186 +168,193 @@ void cShapeBox::render(cRenderOptions& a_options)
             // create display list if requested
             m_displayList.begin(m_useDisplayList);
 
-		    // render box
-		    glBegin(GL_POLYGON);
-			    glNormal3d(1.0, 0.0, 0.0);
-			    glVertex3d(m_hSizeX, m_hSizeY, m_hSizeZ);
-			    glVertex3d(m_hSizeX,-m_hSizeY, m_hSizeZ);
-			    glVertex3d(m_hSizeX,-m_hSizeY,-m_hSizeZ);
-			    glVertex3d(m_hSizeX, m_hSizeY,-m_hSizeZ);
-		    glEnd();
-		
-		    glBegin(GL_POLYGON);
-			    glNormal3d(-1.0, 0.0, 0.0);
-			    glVertex3d(-m_hSizeX, m_hSizeY,-m_hSizeZ);
-			    glVertex3d(-m_hSizeX,-m_hSizeY,-m_hSizeZ);
-			    glVertex3d(-m_hSizeX,-m_hSizeY, m_hSizeZ);
-			    glVertex3d(-m_hSizeX, m_hSizeY, m_hSizeZ);
-		    glEnd();
+            // render box
+            glBegin(GL_POLYGON);
+                glNormal3d(1.0, 0.0, 0.0);
+                glVertex3d(m_hSizeX, m_hSizeY, m_hSizeZ);
+                glVertex3d(m_hSizeX,-m_hSizeY, m_hSizeZ);
+                glVertex3d(m_hSizeX,-m_hSizeY,-m_hSizeZ);
+                glVertex3d(m_hSizeX, m_hSizeY,-m_hSizeZ);
+            glEnd();
+        
+            glBegin(GL_POLYGON);
+                glNormal3d(-1.0, 0.0, 0.0);
+                glVertex3d(-m_hSizeX, m_hSizeY,-m_hSizeZ);
+                glVertex3d(-m_hSizeX,-m_hSizeY,-m_hSizeZ);
+                glVertex3d(-m_hSizeX,-m_hSizeY, m_hSizeZ);
+                glVertex3d(-m_hSizeX, m_hSizeY, m_hSizeZ);
+            glEnd();
 
-		    glBegin(GL_POLYGON);
-			    glNormal3d(0.0, 1.0, 0.0);
-			    glVertex3d( m_hSizeX, m_hSizeY,-m_hSizeZ);
-			    glVertex3d(-m_hSizeX, m_hSizeY,-m_hSizeZ);
-			    glVertex3d(-m_hSizeX, m_hSizeY, m_hSizeZ);
-			    glVertex3d( m_hSizeX, m_hSizeY, m_hSizeZ);
-		    glEnd();
-		
-		    glBegin(GL_POLYGON);
-			    glNormal3d(0.0,-1.0, 0.0);
-			    glVertex3d( m_hSizeX,-m_hSizeY, m_hSizeZ);
-			    glVertex3d(-m_hSizeX,-m_hSizeY, m_hSizeZ);
-			    glVertex3d(-m_hSizeX,-m_hSizeY,-m_hSizeZ);
-			    glVertex3d( m_hSizeX,-m_hSizeY,-m_hSizeZ);
-		    glEnd();
+            glBegin(GL_POLYGON);
+                glNormal3d(0.0, 1.0, 0.0);
+                glVertex3d( m_hSizeX, m_hSizeY,-m_hSizeZ);
+                glVertex3d(-m_hSizeX, m_hSizeY,-m_hSizeZ);
+                glVertex3d(-m_hSizeX, m_hSizeY, m_hSizeZ);
+                glVertex3d( m_hSizeX, m_hSizeY, m_hSizeZ);
+            glEnd();
+        
+            glBegin(GL_POLYGON);
+                glNormal3d(0.0,-1.0, 0.0);
+                glVertex3d( m_hSizeX,-m_hSizeY, m_hSizeZ);
+                glVertex3d(-m_hSizeX,-m_hSizeY, m_hSizeZ);
+                glVertex3d(-m_hSizeX,-m_hSizeY,-m_hSizeZ);
+                glVertex3d( m_hSizeX,-m_hSizeY,-m_hSizeZ);
+            glEnd();
 
-		    glBegin(GL_POLYGON);
-			    glNormal3d(0.0, 0.0, 1.0);
-			    glVertex3d( m_hSizeX, m_hSizeY, m_hSizeZ);
-			    glVertex3d(-m_hSizeX, m_hSizeY, m_hSizeZ);
-			    glVertex3d(-m_hSizeX,-m_hSizeY, m_hSizeZ);
-			    glVertex3d( m_hSizeX,-m_hSizeY, m_hSizeZ);
-		    glEnd();
-		    glBegin(GL_POLYGON);
-			    glNormal3d(0.0, 0.0,-1.0);
-			    glVertex3d( m_hSizeX,-m_hSizeY,-m_hSizeZ);
-			    glVertex3d(-m_hSizeX,-m_hSizeY,-m_hSizeZ);
-			    glVertex3d(-m_hSizeX, m_hSizeY,-m_hSizeZ);
-			    glVertex3d( m_hSizeX, m_hSizeY,-m_hSizeZ);
-		    glEnd();
+            glBegin(GL_POLYGON);
+                glNormal3d(0.0, 0.0, 1.0);
+                glVertex3d( m_hSizeX, m_hSizeY, m_hSizeZ);
+                glVertex3d(-m_hSizeX, m_hSizeY, m_hSizeZ);
+                glVertex3d(-m_hSizeX,-m_hSizeY, m_hSizeZ);
+                glVertex3d( m_hSizeX,-m_hSizeY, m_hSizeZ);
+            glEnd();
+            glBegin(GL_POLYGON);
+                glNormal3d(0.0, 0.0,-1.0);
+                glVertex3d( m_hSizeX,-m_hSizeY,-m_hSizeZ);
+                glVertex3d(-m_hSizeX,-m_hSizeY,-m_hSizeZ);
+                glVertex3d(-m_hSizeX, m_hSizeY,-m_hSizeZ);
+                glVertex3d( m_hSizeX, m_hSizeY,-m_hSizeZ);
+            glEnd();
 
             // finalize display list
             m_displayList.end(true);
         }
-	}
+    }
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     From the position of the tool, search for the nearest point located
     at the surface of the current object. Decide if the point is located inside
     or outside of the object
 
-    \fn     void cShapeBox::computeLocalInteraction(const cVector3d& a_toolPos,
-                                                      const cVector3d& a_toolVel,
-                                                      const unsigned int a_IDN)
     \param  a_toolPos  Position of the tool.
     \param  a_toolVel  Velocity of the tool.
     \param  a_IDN  Identification number of the force algorithm.
 */
-//===========================================================================
+//==============================================================================
 void cShapeBox::computeLocalInteraction(const cVector3d& a_toolPos,
                                           const cVector3d& a_toolVel,
                                           const unsigned int a_IDN)
 {
-	// temp variables
-	bool inside;
-	cVector3d projectedPoint;
-	
-	// sign
-	double signX = cSign(a_toolPos(0) );
-	double signY = cSign(a_toolPos(1) );
-	double signZ = cSign(a_toolPos(2) );
+    // temp variables
+    bool inside;
+    cVector3d projectedPoint;
+    cVector3d normal(1,0,0);
+    
+    // sign
+    double signX = cSign(a_toolPos(0) );
+    double signY = cSign(a_toolPos(1) );
+    double signZ = cSign(a_toolPos(2) );
 
-	// check if tool is located inside box
-	double tx = (signX * a_toolPos(0) );
-	double ty = (signY * a_toolPos(1) );
-	double tz = (signZ * a_toolPos(2) );
-	
-	inside = false;
-	if (cContains(tx, 0.0, m_hSizeX))
-	{
-		if (cContains(ty, 0.0, m_hSizeY))
-		{
-			if (cContains(tz, 0.0, m_hSizeZ))
-			{
-				inside = true;
-			}
-		}
-	}
+    // check if tool is located inside box
+    double tx = (signX * a_toolPos(0) );
+    double ty = (signY * a_toolPos(1) );
+    double tz = (signZ * a_toolPos(2) );
+    
+    inside = false;
+    if (cContains(tx, 0.0, m_hSizeX))
+    {
+        if (cContains(ty, 0.0, m_hSizeY))
+        {
+            if (cContains(tz, 0.0, m_hSizeZ))
+            {
+                inside = true;
+            }
+        }
+    }
 
-	if (inside)
-	{
-		// tool is located inside box, compute distance from tool to surface
-		double m_distanceX = m_hSizeX - (signX * a_toolPos(0) );
-		double m_distanceY = m_hSizeY - (signY * a_toolPos(1) );
-		double m_distanceZ = m_hSizeZ - (signZ * a_toolPos(2) );
+    if (inside)
+    {
+        // tool is located inside box, compute distance from tool to surface
+        double m_distanceX = m_hSizeX - (signX * a_toolPos(0) );
+        double m_distanceY = m_hSizeY - (signY * a_toolPos(1) );
+        double m_distanceZ = m_hSizeZ - (signZ * a_toolPos(2) );
 
-		// search nearest surface
-		if (m_distanceX < m_distanceY)
-		{
-			if (m_distanceX < m_distanceZ)
-			{
-				projectedPoint(0)  = signX * m_hSizeX;
-				projectedPoint(1)  = a_toolPos(1) ;
-				projectedPoint(2)  = a_toolPos(2) ;
-			}
-			else
-			{
-				projectedPoint(0)  = a_toolPos(0) ;
-				projectedPoint(1)  = a_toolPos(1) ;
-				projectedPoint(2)  = signZ * m_hSizeZ;
-			}
-		}
-		else
-		{
-			if (m_distanceY < m_distanceZ)
-			{
-				projectedPoint(0)  = a_toolPos(0) ;
-				projectedPoint(1)  = signY * m_hSizeY;
-				projectedPoint(2)  = a_toolPos(2) ;
-			}
-			else
-			{
-				projectedPoint(0)  = a_toolPos(0) ;
-				projectedPoint(1)  = a_toolPos(1) ;
-				projectedPoint(2)  = signZ * m_hSizeZ;
-			}
-		}
-	}
-	else
-	{
-		projectedPoint(0)  = cClamp(a_toolPos(0) , -m_hSizeX, m_hSizeX);
-		projectedPoint(1)  = cClamp(a_toolPos(1) , -m_hSizeY, m_hSizeY);
-		projectedPoint(2)  = cClamp(a_toolPos(2) , -m_hSizeZ, m_hSizeZ);
-	}
+        // search nearest surface
+        if (m_distanceX < m_distanceY)
+        {
+            if (m_distanceX < m_distanceZ)
+            {
+                projectedPoint(0)  = signX * m_hSizeX;
+                projectedPoint(1)  = a_toolPos(1) ;
+                projectedPoint(2)  = a_toolPos(2) ;
+                normal.set(signX * 1.0, 0.0, 0.0);
+            }
+            else
+            {
+                projectedPoint(0)  = a_toolPos(0) ;
+                projectedPoint(1)  = a_toolPos(1) ;
+                projectedPoint(2)  = signZ * m_hSizeZ;
+                normal.set(0.0, 0.0, signZ * 1.0);
+            }
+        }
+        else
+        {
+            if (m_distanceY < m_distanceZ)
+            {
+                projectedPoint(0)  = a_toolPos(0) ;
+                projectedPoint(1)  = signY * m_hSizeY;
+                projectedPoint(2)  = a_toolPos(2) ;
+                normal.set(0.0, signY * 1.0, 0.0);
+            }
+            else
+            {
+                projectedPoint(0)  = a_toolPos(0) ;
+                projectedPoint(1)  = a_toolPos(1) ;
+                projectedPoint(2)  = signZ * m_hSizeZ;
+                normal.set(0.0, 0.0, signZ * 1.0);
+            }
+        }
+    }
+    else
+    {
+        projectedPoint(0)  = cClamp(a_toolPos(0) , -m_hSizeX, m_hSizeX);
+        projectedPoint(1)  = cClamp(a_toolPos(1) , -m_hSizeY, m_hSizeY);
+        projectedPoint(2)  = cClamp(a_toolPos(2) , -m_hSizeZ, m_hSizeZ);
+    }
 
-	// return results
-	projectedPoint.copyto(m_interactionProjectedPoint);
-	m_interactionInside = inside;
+    // return results
+    cVector3d n = a_toolPos - projectedPoint;
+    if (n.lengthsq() > 0.0)
+    {
+        m_interactionNormal = n;
+        m_interactionNormal.normalize();
+    }
+
+    m_interactionInside = inside;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update bounding box of current object.
-
-    \fn       void cShapeBox::updateBoundaryBox()
 */
-//===========================================================================
+//==============================================================================
 void cShapeBox::updateBoundaryBox()
 {
-	// compute half size lengths
+    // compute half size lengths
     m_boundaryBoxMin.set(-m_hSizeX,-m_hSizeY,-m_hSizeZ);
     m_boundaryBoxMax.set( m_hSizeX, m_hSizeY, m_hSizeZ);
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Scale box with a uniform scale factor.
 
-    \fn       void cShapeBox::scaleObject(const double& a_scaleFactor)
-    \param    a_scaleFactor  Scale factor.
+    \param  a_scaleFactor  Scale factor.
 */
-//===========================================================================
+//==============================================================================
 void cShapeBox::scaleObject(const double& a_scaleFactor)
 {
     // update dimensions
     m_hSizeX *= a_scaleFactor;
-	m_hSizeY *= a_scaleFactor;
-	m_hSizeZ *= a_scaleFactor;
+    m_hSizeY *= a_scaleFactor;
+    m_hSizeZ *= a_scaleFactor;
 
     // update bounding box
     updateBoundaryBox();
@@ -357,3 +362,8 @@ void cShapeBox::scaleObject(const double& a_scaleFactor)
     // invalidate display list
     invalidateDisplayList();
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

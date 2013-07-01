@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,31 +39,38 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 368 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CDirectionalLightH
 #define CDirectionalLightH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "lighting/CGenericLight.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     \file       CDirectionalLight.h
 
-    \brief 
+    \brief
     <b> Lighting </b> \n 
     Directional Light Source.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cDirectionalLight
     \ingroup    lighting
 
-    \brief      
+    \brief
+    Direction light source
+
+    \details
     cDirectionalLight describes a directional light source. A directional 
     light source is treated as though it's located infinitely far away from 
     the scene, therefore only the lighting direction needs to be defined.
@@ -71,39 +78,43 @@
     considered parallel by the time they reach an object. An example of a 
     real-world directional light source is the sun.
 */
-//===========================================================================
+//==============================================================================
 class cDirectionalLight : public virtual cGenericLight
 {
-  public:
-    
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Constructor of cDirectionalLight.
     cDirectionalLight(cWorld* a_world);
-	
+    
     //! Destructor of cDirectionalLight.
     virtual ~cDirectionalLight();
 
 
-	//-----------------------------------------------------------------------
-    // METHODS:
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //-----------------------------------------------------------------------
 
-    //! Set the direction of the light beam... only affects _positional_ lights with angular cutoffs (spotlights).
+public:
+
+    //! Set the direction of the light beam. 
     void setDir(const cVector3d& a_direction);
 
-    //! Set the direction of the light beam... only affects _positional_ lights with angular cutoffs (spotlights).
+    //! Set the direction of the light beam.
     void setDir(const double a_x, const double a_y, const double a_z);
 
-    //! Read the direction of the light beam... only affects _positional_ lights with angular cutoffs (spotlights).
+    //! Read the direction of the light beam.
     cVector3d getDir() const { return (m_globalRot.getCol0()); }
 
-    
-	//-----------------------------------------------------------------------
-	// METHODS:
-	//-----------------------------------------------------------------------
+
+    //-----------------------------------------------------------------------
+    // VIRTUAL PROTECTED METHODS:
+    //-----------------------------------------------------------------------
+
+protected:
 
     //! Render the lighting properties of this light source in OpenGL.
     virtual void renderLightSource(cRenderOptions& a_options);
@@ -112,7 +123,11 @@ class cDirectionalLight : public virtual cGenericLight
     virtual void render(cRenderOptions& a_options){}
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

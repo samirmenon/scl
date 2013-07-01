@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,26 +39,28 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 322 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "CFog.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
-   Constructor of cFog.
-
-    \fn         cFog::cFog()
+    Constructor of cFog.
 */
-//===========================================================================
+//==============================================================================
 cFog::cFog()
 {
-	// enable fog
-	m_enabled = false;   
+    // enable fog
+    m_enabled = false;   
 
-	// set default fog color
-	m_color.set(1.0, 1.0, 1.0, 1.0);
+    // set default fog color
+    m_color.set(1.0, 1.0, 1.0, 1.0);
 
     // set default properties
     setProperties(0.35, 0.0, 1.0);
@@ -68,36 +70,34 @@ cFog::cFog()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-      Set fog properties.
+    Set fog properties.
 
-      \fn       void cFog:setProperties(const double a_start, 
-                    const double a_end, 
-                    const double a_density)
-	  \param	a_start  Distance from viewport.
-      \param	a_end  Distance from viewport.
-      \param	a_density  Fog density
+    \param  a_start  Distance from viewport.
+    \param  a_end  Distance from viewport.
+    \param  a_density  Fog density
 */
-//===========================================================================
+//==============================================================================
 void cFog::setProperties(const double a_start, const double a_end, const double a_density)
 {
     m_start   = (float)a_start;
-    m_end	    = (float)cMax(a_start, a_end);
+    m_end     = (float)cMax(a_start, a_end);
     m_density = (float)a_density;
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-      Render fog object in OpenGL.
+    Render fog object in OpenGL.
 
-      \fn       void cFog::render(cRenderOptions& a_options)
-	  \param	a_options Rendering options
+    \param  a_options Rendering options
 */
-//===========================================================================
+//==============================================================================
 void cFog::render(cRenderOptions& a_options)
 {
+#ifdef C_USE_OPENGL
+
     if ((!m_enabled) || (a_options.m_creating_shadow_map))
     {
         // fog is disabled
@@ -113,4 +113,11 @@ void cFog::render(cRenderOptions& a_options)
     glHint(GL_FOG_HINT, GL_NICEST);
     glFogf(GL_FOG_START, m_start);
     glFogf(GL_FOG_END, m_end);
+
+#endif
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

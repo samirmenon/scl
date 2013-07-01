@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,31 +37,34 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 707 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 995 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "effects/CEffectMagnet.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CGenericObject.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//==============================================================================
 /*!
     Constructor of cEffectMagnet.
 
     \fn  cEffectMagnet::cEffectMagnet(cGenericObject* a_parent):cGenericEffect(a_parent)
     \param  a_parent Parent object.
 */
-//===========================================================================
+//==============================================================================
 cEffectMagnet::cEffectMagnet(cGenericObject* a_parent):cGenericEffect(a_parent)
 {
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Compute the resulting force effect.
 
@@ -75,14 +78,14 @@ cEffectMagnet::cEffectMagnet(cGenericObject* a_parent):cGenericEffect(a_parent)
     \param  a_reactionForce  Return the computed force here.
     \return  Return false if no interaction force is computed.
 */
-//===========================================================================
+//==============================================================================
 bool cEffectMagnet::computeForce(const cVector3d& a_toolPos,
                                   const cVector3d& a_toolVel,
                                   const unsigned int& a_toolID,
                                   cVector3d& a_reactionForce)
 {
     // compute distance from object to tool
-    double distance = cDistance(a_toolPos, m_parent->m_interactionProjectedPoint);
+    double distance = cDistance(a_toolPos, m_parent->m_interactionPoint);
 
     // get parameters of magnet
     double magnetMaxForce = m_parent->m_material->getMagnetMaxForce();
@@ -90,48 +93,34 @@ bool cEffectMagnet::computeForce(const cVector3d& a_toolPos,
     double stiffness = m_parent->m_material->getStiffness();
     double forceMagnitude = 0;
 
-    if ((distance > 0) && (distance < magnetMaxDistance) && (stiffness > 0))
+    if (!m_parent->m_interactionInside)
     {
-        double limitLinearModel = magnetMaxForce / stiffness;
-        cClamp(limitLinearModel, 0.0, 0.5 * distance);
-
-        if (distance < limitLinearModel)
+        if ((distance < magnetMaxDistance) && (stiffness > 0))
         {
-            // apply local linear model near magnet
-            forceMagnitude = stiffness * distance;
+            double d = magnetMaxForce / stiffness;
+            if (distance < d)
+            {
+                forceMagnitude = stiffness * distance;
+            }
+            else
+            {
+                double dx = (magnetMaxDistance - d);
+                if (dx > 0)
+                {
+                    double k = magnetMaxForce / dx;
+                    forceMagnitude = k * (magnetMaxDistance - distance);
+                }
+            }
+  
+            // compute reaction force
+            a_reactionForce = cMul(-forceMagnitude, m_parent->m_interactionNormal);
+
+            return (true);
         }
         else
         {
-            // compute quadratic model
-            cMatrix3d sys;
-            sys(0,0) = limitLinearModel * limitLinearModel;
-            sys(0,1) = limitLinearModel;
-            sys(0,2) = 1.0;
-            sys(1,0) = magnetMaxDistance * magnetMaxDistance;
-            sys(1,1) = magnetMaxDistance;
-            sys(1,2) = 1.0;
-            sys(2,0) = 2.0 * limitLinearModel;
-            sys(2,1) = 1.0;
-            sys(2,2) = 0.0;
-            sys.invert();
-
-            cVector3d param;
-            sys.mulr(cVector3d(magnetMaxForce, 0.0, -1.0), param);
-
-            // apply quadratic model
-            double val = distance - limitLinearModel;
-            forceMagnitude = param(0)  * val * val + param(1)  * val + param(2) ;
+            return (false);
         }
-
-        // compute magnetic force
-        a_reactionForce = cMul(forceMagnitude, cNormalize(cSub(m_parent->m_interactionProjectedPoint, a_toolPos)));
-
-        // add damping component
-        double viscosity = m_parent->m_material->getViscosity();
-        cVector3d viscousForce = cMul(-viscosity, a_toolVel);
-        a_reactionForce.add(viscousForce);
-
-        return (true);
     }
     else
     {
@@ -141,4 +130,8 @@ bool cEffectMagnet::computeForce(const cVector3d& a_toolPos,
     }
 }
 
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
 

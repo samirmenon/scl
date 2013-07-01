@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,28 +37,31 @@
 
     \author    <http://www.chai3d.org>
     \author    Sebastien Grange
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 801 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1067 $
  */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include <algorithm>
 using namespace std;
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "world/CShapeCylinder.h"
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*!
     Constructor of cShapeCylinder.
 
-    \fn     cShapeCylinder::cShapeCylinder(const double a_baseRadius, const double topRadius, const double a_height)
-    \param  a_baseRadius   Base radius of cylinder
-    \param  a_topRadius    Top radius of cylinder
-    \param  a_height       Height of cylinder
+    \param  a_baseRadius  Base radius of cylinder
+    \param  a_topRadius  Top radius of cylinder
+    \param  a_height  Height of cylinder
     \param  a_material  Material property to be applied to object.
  */
-//===========================================================================
+//==============================================================================
 cShapeCylinder::cShapeCylinder(const double a_baseRadius,
                                const double a_topRadius,
                                const double a_height,
@@ -87,30 +90,27 @@ cShapeCylinder::cShapeCylinder(const double a_baseRadius,
     }
 
     // allocate a new OpenGL quadric object for rendering
+    #ifdef C_USE_OPENGL
     m_quadric = gluNewQuadric ();
+    #endif
 
     // initialize boundary box
     updateBoundaryBox ();
 };
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Create a copy of itself.
 
-    \fn     cShapeCylinder* cShapeCylinder::copy(const bool a_duplicateMaterialData,
-                                     const bool a_duplicateTextureData, 
-                                     const bool a_duplicateMeshData,
-                                     const bool a_buildCollisionDetector)
+    \param  a_duplicateMaterialData  If __true__, material (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateTextureData  If __true__, texture data (if available) is duplicated, otherwise it is shared.
+    \param  a_duplicateMeshData  If __true__, mesh data (if available) is duplicated, otherwise it is shared.
+    \param  a_buildCollisionDetector  If __true__, collision detector (if available) is duplicated, otherwise it is shared.
 
-    \param      a_duplicateMaterialData  If \b true, material (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateTextureData  If \b true, texture data (if available) is duplicated, otherwise it is shared.
-    \param      a_duplicateMeshData  If \b true, mesh data (if available) is duplicated, otherwise it is shared.
-    \param      a_buildCollisionDetector  If \b true, collision detector (if available) is duplicated, otherwise it is shared.
-
-	\return		Return new object.
+    \return Return new object.
 */
-//===========================================================================
+//==============================================================================
 cShapeCylinder* cShapeCylinder::copy(const bool a_duplicateMaterialData,
                                      const bool a_duplicateTextureData, 
                                      const bool a_duplicateMeshData,
@@ -127,16 +127,17 @@ cShapeCylinder* cShapeCylinder::copy(const bool a_duplicateMaterialData,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
-    Render sphere in OpenGL
+    Render sphere in OpenGL.
 
-    \fn       void cShapeCylinder::render(cRenderOptions& a_options)
-    \param    a_options  Render options
+    \param  a_options  Render options.
  */
-//===========================================================================
+//==============================================================================
 void cShapeCylinder::render(cRenderOptions& a_options)
 {
+#ifdef C_USE_OPENGL
+
     /////////////////////////////////////////////////////////////////////////
     // Render parts that use material properties
     /////////////////////////////////////////////////////////////////////////
@@ -154,30 +155,30 @@ void cShapeCylinder::render(cRenderOptions& a_options)
         // set normal-rendering mode
         gluQuadricNormals (m_quadric, GLU_SMOOTH);
 
-		// render texture property if defined
+        // render texture property if defined
         bool usedTexture = false;
-		if ((m_texture != NULL) && (m_useTextureMapping))
-		{
+        if ((m_texture != NULL) && (m_useTextureMapping))
+        {
             // we are using texture
             usedTexture = true;
 
             // activate texture
-			m_texture->render(a_options);
+            m_texture->render(a_options);
 
-			// generate texture coordinates
-			gluQuadricTexture(m_quadric, GL_TRUE);
-		}
+            // generate texture coordinates
+            gluQuadricTexture(m_quadric, GL_TRUE);
+        }
 
         // render a cylinder
         gluCylinder(m_quadric, m_baseRadius, m_topRadius, m_height, 36, 36);
 
-		// turn off texture rendering if it has been used
-		if (usedTexture)
-		{
-			glActiveTextureARB(GL_TEXTURE1_ARB);
-			glDisable(GL_TEXTURE_1D);
+        // turn off texture rendering if it has been used
+        if (usedTexture)
+        {
+            glActiveTextureARB(GL_TEXTURE1_ARB);
+            glDisable(GL_TEXTURE_1D);
             glDisable(GL_TEXTURE_2D);
-		}
+        }
 
         // close the cylinder
         gluQuadricOrientation (m_quadric, GLU_INSIDE);
@@ -187,23 +188,22 @@ void cShapeCylinder::render(cRenderOptions& a_options)
         gluDisk               (m_quadric, 0.0, m_topRadius, 36, 36);
         glTranslated          (0.0, 0.0, -m_height);
     }
+
+#endif
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     From the position of the tool, search for the nearest point located
     at the surface of the current object. Decide if the point is located inside
     or outside of the object
 
-    \fn     void cShapeCylinder::computeLocalInteraction(const cVector3d& a_toolPos,
-                                                       const cVector3d& a_toolVel,
-                                                       const unsigned int a_IDN)
     \param  a_toolPos  Position of the tool.
     \param  a_toolVel  Velocity of the tool.
     \param  a_IDN  Identification number of the force algorithm.
  */
-//===========================================================================
+//==============================================================================
 void cShapeCylinder::computeLocalInteraction(const cVector3d& a_toolPos,
                                              const cVector3d& a_toolVel,
                                              const unsigned int a_IDN)
@@ -230,9 +230,32 @@ void cShapeCylinder::computeLocalInteraction(const cVector3d& a_toolPos,
     double baseLen = cSub(a_toolPos,projBase).length();
     double topLen  = cSub(a_toolPos,projTop).length();
     double projLen = cSub(a_toolPos,projSurface).length();
-    if      (baseLen < topLen  && baseLen < projLen) m_interactionProjectedPoint = projBase;
-    else if (topLen  < baseLen && topLen  < projLen) m_interactionProjectedPoint = projTop;
-    else                                             m_interactionProjectedPoint = projSurface;
+    
+    if (baseLen < topLen && baseLen < projLen) 
+    {
+        m_interactionPoint = projBase;
+       m_interactionNormal.set(0.0, 0.0, 1.0);
+    }
+    
+    else if (topLen  < baseLen && topLen  < projLen) 
+    {
+        m_interactionPoint = projTop;
+        m_interactionNormal.set(0.0, 0.0, 1.0);
+    }
+    
+    else
+    {
+        m_interactionPoint = projSurface;
+        m_interactionNormal.set(projSurface.x(), projSurface.y(), 0.0);
+        if (m_interactionNormal.lengthsq() > 0.0)
+        {
+            m_interactionNormal.normalize();
+        }
+        else
+        {
+            m_interactionNormal.set(0.0, 0.0, 1.0);
+        }
+    }
 
     // determine inside or out
     if (dirLen > radius || a_toolPos(2)  > m_height || a_toolPos(2)  < 0.0) 
@@ -248,13 +271,11 @@ void cShapeCylinder::computeLocalInteraction(const cVector3d& a_toolPos,
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Update bounding box of current object.
-
-    \fn       void cShapeCylinder::updateBoundaryBox()
  */
-//===========================================================================
+//==============================================================================
 void cShapeCylinder::updateBoundaryBox()
 {
     double rad = max (m_baseRadius, m_topRadius);
@@ -264,14 +285,13 @@ void cShapeCylinder::updateBoundaryBox()
 }
 
 
-//===========================================================================
+//==============================================================================
 /*!
     Scale cylinder with a uniform scale factor.
 
-    \fn       void cShapeCylinder::scaleObject(const double& a_scaleFactor)
-    \param    a_scaleFactor  Scale factor.
+    \param  a_scaleFactor  Scale factor.
 */
-//===========================================================================
+//==============================================================================
 void cShapeCylinder::scaleObject(const double& a_scaleFactor)
 {
     // update dimensions
@@ -285,3 +305,8 @@ void cShapeCylinder::scaleObject(const double& a_scaleFactor)
     // invalidate display list
     invalidateDisplayList();
 }
+
+
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------

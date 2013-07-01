@@ -1,7 +1,7 @@
-//===========================================================================
+//==============================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -39,45 +39,52 @@
     \author    Francois Conti
     \version   $MAJOR.$MINOR.$RELEASE $Rev: 403 $
 */
-//===========================================================================
+//==============================================================================
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #ifndef CTexture1dH
 #define CTexture1dH
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 #include "graphics/CColor.h"
 #include "materials/CGenericTexture.h"
 #include "graphics/CImage.h"
 #include <string>
 #include <stdio.h>
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-//===========================================================================
+//------------------------------------------------------------------------------
+namespace chai3d {
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*! 
-    \file       CTexture1d.h
+    \file   CTexture1d.h
 
     \brief  
     <b> Materials </b> \n 
     1D Texture.
 */
-//===========================================================================
+//==============================================================================
 
-//===========================================================================
+//==============================================================================
 /*!
     \class      cTexture1d
     \ingroup    materials
-    
+
     \brief      
-    cTexture1d describes a 2D bitmap texture used for OpenGL texture-mapping
+    1D Texture Map
+
+    \details      
+    cTexture1d describes a 1D bitmap texture used for OpenGL texture-mapping.
 */
-//===========================================================================
+//==============================================================================
 class cTexture1d : public cGenericTexture
 {
-  public:
-
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // CONSTRUCTOR & DESTRUCTOR:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Constructor of cTexture1d.
     cTexture1d();
@@ -86,9 +93,11 @@ class cTexture1d : public cGenericTexture
     virtual ~cTexture1d();
 
 
-	//-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PUBLIC METHODS:
+    //--------------------------------------------------------------------------
+
+public:
 
     //! Set texture unit where a_textureUnit is GL_TEXTUREi_ARB, where 0i<GL_MAX_TEXTURE_UNITS_ARB.
     inline void setTextureUnit(const GLenum a_textureUnit);
@@ -96,14 +105,14 @@ class cTexture1d : public cGenericTexture
     //! Get texture unit where a_textureUnit is GL_TEXTUREi_ARB, where 0i<GL_MAX_TEXTURE_UNITS_ARB.
     inline GLenum getTextureUnit() const { return (m_textureUnit); }
 
-	//! Create a copy of current object.
-	virtual cTexture1d* copy();
+    //! Create a copy of current object.
+    virtual cTexture1d* copy();
 
     //! Load a texture image file.
-    virtual bool loadFromFile(const string& a_fileName);
+    virtual bool loadFromFile(const std::string& a_fileName);
 
     //! Save a texture image file.
-    virtual bool saveToFile(const string& a_fileName);
+    virtual bool saveToFile(const std::string& a_fileName);
 
     //! Enable texturing and set this texture as the current texture.
     virtual void render(cRenderOptions& a_options);
@@ -124,16 +133,16 @@ class cTexture1d : public cGenericTexture
     GLint getWrapSmode() const { return (m_wrapSmode); }
 
     //! Set the magnification function.
-    void setMagnificationFunction(const GLint a_magnificationFunction);
+    void setMagFunction(const GLint a_magFunction);
 
     //! Get current magnification function.
-    GLint getMagnificationFunction() const { return (m_magnificationFunction); }
+    GLint getMagFunction() const { return (m_magFunction); }
 
     //! Set the minification function.
-    void setMinifyingFunction(const GLint a_minifyingFunction);
+    void setMinFunction(const GLint a_minFunction);
 
-    //! Get current magnification function.
-    GLint getMinifyingFunction() const { return (m_minifyingFunction); }
+    //! Get current minification function.
+    GLint getMinFunction() const { return (m_minFunction); }
 
     //! Set spherical mapping mode \b ON or \b OFF.
     void setSphericalMappingEnabled(const bool a_enabled) { m_useSphericalMapping = a_enabled; }
@@ -157,26 +166,26 @@ class cTexture1d : public cGenericTexture
     cColorf m_color;
 
 
-  private:
+    //--------------------------------------------------------------------------
+    // PRIVATE METHODS:
+    //--------------------------------------------------------------------------
 
-	//-----------------------------------------------------------------------
-    // METHODS:
-    //-----------------------------------------------------------------------
-	
-	//! Reset internal variables. This function should be called only by constructors.
+private:
+
+    //! Reset internal variables. This function should be called only by constructors.
     void reset();
 
     //! Initialize GL texture.
     void update();
 
 
-	//-----------------------------------------------------------------------
-    // MEMBERS:
-    //-----------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // PROTECTED MEMBERS:
+    //--------------------------------------------------------------------------
 
-  public:
+protected:
 
-    //! If \b true, texture bitmap has not yet been sent to video card.
+    //! If __true__, texture bitmap has not yet been sent to video card.
     bool m_updateTextureFlag;
 
     //! OpenGL texture ID number.
@@ -186,15 +195,15 @@ class cTexture1d : public cGenericTexture
     GLint m_wrapSmode;
 
     //! Texture magnification function. (\e GL_NEAREST or \e GL_LINEAR).
-    GLint m_magnificationFunction;
+    GLint m_magFunction;
 
     //! Texture minifying function. (\e GL_NEAREST or \e GL_LINEAR).
-    GLint m_minifyingFunction;
+    GLint m_minFunction;
 
-    //! If \b true, we use GLU to build mipmaps.
+    //! If __true__, we use GLU to build mipmaps.
     bool m_useMipmaps;
 
-    //! If \b true, we use spherical mapping.
+    //! If __true__, we use spherical mapping.
     bool m_useSphericalMapping;
 
     //! OpenGL texture mode (\e GL_MODULATE, \e GL_DECAL, \e GL_BLEND, \e GL_REPLACE).
@@ -203,23 +212,24 @@ class cTexture1d : public cGenericTexture
     //! Texture unit number
     GLenum m_textureUnit;
 
-
-  protected:
-
     //! Texture magnification function when Mipmap is OFF.
-    GLint m_magnificationFunctionMipmapsOFF;
+    GLint m_magFunctionMipmapsOFF;
 
     //! Texture mignifying function when Mipmap is OFF.
-    GLint m_minifyingFunctionMipmapsOFF;
+    GLint m_minFunctionMipmapsOFF;
 
     //! Texture magnification function when Mipmap is ON.
-    GLint m_magnificationFunctionMipmapsON;
+    GLint m_magFunctionMipmapsON;
 
     //! Texture mignifying function when Mipmap is ON.
-    GLint m_minifyingFunctionMipmapsON;
+    GLint m_minFunctionMipmapsON;
 };
 
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+} // namespace chai3d
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 #endif
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 

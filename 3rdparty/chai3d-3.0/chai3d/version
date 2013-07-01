@@ -1,5 +1,5 @@
 #  Software License Agreement (BSD License)
-#  Copyright (c) 2003-2012, CHAI3D.
+#  Copyright (c) 2003-2013, CHAI3D.
 #  (www.chai3d.org)
 #
 #  All rights reserved.
@@ -35,7 +35,7 @@
 #
 #  $Author: seb $
 #  $Date: 2012-05-07 20:36:47 +1200 (Mon, 07 May 2012) $
-#  $Rev: 836 $
+#  $Rev: 1057 $
 
 
 MAJOR=3
