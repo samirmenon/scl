@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,12 +37,13 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 717 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1047 $
 */
 //===========================================================================
 
 //---------------------------------------------------------------------------
 #include "CGELMassParticle.h"
+using namespace chai3d;
 //---------------------------------------------------------------------------
 
 //===========================================================================
@@ -57,7 +58,7 @@ double cGELMassParticle::default_mass          = 0.1;  // [kg]
 cColorf cGELMassParticle::default_color(1.0f, 1.0f, 0.4f);
 
 // Gravity field:
-bool cGELMassParticle::default_useGravity      = true;
+bool cGELMassParticle::default_useGravity = true;
 cVector3d cGELMassParticle::default_gravity(0.00, 0.00, -9.81);
 
 // Default rendering mode

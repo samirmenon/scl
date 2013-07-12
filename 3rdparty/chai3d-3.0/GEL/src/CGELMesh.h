@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,7 +37,7 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 791 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1047 $
 */
 //===========================================================================
 
@@ -53,8 +53,6 @@
 #include <typeinfo>
 #include <vector>
 #include <list>
-//---------------------------------------------------------------------------
-using std::vector;
 //---------------------------------------------------------------------------
 
 //===========================================================================
@@ -77,7 +75,7 @@ using std::vector;
     deformation simulation.
 */
 //===========================================================================
-class cGELMesh : public cMultiMesh
+class cGELMesh : public chai3d::cMultiMesh
 {
 
   public:
@@ -122,7 +120,7 @@ class cGELMesh : public cMultiMesh
     void applyNextPose();
 
     //! Render deformable mesh.
-    virtual void render(cRenderOptions& a_options);
+    virtual void render(chai3d::cRenderOptions& a_options);
 
 
 	//-----------------------------------------------------------------------
@@ -130,16 +128,16 @@ class cGELMesh : public cMultiMesh
     //-----------------------------------------------------------------------
 
     //! List of nodes composing the skeleton.
-    list<cGELSkeletonNode*> m_nodes;
+    std::list<cGELSkeletonNode*> m_nodes;
 
     //! List of links connecting the different nodes.
-    list<cGELSkeletonLink*> m_links;
+    std::list<cGELSkeletonLink*> m_links;
 
     //! List of linear springs connecting vertices together.
-    list<cGELLinearSpring*> m_linearSprings;
+    std::list<cGELLinearSpring*> m_linearSprings;
 
     //! List of deformable vertices.
-    vector<cGELVertex> m_gelVertices;
+    std::vector<cGELVertex> m_gelVertices;
 
     //! If \b true then display skeleton.
     bool m_showSkeletonModel;

@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,7 +37,7 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 717 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1047 $
 */
 //===========================================================================
 
@@ -80,7 +80,7 @@ class cGELVertex
     //-----------------------------------------------------------------------
 
     //! Constructor of cGELVertex.
-    cGELVertex(cVertex* a_vertex);
+    cGELVertex(chai3d::cVertex* a_vertex);
 
     //! Destructor of cGELVertex.
     virtual ~cGELVertex();
@@ -91,7 +91,7 @@ class cGELVertex
     //-----------------------------------------------------------------------
 
     //! Mesh object vertex.
-    cVertex* m_vertex;
+    chai3d::cVertex* m_vertex;
 
     //! Mass particle for current vertex.
     cGELMassParticle* m_massParticle;

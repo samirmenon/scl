@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,7 +37,7 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 717 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1047 $
 */
 //===========================================================================
 
@@ -46,8 +46,6 @@
 #define CGELMassParticleH
 //---------------------------------------------------------------------------
 #include "chai3d.h"
-//---------------------------------------------------------------------------
-using namespace std;
 //---------------------------------------------------------------------------
 
 //===========================================================================
@@ -92,13 +90,13 @@ class cGELMassParticle
     void setMass(double a_mass);
 
     //! Add force to mass particle.
-    inline void addForce(cVector3d &a_force)
+    inline void addForce(chai3d::cVector3d &a_force)
     {
         m_force.add(a_force);
     }
 
     //! Set an external force to mass particle.
-    inline void setExternalForce(cVector3d &a_force)
+    inline void setExternalForce(chai3d::cVector3d &a_force)
     {
         m_externalForce = a_force;
     }
@@ -109,7 +107,7 @@ class cGELMassParticle
         if (!m_fixed)
         {
             // Euler double integration for position
-            cVector3d damping;
+            chai3d::cVector3d damping;
             m_vel.mulr(-m_kDampingPos * m_mass, damping);
             m_force.add(damping);
             m_acc = cDiv(m_mass, cAdd(m_force, m_externalForce));
@@ -158,7 +156,7 @@ class cGELMassParticle
 
         // render external forces
         glColor4fv( (const float *)&m_color);
-        cVector3d v = cAdd(m_pos, cMul(scale_force_vector_display, m_externalForce));
+        chai3d::cVector3d v = cAdd(m_pos, cMul(scale_force_vector_display, m_externalForce));
         glBegin(GL_LINES);
           glVertex3dv( (const double *)&m_pos);
           glVertex3dv( (const double *)&v);
@@ -174,13 +172,13 @@ class cGELMassParticle
     double m_mass;
 
     //! Current force being applied.
-    cVector3d m_force;
+    chai3d::cVector3d m_force;
 
     //! Instant acceleration.
-    cVector3d m_acc;
+    chai3d::cVector3d m_acc;
 
     //! Instant velocity.
-    cVector3d m_vel;
+    chai3d::cVector3d m_vel;
 
     //! Linear damping.
     double m_kDampingPos;
@@ -192,7 +190,7 @@ class cGELMassParticle
     bool m_useGravity;
 
     //! Gravity field.
-    cVector3d m_gravity;
+    chai3d::cVector3d m_gravity;
 
 
 	//-----------------------------------------------------------------------
@@ -200,7 +198,7 @@ class cGELMassParticle
     //-----------------------------------------------------------------------
 
     //! Color used to display nodes.
-    cColorf m_color;
+    chai3d::cColorf m_color;
 
 
   public:
@@ -210,10 +208,10 @@ class cGELMassParticle
     //-----------------------------------------------------------------------
 
     //! Position.
-    cVector3d m_pos;
+    chai3d::cVector3d m_pos;
 
     //! Next position computed.
-    cVector3d m_nextPos;
+    chai3d::cVector3d m_nextPos;
 
 
   private:
@@ -223,7 +221,7 @@ class cGELMassParticle
     //-----------------------------------------------------------------------
       
     //! External force.
-    cVector3d m_externalForce;
+    chai3d::cVector3d m_externalForce;
 
 
   public:
@@ -239,13 +237,13 @@ class cGELMassParticle
     static double default_mass;
 
     //! Default property - color.
-    static cColorf default_color;
+    static chai3d::cColorf default_color;
 
     //! Default property - use of gravity field.
     static bool default_useGravity;
 
     //! Default property - gravity field.
-    static cVector3d default_gravity;
+    static chai3d::cVector3d default_gravity;
 
     //! Default property - force display status.
     static bool show_forces;

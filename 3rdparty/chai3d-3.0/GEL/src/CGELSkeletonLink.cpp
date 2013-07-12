@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,13 +37,14 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 831 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1047 $
 */
 //===========================================================================
 
 //---------------------------------------------------------------------------
 #include "CGELSkeletonLink.h"
 #include "CGELMesh.h"
+using namespace chai3d;
 //---------------------------------------------------------------------------
 
 //===========================================================================
@@ -53,7 +54,7 @@
 // Physical properties:
 double cGELSkeletonLink::default_kSpringElongation = 100.0; // [N/m]
 double cGELSkeletonLink::default_kSpringFlexion    = 0.1;   // [Nm/RAD]
-double cGELSkeletonLink::default_kSpringTorsion   = 0.1;    // [Nm/RAD]
+double cGELSkeletonLink::default_kSpringTorsion    = 0.1;   // [Nm/RAD]
 
 // Graphical properties:
 cColorf cGELSkeletonLink::default_color(0.2f, 0.2f, 1.0f);

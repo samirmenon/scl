@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,7 +37,7 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 717 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1047 $
 */
 //===========================================================================
 
@@ -134,9 +134,9 @@ class cGELSkeletonLink
         // apply force
         if (m_length > 0.000001)
         {
-            cVector3d force = cMul(f/m_length, m_wLink01);
+            chai3d::cVector3d force = cMul(f/m_length, m_wLink01);
             m_node0->addForce(force);
-            cVector3d tmpfrc = cMul(-1, force);
+            chai3d::cVector3d tmpfrc = cMul(-1, force);
             m_node1->addForce(tmpfrc);
         }
 
@@ -144,8 +144,8 @@ class cGELSkeletonLink
         // FLEXION:
         //-------------------------------------------------------------
         // compute flexion forces and torques
-        cVector3d torqueDir0 = cCross(m_wzLink01, m_wLink01);
-        cVector3d torqueDir1 = cCross(m_wzLink10, m_wLink10);
+        chai3d::cVector3d torqueDir0 = cCross(m_wzLink01, m_wLink01);
+        chai3d::cVector3d torqueDir1 = cCross(m_wzLink10, m_wLink10);
         double angle0 = cAngle(m_wzLink01, m_wLink01);
         double angle1 = cAngle(m_wzLink10, m_wLink10);
         double torqueMag0 = angle0 * m_kSpringFlexion;
@@ -155,21 +155,21 @@ class cGELSkeletonLink
         {
 			if (torqueMag0 > 0.0001)
             {
-                cVector3d torque0 = cMul(torqueMag0, cNormalize(torqueDir0));
+			    chai3d::cVector3d torque0 = cMul(torqueMag0, cNormalize(torqueDir0));
                 m_node0->addTorque(torque0);
-                cVector3d force1 = cMul((torqueMag0/m_length), cNormalize(cCross(m_wLink01, torque0)));
+                chai3d::cVector3d force1 = cMul((torqueMag0/m_length), cNormalize(cCross(m_wLink01, torque0)));
                 m_node1->addForce(force1);
-                cVector3d tmpfrc = cMul(-1,force1);
+                chai3d::cVector3d tmpfrc = cMul(-1,force1);
                 m_node0->addForce(tmpfrc);
             }
 
             if (torqueMag1 > 0.0001)
             {
-                cVector3d torque1 = cMul(torqueMag1, cNormalize(torqueDir1));
+                chai3d::cVector3d torque1 = cMul(torqueMag1, cNormalize(torqueDir1));
                 m_node1->addTorque(torque1);
-                cVector3d force0 = cMul((torqueMag1/m_length), cNormalize(cCross(m_wLink10, torque1)));
+                chai3d::cVector3d force0 = cMul((torqueMag1/m_length), cNormalize(cCross(m_wLink10, torque1)));
                 m_node0->addForce(force0);
-                cVector3d tmpfrc = cMul(-1,force0);
+                chai3d::cVector3d tmpfrc = cMul(-1,force0);
                 m_node1->addForce(tmpfrc);
             }
         }
@@ -186,18 +186,18 @@ class cGELSkeletonLink
 			m_node1->m_rot.mulr(m_A1, m_wA1);
 
 			// compute torsional angle and torque
-			cVector3d v0, v1;
+			chai3d::cVector3d v0, v1;
 			m_wA0.crossr(m_wLink01, v0);
 			m_wA1.crossr(m_wLink01, v1);
 			v0.normalize();
 			v1.normalize();
 
-			cVector3d torque;
+			chai3d::cVector3d torque;
 			v0.crossr(v1, m_torsionAxisAngle);
 			m_torsionAxisAngle.mulr(m_kSpringTorsion, torque);
 
 			m_node0->addTorque(torque);
-			cVector3d tmptrq = -1.0 * torque;
+			chai3d::cVector3d tmptrq = -1.0 * torque;
 			m_node1->addTorque(tmptrq);
 		}
     }
@@ -219,7 +219,7 @@ class cGELSkeletonLink
     //-----------------------------------------------------------------------
 
     //! Color used to display NN-links.
-    cColorf m_color;
+    chai3d::cColorf m_color;
 
 
 	//-----------------------------------------------------------------------
@@ -256,43 +256,43 @@ class cGELSkeletonLink
     //-----------------------------------------------------------------------
 
     //! Initial link vector between node 0 and node 1 in node0 reference frame.
-    cVector3d m_nzLink01;
+	chai3d::cVector3d m_nzLink01;
 
     //! Initial link vector between node 0 and node 1 in world coordinates.
-    cVector3d m_wzLink01;
+	chai3d::cVector3d m_wzLink01;
 
     //! Initial link vector between node 1 and node 0 in node1 reference frame.
-    cVector3d m_nzLink10;
+	chai3d::cVector3d m_nzLink10;
 
     //! Initial link vector between node 1 and node 0 in world coordinates.
-    cVector3d m_wzLink10;
+	chai3d::cVector3d m_wzLink10;
 
     //! Current link between node 0 and node 1 in world coordinates.
-    cVector3d m_wLink01;
+	chai3d::cVector3d m_wLink01;
 
     //! Current link between node 1 and node 0 in world coordinates.
-    cVector3d m_wLink10;
+	chai3d::cVector3d m_wLink10;
 
     //! Torsional angle.
-    cVector3d m_torsionAxisAngle;
+	chai3d::cVector3d m_torsionAxisAngle;
 
     //! Reference vector frame A on sphere 0 (local coordinates).
-    cVector3d m_A0;
+	chai3d::cVector3d m_A0;
 
     //! Reference vector frame A on sphere 0 (world coordinates).
-    cVector3d m_wA0;
+	chai3d::cVector3d m_wA0;
 
     //! Reference vector frame B on sphere 0 (local coordinates).
-    cVector3d m_B0;
+	chai3d::cVector3d m_B0;
 
     //! Reference vector frame B on sphere 0 (world coordinates).
-    cVector3d m_wB0;
+	chai3d::cVector3d m_wB0;
 
     //! Reference vector frame A on sphere 1 (local coordinates).
-    cVector3d m_A1;
+	chai3d::cVector3d m_A1;
 
     //! Reference vector frame A on sphere 1 (world coordinates).
-    cVector3d m_wA1;
+	chai3d::cVector3d m_wA1;
 
     //! Initial length of link.
     double m_length0;
@@ -317,7 +317,7 @@ class cGELSkeletonLink
     static double default_kSpringTorsion;      // [Nm/RAD]
 
     //! Default property - color property.
-    static cColorf default_color;
+    static chai3d::cColorf default_color;
 };
 
 //---------------------------------------------------------------------------

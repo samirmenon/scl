@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,7 +37,7 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 717 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1047 $
 */
 //===========================================================================
 
@@ -111,7 +111,7 @@ class cGELLinearSpring
     inline void computeForces()
     {
         // update basic parameters of current link
-        cVector3d m_link01 = cSub(m_node1->m_pos, m_node0->m_pos);
+        chai3d::cVector3d m_link01 = cSub(m_node1->m_pos, m_node0->m_pos);
         double m_length = m_link01.length();
 
         //-------------------------------------------------------------
@@ -126,9 +126,9 @@ class cGELLinearSpring
         // apply force
         if (m_length > 0.000001)
         {
-            cVector3d force = cMul(f/m_length, m_link01);
+            chai3d::cVector3d force = cMul(f/m_length, m_link01);
             m_node0->addForce(force);
-            cVector3d tmpfrc = cMul(-1, force);
+            chai3d::cVector3d tmpfrc = cMul(-1, force);
             m_node1->addForce(tmpfrc);
         }
     }
@@ -139,7 +139,7 @@ class cGELLinearSpring
     //-----------------------------------------------------------------------
 
     //! Color property used for displaying link.
-    cColorf m_color;
+    chai3d::cColorf m_color;
 
 
 	//-----------------------------------------------------------------------
@@ -180,7 +180,7 @@ class cGELLinearSpring
     static double default_kSpringElongation;   // [N/m]
 
     //! Default property - color property.
-    static cColorf default_color;
+    static chai3d::cColorf default_color;
 };
 
 //---------------------------------------------------------------------------

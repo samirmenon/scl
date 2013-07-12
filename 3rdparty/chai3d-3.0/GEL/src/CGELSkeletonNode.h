@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,7 +37,7 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 840 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1047 $
 */
 //===========================================================================
 
@@ -46,8 +46,6 @@
 #define CGELSkeletonNodeH
 //---------------------------------------------------------------------------
 #include "chai3d.h"
-//---------------------------------------------------------------------------
-using namespace std;
 //---------------------------------------------------------------------------
 
 //===========================================================================
@@ -92,25 +90,25 @@ class cGELSkeletonNode
     void setMass(double a_mass);
 
     //! Add force to node.
-    inline void addForce(cVector3d &a_force)
+    inline void addForce(chai3d::cVector3d &a_force)
     {
         m_force.add(a_force);
     }
 
     //! Add torque to node.
-    inline void addTorque(cVector3d &a_torque)
+    inline void addTorque(chai3d::cVector3d &a_torque)
     {
         m_torque.add(a_torque);
     }
 
     //! Set an external force to node.
-    inline void setExternalForce(cVector3d &a_force)
+    inline void setExternalForce(chai3d::cVector3d &a_force)
     {
         m_externalForce = a_force;
     }
 
     //! Set an external torque to node.
-    inline void setExternalTorque(cVector3d &a_torque)
+    inline void setExternalTorque(chai3d::cVector3d &a_torque)
     {
         m_externalTorque = a_torque;
     }
@@ -121,7 +119,7 @@ class cGELSkeletonNode
         if (!m_fixed)
         {
             // Euler double integration for position
-            cVector3d damping;
+            chai3d::cVector3d damping;
             m_vel.mulr(-m_kDampingPos * m_mass, damping);
             m_force.add(damping);
             m_acc = cDiv(m_mass, cAdd(m_force, m_externalForce));
@@ -134,7 +132,7 @@ class cGELSkeletonNode
         }
 
         // Euler double integration for rotation
-        cVector3d dampingAng;
+        chai3d::cVector3d dampingAng;
         m_angVel.mulr(-m_kDampingRot * m_mass, dampingAng);
         m_torque.add(dampingAng);
         m_angAcc = cMul((1/m_inertia), m_torque);
@@ -185,20 +183,20 @@ class cGELSkeletonNode
     inline void render()
     {
         // set pose
-        cTransform mat;
+        chai3d::cTransform mat;
         mat.set(m_pos, m_rot);
         glPushMatrix();
         glMultMatrixd( (const double *)mat.getData() );
 
         // draw node
         m_color.render();
-        cDrawSphere(m_radius, 12, 12);
+        chai3d::cDrawSphere(m_radius, 12, 12);
 
         // draw frame
         if (default_showFrame == true)
         {
             double frameScale = 3.0 * m_radius;
-            cDrawFrame(frameScale);
+            chai3d::cDrawFrame(frameScale);
         }
 
         // pos open gl matrix
@@ -206,7 +204,7 @@ class cGELSkeletonNode
 
         // render external forces
         glColor4fv( (const float *)&m_color);
-        cVector3d v = cAdd(m_pos, cMul(1.0/50.0, m_externalForce));
+        chai3d::cVector3d v = cAdd(m_pos, cMul(1.0/50.0, m_externalForce));
         glBegin(GL_LINES);
           glVertex3dv( (const double *)&m_pos);
           glVertex3dv( (const double *)&v);
@@ -219,7 +217,7 @@ class cGELSkeletonNode
     //-----------------------------------------------------------------------
 
     //! Color used to display nodes.
-    cColorf m_color;
+    chai3d::cColorf m_color;
 
 
 	//-----------------------------------------------------------------------
@@ -233,22 +231,22 @@ class cGELSkeletonNode
     double m_mass;
 
     //! Current force applied on node.
-    cVector3d m_force;
+    chai3d::cVector3d m_force;
 
     //! Current torque applies on node.
-    cVector3d m_torque;
+    chai3d::cVector3d m_torque;
 
     //! Instant acceleration at node.
-    cVector3d m_acc;
+    chai3d::cVector3d m_acc;
 
     //! Instant angular acceleration at node.
-    cVector3d m_angAcc;
+    chai3d::cVector3d m_angAcc;
 
     //! Instant velocity at node.
-    cVector3d m_vel;
+    chai3d::cVector3d m_vel;
 
     //! Instant angular velocity at node.
-    cVector3d m_angVel;
+    chai3d::cVector3d m_angVel;
 
     //! Linear damping.
     double m_kDampingPos;
@@ -266,7 +264,7 @@ class cGELSkeletonNode
     bool m_useGravity;
 
     //! Gravity field.
-    cVector3d m_gravity;
+    chai3d::cVector3d m_gravity;
 
 
 	//-----------------------------------------------------------------------
@@ -274,16 +272,16 @@ class cGELSkeletonNode
     //-----------------------------------------------------------------------
 
     //! Position computed.
-    cVector3d m_pos;
+    chai3d::cVector3d m_pos;
 
     //! Rotation computed.
-    cMatrix3d m_rot;
+    chai3d::cMatrix3d m_rot;
 
     //! Next position computed.
-    cVector3d m_nextPos;
+    chai3d::cVector3d m_nextPos;
 
     //! Next rotation computed.
-    cMatrix3d m_nextRot;
+    chai3d::cMatrix3d m_nextRot;
 
 
   private:
@@ -293,10 +291,10 @@ class cGELSkeletonNode
     //-----------------------------------------------------------------------
       
     //! External force.
-    cVector3d m_externalForce;
+    chai3d::cVector3d m_externalForce;
 
     //! External torque.
-    cVector3d m_externalTorque;
+    chai3d::cVector3d m_externalTorque;
 
 
   public:
@@ -321,13 +319,13 @@ class cGELSkeletonNode
     static bool default_useGravity;
 
     //! Default value - Gravity field magnitude and direction.
-    static cVector3d default_gravity;
+    static chai3d::cVector3d default_gravity;
 
     //! Default value - Is the node reference frame displayed?
     static bool default_showFrame;
 
     //! Default color used to render the node.
-    static cColorf default_color;
+    static chai3d::cColorf default_color;
 };
 
 //---------------------------------------------------------------------------

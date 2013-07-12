@@ -1,7 +1,7 @@
 //===========================================================================
 /*
     Software License Agreement (BSD License)
-    Copyright (c) 2003-2012, CHAI3D.
+    Copyright (c) 2003-2013, CHAI3D.
     (www.chai3d.org)
 
     All rights reserved.
@@ -37,7 +37,7 @@
 
     \author    <http://www.chai3d.org>
     \author    Francois Conti
-    \version   $MAJOR.$MINOR.$RELEASE $Rev: 717 $
+    \version   $MAJOR.$MINOR.$RELEASE $Rev: 1047 $
 */
 //===========================================================================
 
@@ -68,7 +68,7 @@
     cGELWorld implements a world to handle deformable objects within CHAI3D.
 */
 //===========================================================================
-class cGELWorld : public cGenericObject
+class cGELWorld : public chai3d::cGenericObject
 {
   public:
 
@@ -102,7 +102,7 @@ class cGELWorld : public cGenericObject
     //-----------------------------------------------------------------------
 
     //! List of deformable solids.
-    list<cGELMesh*> m_gelMeshes;
+    std::list<cGELMesh*> m_gelMeshes;
 
     //! Current time of simulation.
     double m_simulationTime;
@@ -111,7 +111,7 @@ class cGELWorld : public cGenericObject
     double m_integrationTime;
 
     //! Gravity constant.
-    cVector3d m_gravity;
+    chai3d::cVector3d m_gravity;
 
 
   private:
@@ -121,7 +121,7 @@ class cGELWorld : public cGenericObject
     //-----------------------------------------------------------------------
 
     //! Render deformable mesh.
-    virtual void render(cRenderOptions& a_options);
+    virtual void render(chai3d::cRenderOptions& a_options);
 };
 
 
@@ -135,7 +135,7 @@ class cGELWorld : public cGenericObject
     deformable objects.
 */
 //===========================================================================
-class cGELWorldCollision : public cGenericCollision
+class cGELWorldCollision : public chai3d::cGenericCollision
 {
   public:
 
@@ -161,10 +161,10 @@ class cGELWorldCollision : public cGenericCollision
     virtual void render() {};
 
     //! Return the nearest triangle intersected by the given segment, if any.
-    virtual bool computeCollision(cVector3d& a_segmentPointA,
-                                  cVector3d& a_segmentPointB,
-                                  cCollisionRecorder& a_recorder,
-                                  cCollisionSettings& a_settings);
+    virtual bool computeCollision(chai3d::cVector3d& a_segmentPointA,
+                                  chai3d::cVector3d& a_segmentPointB,
+                                  chai3d::cCollisionRecorder& a_recorder,
+                                  chai3d::cCollisionSettings& a_settings);
 
   private:
 
