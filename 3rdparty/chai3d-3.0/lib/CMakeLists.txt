@@ -93,7 +93,7 @@ SET(CHAI_SRC ${CHAI_INC_DIR}/system/CString.cpp
              ${CHAI_INC_DIR}/effects/CEffectViscosity.cpp
              ${CHAI_INC_DIR}/effects/CEffectSurface.cpp
              ${CHAI_INC_DIR}/effects/CEffectMagnet.cpp
-             ${CHAI_INC_DIR}/effects/CEffectPotentialField.cpp
+             #${CHAI_INC_DIR}/effects/CEffectPotentialField.cpp
              ${CHAI_INC_DIR}/effects/CEffectStickSlip.cpp
              ${CHAI_INC_DIR}/effects/CGenericEffect.cpp
              ${CHAI_INC_DIR}/effects/CEffectVibration.cpp
