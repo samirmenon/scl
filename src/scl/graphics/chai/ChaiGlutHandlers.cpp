@@ -40,6 +40,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/freeglut.h>
 
+using namespace chai3d;
+
 namespace scl_chai_glut_interface
 {
   //---------------------------------------------------------------------------
@@ -517,7 +519,7 @@ namespace scl_chai_glut_interface
 
     // compute position of camera in space
     cVector3d pos = cAdd(
-        gr_ds->cam_lookat_,
+        cVector3d(gr_ds->cam_lookat_(0),gr_ds->cam_lookat_(1),gr_ds->cam_lookat_(2)),
         cVector3d(
             chai_glob_ds->cam_sph_x_ * cCosDeg(chai_glob_ds->cam_sph_h_) * cCosDeg(chai_glob_ds->cam_sph_v_),
             chai_glob_ds->cam_sph_x_ * cSinDeg(chai_glob_ds->cam_sph_h_) * cCosDeg(chai_glob_ds->cam_sph_v_),
@@ -526,7 +528,9 @@ namespace scl_chai_glut_interface
     );
 
     // set new position to camera
-    chai_glob_ds->GLOB_chaiDbptr->chai_cam_->set(pos,gr_ds->cam_lookat_,gr_ds->cam_up_);
+    chai_glob_ds->GLOB_chaiDbptr->chai_cam_->set(pos,
+        cVector3d(gr_ds->cam_lookat_(0), gr_ds->cam_lookat_(1), gr_ds->cam_lookat_(2)),
+        cVector3d(gr_ds->cam_up_(0),gr_ds->cam_up_(1),gr_ds->cam_up_(2)) );
 
     // recompute global positions
     chai_glob_ds->GLOB_chaiDbptr->chai_world_->computeGlobalPositions(true);
