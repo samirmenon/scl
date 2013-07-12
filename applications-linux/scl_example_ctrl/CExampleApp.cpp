@@ -42,6 +42,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <stdexcept>
 
+using namespace chai3d;
+
 namespace scl_app
 {
 
@@ -229,7 +231,10 @@ namespace scl_app
       assert(NULL!=it->task_);
       assert(NULL!=it->task_ds_);
       db_->s_gui_.ui_point_[it->ui_pt_] = it->task_ds_->x_;
-      it->chai_pos_des_->setLocalPos(db_->s_gui_.ui_point_[it->ui_pt_]);
+
+      //Using a tmp ref to simplify code.
+      Eigen::Vector3d& tmp_ref = db_->s_gui_.ui_point_[it->ui_pt_];
+      it->chai_pos_des_->setLocalPos(tmp_ref(0),tmp_ref(1),tmp_ref(2));
     }
 
     if(has_been_init_com_task_) //Update the com task (if any)
@@ -237,8 +242,9 @@ namespace scl_app
       assert(NULL!=chai_com_pos_);
       assert(NULL!=chai_com_pos_des_);
       db_->s_gui_.ui_point_[ui_pt_com_] = task_ds_com_->x_;
-      chai_com_pos_->setLocalPos(task_ds_com_->x_);
-      chai_com_pos_des_->setLocalPos(db_->s_gui_.ui_point_[ui_pt_com_]);
+      chai_com_pos_->setLocalPos(task_ds_com_->x_(0), task_ds_com_->x_(1), task_ds_com_->x_(2));
+      Eigen::Vector3d& tmp_ref2 = db_->s_gui_.ui_point_[ui_pt_com_];
+      chai_com_pos_des_->setLocalPos(tmp_ref2(0),tmp_ref2(1),tmp_ref2(2));
     }
   }
 
@@ -266,12 +272,16 @@ namespace scl_app
 
       //Set the positions of the ui points
       for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
-      { it->chai_pos_des_->setLocalPos(db_->s_gui_.ui_point_[it->ui_pt_]); }
+      {
+        Eigen::Vector3d& tmp_ref = db_->s_gui_.ui_point_[it->ui_pt_];
+        it->chai_pos_des_->setLocalPos(tmp_ref(0),tmp_ref(1),tmp_ref(2));
+      }
 
       if(has_been_init_com_task_)
       {
-        chai_com_pos_->setLocalPos(task_ds_com_->x_);
-        chai_com_pos_des_->setLocalPos(db_->s_gui_.ui_point_[ui_pt_com_]);
+        chai_com_pos_->setLocalPos(task_ds_com_->x_(0),task_ds_com_->x_(1),task_ds_com_->x_(2));
+        Eigen::Vector3d& tmp_ref2 = db_->s_gui_.ui_point_[ui_pt_com_];
+        chai_com_pos_des_->setLocalPos(tmp_ref2(0),tmp_ref2(1),tmp_ref2(2));
       }
     }
     robot_.computeServo();           //Run the servo loop
