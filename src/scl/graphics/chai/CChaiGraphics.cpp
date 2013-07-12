@@ -41,6 +41,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/freeglut.h>
 
+using namespace chai3d;
+
 namespace scl {
 
   const sFloat CHAI_SPHERE_RENDER_RADIUS = 0.0001; //m
@@ -163,9 +165,9 @@ namespace scl {
           cVector3d dir = lookat-pos;
 
 #ifdef DEBUG
-          std::cout<<"\nLight Pos:"<<pos[0]<<" "<<pos[1]<<" "<<pos[2];
-          std::cout<<"\nLight Lookat:"<<lookat[0]<<" "<<lookat[1]<<" "<<lookat[2];
-          std::cout<<"\nLight Dir:"<<dir[0]<<" "<<dir[1]<<" "<<dir[2]<<std::flush;
+          std::cout<<"\nLight Pos:"<<pos(0)<<" "<<pos(1)<<" "<<pos(2);
+          std::cout<<"\nLight Lookat:"<<lookat(0)<<" "<<lookat(1)<<" "<<lookat(2);
+          std::cout<<"\nLight Dir:"<<dir(0)<<" "<<dir(1)<<" "<<dir(2)<<std::flush;
           std::cout<<std::endl;
 #endif
 
@@ -411,7 +413,12 @@ namespace scl {
           //Set the rotation in its parent
           Eigen::Quaternion<sFloat> tmp_quat(lnk_gr.ori_parent_quat_(3), lnk_gr.ori_parent_quat_(0),
               lnk_gr.ori_parent_quat_(1),lnk_gr.ori_parent_quat_(2));
-          tmp->setLocalRot(tmp_quat.toRotationMatrix());
+          Eigen::Matrix3d tmp_rot_mat = tmp_quat.toRotationMatrix();
+          cMatrix3d tmp_mat;
+          tmp_mat(0,0) = tmp_rot_mat(0,0); tmp_mat(1,0) = tmp_rot_mat(1,0); tmp_mat(2,0) = tmp_rot_mat(2,0);
+          tmp_mat(0,1) = tmp_rot_mat(0,1); tmp_mat(1,1) = tmp_rot_mat(1,1); tmp_mat(2,1) = tmp_rot_mat(2,1);
+          tmp_mat(0,2) = tmp_rot_mat(0,2); tmp_mat(1,2) = tmp_rot_mat(1,2); tmp_mat(2,2) = tmp_rot_mat(2,2);
+          tmp->setLocalRot(tmp_mat);
 
           // NOTE TODO : Chai mesh scaling is now isotropic. Bug #27 as of v3.0.
           // Only using X-scaling. Fix later
@@ -443,7 +450,12 @@ namespace scl {
           arg_link->robot_link_->pos_in_parent_[2]);
 
       //Set the rotation in its parent
-      arg_link->graphics_obj_->setLocalRot(arg_link->robot_link_->ori_parent_quat_.toRotationMatrix());
+      Eigen::Matrix3d tmp_rot_mat =arg_link->robot_link_->ori_parent_quat_.toRotationMatrix();
+      cMatrix3d tmp_mat;
+      tmp_mat(0,0) = tmp_rot_mat(0,0); tmp_mat(1,0) = tmp_rot_mat(1,0); tmp_mat(2,0) = tmp_rot_mat(2,0);
+      tmp_mat(0,1) = tmp_rot_mat(0,1); tmp_mat(1,1) = tmp_rot_mat(1,1); tmp_mat(2,1) = tmp_rot_mat(2,1);
+      tmp_mat(0,2) = tmp_rot_mat(0,2); tmp_mat(1,2) = tmp_rot_mat(1,2); tmp_mat(2,2) = tmp_rot_mat(2,2);
+      arg_link->graphics_obj_->setLocalRot(tmp_mat);
 
 #ifdef DEBUG
       //When testing, show the frames as well (gives a good idea of how things work).
@@ -530,7 +542,12 @@ namespace scl {
 
       //3. Initialize the mesh's position and orientation (relative to the origin)
       tmp_chai_mesh->setLocalPos(arg_pos(0), arg_pos(1), arg_pos(2)); //Set position
-      tmp_chai_mesh->setLocalRot(arg_rot); //Set rotation
+
+      cMatrix3d tmp_mat;
+      tmp_mat(0,0) = arg_rot(0,0); tmp_mat(1,0) = arg_rot(1,0); tmp_mat(2,0) = arg_rot(2,0);
+      tmp_mat(0,1) = arg_rot(0,1); tmp_mat(1,1) = arg_rot(1,1); tmp_mat(2,1) = arg_rot(2,1);
+      tmp_mat(0,2) = arg_rot(0,2); tmp_mat(1,2) = arg_rot(1,2); tmp_mat(2,2) = arg_rot(2,2);
+      tmp_chai_mesh->setLocalRot(tmp_mat); //Set rotation
 
       //4. Add the mesh to the world.
       data_->chai_world_->addChild(tmp_chai_mesh);
@@ -578,7 +595,12 @@ namespace scl {
 
       //3. Initialize the mesh's position and orientation (relative to the origin)
       tmp_chai_mesh->setLocalPos(arg_pos(0), arg_pos(1), arg_pos(2)); //Set position
-      tmp_chai_mesh->setLocalRot(arg_rot); //Set rotation
+
+      cMatrix3d tmp_mat;
+      tmp_mat(0,0) = arg_rot(0,0); tmp_mat(1,0) = arg_rot(1,0); tmp_mat(2,0) = arg_rot(2,0);
+      tmp_mat(0,1) = arg_rot(0,1); tmp_mat(1,1) = arg_rot(1,1); tmp_mat(2,1) = arg_rot(2,1);
+      tmp_mat(0,2) = arg_rot(0,2); tmp_mat(1,2) = arg_rot(1,2); tmp_mat(2,2) = arg_rot(2,2);
+      tmp_chai_mesh->setLocalRot(tmp_mat); //Set rotation
 
       //4. Get mesh's parent data structure pointing to the chai object
       SGraphicsMesh* tmp_parent_mesh_ds = S_NULL;
@@ -724,7 +746,7 @@ namespace scl {
           gr_mpt.graphics_parent_ = gr_lnk;
 
           gr_mpt.pos_ = new cVector3d();
-          *(gr_mpt.pos_) = it->point_;
+          gr_mpt.pos_->set(it->point_(0),it->point_(1),it->point_(2));
 
           if(it2!=ite)
           {
@@ -738,7 +760,7 @@ namespace scl {
             gr_mpt.graphics_parent_next_ = gr_lnk2;
 
             gr_mpt.pos_next_ = new cVector3d();
-            *(gr_mpt.pos_next_) = it2->point_;
+            gr_mpt.pos_next_->set(it2->point_(0),it2->point_(1),it2->point_(2));
 
             //Set up a line : The initial coordinates don't matter and will be immediately
             //updated with global coordinates of the skeletonwhile rendering.
@@ -817,7 +839,7 @@ namespace scl {
       { throw(std::runtime_error("Could not allocate new rendering object"));  }
 
       //Set its position in the parent frame
-      new_op_gr->setLocalPos(arg_pos);
+      new_op_gr->setLocalPos(arg_pos(0),arg_pos(1),arg_pos(2));
 
       //Add it to the parent frame as a child
       op_gr->addChild(new_op_gr);
@@ -848,7 +870,7 @@ namespace scl {
       { throw(std::runtime_error("Could not allocate new rendering object"));  }
 
       //Set its position in the parent frame
-      new_op_gr->setLocalPos(arg_pos);
+      new_op_gr->setLocalPos(arg_pos(0),arg_pos(1),arg_pos(2));
 
       //Add it to the parent frame as a child
       data_->chai_world_->addChild(new_op_gr);
@@ -873,7 +895,9 @@ namespace scl {
     {
       if(!has_been_init_) { return false; }
 
-      //Create a new sphere and add it to the robot.
+      throw(std::runtime_error("Belted ellipsoids are from chai v2. Need to be updated to chai v3. See Issue #50 on bitbucket for updates"));
+
+      /*//Create a new sphere and add it to the robot.
       cGenericObject *new_op_gr = new cShapeBeltedEllipsoid();
       if(S_NULL == new_op_gr)
       { throw(std::runtime_error("Could not allocate new rendering object"));  }
@@ -885,7 +909,7 @@ namespace scl {
       data_->chai_world_->addChild(new_op_gr);
 
       //Set the return pointer if passed, so that the caller can manipulate the sphere.
-      arg_ret_ptr = new_op_gr;
+      arg_ret_ptr = new_op_gr;*/
     }
     catch(std::exception& ee)
     {
@@ -1000,38 +1024,38 @@ namespace scl {
           switch(lnk_robdata->joint_type_)
           {
             case JOINT_TYPE_PRISMATIC_X:
-              tr[0] = lnk_robdata->pos_in_parent_(0) + q;
-              tr[1] = lnk_robdata->pos_in_parent_(1);
-              tr[2] = lnk_robdata->pos_in_parent_(2);
+              tr(0) = lnk_robdata->pos_in_parent_(0) + q;
+              tr(1) = lnk_robdata->pos_in_parent_(1);
+              tr(2) = lnk_robdata->pos_in_parent_(2);
               break;
             case JOINT_TYPE_PRISMATIC_Y:
-              tr[0] = lnk_robdata->pos_in_parent_(0);
-              tr[1] = lnk_robdata->pos_in_parent_(1) + q;
-              tr[2] = lnk_robdata->pos_in_parent_(2);
+              tr(0) = lnk_robdata->pos_in_parent_(0);
+              tr(1) = lnk_robdata->pos_in_parent_(1) + q;
+              tr(2) = lnk_robdata->pos_in_parent_(2);
               break;
             case JOINT_TYPE_PRISMATIC_Z:
-              tr[0] = lnk_robdata->pos_in_parent_(0);
-              tr[1] = lnk_robdata->pos_in_parent_(1);
-              tr[2] = lnk_robdata->pos_in_parent_(2) + q;
+              tr(0) = lnk_robdata->pos_in_parent_(0);
+              tr(1) = lnk_robdata->pos_in_parent_(1);
+              tr(2) = lnk_robdata->pos_in_parent_(2) + q;
               break;
             case JOINT_TYPE_REVOLUTE_X:
-              tr[0] = lnk_robdata->pos_in_parent_(0);
-              tr[1] = lnk_robdata->pos_in_parent_(1);
-              tr[2] = lnk_robdata->pos_in_parent_(2);
+              tr(0) = lnk_robdata->pos_in_parent_(0);
+              tr(1) = lnk_robdata->pos_in_parent_(1);
+              tr(2) = lnk_robdata->pos_in_parent_(2);
               //Emulate euler angles with Eigen angle-axis
               tmp_rot = lnk_robdata->ori_parent_quat_.toRotationMatrix() * Eigen::AngleAxisd(q,Eigen::Vector3d::UnitX());
               break;
             case JOINT_TYPE_REVOLUTE_Y:
-              tr[0] = lnk_robdata->pos_in_parent_(0);
-              tr[1] = lnk_robdata->pos_in_parent_(1);
-              tr[2] = lnk_robdata->pos_in_parent_(2);
+              tr(0) = lnk_robdata->pos_in_parent_(0);
+              tr(1) = lnk_robdata->pos_in_parent_(1);
+              tr(2) = lnk_robdata->pos_in_parent_(2);
               //Emulate euler angles with Eigen angle-axis
               tmp_rot = lnk_robdata->ori_parent_quat_.toRotationMatrix() * Eigen::AngleAxisd(q,Eigen::Vector3d::UnitY());
               break;
             case JOINT_TYPE_REVOLUTE_Z:
-              tr[0] = lnk_robdata->pos_in_parent_(0);
-              tr[1] = lnk_robdata->pos_in_parent_(1);
-              tr[2] = lnk_robdata->pos_in_parent_(2);
+              tr(0) = lnk_robdata->pos_in_parent_(0);
+              tr(1) = lnk_robdata->pos_in_parent_(1);
+              tr(2) = lnk_robdata->pos_in_parent_(2);
               //Emulate euler angles with Eigen angle-axis
               tmp_rot = lnk_robdata->ori_parent_quat_.toRotationMatrix() * Eigen::AngleAxisd(q,Eigen::Vector3d::UnitZ());
               break;
@@ -1048,7 +1072,12 @@ namespace scl {
 
           //3. Initialize the mesh's position and orientation (relative to the parent)
           lnk_grdata->setLocalPos(tr); //Set position
-          lnk_grdata->setLocalRot(tmp_rot); //Set rotation
+
+          cMatrix3d tmp_mat;
+          tmp_mat(0,0) = tmp_rot(0,0); tmp_mat(1,0) = tmp_rot(1,0); tmp_mat(2,0) = tmp_rot(2,0);
+          tmp_mat(0,1) = tmp_rot(0,1); tmp_mat(1,1) = tmp_rot(1,1); tmp_mat(2,1) = tmp_rot(2,1);
+          tmp_mat(0,2) = tmp_rot(0,2); tmp_mat(1,2) = tmp_rot(1,2); tmp_mat(2,2) = tmp_rot(2,2);
+          lnk_grdata->setLocalRot(tmp_mat); //Set rotation
 
           //Advance to the next link in the robot
         }

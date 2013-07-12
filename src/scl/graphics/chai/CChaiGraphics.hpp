@@ -160,13 +160,13 @@ public:
       const Eigen::Vector3d& arg_pos,
       const sFloat arg_size=0.01,
       /** Get the object for your use */
-      cGenericObject** arg_ret_ptr=S_NULL);
+      chai3d::cGenericObject** arg_ret_ptr=S_NULL);
 
   /** Adds a sphere to the rendering environment wrt the global frame */
   sBool addSphereToRender(
       const Eigen::Vector3d& arg_pos,
       /** Reference to a pointer, pass a pointer and get the object for your use */
-      cGenericObject*& arg_ret_ptr,
+      chai3d::cGenericObject*& arg_ret_ptr,
       const sFloat arg_size=0.01);
 
   /** Adds a belted ellipsoid (representing the inertia at an operational point)
@@ -174,7 +174,7 @@ public:
   sBool addBeltedEllipsoidToRender(
       const Eigen::Vector3d& arg_pos,
       /** Reference to a pointer, pass a pointer and get the object for your use */
-      cGenericObject*& arg_ret_ptr,
+      chai3d::cGenericObject*& arg_ret_ptr,
       const sFloat arg_size=0.01);
 
   /** Deallocates the chai world. */

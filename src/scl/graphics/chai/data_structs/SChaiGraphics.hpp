@@ -50,11 +50,14 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  * NOTE : Link with the Chai3D library to get these class
  * specifications.
  */
+namespace chai3d
+{
 class cWorld;
 class cCamera;
 class cGenericObject;
 class cMesh;
 struct cVector3d;
+}
 
 namespace scl
 {
@@ -66,7 +69,7 @@ struct SGraphicsPhysicalLink
 {
 public:
   const SRigidBody* robot_link_;
-  cGenericObject* graphics_obj_;
+  chai3d::cGenericObject* graphics_obj_;
   const SRobotIOData* io_data_;
   sInt io_data_idx_;
 
@@ -112,7 +115,7 @@ public:
   /** The pointer to the xyz graphics library's corresponding
    * graphics object. Be sure to typecast this correctly in
    * any implementation   */
-  cGenericObject* graphics_obj_;
+  chai3d::cGenericObject* graphics_obj_;
 };
 
 /** The graphics representation for rendered muscles */
@@ -123,14 +126,14 @@ struct SGraphicsMsys
     struct SGraphicsMusclePoint
     {//Chai's GPL license might now allow us to directly link. Hence have to separate stuff.
       //Hence use forward decls and pointers. Should have used static members instead
-      cVector3d* pos_;
+      chai3d::cVector3d* pos_;
       SGraphicsPhysicalLink* graphics_parent_;//Access the chai and scl objects
 
-      cVector3d* pos_next_;
+      chai3d::cVector3d* pos_next_;
       SGraphicsPhysicalLink* graphics_parent_next_;//Access the chai and scl objects
 
-      cGenericObject* graphics_via_point_;
-      cGenericObject* graphics_via_line_;
+      chai3d::cGenericObject* graphics_via_point_;
+      chai3d::cGenericObject* graphics_via_line_;
       SGraphicsMusclePoint()
       {
         pos_ = S_NULL; pos_next_ = S_NULL;
@@ -166,10 +169,10 @@ public:
    * The graphics world :
    * A scenegraph of what will be rendered
    */
-  cWorld* chai_world_;
+  chai3d::cWorld* chai_world_;
 
   /** A camera that looks at the world. */
-  cCamera* chai_cam_;
+  chai3d::cCamera* chai_cam_;
 
   /** Container for all the robots to be rendered. */
   sutil::CMappedList<std::string,
@@ -194,7 +197,7 @@ public:
 
   scl::sFloat mouse_grab_mag_; //magnitude
   Eigen::Vector3d mouse_grab_pos_;
-  cGenericObject* mouse_grab_obj_;
+  chai3d::cGenericObject* mouse_grab_obj_;
 
   /** Running or not */
   sFloat running_;
