@@ -1,7 +1,7 @@
 /****************************************************************************
  *
- *  DHD - Haptic SDK ver 3.4.2
- *  Copyright (C) 2001-2012
+ *  DHD - Haptic SDK ver 3.5.0-pre
+ *  Copyright (C) 2001-2013
  *  Force Dimension, Switzerland
  *  All Rights Reserved.
  *
@@ -67,7 +67,8 @@ typedef unsigned long  ulong;
     DHD_ERROR_INVALID_INDEX,
     DHD_ERROR_DEPRECATED,
     DHD_ERROR_NULL_ARGUMENT,
-    DHD_ERROR_REDUNDANT_FAIL
+    DHD_ERROR_REDUNDANT_FAIL,
+    DHD_ERROR_NOT_ENABLED
   };
 
   /* error reporting */
@@ -95,6 +96,8 @@ typedef unsigned long  ulong;
 #define DHD_DEVICE_CUSTOM         91
 #define DHD_DEVICE_SIGMA331      104
 #define DHD_DEVICE_SIGMA331_LEFT 105
+#define DHD_DEVICE_SIGMA33P      106
+#define DHD_DEVICE_SIGMA33P_LEFT 107
 
 /* deprecated devices (no longer supported) */
 #define DHD_DEVICE_3DOF           31
@@ -138,7 +141,7 @@ typedef unsigned long  ulong;
 #define DHD_MOTOR_SATURATED        2
 
 /* status count */
-#define DHD_MAX_STATUS            14
+#define DHD_MAX_STATUS            15
 
 /* status codes */
 #define DHD_STATUS_POWER           0
@@ -155,6 +158,7 @@ typedef unsigned long  ulong;
 #define DHD_STATUS_TIMEGUARD      11
 #define DHD_STATUS_WRIST_INIT     12
 #define DHD_STATUS_REDUNDANCY     13
+#define DHD_STATUS_FORCEOFFCAUSE  14
 
 /* buttons count */
 #define DHD_MAX_BUTTONS            8
@@ -166,9 +170,20 @@ typedef unsigned long  ulong;
 #define DHD_VELOCITY_WINDOW       20  // [ms]
 
 /* USB operation modes */
-#define DHD_USB_MODE_SYNC          0
-#define DHD_USB_MODE_ASYNC         1
-#define DHD_USB_MODE_READLOOP      2
+#define DHD_COM_MODE_SYNC          0
+#define DHD_COM_MODE_ASYNC         1
+#define DHD_COM_MODE_READLOOP      2
+#define DHD_COM_MODE_VIRTUAL       3
+#define DHD_COM_MODE_NETWORK       4
+
+/* causes for device FORCE OFF state */
+#define DHD_FORCEOFF_NONE          0
+#define DHD_FORCEOFF_BUTTON        1
+#define DHD_FORCEOFF_VELOCITY      2
+#define DHD_FORCEOFF_WATCHDOG      3
+#define DHD_FORCEOFF_SOFTWARE      4
+#define DHD_FORCEOFF_USBDISCN      5
+#define DHD_FORCEOFF_DEADMAN       6
 
 
 /****************************************************************************
@@ -186,6 +201,7 @@ typedef unsigned long  ulong;
   int         __SDK dhdOpenID                            (char ID);
   int         __SDK dhdClose                             (char ID = -1);
   int         __SDK dhdStop                              (char ID = -1);
+  int         __SDK dhdGetComMode                        (char ID = -1);                                                                                           /* added in release 3.3.2 */
   int         __SDK dhdEnableForce                       (uchar val, char ID = -1);
   int         __SDK dhdGetSystemType                     (char ID = -1);
   const char* __SDK dhdGetSystemName                     (char ID = -1);                                                                                           /* added in 3.2 release */
@@ -198,6 +214,7 @@ typedef unsigned long  ulong;
   ulong       __SDK dhdGetSystemCounter                  ();
   int         __SDK dhdGetButton                         (int index, char ID = -1);
   uint        __SDK dhdGetButtonMask                     (char ID = -1);
+  int         __SDK dhdSetOutput                         (uint output, char ID = -1);                                                                              /* added in 3.4 release */
   bool        __SDK dhdIsLeftHanded                      (char ID = -1);
   bool        __SDK dhdHasWrist                          (char ID = -1);
   bool        __SDK dhdHasActiveWrist                    (char ID = -1);
@@ -216,8 +233,6 @@ typedef unsigned long  ulong;
   int         __SDK dhdSetForce                          (double  fx, double  fy, double  fz, char ID = -1);
   int         __SDK dhdGetOrientationRad                 (double *oa, double *ob, double *og, char ID = -1);
   int         __SDK dhdGetOrientationDeg                 (double *oa, double *ob, double *og, char ID = -1);
-  int         __SDK dhdGetTorque                         (double *ta, double *tb, double *tg, char ID = -1);
-  int         __SDK dhdSetTorque                         (double  ta, double  tb, double  tg, char ID = -1);
   int         __SDK dhdGetPositionAndOrientationRad      (double *px, double *py, double *pz, double *oa, double *ob, double *og, char ID = -1);
   int         __SDK dhdGetPositionAndOrientationDeg      (double *px, double *py, double *pz, double *oa, double *ob, double *og, char ID = -1);
   int         __SDK dhdGetPositionAndOrientationFrame    (double *px, double *py, double *pz, double matrix[3][3], char ID = -1);
@@ -226,17 +241,13 @@ typedef unsigned long  ulong;
   int         __SDK dhdGetOrientationFrame               (double matrix[3][3], char ID = -1);
   int         __SDK dhdGetGripperAngleDeg                (double *a, char ID = -1);
   int         __SDK dhdGetGripperAngleRad                (double *a, char ID = -1);
+  int         __SDK dhdGetGripperGap                     (double *g, char ID = -1);
   int         __SDK dhdGetGripperThumbPos                (double *px, double *py, double *pz,  char ID = -1);
   int         __SDK dhdGetGripperFingerPos               (double *px, double *py, double *pz,  char ID = -1);
-  int         __SDK dhdSetGripperTorque                  (double t, char ID = -1);
-  int         __SDK dhdSetGripperForce                   (double f, char ID = -1);
   double      __SDK dhdGetComFreq                        (char ID = -1);
   int         __SDK dhdSetForceAndGripperForce           (double fx, double fy, double fz, double f, char ID = -1);
-  int         __SDK dhdSetForceAndGripperTorque          (double fx, double fy, double fz, double t, char ID = -1);
   int         __SDK dhdSetForceAndTorqueAndGripperForce  (double fx, double fy, double fz, double ta, double tb, double tg, double f, char ID = -1);               /* added in 3.3 release */
-  int         __SDK dhdSetForceAndTorqueAndGripperTorque (double fx, double fy, double fz, double ta, double tb, double tg, double t, char ID = -1);               /* added in 3.3 release */
   int         __SDK dhdGetForceAndTorqueAndGripperForce  (double *fx, double *fy, double *fz, double *ta, double *tb, double *tg, double *f, char ID = -1);        /* added in 3.3 release */
-  int         __SDK dhdGetForceAndTorqueAndGripperTorque (double *fx, double *fy, double *fz, double *ta, double *tb, double *tg, double *t, char ID = -1);        /* added in 3.3 release */
   int         __SDK dhdConfigLinearVelocity              (int ms = DHD_VELOCITY_WINDOW, int mode = DHD_VELOCITY_WINDOWING, char ID = -1);
   int         __SDK dhdGetLinearVelocity                 (double *vx, double *vy, double *vz, char ID = -1);
   int         __SDK dhdConfigAngularVelocity             (int ms = DHD_VELOCITY_WINDOW, int mode = DHD_VELOCITY_WINDOWING, char ID = -1);
@@ -286,13 +297,11 @@ typedef unsigned long  ulong;
   int         __SDK dhdWristMotorToTorque                (ushort mot0, ushort mot1, ushort mot2, int enc0, int enc1, int enc2, double  *ta, double  *tb, double  *tg, char ID = -1);
   int         __SDK dhdWristTorqueToMotor                (double  ta, double  tb, double  tg, int enc0, int enc1, int enc2, ushort *mot0, ushort *mot1, ushort *mot2, char ID = -1);
   int         __SDK dhdGripperEncoderToAngleRad          (int enc, double *a, char ID = -1);
-  int         __SDK dhdGripperEncoderToPosition          (int enc, double *p, char ID = -1);
+  int         __SDK dhdGripperEncoderToGap               (int enc, double *g, char ID = -1);
   int         __SDK dhdGripperAngleRadToEncoder          (double a, int *enc, char ID = -1);
-  int         __SDK dhdGripperPositionToEncoder          (double p, int *enc, char ID = -1);
-  int         __SDK dhdGripperMotorToTorque              (ushort mot, double *t, int e = 0, double rWo[3][3] = NULL, char ID = -1);
-  int         __SDK dhdGripperMotorToForce               (ushort mot, double *f, int e = 0, double rWo[3][3] = NULL, char ID = -1);
-  int         __SDK dhdGripperTorqueToMotor              (double t, ushort *mot, int e = 0, double rWo[3][3] = NULL, char ID = -1);
-  int         __SDK dhdGripperForceToMotor               (double f, ushort *mot, int e = 0, double rWo[3][3] = NULL, char ID = -1);
+  int         __SDK dhdGripperGapToEncoder               (double g, int *enc, char ID = -1);
+  int         __SDK dhdGripperMotorToForce               (ushort mot, double *f, int e[4], char ID = -1);
+  int         __SDK dhdGripperForceToMotor               (double f, ushort *mot, int e[4], char ID = -1);
   int         __SDK dhdSetMot                            (ushort mot[DHD_MAX_DOF], uchar mask = 0xff, char ID = -1);
   int         __SDK dhdGetEnc                            (int    enc[DHD_MAX_DOF], uchar mask = 0xff, char ID = -1);
   int         __SDK dhdSetBrk                            (uchar mask = 0xff, char ID = -1);
@@ -304,9 +313,8 @@ typedef unsigned long  ulong;
   int         __SDK dhdSetDeltaJointTorques              (double t0, double t1, double t2, char ID = -1);                                                          /* added in release 3.3   */
   int         __SDK dhdGetJointAngles                    (double j[DHD_MAX_DOF], char ID = -1);                                                                    /* added in release 3.3   */
   int         __SDK dhdJointAnglesToInertiaMatrix        (double j[DHD_MAX_DOF], double inertia[6][6], char ID = -1);                                              /* added in release 3.3   */
-  int         __SDK dhdSetUSBMode                        (int loop, char ID = -1);                                                                                 /* added in release 3.3.2 */
-  int         __SDK dhdGetUSBMode                        (char ID = -1);                                                                                           /* added in release 3.3.2 */
-  int         __SDK dhdSetUSBModePriority                (int priority, char ID = -1);                                                                             /* added in release 3.3.2 */
+  int         __SDK dhdSetComMode                        (int loop, char ID = -1);                                                                                 /* added in release 3.3.2 */
+  int         __SDK dhdSetComModePriority                (int priority, char ID = -1);                                                                             /* added in release 3.3.2 */
   int         __SDK dhdSetWatchdog                       (unsigned char  val, char ID = -1);                                                                       /* added in release 3.3.2 */
   int         __SDK dhdGetWatchdog                       (unsigned char *val, char ID = -1);                                                                       /* added in release 3.3.2 */
 
