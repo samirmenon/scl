@@ -30,7 +30,7 @@ CHAI_FIN_LIB_DIR = -L$(CHAI_INC_DIR)../lib/release/ -Wl,--rpath=$(CHAI_INC_DIR).
 CHAI_LIB_DBG = -lchai3d
 CHAI_LIB_FIN = -lchai3d
 CHAI_DEFS = -D_LINUX -DdDOUBLE -DLINUX \
-					  -lpthread -lrt -lGL -lGLU -lglut
+					  -lpthread -lrt -lGL -lGLU -lGLEW -lglut
 					  
 ############################# INCLUDE AND LINK OPTIONS ############################
 #Collate all the include directiories
