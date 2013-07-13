@@ -90,7 +90,7 @@ namespace scl_app
       scl::STaskOpPos* task_ds_;
       scl::sInt ui_pt_;
       scl::sBool has_been_init_;
-      cGenericObject *chai_pos_,*chai_pos_des_;
+      chai3d::cGenericObject *chai_pos_,*chai_pos_des_;
       SOpPointUiLinkData() :
         name_(""),task_(NULL), task_ds_(NULL),ui_pt_(-1),
         has_been_init_(false), chai_pos_(NULL), chai_pos_des_(NULL){}
@@ -104,7 +104,7 @@ namespace scl_app
     scl::STaskComPos* task_ds_com_;
     scl::sInt ui_pt_com_;
     scl::sBool has_been_init_com_task_;
-    cGenericObject *chai_com_pos_,*chai_com_pos_des_;
+    chai3d::cGenericObject *chai_com_pos_,*chai_com_pos_des_;
 
     //For controlling op points with haptics
     //The app will support dual-mode control, with the haptics controlling op points.

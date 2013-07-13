@@ -126,19 +126,16 @@ endif()
 
 # Note : The DHD library is not open source so we can't use
 # the debugger.
-find_library( CDHD_LIBRARY_DEBUG NAMES dhd
+find_library( CDHD_LIBRARY NAMES dhd
             PATHS   ${CHAI_INC_DIR}../DHD/lib/
             PATH_SUFFIXES ${DHD_LIB_TYPE} )
 
-find_library( CDHD_LIBRARY_RELEASE NAMES dhd
+find_library( CDRD_LIBRARY NAMES drd
             PATHS   ${CHAI_INC_DIR}../DHD/lib/
             PATH_SUFFIXES ${DHD_LIB_TYPE} )
 
-SET( CDHD_LIBRARY debug     ${CDHD_LIBRARY_DEBUG}
-              optimized ${CDHD_LIBRARY_RELEASE} )
-
-target_link_libraries(scl_haptic_ctrl ${CDHD_LIBRARY})
+target_link_libraries(scl_haptic_ctrl ${CDHD_LIBRARY} ${CDRD_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_haptic_ctrl gomp GL GLU glut ncurses usb-1.0 pthread rt pci z)
+target_link_libraries(scl_haptic_ctrl gomp GL GLU GLEW glut ncurses usb-1.0 pthread rt pci z)
