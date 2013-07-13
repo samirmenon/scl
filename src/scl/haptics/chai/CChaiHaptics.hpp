@@ -43,8 +43,11 @@
 // Forward declarations for chai classes so we don't have
 // to include the chai header here. Instead, we can just
 //include it in the .cpp file
+namespace chai3d
+{
 class cHapticDeviceHandler;
 class cGenericHapticDevice;
+}
 
 namespace scl
 {
@@ -100,11 +103,11 @@ namespace scl
      * ******************************************************** */
   private:
     /** A vector to contain the state of all presently connected haptic devices */
-    std::vector<cGenericHapticDevice*> haptic_devices_;
+    std::vector<chai3d::cGenericHapticDevice*> haptic_devices_;
 
     /** Chai communicates with a haptic device through a handler. One handler keeps
      * track of all connected devices. */
-    cHapticDeviceHandler* haptics_handler_;
+    chai3d::cHapticDeviceHandler* haptics_handler_;
   };
 }
 

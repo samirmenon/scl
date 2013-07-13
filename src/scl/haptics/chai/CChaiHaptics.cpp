@@ -37,6 +37,8 @@
 #include <stdexcept>
 #include <iostream>
 
+using namespace chai3d;
+
 namespace scl
 {
   CChaiHaptics::~CChaiHaptics()
@@ -123,7 +125,10 @@ namespace scl
     int tmp = haptic_devices_[arg_id]->getPosition(tmpv);
     if (0 != tmp)
     { std::cout<<"\nCChaiHaptics::getHapticDevicePosition() : WARNING : \n\tCould not read position of haptic device: "<<arg_id; }
-    ret_pos_vec = tmpv;
+
+    Eigen::Vector3d tmp_vec;
+    tmp_vec<<tmpv(0),tmpv(1),tmpv(2);
+    ret_pos_vec = tmp_vec;
 
     return true;
   }
@@ -150,7 +155,9 @@ namespace scl
     {// Now read the state from the devices.
       cVector3d tmpv;
       int tmp =(*it)->getPosition(tmpv); //Read position into tmpv
-      *itv = tmpv;                       //Set the positions in the vector
+      Eigen::Vector3d tmp_vec;
+      tmp_vec<<tmpv(0),tmpv(1),tmpv(2);
+      *itv = tmp_vec;                       //Set the positions in the vector
       if (0 != tmp)
       { std::cout<<"\nWARNING : Could not read position of haptic device: "<<i; }
       i++;
