@@ -21,91 +21,93 @@ INCLUDE_DIRECTORIES(${CHAI_INC_DIR} ${DHD_INC_DIR} ${GEL_INC_DIR}
                     ${PNG_INC_DIR} ${EIGEN_INC_DIR})
 
 #Set all the sources required for the library
-SET(CHAI_SRC ${CHAI_INC_DIR}/graphics/CFont.cpp
-             ${CHAI_INC_DIR}/graphics/CDraw3D.cpp
-             ${CHAI_INC_DIR}/graphics/CColor.cpp
-             ${CHAI_INC_DIR}/graphics/CImage.cpp
-             ${CHAI_INC_DIR}/graphics/CFog.cpp
-             ${CHAI_INC_DIR}/graphics/CTriangle.cpp
-             ${CHAI_INC_DIR}/graphics/CEdge.cpp
-             ${CHAI_INC_DIR}/graphics/CVertex.cpp
-             ${CHAI_INC_DIR}/graphics/GLee.cpp
-             ${CHAI_INC_DIR}/graphics/CDisplayList.cpp
-             ${CHAI_INC_DIR}/graphics/CPrimitives.cpp
-             ${CHAI_INC_DIR}/files/CFileImageJPG.cpp
-             ${CHAI_INC_DIR}/files/CFileModelOBJ.cpp
-             ${CHAI_INC_DIR}/files/CFileImagePNG.cpp
-             ${CHAI_INC_DIR}/files/CFileImageRAW.cpp
-             ${CHAI_INC_DIR}/files/CFileImagePPM.cpp
-             ${CHAI_INC_DIR}/files/CFileImageBMP.cpp
-             ${CHAI_INC_DIR}/files/CFileModel3DS.cpp
-             ${CHAI_INC_DIR}/files/CFileImageGIF.cpp
-             ${CHAI_INC_DIR}/forces/CGenericForceAlgorithm.cpp
+SET(CHAI_SRC ${CHAI_INC_DIR}/system/CString.cpp
+             ${CHAI_INC_DIR}/system/CGlobals.cpp
+             ${CHAI_INC_DIR}/system/CMutex.cpp
+             ${CHAI_INC_DIR}/system/CThread.cpp
+             ${CHAI_INC_DIR}/world/CShapeTorus.cpp
+             ${CHAI_INC_DIR}/world/CMesh.cpp
+             ${CHAI_INC_DIR}/world/CGenericObject.cpp
+             ${CHAI_INC_DIR}/world/CShapeCylinder.cpp
+						 #${CHAI_INC_DIR}/world/CShapeBeltedEllipsoid.cpp
+             ${CHAI_INC_DIR}/world/CShapeLine.cpp
+             ${CHAI_INC_DIR}/world/CMultiMesh.cpp
+             ${CHAI_INC_DIR}/world/CShapeSphere.cpp
+             ${CHAI_INC_DIR}/world/CShapeBox.cpp
+             ${CHAI_INC_DIR}/world/CWorld.cpp
+             ${CHAI_INC_DIR}/materials/CTexture2d.cpp
+             ${CHAI_INC_DIR}/materials/CGenericTexture.cpp
+             ${CHAI_INC_DIR}/materials/CMaterial.cpp
+             ${CHAI_INC_DIR}/materials/CTexture1d.cpp
+             ${CHAI_INC_DIR}/shaders/CShaderProgram.cpp
+             ${CHAI_INC_DIR}/shaders/CShader.cpp
+             ${CHAI_INC_DIR}/widgets/CBackground.cpp
+             ${CHAI_INC_DIR}/widgets/CPanel.cpp
+             ${CHAI_INC_DIR}/widgets/CGenericWidget.cpp
+             ${CHAI_INC_DIR}/widgets/CBitmap.cpp
+             ${CHAI_INC_DIR}/widgets/CLabel.cpp
+             ${CHAI_INC_DIR}/widgets/CLevel.cpp
+             ${CHAI_INC_DIR}/widgets/CScope.cpp
+             ${CHAI_INC_DIR}/widgets/CDial.cpp
              ${CHAI_INC_DIR}/forces/CAlgorithmPotentialField.cpp
              ${CHAI_INC_DIR}/forces/CInteractionBasics.cpp
              ${CHAI_INC_DIR}/forces/CAlgorithmFingerProxy.cpp
-             ${CHAI_INC_DIR}/world/CWorld.cpp
-             ${CHAI_INC_DIR}/world/CGenericObject.cpp
-             ${CHAI_INC_DIR}/world/CShapeSphere.cpp
-             ${CHAI_INC_DIR}/world/CMesh.cpp
-             ${CHAI_INC_DIR}/world/CMultiMesh.cpp
-             ${CHAI_INC_DIR}/world/CShapeBox.cpp
-             ${CHAI_INC_DIR}/world/CShapeTorus.cpp
-						 ${CHAI_INC_DIR}/world/CShapeBeltedEllipsoid.cpp
-             ${CHAI_INC_DIR}/world/CShapeCylinder.cpp
-             ${CHAI_INC_DIR}/world/CShapeLine.cpp
-             ${CHAI_INC_DIR}/system/CGlobals.cpp
-             ${CHAI_INC_DIR}/system/CString.cpp
-             ${CHAI_INC_DIR}/system/CMutex.cpp
-             ${CHAI_INC_DIR}/system/CThread.cpp
-             ${CHAI_INC_DIR}/timers/CFrequencyCounter.cpp
-             ${CHAI_INC_DIR}/timers/CPrecisionClock.cpp
-             ${CHAI_INC_DIR}/effects/CEffectSurface.cpp
-             ${CHAI_INC_DIR}/effects/CEffectVibration.cpp
-             ${CHAI_INC_DIR}/effects/CEffectPotentialField.cpp
-             ${CHAI_INC_DIR}/effects/CEffectViscosity.cpp
-             ${CHAI_INC_DIR}/effects/CEffectStickSlip.cpp
-             ${CHAI_INC_DIR}/effects/CEffectMagnet.cpp
-             ${CHAI_INC_DIR}/effects/CGenericEffect.cpp
-             ${CHAI_INC_DIR}/display/CViewport.cpp
-             ${CHAI_INC_DIR}/display/CCamera.cpp
-             ${CHAI_INC_DIR}/widgets/CPanel.cpp
-             ${CHAI_INC_DIR}/widgets/CBackground.cpp
-             ${CHAI_INC_DIR}/widgets/CLevel.cpp
-             ${CHAI_INC_DIR}/widgets/CDial.cpp
-             ${CHAI_INC_DIR}/widgets/CScope.cpp
-             ${CHAI_INC_DIR}/widgets/CBitmap.cpp
-             ${CHAI_INC_DIR}/widgets/CGenericWidget.cpp
-             ${CHAI_INC_DIR}/widgets/CLabel.cpp
+             ${CHAI_INC_DIR}/forces/CGenericForceAlgorithm.cpp
+             ${CHAI_INC_DIR}/lighting/CShadowMap.cpp
+             ${CHAI_INC_DIR}/lighting/CDirectionalLight.cpp
+             ${CHAI_INC_DIR}/lighting/CSpotLight.cpp
+             ${CHAI_INC_DIR}/lighting/CPositionalLight.cpp
+             ${CHAI_INC_DIR}/lighting/CGenericLight.cpp
+             ${CHAI_INC_DIR}/files/CFileModel3DS.cpp
+             ${CHAI_INC_DIR}/files/CFileImagePNG.cpp
+             ${CHAI_INC_DIR}/files/CFileImageBMP.cpp
+             ${CHAI_INC_DIR}/files/CFileImageJPG.cpp
+             ${CHAI_INC_DIR}/files/CFileModelOBJ.cpp
+             ${CHAI_INC_DIR}/files/CFileImagePPM.cpp
+             ${CHAI_INC_DIR}/files/CFileImageRAW.cpp
+             ${CHAI_INC_DIR}/files/CFileImageGIF.cpp
+             ${CHAI_INC_DIR}/devices/CGenericDevice.cpp
+             ${CHAI_INC_DIR}/devices/CVirtualDevice.cpp
+             ${CHAI_INC_DIR}/devices/CHydraDevice.cpp
+             ${CHAI_INC_DIR}/devices/CDeltaDevices.cpp
              ${CHAI_INC_DIR}/devices/CPhantomDevices.cpp
              ${CHAI_INC_DIR}/devices/CHapticDeviceHandler.cpp
-             ${CHAI_INC_DIR}/devices/CMyCustomDevice.cpp
-             ${CHAI_INC_DIR}/devices/CVirtualDevice.cpp
-             ${CHAI_INC_DIR}/devices/CDeltaDevices.cpp
+             ${CHAI_INC_DIR}/devices/CSixenseDevices.cpp
              ${CHAI_INC_DIR}/devices/CFalconDevice.cpp
-             ${CHAI_INC_DIR}/devices/CGenericDevice.cpp
              ${CHAI_INC_DIR}/devices/CGenericHapticDevice.cpp
-             ${CHAI_INC_DIR}/shaders/CShader.cpp
-             ${CHAI_INC_DIR}/shaders/CShaderProgram.cpp
-             ${CHAI_INC_DIR}/collisions/CCollisionAABB.cpp
-             ${CHAI_INC_DIR}/collisions/CCollisionBrute.cpp
-             ${CHAI_INC_DIR}/collisions/CCollisionAABBTree.cpp
+             ${CHAI_INC_DIR}/devices/CMyCustomDevice.cpp
              ${CHAI_INC_DIR}/collisions/CGenericCollision.cpp
-             ${CHAI_INC_DIR}/collisions/CCollisionAABBBox.cpp
              ${CHAI_INC_DIR}/collisions/CCollisionBasics.cpp
-             ${CHAI_INC_DIR}/materials/CTexture1d.cpp
-             ${CHAI_INC_DIR}/materials/CMaterial.cpp
-             ${CHAI_INC_DIR}/materials/CGenericTexture.cpp
-             ${CHAI_INC_DIR}/materials/CTexture2d.cpp
-             ${CHAI_INC_DIR}/lighting/CShadowMap.cpp
-             ${CHAI_INC_DIR}/lighting/CGenericLight.cpp
-             ${CHAI_INC_DIR}/lighting/CSpotLight.cpp
-             ${CHAI_INC_DIR}/lighting/CDirectionalLight.cpp
-             ${CHAI_INC_DIR}/lighting/CPositionalLight.cpp
+             ${CHAI_INC_DIR}/collisions/CCollisionBrute.cpp
+             ${CHAI_INC_DIR}/collisions/CCollisionAABB.cpp
+             ${CHAI_INC_DIR}/collisions/CCollisionAABBTree.cpp
+             ${CHAI_INC_DIR}/collisions/CCollisionAABBBox.cpp
+             ${CHAI_INC_DIR}/timers/CFrequencyCounter.cpp
+             ${CHAI_INC_DIR}/timers/CPrecisionClock.cpp
+             ${CHAI_INC_DIR}/display/CCamera.cpp
+             ${CHAI_INC_DIR}/display/CViewport.cpp
              ${CHAI_INC_DIR}/tools/CGenericTool.cpp
+             ${CHAI_INC_DIR}/tools/CToolCursor.cpp
              ${CHAI_INC_DIR}/tools/CToolGripper.cpp
              ${CHAI_INC_DIR}/tools/CHapticPoint.cpp
-             ${CHAI_INC_DIR}/tools/CToolCursor.cpp
+             ${CHAI_INC_DIR}/effects/CEffectViscosity.cpp
+             ${CHAI_INC_DIR}/effects/CEffectSurface.cpp
+             ${CHAI_INC_DIR}/effects/CEffectMagnet.cpp
+             #${CHAI_INC_DIR}/effects/CEffectPotentialField.cpp
+             ${CHAI_INC_DIR}/effects/CEffectStickSlip.cpp
+             ${CHAI_INC_DIR}/effects/CGenericEffect.cpp
+             ${CHAI_INC_DIR}/effects/CEffectVibration.cpp
+             ${CHAI_INC_DIR}/graphics/CColor.cpp
+             ${CHAI_INC_DIR}/graphics/GLee.cpp
+             ${CHAI_INC_DIR}/graphics/CFog.cpp
+             ${CHAI_INC_DIR}/graphics/CImage.cpp
+             ${CHAI_INC_DIR}/graphics/CTriangle.cpp
+             ${CHAI_INC_DIR}/graphics/CEdge.cpp
+             ${CHAI_INC_DIR}/graphics/CPrimitives.cpp
+             ${CHAI_INC_DIR}/graphics/CDisplayList.cpp
+             ${CHAI_INC_DIR}/graphics/CFont.cpp
+             ${CHAI_INC_DIR}/graphics/CDraw3D.cpp
+             ${CHAI_INC_DIR}/graphics/CVertex.cpp 
             )
 
 SET(GEL_SRC ${GEL_INC_DIR}/CGELSkeletonNode.cpp
@@ -239,7 +241,7 @@ SET(GR_LIBS_ALL_SRC ${GIF_SRC} ${3DS_SRC} ${JPEG_SRC} ${PNG_SRC})
 
 ADD_DEFINITIONS(-D_LINUX -DLINUX -DdDOUBLE -DC_ENABLE_DELTA_DEVICE_SUPPORT)
 ADD_DEFINITIONS(-lpthread -lrt -lpci -lz -lusb-1.0
-		-lGL -lGLU -lglut -fPIC)
+				-lGL -lGLU -lGLEW -lglut -fPIC)
 
 
 #Set the build mode to debug by default
@@ -248,7 +250,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   ADD_DEFINITIONS(-DASSERT=assert -DDEBUG=1)
 	#SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-overflow=5 -Wextra -ggdb -O0 -g -pg")
 	#SET(CMAKE_C_FLAGS_DEBUG "-DHAVE_STDARG_H -DHAVE_SYS_TYPES_H -DHAVE_UNISTD_H -DHAVE_CONFIG_H -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-overflow=5 -Wextra -ggdb -O0 -g -pg")
-  SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wpointer-arith -Wcast-qual -Wstrict-overflow=5 -Wextra -ggdb -O0 -g -pg")
+  SET(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wpointer-arith -Wcast-qual -Wstrict-overflow=5 -ggdb -O0 -g -pg")
   SET(CMAKE_C_FLAGS_DEBUG "-DHAVE_STDARG_H -DHAVE_SYS_TYPES_H -DHAVE_UNISTD_H -DHAVE_CONFIG_H -Wall -Wpointer-arith -Wcast-qual -Wstrict-overflow=5 -ggdb -O0 -g -pg")
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
@@ -275,8 +277,15 @@ elseif( "${CMAKE_SIZEOF_VOID_P}" EQUAL "4" )
        set(DHD_LIB_TYPE "lin-i686")
 endif()
 
+# Note : The DHD library is not open source so we can't use
+# the debugger.
 find_library( DHD_LIBRARY NAMES dhd
             PATHS   ${CHAI_BASE_DIR}/DHD/lib/
             PATH_SUFFIXES ${DHD_LIB_TYPE} )
+            
+find_library( DRD_LIBRARY NAMES drd
+            PATHS   ${CHAI_BASE_DIR}/DHD/lib/
+            PATH_SUFFIXES ${DHD_LIB_TYPE} )
 
-target_link_libraries(chai3d ${DHD_LIBRARY})
+target_link_libraries(chai3d ${DHD_LIBRARY} ${DRD_LIBRARY})
+
