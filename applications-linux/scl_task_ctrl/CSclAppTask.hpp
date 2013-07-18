@@ -160,7 +160,7 @@ namespace scl_app
     if((argc != 5)&&(argc != 6))
     {
       std::cout<<"\nDemo application demonstrates operational space task control."
-          <<"\nThe command line input is: ./<executable> <file_name.xml> <robot_name.xml> <controller_name> <operational task point> <optional : operational task point2>";
+          <<"\nThe command line input is: ./<executable> <file_name.xml> <robot_name> <controller_name> <operational task point> <optional : operational task point2>";
       return false;
     }
     else
