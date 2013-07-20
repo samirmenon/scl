@@ -64,7 +64,7 @@ public:
   std::string file_name_;
 
   /** The list of graphics classes */
-  enum SRigidBodyGraphicClasses{ CLASS_FILE_OBJ, CLASS_SPHERE, CLASS_CUBE, CLASS_NOT_INIT };
+  enum SRigidBodyGraphicClasses{ CLASS_FILE_OBJ, CLASS_SPHERE, CLASS_CUBOID, CLASS_NOT_INIT };
 
   /** FILE, SPHERE, CUBE */
   SRigidBodyGraphicClasses class_;
