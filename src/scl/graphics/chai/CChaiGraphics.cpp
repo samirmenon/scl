@@ -295,6 +295,10 @@ namespace scl {
       else
       { robot_brrep_root->graphics_obj_->setShowFrame(false,false); }
 
+      //8. Set wireframe if required
+      if(true == robdef->flag_wireframe_on_)
+      { robot_brrep_root->graphics_obj_->setWireMode(true,true); }
+
       //7. Check for errors.
       if(S_NULL==robot_brrep_root->graphics_obj_)
       { throw(std::runtime_error("Failed to create chai graphics tree for robot"));  }
