@@ -440,14 +440,14 @@ namespace scl {
           {
             //Set the sphere's color
             // NOTE : Chai handles pointers... If you don't pass it a new obj, it segfaults
-            cMaterial *tmp_mat = new cMaterial();
+            cMaterial *tmp_material = new cMaterial();
             cColorf tmp_col;
             tmp_col.set(lnk_gr.color_[0],lnk_gr.color_[1],lnk_gr.color_[2]);
-            tmp_mat->setColor(tmp_col);
-            tmp_mat->setShininess(100);
+            tmp_material->setColor(tmp_col);
+            tmp_material->setShininess(100);
 
             // Uses the first scaling constant to decide the radius
-            cGenericObject* tmp = new cShapeSphere(lnk_gr.scaling_(0),tmp_mat);
+            cGenericObject* tmp = new cShapeSphere(lnk_gr.scaling_(0),tmp_material);
             if(NULL == tmp)
             {
               std::string err_str;
@@ -460,6 +460,48 @@ namespace scl {
             tmp->setLocalPos(lnk_gr.pos_in_parent_[0],
                 lnk_gr.pos_in_parent_[1],
                 lnk_gr.pos_in_parent_[2]);
+
+            //Use display lists : Uses the graphics card for faster rendering
+            // NOTE : Possibly corrupts the rendering. Disable if required.
+#ifndef DEBUG
+            tmp->setUseDisplayList(true, true);
+            tmp->invalidateDisplayList(true);
+#endif
+          }
+          else if(SRigidBodyGraphics::CLASS_CUBOID == lnk_gr.class_)
+          {
+            //Set the sphere's color
+            // NOTE : Chai handles pointers... If you don't pass it a new obj, it segfaults
+            cMaterial *tmp_material = new cMaterial();
+            cColorf tmp_col;
+            tmp_col.set(lnk_gr.color_[0],lnk_gr.color_[1],lnk_gr.color_[2]);
+            tmp_material->setColor(tmp_col);
+            tmp_material->setShininess(100);
+
+            // Uses the first scaling constant to decide the radius
+            cGenericObject* tmp = new cShapeBox(lnk_gr.scaling_(0),lnk_gr.scaling_(1),lnk_gr.scaling_(2),tmp_material);
+            if(NULL == tmp)
+            {
+              std::string err_str;
+              err_str = "Couldn't allocate memory for a sphere graphic object. At robot link : "+ arg_link->name_;
+              throw(std::runtime_error(err_str.c_str()));
+            }
+            arg_link->graphics_obj_->addChild(tmp);
+
+            // Set the object's position and orientation in its parent (fixed)
+            tmp->setLocalPos(lnk_gr.pos_in_parent_[0],
+                lnk_gr.pos_in_parent_[1],
+                lnk_gr.pos_in_parent_[2]);
+
+            //Set the rotation in its parent
+            Eigen::Quaternion<sFloat> tmp_quat(lnk_gr.ori_parent_quat_(3), lnk_gr.ori_parent_quat_(0),
+                lnk_gr.ori_parent_quat_(1),lnk_gr.ori_parent_quat_(2));
+            Eigen::Matrix3d tmp_rot_mat = tmp_quat.toRotationMatrix();
+            cMatrix3d tmp_mat;
+            tmp_mat(0,0) = tmp_rot_mat(0,0); tmp_mat(1,0) = tmp_rot_mat(1,0); tmp_mat(2,0) = tmp_rot_mat(2,0);
+            tmp_mat(0,1) = tmp_rot_mat(0,1); tmp_mat(1,1) = tmp_rot_mat(1,1); tmp_mat(2,1) = tmp_rot_mat(2,1);
+            tmp_mat(0,2) = tmp_rot_mat(0,2); tmp_mat(1,2) = tmp_rot_mat(1,2); tmp_mat(2,2) = tmp_rot_mat(2,2);
+            tmp->setLocalRot(tmp_mat);
 
             //Use display lists : Uses the graphics card for faster rendering
             // NOTE : Possibly corrupts the rendering. Disable if required.
