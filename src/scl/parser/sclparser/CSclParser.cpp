@@ -272,6 +272,25 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
         { arg_robot.flag_logging_on_ = false;  }
       }
 
+      xmlflags = _robot_handle.FirstChildElement( "flag_wireframe_on" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sss;
+        ss>>sss;
+        if("true" == sss || "1" == sss)
+        { arg_robot.flag_wireframe_on_ = true;  }
+        else
+        { arg_robot.flag_wireframe_on_ = false;  }
+      }
+
+      xmlflags = _robot_handle.FirstChildElement( "option_axis_frame_size" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        ss>>arg_robot.option_axis_frame_size_;
+      }
+
       // *****************************************************************
       //                        Now parse the links
       // *****************************************************************

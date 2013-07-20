@@ -97,6 +97,8 @@ public:
   sBool flag_apply_actuator_acc_limits_;     //true
   sBool flag_controller_on_;                 //true
   sBool flag_logging_on_;                    //false
+  sBool flag_wireframe_on_;                  //false
+  sFloat option_axis_frame_size_;            //0.01
   /** ---------------------------------------------- */
 
   //std::string name_; //Inherited
@@ -114,6 +116,8 @@ public:
     flag_apply_actuator_acc_limits_   = true;
     flag_controller_on_               = true;
     flag_logging_on_                  = false;
+    flag_wireframe_on_                = false;
+    option_axis_frame_size_           = 0.01;//default
   }
 };
 

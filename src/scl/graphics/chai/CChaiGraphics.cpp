@@ -287,8 +287,13 @@ namespace scl {
       { throw(std::runtime_error("Failed to add child robot-link"));  }
 
       //7. Set random rendering options (Defaults. Override later if you want.)
-      robot_brrep_root->graphics_obj_->setShowFrame(false, false);
-      robot_brrep_root->graphics_obj_->setFrameSize(0.15,true);
+      if(0.0<robdef->option_axis_frame_size_)
+      {
+        robot_brrep_root->graphics_obj_->setFrameSize(robdef->option_axis_frame_size_,true);
+        robot_brrep_root->graphics_obj_->setShowFrame(true,true);
+      }
+      else
+      { robot_brrep_root->graphics_obj_->setShowFrame(false,false); }
 
       //7. Check for errors.
       if(S_NULL==robot_brrep_root->graphics_obj_)
