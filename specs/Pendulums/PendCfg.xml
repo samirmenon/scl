@@ -3,10 +3,329 @@
 
 <!-- Units are in Std International System -->
 <scl>
-    <graphics name="StanbotStdView">
+    <!-- A variety of Pend based robot models to test wbc
+         XN = N Pends attached in series
+         PN = N Pends attached in parallel
+         XMPN = N <M-Serial-Pends> attached in parallel 
+         Total dofs = M*N*6
+    -->
+    <robot name="Pend6"> 
+        <spec>Pend6</spec>
+        <file>../../specs/Pendulums/Pend6.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+              <graphics>
+              <sphere>
+                <radius>0.05</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <color>1.0 0.0 0.0</color>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend6x2"> 
+        <spec>Pend6x2</spec>
+        <file>../../specs/Pendulums/Pend6x2.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend6x4"> 
+        <spec>Pend6x4</spec>
+        <file>../../specs/Pendulums/Pend6x4.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend6x8"> 
+        <spec>Pend6x8</spec>
+        <file>../../specs/Pendulums/Pend6x8.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend6x16"> 
+        <spec>Pend6x16</spec>
+        <file>../../specs/Pendulums/Pend6x16.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend6x64"> 
+        <spec>Pend6x64</spec>
+        <file>../../specs/Pendulums/Pend6x64.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend12"> 
+        <spec>Pend12</spec>
+        <file>../../specs/Pendulums/Pend12.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend12x2"> 
+        <spec>Pend12x2</spec>
+        <file>../../specs/Pendulums/Pend12x2.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend24"> 
+        <spec>Pend24</spec>
+        <file>../../specs/Pendulums/Pend24.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend24x4"> 
+        <spec>Pend24x4</spec>
+        <file>../../specs/Pendulums/Pend24x4.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend48"> 
+        <spec>Pend48</spec>
+        <file>../../specs/Pendulums/Pend48.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <robot name="Pend96"> 
+        <spec>Pend96</spec>
+        <file>../../specs/Pendulums/Pend96.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+              <sphere>
+                <radius>0.1</radius>
+                <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+                <collision_type>0</collision_type>
+              </sphere>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+    </robot>
+
+    <graphics name="PendStdView">
         <camera>
-            <pos>4.0   0.0   2.0</pos>
-            <lookat>0.0   0.0   0.5</lookat>
+            <pos>4.0   0.0   -0.3</pos>
+            <lookat>0.0   0.0   -0.1</lookat>
             <up>0   0   1</up>
             <clip>0 10</clip>
             <background>0 0 0</background>
@@ -19,149 +338,13 @@
             <pos>-2.0   0.0   0.0</pos>
             <lookat>0.0   0.0   0.0</lookat>
         </light>
+        <background_color>0.0 0.0 0.0</background_color>
     </graphics>
 
-    <!-- A variety of Puma based robot models to test wbc
-         XN = N Pumas attached in series
-         PN = N Pumas attached in parallel
-         XMPN = N <M-Serial-Pumas> attached in parallel 
-         Total dofs = M*N*6
-    -->
-    <robot name="PumaBot"> 
-        <spec>Puma</spec>
-        <file>../../specs/Benchmarks/Puma.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
 
-    <robot name="PumaBotP2"> 
-        <spec>PumaP2</spec>
-        <file>../../specs/Benchmarks/PumaP2.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotP4"> 
-        <spec>PumaP4</spec>
-        <file>../../specs/Benchmarks/PumaP4.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotP8"> 
-        <spec>PumaP8</spec>
-        <file>../../specs/Benchmarks/PumaP8.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotP16"> 
-        <spec>PumaP16</spec>
-        <file>../../specs/Benchmarks/PumaP16.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotP64"> 
-        <spec>PumaP64</spec>
-        <file>../../specs/Benchmarks/PumaP64.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotX2"> 
-        <spec>PumaX2</spec>
-        <file>../../specs/Benchmarks/PumaX2.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotX2P2"> 
-        <spec>PumaX2P2</spec>
-        <file>../../specs/Benchmarks/PumaX2P2.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotX4"> 
-        <spec>PumaX4</spec>
-        <file>../../specs/Benchmarks/PumaX4.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotX4P4"> 
-        <spec>PumaX4P4</spec>
-        <file>../../specs/Benchmarks/PumaX4P4.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotX8"> 
-        <spec>PumaX8</spec>
-        <file>../../specs/Benchmarks/PumaX8.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <robot name="PumaBotX16"> 
-        <spec>PumaX16</spec>
-        <file>../../specs/Benchmarks/PumaX16.xml</file>
-        <gravity>0.000   0.000   -9.81</gravity> 
-        <root_link>
-            <link_name>ground</link_name>
-            <position_in_parent>0.300   0.000   0.000</position_in_parent> 
-            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-        </root_link>
-    </robot>
-
-    <controller name="PumaGcCtrl">
+    <controller name="PendGcCtrl">
         <type>gc</type>
-        <must_use_robot>PumaBotP64</must_use_robot>
+        <must_use_robot>Pend96</must_use_robot>
         <kp>100</kp>
         <kv>10</kv>
         <ki>0</ki>
