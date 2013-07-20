@@ -17,13 +17,13 @@
             <link_name>ground</link_name>
             <position_in_parent>0.300   0.000   0.000</position_in_parent> 
             <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
-              <graphics>
-              <sphere>
-                <radius>0.05</radius>
+            <graphics>
+              <cuboid>
                 <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
                 <color>1.0 0.0 0.0</color>
+                <scaling>0.12 0.12 0.03</scaling>
                 <collision_type>0</collision_type>
-              </sphere>
+              </cuboid>
             </graphics>
         </root_link>
         <!-- These flags can control the simulation's default behavior. -->
