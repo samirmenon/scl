@@ -26,7 +26,7 @@
               </cuboid>
             </graphics>
         </root_link>
-        <!-- These flags can control the simulation's default behavior. -->
+        <!-- These flags can control the simulation's default behavior. Optional. -->
         <flag_gc_damping>false</flag_gc_damping>
         <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
         <flag_actuator_force_limits>true</flag_actuator_force_limits>
@@ -34,6 +34,8 @@
         <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
         <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
         <flag_logging_on>false</flag_logging_on>
+        <flag_wireframe_on>true</flag_wireframe_on>
+        <option_axis_frame_size>0.1</option_axis_frame_size> <!-- All options are optional -->
     </robot>
 
     <robot name="Pend6x2"> 
