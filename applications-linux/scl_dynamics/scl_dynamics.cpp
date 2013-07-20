@@ -161,12 +161,6 @@ int main(int argc, char** argv)
 
       scl::sFloat t_start, t_end;
 
-      //NOTE TODO : DELETE THIS:
-      std::string tmp;
-      tmp = robot_name + ".xml";
-      tmp_lparser.saveRobotToFile(*(scl::CDatabase::getData()->
-          s_parser_.robots_.at(robot_name)),tmp);
-
       omp_set_num_threads(2);
       int thread_id;
       t_start = sutil::CSystemClock::getSysTime();
