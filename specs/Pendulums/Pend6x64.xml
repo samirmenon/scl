@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <scl>
-  <robot spec_name="PumaP64">
+  <robot spec_name="Pend6x64">
     <link>
       <link_name>base</link_name>
       <mass>1.0</mass>
@@ -13,6 +13,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm</link_name>
@@ -26,6 +34,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm</link_name>
@@ -39,6 +55,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand</link_name>
@@ -52,6 +76,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger</link_name>
@@ -65,6 +97,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector1</link_name>
@@ -78,6 +118,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <!--X2-->
@@ -93,6 +141,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm2</link_name>
@@ -106,6 +162,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm2</link_name>
@@ -119,6 +183,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand2</link_name>
@@ -132,6 +204,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger2</link_name>
@@ -145,6 +225,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector2</link_name>
@@ -158,6 +246,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -176,6 +272,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm4</link_name>
@@ -189,6 +293,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm4</link_name>
@@ -202,6 +314,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand4</link_name>
@@ -215,6 +335,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger4</link_name>
@@ -228,6 +356,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector14</link_name>
@@ -241,6 +377,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base24</link_name>
@@ -254,6 +398,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm24</link_name>
@@ -267,6 +419,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm24</link_name>
@@ -280,6 +440,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand24</link_name>
@@ -293,6 +461,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger24</link_name>
@@ -306,6 +482,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector24</link_name>
@@ -319,6 +503,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -335,6 +527,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm8</link_name>
@@ -348,6 +548,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm8</link_name>
@@ -361,6 +569,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand8</link_name>
@@ -374,6 +590,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger8</link_name>
@@ -387,6 +611,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector18</link_name>
@@ -400,6 +632,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -414,6 +654,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm28</link_name>
@@ -427,6 +675,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm28</link_name>
@@ -440,6 +696,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand28</link_name>
@@ -453,6 +717,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger28</link_name>
@@ -466,6 +738,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector28</link_name>
@@ -479,6 +759,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -493,6 +781,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm48</link_name>
@@ -506,6 +802,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm48</link_name>
@@ -519,6 +823,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand48</link_name>
@@ -532,6 +844,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger48</link_name>
@@ -545,6 +865,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector148</link_name>
@@ -558,6 +886,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base248</link_name>
@@ -571,6 +907,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm248</link_name>
@@ -584,6 +928,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm248</link_name>
@@ -597,6 +949,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand248</link_name>
@@ -610,6 +970,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger248</link_name>
@@ -623,6 +991,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector</link_name>
@@ -636,6 +1012,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -654,6 +1038,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_armX8P8</link_name>
@@ -667,6 +1059,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_armX8P8</link_name>
@@ -680,6 +1080,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-handX8P8</link_name>
@@ -693,6 +1101,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-fingerX8P8</link_name>
@@ -706,6 +1122,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector1X8P8</link_name>
@@ -719,6 +1143,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <!--X2-->
@@ -734,6 +1166,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm2X8P8</link_name>
@@ -747,6 +1187,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm2X8P8</link_name>
@@ -760,6 +1208,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand2X8P8</link_name>
@@ -773,6 +1229,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger2X8P8</link_name>
@@ -786,6 +1250,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector2X8P8</link_name>
@@ -799,6 +1271,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -817,6 +1297,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm4X8P8</link_name>
@@ -830,6 +1318,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm4X8P8</link_name>
@@ -843,6 +1339,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand4X8P8</link_name>
@@ -856,6 +1360,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger4X8P8</link_name>
@@ -869,6 +1381,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector14X8P8</link_name>
@@ -882,6 +1402,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base24X8P8</link_name>
@@ -895,6 +1423,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm24X8P8</link_name>
@@ -908,6 +1444,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm24X8P8</link_name>
@@ -921,6 +1465,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand24X8P8</link_name>
@@ -934,6 +1486,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger24X8P8</link_name>
@@ -947,6 +1507,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector24X8P8</link_name>
@@ -960,6 +1528,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -976,6 +1552,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm8X8P8</link_name>
@@ -989,6 +1573,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm8X8P8</link_name>
@@ -1002,6 +1594,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand8X8P8</link_name>
@@ -1015,6 +1615,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger8X8P8</link_name>
@@ -1028,6 +1636,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector18X8P8</link_name>
@@ -1041,6 +1657,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -1055,6 +1679,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm28X8P8</link_name>
@@ -1068,6 +1700,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm28X8P8</link_name>
@@ -1081,6 +1721,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand28X8P8</link_name>
@@ -1094,6 +1742,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger28X8P8</link_name>
@@ -1107,6 +1763,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector28X8P8</link_name>
@@ -1120,6 +1784,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -1134,6 +1806,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm48X8P8</link_name>
@@ -1147,6 +1827,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm48X8P8</link_name>
@@ -1160,6 +1848,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand48X8P8</link_name>
@@ -1173,6 +1869,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger48X8P8</link_name>
@@ -1186,6 +1890,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector148X8P8</link_name>
@@ -1199,6 +1911,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base248X8P8</link_name>
@@ -1212,6 +1932,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm248X8P8</link_name>
@@ -1225,6 +1953,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm248X8P8</link_name>
@@ -1238,6 +1974,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand248X8P8</link_name>
@@ -1251,6 +1995,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger248X8P8</link_name>
@@ -1264,6 +2016,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effectorX8P8</link_name>
@@ -1277,6 +2037,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -1292,6 +2060,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_armX8P8D</link_name>
@@ -1305,6 +2081,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_armX8P8D</link_name>
@@ -1318,6 +2102,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-handX8P8D</link_name>
@@ -1331,6 +2123,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-fingerX8P8D</link_name>
@@ -1344,6 +2144,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector1X8P8D</link_name>
@@ -1357,6 +2165,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <!--X2-->
@@ -1372,6 +2188,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm2X8P8D</link_name>
@@ -1385,6 +2209,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm2X8P8D</link_name>
@@ -1398,6 +2230,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand2X8P8D</link_name>
@@ -1411,6 +2251,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger2X8P8D</link_name>
@@ -1424,6 +2272,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector2X8P8D</link_name>
@@ -1437,6 +2293,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -1455,6 +2319,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm4X8P8D</link_name>
@@ -1468,6 +2340,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm4X8P8D</link_name>
@@ -1481,6 +2361,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand4X8P8D</link_name>
@@ -1494,6 +2382,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger4X8P8D</link_name>
@@ -1507,6 +2403,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector14X8P8D</link_name>
@@ -1520,6 +2424,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base24X8P8D</link_name>
@@ -1533,6 +2445,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm24X8P8D</link_name>
@@ -1546,6 +2466,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm24X8P8D</link_name>
@@ -1559,6 +2487,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand24X8P8D</link_name>
@@ -1572,6 +2508,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger24X8P8D</link_name>
@@ -1585,6 +2529,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector24X8P8D</link_name>
@@ -1598,6 +2550,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -1614,6 +2574,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm8X8P8D</link_name>
@@ -1627,6 +2595,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm8X8P8D</link_name>
@@ -1640,6 +2616,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand8X8P8D</link_name>
@@ -1653,6 +2637,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger8X8P8D</link_name>
@@ -1666,6 +2658,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector18X8P8D</link_name>
@@ -1679,6 +2679,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -1693,6 +2701,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm28X8P8D</link_name>
@@ -1706,6 +2722,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm28X8P8D</link_name>
@@ -1719,6 +2743,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand28X8P8D</link_name>
@@ -1732,6 +2764,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger28X8P8D</link_name>
@@ -1745,6 +2785,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector28X8P8D</link_name>
@@ -1758,6 +2806,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -1772,6 +2828,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm48X8P8D</link_name>
@@ -1785,6 +2849,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm48X8P8D</link_name>
@@ -1798,6 +2870,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand48X8P8D</link_name>
@@ -1811,6 +2891,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger48X8P8D</link_name>
@@ -1824,6 +2912,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector148X8P8D</link_name>
@@ -1837,6 +2933,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base248X8P8D</link_name>
@@ -1850,6 +2954,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm248X8P8D</link_name>
@@ -1863,6 +2975,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm248X8P8D</link_name>
@@ -1876,6 +2996,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand248X8P8D</link_name>
@@ -1889,6 +3017,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger248X8P8D</link_name>
@@ -1902,6 +3038,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effectorX8P8D</link_name>
@@ -1915,6 +3059,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -1933,6 +3085,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_armX8P8X8P8D</link_name>
@@ -1946,6 +3106,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_armX8P8X8P8D</link_name>
@@ -1959,6 +3127,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-handX8P8X8P8D</link_name>
@@ -1972,6 +3148,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-fingerX8P8X8P8D</link_name>
@@ -1985,6 +3169,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector1X8P8X8P8D</link_name>
@@ -1998,6 +3190,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <!--X2-->
@@ -2013,6 +3213,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm2X8P8X8P8D</link_name>
@@ -2026,6 +3234,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm2X8P8X8P8D</link_name>
@@ -2039,6 +3255,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand2X8P8X8P8D</link_name>
@@ -2052,6 +3276,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger2X8P8X8P8D</link_name>
@@ -2065,6 +3297,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector2X8P8X8P8D</link_name>
@@ -2078,6 +3318,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -2096,6 +3344,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm4X8P8X8P8D</link_name>
@@ -2109,6 +3365,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm4X8P8X8P8D</link_name>
@@ -2122,6 +3386,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand4X8P8X8P8D</link_name>
@@ -2135,6 +3407,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger4X8P8X8P8D</link_name>
@@ -2148,6 +3428,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector14X8P8X8P8D</link_name>
@@ -2161,6 +3449,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base24X8P8X8P8D</link_name>
@@ -2174,6 +3470,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm24X8P8X8P8D</link_name>
@@ -2187,6 +3491,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm24X8P8X8P8D</link_name>
@@ -2200,6 +3512,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand24X8P8X8P8D</link_name>
@@ -2213,6 +3533,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger24X8P8X8P8D</link_name>
@@ -2226,6 +3554,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector24X8P8X8P8D</link_name>
@@ -2239,6 +3575,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -2255,6 +3599,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm8X8P8X8P8D</link_name>
@@ -2268,6 +3620,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm8X8P8X8P8D</link_name>
@@ -2281,6 +3641,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand8X8P8X8P8D</link_name>
@@ -2294,6 +3662,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger8X8P8X8P8D</link_name>
@@ -2307,6 +3683,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector18X8P8X8P8D</link_name>
@@ -2320,6 +3704,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -2334,6 +3726,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm28X8P8X8P8D</link_name>
@@ -2347,6 +3747,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm28X8P8X8P8D</link_name>
@@ -2360,6 +3768,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand28X8P8X8P8D</link_name>
@@ -2373,6 +3789,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger28X8P8X8P8D</link_name>
@@ -2386,6 +3810,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector28X8P8X8P8D</link_name>
@@ -2399,6 +3831,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -2413,6 +3853,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm48X8P8X8P8D</link_name>
@@ -2426,6 +3874,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm48X8P8X8P8D</link_name>
@@ -2439,6 +3895,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand48X8P8X8P8D</link_name>
@@ -2452,6 +3916,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger48X8P8X8P8D</link_name>
@@ -2465,6 +3937,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector148X8P8X8P8D</link_name>
@@ -2478,6 +3958,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base248X8P8X8P8D</link_name>
@@ -2491,6 +3979,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm248X8P8X8P8D</link_name>
@@ -2504,6 +4000,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm248X8P8X8P8D</link_name>
@@ -2517,6 +4021,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand248X8P8X8P8D</link_name>
@@ -2530,6 +4042,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger248X8P8X8P8D</link_name>
@@ -2543,6 +4063,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effectorX8P8X8P8D</link_name>
@@ -2556,6 +4084,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -2570,6 +4106,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_armX8P8DD</link_name>
@@ -2583,6 +4127,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_armX8P8DD</link_name>
@@ -2596,6 +4148,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-handX8P8DD</link_name>
@@ -2609,6 +4169,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-fingerX8P8DD</link_name>
@@ -2622,6 +4190,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector1X8P8DD</link_name>
@@ -2635,6 +4211,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <!--X2-->
@@ -2650,6 +4234,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm2X8P8DD</link_name>
@@ -2663,6 +4255,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm2X8P8DD</link_name>
@@ -2676,6 +4276,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand2X8P8DD</link_name>
@@ -2689,6 +4297,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger2X8P8DD</link_name>
@@ -2702,6 +4318,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector2X8P8DD</link_name>
@@ -2715,6 +4339,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -2733,6 +4365,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm4X8P8DD</link_name>
@@ -2746,6 +4386,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm4X8P8DD</link_name>
@@ -2759,6 +4407,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand4X8P8DD</link_name>
@@ -2772,6 +4428,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger4X8P8DD</link_name>
@@ -2785,6 +4449,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector14X8P8DD</link_name>
@@ -2798,6 +4470,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base24X8P8DD</link_name>
@@ -2811,6 +4491,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm24X8P8DD</link_name>
@@ -2824,6 +4512,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm24X8P8DD</link_name>
@@ -2837,6 +4533,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand24X8P8DD</link_name>
@@ -2850,6 +4554,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger24X8P8DD</link_name>
@@ -2863,6 +4575,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector24X8P8DD</link_name>
@@ -2876,6 +4596,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -2892,6 +4620,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm8X8P8DD</link_name>
@@ -2905,6 +4641,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm8X8P8DD</link_name>
@@ -2918,6 +4662,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand8X8P8DD</link_name>
@@ -2931,6 +4683,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger8X8P8DD</link_name>
@@ -2944,6 +4704,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector18X8P8DD</link_name>
@@ -2957,6 +4725,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -2971,6 +4747,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm28X8P8DD</link_name>
@@ -2984,6 +4768,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm28X8P8DD</link_name>
@@ -2997,6 +4789,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand28X8P8DD</link_name>
@@ -3010,6 +4810,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger28X8P8DD</link_name>
@@ -3023,6 +4831,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector28X8P8DD</link_name>
@@ -3036,6 +4852,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -3050,6 +4874,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm48X8P8DD</link_name>
@@ -3063,6 +4895,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm48X8P8DD</link_name>
@@ -3076,6 +4916,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand48X8P8DD</link_name>
@@ -3089,6 +4937,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger48X8P8DD</link_name>
@@ -3102,6 +4958,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector148X8P8DD</link_name>
@@ -3115,6 +4979,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base248X8P8DD</link_name>
@@ -3128,6 +5000,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm248X8P8DD</link_name>
@@ -3141,6 +5021,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm248X8P8DD</link_name>
@@ -3154,6 +5042,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand248X8P8DD</link_name>
@@ -3167,6 +5063,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger248X8P8DD</link_name>
@@ -3180,6 +5084,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effectorX8P8DD</link_name>
@@ -3193,6 +5105,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -3211,6 +5131,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_armX8P8X8P8DD</link_name>
@@ -3224,6 +5152,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_armX8P8X8P8DD</link_name>
@@ -3237,6 +5173,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-handX8P8X8P8DD</link_name>
@@ -3250,6 +5194,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-fingerX8P8X8P8DD</link_name>
@@ -3263,6 +5215,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector1X8P8X8P8DD</link_name>
@@ -3276,6 +5236,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <!--X2-->
@@ -3291,6 +5259,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm2X8P8X8P8DD</link_name>
@@ -3304,6 +5280,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm2X8P8X8P8DD</link_name>
@@ -3317,6 +5301,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand2X8P8X8P8DD</link_name>
@@ -3330,6 +5322,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger2X8P8X8P8DD</link_name>
@@ -3343,6 +5343,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector2X8P8X8P8DD</link_name>
@@ -3356,6 +5364,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -3374,6 +5390,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm4X8P8X8P8DD</link_name>
@@ -3387,6 +5411,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm4X8P8X8P8DD</link_name>
@@ -3400,6 +5432,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand4X8P8X8P8DD</link_name>
@@ -3413,6 +5453,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger4X8P8X8P8DD</link_name>
@@ -3426,6 +5474,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector14X8P8X8P8DD</link_name>
@@ -3439,6 +5495,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base24X8P8X8P8DD</link_name>
@@ -3452,6 +5516,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm24X8P8X8P8DD</link_name>
@@ -3465,6 +5537,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm24X8P8X8P8DD</link_name>
@@ -3478,6 +5558,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand24X8P8X8P8DD</link_name>
@@ -3491,6 +5579,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger24X8P8X8P8DD</link_name>
@@ -3504,6 +5600,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector24X8P8X8P8DD</link_name>
@@ -3517,6 +5621,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -3533,6 +5645,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm8X8P8X8P8DD</link_name>
@@ -3546,6 +5666,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm8X8P8X8P8DD</link_name>
@@ -3559,6 +5687,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand8X8P8X8P8DD</link_name>
@@ -3572,6 +5708,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger8X8P8X8P8DD</link_name>
@@ -3585,6 +5729,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector18X8P8X8P8DD</link_name>
@@ -3598,6 +5750,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -3612,6 +5772,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm28X8P8X8P8DD</link_name>
@@ -3625,6 +5793,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm28X8P8X8P8DD</link_name>
@@ -3638,6 +5814,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand28X8P8X8P8DD</link_name>
@@ -3651,6 +5835,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger28X8P8X8P8DD</link_name>
@@ -3664,6 +5856,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector28X8P8X8P8DD</link_name>
@@ -3677,6 +5877,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -3691,6 +5899,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm48X8P8X8P8DD</link_name>
@@ -3704,6 +5920,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm48X8P8X8P8DD</link_name>
@@ -3717,6 +5941,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand48X8P8X8P8DD</link_name>
@@ -3730,6 +5962,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger48X8P8X8P8DD</link_name>
@@ -3743,6 +5983,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector148X8P8X8P8DD</link_name>
@@ -3756,6 +6004,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base248X8P8X8P8DD</link_name>
@@ -3769,6 +6025,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm248X8P8X8P8DD</link_name>
@@ -3782,6 +6046,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm248X8P8X8P8DD</link_name>
@@ -3795,6 +6067,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand248X8P8X8P8DD</link_name>
@@ -3808,6 +6088,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger248X8P8X8P8DD</link_name>
@@ -3821,6 +6109,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effectorX8P8X8P8DD</link_name>
@@ -3834,6 +6130,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -3849,6 +6153,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_armX8P8DX8P8DD</link_name>
@@ -3862,6 +6174,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_armX8P8DX8P8DD</link_name>
@@ -3875,6 +6195,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-handX8P8DX8P8DD</link_name>
@@ -3888,6 +6216,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-fingerX8P8DX8P8DD</link_name>
@@ -3901,6 +6237,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector1X8P8DX8P8DD</link_name>
@@ -3914,6 +6258,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <!--X2-->
@@ -3929,6 +6281,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm2X8P8DX8P8DD</link_name>
@@ -3942,6 +6302,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm2X8P8DX8P8DD</link_name>
@@ -3955,6 +6323,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand2X8P8DX8P8DD</link_name>
@@ -3968,6 +6344,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger2X8P8DX8P8DD</link_name>
@@ -3981,6 +6365,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector2X8P8DX8P8DD</link_name>
@@ -3994,6 +6386,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -4012,6 +6412,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm4X8P8DX8P8DD</link_name>
@@ -4025,6 +6433,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm4X8P8DX8P8DD</link_name>
@@ -4038,6 +6454,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand4X8P8DX8P8DD</link_name>
@@ -4051,6 +6475,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger4X8P8DX8P8DD</link_name>
@@ -4064,6 +6496,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector14X8P8DX8P8DD</link_name>
@@ -4077,6 +6517,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base24X8P8DX8P8DD</link_name>
@@ -4090,6 +6538,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm24X8P8DX8P8DD</link_name>
@@ -4103,6 +6559,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm24X8P8DX8P8DD</link_name>
@@ -4116,6 +6580,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand24X8P8DX8P8DD</link_name>
@@ -4129,6 +6601,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger24X8P8DX8P8DD</link_name>
@@ -4142,6 +6622,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector24X8P8DX8P8DD</link_name>
@@ -4155,6 +6643,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -4171,6 +6667,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm8X8P8DX8P8DD</link_name>
@@ -4184,6 +6688,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm8X8P8DX8P8DD</link_name>
@@ -4197,6 +6709,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand8X8P8DX8P8DD</link_name>
@@ -4210,6 +6730,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger8X8P8DX8P8DD</link_name>
@@ -4223,6 +6751,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector18X8P8DX8P8DD</link_name>
@@ -4236,6 +6772,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -4250,6 +6794,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm28X8P8DX8P8DD</link_name>
@@ -4263,6 +6815,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm28X8P8DX8P8DD</link_name>
@@ -4276,6 +6836,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand28X8P8DX8P8DD</link_name>
@@ -4289,6 +6857,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger28X8P8DX8P8DD</link_name>
@@ -4302,6 +6878,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector28X8P8DX8P8DD</link_name>
@@ -4315,6 +6899,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -4329,6 +6921,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm48X8P8DX8P8DD</link_name>
@@ -4342,6 +6942,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm48X8P8DX8P8DD</link_name>
@@ -4355,6 +6963,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand48X8P8DX8P8DD</link_name>
@@ -4368,6 +6984,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger48X8P8DX8P8DD</link_name>
@@ -4381,6 +7005,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector148X8P8DX8P8DD</link_name>
@@ -4394,6 +7026,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base248X8P8DX8P8DD</link_name>
@@ -4407,6 +7047,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm248X8P8DX8P8DD</link_name>
@@ -4420,6 +7068,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm248X8P8DX8P8DD</link_name>
@@ -4433,6 +7089,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand248X8P8DX8P8DD</link_name>
@@ -4446,6 +7110,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger248X8P8DX8P8DD</link_name>
@@ -4459,6 +7131,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effectorX8P8DX8P8DD</link_name>
@@ -4472,6 +7152,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -4490,6 +7178,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_armX8P8X8P8DX8P8DD</link_name>
@@ -4503,6 +7199,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_armX8P8X8P8DX8P8DD</link_name>
@@ -4516,6 +7220,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-handX8P8X8P8DX8P8DD</link_name>
@@ -4529,6 +7241,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-fingerX8P8X8P8DX8P8DD</link_name>
@@ -4542,6 +7262,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector1X8P8X8P8DX8P8DD</link_name>
@@ -4555,6 +7283,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <!--X2-->
@@ -4570,6 +7306,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm2X8P8X8P8DX8P8DD</link_name>
@@ -4583,6 +7327,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm2X8P8X8P8DX8P8DD</link_name>
@@ -4596,6 +7348,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand2X8P8X8P8DX8P8DD</link_name>
@@ -4609,6 +7369,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger2X8P8X8P8DX8P8DD</link_name>
@@ -4622,6 +7390,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector2X8P8X8P8DX8P8DD</link_name>
@@ -4635,6 +7411,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -4653,6 +7437,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm4X8P8X8P8DX8P8DD</link_name>
@@ -4666,6 +7458,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm4X8P8X8P8DX8P8DD</link_name>
@@ -4679,6 +7479,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand4X8P8X8P8DX8P8DD</link_name>
@@ -4692,6 +7500,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger4X8P8X8P8DX8P8DD</link_name>
@@ -4705,6 +7521,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector14X8P8X8P8DX8P8DD</link_name>
@@ -4718,6 +7542,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base24X8P8X8P8DX8P8DD</link_name>
@@ -4731,6 +7563,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm24X8P8X8P8DX8P8DD</link_name>
@@ -4744,6 +7584,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm24X8P8X8P8DX8P8DD</link_name>
@@ -4757,6 +7605,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand24X8P8X8P8DX8P8DD</link_name>
@@ -4770,6 +7626,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger24X8P8X8P8DX8P8DD</link_name>
@@ -4783,6 +7647,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector24X8P8X8P8DX8P8DD</link_name>
@@ -4796,6 +7668,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
 
@@ -4812,6 +7692,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm8X8P8X8P8DX8P8DD</link_name>
@@ -4825,6 +7713,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm8X8P8X8P8DX8P8DD</link_name>
@@ -4838,6 +7734,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand8X8P8X8P8DX8P8DD</link_name>
@@ -4851,6 +7755,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger8X8P8X8P8DX8P8DD</link_name>
@@ -4864,6 +7776,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector18X8P8X8P8DX8P8DD</link_name>
@@ -4877,6 +7797,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -4891,6 +7819,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm28X8P8X8P8DX8P8DD</link_name>
@@ -4904,6 +7840,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm28X8P8X8P8DX8P8DD</link_name>
@@ -4917,6 +7861,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand28X8P8X8P8DX8P8DD</link_name>
@@ -4930,6 +7882,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger28X8P8X8P8DX8P8DD</link_name>
@@ -4943,6 +7903,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector28X8P8X8P8DX8P8DD</link_name>
@@ -4956,6 +7924,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
     <link>
@@ -4970,6 +7946,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm48X8P8X8P8DX8P8DD</link_name>
@@ -4983,6 +7967,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm48X8P8X8P8DX8P8DD</link_name>
@@ -4996,6 +7988,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand48X8P8X8P8DX8P8DD</link_name>
@@ -5009,6 +8009,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger48X8P8X8P8DX8P8DD</link_name>
@@ -5022,6 +8030,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effector148X8P8X8P8DX8P8DD</link_name>
@@ -5035,6 +8051,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>base248X8P8X8P8DX8P8DD</link_name>
@@ -5048,6 +8072,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>upper_arm248X8P8X8P8DX8P8DD</link_name>
@@ -5061,6 +8093,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>lower_arm248X8P8X8P8DX8P8DD</link_name>
@@ -5074,6 +8114,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-hand248X8P8X8P8DX8P8DD</link_name>
@@ -5087,6 +8135,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>wrist-finger248X8P8X8P8DX8P8DD</link_name>
@@ -5100,6 +8156,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
     <link>
       <link_name>end-effectorX8P8X8P8DX8P8DD</link_name>
@@ -5113,6 +8177,14 @@
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
       <joint_type>rz</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
     </link>
 
   </robot>
