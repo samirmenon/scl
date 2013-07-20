@@ -222,11 +222,12 @@ namespace scl_parser {
 
 
       //******************************** Graphics Stuff ******************************
-      //Graphics : obj file
+      bool flag_graphics_tag_found,flag_graphics_element_found=false;
+      flag_graphics_tag_found = (NULL != arg_link_txml.FirstChild( "graphics" ).ToElement());
+
+      //**** Graphics : obj file
       link_data = arg_link_txml.FirstChild( "graphics" ).FirstChild("obj_file").ToElement();
-#ifdef DEBUG
-      if ( !link_data ) {std::cerr<< "\nWarning: No obj files found";}
-#endif
+
       for(; link_data; link_data=link_data->NextSiblingElement() )
       {
         std::string ss;
@@ -240,6 +241,7 @@ namespace scl_parser {
 
         //Read all the obj_files
         SRigidBodyGraphics tgr;
+        tgr.class_ = SRigidBodyGraphics::CLASS_FILE_OBJ;
         ss = link_data->FirstChildElement("name")->FirstChild()->Value();
         ss = scl::CDatabase::getData()->dir_specs_ + ss;
         tgr.file_name_ = ss;
@@ -300,6 +302,24 @@ namespace scl_parser {
 #endif
         }
 
+        obj_data = link_data->FirstChildElement( "color" );
+        if ( obj_data )
+        {
+          sFloat tmpvar;
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tmpvar;
+          tgr.color_[0] = tmpvar;
+          ss>>tmpvar;
+          tgr.color_[1] = tmpvar;
+          ss>>tmpvar;
+          tgr.color_[2] = tmpvar;
+        }
+        else{
+#ifdef DEBUG
+          std::cerr<< "\nCSclTiXmlParser::readLink() : Optional : Could add color if required";
+#endif
+        }
+
         obj_data = link_data->FirstChildElement( "collision_type" );
         if ( obj_data )
         {
@@ -313,7 +333,84 @@ namespace scl_parser {
         }
 
         arg_link_ds.graphics_obj_vec_.push_back(tgr);
-      }
+        flag_graphics_element_found = true;
+      }// End of obj file
+
+      //**** Graphics : sphere
+      link_data = arg_link_txml.FirstChild( "graphics" ).FirstChild("sphere").ToElement();
+
+      for(; link_data; link_data=link_data->NextSiblingElement() )
+      {
+        std::string ss;
+
+        //Read all the obj_files
+        SRigidBodyGraphics tgr;
+        tgr.class_ = SRigidBodyGraphics::CLASS_SPHERE;
+
+        obj_data = link_data->FirstChildElement( "position_in_parent" );
+        if ( obj_data )
+        {
+          sFloat tmpvar;
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tmpvar;
+          tgr.pos_in_parent_(0) = tmpvar;
+          ss>>tmpvar;
+          tgr.pos_in_parent_(1) = tmpvar;
+          ss>>tmpvar;
+          tgr.pos_in_parent_(2) = tmpvar;
+        }
+        else  {
+#ifdef DEBUG
+          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not found for sphere";
+#endif
+        }
+
+        obj_data = link_data->FirstChildElement( "radius" );
+        if ( obj_data )
+        {
+          sFloat tmpvar;
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tmpvar;
+          tgr.scaling_(0) = tmpvar; //radius
+          tgr.scaling_(1) = tmpvar; //radius
+          tgr.scaling_(2) = tmpvar; //radius
+        }
+        else
+        { throw(std::runtime_error("Radius not found for sphere")); }
+
+        obj_data = link_data->FirstChildElement( "color" );
+        if ( obj_data )
+        {
+          sFloat tmpvar;
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tmpvar;
+          tgr.color_[0] = tmpvar;
+          ss>>tmpvar;
+          tgr.color_[1] = tmpvar;
+          ss>>tmpvar;
+          tgr.color_[2] = tmpvar;
+        }
+        else{
+#ifdef DEBUG
+          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for sphere";
+#endif
+        }
+
+        obj_data = link_data->FirstChildElement( "collision_type" );
+        if ( obj_data )
+        {
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tgr.collision_type_;
+        }
+        else  {
+#ifdef DEBUG
+          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Collision type not found for sphere";
+#endif
+        }
+
+        arg_link_ds.graphics_obj_vec_.push_back(tgr);
+        flag_graphics_element_found = true;
+      }// End of sphere
 
       //Graphics : collision type //NOTE TODO : Old style (Depracated)
       link_data = arg_link_txml.FirstChildElement( "graphics" ).FirstChildElement("collision_type").Element();
@@ -321,7 +418,13 @@ namespace scl_parser {
       {
         std::stringstream ss(link_data->FirstChild()->Value());
         ss>>arg_link_ds.collision_type_;
+        flag_graphics_element_found = true;
+        std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : <graphics> <collision_type> tags are depracated. Use these in the graphics elements.";
       }
+
+      if(flag_graphics_tag_found && (false == flag_graphics_element_found))
+      { std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : Found <graphics> tag but no sub-elements."; }
+      //******************************** End of Graphics Stuff ******************************
     }
     catch(std::exception& e)
     {

@@ -63,6 +63,15 @@ public:
 
   std::string file_name_;
 
+  /** The list of graphics classes */
+  enum SRigidBodyGraphicClasses{ CLASS_FILE_OBJ, CLASS_SPHERE, CLASS_CUBE, CLASS_NOT_INIT };
+
+  /** FILE, SPHERE, CUBE */
+  SRigidBodyGraphicClasses class_;
+
+  /** Color (rgb) */
+  double color_[3];
+
   SRigidBodyGraphics()
   {
     pos_in_parent_.setZero(3);
@@ -71,6 +80,8 @@ public:
     scaling_.setConstant(3,1);//x y z scaling. Default = 1
     collision_type_ = 0;
     file_name_ = "";
+    class_ = CLASS_NOT_INIT;
+    color_[0] = 0; color_[1] = 0; color_[2] = 0;
   }
 };
 

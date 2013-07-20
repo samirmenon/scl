@@ -395,50 +395,85 @@ namespace scl {
             it!=ite; ++it)
         {
           const SRigidBodyGraphics& lnk_gr = (*it);
-          cMultiMesh* tmp = new cMultiMesh();
-          if(false == cLoadFileOBJ(tmp,lnk_gr.file_name_))
-            if(false == cLoadFile3DS(tmp,lnk_gr.file_name_))
+          if(SRigidBodyGraphics::CLASS_FILE_OBJ == lnk_gr.class_)
+          {
+            cMultiMesh* tmp = new cMultiMesh();
+            if(false == cLoadFileOBJ(tmp,lnk_gr.file_name_))
+              if(false == cLoadFile3DS(tmp,lnk_gr.file_name_))
+              {
+                std::string err_str;
+                err_str = "Couldn't load obj/3ds robot link file: "+ lnk_gr.file_name_;
+                throw(std::runtime_error(err_str.c_str()));
+              }
+            arg_link->graphics_obj_->addChild(tmp);
+
+            // Set the object's position and orientation in its parent (fixed)
+            tmp->setLocalPos(lnk_gr.pos_in_parent_[0],
+                lnk_gr.pos_in_parent_[1],
+                lnk_gr.pos_in_parent_[2]);
+
+            //Set the rotation in its parent
+            Eigen::Quaternion<sFloat> tmp_quat(lnk_gr.ori_parent_quat_(3), lnk_gr.ori_parent_quat_(0),
+                lnk_gr.ori_parent_quat_(1),lnk_gr.ori_parent_quat_(2));
+            Eigen::Matrix3d tmp_rot_mat = tmp_quat.toRotationMatrix();
+            cMatrix3d tmp_mat;
+            tmp_mat(0,0) = tmp_rot_mat(0,0); tmp_mat(1,0) = tmp_rot_mat(1,0); tmp_mat(2,0) = tmp_rot_mat(2,0);
+            tmp_mat(0,1) = tmp_rot_mat(0,1); tmp_mat(1,1) = tmp_rot_mat(1,1); tmp_mat(2,1) = tmp_rot_mat(2,1);
+            tmp_mat(0,2) = tmp_rot_mat(0,2); tmp_mat(1,2) = tmp_rot_mat(1,2); tmp_mat(2,2) = tmp_rot_mat(2,2);
+            tmp->setLocalRot(tmp_mat);
+
+            // NOTE TODO : Chai mesh scaling is now isotropic. Bug #27 as of v3.0.
+            // Only using X-scaling. Fix later
+            tmp->scale(lnk_gr.scaling_(0),true);
+            //cVector3d tmp_scale;
+            //tmp_scale[0] = lnk_gr.scaling_(0); tmp_scale[1] = lnk_gr.scaling_(1); tmp_scale[2] = lnk_gr.scaling_(2);
+            //tmp->scale(tmp_scale,true);
+
+            //Use display lists : Uses the graphics card for faster rendering
+            // NOTE : Possibly corrupts the rendering. Disable if required.
+#ifndef DEBUG
+            tmp->setUseDisplayList(true, true);
+            tmp->invalidateDisplayList(true);
+#endif
+          }
+          else if(SRigidBodyGraphics::CLASS_SPHERE == lnk_gr.class_)
+          {
+            //Set the sphere's color
+            // NOTE : Chai handles pointers... If you don't pass it a new obj, it segfaults
+            cMaterial *tmp_mat = new cMaterial();
+            cColorf tmp_col;
+            tmp_col.set(lnk_gr.color_[0],lnk_gr.color_[1],lnk_gr.color_[2]);
+            tmp_mat->setColor(tmp_col);
+            tmp_mat->setShininess(100);
+
+            // Uses the first scaling constant to decide the radius
+            cGenericObject* tmp = new cShapeSphere(lnk_gr.scaling_(0),tmp_mat);
+            if(NULL == tmp)
             {
               std::string err_str;
-              err_str = "Couldn't load obj/3ds robot link file: "+ lnk_gr.file_name_;
+              err_str = "Couldn't allocate memory for a sphere graphic object. At robot link : "+ arg_link->name_;
               throw(std::runtime_error(err_str.c_str()));
             }
-          arg_link->graphics_obj_->addChild(tmp);
+            arg_link->graphics_obj_->addChild(tmp);
 
-          // Set the object's position and orientation in its parent (fixed)
-          tmp->setLocalPos(lnk_gr.pos_in_parent_[0],
-              lnk_gr.pos_in_parent_[1],
-              lnk_gr.pos_in_parent_[2]);
+            // Set the object's position and orientation in its parent (fixed)
+            tmp->setLocalPos(lnk_gr.pos_in_parent_[0],
+                lnk_gr.pos_in_parent_[1],
+                lnk_gr.pos_in_parent_[2]);
 
-          //Set the rotation in its parent
-          Eigen::Quaternion<sFloat> tmp_quat(lnk_gr.ori_parent_quat_(3), lnk_gr.ori_parent_quat_(0),
-              lnk_gr.ori_parent_quat_(1),lnk_gr.ori_parent_quat_(2));
-          Eigen::Matrix3d tmp_rot_mat = tmp_quat.toRotationMatrix();
-          cMatrix3d tmp_mat;
-          tmp_mat(0,0) = tmp_rot_mat(0,0); tmp_mat(1,0) = tmp_rot_mat(1,0); tmp_mat(2,0) = tmp_rot_mat(2,0);
-          tmp_mat(0,1) = tmp_rot_mat(0,1); tmp_mat(1,1) = tmp_rot_mat(1,1); tmp_mat(2,1) = tmp_rot_mat(2,1);
-          tmp_mat(0,2) = tmp_rot_mat(0,2); tmp_mat(1,2) = tmp_rot_mat(1,2); tmp_mat(2,2) = tmp_rot_mat(2,2);
-          tmp->setLocalRot(tmp_mat);
-
-          // NOTE TODO : Chai mesh scaling is now isotropic. Bug #27 as of v3.0.
-          // Only using X-scaling. Fix later
-          tmp->scale(lnk_gr.scaling_(0),true);
-          //cVector3d tmp_scale;
-          //tmp_scale[0] = lnk_gr.scaling_(0); tmp_scale[1] = lnk_gr.scaling_(1); tmp_scale[2] = lnk_gr.scaling_(2);
-          //tmp->scale(tmp_scale,true);
-
-          //Use display lists : Uses the graphics card for faster rendering
-          // NOTE : Possibly corrputs the rendering. Disable if required.
+            //Use display lists : Uses the graphics card for faster rendering
+            // NOTE : Possibly corrupts the rendering. Disable if required.
 #ifndef DEBUG
-          tmp->setUseDisplayList(true, true);
-          tmp->invalidateDisplayList(true);
+            tmp->setUseDisplayList(true, true);
+            tmp->invalidateDisplayList(true);
 #endif
+          }
 
         }
       }
       else
       {
-        //1.b) Since we have meshes for this link, we will initialize a sphere (default)
+        //1.b) Since we have no meshes for this link, we will initialize a sphere (default)
         //     to represent this link in chai's scenegraph
         arg_link->graphics_obj_ = new cShapeSphere(CHAI_SPHERE_RENDER_RADIUS);
       }
