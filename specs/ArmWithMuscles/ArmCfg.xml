@@ -32,6 +32,7 @@
     <flag_logging_on>false</flag_logging_on>
     <flag_wireframe_on>false</flag_wireframe_on>
     <option_axis_frame_size>0.1</option_axis_frame_size> <!-- All options are optional -->
+    <option_muscle_via_pt_sz>0.01</option_muscle_via_pt_sz>
   </robot>
   
   <!-- A muscle actuated arm model to test scl's muscle actuation -->
