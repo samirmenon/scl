@@ -588,7 +588,7 @@ bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
         //Add the root node to the robdef
         SMuscle *tmp_musc_ds2 = arg_robot.muscle_system_.muscles_.create(tmp_musc_ds.name_,tmp_musc_ds);
         if(S_NULL == tmp_musc_ds2)
-        { throw(std::runtime_error(std::string("Couldn't allocate a muscle:") + tmp_musc_ds2->name_)); }
+        { throw(std::runtime_error(std::string("Couldn't allocate a muscle (id taken already?):") + tmp_musc_ds.name_)); }
 
         tmp_musc_ds2 = S_NULL;
       }

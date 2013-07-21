@@ -32,6 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CCHAIGRAPHICS_HPP_
 
 #include <scl/DataTypes.hpp>
+#include <scl/data_structs/SRobotParsedData.hpp>
 
 #include <scl/data_structs/SGraphicsParsedData.hpp>
 #include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>
@@ -139,6 +140,16 @@ public:
   virtual sBool addMusclesToRender(
       const std::string& arg_robot,
       const std::string& arg_msys,
+      const sBool add_musc_via_points);
+
+  /** Adds a muscle system to the graphics rendering environment
+   *
+   * A muscle system contains:
+   * 1. A set of muscles, each with a set of connection points to certain links.
+   * 2. A parent robot to whose links the muscles attach. */
+  virtual sBool addMusclesToRender(
+      const std::string& arg_robot,
+      const SMuscleSystem& arg_msys,
       const sBool add_musc_via_points);
 
   /** Removes a muscle system from the graphics rendering environment

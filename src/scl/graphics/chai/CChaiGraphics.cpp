@@ -240,6 +240,7 @@ namespace scl {
   {
     const SRigidBody * tmp_root_link = S_NULL;
     SGraphicsPhysicalLink* robot_brrep_root = S_NULL;
+    bool flag;
     try
     {
       if(!has_been_init_) { return false; }
@@ -306,6 +307,13 @@ namespace scl {
 
       //8. Add the constructed robot tree to the graphics (chai) world
       data_->chai_world_->addChild(robot_brrep_root->graphics_obj_);
+
+      if(true == robdef->muscle_system_.has_been_init_)
+      {
+        flag = addMusclesToRender(arg_robot,robdef->muscle_system_,true);
+        if(false == flag)
+        { throw(std::runtime_error("Failed to add a muscle system for robot"));  }
+      }
 
 #ifdef DEBUG
       // Print some info
@@ -826,6 +834,7 @@ namespace scl {
       const sBool add_musc_via_points)
   {
     std::string musc_name("");
+    bool flag;
     try
     {
       if(!has_been_init_) { return false; }
@@ -842,20 +851,53 @@ namespace scl {
       SMuscleSystem *msys_db = db->s_parser_.muscle_systems_.at(arg_msys);
       if(S_NULL == msys_db) { throw(std::runtime_error("Could not find muscle system in the database. Did you pass the right name?"));  }
 
-      SGraphicsMsys *msys_gr = data_->muscles_rendered_.create(arg_msys);
+      flag = addMusclesToRender(arg_robot,*msys_db,add_musc_via_points);
+      if(false == flag)
+      { throw(std::runtime_error("Couldn't add a muscle system for the robot"));  }
+    }
+    catch(std::exception& ee)
+    {
+      std::cerr<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys<<") : "<<musc_name<<" : "<<ee.what();
+      return false;
+    }
+    return true;
+  }
+
+
+
+  sBool CChaiGraphics::addMusclesToRender(
+      const std::string& arg_robot,
+      const SMuscleSystem& arg_msys,
+      const sBool add_musc_via_points)
+  {
+    std::string musc_name("");
+    try
+    {
+      if(!has_been_init_) { return false; }
+
+      //1. Get the robot
+      SDatabase* db = CDatabase::getData();
+      if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
+
+      sutil::CMappedTree<std::string, SGraphicsPhysicalLink>* rob_gr;
+      rob_gr = data_->robots_rendered_.at(arg_robot);
+      if(S_NULL==rob_gr)//Require an existing robot to render muscles.
+      { throw(std::runtime_error("Couldn't find a (physics+graphics) representation for the robot on the pile"));  }
+
+      SGraphicsMsys *msys_gr = data_->muscles_rendered_.create(arg_msys.name_);
       if(S_NULL == db) { throw(std::runtime_error("Could not create muscle rendering data struct on the pile"));  }
 
-      sutil::CMappedList<std::basic_string<char>, scl::SMuscle>::iterator it,ite;
-      for(it = msys_db->muscles_.begin(), ite = msys_db->muscles_.end();
+      sutil::CMappedList<std::basic_string<char>, scl::SMuscle>::const_iterator it,ite;
+      for(it = arg_msys.muscles_.begin(), ite = arg_msys.muscles_.end();
           it!=ite; ++it)
       {
-        SMuscle &mus = *it;
+        const SMuscle &mus = *it;
 
         musc_name = mus.name_;//For debugging. Useful to know where it failed.
 
         SGraphicsMsys::SGraphicsMuscle gr_musc;//Initialize this and plug it into the msys
 
-        std::vector<SMusclePoint>::iterator it,it2,ite;
+        std::vector<SMusclePoint>::const_iterator it,it2,ite;
         for(it = mus.points_.begin(), ite = mus.points_.end();
             it!=ite;++it)
         {
@@ -864,7 +906,7 @@ namespace scl {
           SGraphicsPhysicalLink* gr_lnk = rob_gr->at((*it).parent_link_);
           if(S_NULL == gr_lnk)
           {
-            std::cout<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys<<") WARNING: Orphan muscle: "
+            std::cout<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle: "
                 <<musc_name<<". Missing parent link: "<<(*it).parent_link_;
             continue;
           }
@@ -882,7 +924,7 @@ namespace scl {
             SGraphicsPhysicalLink* gr_lnk2 = rob_gr->at((*it2).parent_link_);
             if(S_NULL == gr_lnk2)
             {
-              std::cout<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys<<") WARNING: Orphan muscle upcoming : "
+              std::cout<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle upcoming : "
                   <<musc_name<<". Missing parent link: "<<(*it2).parent_link_;
               continue;
             }
@@ -930,7 +972,7 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys<<") : "<<musc_name<<" : "<<ee.what();
+      std::cerr<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys.name_<<") : "<<musc_name<<" : "<<ee.what();
       return false;
     }
     return true;
