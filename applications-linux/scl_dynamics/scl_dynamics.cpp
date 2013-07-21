@@ -119,8 +119,8 @@ int main(int argc, char** argv)
 
 #ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<robot_name;
-      scl_util::printRobotLinkTree(*( scl::CDatabase::getData()->
-          s_parser_.robots_.at(robot_name)->robot_br_rep_.getRootNode()),0);
+      scl::SRobotParsedData *rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
+      scl_util::printRobotLinkTree(*(rob_ds->robot_br_rep_.getRootNode()),0);
 #endif
 
       /******************************TaoDynamics************************************/
