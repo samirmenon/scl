@@ -87,8 +87,14 @@ public:
       std::vector<scl::SNonControlTaskBase> &arg_task_non_ctrl_vec);
 
 private:
+  /** Reads a robot specification from a file */
   bool readRobotSpecFromFile(const std::string& arg_spec_file,
       const std::string& arg_robot_spec_name,
+      scl::SRobotParsedData& arg_robot);
+
+  /** Reads a robot's muscle specification from a file */
+  bool readMuscleSpecFromFile(const std::string& arg_spec_file,
+      const std::string& arg_muscle_spec_name,
       scl::SRobotParsedData& arg_robot);
 };
 

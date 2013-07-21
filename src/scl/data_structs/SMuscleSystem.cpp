@@ -56,7 +56,7 @@ namespace scl
     max_contraction_vel_low_ = 10.0;
     max_contraction_vel_high_ = 10.0;
     damping_ = 0.0;
-    muscle_name_ = "";
+    name_ = "";
     muscle_type_ = "";
   }
 

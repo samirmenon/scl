@@ -59,15 +59,15 @@ public:
   CSclTiXmlParser() {}
   ~CSclTiXmlParser() {}
 
-  /**
-   * Reads single links
-   */
+  /** Reads single links */
   static bool readLink(const scl_tinyxml::TiXmlHandle& arg_link_txml,
       scl::SRigidBody& arg_link_ds, bool arg_is_root);
+
+  /** Reads single links */
+  static bool readMuscle(const scl_tinyxml::TiXmlHandle& arg_musc_txml,
+      scl::SMuscle& arg_muscle_ds, bool arg_is_root);
   
-  /**
-   * Reads in graphics data
-   */
+  /** Reads in graphics data */
   static bool readGraphics(
       const scl_tinyxml::TiXmlHandle &arg_graphics_data_txml,
       scl::SGraphicsParsedData& arg_graphics_ds);

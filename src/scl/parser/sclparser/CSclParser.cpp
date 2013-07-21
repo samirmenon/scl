@@ -295,7 +295,7 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       //                        Now parse the links
       // *****************************************************************
       TiXmlElement* link_data;
-      std::string spec, spec_file;
+      std::string spec(""), spec_muscle(""), spec_file("");
 
       //Spec name
       link_data = _robot_handle.FirstChildElement( "spec" ).Element();
@@ -306,6 +306,14 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       }
       else
       { throw(std::runtime_error("\nError reading robot spec name")); }
+
+      //Muscle spec name
+      link_data = _robot_handle.FirstChildElement( "option_muscle_spec" ).Element();
+      if ( link_data )
+      {
+        std::stringstream ss(link_data->FirstChild()->Value());
+        ss>>spec_muscle;
+      }
 
       //File name
       link_data = _robot_handle.FirstChildElement( "file" ).Element();
@@ -343,6 +351,15 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       {
         std::string err;
         err ="Could not read the robot's spec (" + spec +") from its file : "+ spec_file;
+        throw(std::runtime_error(err));
+      }
+
+      //Now read the generic muscle specification from the spec file.
+      flag = readMuscleSpecFromFile(spec_file, spec_muscle, /*ret val */arg_robot);
+      if(false == flag)
+      {
+        std::string err;
+        err ="Could not read the robot's muscle spec (" + spec_muscle +") from its file : "+ spec_file;
         throw(std::runtime_error(err));
       }
 
@@ -487,6 +504,104 @@ bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
   }
   return false;
 }
+
+bool readMuscleSpecFromFile(const std::string& arg_spec_file,
+    const std::string& arg_muscle_spec_name,
+    scl::SRobotParsedData& arg_robot)
+{
+  bool flag;
+  try
+  {
+    //Set up the parser.
+    TiXmlElement* tiElem_muscle;
+    TiXmlHandle tiHndl_file_handle(NULL), tiHndl_world(NULL);
+    TiXmlDocument tiDoc_file(arg_spec_file.c_str());
+
+    //Check if file opened properly
+    flag = tiDoc_file.LoadFile(scl_tinyxml::TIXML_ENCODING_UNKNOWN);
+    if(false == flag)
+    { throw std::runtime_error("Could not open xml file to read muscle spec"); }
+
+
+    //Get handles to the tinyxml loaded ds
+    tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
+
+    //Read in the links.
+    tiElem_muscle = tiHndl_world.FirstChildElement( "muscle_system" ).ToElement();
+    if(NULL == tiElem_muscle) //Unnamed muscle
+    { throw std::runtime_error("No muscle_system specs found in spec file"); }
+
+    sUInt muscle_spec=0;
+
+    //Iterating with TiXmlElement is faster than TiXmlHandle
+    for(; tiElem_muscle; tiElem_muscle=tiElem_muscle->NextSiblingElement("muscle_system") )
+    {
+      TiXmlHandle _muscle_handle(tiElem_muscle); //Back to handles
+
+      //Read muscle name
+      if(NULL == tiElem_muscle->Attribute("spec_name")) //Unnamed muscle
+      {
+#ifdef DEBUG
+        std::cout<<"Warning : Found unnamed spec.";
+#endif
+        continue;
+      }
+
+      if(arg_muscle_spec_name != tiElem_muscle->Attribute("spec_name")) //Names don't match
+      {
+#ifdef DEBUG
+        std::cout<<"Warning : Wanted spec: "<<arg_muscle_spec_name<<". Got: "<<tiElem_muscle->Attribute("spec_name");
+#endif
+        continue;
+      }
+
+      muscle_spec++; //Found a candidate
+      if(muscle_spec>1) //There should only be one muscle with this name.
+      {
+#ifdef DEBUG
+        //Stronger error checking in debug mode. Break if muscle names aren't unique.
+        throw(std::runtime_error("Multiple muscle_system specs have the same name"));
+#endif
+        break; //In release mode, we ignore the extra muscle_system specs. Move on.
+      }
+
+      //Now actually read in the muscle_system by parsing all the muscles
+      sInt id = 0;
+      TiXmlElement* _child_link_element = _muscle_handle.FirstChildElement( "muscle" ).ToElement();
+      for(; _child_link_element; _child_link_element=_child_link_element->NextSiblingElement("muscle") )
+      {
+        //Allocate an object for the muscle to be parsed
+        SMuscle tmp_musc_ds;
+
+        //Read in the xml data into the muscle object
+        TiXmlHandle _child_link_handle(_child_link_element); //Back to handles
+        flag = CSclTiXmlParser::readMuscle(_child_link_handle, tmp_musc_ds, false);
+        if(false == flag)
+        { throw(std::runtime_error("Couldn't parse a muscle:")); }
+
+        //Add the root node to the robdef
+        SMuscle *tmp_musc_ds2 = arg_robot.muscle_system_.muscles_.create(tmp_musc_ds.name_,tmp_musc_ds);
+        if(S_NULL == tmp_musc_ds2)
+        { throw(std::runtime_error(std::string("Couldn't allocate a muscle:") + tmp_musc_ds2->name_)); }
+
+        tmp_musc_ds2 = S_NULL;
+      }
+
+    }//End of loop over robots in the xml file.
+
+    if(muscle_spec<1)
+    { throw(std::runtime_error(std::string("Didn't find any muscle spec called: ")+arg_muscle_spec_name)); }
+
+    return true;
+  }
+  catch(std::exception& e)
+  { std::cerr<<"\nCSclParser::readRobotSpecFromFile("<<arg_spec_file<<"): "<<e.what(); }
+  return false;
+}
+
+
+
 
 bool CSclParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
     const std::string &arg_file)

@@ -101,7 +101,7 @@ namespace scl
     /** The muscle's type. Eg. Thelen2003Muscle, Schutte1993Muscle etc. */
     std::string muscle_type_;
     /** The muscle's name */
-    std::string muscle_name_;
+    std::string name_;
 
     /** Default constructor. Does nothing */
     SMuscle();

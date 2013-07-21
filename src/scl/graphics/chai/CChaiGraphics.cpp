@@ -850,7 +850,7 @@ namespace scl {
       {
         SMuscle &mus = *it;
 
-        musc_name = mus.muscle_name_;//For debugging. Useful to know where it failed.
+        musc_name = mus.name_;//For debugging. Useful to know where it failed.
 
         SGraphicsMsys::SGraphicsMuscle gr_musc;//Initialize this and plug it into the msys
 

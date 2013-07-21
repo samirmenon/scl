@@ -132,7 +132,7 @@ namespace scl_parser {
           std::string s; s = "Can't allocate a muscle on the pile : " + muscle_name;
           throw(std::runtime_error(s.c_str()));
         }
-        mus->muscle_name_ = muscle_name;
+        mus->name_ = muscle_name;
         mus->muscle_type_ = _muscle_handle.ToElement()->Value();
 
         //Load the scalar properties
