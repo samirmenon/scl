@@ -42,11 +42,11 @@ https://bitbucket.org/samirmenon/scl-manips-group/wiki/install/getting_started
 Additional notes:
 
 * For documentation:
-$ cd ~/scl-dev.git/doc
+$ cd ~/scl-manips-group.git/doc
 $ evince StandardControlFramework-overview.pdf &
 
 * For additional models:
-$ cd ~/scl-dev.git/specs
+$ cd ~/scl-manips-group.git/specs
 - You can run different models by specifying the config file ../../specs/*/*Cfg.xml
 
 * For additional controllers:
