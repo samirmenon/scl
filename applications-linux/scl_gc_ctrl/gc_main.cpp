@@ -70,10 +70,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 int main(int argc, char** argv)
 {
   bool flag;
-  if((argc != 2)&&(argc != 3))
+  if((argc < 2)&&(argc > 4))
   {
     std::cout<<"\nscl-robot demo application demonstrates how scl controls joint angles of single robots."
-        <<"\nThe command line input is: ./<executable> <file_name.xml> <optional: robot_name.xml>\n";
+        <<"\nThe command line input is: ./<executable> <file_name.xml> <optional: robot name> <optional: controller name>\n";
     return 0;
   }
   else
@@ -99,7 +99,7 @@ int main(int argc, char** argv)
       scl_parser::CSclParser tmp_lparser;//Use the scl tinyxml parser
 
       std::string robot_name;
-      if(argc==2)
+      if(argc<3)
       {//Find the robot specs in the file if one isn't specified by the user.
         std::vector<std::string> robot_names;
         flag = tmp_lparser.listRobotsInFile(tmp_infile,robot_names);
@@ -118,14 +118,25 @@ int main(int argc, char** argv)
       if(S_NULL == scl_registry::parseGraphics(tmp_infile, graphics_names[0], &tmp_lparser))
       { throw(std::runtime_error("Could not register graphics with the database"));  }
 
-      std::vector<std::pair<std::string,std::string> > ctrl_names;//<name,type>
-      flag = tmp_lparser.listControllersInFile(tmp_infile,ctrl_names);
-      if(false == flag) { throw(std::runtime_error("Could not list controllers in the file"));  }
-
       std::string ctrl_name; //Parse all the gc controllers for this robot!
-      std::vector<std::pair<std::string,std::string> >::iterator itc, itce;
-      for(itc = ctrl_names.begin(), itce = ctrl_names.end();itc!=itce;++itc)
-      { if((*itc).second=="gc"){ ctrl_name = (*itc).first; break; } }
+      if(argc<4)
+      {//Find the robot controller in the file if one isn't specified by the user.
+        ctrl_name = "";
+
+        std::vector<std::pair<std::string,std::string> > ctrl_names;//<name,type>
+        flag = tmp_lparser.listControllersInFile(tmp_infile,ctrl_names);
+        if(false == flag) { throw(std::runtime_error("Could not list controllers in the file"));  }
+
+        //Find only the gc controller
+        std::vector<std::pair<std::string,std::string> >::iterator itc, itce;
+        for(itc = ctrl_names.begin(), itce = ctrl_names.end();itc!=itce;++itc)
+        { if((*itc).second=="gc"){ ctrl_name = (*itc).first; break; } }
+
+        if("" == ctrl_name)
+        { throw(std::runtime_error("Could not find any gc controllers in the file"));  }
+      }
+      else { ctrl_name = argv[3];}//If robot name was passed, use it.
+
       if(S_NULL == scl_registry::parseGcController(tmp_infile, robot_name, ctrl_name, &tmp_lparser))
       { throw(std::runtime_error("Could not register controller with the database"));  }
 
