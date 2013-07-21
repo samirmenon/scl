@@ -703,12 +703,12 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cylin
         int musc_order=-1;
 
         if(NULL == muscle_data->Attribute("order"))
-        { throw(std::runtime_error("No order attribute at muscle point (must be >=0)")); }
+        { throw(std::runtime_error("No order attribute at muscle point (must be 0 to num_points-1)")); }
 
         std::stringstream ss(muscle_data->Attribute("order"));
         ss>>musc_order;
-        if(musc_order<0)
-        { throw(std::runtime_error("Negative muscle point order (must be >=0)")); }
+        if(musc_order<0 || musc_order>=n_musc_points)
+        { throw(std::runtime_error("Negative muscle point order (must be 0 to num_points-1)")); }
 
         //Store a reference to the current point (for simplicity)
         SMusclePoint &tmp_musc_pt = arg_muscle_ds.points_[musc_order];
