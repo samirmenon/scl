@@ -56,7 +56,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <omp.h>
 #include <GL/freeglut.h>
 
-/***
+/**
  * A sample application to demonstrate scl running one or more robots.
  *
  * Use it as a template to write your own (more detailed/beautiful/functional)

@@ -52,7 +52,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/util/DatabaseUtils.hpp>
 
 
-/***
+/**
  * A sample application to convert supported files into a scl file format.
  */
 int main(int argc, char** argv)
