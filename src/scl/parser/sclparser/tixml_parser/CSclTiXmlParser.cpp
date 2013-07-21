@@ -228,7 +228,7 @@ namespace scl_parser {
       //**** Graphics : obj file
       link_data = arg_link_txml.FirstChild( "graphics" ).FirstChild("obj_file").ToElement();
 
-      for(; link_data; link_data=link_data->NextSiblingElement() )
+      for(; link_data; link_data=link_data->NextSiblingElement("obj_file") )
       {
         std::string ss;
 
@@ -321,7 +321,7 @@ namespace scl_parser {
       //**** Graphics : sphere
       link_data = arg_link_txml.FirstChild( "graphics" ).FirstChild("sphere").ToElement();
 
-      for(; link_data; link_data=link_data->NextSiblingElement() )
+      for(; link_data; link_data=link_data->NextSiblingElement("sphere") )
       {
         std::string ss;
 
@@ -394,7 +394,7 @@ namespace scl_parser {
       //**** Graphics : cuboid
       link_data = arg_link_txml.FirstChild( "graphics" ).FirstChild("cuboid").ToElement();
 
-      for(; link_data; link_data=link_data->NextSiblingElement() )
+      for(; link_data; link_data=link_data->NextSiblingElement("cuboid") )
       {
         std::string ss;
 
@@ -475,7 +475,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not fo
 #ifdef DEBUG
 std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboid";
 #endif
-        }//End of cuboid
+        }
 
         obj_data = link_data->FirstChildElement( "collision_type" );
         if ( obj_data )
@@ -486,6 +486,109 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         else  {
 #ifdef DEBUG
           std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Collision type not found for cuboid element";
+#endif
+        }
+
+        arg_link_ds.graphics_obj_vec_.push_back(tgr);
+        flag_graphics_element_found = true;
+      }// End of cuboid
+
+
+      //**** Graphics : cylinder
+      link_data = arg_link_txml.FirstChild( "graphics" ).FirstChild("cylinder").ToElement();
+
+      for(; link_data; link_data=link_data->NextSiblingElement("cylinder") )
+      {
+        std::string ss;
+
+        //Read all the obj_files
+        SRigidBodyGraphics tgr;
+        tgr.class_ = SRigidBodyGraphics::CLASS_CYLINDER;
+
+        obj_data = link_data->FirstChildElement( "position_in_parent" );
+        if ( obj_data )
+        {
+          sFloat tmpvar;
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tmpvar;
+          tgr.pos_in_parent_(0) = tmpvar;
+          ss>>tmpvar;
+          tgr.pos_in_parent_(1) = tmpvar;
+          ss>>tmpvar;
+          tgr.pos_in_parent_(2) = tmpvar;
+        }
+        else  {
+#ifdef DEBUG
+std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not found for cylinder";
+#endif
+        }
+
+        obj_data = link_data->FirstChildElement( "orientation_in_parent" );
+        if ( obj_data )
+        {
+          sFloat tmpvar;
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tmpvar;
+          tgr.ori_parent_quat_(0) = tmpvar;
+          ss>>tmpvar;
+          tgr.ori_parent_quat_(1) = tmpvar;
+          ss>>tmpvar;
+          tgr.ori_parent_quat_(2) = tmpvar;
+          ss>>tmpvar;
+          tgr.ori_parent_quat_(3) = tmpvar;
+        }
+        else  {
+#ifdef DEBUG
+          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Orientation in parent not found for cylinder";
+#endif
+        }
+
+        //SI units. Default is 1 1 1 (massive!)
+        obj_data = link_data->FirstChildElement( "baseR_topR_height" );
+        if ( obj_data )
+        {
+          sFloat tmpvar;
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tmpvar;
+          tgr.scaling_(0) = tmpvar; //x
+          ss>>tmpvar;
+          tgr.scaling_(1) = tmpvar; //y
+          ss>>tmpvar;
+          tgr.scaling_(2) = tmpvar; //z
+        }
+        else  {
+#ifdef DEBUG
+          std::cerr<< "\nCSclTiXmlParser::readLink()  : Warning : Graphics scaling not found for cylinder";
+#endif
+        }
+
+        obj_data = link_data->FirstChildElement( "color" );
+        if ( obj_data )
+        {
+          sFloat tmpvar;
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tmpvar;
+          tgr.color_[0] = tmpvar;
+          ss>>tmpvar;
+          tgr.color_[1] = tmpvar;
+          ss>>tmpvar;
+          tgr.color_[2] = tmpvar;
+        }
+        else{
+#ifdef DEBUG
+std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cylinder";
+#endif
+        }
+
+        obj_data = link_data->FirstChildElement( "collision_type" );
+        if ( obj_data )
+        {
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tgr.collision_type_;
+        }
+        else  {
+#ifdef DEBUG
+          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Collision type not found for cylinder";
 #endif
         }
 
