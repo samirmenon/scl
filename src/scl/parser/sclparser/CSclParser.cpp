@@ -291,6 +291,14 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
         ss>>arg_robot.option_axis_frame_size_;
       }
 
+      xmlflags = _robot_handle.FirstChildElement( "option_muscle_via_pt_sz" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        ss>>arg_robot.option_muscle_via_pt_sz_;
+        arg_robot.muscle_system_.render_muscle_via_pt_sz_ = arg_robot.option_muscle_via_pt_sz_;
+      }
+
       // *****************************************************************
       //                        Now parse the links
       // *****************************************************************

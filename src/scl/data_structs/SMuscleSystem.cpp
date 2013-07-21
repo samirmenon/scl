@@ -71,6 +71,8 @@ namespace scl
   {
     muscles_.clear();
     must_use_robot_ = "";
+    render_muscle_thickness_ = 3;
+    render_muscle_via_pt_sz_ = 0.0;
   }
 
   SMuscleSystem::~SMuscleSystem()

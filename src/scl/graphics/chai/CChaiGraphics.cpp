@@ -46,8 +46,8 @@ using namespace chai3d;
 namespace scl {
 
   const sFloat CHAI_SPHERE_RENDER_RADIUS = 0.0001; //m
-  const sFloat CHAI_SPHERE_MUSC_VIA_RADIUS = 0.004; //m
-  const sFloat CHAI_MUSC_THICKNESS = 3; //pixels
+  const sFloat CHAI_SPHERE_MUSC_VIA_RADIUS = 0.008; //m
+  const sFloat CHAI_MUSC_THICKNESS = 10; //pixels
 
   sBool CChaiGraphics::initGraphics(
       const std::string & arg_graphics_name)
@@ -310,7 +310,11 @@ namespace scl {
 
       if(true == robdef->muscle_system_.has_been_init_)
       {
-        flag = addMusclesToRender(arg_robot,robdef->muscle_system_,true);
+        if(robdef->option_muscle_via_pt_sz_>0.0)
+        { flag = addMusclesToRender(arg_robot,robdef->muscle_system_,true); }
+        else
+        { flag = addMusclesToRender(arg_robot,robdef->muscle_system_,false); }
+
         if(false == flag)
         { throw(std::runtime_error("Failed to add a muscle system for robot"));  }
       }
@@ -954,10 +958,15 @@ namespace scl {
 
           if(add_musc_via_points)//Add via point rendering if required
           {
-            gr_mpt.graphics_via_point_ = new cShapeSphere(CHAI_SPHERE_MUSC_VIA_RADIUS);
-            gr_mpt.graphics_via_point_->setLocalPos(*(gr_mpt.pos_));
+            if(arg_msys.render_muscle_via_pt_sz_ > 0.0)
+            {
+              gr_mpt.graphics_via_point_ = new cShapeSphere(arg_msys.render_muscle_via_pt_sz_);
+              gr_mpt.graphics_via_point_->setLocalPos(*(gr_mpt.pos_));
 
-            gr_mpt.graphics_parent_->graphics_obj_->addChild(gr_mpt.graphics_via_point_);
+              gr_mpt.graphics_parent_->graphics_obj_->addChild(gr_mpt.graphics_via_point_);
+            }
+            else
+            { std::cerr<<"\nCChaiGraphics::addMusclesToRender(): WARNING: Inconsistent muscle via point state.";  }
           }
 
           //Add the point to the muscle

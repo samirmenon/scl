@@ -122,6 +122,7 @@ namespace scl
   class SMuscleSystem : public SObject
   {
   public:
+    /** ******************** DATA *********************** */
     /** A set of muscles */
     sutil::CMappedList<std::string, SMuscle> muscles_;
 
@@ -129,6 +130,11 @@ namespace scl
      * robots. */
     std::string must_use_robot_;
 
+    /** Graphics properties */
+    int render_muscle_thickness_;//pixels
+    double render_muscle_via_pt_sz_;//size of sphere
+
+    /** ******************** FUNCTIONS *********************** */
     /** Default constructor. Sets the type. */
     SMuscleSystem();
     /** Default destructor. Does nothing */

@@ -91,8 +91,8 @@ public:
   /** ---------------------------------------------- */
   /** Flags to control the simulation     | Defaults */
   /** ---------------------------------------------- */
-  sBool flag_apply_gc_damping_;                 //false
-  sBool flag_apply_gc_pos_limits_;            //false
+  sBool flag_apply_gc_damping_;              //false
+  sBool flag_apply_gc_pos_limits_;           //false
   sBool flag_apply_actuator_force_limits_;   //true
   sBool flag_apply_actuator_pos_limits_;     //true
   sBool flag_apply_actuator_vel_limits_;     //true
@@ -101,6 +101,7 @@ public:
   sBool flag_logging_on_;                    //false
   sBool flag_wireframe_on_;                  //false
   sFloat option_axis_frame_size_;            //0.01
+  sFloat option_muscle_via_pt_sz_;           //0.00 (not rendered)
   /** ---------------------------------------------- */
 
   //std::string name_; //Inherited
@@ -110,8 +111,8 @@ public:
       dof_(0)
   {
     //Flags to control SRobot's behavior
-    flag_apply_gc_damping_               = false;
-    flag_apply_gc_pos_limits_          = false;
+    flag_apply_gc_damping_            = false;
+    flag_apply_gc_pos_limits_         = false;
     flag_apply_actuator_force_limits_ = true;
     flag_apply_actuator_pos_limits_   = true;
     flag_apply_actuator_vel_limits_   = true;
@@ -120,6 +121,7 @@ public:
     flag_logging_on_                  = false;
     flag_wireframe_on_                = false;
     option_axis_frame_size_           = 0.01;//default
+    option_muscle_via_pt_sz_          = 0.00;//default
   }
 };
 
