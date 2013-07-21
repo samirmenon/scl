@@ -38,6 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <sutil/CMappedTree.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
+#include <scl/data_structs/SMuscleSystem.hpp>
 
 #include <scl/data_structs/SObject.hpp>
 
