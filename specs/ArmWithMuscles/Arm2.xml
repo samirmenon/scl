@@ -1,0 +1,150 @@
+<?xml version="1.0" ?>
+<scl>
+  <robot spec_name="Arm2">
+    <link>
+      <link_name>upper_arm</link_name>
+      <mass>1.0</mass>
+      <inertia>0.20  0.20  0.20</inertia>
+      <center_of_mass>0.0  0.0  -0.4</center_of_mass>
+      <position_in_parent>0  0.25  0</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>shoulder-rx</joint_name>
+      <parent_link_name>ground</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rx</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+        <cylinder>
+          <position_in_parent>0.000000 0.000000 -0.800000</position_in_parent>
+          <color>0.3 0.3 0.35</color>
+          <baseR_topR_height>0.03 0.03 0.8</baseR_topR_height>
+          <collision_type>0</collision_type>
+        </cylinder>
+      </graphics>
+    </link>
+    <link>
+      <link_name>lower_arm</link_name>
+      <mass>1.0</mass>
+      <inertia>0.20  0.20  0.20</inertia>
+      <center_of_mass>0.0  0.0  -0.4</center_of_mass>
+      <position_in_parent>0  0.0  -0.8</position_in_parent>
+      <orientation_in_parent>0  0  0  1</orientation_in_parent>
+      <joint_name>shoulder2-rx</joint_name>
+      <parent_link_name>upper_arm</parent_link_name>
+      <joint_limits>-3.14159 3.14159</joint_limits>
+      <default_joint_position>0</default_joint_position>
+      <joint_type>rx</joint_type>
+      <graphics>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+        <cylinder>
+          <position_in_parent>0.000000 0.000000 -0.800000</position_in_parent>
+          <color>0.3 0.3 0.35</color>
+          <baseR_topR_height>0.03 0.03 0.8</baseR_topR_height>
+          <collision_type>0</collision_type>
+        </cylinder>
+        <sphere>
+          <radius>0.05</radius>
+          <position_in_parent>0.000000 0.000000 -0.800000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <collision_type>0</collision_type>
+        </sphere>
+      </graphics>
+    </link>
+  </robot>
+
+
+  <!-- Muscle system -->
+  <muscle_system spec_name="Arm2Msys">
+    <!-- A single muscle -->
+    <muscle type="Hill">
+      <name>m0</name>
+      <max_isometric_force>100</max_isometric_force> <!-- at the contractile element -->
+      <stiffness>10</stiffness> <!-- of the parallel spring damper -->
+      <damping>4</damping> <!-- of the parallel spring damper -->
+      <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
+      <!-- Each muscle has multiple attachment points -->
+      <muscle_points>
+        <point order="0"><!-- Order is end-/start-flip invariant -->
+          <parent_link_name>ground</parent_link_name>
+          <position_in_parent>0.0 0.125 -0.01</position_in_parent>
+        </point>
+        <point order="1">
+          <parent_link_name>ground</parent_link_name>
+          <position_in_parent>0.0 0.185 -0.03</position_in_parent>
+        </point>
+        <point order="2">
+          <parent_link_name>upper_arm</parent_link_name>
+          <position_in_parent>0.0 -0.04 -0.4</position_in_parent>
+        </point>
+        <point order="3">
+          <parent_link_name>upper_arm</parent_link_name>
+          <position_in_parent>0.0 -0.03 -0.6</position_in_parent>
+        </point>
+      </muscle_points>
+    </muscle>
+    
+    <muscle type="Hill">
+      <name>m1</name>
+      <max_isometric_force>100</max_isometric_force> <!-- at the contractile element -->
+      <stiffness>10</stiffness> <!-- of the parallel spring damper -->
+      <damping>4</damping> <!-- of the parallel spring damper -->
+      <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
+      <!-- Each muscle has multiple attachment points -->
+      <muscle_points>
+        <point order="0"><!-- Order is end-/start-flip invariant -->
+          <parent_link_name>ground</parent_link_name>
+          <position_in_parent>0.0 0.125 0.01</position_in_parent>
+        </point>
+        <point order="1">
+          <parent_link_name>ground</parent_link_name>
+          <position_in_parent>0.0 0.185 0.06</position_in_parent>
+        </point>
+        <point order="2">
+          <parent_link_name>ground</parent_link_name>
+          <position_in_parent>0.0 0.23 0.08</position_in_parent>
+        </point>
+        <point order="3">
+          <parent_link_name>upper_arm</parent_link_name>
+          <position_in_parent>0.0 0.07 0.03</position_in_parent>
+        </point>
+        <point order="4">
+          <parent_link_name>upper_arm</parent_link_name>
+          <position_in_parent>0.0 0.04 -0.4</position_in_parent>
+        </point>
+        <point order="5">
+          <parent_link_name>upper_arm</parent_link_name>
+          <position_in_parent>0.0 0.03 -0.6</position_in_parent>
+        </point>
+      </muscle_points>
+    </muscle>
+  </muscle_system>    <!-- End of muscle system -->
+
+</scl>
+
+
+<!-- Alternative muscle formulations 
+    <muscle type="Zajac">
+      <name>m0</name>
+      <max_isometric_force>100</max_isometric_force>   
+      <optimal_fiber_length></optimal_fiber_length>
+      <tendon_slack_length></tendon_slack_length>
+      <pennation_angle></pennation_angle>
+      <time_constants_act_deact></time_constants_act_deact>
+      <max_contraction_vel></max_contraction_vel>
+      <damping></damping> 
+    </muscle> -->
+
+
+
+

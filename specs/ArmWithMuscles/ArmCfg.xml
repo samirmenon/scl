@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "scl.dtd">
+
+<!-- Units are in Std International System -->
+<scl>
+  <!-- A muscle actuated arm model to test scl's muscle actuation -->
+  <robot name="Arm2Bot"> 
+    <spec>Arm2</spec>
+    <option_muscle_spec>Arm2Msys</option_muscle_spec> <!-- All options are optional -->
+    <file>../../specs/ArmWithMuscles/Arm2.xml</file>
+    <gravity>0.000   0.000   -9.81</gravity> 
+    <root_link>
+      <link_name>ground</link_name>
+      <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+      <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+      <graphics>
+        <cuboid>
+          <position_in_parent>0.000000 0.1250000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <scaling>0.02 0.25 0.02</scaling>
+          <collision_type>0</collision_type>
+        </cuboid>
+      </graphics>
+    </root_link>
+    <!-- These flags can control the simulation's default behavior. Optional. -->
+    <flag_gc_damping>false</flag_gc_damping>
+    <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+    <flag_actuator_force_limits>true</flag_actuator_force_limits>
+    <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+    <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+    <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+    <flag_logging_on>false</flag_logging_on>
+    <flag_wireframe_on>false</flag_wireframe_on>
+    <option_axis_frame_size>0.1</option_axis_frame_size> <!-- All options are optional -->
+  </robot>
+  
+  <!-- A muscle actuated arm model to test scl's muscle actuation -->
+  <robot name="Arm5Bot"> 
+    <spec>Arm5</spec>
+    <file>../../specs/ArmWithMuscles/Arm5.xml</file>
+    <gravity>0.000   0.000   -9.81</gravity> 
+    <root_link>
+      <link_name>ground</link_name>
+      <position_in_parent>0.300   0.000   0.000</position_in_parent> 
+      <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+      <graphics>
+        <cuboid>
+          <position_in_parent>0.000000 0.1250000 0.000000</position_in_parent>
+          <color>1.0 0.0 0.0</color>
+          <scaling>0.02 0.25 0.02</scaling>
+          <collision_type>0</collision_type>
+        </cuboid>
+      </graphics>
+    </root_link>
+    <!-- These flags can control the simulation's default behavior. Optional. -->
+    <flag_gc_damping>false</flag_gc_damping>
+    <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+    <flag_actuator_force_limits>true</flag_actuator_force_limits>
+    <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+    <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+    <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+    <flag_logging_on>false</flag_logging_on>
+    <flag_wireframe_on>false</flag_wireframe_on>
+    <option_axis_frame_size>0.1</option_axis_frame_size> <!-- All options are optional -->
+  </robot>
+
+  <graphics name="ArmStdView">
+    <camera>
+        <pos>4.0   0.0   -0.3</pos>
+        <lookat>0.0   0.0   -0.1</lookat>
+        <up>0   0   1</up>
+        <clip>0 10</clip>
+        <background>0 0 0</background>
+    </camera>
+    <light>
+        <pos>2.0   0.0   0.0</pos>
+        <lookat>0.0   0.0   0.5</lookat>
+    </light>
+    <light>
+        <pos>-2.0   0.0   0.0</pos>
+        <lookat>0.0   0.0   0.0</lookat>
+    </light>
+    <background_color>0.0 0.0 0.0</background_color>
+  </graphics>
+
+  <controller name="2gc">
+    <type>gc</type>
+    <must_use_robot>Arm2Bot</must_use_robot>
+    <kp>100</kp>
+    <kv>10</kv>
+    <ki>0</ki>
+    <force_max>10</force_max>
+    <force_min>-10</force_min>
+  </controller>
+  
+  <controller name="5gc">
+    <type>gc</type>
+    <must_use_robot>Arm5Bot</must_use_robot>
+    <kp>100</kp>
+    <kv>10</kv>
+    <ki>0</ki>
+    <force_max>10</force_max>
+    <force_min>-10</force_min>
+  </controller>
+</scl>
