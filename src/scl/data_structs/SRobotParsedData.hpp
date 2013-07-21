@@ -52,12 +52,13 @@ namespace scl
 struct SRobotParsedData : public SObject
 {
 public:
-  /** The controller parser definition contains a root link vector and
-   * a child link vector.
-   *
-   * The branching representation will store a tree of SRigidBody nodes
+  /** The branching representation will store a tree of SRigidBody nodes
    * and will maintain a mapping between their names and the nodes. */
   sutil::CMappedTree<std::string, SRigidBody> robot_br_rep_;
+
+  /** The muscle specification contains a list of all muscle actuators
+   * that are attached to this robot. */
+  SMuscleSystem muscle_system_;
 
   /** The joint values don't go outside this range */
   Eigen::VectorXd gc_pos_limit_max_, gc_pos_limit_min_;
@@ -71,7 +72,7 @@ public:
    * require a more sophisticated data structure than
    * a simple vector.
    *
-   * NOTE TODO : Rename this to joint damping. */
+   * NOTE TODO : Rename this to gc damping. */
   Eigen::VectorXd damping_;
 
   /** The actuators' max force values don't go outside this range */
