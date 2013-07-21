@@ -14,7 +14,7 @@ SET(3DS_INC_DIR ../lib3ds/include)
 SET(JPEG_INC_DIR ../libjpeg/include)
 SET(PNG_INC_DIR ../libpng/include)
 
-SET(EIGEN_INC_DIR ../../eigen3.1.2)
+SET(EIGEN_INC_DIR ../../eigen)
 
 INCLUDE_DIRECTORIES(${CHAI_INC_DIR} ${DHD_INC_DIR} ${GEL_INC_DIR}
                     ${GIF_INC_DIR} ${3DS_INC_DIR} ${JPEG_INC_DIR} 
