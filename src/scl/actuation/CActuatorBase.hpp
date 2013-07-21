@@ -133,6 +133,12 @@ namespace scl
     }
 
     /* *****************************************************************
+     *                        Actuator Properties
+     * ***************************************************************** */
+    /** Does this actuator actuate the generalized coordinates? */
+    virtual sBool getActuatesGC()=0;
+
+    /* *****************************************************************
      *                        Initialization
      * ***************************************************************** */
     /** All actutors must be initialized */

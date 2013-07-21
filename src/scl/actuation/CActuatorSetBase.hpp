@@ -54,6 +54,16 @@ namespace scl
   {
   public:
     /* *****************************************************************
+     *                        Actuator Kinematics
+     * ***************************************************************** */
+    /** Some actuator sets don't directly actuate the generalized coordinates
+     * and require a Jacobian to compute their contribution to the generalized
+     * forces.
+     *
+     * Each actuator instance must implement this. */
+    virtual sBool computeJacobian()=0;
+
+    /* *****************************************************************
      *                        Actuator Modeling
      * ***************************************************************** */
     /** Set the actuator commands. These will be translated into individual
