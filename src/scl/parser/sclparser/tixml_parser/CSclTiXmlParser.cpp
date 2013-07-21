@@ -718,7 +718,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cylin
         muscle_datal2 = muscle_data->FirstChildElement("parent_link_name");
         if ( muscle_datal2 )
         {
-          std::stringstream ss(muscle_data->FirstChild()->Value());
+          std::stringstream ss(muscle_datal2->FirstChild()->Value());
           ss>>tmp_musc_pt.parent_link_;
         }
         else
@@ -728,7 +728,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cylin
         muscle_datal2 = muscle_data->FirstChildElement("position_in_parent");
         if ( muscle_datal2 )
         {
-          std::stringstream ss(muscle_data->FirstChild()->Value());
+          std::stringstream ss(muscle_datal2->FirstChild()->Value());
           ss>>tmp_musc_pt.point_(0);
           ss>>tmp_musc_pt.point_(1);
           ss>>tmp_musc_pt.point_(2);

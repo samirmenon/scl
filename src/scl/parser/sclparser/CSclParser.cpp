@@ -559,6 +559,9 @@ bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
         continue;
       }
 
+      //Set the muscle name
+      arg_robot.muscle_system_.name_ = arg_muscle_spec_name;
+
       muscle_spec++; //Found a candidate
       if(muscle_spec>1) //There should only be one muscle with this name.
       {
