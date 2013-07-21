@@ -77,7 +77,14 @@ struct SParserData
   /** Contains all the parsed robots. */
   sutil::CMappedList<std::string,SRobotParsedData> robots_;
 
-  /** Contains all the parsed muscle systems */
+  /** Contains all the parsed muscle systems
+   *
+   * NOTE TODO : Muscle systems should be attached to parsed robot
+   * specifications. They can't do anything independent of the
+   * actual robot spec anyway. The original idea was to allow multiple
+   * muscle specs for a robot, but that's overkill. More modular to
+   * just redefine the robot as something else and give it a new
+   * muscle spec. */
   sutil::CMappedList<std::string,SMuscleSystem> muscle_systems_;
 
   /** The config file in which the robot and muscle system is specified.
