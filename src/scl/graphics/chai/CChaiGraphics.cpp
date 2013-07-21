@@ -127,7 +127,7 @@ namespace scl {
 
 #ifdef DEBUG
         std::cout<<"\nCam Pos:"<<data_parsed_->cam_pos_[0]
-          <<" "<<data_parsed_->cam_pos_[1]<<" "<<data_parsed_->cam_pos_[2]<<std::flush;
+          <<" "<<data_parsed_->cam_pos_[1]<<" "<<data_parsed_->cam_pos_[2]<<std::flush();
         std::cout<<"\nCam Lookat:"<<data_parsed_->cam_lookat_[0]
           <<" "<<data_parsed_->cam_lookat_[1]<<" "<< data_parsed_->cam_lookat_[2];
         std::cout<<"\nCam Up:"<<data_parsed_->cam_up_[0]

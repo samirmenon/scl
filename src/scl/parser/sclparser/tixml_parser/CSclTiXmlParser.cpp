@@ -618,6 +618,133 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cylin
     return true;
   }
 
+
+
+  /** Reads single links */
+  bool CSclTiXmlParser::readMuscle(const scl_tinyxml::TiXmlHandle& arg_musc_txml,
+      scl::SMuscle& arg_muscle_ds, bool arg_is_root)
+  {
+    try
+    {
+      //Read in the information into arg_glob_ds
+      TiXmlElement* muscle_data, *muscle_datal2;
+
+      //muscle name.
+      muscle_data = arg_musc_txml.Element();
+      if ( muscle_data )
+      {
+        std::stringstream ss(muscle_data->Attribute("type"));
+        ss>>arg_muscle_ds.muscle_type_;
+      }
+      else
+      {throw(std::runtime_error("Error reading muscle type"));}
+
+      //NOTE : Should read multiple cameras. But reads only one.
+      //Camera orientation and position
+      muscle_data = arg_musc_txml.FirstChildElement("name").Element();
+      if ( muscle_data )
+      {
+        std::stringstream ss(muscle_data->FirstChild()->Value());
+        ss>>arg_muscle_ds.name_;
+      }
+      else
+      {throw(std::runtime_error("Error reading muscle name"));}
+
+      /** ************** HILL TYPE MODEL PROPERTIES ************* */
+      muscle_data = arg_musc_txml.FirstChildElement("max_isometric_force").Element();
+      if ( muscle_data )
+      {
+        std::stringstream ss(muscle_data->FirstChild()->Value());
+        ss>>arg_muscle_ds.max_isometric_force_;
+      }
+      else
+      {throw(std::runtime_error("Error reading max isometric force"));}
+
+      muscle_data = arg_musc_txml.FirstChildElement("stiffness").Element();
+      if ( muscle_data )
+      {
+        std::stringstream ss(muscle_data->FirstChild()->Value());
+        ss>>arg_muscle_ds.stiffness_;
+      }
+      else
+      {throw(std::runtime_error("Error reading stiffness"));}
+
+      muscle_data = arg_musc_txml.FirstChildElement("damping").Element();
+      if ( muscle_data )
+      {
+        std::stringstream ss(muscle_data->FirstChild()->Value());
+        ss>>arg_muscle_ds.damping_;
+      }
+      else
+      {throw(std::runtime_error("Error reading damping"));}
+
+      muscle_data = arg_musc_txml.FirstChildElement("tendon_stiffness").Element();
+      if ( muscle_data )
+      {
+        std::stringstream ss(muscle_data->FirstChild()->Value());
+        ss>>arg_muscle_ds.stiffness_tendon_;
+      }
+      else
+      {throw(std::runtime_error("Error reading tendon stiffness"));}
+
+      /** ********************** Now read muscle attachment points ***************************** */
+      // Count all the muscle attachment points.
+      int n_musc_points=0;
+      muscle_data = arg_musc_txml.FirstChild( "muscle_points" ).FirstChild("point").ToElement();
+      for(; muscle_data; muscle_data=muscle_data->NextSiblingElement("point") )
+      { n_musc_points++; }
+
+      arg_muscle_ds.points_.resize(n_musc_points,SMusclePoint());
+
+      // Iterate over all the muscle attachment points.
+      muscle_data = arg_musc_txml.FirstChild( "muscle_points" ).FirstChild("point").ToElement();
+      for(; muscle_data; muscle_data=muscle_data->NextSiblingElement("point"))
+      {// For each point
+        int musc_order=-1;
+
+        if(NULL == muscle_data->Attribute("order"))
+        { throw(std::runtime_error("No order attribute at muscle point (must be >=0)")); }
+
+        std::stringstream ss(muscle_data->Attribute("order"));
+        ss>>musc_order;
+        if(musc_order<0)
+        { throw(std::runtime_error("Negative muscle point order (must be >=0)")); }
+
+        //Store a reference to the current point (for simplicity)
+        SMusclePoint &tmp_musc_pt = arg_muscle_ds.points_[musc_order];
+        tmp_musc_pt.position_on_muscle_ = static_cast<sUInt>(musc_order);
+
+        // Read in the parent link
+        muscle_datal2 = muscle_data->FirstChildElement("parent_link_name");
+        if ( muscle_datal2 )
+        {
+          std::stringstream ss(muscle_data->FirstChild()->Value());
+          ss>>tmp_musc_pt.parent_link_;
+        }
+        else
+        {throw(std::runtime_error("Error reading parent link name"));}
+
+        // Read in the pos in parent
+        muscle_datal2 = muscle_data->FirstChildElement("position_in_parent");
+        if ( muscle_datal2 )
+        {
+          std::stringstream ss(muscle_data->FirstChild()->Value());
+          ss>>tmp_musc_pt.point_(0);
+          ss>>tmp_musc_pt.point_(1);
+          ss>>tmp_musc_pt.point_(2);
+        }
+        else
+        {throw(std::runtime_error("Error reading parent link name"));}
+      }
+
+      return true;
+    }
+    catch(std::exception& e)
+    { std::cout<<"\nCSclTiXmlParser::readMuscle() : "<< e.what(); }
+    return false;
+  }
+
+
   bool CSclTiXmlParser::readGraphics(
         const TiXmlHandle &arg_graphics_data_txml,
         scl::SGraphicsParsedData& arg_graphics_ds)

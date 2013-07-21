@@ -55,9 +55,13 @@ namespace scl
     max_contraction_vel_ = 10.0;// Unit : m/s
     max_contraction_vel_low_ = 10.0;
     max_contraction_vel_high_ = 10.0;
+    max_tendon_strain_ = 100;
+    max_muscle_strain_ = 100;
+    stiffness_ = 100;
     damping_ = 0.0;
-    name_ = "";
+    stiffness_tendon_ = 1000;
     muscle_type_ = "";
+    name_ = "";
   }
 
   SMuscle::~SMuscle()

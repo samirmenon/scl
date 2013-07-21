@@ -355,12 +355,15 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       }
 
       //Now read the generic muscle specification from the spec file.
-      flag = readMuscleSpecFromFile(spec_file, spec_muscle, /*ret val */arg_robot);
-      if(false == flag)
+      if("" != spec_muscle)
       {
-        std::string err;
-        err ="Could not read the robot's muscle spec (" + spec_muscle +") from its file : "+ spec_file;
-        throw(std::runtime_error(err));
+        flag = readMuscleSpecFromFile(spec_file, spec_muscle, /*ret val */arg_robot);
+        if(false == flag)
+        {
+          std::string err;
+          err ="Could not read the robot's muscle spec (" + spec_muscle +") from its file : "+ spec_file;
+          throw(std::runtime_error(err));
+        }
       }
 
       arg_robot.dof_ = arg_robot.robot_br_rep_.size() - 1;//The root node is stationary
@@ -505,7 +508,7 @@ bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
   return false;
 }
 
-bool readMuscleSpecFromFile(const std::string& arg_spec_file,
+bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
     const std::string& arg_muscle_spec_name,
     scl::SRobotParsedData& arg_robot)
 {
@@ -530,7 +533,7 @@ bool readMuscleSpecFromFile(const std::string& arg_spec_file,
     //Read in the links.
     tiElem_muscle = tiHndl_world.FirstChildElement( "muscle_system" ).ToElement();
     if(NULL == tiElem_muscle) //Unnamed muscle
-    { throw std::runtime_error("No muscle_system specs found in spec file"); }
+    { throw std::runtime_error("No muscle system specs found in spec file"); }
 
     sUInt muscle_spec=0;
 
@@ -567,7 +570,6 @@ bool readMuscleSpecFromFile(const std::string& arg_spec_file,
       }
 
       //Now actually read in the muscle_system by parsing all the muscles
-      sInt id = 0;
       TiXmlElement* _child_link_element = _muscle_handle.FirstChildElement( "muscle" ).ToElement();
       for(; _child_link_element; _child_link_element=_child_link_element->NextSiblingElement("muscle") )
       {
@@ -593,10 +595,11 @@ bool readMuscleSpecFromFile(const std::string& arg_spec_file,
     if(muscle_spec<1)
     { throw(std::runtime_error(std::string("Didn't find any muscle spec called: ")+arg_muscle_spec_name)); }
 
+    arg_robot.muscle_system_.has_been_init_ = true;
     return true;
   }
   catch(std::exception& e)
-  { std::cerr<<"\nCSclParser::readRobotSpecFromFile("<<arg_spec_file<<"): "<<e.what(); }
+  { std::cerr<<"\nCSclParser::readMuscleSpecFromFile("<<arg_spec_file<<"): "<<e.what(); }
   return false;
 }
 

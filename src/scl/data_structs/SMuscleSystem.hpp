@@ -80,6 +80,7 @@ namespace scl
     std::vector<SMusclePoint> points_;
     /** Maximum force that this muscle can exert */
     sFloat max_isometric_force_;
+
     /** The optimal muscle fiber length */
     sFloat optimal_fiber_length_;
     /** The tendon's slack */
@@ -90,14 +91,21 @@ namespace scl
     sFloat activation_time_constt_, deactivation_time_constt_;
     /** Max contraction velocity */
     sFloat max_contraction_vel_;
+
     /** Max contraction velocity at low and high fiber lengths. Thelen Muscles. */
     sFloat max_contraction_vel_low_,max_contraction_vel_high_;
     /** Max tendon strain : Thelen Muscles. */
     sFloat max_tendon_strain_;
     /** Max muscle strain : Thelen Muscles. */
     sFloat max_muscle_strain_;
-    /** The muscle's damping ratio. NOTE TODO : What does this do? */
+
+    /** The muscle's stiffness ratio. Hill Muscles */
+    sFloat stiffness_;
+    /** The muscle's damping ratio. Hill Muscles */
     sFloat damping_;
+    /** The muscle tendon's stiffness ratio. Hill Muscles */
+    sFloat stiffness_tendon_;
+
     /** The muscle's type. Eg. Thelen2003Muscle, Schutte1993Muscle etc. */
     std::string muscle_type_;
     /** The muscle's name */
