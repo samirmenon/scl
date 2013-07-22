@@ -58,7 +58,7 @@ namespace scl
   sBool CActuatorMuscle::init(const std::string& arg_name,
       const SRobotParsedData *arg_robot,
       const SRobotIOData *arg_rob_io_ds,
-      SMuscleSystem *arg_msys,
+      const SMuscleSystem *arg_msys,
       CDynamicsBase *arg_dynamics)
   {
     bool flag;

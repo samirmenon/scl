@@ -149,7 +149,7 @@ namespace scl
     virtual sBool init(const std::string& arg_name,
         const SRobotParsedData *arg_robot,
         const SRobotIOData *arg_rob_io_ds,
-        SMuscleSystem *arg_msys,
+        const SMuscleSystem *arg_msys,
         CDynamicsBase *arg_dynamics);
 
     /** Has this actuator been initialized */
@@ -176,7 +176,7 @@ namespace scl
     const SRobotIOData *robot_io_ds_;
 
     /** The parsed muscle specification */
-    SMuscleSystem *msys_;
+    const SMuscleSystem *msys_;
 
     /** The muscle in the system */
     const SMuscle *muscle_;
