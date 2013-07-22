@@ -76,6 +76,10 @@ namespace scl
       if(NULL == tmp){ return -1; } else {  return *tmp;  }
     }
 
+    /** To simplify the confusion between name idx and numeric idx */
+    int getNumberOfMuscles()
+    { return muscles_.size(); }
+
     /* *****************************************************************
      *                        Initialization
      * ***************************************************************** */

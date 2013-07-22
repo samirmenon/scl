@@ -99,8 +99,8 @@ namespace scl
       for (i=0, itm = muscles_.begin(), itme = muscles_.end();
           itm != itme; ++itm, ++i)
       {
-        muscle_id_to_name_[i] = it->name_;
-        sUInt* tmp = muscle_name_to_id_.create(it->name_);
+        muscle_id_to_name_[i] = itm->getName();
+        sUInt* tmp = muscle_name_to_id_.create(itm->getName());
         *tmp = i;
       }
 
