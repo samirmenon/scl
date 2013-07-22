@@ -91,6 +91,19 @@ namespace scl
         { throw(std::runtime_error(std::string("Could not initialize muscle: ")+it->name_)); }
       }
 
+      muscle_id_to_name_.resize(muscles_.size());
+
+      // Initialize all the muscles ids in the new muscle objects
+      int i=0;
+      sutil::CMappedList<std::string, CActuatorMuscle>::const_iterator itm,itme;
+      for (i=0, itm = muscles_.begin(), itme = muscles_.end();
+          itm != itme; ++itm, ++i)
+      {
+        muscle_id_to_name_[i] = it->name_;
+        sUInt* tmp = muscle_name_to_id_.create(it->name_);
+        *tmp = i;
+      }
+
       has_been_init_ = true;
     }
     catch(std::exception &e)

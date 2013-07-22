@@ -62,6 +62,20 @@ namespace scl
     virtual sBool computeJacobian(Eigen::MatrixXd &ret_J);
 
     /* *****************************************************************
+     *                           Accessors
+     * ***************************************************************** */
+    /** To simplify the confusion between name idx and numeric idx */
+    std::string getMuscleNameAtId(sUInt arg_id)
+    { return muscle_id_to_name_[arg_id];  }
+
+    /** To simplify the confusion between name idx and numeric idx */
+    int getMuscleIdAtName(const std::string& arg_name)
+    {
+      sUInt * tmp=  muscle_name_to_id_.at(arg_name);
+      if(NULL == tmp){ return -1; } else {  return *tmp;  }
+    }
+
+    /* *****************************************************************
      *                        Initialization
      * ***************************************************************** */
     /** Initializes the actuators. This involves determining whether the muscle
@@ -89,6 +103,12 @@ namespace scl
   protected:
     /** The muscles in this set */
     sutil::CMappedList<std::string,CActuatorMuscle> muscles_;
+
+    /** The muscle numeric id to name map */
+    std::vector<std::string> muscle_id_to_name_;
+
+    /** The muscle name to numeric id map */
+    sutil::CMappedList<std::string, sUInt> muscle_name_to_id_;
 
     /** The name of the actuator set */
     std::string name_;
