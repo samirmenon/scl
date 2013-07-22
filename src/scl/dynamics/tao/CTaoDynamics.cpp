@@ -274,6 +274,11 @@ namespace scl
     std::vector<SGcModel::SCOMInfo>::iterator it, ite;
     for(it = js_model->coms_.begin(), ite = js_model->coms_.end(); it!=ite;++it)
     {
+      if(NULL == it->link_dynamic_id_)
+      {
+        fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Com properties not initialized in controller impl\n");
+        return false;
+      }
       flag = calculateTransformationMatrix(it->link_dynamic_id_,it->T_com_);
       if(false == flag) {
         fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Com transformation matrix computation failed\n");
