@@ -40,7 +40,7 @@ namespace scl
 {
   /** A generic object in the world. All database objects should
    * inherit from this. */
-  struct SObject
+  class SObject
   {
   public:
     /** Constructor sets the type of the object.
