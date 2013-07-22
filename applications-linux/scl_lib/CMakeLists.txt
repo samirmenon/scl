@@ -26,7 +26,9 @@ SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIOData.cpp
            ${SCL_INC_DIR}/data_structs/SMuscleSystem.cpp
    )
 
-SET(ACT_SRC ${SCL_INC_DIR}/actuation/muscles/CActuatorMuscle.cpp)
+SET(ACT_SRC ${SCL_INC_DIR}/actuation/muscles/CActuatorMuscle.cpp
+            ${SCL_INC_DIR}/actuation/muscles/CActuatorSetMuscle.cpp
+   )
 
 SET(UTIL_SRC ${SCL_INC_DIR}/util/DatabaseUtils.cpp
              ${SCL_INC_DIR}/util/HelperFunctions.cpp
