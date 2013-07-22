@@ -26,6 +26,8 @@ SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIOData.cpp
            ${SCL_INC_DIR}/data_structs/SMuscleSystem.cpp
    )
 
+SET(ACT_SRC ${SCL_INC_DIR}/actuation/muscles/CActuatorMuscle.cpp)
+
 SET(UTIL_SRC ${SCL_INC_DIR}/util/DatabaseUtils.cpp
              ${SCL_INC_DIR}/util/HelperFunctions.cpp
              ${SCL_INC_DIR}/util/FileFunctions.cpp
@@ -115,7 +117,7 @@ SET(TIXML_SRC ${SCL_INC_DIR}/parser/scl_tinyxml/scl_tinystr.cpp
    )
 ADD_DEFINITIONS(-DTIXML_USE_STL)
 
-SET(ALLSRC ${DB_SRC} ${UTIL_SRC} ${ROBOT_SRC} 
+SET(ALLSRC ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} 
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
            ${TAO_SRC} 
 					 ${LOTUS_PARSER_SRC} ${SAI_PARSER_SRC} ${OSIM_PARSER_SRC} ${TIXML_SRC})
