@@ -124,7 +124,6 @@ namespace scl
     if(false == msys_->has_been_init_) {  has_been_init_ = false; return false; }
     if(NULL == dynamics_) {  has_been_init_ = false; return false; }
 #endif
-
     return has_been_init_;
   }
 
@@ -136,7 +135,28 @@ namespace scl
    * Each actuator instance must implement this. */
   sBool CActuatorSetMuscle::computeJacobian(Eigen::MatrixXd &ret_J)
   {//This function doesn't use std::exceptions (for speed).
-    return true;
+    if(false == hasBeenInit()){ return false; }
+    bool flag = true;
+
+    // del-L_m = J del-q
+    ret_J.resize(muscles_.size(),robot_->dof_);
+
+    Eigen::VectorXd row_J;
+    row_J.resize(robot_->dof_);
+
+    // Compute a row vector for each muscle to get the full muscle Jacobian
+    int i=0;
+    sutil::CMappedList<std::string, CActuatorMuscle>::iterator itm,itme;
+    for (i=0, itm = muscles_.begin(), itme = muscles_.end();
+        itm != itme; ++itm,++i)
+    {
+      flag = flag && itm->computeJacobian(row_J);
+#ifdef DEBUG
+      if (false == flag) {  return false; }
+#endif
+      ret_J.row(i) = row_J;
+    }
+    return flag;
   }
 
 } /* namespace scl */
