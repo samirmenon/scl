@@ -39,6 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 #include <scl/dynamics/tao/tao/dynamics/taoDNode.h>
+#include <scl/actuation/muscles/CActuatorSetMuscle.hpp>
 
 #include <sutil/CSystemClock.hpp>
 
@@ -142,10 +143,13 @@ int main(int argc, char** argv)
       if(S_NULL == scl_registry::parseGcController(tmp_infile, robot_name, ctrl_name, &tmp_lparser))
       { throw(std::runtime_error("Could not register controller with the database"));  }
 
+      scl::SRobotParsedData *rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
+      if(NULL == rob_ds)
+      { throw(std::runtime_error("Could not find robot in database after parsing"));  }
+
 #ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<robot_name;
-      scl_util::printRobotLinkTree(*( scl::CDatabase::getData()->
-          s_parser_.robots_.at(robot_name)->robot_br_rep_.getRootNode()),0);
+      scl_util::printRobotLinkTree(*( rob_ds->robot_br_rep_.getRootNode()),0);
 #endif
 
       /******************************TaoDynamics************************************/
@@ -185,6 +189,37 @@ int main(int argc, char** argv)
       flag = robot_gc_ctrl.init(gc_ctrl_ds,&tao_dyn_int);
       if(false == flag) { throw(std::runtime_error("Could not initialize the controller object"));  }
 
+      /**********************Initialize Muscle Actuator Model & Dynamics*******************/
+      scl::CActuatorSetMuscle rob_mset;
+      flag = rob_mset.init(rob_ds->muscle_system_.name_, rob_ds, rob_io_ds, &(rob_ds->muscle_system_), &tao_dyn);
+      if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set"));  }
+
+      // Run the compute Jacobian function once (resizes the matrix etc.).
+      Eigen::MatrixXd rob_muscle_J, rob_muscle_Jpinv;
+      flag = rob_mset.computeJacobian(rob_muscle_J);
+      if(false == flag) { throw(std::runtime_error("Could not use muscle actuator set to compute a Jacobian"));  }
+
+      // Set up an SVD to compute the inv to get muscle activation for gc control
+      Eigen::JacobiSVD<Eigen::MatrixXd > rob_svd;
+      // Singular value matrix
+      Eigen::MatrixXd rob_sing_val;
+      rob_sing_val.setZero(rob_mset.getNumberOfMuscles(),rob_ds->dof_); //NOTE : Rectangular matrix
+
+      // Compute svd to set up matrix sizes etc.
+      rob_svd.compute(rob_muscle_J, Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+      for(int i=0;i<rob_ds->dof_;++i)
+      {
+        if(rob_svd.singularValues()(i)>1e-6)
+        { rob_sing_val(i,i) = 1/rob_svd.singularValues()(i);  }
+        else
+        { rob_sing_val(i,i) = 0;  }
+      }
+      rob_muscle_Jpinv = rob_svd.matrixU() * rob_sing_val * rob_svd.matrixV().transpose();
+
+      // The muscle force vector
+      Eigen::VectorXd rob_muscle_f;
+      rob_muscle_f.setZero(rob_ds->muscle_system_.muscles_.size());
+
       /******************************Main Loop************************************/
       std::cout<<std::flush;
 
@@ -222,6 +257,27 @@ int main(int argc, char** argv)
             {
               robot_gc_ctrl.computeKinematics();
               robot_gc_ctrl.computeDynamics();
+              rob_mset.computeJacobian(rob_muscle_J);
+
+              // Compute svd to set up matrix sizes etc.
+              rob_svd.compute(rob_muscle_J, Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+              for(int i=0;i<rob_ds->dof_;++i)
+              {
+                if(rob_svd.singularValues()(i)>1e-6)
+                { rob_sing_val(i,i) = 1/rob_svd.singularValues()(i);  }
+                else
+                { rob_sing_val(i,i) = 0;  }
+              }
+              rob_muscle_Jpinv = rob_svd.matrixU() * rob_sing_val * rob_svd.matrixV().transpose();
+
+              rob_muscle_f = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
+
+              if(ctrl_ctr%5000 == 0)
+              { std::cout<<"\nFm {"<<rob_mset.getMuscleNameAtId(0)<<", "
+                <<rob_mset.getMuscleNameAtId(1)<<", "
+                <<rob_mset.getMuscleNameAtId(2)<<", "
+                <<rob_mset.getMuscleNameAtId(3)<<"} : "
+                <<rob_muscle_f.transpose(); }
             }
             robot_gc_ctrl.computeControlForces();
 
