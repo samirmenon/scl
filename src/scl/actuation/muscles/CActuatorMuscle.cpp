@@ -168,13 +168,25 @@ namespace scl
     return data_.has_been_init_;
   }
 
+  /** Has this actuator been initialized */
+  sBool CActuatorMuscle::hasBeenInit()
+  {
+    if(NULL == robot_) {  data_.has_been_init_ = false; return false; }
+    if(NULL == robot_io_ds_) {  data_.has_been_init_ = false; return false; }
+    if(NULL == msys_) {  data_.has_been_init_ = false; return false; }
+    if(NULL == muscle_) {  data_.has_been_init_ = false; return false; }
+    if(NULL == dynamics_) {  data_.has_been_init_ = false; return false; }
+
+    return data_.has_been_init_;
+  }
+
 
   /** Some actuator sets don't directly actuate the generalized coordinates
    * and require a Jacobian to compute their contribution to the generalized
    * forces.
    *
    * Each actuator instance must implement this. */
-  sBool CActuatorMuscle::computeJacobian(Eigen::VectorXd& arg_J)
+  sBool CActuatorMuscle::computeJacobian(Eigen::VectorXd& ret_J)
   {//This function doesn't use std::exceptions (for speed).
     if(false == data_.has_been_init_) { return data_.has_been_init_; }
 
@@ -182,7 +194,7 @@ namespace scl
     bool flag = true;
 
     //Zero the Jacobian. And get the latest gc configuration.
-    arg_J.Zero(robot_->dof_);
+    ret_J.Zero(robot_->dof_);
     data_.dq_curr_ = robot_io_ds_->sensors_.dq_;
 
     //1. Iterate over all gc spanning muscle via-points.
@@ -233,7 +245,7 @@ namespace scl
             - (tmp_pt_set.x_glob_1_-tmp_pt_set.x_glob_0_).norm();
 
         //2.b: Compute the muscle's length gradient wrt the gc
-        arg_J(jcol) = grad_gc;
+        ret_J(jcol) = grad_gc;
       }
     }
 

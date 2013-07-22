@@ -138,7 +138,7 @@ namespace scl
          *
          * NOTE : The Jacobian is a row vector with non-zero entries only
          * at the spanned generalized coordinates*/
-        Eigen::VectorXd& arg_J);
+        Eigen::VectorXd& ret_J);
 
     /* *****************************************************************
      *                        Initialization
@@ -153,12 +153,11 @@ namespace scl
         CDynamicsBase *arg_dynamics);
 
     /** Has this actuator been initialized */
-    virtual sBool hasBeenInit()
-    {
-      if(NULL == msys_) {  return false; }
-      return data_.has_been_init_;
-    }
+    virtual sBool hasBeenInit();
 
+    /* *****************************************************************
+     *                        Constructors
+     * ***************************************************************** */
     /** Default constructor. Sets stuff to NULL. */
     CActuatorMuscle();
 
