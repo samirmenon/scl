@@ -126,7 +126,7 @@ endif()
 
 # Note : The DHD library is not open source so we can't use
 # the debugger.
-find_library( CDHD_LIBRARY NAMES dhd
+find_library( CDHD_LIBRARY NAMES drd
             PATHS   ${CHAI_INC_DIR}../DHD/lib/
             PATH_SUFFIXES ${DHD_LIB_TYPE} )
 
