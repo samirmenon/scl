@@ -28,17 +28,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
-
-#include <sstream>
-
-//Standard includes
-#include <iostream>
-#include <stdexcept>
-#include <cassert>
-
-//Eigen 3rd party lib
-#include <Eigen/Dense>
-
 //scl lib
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
@@ -49,9 +38,18 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/gc/CGcController.hpp>
 #include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/util/DatabaseUtils.hpp>
+#include <scl/dynamics/tao/tao/dynamics/taoDNode.h>
+
 #include <sutil/CSystemClock.hpp>
 
-#include <scl/dynamics/tao/tao/dynamics/taoDNode.h>
+//Eigen 3rd party lib
+#include <Eigen/Dense>
+
+//Standard includes
+#include <sstream>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
 
 #include <omp.h>
 #include <GL/freeglut.h>
