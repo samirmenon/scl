@@ -322,6 +322,27 @@ int main(int argc, char** argv)
         {
           robot_gc_ctrl.computeKinematics();
           robot_gc_ctrl.computeDynamics();
+          rob_mset.computeJacobian(rob_muscle_J);
+
+          // Compute svd to set up matrix sizes etc.
+          rob_svd.compute(rob_muscle_J, Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+          for(int i=0;i<rob_ds->dof_;++i)
+          {
+            if(rob_svd.singularValues()(i)>1e-6)
+            { rob_sing_val(i,i) = 1/rob_svd.singularValues()(i);  }
+            else
+            { rob_sing_val(i,i) = 0;  }
+          }
+          rob_muscle_Jpinv = rob_svd.matrixU() * rob_sing_val * rob_svd.matrixV().transpose();
+
+          rob_muscle_f = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
+
+          if(ctrl_ctr%5000 == 0)
+          { std::cout<<"\nFm {"<<rob_mset.getMuscleNameAtId(0)<<", "
+            <<rob_mset.getMuscleNameAtId(1)<<", "
+            <<rob_mset.getMuscleNameAtId(2)<<", "
+            <<rob_mset.getMuscleNameAtId(3)<<"} : "
+            <<rob_muscle_f.transpose(); }
         }
         robot_gc_ctrl.computeControlForces();
 
