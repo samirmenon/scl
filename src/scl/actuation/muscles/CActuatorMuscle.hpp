@@ -153,7 +153,7 @@ namespace scl
         CDynamicsBase *arg_dynamics);
 
     /** Has this actuator been initialized */
-    virtual sBool hasBeenInit();
+    virtual inline sBool hasBeenInit();
 
     /* *****************************************************************
      *                        Constructors

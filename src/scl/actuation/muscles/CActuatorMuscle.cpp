@@ -71,6 +71,8 @@ namespace scl
       { throw(std::runtime_error("Passed NULL robot io data struct")); }
       if(NULL==arg_msys)
       { throw(std::runtime_error("Passed NULL muscle spec data struct")); }
+      if(false==arg_msys->has_been_init_)
+      { throw(std::runtime_error("Passed unintialized muscle spec data struct")); }
       if(NULL==arg_dynamics)
       { throw(std::runtime_error("Passed NULL robot dynamics object")); }
 
@@ -171,11 +173,14 @@ namespace scl
   /** Has this actuator been initialized */
   sBool CActuatorMuscle::hasBeenInit()
   {
+#ifdef DEBUG
     if(NULL == robot_) {  data_.has_been_init_ = false; return false; }
     if(NULL == robot_io_ds_) {  data_.has_been_init_ = false; return false; }
     if(NULL == msys_) {  data_.has_been_init_ = false; return false; }
+    if(false == msys_->has_been_init_) {  data_.has_been_init_ = false; return false; }
     if(NULL == muscle_) {  data_.has_been_init_ = false; return false; }
     if(NULL == dynamics_) {  data_.has_been_init_ = false; return false; }
+#endif
 
     return data_.has_been_init_;
   }
@@ -188,7 +193,7 @@ namespace scl
    * Each actuator instance must implement this. */
   sBool CActuatorMuscle::computeJacobian(Eigen::VectorXd& ret_J)
   {//This function doesn't use std::exceptions (for speed).
-    if(false == data_.has_been_init_) { return data_.has_been_init_; }
+    if(false == hasBeenInit()) { return data_.has_been_init_; }
 
     //Compute the change in length at this point.
     bool flag = true;
