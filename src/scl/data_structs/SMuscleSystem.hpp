@@ -78,6 +78,7 @@ namespace scl
     /** The muscle points should be ordered
      * by position_on_muscle_ */
     std::vector<SMusclePoint> points_;
+
     /** Maximum force that this muscle can exert */
     sFloat max_isometric_force_;
 
