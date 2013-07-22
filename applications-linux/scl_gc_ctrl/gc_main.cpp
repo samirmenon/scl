@@ -194,10 +194,6 @@ int main(int argc, char** argv)
       { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
       /**********************Initialize Robot Dynamics and Controller*******************/
-      //NOTE TODO : Start using the CRobot helper class
-//      scl::CRobot robot;
-//      scl::Srobot robot_ds;
-
       scl::CTaoDynamics tao_dyn; //Use for model updates.
       flag = tao_dyn.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)); //Reads stuff from the database.
       if(false == flag) { throw(std::runtime_error("Could not initialize dynamics object"));  }
@@ -286,18 +282,12 @@ int main(int argc, char** argv)
         for(unsigned int i=0; i< gc_ctrl_ds->robot_->dof_;i++)
         { gc_ctrl_ds->des_q_(i) = 0.5*sin(sutil::CSystemClock::getSysTime());  }
 
-//        gc_ctrl_ds->des_q_ = gc_ctrl_ds->io_data_->sensors_.q_;
-
-//        char c;
-//        std::cin>>c;
-
         //Slower dynamics update.
         if(ctrl_ctr%50 == 0)
         {
           robot_gc_ctrl.computeKinematics();
           robot_gc_ctrl.computeDynamics();
         }
-//        robot_gc_ctrl.computeFloatForces();
         robot_gc_ctrl.computeControlForces();
 
         //Set the command torques for the simulator to the controller's computed torques
