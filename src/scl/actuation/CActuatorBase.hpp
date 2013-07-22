@@ -43,7 +43,7 @@ namespace scl
    * NOTE : Please don't be confused. This is an actuator "model", and
    *        as these flags make sense for a simulated actuator. It is
    *        "NOT" meant as an interface to a real actuator. */
-  class SActuatorBase : public SObject
+  class SActuatorSettings
   {
   public:
     sBool flag_apply_limits_force_;   //true
@@ -62,7 +62,7 @@ namespace scl
     Eigen::VectorXd limits_acc_;
 
     /** Constructor : Sets defaults */
-    SActuatorBase() :
+    SActuatorSettings() :
       flag_apply_limits_force_(true),
       flag_apply_limits_pos_(true),
       flag_apply_limits_vel_(true),
@@ -112,54 +112,52 @@ namespace scl
     /* *****************************************************************
      *                        Actuation Model
      * ***************************************************************** */
-    /** Sets the actuator's command */
-    virtual sBool setActuatorCommand(const Eigen::VectorXd& arg_input)=0;
+    /** Convenience function that combines an actuator's functions
+     *
+     * A typical implementation might split this function into three stages:
+     * {
+     *  bool flag=true;
+     *  flag = flag && setActuatorCommand(arg_input);
+     *  flag = flag && applyActuatorModel();
+     *  flag = flag && getActuatorOutput(ret_output_gc);
+     *  return flag;
+     * }
+     * */
+    virtual sBool actuate(const std::vector<sFloat>& arg_input,
+        Eigen::VectorXd& ret_output_gc_force) = 0;
 
-    /** Applies the actuator model to the current input commands */
-    virtual sBool applyActuatorModel()=0;
-
-    /** Gets the output of the actuator. Returned in the passed variable. */
-    virtual sBool getActuatorOutput(Eigen::VectorXd& ret_output)=0;
-
-    /** Convenience function that combines an actuator's functions */
-    virtual sBool actuate(const Eigen::VectorXd& arg_input,
-        Eigen::VectorXd& ret_output)
-    {
-      bool flag=true;
-      flag = flag && setActuatorCommand(arg_input);
-      flag = flag && applyActuatorModel();
-      flag = flag && getActuatorOutput(ret_output);
-      return flag;
-    }
+    /** Some actuator sets don't directly actuate the generalized coordinates
+     * and require a Jacobian to compute their contribution to the generalized
+     * forces.
+     *
+     * Each actuator instance must implement this. */
+    virtual sBool computeJacobian()=0;
 
     /* *****************************************************************
      *                        Actuator Properties
      * ***************************************************************** */
-    /** Does this actuator actuate the generalized coordinates? */
+    /** Does this actuator actuate the generalized coordinates?
+     * If so, the computeJacobian function is not used. */
     virtual sBool getActuatesGC()=0;
 
     /* *****************************************************************
      *                        Initialization
      * ***************************************************************** */
     /** All actutors must be initialized */
-    virtual sBool init(SActuatorBase* arg_state)=0;
+    virtual sBool init(SActuatorSettings* arg_state)=0;
 
     /** Has this actuator been initialized */
-    virtual sBool hasBeenInit()
-    {
-      if(S_NULL == state_) {  return false; }
-      return state_->has_been_init_;
-    }
+    virtual sBool hasBeenInit()=0;
 
     /** Default constructor. Sets stuff to NULL */
-    CActuatorBase() : state_(S_NULL) {}
+    CActuatorBase() : settings_(S_NULL) {}
 
     /** Default destructor. Frees memory */
     virtual ~CActuatorBase() {}
 
   protected:
     /** The subclass must set this during the initialization call. */
-    SActuatorBase* state_;
+    SActuatorSettings settings_;
   };
 
 } /* namespace scl */

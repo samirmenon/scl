@@ -92,8 +92,6 @@ namespace scl
     virtual ~CActuatorSetBase() {}
 
   protected:
-    /** A collection of actuators that a controller can send commands to */
-    sutil::CMappedPointerList<std::string, CActuatorBase, true> actuators_;
 
     /** Initialization state */
     sBool has_been_init_;
