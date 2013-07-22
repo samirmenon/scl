@@ -113,7 +113,7 @@ namespace scl
    * NOTE : This doesn't accommodate muscle via points that slide
    * across surfaces. While those are more biologically realistic,
    * they involve solving a shortest path formulation over a curved
-   * surface (Brachistocrone problem). The sliding point might
+   * surface (the Brachistochrone problem). The sliding point might
    * be better for large motions across complex joint complexes. */
   class CActuatorMuscle
   {
