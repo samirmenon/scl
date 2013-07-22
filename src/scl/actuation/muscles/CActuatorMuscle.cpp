@@ -40,6 +40,7 @@ namespace scl
   SActuatorMuscle::SViaPointSet::SViaPointSet() :
     parent_link_0_(""), parent_link_1_(""),
     dynamics_link_id_0_(NULL), dynamics_link_id_1_(NULL),
+    is_root_0_(false),is_root_1_(false),
     child_link_id_(-1)
   {}
 
@@ -132,7 +133,7 @@ namespace scl
         {// This set of via points contributes to muscle length changes. Use it.
           SActuatorMuscle::SViaPointSet* pt_set = data_.via_point_set_.create(i);
           if(NULL == pt_set)
-          { throw(std::runtime_error("Could not find create via point in the mapped list")); }
+          { throw(std::runtime_error("Could not find created via point in the mapped list")); }
 
           // Set the parent links
           pt_set->parent_link_0_ = tmp_pt_0.parent_link_;
@@ -141,6 +142,19 @@ namespace scl
           pt_set->position_in_parent_0_ = tmp_pt_0.point_;
           pt_set->position_in_parent_1_ = tmp_pt_1.point_;
 
+          // For root links, the via point positions are constant
+          if(tmp_rb_0->is_root_){
+            pt_set->is_root_0_ = true;
+            pt_set->x_glob_0_ = pt_set->position_in_parent_0_+tmp_rb_0->pos_in_parent_;
+            pt_set->dx_glob_0_.setZero();
+          }
+          if(tmp_rb_1->is_root_){
+            pt_set->is_root_1_ = true;
+            pt_set->x_glob_1_ = pt_set->position_in_parent_1_+tmp_rb_1->pos_in_parent_;
+            pt_set->dx_glob_1_.setZero();
+          }
+
+          //NOTE : These return NULL for root nodes. Need special code to handle that.
           pt_set->dynamics_link_id_0_ = dynamics_->getIdForLink(tmp_pt_0.parent_link_);
           pt_set->dynamics_link_id_1_ = dynamics_->getIdForLink(tmp_pt_1.parent_link_);
 
@@ -197,6 +211,7 @@ namespace scl
 
     //Compute the change in length at this point.
     bool flag = true;
+    Eigen::Affine3d T;
 
     //Zero the Jacobian. And get the latest gc configuration.
     ret_J.Zero(robot_->dof_);
@@ -211,25 +226,29 @@ namespace scl
       //1.a: Set up vars to find position of the via points
       // NOTE TODO : This is inefficient. Shouldn't require this. Improve dynamics engine
       // to use direct vectors without re-doing all this.
-      Eigen::Affine3d T;
 
-      //1.b.0: Compute point offset in global coords
-      flag = dynamics_->calculateTransformationMatrix(tmp_pt_set.dynamics_link_id_0_,T);
-      tmp_pt_set.x_glob_0_ = T * tmp_pt_set.position_in_parent_0_;
+      // The root never moves. x_glob_0_ is constant (computed at init) and J = all zeros.
+      if(false == tmp_pt_set.is_root_0_){
+        //1.b.0: Compute point offset in global coords
+        flag = dynamics_->calculateTransformationMatrix(tmp_pt_set.dynamics_link_id_0_,T);
+        tmp_pt_set.x_glob_0_ = T * tmp_pt_set.position_in_parent_0_;
 
-      //1.b.1: Compute point offset in global coords
-      flag = flag && dynamics_->calculateTransformationMatrix(tmp_pt_set.dynamics_link_id_1_,T);
-      tmp_pt_set.x_glob_1_ = T * tmp_pt_set.position_in_parent_1_;
+        //1.c.0: Compute Jacobians at the via points.
+        flag = flag && dynamics_->calculateJacobian(tmp_pt_set.dynamics_link_id_0_, tmp_pt_set.x_glob_0_, tmp_pt_set.J_0_);
+        //Use the position jacobian only. This is a point task.
+        tmp_pt_set.J_0_ = tmp_pt_set.J_0_.block(0,0,3,robot_->dof_);
+      }
 
-      //1.c.0: Compute Jacobians at the via points.
-      flag = flag && dynamics_->calculateJacobian(tmp_pt_set.dynamics_link_id_0_, tmp_pt_set.x_glob_0_, tmp_pt_set.J_0_);
-      //Use the position jacobian only. This is a point task.
-      tmp_pt_set.J_0_ = tmp_pt_set.J_0_.block(0,0,3,robot_->dof_);
+      if(false == tmp_pt_set.is_root_1_){
+        //1.b.1: Compute point offset in global coords
+        flag = flag && dynamics_->calculateTransformationMatrix(tmp_pt_set.dynamics_link_id_1_,T);
+        tmp_pt_set.x_glob_1_ = T * tmp_pt_set.position_in_parent_1_;
 
-      //1.c.1: Compute Jacobians at the via points.
-      flag = flag && dynamics_->calculateJacobian(tmp_pt_set.dynamics_link_id_1_, tmp_pt_set.x_glob_1_, tmp_pt_set.J_1_);
-      //Use the position jacobian only. This is a point task.
-      tmp_pt_set.J_1_ = tmp_pt_set.J_1_.block(0,0,3,robot_->dof_);
+        //1.c.1: Compute Jacobians at the via points.
+        flag = flag && dynamics_->calculateJacobian(tmp_pt_set.dynamics_link_id_1_, tmp_pt_set.x_glob_1_, tmp_pt_set.J_1_);
+        //Use the position jacobian only. This is a point task.
+        tmp_pt_set.J_1_ = tmp_pt_set.J_1_.block(0,0,3,robot_->dof_);
+      }
 
       if(false == flag){  return false; }
 
@@ -242,8 +261,10 @@ namespace scl
         double grad_gc;
 
         //2.a: Compute the instantaneous velocity due to the gc
-        tmp_pt_set.dx_glob_0_ = tmp_pt_set.J_0_.col(jcol) * data_.dq_curr_(jcol);
-        tmp_pt_set.dx_glob_1_ = tmp_pt_set.J_1_.col(jcol) * data_.dq_curr_(jcol);
+        if(false == tmp_pt_set.is_root_0_)
+        { tmp_pt_set.dx_glob_0_ = tmp_pt_set.J_0_.col(jcol) * data_.dq_curr_(jcol); }
+        if(false == tmp_pt_set.is_root_1_)
+        { tmp_pt_set.dx_glob_1_ = tmp_pt_set.J_1_.col(jcol) * data_.dq_curr_(jcol); }
 
         grad_gc = (tmp_pt_set.x_glob_1_+tmp_pt_set.dx_glob_1_-
                       tmp_pt_set.x_glob_0_-tmp_pt_set.dx_glob_0_).norm()

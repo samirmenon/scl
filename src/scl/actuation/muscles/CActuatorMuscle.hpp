@@ -73,6 +73,9 @@ namespace scl
        * gc columns are relevant while computing the muscle Jacobian. */
       const void* dynamics_link_id_0_, *dynamics_link_id_1_;
 
+      /** Is one of the links root. */
+      bool is_root_0_, is_root_1_;
+
       /** Child link in branching representation = {0,1} */
       int child_link_id_;
 
@@ -139,6 +142,12 @@ namespace scl
          * NOTE : The Jacobian is a row vector with non-zero entries only
          * at the spanned generalized coordinates*/
         Eigen::VectorXd& ret_J);
+
+    /* *****************************************************************
+     *                           Accessors
+     * ***************************************************************** */
+    std::string getName() const
+    { return data_.name_; }
 
     /* *****************************************************************
      *                        Initialization
