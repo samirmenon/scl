@@ -20,11 +20,11 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file gc_main.cpp
+/* \file muscle_gc_main.cpp
  *
- *  Created on: Nov 22, 2010
+ *  Created on: Jul 22, 2013
  *
- *  Copyright (C) 2010
+ *  Copyright (C) 2013
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
