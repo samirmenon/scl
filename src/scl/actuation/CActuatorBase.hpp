@@ -150,7 +150,7 @@ namespace scl
     virtual sBool hasBeenInit()=0;
 
     /** Default constructor. Sets stuff to NULL */
-    CActuatorBase() : settings_(S_NULL) {}
+    CActuatorBase() {}
 
     /** Default destructor. Frees memory */
     virtual ~CActuatorBase() {}
