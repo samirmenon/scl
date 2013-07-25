@@ -273,11 +273,12 @@ int main(int argc, char** argv)
               rob_muscle_f = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
 
               if(ctrl_ctr%5000 == 0)
-              { std::cout<<"\nFm {"<<rob_mset.getMuscleNameAtId(0)<<", "
-                <<rob_mset.getMuscleNameAtId(1)<<", "
-                <<rob_mset.getMuscleNameAtId(2)<<", "
-                <<rob_mset.getMuscleNameAtId(3)<<"} : "
-                <<rob_muscle_f.transpose(); }
+              {
+                std::cout<<"\nFm {";
+                for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
+                { std::cout<<rob_mset.getMuscleNameAtId(j)<<", "; }
+                std::cout<<"} : "<<rob_muscle_f.transpose();
+              }
             }
             robot_gc_ctrl.computeControlForces();
 
@@ -338,11 +339,12 @@ int main(int argc, char** argv)
           rob_muscle_f = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
 
           if(ctrl_ctr%5000 == 0)
-          { std::cout<<"\nFm {"<<rob_mset.getMuscleNameAtId(0)<<", "
-            <<rob_mset.getMuscleNameAtId(1)<<", "
-            <<rob_mset.getMuscleNameAtId(2)<<", "
-            <<rob_mset.getMuscleNameAtId(3)<<"} : "
-            <<rob_muscle_f.transpose(); }
+          {
+            std::cout<<"\nFm {";
+            for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
+            { std::cout<<rob_mset.getMuscleNameAtId(j)<<", "; }
+            std::cout<<"} : "<<rob_muscle_f.transpose();
+          }
         }
         robot_gc_ctrl.computeControlForces();
 
