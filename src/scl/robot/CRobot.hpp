@@ -195,19 +195,19 @@ namespace scl
     {  data_.io_data_->actuators_.force_gc_commanded_ = arg_f; }
 
     void setGeneralizedCoordinatesToZero()
-    {  data_.io_data_->sensors_.q_.Zero(data_.parsed_robot_data_->dof_); }
+    {  data_.io_data_->sensors_.q_.setZero(data_.parsed_robot_data_->dof_); }
 
     void setGeneralizedVelocitiesToZero()
-    {  data_.io_data_->sensors_.dq_.Zero(data_.parsed_robot_data_->dof_); }
+    {  data_.io_data_->sensors_.dq_.setZero(data_.parsed_robot_data_->dof_); }
 
     void setGeneralizedAccelerationsToZero()
-    {  data_.io_data_->sensors_.ddq_.Zero(data_.parsed_robot_data_->dof_); }
+    {  data_.io_data_->sensors_.ddq_.setZero(data_.parsed_robot_data_->dof_); }
 
     void setGeneralizedForcesMeasuredToZero()
-    {  data_.io_data_->sensors_.force_gc_measured_.Zero(data_.parsed_robot_data_->dof_); }
+    {  data_.io_data_->sensors_.force_gc_measured_.setZero(data_.parsed_robot_data_->dof_); }
 
     void setGeneralizedForcesCommandedToZero()
-    {  data_.io_data_->actuators_.force_gc_commanded_.Zero(data_.parsed_robot_data_->dof_); }
+    {  data_.io_data_->actuators_.force_gc_commanded_.setZero(data_.parsed_robot_data_->dof_); }
 
     // **********************************************************************
     //                       Controller helper functions
