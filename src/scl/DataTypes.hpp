@@ -34,6 +34,15 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 
+// Check GCC
+#if __GNUC__
+#if __x86_64__ || __ppc64__
+#define SCL_64_BIT
+#else
+#define SCL_32_BIT
+#endif
+#endif
+
 namespace scl
 {
   ///////////////////////////////////////////////////////////////
