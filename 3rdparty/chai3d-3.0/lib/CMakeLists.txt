@@ -239,7 +239,7 @@ SET(GR_LIBS_ALL_SRC ${GIF_SRC} ${3DS_SRC} ${JPEG_SRC} ${PNG_SRC})
 
 ######################END OF SRC DEFS##############
 
-ADD_DEFINITIONS(-D_LINUX -DLINUX -DdDOUBLE)
+ADD_DEFINITIONS(-DLINUX -DdDOUBLE)
 ADD_DEFINITIONS(-lpthread -lrt -lpci -lz -lusb-1.0
 				-lGL -lGLU -lGLEW -lglut -fPIC)
 
