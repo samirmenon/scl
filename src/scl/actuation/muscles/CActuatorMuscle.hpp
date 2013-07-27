@@ -89,7 +89,7 @@ namespace scl
     };
 
     /** The set of generalized coordinates spanned by this muscle */
-    sutil::CMappedList<unsigned long,SViaPointSet> via_point_set_;
+    sutil::CMappedList<sUInt,SViaPointSet> via_point_set_;
 
     /** The generalized coordinate values */
     Eigen::VectorXd q_curr_, dq_curr_;

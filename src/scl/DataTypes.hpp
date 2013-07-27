@@ -52,8 +52,12 @@ namespace scl
   typedef bool sBool;
   /** Standard char */
   typedef char sChar;
+#ifdef SCL_64_BIT
   /** Standard unsigned int */
   typedef unsigned int sUInt;
+#else
+  typedef unsigned long sUInt;
+#endif
   /** Standard int (4-byte) */
   typedef int sInt;
   /** Standard longlong */
