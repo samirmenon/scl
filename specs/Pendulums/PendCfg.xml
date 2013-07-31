@@ -344,11 +344,22 @@
     </graphics>
 
 
-    <controller name="PendGcCtrl">
+    <controller name="96gc">
         <type>gc</type>
         <must_use_robot>Pend96</must_use_robot>
         <kp>100</kp>
-        <kv>10</kv>
+        <kv>15</kv>
+        <ki>0</ki>
+        <force_max>100</force_max>
+        <force_min>-100</force_min>
+    </controller>
+    
+
+    <controller name="6gc">
+        <type>gc</type>
+        <must_use_robot>Pend6</must_use_robot>
+        <kp>100</kp>
+        <kv>15</kv>
         <ki>0</ki>
         <force_max>10</force_max>
         <force_min>-10</force_min>

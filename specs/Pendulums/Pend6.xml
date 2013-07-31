@@ -6,13 +6,13 @@
       <mass>1.0</mass>
       <inertia>1.0  1.0  1.0</inertia>
       <center_of_mass>0  0  0</center_of_mass>
-      <position_in_parent>0  0  0</position_in_parent>
+      <position_in_parent>0  0  1</position_in_parent>
       <orientation_in_parent>0  0  0  1</orientation_in_parent>
       <joint_name>shoulder-yaw</joint_name>
       <parent_link_name>ground</parent_link_name>
       <joint_limits>-3.14159 3.14159</joint_limits>
       <default_joint_position>0</default_joint_position>
-      <joint_type>rz</joint_type>
+      <joint_type>ry</joint_type>
       <graphics>
         <sphere>
           <radius>0.05</radius>
@@ -90,7 +90,7 @@
       <mass>1.0</mass>
       <inertia>1.0  1.0  1.0</inertia>
       <center_of_mass>0  0  0</center_of_mass>
-      <position_in_parent>0  0  0</position_in_parent>
+      <position_in_parent>0  0.2  0</position_in_parent>
       <orientation_in_parent>-0.707107  -0  -0  0.707107</orientation_in_parent>
       <joint_name>wrist-pitch</joint_name>
       <parent_link_name>wrist-hand</parent_link_name>
@@ -111,7 +111,7 @@
       <mass>1.0</mass>
       <inertia>1.0  1.0  1.0</inertia>
       <center_of_mass>0  0  0.032</center_of_mass>
-      <position_in_parent>0  0  0</position_in_parent>
+      <position_in_parent>0.1  0  0.1</position_in_parent>
       <orientation_in_parent>0.707107  0  0  0.707107</orientation_in_parent>
       <joint_name>wrist-roll2</joint_name>
       <parent_link_name>wrist-finger</parent_link_name>
