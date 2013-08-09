@@ -260,12 +260,12 @@ int cHapticDeviceHandler::getDevice(cGenericHapticDevice*& a_hapticDevice,
     if (a_index < m_numDevices)
     {
         a_hapticDevice = m_devices[a_index];
-        return (C_SUCCESS);
+        return 0;
     }
     else
     {
         a_hapticDevice = m_nullHapticDevice;
-        return (C_ERROR);
+        return -1;
     }
 }
 
