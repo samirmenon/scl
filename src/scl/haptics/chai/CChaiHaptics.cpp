@@ -51,6 +51,7 @@ namespace scl
 
   scl::sInt CChaiHaptics::connectToDevices()
   {
+    bool flag;
     try
     {
       // Create a haptic device handler :
@@ -84,8 +85,8 @@ namespace scl
         { std::cout << "\nRegistered haptic device: "<< i << std::flush; }
 
         // 2. Open a connection to the haptic device.
-        tmp = tmp_haptic_device->open();
-        if (0 != tmp)
+        flag = tmp_haptic_device->open();
+        if (false == flag)
         {
           std::stringstream ss; ss<<"Could not connect to haptic device: "<<i;
           throw(std::runtime_error(ss.str()));
