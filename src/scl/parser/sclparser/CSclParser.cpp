@@ -1163,6 +1163,28 @@ bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
       else
       { throw(std::runtime_error("No kv information."));  }
 
+      cr_data = _cr_handle.FirstChildElement("ka").Element();
+      if ( cr_data )
+      {
+        unsigned int sz=0;
+        //Count how many numbers the string has
+        const char* ss = cr_data->FirstChild()->Value();
+        if(ss==NULL)
+        { throw(std::runtime_error("No ka information."));  }
+
+        sz = scl_util::countNumbersInString(ss);
+        if(0==sz)
+        { throw(std::runtime_error("No ka information."));  }
+
+        //Now save them to the ka vector
+        arg_ctrl.ka_.setZero(sz);
+        std::stringstream sstr(cr_data->FirstChild()->Value());
+        for(unsigned int i=0;i<sz;i++)
+        { sstr>>arg_ctrl.ka_(i);  }
+      }
+      else
+      { throw(std::runtime_error("No ka information."));  }
+
       cr_data = _cr_handle.FirstChildElement("ki").Element();
       if ( cr_data )
       {
@@ -1183,7 +1205,7 @@ bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
         { sstr>>arg_ctrl.ki_(i);  }
       }
       else
-      { throw(std::runtime_error("No ki information."));  }
+      { std::cerr<<"\nCSclParser::readGcControllerFromFile() : WARNING : No ki information. Setting to zero."; }
 
       cr_data = _cr_handle.FirstChildElement("force_max").Element();
       if ( cr_data )
@@ -1232,7 +1254,7 @@ bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCSclParser::readGcControllerFromFile() :"<<e.what();
+    std::cerr<<"\nCSclParser::readGcControllerFromFile() : "<<e.what();
     return false;
   }
   return true; //Success.
@@ -1397,6 +1419,28 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         else
         { throw(std::runtime_error("No kv information."));  }
 
+        cr_data = _task_handle.FirstChildElement("ka").Element();
+        if ( cr_data )
+        {
+          unsigned int sz=0;
+          //Count how many numbers the string has
+          const char* ss = cr_data->FirstChild()->Value();
+          if(ss==NULL)
+          { throw(std::runtime_error("No ka information."));  }
+
+          sz = scl_util::countNumbersInString(ss);
+          if(0==sz)
+          { throw(std::runtime_error("No ka information."));  }
+
+          //Now save them to the ka vector
+          tmp_task.ka_.setZero(sz);
+          std::stringstream sstr(cr_data->FirstChild()->Value());
+          for(unsigned int i=0;i<sz;i++)
+          { sstr>>tmp_task.ka_(i);  }
+        }
+        else
+        { throw(std::runtime_error("No ka information."));  }
+
         cr_data = _task_handle.FirstChildElement("ki").Element();
         if ( cr_data )
         {
@@ -1417,7 +1461,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
           { sstr>>tmp_task.ki_(i);  }
         }
         else
-        { throw(std::runtime_error("No ki information."));  }
+        { std::cerr<<"\nCSclParser::readTaskControllerFromFile() : WARNING : No ki information. Setting to zero."; }
 
         cr_data = _task_handle.FirstChildElement("force_max").Element();
         if ( cr_data )
@@ -1482,6 +1526,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
               strcmp(tiElem_task_options->Value(),"task_dof")==0 ||
               strcmp(tiElem_task_options->Value(),"kp")==0 ||
               strcmp(tiElem_task_options->Value(),"kv")==0 ||
+              strcmp(tiElem_task_options->Value(),"ka")==0 ||
               strcmp(tiElem_task_options->Value(),"ki")==0 ||
               strcmp(tiElem_task_options->Value(),"force_max")==0 ||
               strcmp(tiElem_task_options->Value(),"force_min")==0)
