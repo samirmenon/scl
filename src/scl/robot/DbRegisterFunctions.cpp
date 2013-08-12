@@ -299,7 +299,7 @@ namespace scl_registry
       //Now initialize the robot-specific parts.
       flag = ret_ctrl->init(arg_ctrl_name,db->s_parser_.robots_.at(arg_robot_name),
           db->s_io_.io_data_.at(arg_robot_name),
-          tmp_ctrl.kp_,tmp_ctrl.kv_,tmp_ctrl.ki_,
+          tmp_ctrl.kp_,tmp_ctrl.kv_,tmp_ctrl.ka_,tmp_ctrl.ki_,
           tmp_ctrl.force_gc_max_,tmp_ctrl.force_gc_min_);
       if(false == flag)
       { throw (std::runtime_error("Could not initialize the controller's data structure."));  }
