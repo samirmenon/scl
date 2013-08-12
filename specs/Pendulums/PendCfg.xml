@@ -349,7 +349,7 @@
         <must_use_robot>Pend96</must_use_robot>
         <kp>100</kp>
         <kv>15</kv>
-        <ki>0</ki>
+        <ka>0</ka>
         <force_max>100</force_max>
         <force_min>-100</force_min>
     </controller>
@@ -360,7 +360,7 @@
         <must_use_robot>Pend6</must_use_robot>
         <kp>100</kp>
         <kv>15</kv>
-        <ki>0</ki>
+        <ka>0</ka>
         <force_max>10</force_max>
         <force_min>-10</force_min>
     </controller>

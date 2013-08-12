@@ -62,7 +62,7 @@
         <must_use_robot>rppbot</must_use_robot>
         <kp>100</kp>
         <kv>10</kv>
-        <ki>0</ki>
+        <ka>0</ka>
         <force_max>10</force_max>
         <force_min>-10</force_min>
     </controller>
@@ -79,7 +79,7 @@
             <task_dof>3</task_dof>
             <kp>10</kp>
             <kv>4</kv>
-            <ki>0</ki>
+            <ka>0</ka>
             <force_max>100</force_max>
             <force_min>-100</force_min>
         </task>
@@ -91,7 +91,7 @@
             <task_dof>0</task_dof> 
             <kp>0</kp>
             <kv>4</kv>
-            <ki>0</ki>
+            <ka>0</ka>
             <force_max>100</force_max>
             <force_min>-100</force_min>
         </task>

@@ -46,7 +46,7 @@
         <must_use_robot>Stanbot</must_use_robot>
         <kp>1600</kp>
         <kv>50</kv>
-        <ki>0</ki>
+        <ka>0</ka>
         <force_max>1000</force_max>
         <force_min>-1000</force_min>
     </controller>
@@ -62,7 +62,7 @@
             <task_dof>3</task_dof>
             <kp>100</kp>
             <kv>20</kv>
-            <ki>0</ki>
+            <ka>0</ka>
             <force_max>1000</force_max>
             <force_min>-1000</force_min>
         </task>
@@ -75,7 +75,7 @@
             <task_dof>3</task_dof>
             <kp>100</kp>
             <kv>20</kv>
-            <ki>0</ki>
+            <ka>0</ka>
             <force_max>1000</force_max>
             <force_min>-1000</force_min>
         </task>
@@ -86,7 +86,7 @@
             <task_dof>3</task_dof>
             <kp>100</kp>
             <kv>20</kv>
-            <ki>0</ki>
+            <ka>0</ka>
             <force_max>10000</force_max>
             <force_min>-10000</force_min>
         </task> -->
@@ -97,7 +97,7 @@
             <task_dof>0</task_dof> 
             <kp>100</kp>
             <kv>20</kv>
-            <ki>0</ki>
+            <ka>0</ka>
             <force_max>10000</force_max>
             <force_min>-10000</force_min>
         </task>
@@ -109,7 +109,7 @@
             <task_dof>0</task_dof> 
             <kp>0</kp>
             <kv>20</kv>
-            <ki>0</ki>
+            <ka>0</ka>
             <force_max>10000</force_max>
             <force_min>-10000</force_min>
         </task>-->
