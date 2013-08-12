@@ -64,7 +64,7 @@ namespace scl
     /** The destructor does nothing */
     virtual ~CGcController();
 
-    /** Computes generalized coordinate forces. Uses position,
+    /** [PDA] : Computes generalized coordinate forces. Uses position,
      * velocity and acceleration set points and gains.
      *
      * Does not use integral gain by default. To get an integral
@@ -107,11 +107,11 @@ namespace scl
     /* ******************************************************************
      *                   Additional control functions
      * ****************************************************************** */
-    /** Generic PD controller
-     * Dynamic decoupling + PD controller on decoupled closed loop system.
+    /** [PD] : Dynamic decoupling + PD controller on decoupled closed
+     *         loop system in the generalized coordinates.
      *
      * Does not include acceleration set points or integral gain. */
-    sBool computePDControlForces();
+    sBool computeControlForcesPD();
 
     /** Controller that only compensates for gravity:
      * Gravity compensation + damping */

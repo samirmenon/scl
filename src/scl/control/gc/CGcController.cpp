@@ -75,7 +75,7 @@ namespace scl
     return true;
   }
 
-  sBool CGcController::computePDControlForces()
+  sBool CGcController::computeControlForcesPD()
   {
     //Compute the servo generalized forces :
     //F_gc_star = M(q) (-kp(q-q_des)-kv(dq/dt)) + b(q,dq/dt) + g(q)
