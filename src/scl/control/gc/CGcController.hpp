@@ -41,27 +41,34 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-  /**
-   * A generic generalized coordinate space force controller.
-   * Much simpler than the task space controller.
+  /** A generic generalized coordinate space force controller.
+   *
+   * Requires set points for position and velocity. Optionally,
+   * can also use acceleration set points and can introduce integral
+   * gain.
+   *
+   * This controller's advantage is its simplicity. It's disadvantage
+   * is that it is usually hard trajectories in the generalized coordinates.
+   * Moreover, for redundant robots, such trajectories are energy sub-optimal
+   * and require controlling motor task null spaces, which may be superfluous.
    */
   class CGcController : public scl::CControllerBase
   {
   public:
-    /********************************
-     * GcController specific functions
-     *********************************/
-
-    /********************************
-     * CControllerBase API
-     *********************************/
+    /* ******************************************************************
+     *                        CControllerBase API
+     * ****************************************************************** */
     /** The constructor does nothing */
     CGcController();
 
     /** The destructor does nothing */
     virtual ~CGcController();
 
-    /** Computes generalized coordinate forces */
+    /** Computes generalized coordinate forces. Uses position,
+     * velocity and acceleration set points and gains.
+     *
+     * Does not use integral gain by default. To get an integral
+     * gain controller look at computeControlForcesPIDA() */
     virtual sBool computeControlForces();
 
     /** Computes the kinematic model : Jacobian
@@ -97,10 +104,13 @@ namespace scl
     /** Whether the controller has been attached to a robot or not */
     virtual sBool hasBeenInit() { return has_been_init_;  }
 
-    // Additional control functions:
-
+    /* ******************************************************************
+     *                   Additional control functions
+     * ****************************************************************** */
     /** Generic PD controller
-     * Dynamic decoupling + PD controller on decoupled closed loop system */
+     * Dynamic decoupling + PD controller on decoupled closed loop system.
+     *
+     * Does not include acceleration set points or integral gain. */
     sBool computePDControlForces();
 
     /** Controller that only compensates for gravity:

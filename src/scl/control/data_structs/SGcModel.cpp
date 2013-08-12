@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-  SGcModel::SGcModel()
+  SGcModel::SGcModel() : mass_(-1)
   { }
 
   sBool SGcModel::init(const sUInt arg_robot_dof)

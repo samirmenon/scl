@@ -58,9 +58,12 @@ namespace scl
     tmp2 = (data_->des_dq_ - data_->io_data_->sensors_.dq_);
     tmp2 = data_->kv_.array() * tmp2.array();
 
+    tmp3 = (data_->des_ddq_ - data_->io_data_->sensors_.ddq_);
+    tmp3 = data_->ka_.array() * tmp3.array();
+
     //Obtain force to be applied to a unit mass floating about
     //in space (ie. A dynamically decoupled mass).
-    tmp3 = data_->des_ddq_ + tmp2 + tmp1;
+    tmp3 += tmp2 + tmp1;
 
     //Apply Task's Force Limits
     tmp3 = tmp3.array().min(data_->force_gc_max_.array()); // Remain below the upper bound.

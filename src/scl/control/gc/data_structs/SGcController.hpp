@@ -71,7 +71,7 @@ namespace scl
      * Computed by : None. These are constants.
      * Used by     : The GcController to calculate gc forces
      */
-    Eigen::VectorXd kp_, kv_, ki_;
+    Eigen::VectorXd kp_, kv_, ka_, ki_;
 
     SGcController();
 
@@ -81,6 +81,7 @@ namespace scl
         /* The remaining variables initialize the gc controller */
         const Eigen::VectorXd & arg_kp,
         const Eigen::VectorXd & arg_kv,
+        const Eigen::VectorXd & arg_ka,
         const Eigen::VectorXd & arg_ki,
         const Eigen::VectorXd & arg_fgc_max,
         const Eigen::VectorXd & arg_fgc_min );

@@ -67,7 +67,10 @@ namespace scl
    * The function must then return true
    *
    * NOTE TODO : ^^^ Why in the world wouldn't we set the func to 0
-   * then
+   * then?
+   * Ans : For now, this makes parsing simple. The parser just stores
+   * a set of data related to the task without any specific knowledge
+   * of a subtask.
    */
   class STaskBase : public SObject
   {

@@ -51,6 +51,7 @@ namespace scl
       /* The remaining variables initialize the gc controller */
       const Eigen::VectorXd & arg_kp,
       const Eigen::VectorXd & arg_kv,
+      const Eigen::VectorXd & arg_ka,
       const Eigen::VectorXd & arg_ki,
       const Eigen::VectorXd & arg_fgc_max,
       const Eigen::VectorXd & arg_fgc_min )
@@ -70,6 +71,9 @@ namespace scl
       if((1!=arg_kv.size()) && (dof!=(sUInt)arg_kv.size()))
       { throw(std::runtime_error("Velocity gain vector (kv) size should be 1 or robot-dof")); }
 
+      if((1!=arg_ka.size()) && (dof!=(sUInt)arg_ka.size()))
+      { throw(std::runtime_error("Acceleration gain vector (ka) size should be 1 or robot-dof")); }
+
       if((1!=arg_ki.size()) && (dof!=(sUInt)arg_ki.size()))
       { throw(std::runtime_error("Integral gain vector (ki) size should be 1 or robot-dof")); }
 
@@ -86,6 +90,10 @@ namespace scl
       if(1==arg_kv.size())
       {kv_.setConstant(dof,arg_kv(0));}
       else{ kv_ = arg_kv;  }
+
+      if(1==arg_ka.size())
+      {ka_.setConstant(dof,arg_ka(0));}
+      else{ ka_ = arg_ka;  }
 
       if(1==arg_ki.size())
       {ki_.setConstant(dof,arg_ki(0));}
