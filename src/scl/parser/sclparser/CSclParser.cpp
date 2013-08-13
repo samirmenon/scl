@@ -1670,7 +1670,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCSclParser::readTaskControllerFromFile() : "<<e.what();
+    std::cerr<<"\nCSclParser::readTaskControllerFromFile() : Error : "<<e.what();
     return false;
   }
   return true; //Success.
