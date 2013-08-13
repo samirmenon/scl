@@ -415,12 +415,12 @@ namespace scl_test
     t = (t - static_cast<int>(t))/2.0;//Between 0 and 0.1
 
     db->s_gui_.ui_point_[0](0) = t; //Keep the robot moving
-    tsk->setGoal(db->s_gui_.ui_point_[0]); //Interact with the gui
+    tsk->setGoalPos(db->s_gui_.ui_point_[0]); //Interact with the gui
 
     if(op_link2_set)//Use only if the second task was also initialized.
     {
       db->s_gui_.ui_point_[1](0) = -t; //Keep the robot moving
-      tsk2->setGoal(db->s_gui_.ui_point_[1]);
+      tsk2->setGoalPos(db->s_gui_.ui_point_[1]);
     }
 
     if(ctrl_ctr%100 == 0)           //Update dynamics at a slower rate
@@ -440,12 +440,12 @@ namespace scl_test
     t = (t - static_cast<int>(t))/2.0;//Between 0 and 0.1
 
     db->s_gui_.ui_point_[0](0) = t; //Keep the robot moving
-    tsk->setGoal(db->s_gui_.ui_point_[0]); //Interact with the gui
+    tsk->setGoalPos(db->s_gui_.ui_point_[0]); //Interact with the gui
 
     if(op_link2_set)//Use only if the second task was also initialized.
     {
       db->s_gui_.ui_point_[1](0) = -t; //Keep the robot moving
-      tsk2->setGoal(db->s_gui_.ui_point_[1]);
+      tsk2->setGoalPos(db->s_gui_.ui_point_[1]);
     }
 
     double tinit = sutil::CSystemClock::getSysTime();

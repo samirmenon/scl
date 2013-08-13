@@ -89,8 +89,8 @@ namespace scl_app
       assert(op_link_set[i]);
       assert(op_link2_set[i]);
 
-      tsk[i]->setGoal(db->s_gui_.ui_point_[2*i+0]); //Interact with the gui
-      tsk2[i]->setGoal(db->s_gui_.ui_point_[2*i+1]);
+      tsk[i]->setGoalPos(db->s_gui_.ui_point_[2*i+0]); //Interact with the gui
+      tsk2[i]->setGoalPos(db->s_gui_.ui_point_[2*i+1]);
 
       if(ctrl_ctr%5 == 0)           //Update dynamics at a slower rate
       { robot[i].computeDynamics();  }

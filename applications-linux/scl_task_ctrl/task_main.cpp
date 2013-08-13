@@ -83,10 +83,10 @@ namespace scl_app
   {
     sutil::CSystemClock::tick(db->sim_dt_);//Tick the clock.
 
-    tsk->setGoal(db->s_gui_.ui_point_[0]); //Interact with the gui
+    tsk->setGoalPos(db->s_gui_.ui_point_[0]); //Interact with the gui
 
     if(op_link2_set)//Use only if the second task was also initialized.
-    { tsk2->setGoal(db->s_gui_.ui_point_[1]); }
+    { tsk2->setGoalPos(db->s_gui_.ui_point_[1]); }
 
     if(ctrl_ctr%100 == 0)           //Update dynamics at a slower rate
     { robot.computeDynamics();  }

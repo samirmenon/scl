@@ -236,10 +236,10 @@ namespace scl_app
     //Update the operational point tasks (if any)
     std::vector<SOpPointUiLinkData>::iterator it,ite;
     for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
-    { it->task_->setGoal(db_->s_gui_.ui_point_[it->ui_pt_]); } //Set the goal position.
+    { it->task_->setGoalPos(db_->s_gui_.ui_point_[it->ui_pt_]); } //Set the goal position.
 
     if(has_been_init_com_task_) //Update the com task (if any)
-    { task_com_->setGoal(db_->s_gui_.ui_point_[ui_pt_com_]); }
+    { task_com_->setGoalPos(db_->s_gui_.ui_point_[ui_pt_com_]); }
 
     if(ctrl_ctr_%5 == 0)           //Update dynamics at a slower rate
     {
