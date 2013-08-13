@@ -1268,8 +1268,8 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
       std::string &arg_must_use_robot,
       scl::STaskController& arg_ctrl,
-      std::vector<STaskBase> &arg_taskvec,
-      std::vector<SNonControlTaskBase> &arg_task_non_ctrl_vec)
+      std::vector<STaskBase*> &arg_taskvec,
+      std::vector<SNonControlTaskBase*> &arg_task_non_ctrl_vec)
 {
   bool flag;
   try
@@ -1346,9 +1346,9 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
          *  These are contained in the STaskBase data
          *  structure
          *  *********************************************/
-        STaskBase tmp_task;
+        STaskBase* tmp_task = new STaskParsedData();
 
-        tmp_task.name_ = tiElem_task_ctrl->Attribute("name");
+        tmp_task->name_ = tiElem_task_ctrl->Attribute("name");
 
         TiXmlHandle _task_handle(tiElem_task_ctrl); //Back to handles
 
@@ -1356,7 +1356,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         if ( cr_data )
         {
           std::string type(cr_data->FirstChild()->Value());
-          tmp_task.type_task_ = type;
+          tmp_task->type_task_ = type;
         }
         else
         { throw(std::runtime_error("No task type."));  }
@@ -1365,7 +1365,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         if ( cr_data )
         {
           std::stringstream sstr(cr_data->FirstChild()->Value());
-          sstr>>tmp_task.priority_;
+          sstr>>tmp_task->priority_;
         }
         else
         { throw(std::runtime_error("No priority information."));  }
@@ -1374,7 +1374,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         if ( cr_data )
         {
           std::stringstream sstr(cr_data->FirstChild()->Value());
-          sstr>>tmp_task.dof_task_;
+          sstr>>tmp_task->dof_task_;
         }
         else
         { throw(std::runtime_error("No task dof information."));  }
@@ -1393,10 +1393,10 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
           { throw(std::runtime_error("No kp information."));  }
 
           //Now save them to the kp vector
-          tmp_task.kp_.setZero(sz);
+          tmp_task->kp_.setZero(sz);
           std::stringstream sstr(cr_data->FirstChild()->Value());
           for(unsigned int i=0;i<sz;i++)
-          { sstr>>tmp_task.kp_(i);  }
+          { sstr>>tmp_task->kp_(i);  }
         }
         else
         { throw(std::runtime_error("No kp information."));  }
@@ -1415,10 +1415,10 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
           { throw(std::runtime_error("No kv information."));  }
 
           //Now save them to the kv vector
-          tmp_task.kv_.setZero(sz);
+          tmp_task->kv_.setZero(sz);
           std::stringstream sstr(cr_data->FirstChild()->Value());
           for(unsigned int i=0;i<sz;i++)
-          { sstr>>tmp_task.kv_(i);  }
+          { sstr>>tmp_task->kv_(i);  }
         }
         else
         { throw(std::runtime_error("No kv information."));  }
@@ -1437,10 +1437,10 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
           { throw(std::runtime_error("No ka information."));  }
 
           //Now save them to the ka vector
-          tmp_task.ka_.setZero(sz);
+          tmp_task->ka_.setZero(sz);
           std::stringstream sstr(cr_data->FirstChild()->Value());
           for(unsigned int i=0;i<sz;i++)
-          { sstr>>tmp_task.ka_(i);  }
+          { sstr>>tmp_task->ka_(i);  }
         }
         else
         { throw(std::runtime_error("No ka information."));  }
@@ -1459,15 +1459,15 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
           { throw(std::runtime_error("No ki information."));  }
 
           //Now save them to the ki vector
-          tmp_task.ki_.setZero(sz);
+          tmp_task->ki_.setZero(sz);
           std::stringstream sstr(cr_data->FirstChild()->Value());
           for(unsigned int i=0;i<sz;i++)
-          { sstr>>tmp_task.ki_(i);  }
+          { sstr>>tmp_task->ki_(i);  }
         }
         else
         {
-          tmp_task.ki_.setZero(1);
-          std::cerr<<"\nCSclParser::readTaskControllerFromFile() : WARNING : Task ["<<tmp_task.name_
+          tmp_task->ki_.setZero(1);
+          std::cerr<<"\nCSclParser::readTaskControllerFromFile() : WARNING : Task ["<<tmp_task->name_
               <<"]. No ki information. Setting to zero.";
         }
 
@@ -1483,10 +1483,10 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
           sz = scl_util::countNumbersInString(ss);
 
           //Now save them to the force max
-          tmp_task.force_task_max_.setZero(sz);
+          tmp_task->force_task_max_.setZero(sz);
           std::stringstream sstr(cr_data->FirstChild()->Value());
           for(unsigned int i=0;i<sz;i++)
-          { sstr>>tmp_task.force_task_max_(i);  }
+          { sstr>>tmp_task->force_task_max_(i);  }
         }
         else
         { throw(std::runtime_error("No max force information."));  }
@@ -1503,10 +1503,10 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
           sz = scl_util::countNumbersInString(ss);
 
           //Now save them to the force min
-          tmp_task.force_task_min_.setZero(sz);
+          tmp_task->force_task_min_.setZero(sz);
           std::stringstream sstr(cr_data->FirstChild()->Value());
           for(unsigned int i=0;i<sz;i++)
-          { sstr>>tmp_task.force_task_min_(i);  }
+          { sstr>>tmp_task->force_task_min_(i);  }
         }
         else
         { throw(std::runtime_error("No min force information."));  }
@@ -1556,7 +1556,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
 #endif
 
           //Store the nonstandard param
-          tmp_task.task_nonstd_params_.push_back(nonstd_param);
+          tmp_task->task_nonstd_params_.push_back(nonstd_param);
         }
 
         /** *********************************************
@@ -1567,7 +1567,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         arg_taskvec.push_back(tmp_task);
 
 #ifdef DEBUG
-          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed task: "<<tmp_task.name_<<". Type: "<<tmp_task.type_task_;
+          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed task: "<<tmp_task->name_<<". Type: "<<tmp_task->type_task_;
 #endif
 
       }//End of loop over tasks in the xml file.
@@ -1589,9 +1589,9 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
          *  These are contained in the STaskBase data
          *  structure
          *  *********************************************/
-        SNonControlTaskBase tmp_task;
+        SNonControlTaskBase* tmp_task = new SNonControlTaskParsedData();
 
-        tmp_task.name_ = tiElem_task_ctrl->Attribute("name");
+        tmp_task->name_ = tiElem_task_ctrl->Attribute("name");
 
         TiXmlHandle _task_handle(tiElem_task_ctrl); //Back to handles
 
@@ -1599,7 +1599,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         if ( cr_data )
         {
           std::string type(cr_data->FirstChild()->Value());
-          tmp_task.type_task_ = type;
+          tmp_task->type_task_ = type;
         }
         else
         { throw(std::runtime_error("No task type."));  }
@@ -1640,13 +1640,13 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
               <<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
 #endif
           //Store the nonstandard param
-          tmp_task.task_nonstd_params_.push_back(nonstd_param);
+          tmp_task->task_nonstd_params_.push_back(nonstd_param);
         }
         //Add the parsed task to the controller' task vector
         arg_task_non_ctrl_vec.push_back(tmp_task);
 
 #ifdef DEBUG
-        std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed non-control task: "<<tmp_task.name_<<". Type: "<<tmp_task.type_task_;
+        std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed non-control task: "<<tmp_task->name_<<". Type: "<<tmp_task->type_task_;
 #endif
 
       }//End of loop over tasks in the xml file.

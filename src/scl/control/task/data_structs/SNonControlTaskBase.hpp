@@ -55,14 +55,11 @@ namespace scl
    *
    * NOTE : YOU CAN NOT USE THIS TASK DATA STRUCTURE DIRECTLY.
    * You must subclass it, re-implement the function:
-   *    virtual bool initTaskParams()
+   *    virtual bool initTaskParams()=0;
    * to parse all the custom parameters (from the xml file)
    * stored in
    *    task_nonstd_params_.
    * The function must then return true.
-   *
-   * NOTE TODO : ^^^ Why in the world wouldn't we set the func to 0
-   * then
    */
   class SNonControlTaskBase : public SObject
   {
@@ -113,8 +110,16 @@ namespace scl
      * NOTE: This function is called by init() and must be implemented
      * by all subclasses. Else it will be impossible to initialize
      * the task. Ie. init() will always return false. */
-    virtual bool initTaskParams()
-    { return false; }
+    virtual bool initTaskParams()=0;
+  };
+
+  /** This class is used by the parser to load in the generic
+   * options for each class.
+   */
+  class SNonControlTaskParsedData : public SNonControlTaskBase
+  {
+  public:
+    virtual bool initTaskParams() {return false;}
   };
 
 }

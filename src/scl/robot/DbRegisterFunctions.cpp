@@ -341,8 +341,8 @@ namespace scl_registry
     //Will fill in information from a file into this. It will never be
     //completely initialized.
     scl::STaskController tmp_ctrl;
-    std::vector<scl::STaskBase> taskvec;
-    std::vector<scl::SNonControlTaskBase> taskvec_non_ctrl;
+    std::vector<scl::STaskBase*> taskvec;
+    std::vector<scl::SNonControlTaskBase*> taskvec_non_ctrl;
 
     //Will be initialized (with the init function) and will be returned.
     //The STaskController ds contains a multi-level pile map, which manages
@@ -382,10 +382,10 @@ namespace scl_registry
 
       //Now add the tasks to the controller sutil::CMappedMultiLevelList
       scl::sUInt tasks_parsed=0;
-      for(std::vector<scl::STaskBase>::iterator it = taskvec.begin(),
+      for(std::vector<scl::STaskBase*>::iterator it = taskvec.begin(),
           ite = taskvec.end(); it!=ite; ++it)
       {
-        scl::STaskBase& tmp_task = *it;
+        scl::STaskBase& tmp_task = **it;
 
         //Use dynamic typing to get the correct task type.
         void *get_task_type=S_NULL;
@@ -476,10 +476,10 @@ namespace scl_registry
       //Now parse the non-control tasks
       //Now add the tasks to the controller sutil::CMappedList
       tasks_parsed=0;
-      for(std::vector<scl::SNonControlTaskBase>::iterator it = taskvec_non_ctrl.begin(),
+      for(std::vector<scl::SNonControlTaskBase*>::iterator it = taskvec_non_ctrl.begin(),
           ite = taskvec_non_ctrl.end(); it!=ite; ++it)
       {
-        scl::SNonControlTaskBase& tmp_task = *it;
+        scl::SNonControlTaskBase& tmp_task = **it;
 
         //Use dynamic typing to get the correct task type.
         void *get_task_type=S_NULL;

@@ -65,12 +65,6 @@ namespace scl
    * stored in
    *    task_nonstd_params_.
    * The function must then return true
-   *
-   * NOTE TODO : ^^^ Why in the world wouldn't we set the func to 0
-   * then?
-   * Ans : For now, this makes parsing simple. The parser just stores
-   * a set of data related to the task without any specific knowledge
-   * of a subtask.
    */
   class STaskBase : public SObject
   {
@@ -219,9 +213,13 @@ namespace scl
      * This function is called by init() and must be implemented
      * by all subclasses. Else it will be impossible to initialize
      * the task. Ie. init() will always return false. */
-    virtual bool initTaskParams()
-    { return false; }
+    virtual bool initTaskParams()=0;
   };
 
+  class STaskParsedData : public STaskBase
+  {
+  public:
+    virtual bool initTaskParams() { return false;  }
+  };
 }
 #endif /* STASKBASE_HPP_ */

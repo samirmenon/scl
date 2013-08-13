@@ -150,8 +150,8 @@ namespace scl_parser
         /** Returns a vector of tasks that this task controller can execute.
          * Typically, the task controller will execute all of them simultaneously
          * with a priority order.*/
-        std::vector<scl::STaskBase> &arg_taskvec,
-        std::vector<scl::SNonControlTaskBase> &taskvec_non_ctrl)
+        std::vector<scl::STaskBase*> &arg_taskvec,
+        std::vector<scl::SNonControlTaskBase*> &taskvec_non_ctrl)
     { return false; }
 };
 
