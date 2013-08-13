@@ -173,6 +173,13 @@ namespace scl
     std::vector<sString2> task_nonstd_params_;
 
     /* *********************************************************************
+     *                       External shared data interface
+     * ********************************************************************* */
+    /** This may be used by any shared module in scl that wants to communicate
+     * arbitrary information to a STaskBase subclass */
+    Eigen::VectorXd shared_data_;
+
+    /* *********************************************************************
      *                            Initialization functions
      * ********************************************************************* */
     /** Constructor */
