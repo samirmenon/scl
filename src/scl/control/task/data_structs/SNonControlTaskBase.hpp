@@ -112,15 +112,5 @@ namespace scl
      * the task. Ie. init() will always return false. */
     virtual bool initTaskParams()=0;
   };
-
-  /** This class is used by the parser to load in the generic
-   * options for each class.
-   */
-  class SNonControlTaskParsedData : public SNonControlTaskBase
-  {
-  public:
-    virtual bool initTaskParams() {return false;}
-  };
-
 }
 #endif /* SNONCONTROLTASKBASE_HPP_ */

@@ -51,6 +51,39 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 using namespace scl_tinyxml; //Tinyxml parser implementation is in a separate namespace
 using namespace scl;
 
+
+namespace scl{
+  /** A basic container to parse generic task related information.
+   *
+   * This helps avoid using dynamic typing within the parser, which
+   * is a design decision.
+   *
+   * Avoiding dynamic typing in the parser keeps things simple, removes
+   * a dependence on sutil. One could consider adding it to the parser,
+   * but since its primary use will only be for control tasks, the increase
+   * in complexity might not be worth it.
+   *
+   * If you want a parser that handles dynamic typing, consider writing
+   * another one.
+   */
+  class STaskParsedData : public STaskBase
+  {
+  public:
+    virtual bool initTaskParams() { return false;  }
+  };
+
+  /** This class is used by the parser to load in the generic
+   * options for each class.
+   *
+   * Also read the comments above for STaskParsedData
+   */
+  class SNonControlTaskParsedData : public SNonControlTaskBase
+  {
+  public:
+    virtual bool initTaskParams() {return false;}
+  };
+}
+
 namespace scl_parser {
 
 bool CSclParser::listRobotsInFile(const std::string& arg_file,
