@@ -33,10 +33,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <scl/Singletons.hpp>
+#include <scl/control/task/CTaskController.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <GL/freeglut.h>
+#include <chai3d.h>
 #endif
 #include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/util/DatabaseUtils.hpp>
@@ -178,7 +180,13 @@ namespace scl
         /**********************Initialize Misc. Options *******************/
         //Ctr in array of args_parsed = (args_parsed - 1)
         //So ctr for un-parsed arg = (args_parsed - 1) + 1
-        scl::sInt args_ctr = 4;
+        scl::sUInt args_ctr = 4, ui_points_used=0;
+
+        /** Test whether Controller is a task controller. If so, parse task options. */
+        CTaskController* tmp_task_ctrl = dynamic_cast<scl::CTaskController*> (robot_.getControllerCurrent());
+        bool flag_is_curr_ctrl_task=false;
+        if(S_NULL != tmp_task_ctrl)
+        { flag_is_curr_ctrl_task = true;  }
 
         // Check that we haven't finished parsing everything
         while(args_ctr < argv.size())
@@ -200,6 +208,58 @@ namespace scl
             }
             else
             { throw(std::runtime_error("Specified -l flag but did not specify log file"));  }
+          }
+          else if (("-com" == argv[args_ctr]) || ("-op" == argv[args_ctr]) || ("-ui" == argv[args_ctr]))
+          {// We know the next argument *should* be the op pos task's name
+            if(args_ctr+1 < argv.size())
+            {
+              if(ui_points_used >= SCL_NUM_UI_POINTS)
+              {
+                std::cout<<"\nThe keyboard can only support "<<SCL_NUM_UI_POINTS<<" ui points. Can't add: "
+                    << argv[args_ctr]<<" "<< argv[args_ctr+1];
+                args_ctr+=2; continue;
+              }
+
+              //Initialize the ui ctrl point task
+              // NOTE : There may be many ui point tasks, so we create a tmp, initialize it
+              //        and store it with the others (if any) in the taskvec_ui_ctrl_point_ a few lines below
+              SUiCtrlPointData tmp_ui_ctrl_pt;
+              tmp_ui_ctrl_pt.name_ = argv[args_ctr+1];
+              tmp_ui_ctrl_pt.task_ = tmp_task_ctrl->getTask(tmp_ui_ctrl_pt.name_);
+              if(S_NULL == tmp_ui_ctrl_pt.task_)
+              { throw(std::runtime_error(std::string("Could not find task in the current controller: ")+tmp_ui_ctrl_pt.name_));  }
+              flag = tmp_ui_ctrl_pt.task_->setGoalPos(Eigen::Vector3d::Zero());
+              if(false == flag)
+              { throw(std::runtime_error(std::string("Task doesn't support setting 3dim position for -op or -com: ")+tmp_ui_ctrl_pt.name_));  }
+              tmp_ui_ctrl_pt.ui_pt_ = ui_points_used; ui_points_used++;
+              tmp_ui_ctrl_pt.has_been_init_ = true;
+
+#ifdef GRAPHICS_ON
+              /** Render a sphere at the op-point task's position */
+              flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), tmp_ui_ctrl_pt.chai_pos_, 0.015);
+              if(false == flag) { throw(std::runtime_error("Could not add sphere at ui ctrl task"));  }
+
+              /** Render a sphere at the op-point task's position */
+              flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), tmp_ui_ctrl_pt.chai_pos_des_, 0.02);
+              if(false == flag) { throw(std::runtime_error("Could not add sphere at ui ctrl desired pos"));  }
+
+              if(NULL == tmp_ui_ctrl_pt.chai_pos_des_){ throw(std::runtime_error("Could not add sphere at ui ctrl desired pos"));  }
+
+              //Make desired position red/orange
+              chai3d::cMaterial mat_red;
+              mat_red.setRedFireBrick();
+              tmp_ui_ctrl_pt.chai_pos_des_->setMaterial(mat_red, false);
+#endif
+
+              //Add the initialized task to the vector
+              // NOTE : We add it after initializing the graphics so that we don't end up with a junk
+              //        task in the vector if the graphics fail.
+              taskvec_ui_ctrl_point_.push_back(tmp_ui_ctrl_pt);
+
+              args_ctr+=2; continue;
+            }
+            else
+            { throw(std::runtime_error("Specified -op or -com flag but did not specify the task's name"));  }
           }
           else
           { args_ctr++; }

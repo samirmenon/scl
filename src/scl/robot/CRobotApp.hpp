@@ -34,6 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //Standard includes
 #include <scl/DataTypes.hpp>
+#include <scl/control/task/CTaskBase.hpp>
 #include <scl/robot/CRobot.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
 
@@ -157,6 +158,32 @@ namespace scl
 
     scl::sLongLong ctrl_ctr_;            //Controller computation counter
     scl::sFloat t_start_, t_end_;         //Start and end times
+
+    /** This is an internal class for organizing the control-task
+     * to ui-point connection through the keyboard or an external
+     * haptic device */
+    class SUiCtrlPointData
+    {
+    public:
+      std::string name_;
+      scl::CTaskBase* task_;
+      scl::sInt ui_pt_;
+      scl::sBool has_been_init_;
+#ifdef GRAPHICS_ON
+      Eigen::VectorXd pos_, pos_des_;
+      chai3d::cGenericObject *chai_pos_,*chai_pos_des_;
+#endif
+      SUiCtrlPointData() :
+        name_(""),task_(NULL),ui_pt_(-1),
+        has_been_init_(false)
+#ifdef GRAPHICS_ON
+        , chai_pos_(NULL), chai_pos_des_(NULL)
+#endif
+      {}
+    };
+    /** The operational points that will be linked to keyboard handlers.
+     * NOTE : This is presently designed for a task controller's xyz ctrl tasks */
+    std::vector<SUiCtrlPointData> taskvec_ui_ctrl_point_;
 
     //Graphics stuff
 #ifdef GRAPHICS_ON
