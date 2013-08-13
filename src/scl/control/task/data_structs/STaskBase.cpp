@@ -62,6 +62,7 @@ namespace scl
       const SGcModel* arg_gc_model,
       const Eigen::VectorXd & arg_kp,
       const Eigen::VectorXd & arg_kv,
+      const Eigen::VectorXd & arg_ka,
       const Eigen::VectorXd & arg_ki,
       const Eigen::VectorXd & arg_ftask_max,
       const Eigen::VectorXd & arg_ftask_min,
@@ -127,6 +128,9 @@ namespace scl
       if((1!=arg_kv.size()) && (arg_task_dof!=(sUInt)arg_kv.size()))
       { throw(std::runtime_error("Velocity gain vector (kv) size should be 1 or task-dof")); }
 
+      if((1!=arg_ka.size()) && (arg_task_dof!=(sUInt)arg_ka.size()))
+      { throw(std::runtime_error("Velocity gain vector (ka) size should be 1 or task-dof")); }
+
       if((1!=arg_ki.size()) && (arg_task_dof!=(sUInt)arg_ki.size()))
       { throw(std::runtime_error("Integral gain vector (ki) size should be 1 or task-dof")); }
 
@@ -168,6 +172,10 @@ namespace scl
       if(1==arg_kv.size())
       {kv_.setConstant(dof_task_,arg_kv(0));}
       else{ kv_ = arg_kv;  }
+
+      if(1==arg_ka.size())
+      {ka_.setConstant(dof_task_,arg_ka(0));}
+      else{ ka_ = arg_ka;  }
 
       if(1==arg_ki.size())
       {ki_.setConstant(dof_task_,arg_ki(0));}

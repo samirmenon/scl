@@ -161,7 +161,7 @@ namespace scl
      *
      * Computed by : None. These are constants.
      * Used by     : The task-servo to calculate task forces */
-    Eigen::VectorXd kp_, kv_, ki_, ka_;
+    Eigen::VectorXd kp_, kv_, ka_, ki_;
 
     /** A set of additional options that may be used by users to
      * initialize this specific task. These typically go above and
@@ -195,6 +195,7 @@ namespace scl
         const SGcModel* arg_gc_model,
         const Eigen::VectorXd & arg_kp,
         const Eigen::VectorXd & arg_kv,
+        const Eigen::VectorXd & arg_ka,
         const Eigen::VectorXd & arg_ki,
         const Eigen::VectorXd & arg_ftask_max,
         const Eigen::VectorXd & arg_ftask_min,
