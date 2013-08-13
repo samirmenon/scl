@@ -45,6 +45,7 @@ namespace scl
   public:
     Eigen::VectorXd q_;             //Goal Position in the global frame
     Eigen::VectorXd dq_;            //Goal Velocity in the global frame
+    Eigen::VectorXd ddq_;            //Goal Velocity in the global frame
 
     Eigen::VectorXd q_goal_;        //Goal Position in the global frame
     Eigen::VectorXd dq_goal_;       //Goal Velocity in the global frame

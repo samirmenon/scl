@@ -57,6 +57,7 @@ namespace scl
       // Initialize the gc vectors to the correct sizes
       q_.setZero(dof_task_);
       dq_.setZero(dof_task_);
+      ddq_.setZero(dof_task_);
 
       q_goal_.setZero(dof_task_);
       dq_goal_.setZero(dof_task_);
