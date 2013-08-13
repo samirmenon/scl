@@ -113,6 +113,20 @@ namespace scl
      * Does not include acceleration set points or integral gain. */
     sBool computeControlForcesPD();
 
+    /** [PIDA] : Dynamic decoupling + PIDA controller on decoupled closed
+     *         loop system in the generalized coordinates.
+     *
+     * Includes acceleration set points and integral gain.
+     *
+     * Implements the following 1st order, infinite time horizon integrator:
+     *   if( (t_curr - t_pre) > integral_gain_time_max_ )
+     *   { Force = 0; }
+     *   else
+     *   { Force = Force + ki * pos_err * (t_curr - t_pre) / integral_gain_time_constt_; }
+     *
+     * arg_time : The current time. Required to compute integral gain term. */
+    sBool computeControlForcesPIDA(const sFloat arg_time);
+
     /** Controller that only compensates for gravity:
      * Gravity compensation + damping */
     sBool computeFloatForces();

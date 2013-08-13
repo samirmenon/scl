@@ -43,9 +43,14 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  /**
-   * Generalized coordinate force controller (joint-space controller)
+  /** Generalized coordinate force controller (joint-space controller)
    * data structure.
+   *
+   * Works with an arbitrary actuated articulated body, with direct
+   * force control at the generalized coordinates.
+   *
+   * Supports dynamically decoupled control, which is equivalent to controlling
+   * a unit mass in the generalized coordinates.
    */
   class SGcController : public SControllerBase
   {
@@ -64,17 +69,37 @@ namespace scl
      * (Why separate max and min? Muscles can only pull, not push.) */
     Eigen::VectorXd force_gc_max_,force_gc_min_;
 
-    /**
-     * Gains (scalar if same for different dimensions;
+    /** Gains (scalar if same for different dimensions;
      * vector if different for different dimensions)
      *
      * Computed by : None. These are constants.
-     * Used by     : The GcController to calculate gc forces
-     */
+     * Used by     : The GcController to calculate gc forces */
     Eigen::VectorXd kp_, kv_, ka_, ki_;
 
+    /** Set the integral gain decay rate. Ie. Degrade last timestep's
+     * influence by x%
+     *
+     * Typical use in a PID controller
+     *
+     * if( (t_curr - t_pre) > integral_gain_time_max_ )
+     * { Force = 0; }
+     * else
+     * { Force = Force + ki * pos_err * (t_curr - t_pre) / integral_gain_time_constt_; }
+     * */
+    sFloat integral_gain_time_pre_, integral_gain_time_curr_,
+           integral_gain_time_constt_, integral_gain_time_max_;
+
+    /** The integral force term. Required because integral control is not
+     * time invariant. */
+    Eigen::VectorXd integral_force_;
+
+    /* ********************************************************
+     *              Initialization Functions
+     * ******************************************************** */
+    /** Constructor. Does nothing */
     SGcController();
 
+    /* Initialization function. Sets all the control parameters */
     sBool init(const std::string & arg_controller_name,
         SRobotParsedData* arg_robot_ds,
         SRobotIOData* arg_robot_io_ds,
@@ -84,7 +109,12 @@ namespace scl
         const Eigen::VectorXd & arg_ka,
         const Eigen::VectorXd & arg_ki,
         const Eigen::VectorXd & arg_fgc_max,
-        const Eigen::VectorXd & arg_fgc_min );
+        const Eigen::VectorXd & arg_fgc_min,
+        /** Default:0.1s time constant for the integral gain */
+        const sFloat arg_integral_gain_time_constt=0.1,
+        /** If the integral gain is not recomputed for this time,
+         * the force term is reset. */
+        const sFloat arg_integral_gain_time_max=0.05);
 
     /** Inherits:
       std::string name_;

@@ -100,6 +100,52 @@ namespace scl
     return true;
   }
 
+  sBool CGcController::computeControlForcesPIDA(const sFloat arg_time)
+  {
+    // Take a time step
+    data_->integral_gain_time_pre_ = data_->integral_gain_time_curr_;
+    data_->integral_gain_time_curr_ = arg_time;
+
+    //Compute the servo torques
+    static Eigen::VectorXd tmp1, tmp2, tmp3;
+
+    tmp1 = (data_->des_q_ - data_->io_data_->sensors_.q_);
+    tmp1 =  data_->kp_.array() * tmp1.array();
+
+    tmp2 = (data_->des_dq_ - data_->io_data_->sensors_.dq_);
+    tmp2 = data_->kv_.array() * tmp2.array();
+
+    tmp3 = (data_->des_ddq_ - data_->io_data_->sensors_.ddq_);
+    tmp3 = data_->ka_.array() * tmp3.array();
+
+    double tmp_int_dt = data_->integral_gain_time_curr_ - data_->integral_gain_time_pre_;
+    if(data_->integral_gain_time_max_ <= tmp_int_dt)
+    {// Reset the integral gain, since the system has lost sync with real-time
+      data_->integral_force_.setZero(data_->robot_->dof_);
+    }
+    else
+    {
+      tmp_int_dt /= data_->integral_gain_time_constt_;
+      // All the array() casts are for element wise operations.
+      data_->integral_force_ = data_->integral_force_.array() +
+          data_->ki_.array() * (data_->des_q_ - data_->io_data_->sensors_.q_).array();
+      data_->integral_force_ *= tmp_int_dt;
+    }
+
+    //Obtain force to be applied to a unit mass floating about
+    //in space (ie. A dynamically decoupled mass).
+    tmp3 += tmp2 + tmp1 + data_->integral_force_;
+
+    //Apply Task's Force Limits
+    tmp3 = tmp3.array().min(data_->force_gc_max_.array()); // Remain below the upper bound.
+    tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
+
+    // We do not use the centrifugal/coriolis forces. They can cause instabilities.
+    data_->des_force_gc_ = data_->gc_model_.A_ * tmp3 + data_->gc_model_.g_;
+
+    return true;
+  }
+
   sBool CGcController::computeFloatForces()
   {
     //Compute the servo generalized forces : Gravity compensation + damping
