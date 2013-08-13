@@ -178,8 +178,14 @@ namespace scl
      *    */
     std::vector<sString2> task_nonstd_params_;
 
+    /* *********************************************************************
+     *                            Initialization functions
+     * ********************************************************************* */
     /** Constructor */
     STaskBase();
+
+    /** Destructor : Does nothing */
+    virtual ~STaskBase(){}
 
     /** Initialization function
      *
