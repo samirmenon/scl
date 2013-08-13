@@ -1207,7 +1207,8 @@ bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
       else
       {
         arg_ctrl.ki_.setZero(1);
-        std::cerr<<"\nCSclParser::readGcControllerFromFile() : WARNING : No ki information. Setting to zero.";
+        std::cerr<<"\nCSclParser::readGcControllerFromFile() : WARNING : In Controller ["<<arg_ctrl.name_
+            <<"]No ki information. Setting to zero.";
       }
 
       cr_data = _cr_handle.FirstChildElement("force_max").Element();
@@ -1466,7 +1467,8 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         else
         {
           tmp_task.ki_.setZero(1);
-          std::cerr<<"\nCSclParser::readTaskControllerFromFile() : WARNING : No ki information. Setting to zero.";
+          std::cerr<<"\nCSclParser::readTaskControllerFromFile() : WARNING : Task ["<<tmp_task.name_
+              <<"]. No ki information. Setting to zero.";
         }
 
         cr_data = _task_handle.FirstChildElement("force_max").Element();

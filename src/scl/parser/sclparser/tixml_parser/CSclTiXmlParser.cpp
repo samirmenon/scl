@@ -136,7 +136,8 @@ namespace scl_parser {
             arg_link_ds.inertia_(0,2) = 0.0;
             arg_link_ds.inertia_(1,2) = 0.0;
 #ifdef DEBUG
-            std::cout<<"\nCSclTiXmlParser::readLink() : WARNING : Only three inertia values specified at link : "
+            std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                    <<"]. Only three inertia values specified at link : "
                 <<arg_link_ds.name_<<". \nConsider specifying all 6 : {Ixx, Iyy, Izz, Ixy, Ixz, Iyz}";
 #endif
           }
@@ -168,7 +169,10 @@ namespace scl_parser {
           ss>>arg_link_ds.joint_name_;
         }
         else
-        {std::cerr<< "\nError reading joint name";}
+        {
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          <<"]. Error reading joint name";
+        }
 
         //Parent link name
         link_data = arg_link_txml.FirstChildElement( "parent_link_name" ).Element();
@@ -177,7 +181,10 @@ namespace scl_parser {
           std::stringstream ss(link_data->FirstChild()->Value());
           ss>>arg_link_ds.parent_name_;
         }
-        else  {std::cerr<< "\nError reading parent link name";}
+        else  {
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Error reading parent link name";
+        }
 
         //Lower Joint Limit
         link_data = arg_link_txml.FirstChildElement( "joint_limits" ).Element();
@@ -187,7 +194,10 @@ namespace scl_parser {
           ss>>arg_link_ds.joint_limit_lower_;
           ss>>arg_link_ds.joint_limit_upper_;
         }
-        else  {std::cerr<< "\nError reading joint limits";}
+        else  {
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Error reading joint limits";
+        }
 
         //Default Joint Pos
         link_data = arg_link_txml.FirstChildElement( "default_joint_position" ).Element();
@@ -196,7 +206,10 @@ namespace scl_parser {
           std::stringstream ss(link_data->FirstChild()->Value());
           ss>>arg_link_ds.joint_default_pos_;
         }
-        else  {std::cerr<< "\nError reading default joint position";}
+        else  {
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Error reading default joint position";
+        }
 
         //Joint type
         link_data = arg_link_txml.FirstChildElement( "joint_type" ).Element();
@@ -235,7 +248,8 @@ namespace scl_parser {
         //Obj file paths are always relative to the specs directory.
         if("" == scl::CDatabase::getData()->dir_specs_)
         {
-          std::cout<<"\nCSclTiXmlParser::readLink() : WARNING Specs directory not set in the database. Can't read link's obj file.";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : At link ["<<arg_link_ds.name_
+                  <<"]. Specs directory not set in the database. Can't read link's obj file.";
           continue;
         }
 
@@ -260,7 +274,8 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not found for obj file : "<<tgr.file_name_;
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Position in parent not found for obj file : "<<tgr.file_name_;
 #endif
         }
 
@@ -280,7 +295,8 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Orientation in parent not found for obj file : "<<tgr.file_name_;
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Orientation in parent not found for obj file : "<<tgr.file_name_;
 #endif
         }
 
@@ -298,7 +314,8 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink()  : Warning : Graphics scaling not found for obj file : "<<tgr.file_name_;
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Graphics scaling not found for obj file : "<<tgr.file_name_;
 #endif
         }
 
@@ -310,7 +327,8 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Collision type not found for obj file : "<<tgr.file_name_;
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Collision type not found for obj file : "<<tgr.file_name_;
 #endif
         }
 
@@ -343,7 +361,8 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not found for sphere";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Position in parent not found for sphere";
 #endif
         }
 
@@ -382,7 +401,8 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Collision type not found for sphere";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Collision type not found for sphere";
 #endif
         }
 
@@ -416,7 +436,8 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not found for cuboid";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Position in parent not found for cuboid";
 #endif
         }
 
@@ -436,7 +457,8 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not fo
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Orientation in parent not found for cuboid";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Warning : Orientation in parent not found for cuboid";
 #endif
         }
 
@@ -455,7 +477,8 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not fo
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink()  : Warning : Graphics scaling not found for cuboid";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Warning : Graphics scaling not found for cuboid";
 #endif
         }
 
@@ -485,7 +508,8 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Collision type not found for cuboid element";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Collision type not found for cuboid element";
 #endif
         }
 
@@ -519,7 +543,8 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         }
         else  {
 #ifdef DEBUG
-std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not found for cylinder";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Position in parent not found for cylinder";
 #endif
         }
 
@@ -539,7 +564,8 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not fo
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Orientation in parent not found for cylinder";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Orientation in parent not found for cylinder";
 #endif
         }
 
@@ -558,7 +584,8 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not fo
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink()  : Warning : Graphics scaling not found for cylinder";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+              <<"]. Graphics scaling not found for cylinder";
 #endif
         }
 
@@ -576,7 +603,8 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Position in parent not fo
         }
         else{
 #ifdef DEBUG
-std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cylinder";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+              <<"]. Color not found for cylinder";
 #endif
         }
 
@@ -588,7 +616,8 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cylin
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Collision type not found for cylinder";
+          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Collision type not found for cylinder";
 #endif
         }
 
@@ -603,11 +632,15 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cylin
         std::stringstream ss(link_data->FirstChild()->Value());
         ss>>arg_link_ds.collision_type_;
         flag_graphics_element_found = true;
-        std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : <graphics> <collision_type> tags are depracated. Use these in the graphics elements.";
+        std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                <<"]. <graphics> <collision_type> tags are depracated. Use these in the graphics elements.";
       }
 
       if(flag_graphics_tag_found && (false == flag_graphics_element_found))
-      { std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : Found <graphics> tag but no sub-elements."; }
+      {
+        std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+        <<"]. Found <graphics> tag but no sub-elements.";
+      }
       //******************************** End of Graphics Stuff ******************************
     }
     catch(std::exception& e)
