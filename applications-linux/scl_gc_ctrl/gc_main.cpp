@@ -73,13 +73,18 @@ int main(int argc, char** argv)
   if((argc < 2)&&(argc > 4))
   {
     std::cout<<"\nscl-robot demo application demonstrates how scl controls joint angles of single robots."
-        <<"\nThe command line input is: ./<executable> <file_name.xml> <optional: robot name> <optional: controller name>\n";
+        <<"\nThe command line input is: ./<executable> <file_name.xml> <optional: robot name> <optional: controller name>\n"
+        <<"\n ********** \n Options : "
+        <<"\n Press 1 : Toggle (enable/disable) integral gain. Default off. \n";
     return 0;
   }
   else
   {
     try
     {
+      std::cout<<"\nscl-robot demo application demonstrates how scl controls joint angles of single robots."
+          <<"\n ********** \n Options : "
+          <<"\n Press 1 : Toggle (enable/disable) integral gain. Default off. \n";
       /******************************Initialization************************************/
       //1. Initialize the database and clock.
       if(false == sutil::CSystemClock::start()) { throw(std::runtime_error("Could not start clock"));  }
@@ -217,6 +222,8 @@ int main(int argc, char** argv)
       //Simulation loop.
       std::cout<<"\nStarting simulation. Timestep : "<<db->sim_dt_<<std::flush;
 
+      bool flag_status_pida = false;
+
 #ifndef NOPARALLEL
       omp_set_num_threads(2);
       int thread_id;
@@ -244,7 +251,22 @@ int main(int argc, char** argv)
               robot_gc_ctrl.computeKinematics();
               robot_gc_ctrl.computeDynamics();
             }
-            robot_gc_ctrl.computeControlForces();
+
+            // The actual control loop and some code to print transitions between PDA and PIDA control
+            if(db->s_gui_.ui_flag_[1])
+            {
+              if(false == flag_status_pida)
+              { std::cout<<"\n scl_gc_ctrl: Moving to PIDA control."; std::cout.flush(); }
+              flag_status_pida = true;
+              robot_gc_ctrl.computeControlForcesPIDA(sutil::CSystemClock::getSysTime());
+            }
+            else
+            {
+              if(true == flag_status_pida)
+              { std::cout<<"\n scl_gc_ctrl: Moving to PDA control."; std::cout.flush(); }
+              flag_status_pida = false;
+              robot_gc_ctrl.computeControlForces();
+            }
 
             //Set the command torques for the simulator to the controller's computed torques
             rob_io_ds->actuators_.force_gc_commanded_ = gc_ctrl_ds->des_force_gc_;
