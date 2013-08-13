@@ -175,6 +175,36 @@ namespace scl
         flag = robot_.setControllerCurrent(ctrl_name_);
         if(false == flag) { throw(std::runtime_error("Could not initialize robot's controller"));  }
 
+        /**********************Initialize Misc. Options *******************/
+        //Ctr in array of args_parsed = (args_parsed - 1)
+        //So ctr for un-parsed arg = (args_parsed - 1) + 1
+        scl::sInt args_ctr = 4;
+
+        // Check that we haven't finished parsing everything
+        while(args_ctr < argv.size())
+        {
+          if ("-p" == argv[args_ctr])
+          {//Start simulation paused
+            if(S_NULL == scl::CDatabase::getData())
+            { throw(std::runtime_error("Database not intialized. Can't pause simulation."));  }
+            scl::CDatabase::getData()->pause_ctrl_dyn_ = true;
+            args_ctr++;
+          }
+          else if ("-l" == argv[args_ctr])
+          {// We know the next argument *should* be the log file's name
+            if(args_ctr+1 < argv.size())
+            {
+              flag = robot_.setLogFile(argv[args_ctr+1]);
+              if(false == flag) { throw(std::runtime_error("Could not set up log file"));  }
+              args_ctr+=2;
+            }
+            else
+            { throw(std::runtime_error("Specified -l flag but did not specify log file"));  }
+          }
+          else
+          { args_ctr++; }
+        }
+
         /**********************Initialize Single Control Task *******************/
         flag = initMyController(argv,4);
         if(false == flag)
@@ -187,6 +217,8 @@ namespace scl
 
         //Simulation loop.
         std::cout<<"\nStarting simulation. Integration timestep: "<<db_->sim_dt_<<std::flush;
+        if(scl::CDatabase::getData()->pause_ctrl_dyn_)
+        { std::cout<<"\nSimulation started in PAUSE mode. Press 'P' to resume.";  }
 
         return true;
       }

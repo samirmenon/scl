@@ -78,26 +78,7 @@ namespace scl_app
       // Check that we haven't finished parsing everything
       while(args_ctr < argv.size())
       {
-        if ("-p" == argv[args_ctr])
-        {//Start simulation paused
-
-          if(S_NULL == scl::CDatabase::getData())
-          { throw(std::runtime_error("Database not intialized. Can't pause simulation."));  }
-          scl::CDatabase::getData()->pause_ctrl_dyn_ = true;
-          args_ctr = args_ctr+1;
-        }
-        else if ("-l" == argv[args_ctr])
-        {// We know the next argument *should* be the log file's name
-          if(args_ctr+1 < argv.size())
-          {
-            flag = robot_.setLogFile(argv[args_ctr+1]);
-            if(false == flag) { throw(std::runtime_error("Could not set up log file"));  }
-            args_ctr = args_ctr+2;
-          }
-          else
-          { throw(std::runtime_error("Specified -l flag but did not specify log file"));  }
-        }
-        else if ("-com" == argv[args_ctr])
+        if ("-com" == argv[args_ctr])
         {// We know the next argument *should* be the com pos task's name
           if(args_ctr+1 < argv.size())
           {
