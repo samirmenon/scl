@@ -68,8 +68,15 @@ namespace scl
      * CTaskGcLimitCentering specific functions
      *********************************/
     /** Sets the current goal position */
-    inline void setGoal(const Eigen::VectorXd & arg_gc_goal)
-    { data_->q_goal_ = arg_gc_goal;  }
+    virtual bool setGoalPos(const Eigen::VectorXd & arg_goal);
+
+    /** Gets the current goal position. Returns false if not supported by task. */
+    virtual bool getGoalPos(Eigen::VectorXd & arg_goal) const
+    { arg_goal = data_->q_goal_; return true; }
+
+    /** Gets the current position. Returns false if not supported by task. */
+    virtual bool getPos(Eigen::VectorXd & arg_pos) const
+    { arg_pos = data_->q_; return true; }
 
     /** Whether the task has achieved its goal position. */
     sBool achievedGoalPos();

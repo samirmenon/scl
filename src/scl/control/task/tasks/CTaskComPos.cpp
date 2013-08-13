@@ -102,6 +102,64 @@ namespace scl
   STaskBase* CTaskComPos::getTaskData()
   { return data_; }
 
+  /** Sets the current goal position */
+  bool CTaskComPos::setGoalPos(const Eigen::VectorXd & arg_goal)
+  {
+    if((3 == arg_goal.cols() && 1 == arg_goal.rows()) ||
+        (1 == arg_goal.cols() && 3 == arg_goal.rows()) )
+    {
+      data_->x_goal_ = arg_goal;
+      return true;
+    }
+#ifdef DEBUG
+    else
+    {
+      std::cerr<<"\nCTaskComPos::setGoalPos() : Error : Goal vector's size !=3"<<std::flush;
+      assert(false);
+    }
+#endif
+    return false;
+  }
+
+  /** Sets the current goal velocity */
+  bool CTaskComPos::setGoalVel(const Eigen::VectorXd & arg_goal)
+  {
+    if((3 == arg_goal.cols() && 1 == arg_goal.rows()) ||
+        (1 == arg_goal.cols() && 3 == arg_goal.rows()) )
+    {
+      data_->dx_goal_ = arg_goal;
+      return true;
+    }
+#ifdef DEBUG
+    else
+    {
+      std::cerr<<"\nCTaskComPos::setGoalVel() : Error : Goal vector's size !=3"<<std::flush;
+      assert(false);
+    }
+#endif
+    return false;
+  }
+
+  /** Sets the current goal acceleration */
+  bool CTaskComPos::setGoalAcc(const Eigen::VectorXd & arg_goal)
+  {
+    if((3 == arg_goal.cols() && 1 == arg_goal.rows()) ||
+        (1 == arg_goal.cols() && 3 == arg_goal.rows()) )
+    {
+      data_->ddx_goal_ = arg_goal;
+      return true;
+    }
+#ifdef DEBUG
+    else
+    {
+      std::cerr<<"\nCTaskComPos::setGoalAcc() : Error : Goal vector's size !=3"<<std::flush;
+      assert(false);
+    }
+#endif
+    return false;
+  }
+
+
   void CTaskComPos::reset()
   {
     data_ = S_NULL;

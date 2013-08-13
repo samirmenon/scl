@@ -106,6 +106,63 @@ namespace scl
   STaskBase* CTaskOpPosPIDA1OrderInfTime::getTaskData()
   { return data_; }
 
+  /** Sets the current goal position */
+  bool CTaskOpPosPIDA1OrderInfTime::setGoalPos(const Eigen::VectorXd & arg_goal)
+  {
+    if((data_->dof_task_ == arg_goal.cols() && 1 == arg_goal.rows()) ||
+        (1 == arg_goal.cols() && data_->dof_task_ == arg_goal.rows()) )
+    {
+      data_->x_goal_ = arg_goal;
+      return true;
+    }
+#ifdef DEBUG
+    else
+    {
+      std::cerr<<"\nCTaskOpPosPIDA1OrderInfTime::setGoalPos() : Error : Goal vector's size != data_->dof_task_"<<std::flush;
+      assert(false);
+    }
+#endif
+    return false;
+  }
+
+  /** Sets the current goal velocity */
+  bool CTaskOpPosPIDA1OrderInfTime::setGoalVel(const Eigen::VectorXd & arg_goal)
+  {
+    if((data_->dof_task_ == arg_goal.cols() && 1 == arg_goal.rows()) ||
+        (1 == arg_goal.cols() && data_->dof_task_ == arg_goal.rows()) )
+    {
+      data_->dx_goal_ = arg_goal;
+      return true;
+    }
+#ifdef DEBUG
+    else
+    {
+      std::cerr<<"\nCTaskOpPosPIDA1OrderInfTime::setGoalVel() : Error : Goal vector's size != data_->dof_task_"<<std::flush;
+      assert(false);
+    }
+#endif
+    return false;
+  }
+
+  /** Sets the current goal acceleration */
+  bool CTaskOpPosPIDA1OrderInfTime::setGoalAcc(const Eigen::VectorXd & arg_goal)
+  {
+    if((data_->dof_task_ == arg_goal.cols() && 1 == arg_goal.rows()) ||
+        (1 == arg_goal.cols() && data_->dof_task_ == arg_goal.rows()) )
+    {
+      data_->ddx_goal_ = arg_goal;
+      return true;
+    }
+#ifdef DEBUG
+    else
+    {
+      std::cerr<<"\nCTaskOpPosPIDA1OrderInfTime::setGoalAcc() : Error : Goal vector's size != data_->dof_task_"<<std::flush;
+      assert(false);
+    }
+#endif
+    return false;
+  }
+
   void CTaskOpPosPIDA1OrderInfTime::reset()
   {
     data_ = S_NULL;

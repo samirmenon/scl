@@ -38,25 +38,14 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-
+  /** This class simply introduces a velocity damping (friction) term
+   * into the generalized coordinates */
   class CTaskNullSpaceDamping : public scl::CTaskBase
   {
   public:
     /********************************
      * CTaskBase API
      *********************************/
-    /** Initializes the task object. Required to set output
-     * gc force dofs */
-    virtual bool init(STaskBase* arg_task_data,
-        CDynamicsBase* arg_dynamics);
-
-    /** Return this task controller's task data structure.*/
-    virtual STaskBase* getTaskData();
-
-    /** Resets the task by removing its data.
-     * NOTE : Does not deallocate its data structure*/
-    virtual void reset();
-
     /** Computes the gc forces that resist gc velocity */
     virtual bool computeServo(const SRobotSensorData* arg_sensors);
 
@@ -64,14 +53,29 @@ namespace scl
      * any task below this one in the hierarchy is ignored. */
     virtual bool computeModel();
 
+    /* **************************************************************
+     *                   Status Get/Set Functions
+     * ************************************************************** */
+    /** Return this task controller's task data structure.*/
+    virtual STaskBase* getTaskData();
+
     /********************************
-     * CTaskNullSpaceDamping specific functions
+     * Initialization specific functions
      *********************************/
     /** Default constructor : Does nothing   */
     CTaskNullSpaceDamping();
 
     /** Default destructor : Does nothing.   */
     virtual ~CTaskNullSpaceDamping(){}
+
+    /** Initializes the task object. Required to set output
+     * gc force dofs */
+    virtual bool init(STaskBase* arg_task_data,
+        CDynamicsBase* arg_dynamics);
+
+    /** Resets the task by removing its data.
+     * NOTE : Does not deallocate its data structure*/
+    virtual void reset();
 
   private:
     STaskNullSpaceDamping* data_;

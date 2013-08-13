@@ -67,24 +67,48 @@ namespace scl
      * Assumes that the data_->model_.gc_model_ has been updated. */
     virtual bool computeModel();
 
-    /********************************
-     * CTaskComPos specific functions
-     *********************************/
+    /* **************************************************************
+     *                   Status Get/Set Functions
+     * ************************************************************** */
     /** Return this task controller's task data structure.*/
     virtual STaskBase* getTaskData();
 
     /** Sets the current goal position */
-    inline void setGoal(const Eigen::VectorXd & arg_goal)
-    { data_->x_goal_ = arg_goal;  }
+    virtual bool setGoalPos(const Eigen::VectorXd & arg_goal);
 
     /** Sets the current goal velocity */
-    inline void setGoalVel(const Eigen::VectorXd & arg_goal)
-    { data_->dx_goal_ = arg_goal;  }
+    virtual bool setGoalVel(const Eigen::VectorXd & arg_goal);
 
     /** Sets the current goal acceleration */
-    inline void setGoalAcc(const Eigen::VectorXd & arg_goal)
-    { data_->ddx_goal_ = arg_goal;  }
+    virtual bool setGoalAcc(const Eigen::VectorXd & arg_goal);
 
+    /** Gets the current goal position. Returns false if not supported by task. */
+    virtual bool getGoalPos(Eigen::VectorXd & arg_goal) const
+    { arg_goal = data_->x_goal_; return true; }
+
+    /** Gets the current goal velocity. Returns false if not supported by task. */
+    virtual bool getGoalVel(Eigen::VectorXd & arg_goal) const
+    { arg_goal = data_->dx_goal_; return true; }
+
+    /** Gets the current goal acceleration. Returns false if not supported by task. */
+    virtual bool getGoalAcc(Eigen::VectorXd & arg_goal) const
+    { arg_goal = data_->ddx_goal_; return true; }
+
+    /** Gets the current position. Returns false if not supported by task. */
+    virtual bool getPos(Eigen::VectorXd & arg_pos) const
+    { arg_pos = data_->x_; return true; }
+
+    /** Gets the current velocity. Returns false if not supported by task. */
+    virtual bool getVel(Eigen::VectorXd & arg_vel) const
+    { arg_vel = data_->dx_; return true; }
+
+    /** Gets the current acceleration. Returns false if not supported by task. */
+    virtual bool getAcc(Eigen::VectorXd & arg_acc) const
+    { arg_acc = data_->ddx_; return true; }
+
+    /* *******************************
+     * CTaskComPos specific functions
+     ******************************** */
     /** Whether the task has achieved its goal position. */
     sBool achievedGoalPos();
 

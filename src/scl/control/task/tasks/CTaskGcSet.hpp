@@ -62,18 +62,6 @@ namespace scl
     /********************************
      * CTaskBase API
      *********************************/
-    /** Initializes the task object. Required to set output
-     * gc force dofs */
-    virtual bool init(STaskBase* arg_task_data,
-        CDynamicsBase* arg_dynamics);
-
-    /** Return this task controller's task data structure.*/
-    virtual STaskBase* getTaskData();
-
-    /** Resets the task by removing its data.
-     * NOTE : Does not deallocate its data structure*/
-    virtual void reset();
-
     /** Computes the gc forces that resist gc velocity */
     virtual bool computeServo(const SRobotSensorData* arg_sensors);
 
@@ -81,14 +69,50 @@ namespace scl
      * any task below this one in the hierarchy is ignored. */
     virtual bool computeModel();
 
+    /* **************************************************************
+     *                   Status Get/Set Functions
+     * ************************************************************** */
+    /** Return this task controller's task data structure.*/
+    virtual STaskBase* getTaskData();
+
+    /** Sets the current goal position */
+    virtual bool setGoalPos(const Eigen::VectorXd & arg_goal);
+
+    /** Sets the current goal velocity */
+    virtual bool setGoalVel(const Eigen::VectorXd & arg_goal);
+
+    /** Sets the current goal acceleration */
+    virtual bool setGoalAcc(const Eigen::VectorXd & arg_goal);
+
+    /** Gets the current goal position. Returns false if not supported by task. */
+    virtual bool getGoalPos(Eigen::VectorXd & arg_goal) const
+    { arg_goal = data_->q_goal_; return true; }
+
+    /** Gets the current goal velocity. Returns false if not supported by task. */
+    virtual bool getGoalVel(Eigen::VectorXd & arg_goal) const
+    { arg_goal = data_->dq_goal_; return true; }
+
+    /** Gets the current goal acceleration. Returns false if not supported by task. */
+    virtual bool getGoalAcc(Eigen::VectorXd & arg_goal) const
+    { arg_goal = data_->ddq_goal_; return true; }
+
     /********************************
-     * CTaskGcSet specific functions
+     * Initialization specific functions
      *********************************/
     /** Default constructor : Does nothing   */
     CTaskGcSet();
 
     /** Default destructor : Does nothing.   */
     virtual ~CTaskGcSet(){}
+
+    /** Initializes the task object. Required to set output
+     * gc force dofs */
+    virtual bool init(STaskBase* arg_task_data,
+        CDynamicsBase* arg_dynamics);
+
+    /** Resets the task by removing its data.
+     * NOTE : Does not deallocate its data structure*/
+    virtual void reset();
 
   private:
     STaskGcSet* data_;

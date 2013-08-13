@@ -46,21 +46,61 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl {
 
-/**
- * Container class to encapsulate a task model and a
- * task servo.
+/** Container class to encapsulate a task model and a task servo.
  *
  * NOTE : Virtual class. Subclass and implement functions
  * that compute the task forces.
  */
 class CTaskBase {
 public:
+  /* **************************************************************
+   *                   Computation Functions
+   * ************************************************************** */
   /** Computes the task torques */
   virtual bool computeServo(const SRobotSensorData* arg_sensors)=0;
 
   /** Computes the dynamics (task model) */
   virtual bool computeModel()=0;
 
+  /* **************************************************************
+   *                   Status Get/Set Functions
+   * ************************************************************** */
+  /** Return this task controller's task data structure.
+   *   Use it responsibly!
+   * NOTE : Use dynamic casts whenever you downcast the data.
+   *        And try not to downcast very often. Perf hit. */
+  virtual STaskBase* getTaskData()=0;
+
+  /** Sets the current goal position. Returns false if not supported by task. */
+  virtual bool setGoalPos(const Eigen::VectorXd & arg_goal) { return false; }
+
+  /** Sets the current goal velocity. Returns false if not supported by task. */
+  virtual bool setGoalVel(const Eigen::VectorXd & arg_goal) { return false; }
+
+  /** Sets the current goal acceleration. Returns false if not supported by task. */
+  virtual bool setGoalAcc(const Eigen::VectorXd & arg_goal) { return false; }
+
+  /** Gets the current goal position. Returns false if not supported by task. */
+  virtual bool getGoalPos(Eigen::VectorXd & arg_goal) const { return false; }
+
+  /** Gets the current goal velocity. Returns false if not supported by task. */
+  virtual bool getGoalVel(Eigen::VectorXd & arg_goal) const { return false; }
+
+  /** Gets the current goal acceleration. Returns false if not supported by task. */
+  virtual bool getGoalAcc(Eigen::VectorXd & arg_goal) const { return false; }
+
+  /** Gets the current position. Returns false if not supported by task. */
+  virtual bool getPos(Eigen::VectorXd & arg_pos) const { return false; }
+
+  /** Gets the current velocity. Returns false if not supported by task. */
+  virtual bool getVel(Eigen::VectorXd & arg_vel) const { return false; }
+
+  /** Gets the current acceleration. Returns false if not supported by task. */
+  virtual bool getAcc(Eigen::VectorXd & arg_acc) const { return false; }
+
+  /* **************************************************************
+   *                   Initialization Functions
+   * ************************************************************** */
   /** Constructor does nothing */
   CTaskBase():
     has_been_init_(false),
@@ -75,12 +115,6 @@ public:
    * This function should set has_been_init_ to true*/
   virtual bool init(STaskBase* arg_task_data,
       CDynamicsBase* arg_dynamics)=0;
-
-  /** Return this task controller's task data structure.
-   *   Use it responsibly!
-   * NOTE : Use dynamic casts whenever you downcast the data.
-   *        And try not to downcast very often. Perf hit. */
-  virtual STaskBase* getTaskData()=0;
 
   /** Resets the task by removing its data. */
   virtual void reset()=0;

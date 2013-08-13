@@ -105,6 +105,63 @@ namespace scl
   STaskBase* CTaskOpPos::getTaskData()
   { return data_; }
 
+  /** Sets the current goal position */
+  bool CTaskOpPos::setGoalPos(const Eigen::VectorXd & arg_goal)
+  {
+    if((data_->dof_task_ == arg_goal.cols() && 1 == arg_goal.rows()) ||
+        (1 == arg_goal.cols() && data_->dof_task_ == arg_goal.rows()) )
+    {
+      data_->x_goal_ = arg_goal;
+      return true;
+    }
+#ifdef DEBUG
+    else
+    {
+      std::cerr<<"\nCTaskOpPos::setGoalPos() : Error : Goal vector's size != data_->dof_task_"<<std::flush;
+      assert(false);
+    }
+#endif
+    return false;
+  }
+
+  /** Sets the current goal velocity */
+  bool CTaskOpPos::setGoalVel(const Eigen::VectorXd & arg_goal)
+  {
+    if((data_->dof_task_ == arg_goal.cols() && 1 == arg_goal.rows()) ||
+        (1 == arg_goal.cols() && data_->dof_task_ == arg_goal.rows()) )
+    {
+      data_->dx_goal_ = arg_goal;
+      return true;
+    }
+#ifdef DEBUG
+    else
+    {
+      std::cerr<<"\nCTaskOpPos::setGoalVel() : Error : Goal vector's size != data_->dof_task_"<<std::flush;
+      assert(false);
+    }
+#endif
+    return false;
+  }
+
+  /** Sets the current goal acceleration */
+  bool CTaskOpPos::setGoalAcc(const Eigen::VectorXd & arg_goal)
+  {
+    if((data_->dof_task_ == arg_goal.cols() && 1 == arg_goal.rows()) ||
+        (1 == arg_goal.cols() && data_->dof_task_ == arg_goal.rows()) )
+    {
+      data_->ddx_goal_ = arg_goal;
+      return true;
+    }
+#ifdef DEBUG
+    else
+    {
+      std::cerr<<"\nCTaskOpPos::setGoalAcc() : Error : Goal vector's size != data_->dof_task_"<<std::flush;
+      assert(false);
+    }
+#endif
+    return false;
+  }
+
   void CTaskOpPos::reset()
   {
     data_ = S_NULL;
