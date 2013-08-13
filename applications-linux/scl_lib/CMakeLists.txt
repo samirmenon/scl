@@ -55,6 +55,8 @@ SET(CTR_SRC ${SCL_INC_DIR}/control/data_structs/SControllerBase.cpp
 SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskOpPos.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskOpPos.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/CTaskOpPosPIDA1OrderInfTime.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskOpPosPIDA1OrderInfTime.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskNullSpaceDamping.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskNullSpaceDamping.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskGc.cpp
