@@ -31,7 +31,7 @@ This will open the Pr2 robot with operational space control:
 
 $ cd ../scl_example_ctrl
 $ sh make_rel.sh
-$ ./scl_eg_ctrl ../../specs/Pr2/Pr2Cfg.xml Pr2Bot opc -op hand2 -op hand
+$ ./scl_eg_ctrl ../../specs/Pr2/Pr2Cfg.xml Pr2Bot opc -ui hand2 -ui hand
 
 
 Up-to-date installation instructions - see Getting started in our wiki:
