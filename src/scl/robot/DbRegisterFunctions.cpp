@@ -50,6 +50,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
 
+#include <scl/control/task/tasks/CTaskOpPosPIDA1OrderInfTime.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPosPIDA1OrderInfTime.hpp>
+
 #include <scl/control/task/tasks/CTaskOpPosNoGravity.hpp>
 #include <scl/control/task/tasks/data_structs/STaskOpPosNoGravity.hpp>
 
@@ -605,6 +608,14 @@ namespace scl_registry
       sutil::CDynamicType<std::string,scl::STaskOpPos> typeSTaskOpPos(std::string("STaskOpPos"));
       flag = typeSTaskOpPos.registerType();
       if(false == flag) {throw(std::runtime_error("STaskOpPos"));}
+
+      sutil::CDynamicType<std::string,scl::CTaskOpPosPIDA1OrderInfTime> typeCTaskOpPosPIDA1OrderInfTime(std::string("CTaskOpPosPIDA1OrderInfTime"));
+      flag = typeCTaskOpPosPIDA1OrderInfTime.registerType();
+      if(false == flag) {throw(std::runtime_error("CTaskOpPosPIDA1OrderInfTime"));}
+
+      sutil::CDynamicType<std::string,scl::STaskOpPosPIDA1OrderInfTime> typeSTaskOpPosPIDA1OrderInfTime(std::string("STaskOpPosPIDA1OrderInfTime"));
+      flag = typeSTaskOpPosPIDA1OrderInfTime.registerType();
+      if(false == flag) {throw(std::runtime_error("STaskOpPosPIDA1OrderInfTime"));}
 
       sutil::CDynamicType<std::string,scl::CTaskOpPosNoGravity> typeCTaskOpPosNoGravity(std::string("CTaskOpPosNoGravity"));
       flag = typeCTaskOpPosNoGravity.registerType();
