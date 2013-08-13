@@ -49,15 +49,7 @@ namespace scl_app
 
   /** Default constructor. Sets stuff to zero.
    * Uses a task controller*/
-  CExampleApp::CExampleApp() : CRobotApp(),
-      ctrl_(S_NULL),
-      name_com_task_(""),
-      task_com_(S_NULL),
-      task_ds_com_(S_NULL),
-      ui_pt_com_(-1),
-      has_been_init_com_task_(false),
-      chai_com_pos_(S_NULL),
-      chai_com_pos_des_(S_NULL)
+  CExampleApp::CExampleApp() : CRobotApp()
   { }
 
   scl::sBool CExampleApp::initMyController(const std::vector<std::string>& argv,
@@ -70,61 +62,13 @@ namespace scl_app
       //So ctr for un-parsed arg = (args_parsed - 1) + 1
       scl::sUInt args_ctr = args_parsed, ui_points_used=0;
 
-      /** Initialize Single Control Task */
-      ctrl_ = (scl::CTaskController*) robot_.getControllerCurrent();
-      if(S_NULL == ctrl_)
-      { throw(std::runtime_error("Could not get current controller"));  }
-
       // Check that we haven't finished parsing everything
       while(args_ctr < argv.size())
       {
-        if ("-com" == argv[args_ctr])
-        {// We know the next argument *should* be the com pos task's name
-          if(args_ctr+1 < argv.size())
-          {
-            if(ui_points_used >= SCL_NUM_UI_POINTS)
-            {
-              std::cout<<"\nThe keyboard can only support "<<SCL_NUM_UI_POINTS<<" ui points. Can't add: "
-                  << argv[args_ctr]<<" "<< argv[args_ctr+1];
-              args_ctr+=2; continue;
-            }
-            //Initialize the com task
-            name_com_task_ = argv[args_ctr+1];
-            task_com_ = (scl::CTaskComPos*)(ctrl_->getTask(name_com_task_));
-            if(S_NULL == task_com_)
-            { throw(std::runtime_error(std::string("Could not find specified com task: ")+name_com_task_));  }
-            task_ds_com_ = dynamic_cast<scl::STaskComPos*>(task_com_->getTaskData());
-            if(S_NULL == task_ds_com_)
-            { throw(std::runtime_error("Error. The com task's data structure is NULL."));  }
-            ui_pt_com_ = ui_points_used; ui_points_used++;
-            has_been_init_com_task_ = true;
-
-#ifdef GRAPHICS_ON
-            /** Render a sphere at the com-point task's position */
-            flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), chai_com_pos_, 0.02);
-            if(false == flag) { throw(std::runtime_error("Could not add sphere at com pos"));  }
-
-            if(NULL == chai_com_pos_){ throw(std::runtime_error("Could not add sphere at com pos"));  }
-
-            /** Render a sphere at the com-point task's position */
-            flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), chai_com_pos_des_, 0.02);
-            if(false == flag) { throw(std::runtime_error("Could not add sphere at com desired pos"));  }
-
-            if(NULL == chai_com_pos_des_){ throw(std::runtime_error("Could not add sphere at com desired pos"));  }
-
-            //Make desired position red/orange
-            cMaterial mat_red; mat_red.setRedFireBrick();
-            chai_com_pos_des_->setMaterial(mat_red, false);
-#endif
-            args_ctr+=2; continue;
-          }
-          else
-          { throw(std::runtime_error("Specified -com flag but did not specify com task's name"));  }
-        }
         /* NOTE : ADD MORE COMMAND LINE PARSING OPTIONS IF REQUIRED */
         // else if (argv[args_ctr] == "-p")
         // { }
-        else
+        if(true)
         {
           std::cout<<"\n Possible example task options: -p (start paused) -l (log file), -com (com control task), -op (op point task)";
           args_ctr++;
@@ -170,16 +114,6 @@ namespace scl_app
       Eigen::Vector3d& tmp_ref = db_->s_gui_.ui_point_[it->ui_pt_];
       it->chai_pos_des_->setLocalPos(tmp_ref(0),tmp_ref(1),tmp_ref(2));
     }
-
-    if(has_been_init_com_task_) //Update the com task (if any)
-    {
-      assert(NULL!=chai_com_pos_);
-      assert(NULL!=chai_com_pos_des_);
-      db_->s_gui_.ui_point_[ui_pt_com_] = task_ds_com_->x_;
-      chai_com_pos_->setLocalPos(task_ds_com_->x_(0), task_ds_com_->x_(1), task_ds_com_->x_(2));
-      Eigen::Vector3d& tmp_ref2 = db_->s_gui_.ui_point_[ui_pt_com_];
-      chai_com_pos_des_->setLocalPos(tmp_ref2(0),tmp_ref2(1),tmp_ref2(2));
-    }
   }
 
   void CExampleApp::stepMySimulation()
@@ -190,9 +124,6 @@ namespace scl_app
     std::vector<SUiCtrlPointData>::iterator it,ite;
     for(it = taskvec_ui_ctrl_point_.begin(), ite = taskvec_ui_ctrl_point_.end(); it!=ite; ++it )
     { it->task_->setGoalPos(db_->s_gui_.ui_point_[it->ui_pt_]); } //Set the goal position.
-
-    if(has_been_init_com_task_) //Update the com task (if any)
-    { task_com_->setGoalPos(db_->s_gui_.ui_point_[ui_pt_com_]); }
 
     if(ctrl_ctr_%5 == 0)           //Update dynamics at a slower rate
     {
@@ -213,13 +144,6 @@ namespace scl_app
         it->task_->getPos(it->pos_);
         Eigen::VectorXd& tmp_ref2 = it->pos_;
         it->chai_pos_->setLocalPos(tmp_ref2(0),tmp_ref2(1),tmp_ref2(2));
-      }
-
-      if(has_been_init_com_task_)
-      {
-        chai_com_pos_->setLocalPos(task_ds_com_->x_(0),task_ds_com_->x_(1),task_ds_com_->x_(2));
-        Eigen::Vector3d& tmp_ref2 = db_->s_gui_.ui_point_[ui_pt_com_];
-        chai_com_pos_des_->setLocalPos(tmp_ref2(0),tmp_ref2(1),tmp_ref2(2));
       }
     }
     robot_.computeServo();           //Run the servo loop

@@ -70,20 +70,6 @@ namespace scl_app
     /** Sets all the ui points to their current position and
      * run the dynamics once to flush the state. */
     void setInitialStateForUIAndDynamics();
-
-  private:
-    // ****************************************************
-    //                      The data
-    // ****************************************************
-    scl::CTaskController* ctrl_;           //Use a task controller
-
-    //For controlling the com task with a ui point
-    std::string name_com_task_;
-    scl::CTaskComPos* task_com_;
-    scl::STaskComPos* task_ds_com_;
-    scl::sInt ui_pt_com_;
-    scl::sBool has_been_init_com_task_;
-    chai3d::cGenericObject *chai_com_pos_,*chai_com_pos_des_;
   };
 
 }
