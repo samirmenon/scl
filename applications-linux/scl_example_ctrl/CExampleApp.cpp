@@ -49,7 +49,7 @@ namespace scl_app
 
   /** Default constructor. Sets stuff to zero.
    * Uses a task controller*/
-  CExampleApp::CExampleApp() :
+  CExampleApp::CExampleApp() : CRobotApp(),
       ctrl_(S_NULL),
       name_com_task_(""),
       task_com_(S_NULL),
@@ -121,58 +121,6 @@ namespace scl_app
           else
           { throw(std::runtime_error("Specified -com flag but did not specify com task's name"));  }
         }
-        else if ("-op" == argv[args_ctr])
-        {// We know the next argument *should* be the op pos task's name
-          if(args_ctr+1 < argv.size())
-          {
-            if(ui_points_used >= SCL_NUM_UI_POINTS)
-            {
-              std::cout<<"\nThe keyboard can only support "<<SCL_NUM_UI_POINTS<<" ui points. Can't add: "
-                  << argv[args_ctr]<<" "<< argv[args_ctr+1];
-              args_ctr+=2; continue;
-            }
-
-            //Initialize the op point task
-            // NOTE : There may be many op point tasks, so we create a tmp, initialize it
-            //        and store it with the others (if any) in the taskvec_op_point_ a few lines below
-            SOpPointUiLinkData tmp_op;
-            tmp_op.name_ = argv[args_ctr+1];
-            tmp_op.task_ = dynamic_cast<scl::CTaskOpPos*>(ctrl_->getTask(tmp_op.name_));
-            if(S_NULL == tmp_op.task_)
-            { throw(std::runtime_error(std::string("Could not find specified op point task: ")+tmp_op.name_));  }
-            tmp_op.task_ds_ = dynamic_cast<scl::STaskOpPos*>(tmp_op.task_->getTaskData());
-            if(S_NULL == tmp_op.task_ds_)
-            { throw(std::runtime_error(std::string("Error. The op point task's data structure is NULL:"+tmp_op.name_)));  }
-            tmp_op.ui_pt_ = ui_points_used; ui_points_used++;
-            tmp_op.has_been_init_ = true;
-
-#ifdef GRAPHICS_ON
-            /** Render a sphere at the op-point task's position */
-            flag = chai_gr_.addSphereToRender(robot_name_,tmp_op.task_ds_->link_ds_->name_,
-                tmp_op.task_ds_->pos_in_parent_,0.02, &tmp_op.chai_pos_);
-            if(false == flag) { throw(std::runtime_error("Could not add sphere at op task"));  }
-
-            /** Render a sphere at the op-point task's position */
-            flag = chai_gr_.addSphereToRender(Eigen::Vector3d::Zero(), tmp_op.chai_pos_des_, 0.02);
-            if(false == flag) { throw(std::runtime_error("Could not add sphere at op desired pos"));  }
-
-            if(NULL == tmp_op.chai_pos_des_){ throw(std::runtime_error("Could not add sphere at op desired pos"));  }
-
-            //Make desired position red/orange
-            cMaterial mat_red; mat_red.setRedFireBrick();
-            tmp_op.chai_pos_des_->setMaterial(mat_red, false);
-#endif
-
-            //Add the initialized task to the vector
-            // NOTE : We add it after initializing the graphics so that we don't end up with a junk
-            //        task in the vector if the graphics fail.
-            taskvec_op_point_.push_back(tmp_op);
-
-            args_ctr+=2; continue;
-          }
-          else
-          { throw(std::runtime_error("Specified -op flag but did not specify op point task's name"));  }
-        }
         /* NOTE : ADD MORE COMMAND LINE PARSING OPTIONS IF REQUIRED */
         // else if (argv[args_ctr] == "-p")
         // { }
@@ -204,14 +152,19 @@ namespace scl_app
     robot_.setGeneralizedAccelerationsToZero();
 
     //Update the operational point tasks (if any)
-    std::vector<SOpPointUiLinkData>::iterator it,ite;
-    for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
+    std::vector<SUiCtrlPointData>::iterator it,ite;
+    for(it = taskvec_ui_ctrl_point_.begin(), ite = taskvec_ui_ctrl_point_.end(); it!=ite; ++it )
     {
       assert(it->has_been_init_);
       assert(NULL!=it->chai_pos_des_);
       assert(NULL!=it->task_);
-      assert(NULL!=it->task_ds_);
-      db_->s_gui_.ui_point_[it->ui_pt_] = it->task_ds_->x_;
+      it->task_->getPos(it->pos_);
+#ifdef DEBUG
+      if( (3 != it->pos_.rows() && 1 != it->pos_.cols()) ||
+          (1 != it->pos_.rows() && 3 != it->pos_.cols()) )
+      { assert(false);  }
+#endif
+      db_->s_gui_.ui_point_[it->ui_pt_] = it->pos_;
 
       //Using a tmp ref to simplify code.
       Eigen::Vector3d& tmp_ref = db_->s_gui_.ui_point_[it->ui_pt_];
@@ -234,8 +187,8 @@ namespace scl_app
     sutil::CSystemClock::tick(db_->sim_dt_);//Tick the clock.
 
     //Update the operational point tasks (if any)
-    std::vector<SOpPointUiLinkData>::iterator it,ite;
-    for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
+    std::vector<SUiCtrlPointData>::iterator it,ite;
+    for(it = taskvec_ui_ctrl_point_.begin(), ite = taskvec_ui_ctrl_point_.end(); it!=ite; ++it )
     { it->task_->setGoalPos(db_->s_gui_.ui_point_[it->ui_pt_]); } //Set the goal position.
 
     if(has_been_init_com_task_) //Update the com task (if any)
@@ -252,10 +205,14 @@ namespace scl_app
       robot_.logState(true,true,true);
 
       //Set the positions of the ui points
-      for(it = taskvec_op_point_.begin(), ite = taskvec_op_point_.end(); it!=ite; ++it )
+      for(it = taskvec_ui_ctrl_point_.begin(), ite = taskvec_ui_ctrl_point_.end(); it!=ite; ++it )
       {
         Eigen::Vector3d& tmp_ref = db_->s_gui_.ui_point_[it->ui_pt_];
         it->chai_pos_des_->setLocalPos(tmp_ref(0),tmp_ref(1),tmp_ref(2));
+
+        it->task_->getPos(it->pos_);
+        Eigen::VectorXd& tmp_ref2 = it->pos_;
+        it->chai_pos_->setLocalPos(tmp_ref2(0),tmp_ref2(1),tmp_ref2(2));
       }
 
       if(has_been_init_com_task_)
