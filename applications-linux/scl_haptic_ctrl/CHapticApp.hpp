@@ -77,35 +77,6 @@ namespace scl_app
     // ****************************************************
     //                      The data
     // ****************************************************
-    scl::CTaskController* ctrl_;           //Use a task controller
-
-    /** This is an internal class for organizing the control-task
-     * to ui-point connection through the keyboard or an external
-     * haptic device */
-    class SOpPointUiLinkData
-    {
-    public:
-      std::string name_;
-      scl::CTaskOpPos* task_;
-      scl::STaskOpPos* task_ds_;
-      scl::sInt ui_pt_;
-      scl::sBool has_been_init_;
-      chai3d::cGenericObject *chai_pos_,*chai_pos_des_;
-      SOpPointUiLinkData() :
-        name_(""),task_(NULL), task_ds_(NULL),ui_pt_(-1),
-        has_been_init_(false), chai_pos_(NULL), chai_pos_des_(NULL){}
-    };
-    /** The operational points that will be linked to keyboard handlers */
-    std::vector<SOpPointUiLinkData> taskvec_op_point_;
-
-    //For controlling the com task with a ui point
-    std::string name_com_task_;
-    scl::CTaskComPos* task_com_;
-    scl::STaskComPos* task_ds_com_;
-    scl::sInt ui_pt_com_;
-    scl::sBool has_been_init_com_task_;
-    chai3d::cGenericObject *chai_com_pos_,*chai_com_pos_des_;
-
     //For controlling op points with haptics
     //The app will support dual-mode control, with the haptics controlling op points.
     scl::CChaiHaptics haptics_;
