@@ -53,8 +53,9 @@
         <type>gc</type>
         <must_use_robot>PumaBot</must_use_robot>
         <kp>100</kp>
-        <kv>10</kv>
+        <kv>15</kv>
         <ka>0</ka>
+        <ki>20</ki>
         <force_max>10</force_max>
         <force_min>-10</force_min>
     </controller>

@@ -47,6 +47,7 @@
         <kp>1600</kp>
         <kv>50</kv>
         <ka>0</ka>
+        <ki>30</ki>
         <force_max>1000</force_max>
         <force_min>-1000</force_min>
     </controller>

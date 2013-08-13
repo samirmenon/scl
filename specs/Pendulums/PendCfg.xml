@@ -350,6 +350,7 @@
         <kp>100</kp>
         <kv>15</kv>
         <ka>0</ka>
+        <ki>10</ki>
         <force_max>100</force_max>
         <force_min>-100</force_min>
     </controller>
@@ -361,6 +362,7 @@
         <kp>100</kp>
         <kv>15</kv>
         <ka>0</ka>
+        <ki>10</ki>
         <force_max>10</force_max>
         <force_min>-10</force_min>
     </controller>
