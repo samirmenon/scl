@@ -127,6 +127,12 @@ namespace scl
     /** A set of muscles */
     sutil::CMappedList<std::string, SMuscle> muscles_;
 
+    /** The muscle numeric id to name map */
+    std::vector<std::string> muscle_id_to_name_;
+
+    /** The muscle name to numeric id map */
+    sutil::CMappedList<std::string, sUInt> muscle_name_to_id_;
+
     /** This muscle system might not work on all
      * robots. */
     std::string must_use_robot_;
