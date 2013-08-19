@@ -634,6 +634,18 @@ bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
         tmp_musc_ds2 = S_NULL;
       }
 
+      // Initialize all the muscles ids in the new muscle objects
+      // NOTE TODO: This order should be specified in the config file.
+      int i=0;
+      arg_robot.muscle_system_.muscle_id_to_name_.resize(arg_robot.muscle_system_.muscles_.size());
+      sutil::CMappedList<std::string, SMuscle>::const_iterator itm,itme;
+      for (i=0, itm = arg_robot.muscle_system_.muscles_.begin(), itme = arg_robot.muscle_system_.muscles_.end();
+          itm != itme; ++itm, ++i)
+      {
+        arg_robot.muscle_system_.muscle_id_to_name_[i] = itm->name_;
+        sUInt* tmp = arg_robot.muscle_system_.muscle_name_to_id_.create(itm->name_);
+        *tmp = i;
+      }
     }//End of loop over robots in the xml file.
 
     if(muscle_spec<1)
@@ -646,8 +658,6 @@ bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
   { std::cerr<<"\nCSclParser::readMuscleSpecFromFile("<<arg_spec_file<<"): "<<e.what(); }
   return false;
 }
-
-
 
 
 bool CSclParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
