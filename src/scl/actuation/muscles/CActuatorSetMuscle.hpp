@@ -88,6 +88,14 @@ namespace scl
     int getNumberOfMuscles()
     { return muscles_.size(); }
 
+    /** Access the data structure */
+    SActuatorSetMuscle* getData()
+    { return &data_; }
+
+    /** Access the data structure for reads only */
+    const SActuatorSetMuscle* getData() const
+    { return &data_; }
+
     /* *****************************************************************
      *                        Initialization
      * ***************************************************************** */
