@@ -294,7 +294,7 @@ bool CTaskOpPos::computeModel()
       { singular_values_(2,2) = 1.0/svd_.singularValues()(2);  }
       else { singular_values_(2,2) = 0.0; }
 
-      data_->lambda_ = svd_.matrixU() * singular_values_ * svd_.matrixV().transpose();
+      data_->lambda_ = svd_.matrixV() * singular_values_ * svd_.matrixU().transpose();
 
       //Turn off the svd after 20 iterations
       //Don't worry, the qr will pop back to svd if it is still singular
