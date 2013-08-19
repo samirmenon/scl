@@ -39,9 +39,7 @@ namespace scl
   /** Default constructor. Sets stuff to NULL. */
   CActuatorSetMuscle::CActuatorSetMuscle() :
       CActuatorSetBase("CActuatorSetMuscle"),
-      name_(""), has_been_init_(false),
-      robot_(NULL), robot_io_ds_(NULL),
-      msys_(NULL), dynamics_(NULL)
+      robot_io_ds_(NULL), dynamics_(NULL)
   {}
 
   /** Initializes the actuator. This involves determining whether the muscle
@@ -72,9 +70,9 @@ namespace scl
       name_ = arg_name;
 
       //Save pointers
-      robot_ = arg_robot;
+      data_.robot_ = arg_robot;
       robot_io_ds_ = arg_rob_io_ds;
-      msys_ = arg_msys;
+      data_.msys_ = arg_msys;
       dynamics_ = arg_dynamics;
 
       // Initialize all the muscles in the muscle spec
@@ -92,19 +90,6 @@ namespace scl
         { throw(std::runtime_error(std::string("Could not initialize muscle: ")+it->name_)); }
       }
 
-      muscle_id_to_name_.resize(muscles_.size());
-
-      // Initialize all the muscles ids in the new muscle objects
-      int i=0;
-      sutil::CMappedList<std::string, CActuatorMuscle>::const_iterator itm,itme;
-      for (i=0, itm = muscles_.begin(), itme = muscles_.end();
-          itm != itme; ++itm, ++i)
-      {
-        muscle_id_to_name_[i] = itm->getName();
-        sUInt* tmp = muscle_name_to_id_.create(itm->getName());
-        *tmp = i;
-      }
-
       has_been_init_ = true;
     }
     catch(std::exception &e)
@@ -119,10 +104,10 @@ namespace scl
   sBool CActuatorSetMuscle::hasBeenInit()
   {
 #ifdef DEBUG
-    if(NULL == robot_) {  has_been_init_ = false; return false; }
+    if(NULL == data_.robot_) {  has_been_init_ = false; return false; }
     if(NULL == robot_io_ds_) {  has_been_init_ = false; return false; }
-    if(NULL == msys_) {  has_been_init_ = false; return false; }
-    if(false == msys_->has_been_init_) {  has_been_init_ = false; return false; }
+    if(NULL == data_.msys_) {  has_been_init_ = false; return false; }
+    if(false == data_.msys_->has_been_init_) {  has_been_init_ = false; return false; }
     if(NULL == dynamics_) {  has_been_init_ = false; return false; }
 #endif
     return has_been_init_;
@@ -140,10 +125,10 @@ namespace scl
     bool flag = true;
 
     // del-L_m = J del-q
-    ret_J.resize(muscles_.size(),robot_->dof_);
+    ret_J.resize(muscles_.size(),data_.robot_->dof_);
 
     Eigen::VectorXd row_J;
-    row_J.resize(robot_->dof_);
+    row_J.resize(data_.robot_->dof_);
 
     // Compute a row vector for each muscle to get the full muscle Jacobian
     int i=0;

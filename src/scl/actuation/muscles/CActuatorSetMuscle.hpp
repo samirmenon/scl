@@ -36,6 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/CDynamicsBase.hpp>
 #include <scl/actuation/CActuatorSetBase.hpp>
 #include <scl/actuation/muscles/CActuatorMuscle.hpp>
+#include <scl/actuation/muscles/data_structs/SActuatorSetMuscle.hpp>
 
 #include <Eigen/Eigen>
 
@@ -84,17 +85,6 @@ namespace scl
      *                           Accessors
      * ***************************************************************** */
     /** To simplify the confusion between name idx and numeric idx */
-    std::string getMuscleNameAtId(sUInt arg_id)
-    { return muscle_id_to_name_[arg_id];  }
-
-    /** To simplify the confusion between name idx and numeric idx */
-    int getMuscleIdAtName(const std::string& arg_name)
-    {
-      sUInt * tmp=  muscle_name_to_id_.at(arg_name);
-      if(NULL == tmp){ return -1; } else {  return *tmp;  }
-    }
-
-    /** To simplify the confusion between name idx and numeric idx */
     int getNumberOfMuscles()
     { return muscles_.size(); }
 
@@ -124,29 +114,14 @@ namespace scl
     virtual ~CActuatorSetMuscle(){}
 
   protected:
+    /** The muscle set data */
+    SActuatorSetMuscle data_;
+
     /** The muscles in this set */
     sutil::CMappedList<std::string,CActuatorMuscle> muscles_;
 
-    /** The muscle numeric id to name map */
-    std::vector<std::string> muscle_id_to_name_;
-
-    /** The muscle name to numeric id map */
-    sutil::CMappedList<std::string, sUInt> muscle_name_to_id_;
-
-    /** The name of the actuator set */
-    std::string name_;
-
-    /** Initialization state */
-    sBool has_been_init_;
-
-    /** The parent robot to which this actuator is attached */
-    const SRobotParsedData *robot_;
-
     /** The parent robot to which this actuator is attached */
     const SRobotIOData *robot_io_ds_;
-
-    /** The parsed muscle specification */
-    const SMuscleSystem *msys_;
 
     /** Dynamics specification (to compute robot Jacobians) */
     CDynamicsBase *dynamics_;
