@@ -108,6 +108,7 @@ int main(int argc, char** argv)
         flag = tmp_lparser.listRobotsInFile(tmp_infile,robot_names);
         if(false == flag) { throw(std::runtime_error("Could not read robot names from the file"));  }
         robot_name = robot_names[0];//Use the first available robot.
+        std::cout<<"\nNo robot name passed. Using first robot by default: "<<robot_name;
       }
       else { robot_name = argv[2];}//If robot name was passed, use it.
 
@@ -137,6 +138,8 @@ int main(int argc, char** argv)
 
         if("" == ctrl_name)
         { throw(std::runtime_error("Could not find any gc controllers in the file"));  }
+
+        std::cout<<"\nNo controller name passed. Using first controller by default: "<<ctrl_name;
       }
       else { ctrl_name = argv[3];}//If robot name was passed, use it.
 
