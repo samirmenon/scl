@@ -88,9 +88,6 @@ namespace scl
     /* *****************************************************************
      *                        Initialization
      * ***************************************************************** */
-    /** Initialize the actuator set */
-    virtual sBool init()=0;
-
     /** Default constructor. Sets stuff to NULL */
     CActuatorSetBase(const std::string& arg_subclass_type_name) :
       SObject(arg_subclass_type_name) {}
