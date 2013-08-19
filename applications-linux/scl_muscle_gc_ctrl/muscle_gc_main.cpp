@@ -204,13 +204,15 @@ int main(int argc, char** argv)
 
       // Set up an SVD to compute the inv to get muscle activation for gc control
       Eigen::JacobiSVD<Eigen::MatrixXd > rob_svd;
+      // QR is more stable than SVD in Eigen
+      Eigen::ColPivHouseholderQR<Eigen::Matrix3d> rob_qr;
       // Singular value matrix
       Eigen::MatrixXd rob_sing_val;
       rob_sing_val.setZero(rob_mset.getNumberOfMuscles(),rob_ds->dof_); //NOTE : Rectangular matrix
 
       // Compute svd to set up matrix sizes etc.
       rob_svd.compute(rob_muscle_J, Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
-      for(int i=0;i<rob_ds->dof_;++i)
+      for(unsigned int i=0;i<rob_ds->dof_;++i)
       {
         if(rob_svd.singularValues()(i)>1e-6)
         { rob_sing_val(i,i) = 1/rob_svd.singularValues()(i);  }
@@ -218,6 +220,9 @@ int main(int argc, char** argv)
         { rob_sing_val(i,i) = 0;  }
       }
       rob_muscle_Jpinv = rob_svd.matrixU() * rob_sing_val * rob_svd.matrixV().transpose();
+
+      // Compute QR to set up matrix sizes etc.
+      rob_qr.compute(rob_muscle_J.transpose() * rob_muscle_J);
 
       // The muscle force vector
       Eigen::VectorXd rob_muscle_f;
@@ -264,7 +269,7 @@ int main(int argc, char** argv)
 
               // Compute svd to set up matrix sizes etc.
               rob_svd.compute(rob_muscle_J, Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
-              for(int i=0;i<rob_ds->dof_;++i)
+              for(unsigned int i=0;i<rob_ds->dof_;++i)
               {
                 if(rob_svd.singularValues()(i)>1e-6)
                 { rob_sing_val(i,i) = 1/rob_svd.singularValues()(i);  }
@@ -279,8 +284,21 @@ int main(int argc, char** argv)
               {
                 std::cout<<"\nFm {";
                 for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
-                { std::cout<<rob_mset.getMuscleNameAtId(j)<<", "; }
+                { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
                 std::cout<<"} : "<<rob_muscle_f.transpose();
+
+                // Optional : Compare svd's results with qr
+                rob_qr.compute(rob_muscle_J.transpose() * rob_muscle_J);
+                if(rob_qr.isInvertible())
+                {
+                  rob_muscle_Jpinv = rob_muscle_J.transpose() * rob_qr.inverse();
+
+                  rob_muscle_f = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
+                  std::cout<<"\nQr {";
+                  for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
+                  { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
+                  std::cout<<"} : "<<rob_muscle_f.transpose();
+                }
               }
             }
             robot_gc_ctrl.computeControlForces();
