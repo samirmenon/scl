@@ -57,7 +57,13 @@ namespace scl
     virtual ~SObject(){}
 
     /** Get the object's type */
-    std::string getType() const {  return type_; }
+    virtual const std::string& getType() const {  return type_; }
+
+    /** Get the object's type */
+    virtual const std::string& getName() const {  return name_; }
+
+    /** Get the object's type */
+    virtual bool hasBeenInit() const {  return has_been_init_; }
 
     /** The object's name */
     std::string name_;
