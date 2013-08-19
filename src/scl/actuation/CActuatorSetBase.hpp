@@ -47,10 +47,16 @@ namespace scl
    * coherent interface, abstracting all physical details and exposing
    * a mathematical interface for the controller.
    *
+   * Models:
+   * (a) Actuator Kinematics : Actuator inputs might require some functional
+   *     transform to map on to the generalized coordinates (uses Jacobian).
+   * (b) Actuator Dynamics : Actuator forces might be a function of inputs,
+   *     and present state.
+   *
    * NOTE for "Real Robots": While working with a real robot, subclass
    *  this base class and implement your driver in it.
    */
-  class CActuatorSetBase
+  class CActuatorSetBase : public SObject
   {
   public:
     /* *****************************************************************
@@ -61,19 +67,23 @@ namespace scl
      * forces.
      *
      * Each actuator instance must implement this. */
-    virtual sBool computeJacobian()=0;
+    virtual sBool computeJacobian(Eigen::MatrixXd &ret_J)=0;
 
     /* *****************************************************************
-     *                        Actuator Modeling
+     *                        Actuator Dynamics
      * ***************************************************************** */
     /** Set the actuator commands. These will be translated into individual
-     * actuator commands */
-    virtual sBool actuate(const Eigen::VectorXd& arg_input)=0;
-
-    /** Gets the output of the actuator. Returned in the passed variable.
-     * Typically used for logging, validation etc.
-     * Should "NOT" be used by a controller. */
-    virtual sBool getActuatorOutputs(Eigen::VectorXd& ret_output)=0;
+     * actuator commands.
+     * Gets the output of the actuator. Returned in the passed variable.
+     *
+     * arg_input : The actuator input (possibly arbitrary coordinates)
+     * arg_state : Possibly actuator coordinates, velocities etc. Rows in matrix.
+     * ret_output_force : The actuator forces such that:
+     *                       Fgc = J' * ret_output_force;
+     */
+    virtual sBool computeDynamics(const Eigen::VectorXd& arg_input,
+        const Eigen::MatrixXd& arg_state,
+        Eigen::VectorXd& ret_output_force)=0;
 
     /* *****************************************************************
      *                        Initialization
@@ -81,20 +91,15 @@ namespace scl
     /** Initialize the actuator set */
     virtual sBool init()=0;
 
-    /** Has this actuator been initialized */
-    virtual sBool hasBeenInit()
-    { return has_been_init_; }
-
     /** Default constructor. Sets stuff to NULL */
-    CActuatorSetBase(): has_been_init_(false) {}
+    CActuatorSetBase(const std::string& arg_subclass_type_name) :
+      SObject(arg_subclass_type_name) {}
 
     /** Default destructor. Does nothing. */
     virtual ~CActuatorSetBase() {}
 
-  protected:
-
-    /** Initialization state */
-    sBool has_been_init_;
+  private:
+    CActuatorSetBase();
   };
 
 } /* namespace sutil */
