@@ -37,16 +37,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-  SActuatorMuscle::SViaPointSet::SViaPointSet() :
-    parent_link_0_(""), parent_link_1_(""),
-    dynamics_link_id_0_(NULL), dynamics_link_id_1_(NULL),
-    is_root_0_(false),is_root_1_(false),
-    child_link_id_(-1)
-  {}
-
-  SActuatorMuscle::SActuatorMuscle() : SObject("SActuatorMuscle")
-  {}
-
   /** Default constructor. Sets stuff to NULL. */
   CActuatorMuscle::CActuatorMuscle() :
       robot_(NULL), robot_io_ds_(NULL),

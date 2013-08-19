@@ -40,64 +40,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
 
+#include <scl/actuation/muscles/data_structs/SActuatorMuscle.hpp>
+
 #include <Eigen/Eigen>
 
 namespace scl
 {
-  /** Contains the information required to implement the muscle
-   * model and API   */
-  class SActuatorMuscle : public SObject
-  {
-  public:
-    class SViaPointSet{
-    public:
-      /** The two parent links to which the points are attached */
-      std::string parent_link_0_, parent_link_1_;
-
-      /** The two via points that span one or more generalized
-       * coords */
-      Eigen::Vector3d position_in_parent_0_, position_in_parent_1_;
-
-      /** The two via points that span one or more generalized
-       * coords (in global coordinates) */
-      Eigen::Vector3d x_glob_0_, x_glob_1_;
-
-      /** The instantaneous change in the two via points (in global coordinates) */
-      Eigen::Vector3d dx_glob_0_, dx_glob_1_;
-
-      /** The Jacobians at the via points */
-      Eigen::MatrixXd J_0_, J_1_;
-
-      /** The generalized coordinate spanned. This determines the columns
-       * of the Jacobian that we will pay attention to. Only the actuated
-       * gc columns are relevant while computing the muscle Jacobian. */
-      const void* dynamics_link_id_0_, *dynamics_link_id_1_;
-
-      /** Is one of the links root. */
-      bool is_root_0_, is_root_1_;
-
-      /** Child link in branching representation = {0,1} */
-      int child_link_id_;
-
-      /** The generalized coordinate spanned. This determines the columns
-       * of the Jacobian that we will pay attention to. Only the actuated
-       * gc columns are relevant while computing the muscle Jacobian. */
-      std::vector<sUInt> scl_gc_id_;
-
-      /** Default constructor. Sets stuff to null */
-      SViaPointSet();
-    };
-
-    /** The set of generalized coordinates spanned by this muscle */
-    sutil::CMappedList<sUInt,SViaPointSet> via_point_set_;
-
-    /** The generalized coordinate values */
-    Eigen::VectorXd q_curr_, dq_curr_;
-
-    /** Default constructor. Sets stuff to null. Sets SObject type. */
-    SActuatorMuscle();
-  };
-
   /** Models a muscle as a linear actuator with zero
    * force generation delay and a stiff tendon, which
    * eliminates slack.
