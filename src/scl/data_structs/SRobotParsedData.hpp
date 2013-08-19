@@ -57,6 +57,9 @@ public:
    * and will maintain a mapping between their names and the nodes. */
   sutil::CMappedTree<std::string, SRigidBody> robot_br_rep_;
 
+  /** The indices of the different links in the mapped tree */
+  std::vector<std::string> robot_br_rep_numeric_id_to_name_;
+
   /** The muscle specification contains a list of all muscle actuators
    * that are attached to this robot. */
   SMuscleSystem muscle_system_;
