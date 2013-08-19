@@ -34,6 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
 #include <scl/data_structs/SForce.hpp>
+#include <scl/actuation/data_structs/SActuatorSetBase.hpp>
 
 #include <sutil/CMappedList.hpp>
 #include <Eigen/Dense>
@@ -105,6 +106,13 @@ namespace scl
      * b) By a user interacting through a gui
      */
     Eigen::VectorXd force_gc_commanded_;
+
+    /** Muscle actuator sets. Use the type information to do
+     * stuff with the data depending on actuator type.
+     *
+     * NOTE : The CMappedPointerList merely indicates that sutil
+     * will NOT deallocate memory for these objects. */
+    sutil::CMappedPointerList<std::string, SActuatorSetBase, false> actuator_sets_;
   };
 
   /** Wraps input (sensor) and output (actuator) data for a robot.
