@@ -34,6 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/data_structs/SRobotParsedData.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
+#include <scl/actuation/CActuatorSetBase.hpp>
 #include <scl/actuation/muscles/CActuatorMuscle.hpp>
 
 #include <Eigen/Eigen>
@@ -48,11 +49,11 @@ namespace scl
    *
    * This class combines a set of muscles into
    */
-  class CActuatorSetMuscle
+  class CActuatorSetMuscle : public CActuatorSetBase
   {
   public:
     /* *****************************************************************
-     *                        Actuation Model
+     *                        Actuator Kinematics
      * ***************************************************************** */
     /** Some actuator sets don't directly actuate the generalized coordinates
      * and require a Jacobian to compute their contribution to the generalized
@@ -61,6 +62,23 @@ namespace scl
      * Each actuator instance implements a row in the Jacobian. The actuator
      * set merely collates them. */
     virtual sBool computeJacobian(Eigen::MatrixXd &ret_J);
+
+    /* *****************************************************************
+     *                        Actuator Dynamics
+     * ***************************************************************** */
+    /** Set the actuator commands. These will be translated into individual
+     * actuator commands.
+     * Gets the output of the actuator. Returned in the passed variable.
+     *
+     * arg_input : The actuator input (possibly arbitrary coordinates)
+     * arg_state : Possibly actuator coordinates, velocities etc. Rows in matrix.
+     * ret_output_force : The actuator forces such that:
+     *                       Fgc = J' * ret_output_force;
+     */
+    virtual sBool computeDynamics(const Eigen::VectorXd& arg_input,
+        const Eigen::MatrixXd& arg_state,
+        Eigen::VectorXd& ret_output_force)
+    { /** TODO : Implement hill-type muscles */ return false; }
 
     /* *****************************************************************
      *                           Accessors

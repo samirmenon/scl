@@ -38,6 +38,7 @@ namespace scl
 {
   /** Default constructor. Sets stuff to NULL. */
   CActuatorSetMuscle::CActuatorSetMuscle() :
+      CActuatorSetBase("CActuatorSetMuscle"),
       name_(""), has_been_init_(false),
       robot_(NULL), robot_io_ds_(NULL),
       msys_(NULL), dynamics_(NULL)
