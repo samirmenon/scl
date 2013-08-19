@@ -875,6 +875,7 @@ namespace scl {
       const sBool add_musc_via_points)
   {
     std::string musc_name("");
+    SGraphicsMsys *msys_gr = NULL;
     try
     {
       if(!has_been_init_) { return false; }
@@ -888,9 +889,26 @@ namespace scl {
       if(S_NULL==rob_gr)//Require an existing robot to render muscles.
       { throw(std::runtime_error("Couldn't find a (physics+graphics) representation for the robot on the pile"));  }
 
-      SGraphicsMsys *msys_gr = data_->muscles_rendered_.create(arg_msys.name_);
+      msys_gr = data_->muscles_rendered_.create(arg_msys.name_);
       if(S_NULL == db) { throw(std::runtime_error("Could not create muscle rendering data struct on the pile"));  }
 
+      SRobotIOData *rob_io_ds = db->s_io_.io_data_.at(arg_robot);
+      if(NULL == rob_io_ds)
+      { throw(std::runtime_error(std::string("Couldn't find an io data structure for the robot on the pile: ") + arg_robot));  }
+
+      // Weird const to make sure it carries over across the pointers.
+      const SActuatorSetBase * const *  mptr = rob_io_ds->actuators_.actuator_sets_.at(arg_msys.name_);
+      if(NULL == mptr)
+      { throw(std::runtime_error(std::string("Robot's actuator set doesn't contain muscle actuator set: ") + arg_msys.name_));  }
+
+      msys_gr->muscle_actuator_set_ = *mptr;
+      if(NULL == msys_gr->muscle_actuator_set_)
+      { throw(std::runtime_error(std::string("Robot's io data structure doesn't contain muscle actuator set: ") + arg_msys.name_));  }
+
+      // Make sure the graphics object's name matches the muscle spec.
+      msys_gr->name_ = arg_msys.name_;
+
+      // Now add all the muscles to the graphics muscle object
       sutil::CMappedList<std::basic_string<char>, scl::SMuscle>::const_iterator it,ite;
       for(it = arg_msys.muscles_.begin(), ite = arg_msys.muscles_.end();
           it!=ite; ++it)
@@ -978,10 +996,15 @@ namespace scl {
 
         //Get the next muscle
       }
+
+      // The muscle graphics object has been initialized.
+      msys_gr->has_been_init_ = true;
     }
     catch(std::exception& ee)
     {
       std::cerr<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys.name_<<") : "<<musc_name<<" : "<<ee.what();
+      if(NULL != msys_gr)
+      { data_->muscles_rendered_.erase(arg_msys.name_); }
       return false;
     }
     return true;
@@ -1278,8 +1301,13 @@ namespace scl {
   {
     try
     {
-      //The preliminaries
-      glLineWidth(CHAI_MUSC_THICKNESS);                   // Muscle line size (pixels)
+      SDatabase* db = CDatabase::getData();
+      #ifdef DEBUG
+      if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
+      #endif
+
+//      //The preliminaries
+//      glLineWidth(CHAI_MUSC_THICKNESS);                   // Muscle line size (pixels)
 
       // Recompute global positions : Required for the muscle points
       data_->chai_world_->computeGlobalPositions(true);
@@ -1292,12 +1320,17 @@ namespace scl {
         //Get a muscle system
         SGraphicsMsys& msys = *it;
 
-        std::vector<SGraphicsMsys::SGraphicsMuscle>::iterator it,ite;
-        for(it = msys.msys_.begin(), ite = msys.msys_.end();
-            it!=ite; ++it)
-        {//Loop over all the muscles in a system.
+        std::vector<SGraphicsMsys::SGraphicsMuscle>::iterator itm,itme;
+        int i=0;
+        for(itm = msys.msys_.begin(), itme = msys.msys_.end();
+            itm!=itme; ++itm, ++i)
+        {
+          //Determine the color of this muscle. The color will be applied to all segments.
+          // NOTE : The color is red for max activation and blue for min force. Linspaced
+          //        inc red, dec blue for increasing force.
+          //Loop over all the muscles in a system.
           std::vector<SGraphicsMsys::SGraphicsMuscle::SGraphicsMusclePoint>::iterator itmp,itmpe;
-          for(itmp = (*it).mpt_.begin(), itmpe = (*it).mpt_.end();
+          for(itmp = (*itm).mpt_.begin(), itmpe = (*itm).mpt_.end();
               itmp!=itmpe; ++itmp)
           {//Loop over all the muscle connection points for a muscle
             if(S_NULL == itmp->graphics_via_line_)
@@ -1306,16 +1339,32 @@ namespace scl {
             SGraphicsMsys::SGraphicsMuscle::SGraphicsMusclePoint& mp = *itmp;//Tmp ref
 
             //Reposition the line's end points if the parent links have moved, which they will.
+            //(a) Get the parent graphics objects
             cGenericObject *par = mp.graphics_parent_->graphics_obj_;
             cGenericObject *par2 = mp.graphics_parent_next_->graphics_obj_;
-            cVector3d rotvec, rotvec2;
             cShapeLine* l = dynamic_cast<cShapeLine*>(itmp->graphics_via_line_);
+            if(NULL == l)
+            { std::cerr<<"\nCChaiGraphics::updateGraphicsForMuscles() : Error : Could not obtain muscle line graphics object at :"<<it->name_; }
 
+            // Rotate the line's end points.
+            cVector3d rotvec, rotvec2;
             rotvec = par->getGlobalRot() * (*(*itmp).pos_);//Rotate the point to this frame.
             l->m_pointA = par->getGlobalPos() + rotvec; //Translate the rotated position vector from the frame's position.
 
             rotvec2 = par2->getGlobalRot() * (*(*itmp).pos_next_);//Rotate the point to this frame.
             l->m_pointB = par2->getGlobalPos() + rotvec2; //Translate the rotated position vector from the frame's position.
+
+            // Set the line's color.
+            cMaterial mat;
+            if(msys.muscle_actuator_set_->force_actuator_max_(i) <= 0.0 || msys.muscle_actuator_set_->force_actuator_(i) <= 0.0)
+            { mat.setColorf(0.0,1.0,0.0); }
+            else
+            {
+              double tmp_col = msys.muscle_actuator_set_->force_actuator_(i)/msys.muscle_actuator_set_->force_actuator_max_(i);
+              mat.setColorf(tmp_col,0.0,1 - tmp_col);
+            }
+            l->setMaterial(mat,false);
+            l->setUseMaterial(true,false);
           }
         }
 

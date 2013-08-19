@@ -42,6 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SObject.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/actuation/data_structs/SActuatorSetBase.hpp>
 
 #include <sutil/CMappedList.hpp>
 #include <sutil/CMappedTree.hpp>
@@ -119,10 +120,12 @@ public:
 };
 
 /** The graphics representation for rendered muscles */
-struct SGraphicsMsys
+struct SGraphicsMsys : public SObject
 {
+  /** The graphics representation for one muscle */
   struct SGraphicsMuscle
   {
+    /** The graphics representation for one muscle point */
     struct SGraphicsMusclePoint
     {//Chai's GPL license might now allow us to directly link. Hence have to separate stuff.
       //Hence use forward decls and pointers. Should have used static members instead
@@ -134,6 +137,7 @@ struct SGraphicsMsys
 
       chai3d::cGenericObject* graphics_via_point_;
       chai3d::cGenericObject* graphics_via_line_;
+
       SGraphicsMusclePoint()
       {
         pos_ = S_NULL; pos_next_ = S_NULL;
@@ -142,18 +146,24 @@ struct SGraphicsMsys
       }
       ~SGraphicsMusclePoint()
       {//NOTE TODO : Possible memory leak.
-//        if(S_NULL!=pos_)
-//        { delete pos_;  }
-//        if(S_NULL!=pos_global_)
-//        { delete pos_global_; }
+        // if(S_NULL!=pos_) { delete pos_;  }
       }
-    };
+    }; //End of SGraphicsMusclePoint
+
     /** A set of muscle points to be rendered */
     std::vector<SGraphicsMusclePoint> mpt_;
-    //void* musc_data_;// NOTE TODO : Add dynamic muscle coloring later
-  };
+  }; // End of : SGraphicsMuscle
+
   /** A set of muscles to be rendered */
   std::vector<SGraphicsMuscle> msys_;
+
+  /** A link to the muscle system's actuator set. For rendering
+   * muscle activation for different motions */
+  const SActuatorSetBase * muscle_actuator_set_;
+
+  /** Constructor specifies type */
+  SGraphicsMsys() : SObject("SGraphicsMsys"),
+      muscle_actuator_set_(NULL){}
 };
 
 /** Enables passing data between a chai rendering instance and the scl control framework.
