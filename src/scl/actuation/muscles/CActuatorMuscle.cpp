@@ -137,11 +137,13 @@ namespace scl
             pt_set->is_root_0_ = true;
             pt_set->x_glob_0_ = pt_set->position_in_parent_0_+tmp_rb_0->pos_in_parent_;
             pt_set->dx_glob_0_.setZero();
+            pt_set->J_0_.setZero(3, robot_->dof_);
           }
           if(tmp_rb_1->is_root_){
             pt_set->is_root_1_ = true;
             pt_set->x_glob_1_ = pt_set->position_in_parent_1_+tmp_rb_1->pos_in_parent_;
             pt_set->dx_glob_1_.setZero();
+            pt_set->J_0_.setZero(3, robot_->dof_);
           }
 
           //NOTE : These return NULL for root nodes. Need special code to handle that.
