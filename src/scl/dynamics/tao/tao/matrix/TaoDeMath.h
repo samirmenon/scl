@@ -115,13 +115,13 @@ class deMatrix6;
 #include "TaoDeVector6.h"
 #include "TaoDeMatrix6.h"
 
-#include "TaoDeVector3.inl"
-#include "TaoDeQuaternion.inl"
-#include "TaoDeMatrix3.inl"
-#include "TaoDeFrame.inl"
-#include "TaoDeTransform.inl"
-#include "TaoDeVector6.inl"
-#include "TaoDeMatrix6.inl"
+#include "TaoDeVector3Inl.h"
+#include "TaoDeQuaternionInl.h"
+#include "TaoDeMatrix3Inl.h"
+#include "TaoDeFrameInl.h"
+#include "TaoDeTransformInl.h"
+#include "TaoDeVector6Inl.h"
+#include "TaoDeMatrix6Inl.h"
 
 #endif //__cplusplus
 
