@@ -55,6 +55,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <omp.h>
 #include <GL/freeglut.h>
 
+const double SVD_THESHOLD = 0.0001;
+
 /**
  * A sample application to demonstrate scl running one or more robots.
  *
@@ -160,19 +162,6 @@ int main(int argc, char** argv)
       flag = tao_dyn_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
-      /******************************ChaiGlut Graphics************************************/
-      glutInit(&argc, argv);
-
-      scl::CChaiGraphics chai_gr;
-      flag = chai_gr.initGraphics(graphics_names[0]);
-      if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
-
-      flag = chai_gr.addRobotToRender(robot_name);
-      if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
-
-      if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_names[0], &chai_gr))
-      { throw(std::runtime_error("Glut initialization error")); }
-
       /******************************Shared I/O Data Structure************************************/
       scl::SRobotIOData* rob_io_ds;
       rob_io_ds = db->s_io_.io_data_.at(robot_name);
@@ -197,6 +186,14 @@ int main(int argc, char** argv)
       flag = rob_mset.init(rob_ds->muscle_system_.name_, rob_ds, rob_io_ds, &(rob_ds->muscle_system_), &tao_dyn);
       if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set"));  }
 
+      // Create an actuator set in the database
+      scl::SActuatorSetBase **pact = rob_io_ds->actuators_.actuator_sets_.create(rob_ds->muscle_system_.name_);
+      *pact = rob_mset.getData();
+      scl::SActuatorSetBase *act = *pact;
+      act->force_actuator_max_.setConstant(rob_mset.getNumberOfMuscles(),2);
+      act->force_actuator_min_.setConstant(rob_mset.getNumberOfMuscles(),0);
+      act->force_actuator_.setConstant(rob_mset.getNumberOfMuscles(),0);
+
       // Run the compute Jacobian function once (resizes the matrix etc.).
       Eigen::MatrixXd rob_muscle_J, rob_muscle_Jpinv;
       flag = rob_mset.computeJacobian(rob_muscle_J);
@@ -204,29 +201,38 @@ int main(int argc, char** argv)
 
       // Set up an SVD to compute the inv to get muscle activation for gc control
       Eigen::JacobiSVD<Eigen::MatrixXd > rob_svd;
-      // QR is more stable than SVD in Eigen
-      Eigen::ColPivHouseholderQR<Eigen::Matrix3d> rob_qr;
-      // Singular value matrix
+      // Singular value matrix for J'
       Eigen::MatrixXd rob_sing_val;
-      rob_sing_val.setZero(rob_mset.getNumberOfMuscles(),rob_ds->dof_); //NOTE : Rectangular matrix
+      rob_sing_val.setZero(rob_ds->dof_, rob_mset.getNumberOfMuscles()); //NOTE : Rectangular matrix
 
       // Compute svd to set up matrix sizes etc.
-      rob_svd.compute(rob_muscle_J, Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+      rob_svd.compute(rob_muscle_J.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
       for(unsigned int i=0;i<rob_ds->dof_;++i)
       {
-        if(rob_svd.singularValues()(i)>1e-6)
+        if(rob_svd.singularValues()(i)>SVD_THESHOLD)
         { rob_sing_val(i,i) = 1/rob_svd.singularValues()(i);  }
         else
         { rob_sing_val(i,i) = 0;  }
       }
-      rob_muscle_Jpinv = rob_svd.matrixU() * rob_sing_val * rob_svd.matrixV().transpose();
 
-      // Compute QR to set up matrix sizes etc.
-      rob_qr.compute(rob_muscle_J.transpose() * rob_muscle_J);
+      rob_muscle_Jpinv.setZero(rob_muscle_J.rows(), rob_muscle_J.cols());
+      rob_muscle_Jpinv = rob_svd.matrixV() * rob_sing_val.transpose() * rob_svd.matrixU().transpose();
 
       // The muscle force vector
-      Eigen::VectorXd rob_muscle_f;
-      rob_muscle_f.setZero(rob_ds->muscle_system_.muscles_.size());
+      act->force_actuator_.setZero(rob_ds->muscle_system_.muscles_.size());
+
+      /******************************ChaiGlut Graphics************************************/
+      glutInit(&argc, argv);
+
+      scl::CChaiGraphics chai_gr;
+      flag = chai_gr.initGraphics(graphics_names[0]);
+      if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
+
+      flag = chai_gr.addRobotToRender(robot_name);
+      if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
+
+      if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_names[0], &chai_gr))
+      { throw(std::runtime_error("Glut initialization error")); }
 
       /******************************Main Loop************************************/
       std::cout<<std::flush;
@@ -268,37 +274,25 @@ int main(int argc, char** argv)
               rob_mset.computeJacobian(rob_muscle_J);
 
               // Compute svd to set up matrix sizes etc.
-              rob_svd.compute(rob_muscle_J, Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+              rob_svd.compute(rob_muscle_J.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
               for(unsigned int i=0;i<rob_ds->dof_;++i)
               {
-                if(rob_svd.singularValues()(i)>1e-6)
+                if(rob_svd.singularValues()(i)>SVD_THESHOLD)
                 { rob_sing_val(i,i) = 1/rob_svd.singularValues()(i);  }
                 else
                 { rob_sing_val(i,i) = 0;  }
               }
-              rob_muscle_Jpinv = rob_svd.matrixU() * rob_sing_val * rob_svd.matrixV().transpose();
+              rob_muscle_Jpinv = rob_svd.matrixV() * rob_sing_val.transpose() * rob_svd.matrixU().transpose();
 
-              rob_muscle_f = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
+              act->force_actuator_ = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
 
               if(ctrl_ctr%5000 == 0)
               {
+                std::cout<<"\nJ':\n"<<rob_muscle_J.transpose();
                 std::cout<<"\nFm {";
                 for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
                 { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
-                std::cout<<"} : "<<rob_muscle_f.transpose();
-
-                // Optional : Compare svd's results with qr
-                rob_qr.compute(rob_muscle_J.transpose() * rob_muscle_J);
-                if(rob_qr.isInvertible())
-                {
-                  rob_muscle_Jpinv = rob_muscle_J.transpose() * rob_qr.inverse();
-
-                  rob_muscle_f = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
-                  std::cout<<"\nQr {";
-                  for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
-                  { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
-                  std::cout<<"} : "<<rob_muscle_f.transpose();
-                }
+                std::cout<<"} : "<<act->force_actuator_.transpose();
               }
             }
             robot_gc_ctrl.computeControlForces();
@@ -327,10 +321,6 @@ int main(int argc, char** argv)
 
         assert(rob_io_ds == gc_ctrl_ds->io_data_);
 
-#ifdef DEBUG
-        rob_io_ds->printInfo();
-#endif
-
         //1. Simulation Dynamics
         flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
 //        rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
@@ -347,24 +337,28 @@ int main(int argc, char** argv)
           rob_mset.computeJacobian(rob_muscle_J);
 
           // Compute svd to set up matrix sizes etc.
-          rob_svd.compute(rob_muscle_J, Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
-          for(int i=0;i<rob_ds->dof_;++i)
+          rob_svd.compute(rob_muscle_J.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+          for(unsigned int i=0;i<rob_ds->dof_;++i)
           {
-            if(rob_svd.singularValues()(i)>1e-6)
+            if(rob_svd.singularValues()(i)>SVD_THESHOLD)
             { rob_sing_val(i,i) = 1/rob_svd.singularValues()(i);  }
             else
             { rob_sing_val(i,i) = 0;  }
           }
-          rob_muscle_Jpinv = rob_svd.matrixU() * rob_sing_val * rob_svd.matrixV().transpose();
+          rob_muscle_Jpinv = rob_svd.matrixV() * rob_sing_val.transpose() * rob_svd.matrixU().transpose();
 
-          rob_muscle_f = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
+          act->force_actuator_ = rob_muscle_Jpinv * rob_io_ds->actuators_.force_gc_commanded_;
 
           if(ctrl_ctr%5000 == 0)
           {
+#ifdef DEBUG
+            rob_io_ds->printInfo();
+#endif
+            std::cout<<"\nJ':\n"<<rob_muscle_J.transpose();
             std::cout<<"\nFm {";
             for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
-            { std::cout<<rob_mset.getMuscleNameAtId(j)<<", "; }
-            std::cout<<"} : "<<rob_muscle_f.transpose();
+            { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
+            std::cout<<"} : "<<act->force_actuator_.transpose();
           }
         }
         robot_gc_ctrl.computeControlForces();
