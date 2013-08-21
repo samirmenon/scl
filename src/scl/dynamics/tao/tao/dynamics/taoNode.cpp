@@ -22,7 +22,7 @@
 
 #include <tao/dynamics/taoNode.h>
 #include <tao/dynamics/taoJoint.h>
-#include "taoABNode.h"
+#include "taoArticulatedBodyLink.hpp"
 #include <tao/dynamics/taoDynamics.h>
 
 deVector6* taoNode::velocity()

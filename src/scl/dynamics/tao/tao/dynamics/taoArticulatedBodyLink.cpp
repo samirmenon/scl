@@ -21,8 +21,8 @@
  */
 
 
-#include "taoABNode.h"
 #include "taoABJoint.h"
+#include "taoArticulatedBodyLink.hpp"
 
 #include <assert.h>
 

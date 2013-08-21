@@ -20,8 +20,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _taoABNode_h
-#define _taoABNode_h
+#ifndef _taoArticulatedBodyLink_h
+#define _taoArticulatedBodyLink_h
 
 #include "taoABJoint.h"
 #include <tao/matrix/TaoDeMath.h>
@@ -310,5 +310,5 @@ private:
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
-#endif // _taoABNode_h
+#endif // taoArticulatedBodyLink.h
 

@@ -23,7 +23,7 @@
 #include "taoABDynamics.h"
 #include <tao/matrix/TaoDeMath.h>
 #include "taoDNode.h"
-#include "taoABNode.h"
+#include "taoArticulatedBodyLink.hpp"
 
 #include <assert.h>
 
