@@ -31,10 +31,10 @@
 taoWorld::~taoWorld()
 {
 	taoNodeRoot* r;
-	while (_rootList)
+	while (root_node_)
 	{	
-		r = _rootList;
-		_rootList = _rootList->getNext();
+		r = root_node_;
+		root_node_ = root_node_->getNext();
 		delete r;
 	}
 }
@@ -44,7 +44,7 @@ void taoWorld::update(const deFloat time, const deFloat dt, const deInt n)
 	deInt i = 0;
 	while (i < n)
 	{
-		taoNodeRoot* r = _rootList;
+		taoNodeRoot* r = root_node_;
 		while (r)
 		{
 			if (!r->getIsFixed())
@@ -61,7 +61,7 @@ void taoWorld::update(const deFloat time, const deFloat dt, const deInt n)
 
 void taoWorld::simulate(const deFloat dt)
 {
-	taoNodeRoot* r = _rootList;
+	taoNodeRoot* r = root_node_;
 	while (r)
 	{
 		if (!r->getIsFixed())
@@ -75,7 +75,7 @@ void taoWorld::simulate(const deFloat dt)
 
 void taoWorld::updateTransformation()
 {
-	taoNodeRoot* r = _rootList;
+	taoNodeRoot* r = root_node_;
 	while (r)
 	{
 		if (!r->getIsFixed())
@@ -88,8 +88,8 @@ void taoWorld::updateTransformation()
 
 void taoWorld::addRoot(taoNodeRoot* r, const deInt id)
 {
-	r->setNext(_rootList);
-	_rootList = r;
+	r->setNext(root_node_);
+	root_node_ = r;
 
 	r->setID(id);
 	r->setGroup(this);
@@ -97,10 +97,10 @@ void taoWorld::addRoot(taoNodeRoot* r, const deInt id)
 
 taoNodeRoot* taoWorld::removeRoot(const deInt id)
 {
-	taoNodeRoot* n, *g = _rootList;
+	taoNodeRoot* n, *g = root_node_;
 	if (g && g->getID() == id)
 	{
-		_rootList = g->getNext();
+		root_node_ = g->getNext();
 		g->setNext(NULL);
 		return g;
 	}
@@ -123,7 +123,7 @@ taoNodeRoot* taoWorld::removeRoot(const deInt id)
 
 taoNodeRoot* taoWorld::findRoot(const deInt id)
 {
-	taoNodeRoot* r = _rootList;
+	taoNodeRoot* r = root_node_;
 	while (r)
 	{
 		if (r->getID() == id)

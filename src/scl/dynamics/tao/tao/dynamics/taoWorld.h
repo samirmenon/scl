@@ -45,7 +45,7 @@ class taoNodeRoot;
 class taoWorld
 {
 public:
-	taoWorld() : _id(-1), _isFixed(0), _rootList(NULL), _next(NULL) { _gravity.zero(); }
+	taoWorld() : _id(-1), _isFixed(0), root_node_(NULL), _next(NULL) { _gravity.zero(); }
 	~taoWorld();
 
 	void setID(deInt i) { _id = i; }
@@ -59,7 +59,7 @@ public:
 	void setNext(taoWorld* g) { _next = g; }
 	taoWorld* getNext() { return _next; }
 
-	taoNodeRoot* getRootList() { return _rootList; }
+	taoNodeRoot* getRootList() { return root_node_; }
 	void addRoot(taoNodeRoot* r, const deInt id);
 	taoNodeRoot* removeRoot(const deInt id);
 	taoNodeRoot* findRoot(const deInt id);
@@ -89,7 +89,8 @@ private:
 	deInt _id;
 	deInt _isFixed;
 	deVector3 _gravity;
-	taoNodeRoot* _rootList;
+	taoNodeRoot* root_node_;
+
 	taoWorld* _next;
 };
 
