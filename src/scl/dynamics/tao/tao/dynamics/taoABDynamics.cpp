@@ -298,7 +298,7 @@ void taoABDynamics::_forwardDynamicsOutIn(taoDNode* root, taoABDynamicsData* dat
 {
 	taoABDynamicsData data;
 	deVector6* Pa = root->getABNode()->Pa();
-	deVector6* V = root->getABNode()->V();
+	deVector6* V = root->getABNode()->getVelocity();
 	deVector6 G;
 
 	root->getABNode()->abInertiaInit(data.Ia);
@@ -322,7 +322,7 @@ void taoABDynamics::_inverseDynamicsOutIn(taoDNode* root, taoABDynamicsData2* da
 	taoABDynamicsData2 data;
 	deVector6* F = root->getABNode()->Pa();
 	deVector6* A = root->getABNode()->A();
-	deVector6* V = root->getABNode()->V();
+	deVector6* V = root->getABNode()->getVelocity();
 	deVector6 P;
 	deVector6 G;
 
@@ -364,7 +364,7 @@ void taoABDynamics::_accelerationTreeOut(taoDNode* root, const deVector6* Ah)
 
 void taoABDynamics::_velocityDeltaTreeOut(taoDNode* root, const deVector6* dVh, const deVector6* Vh, const deInt dist)
 {
-	deVector6 *V = root->getABNode()->V();
+	deVector6 *V = root->getABNode()->getVelocity();
 	deVector6 dV;
 
 	root->getABNode()->velocityDelta(dV, *dVh, dist);
@@ -389,7 +389,7 @@ deFloat taoABDynamics::potentialEnergy(taoDNode* root, const deVector3* gh)
 deFloat taoABDynamics::kineticEnergy(taoDNode* root, const deVector6* Vh)
 {
 	deFloat E;
-	deVector6* V = root->getABNode()->V();
+	deVector6* V = root->getABNode()->getVelocity();
 
 	E = root->getABNode()->kineticEnergy(*V, *Vh);
 

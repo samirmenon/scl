@@ -40,7 +40,7 @@
 class taoArticulatedBodyLink
 {
 public:
-	taoArticulatedBodyLink() { _V.zero(); _A.zero(); _H.zero(), _Omega.zero(); }
+	taoArticulatedBodyLink() { velocity_.zero(); _A.zero(); _H.zero(), _Omega.zero(); }
 
 	virtual ~taoArticulatedBodyLink() {}
 
@@ -53,7 +53,10 @@ public:
 
 	virtual deMatrix6* Omega() { return &_Omega; }
 	virtual deVector6* H() { return &_H; }
-	virtual deVector6* V() { return &_V; }
+
+	/** Returns this link's velocity. Should ideally be at the com */
+	virtual deVector6* getVelocity() { return &velocity_; }
+
 	virtual deVector6* A() { return &_A; }
 
 	// Ia = I
@@ -94,16 +97,20 @@ public:
 	virtual void getFrameLocal(deFrame& localFrame) {}
 
 	virtual void abImpulse(deVector6& Yah, deInt propagate) {}
+
 	// 0Je = Je = iXe^T Si = 0Xi^(-T) Si
 	// where 0Xi^(-T) = [ R rxR; 0 R ]
 	// since 0Re = identity
 	// and  iXe^T = [(inv 0Xi) 0Xe]^T = (0Xe)^T * (0Xi)^(-T) = 0Xi ^(-T)
 	// since  0Xe = identity matrix    <--  {e} = {0}
 	virtual void globalJacobian(const deFrame& globalFrame) {}
+
 	// A += J * ddQ
 	virtual void plusEq_Jg_ddQ(deVector6& Ag) {}
+
 	// Tau += Jt * F
 	virtual void add2Tau_JgT_F(const deVector6& Fg) {}
+
 	// Gi = Xc Gc
 	// Gc = [ mi Rtci gi ; 0]
 	// gi = Rt gh
@@ -119,12 +126,16 @@ public:
 	//     = [ wxv ; 0 ]
 	// Xt * WxV = [ Rt -Rtdx; 0 Rt ] [ wxv ; 0 ] = [ Rt WxV ; 0 ]
 	virtual void velocity(deVector6& V, deVector3& WxV, const deVector6& Vh, const deVector3& WhxVh) = 0;
+
 	virtual void velocityOnly(deVector6& V, const deVector6& Vh) {}
+
 	// Hi = hXi^T Hh + Ci
 	virtual void biasAcceleration(deVector6& H, const deVector6& Hh) = 0;
+
 	// Vi = hXi^T Vh + Si dqi;
 	// E = 0.5 Vt I V
 	virtual deFloat kineticEnergy(deVector6& V, const deVector6& Vh) = 0;
+
 	// E = mgh
 	virtual deFloat potentialEnergy(const deVector3& gh, const deFrame& globalFrame, const deFloat mass, const deVector3& centerOfMass) = 0;
 
@@ -132,6 +143,7 @@ public:
 	// ddQ = Dinv*(tau - St*Pa) - Sbar*(X Ah + Ci)
 	// Ai = (hXi^T Ah + Ci) + Si ddqi;
 	virtual void acceleration(deVector6& A, const deVector6& Ah) {}
+
 	virtual void accelerationOnly(deVector6& A, const deVector6& Ah) {}
 
 	// ddQ = Dinv*(tau - St*Pa) - Sbar*(X Ah)
@@ -145,18 +157,22 @@ public:
 	// C = Ph = 0
 	// Pah = - Fexth + sum [ Li (Pai) + X SbarTi taui ]
 	virtual void abBiasForceConfig(deVector6& Pah, deInt propagate) {}
+
 	virtual void abInertiaDepend(deMatrix6& Iah, deVector6& Pah, deMatrix6& Ia, deInt propagate) {}
+
 	// O = S Dinv St + Lt Oh L
 	virtual void osInertiaInv(deMatrix6& Oa, const deMatrix6& Oah) {}
 
 	virtual void setABJoint(taoABJoint* joint, deInt i = 0) {}
+
 	virtual taoABJoint* getABJoint(deInt i = 0) = 0;
 
 	virtual void setNOJ(deInt n) {}
+
 	virtual const deInt getNOJ() const = 0;
 
 private:
-	deVector6 _V;
+	deVector6 velocity_;
 	deVector6 _A;
 	deVector6 _H;		
 	deMatrix6 _Omega;	// Op Sp Matrix inverse : diagonal terms

@@ -30,7 +30,7 @@
 
 deVector6* taoNode::velocity()
 {
-	return getABNode()->V();
+	return getABNode()->getVelocity();
 }
 
 deVector6* taoNode::acceleration()
@@ -204,8 +204,8 @@ void taoNode::unlink()
 
 void taoNode::linearVelocity(deVector3* Vie, const deVector3* Pie)
 {
-	Vie->crossMultiply(*Pie, (*getABNode()->V())[1]);
-	Vie->subtract((*getABNode()->V())[0], *Vie);
+	Vie->crossMultiply(*Pie, (*getABNode()->getVelocity())[1]);
+	Vie->subtract((*getABNode()->getVelocity())[0], *Vie);
 }
 
 void taoNode::linearAcceleration(deVector3* Aie, const deVector3* Pie)
@@ -241,7 +241,7 @@ void taoNode::force(const deVector3* Pie, const deVector3* Fie)
 
 deVector6* taoNodeRoot::velocity()
 {
-	return getABNode()->V();
+	return getABNode()->getVelocity();
 }
 
 deVector6* taoNodeRoot::acceleration()
