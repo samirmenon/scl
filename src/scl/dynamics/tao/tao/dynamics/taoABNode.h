@@ -287,10 +287,10 @@ private:
 	taoABJoint* _joint;
 };
 
-class taoABNodeNOJn : public taoArticulatedBodyLinkNJoints0
+class taoArticulatedBodyLinkNJointsN : public taoArticulatedBodyLinkNJoints0
 {
 public:
-	taoABNodeNOJn() : _noj(0), _joint(NULL) {}
+	taoArticulatedBodyLinkNJointsN() : _noj(0), _joint(NULL) {}
 
 	virtual void updateLocalX(const deFrame& homeFrame, const deFrame& localFrame);
 	virtual void getFrameLocal(deFrame& localFrame);
@@ -321,7 +321,7 @@ public:
         virtual void setNOJ(deInt n) { _noj = n; _joint = new taoABJoint*[_noj]; }
 	virtual const deInt getNOJ() const { return _noj; }
 
-	virtual ~taoABNodeNOJn() 
+	virtual ~taoArticulatedBodyLinkNJointsN() 
 	{ 
 		for (int i = 0; i < _noj; i++)
 			delete _joint[i];
