@@ -85,6 +85,10 @@ namespace scl
     virtual scl::sBool registerCustomDynamicTypes()
     { return true;  }
 
+    /** Sets any vars to their initial position and
+     * run the dynamics once to flush the state. */
+    virtual scl::sBool setInitialStateForUIAndDynamics()=0;
+
   public:
     /************************************************************************/
     /***************NOTE : You should NOT need to modify these **************/
