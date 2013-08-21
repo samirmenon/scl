@@ -425,25 +425,8 @@ namespace std {
       os << "<NULL>";
       return os;
     }
-    taoJointType const jtype(joint.getType());
-    switch (jtype)
-    {
-    case TAO_JOINT_PRISMATIC:
-      os << "prismatic (axis " << dynamic_cast<taoJointDOF1 /*const*/ *>(&joint)->getAxis() << ")";
-      break;
-    case TAO_JOINT_REVOLUTE:
-      os << "revolute (axis " << dynamic_cast<taoJointDOF1 /*const*/ *>(&joint)->getAxis() << ")";
-      break;
-    case TAO_JOINT_SPHERICAL:
-      os << "spherical ";
-      break;
-    case TAO_JOINT_USER:
-      os << "user ";
-      break;
-    default:
-      os << "<invalid type: " << jtype << "> ";
-      break;
-    }
+    scl::sJointType const jtype(joint.getType());
+    os<<" joint type = "<<static_cast<int>(jtype);
     os << "  " << joint.getDOF() << " DOF";
     std::vector<deFloat> foo(joint.getDOF());
     joint.getQ(&foo[0]);

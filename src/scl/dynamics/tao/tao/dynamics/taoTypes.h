@@ -25,7 +25,8 @@
 
 #include <tao/matrix/TaoDeTypes.h>
 
+#include <scl/DataTypes.hpp>
+
 typedef enum {TAO_AXIS_X = 0, TAO_AXIS_Y = 1, TAO_AXIS_Z = 2, TAO_AXIS_S = 3, TAO_AXIS_USER = 4} taoAxis;
-typedef enum {TAO_JOINT_PRISMATIC, TAO_JOINT_REVOLUTE, TAO_JOINT_SPHERICAL, TAO_JOINT_USER} taoJointType;
 
 #endif // _taoTypes_h

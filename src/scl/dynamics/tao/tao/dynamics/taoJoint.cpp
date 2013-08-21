@@ -32,7 +32,7 @@ taoJoint::~taoJoint()
 taoJointSpherical::taoJointSpherical() 
 { 
 	setABJoint(new taoABJointSpherical(this)); 
-	setType(TAO_JOINT_SPHERICAL);
+	setType(scl::JOINT_TYPE_SPHERICAL);
 }
 
 void taoJointSpherical::reset()
@@ -170,18 +170,52 @@ void taoJointDOF1::clampDQ()
 
 taoJointPrismatic::taoJointPrismatic(taoAxis axis) : taoJointDOF1(axis) 
 { 
-	setABJoint(new taoABJointPrismatic(axis, this)); 
-	setType(TAO_JOINT_PRISMATIC);
+	setABJoint(new taoABJointPrismatic(axis, this));
+	switch (axis)
+	{
+	  case TAO_AXIS_X:
+	    setType(scl::JOINT_TYPE_PRISMATIC_X);
+	    break;
+
+    case TAO_AXIS_Y:
+      setType(scl::JOINT_TYPE_PRISMATIC_Y);
+      break;
+
+    case TAO_AXIS_Z:
+      setType(scl::JOINT_TYPE_PRISMATIC_Z);
+      break;
+
+    default:
+      setType(scl::JOINT_TYPE_NOTASSIGNED);
+      break;
+	}
 }
 
 taoJointRevolute::taoJointRevolute(taoAxis axis) : taoJointDOF1(axis)
 { 
 	setABJoint(new taoABJointRevolute(axis, this));
-	setType(TAO_JOINT_REVOLUTE);
+  switch (axis)
+  {
+    case TAO_AXIS_X:
+      setType(scl::JOINT_TYPE_REVOLUTE_X);
+      break;
+
+    case TAO_AXIS_Y:
+      setType(scl::JOINT_TYPE_REVOLUTE_Y);
+      break;
+
+    case TAO_AXIS_Z:
+      setType(scl::JOINT_TYPE_REVOLUTE_Z);
+      break;
+
+    default:
+      setType(scl::JOINT_TYPE_NOTASSIGNED);
+      break;
+  }
 }
 
 taoJointUser::taoJointUser() : taoJointDOF1(TAO_AXIS_USER)
 { 
 	setABJoint(new taoABJointDOF1(this));
-	setType(TAO_JOINT_USER);
+	setType(scl::JOINT_TYPE_NOTASSIGNED);
 }
