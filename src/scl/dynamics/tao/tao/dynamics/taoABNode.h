@@ -247,10 +247,10 @@ private:
 	deMatrix6 _I;
 };
 
-class taoABNodeNOJ1 : public taoArticulatedBodyLinkNJoints0
+class taoArticulatedBodyLinkNJoints1 : public taoArticulatedBodyLinkNJoints0
 {
 public:
-	taoABNodeNOJ1() : _joint(NULL) {}
+	taoArticulatedBodyLinkNJoints1() : _joint(NULL) {}
 
 	virtual void updateLocalX(const deFrame& homeFrame, const deFrame& localFrame);
 	virtual void getFrameLocal(deFrame& localFrame);
@@ -281,7 +281,7 @@ public:
 	virtual void setNOJ(deInt n) {}
 	virtual const deInt getNOJ() const { return 1; }
 
-	virtual ~taoABNodeNOJ1() { delete _joint; }
+	virtual ~taoArticulatedBodyLinkNJoints1() { delete _joint; }
 
 private:
 	taoABJoint* _joint;

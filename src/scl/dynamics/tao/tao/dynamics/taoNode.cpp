@@ -153,7 +153,7 @@ void taoNode::addABNode()
 	if (i > 1)
 		setABNode(new taoABNodeNOJn);
 	else
-		setABNode(new taoABNodeNOJ1);
+		setABNode(new taoArticulatedBodyLinkNJoints1);
 
 	getABNode()->setNOJ(i);
 

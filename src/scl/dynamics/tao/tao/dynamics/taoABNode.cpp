@@ -158,14 +158,14 @@ deFloat taoArticulatedBodyLinkNJoints0::potentialEnergy(const deVector3& gh, con
 	return -mass * gh.dot(h);	
 }
 
-void taoABNodeNOJ1::updateLocalX(const deFrame& homeFrame, const deFrame& localFrame)
+void taoArticulatedBodyLinkNJoints1::updateLocalX(const deFrame& homeFrame, const deFrame& localFrame)
 {
 	deTransform homeX;
 	homeX.set(homeFrame);
 	_joint->update_localX(homeX, localFrame);
 }
 
-void taoABNodeNOJ1::getFrameLocal(deFrame& localFrame)
+void taoArticulatedBodyLinkNJoints1::getFrameLocal(deFrame& localFrame)
 {
 	localFrame.set(_joint->localX());
 }
@@ -204,7 +204,7 @@ void taoABNodeNOJn::getFrameLocal(deFrame& localFrame)
 // since 0Re = identity
 // and  iXe^T = [(inv 0Xi) 0Xe]^T = (0Xe)^T * (0Xi)^(-T) = 0Xi ^(-T)
 // since  0Xe = identity matrix    <--  {e} = {0}
-void taoABNodeNOJ1::globalJacobian(const deFrame& globalFrame)
+void taoArticulatedBodyLinkNJoints1::globalJacobian(const deFrame& globalFrame)
 {
 	deTransform Xg;
 
@@ -214,13 +214,13 @@ void taoABNodeNOJ1::globalJacobian(const deFrame& globalFrame)
 }
 
 // A += J * ddQ
-void taoABNodeNOJ1::plusEq_Jg_ddQ(deVector6& Ag)
+void taoArticulatedBodyLinkNJoints1::plusEq_Jg_ddQ(deVector6& Ag)
 {
 	_joint->plusEq_Jg_ddQ(Ag);
 }
 
 // Tau += Jt * F
-void taoABNodeNOJ1::add2Tau_JgT_F(const deVector6& Fg)
+void taoArticulatedBodyLinkNJoints1::add2Tau_JgT_F(const deVector6& Fg)
 {
 	_joint->add2Tau_JgT_F(Fg);
 }
@@ -263,7 +263,7 @@ void taoABNodeNOJn::add2Tau_JgT_F(const deVector6& Fg)
 // Gi = Xc Gc
 // Gc = [ mi Rtci gi ; 0]
 // gi = Rt gh
-void taoABNodeNOJ1::gravityForce(deVector6& G, deVector3& g, const deVector3& gh)
+void taoArticulatedBodyLinkNJoints1::gravityForce(deVector6& G, deVector3& g, const deVector3& gh)
 {
 	g.transposedMultiply(_joint->localX().rotation(), gh);	
 
@@ -288,7 +288,7 @@ void taoABNodeNOJn::gravityForce(deVector6& G, deVector3& g, const deVector3& gh
 	G[1].multiply((*I())[1][0], g);
 }
 
-void taoABNodeNOJ1::velocityOnly(deVector6& V, const deVector6& Vh)
+void taoArticulatedBodyLinkNJoints1::velocityOnly(deVector6& V, const deVector6& Vh)
 {
 	V.xformT(_joint->localX(), Vh);
 	_joint->plusEq_SdQ(V);
@@ -318,7 +318,7 @@ void taoABNodeNOJn::velocityOnly(deVector6& V, const deVector6& Vh)
 //     = [ wxv ; 0 ]
 // Xt * WxV = [ Rt -Rtdx; 0 Rt ] [ wxv ; 0 ] = [ Rt WxV ; 0 ]
 
-void taoABNodeNOJ1::velocity(deVector6& V, deVector3& WxV, const deVector6& Vh, const deVector3& WhxVh)
+void taoArticulatedBodyLinkNJoints1::velocity(deVector6& V, deVector3& WxV, const deVector6& Vh, const deVector3& WhxVh)
 {
 	V.xformT(_joint->localX(), Vh);
 	_joint->plusEq_SdQ(V);
@@ -330,7 +330,7 @@ void taoABNodeNOJ1::velocity(deVector6& V, deVector3& WxV, const deVector6& Vh, 
 	_joint->plusEq_V_X_SdQ(_joint->C(), V);
 }
 
-void taoABNodeNOJ1::biasAcceleration(deVector6& H, const deVector6& Hh)
+void taoArticulatedBodyLinkNJoints1::biasAcceleration(deVector6& H, const deVector6& Hh)
 {
 	H.xformT(_joint->localX(), Hh);
 	H += _joint->C();
@@ -375,7 +375,7 @@ void taoABNodeNOJn::biasAcceleration(deVector6& H, const deVector6& Hh)
 // hLi = hXi [ 1 - Si Sbari ]^T = hXi [1 - Sbari^T Si^T] = X - X SbarT St
 // Lt = [1 - S Sbar] Xt
 
-void taoABNodeNOJ1::abInertiaDepend(deMatrix6& Iah, deVector6& Pah, deMatrix6& Ia, deInt propagate)
+void taoArticulatedBodyLinkNJoints1::abInertiaDepend(deMatrix6& Iah, deVector6& Pah, deMatrix6& Ia, deInt propagate)
 {
 	_joint->minusEq_SdQ_damping(_joint->Pa(), Ia);
 
@@ -432,7 +432,7 @@ void taoABNodeNOJn::abInertiaDepend(deMatrix6& Iah, deVector6& Pah, deMatrix6& I
 }
 
 // O = S Dinv St + Lt Oh L
-void taoABNodeNOJ1::osInertiaInv(deMatrix6& Oa, const deMatrix6& Oah)
+void taoArticulatedBodyLinkNJoints1::osInertiaInv(deMatrix6& Oa, const deMatrix6& Oah)
 {
 	Oa.similarityXformT(_joint->L(), Oah);
 	_joint->plusEq_S_Dinv_St(Oa);
@@ -452,7 +452,7 @@ void taoABNodeNOJn::osInertiaInv(deMatrix6& Oa, const deMatrix6& Oah)
 	}
 }
 
-void taoABNodeNOJ1::abImpulse(deVector6& Yah, deInt propagate)
+void taoArticulatedBodyLinkNJoints1::abImpulse(deVector6& Yah, deInt propagate)
 {
 	if (propagate)
 		Yah.multiply(_joint->L(), _joint->Pa());
@@ -469,7 +469,7 @@ void taoABNodeNOJn::abImpulse(deVector6& Yah, deInt propagate)
 
 // C = Ph = 0
 // Pah = - Fexth + sum [ Li (Pai) + X SbarTi taui ]
-void taoABNodeNOJ1::abBiasForceConfig(deVector6& Pah, deInt propagate)
+void taoArticulatedBodyLinkNJoints1::abBiasForceConfig(deVector6& Pah, deInt propagate)
 {
 	// store fwdIn() in dq_ to be used by JointAcceleration(1)
 	//_joint[0]->read_dQ(fwdIn, fwdInSphere);
@@ -500,7 +500,7 @@ void taoABNodeNOJn::abBiasForceConfig(deVector6& Pah, deInt propagate)
 
 // ddQ = Dinv*(tau - St*Pa) - Sbar*(X Ah + Ci)
 // Ai = (X Ah + Ci) + Si ddQi;
-void taoABNodeNOJ1::acceleration(deVector6& A, const deVector6& Ah)
+void taoArticulatedBodyLinkNJoints1::acceleration(deVector6& A, const deVector6& Ah)
 {
 	A.xformT(_joint->localX(), Ah);
 	A += _joint->C();
@@ -523,7 +523,7 @@ void taoABNodeNOJn::acceleration(deVector6& A, const deVector6& Ah)
 	}
 }
 
-void taoABNodeNOJ1::accelerationOnly(deVector6& A, const deVector6& Ah)
+void taoArticulatedBodyLinkNJoints1::accelerationOnly(deVector6& A, const deVector6& Ah)
 {
 	A.xformT(_joint->localX(), Ah);
 	A += _joint->C();
@@ -543,7 +543,7 @@ void taoABNodeNOJn::accelerationOnly(deVector6& A, const deVector6& Ah)
 	}
 }
 
-void taoABNodeNOJ1::netForce(deVector6& F, const deVector6& A, const deVector6& P)
+void taoArticulatedBodyLinkNJoints1::netForce(deVector6& F, const deVector6& A, const deVector6& P)
 {
 	F.multiply(*I(), A);
 	F += P;
@@ -557,7 +557,7 @@ void taoABNodeNOJn::netForce(deVector6& F, const deVector6& A, const deVector6& 
 	// see taoABJoint::compute_Tau()
 }
 
-void taoABNodeNOJ1::force(deVector6& Fh, deInt propagate)
+void taoArticulatedBodyLinkNJoints1::force(deVector6& Fh, deInt propagate)
 {
 // no damping
 	if (propagate)
@@ -591,7 +591,7 @@ void taoABNodeNOJn::force(deVector6& Fh, deInt propagate)
 
 // ddQ = Dinv*(tau - St*Pa) - Sbar*(X Ah)
 // Ai = (X Ah) + Si ddQi;
-void taoABNodeNOJ1::velocityDelta(deVector6& dV, const deVector6& dVh, const deInt dist)
+void taoArticulatedBodyLinkNJoints1::velocityDelta(deVector6& dV, const deVector6& dVh, const deInt dist)
 {
 	dV.xformT(_joint->localX(), dVh);
 	if (getFlag())
