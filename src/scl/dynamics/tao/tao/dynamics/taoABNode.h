@@ -65,7 +65,7 @@ public:
 	// Ii = Xc Ic Xtc
 	//    = [ RMRt, -RMRt rx; rx RMRt, RIRt - rx RMRt rx]
 	//    = [ M, -Mrx; rxM, RIRt - m rx rx]
-	virtual void inertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor) = 0;
+	virtual void setInertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor) = 0;
 
 	// Pi = Xc (Wc X Ic Vc) - Ii (Wi X Vi)  
 	//    = Xc (Wc X [mi vc; Ic wc]) -Ii (Wi X Vi)
@@ -169,7 +169,7 @@ public:
 	virtual void abInertiaInit(deMatrix6& Ia) {}
 	virtual void impulseInit(const deVector3& point, const deVector3& impulse) {}
 
-	virtual void inertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor) {}
+	virtual void setInertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor) {}
 	virtual void biasForce(deVector6& P, const deVector6& V, const deVector3& WxV) {}
 	virtual void _abInertia(deMatrix6& Iah, const deMatrix6& L, const deMatrix6& Ia, const deTransform& X) {}
 	virtual void _abBiasForce(deVector6& Pah, const deMatrix6& L, const deMatrix6& Ia, const deVector6& C, const deVector6& Pa) {}
@@ -227,7 +227,7 @@ public:
 	virtual void abInertiaInit(deMatrix6& Ia);
 	virtual void impulseInit(const deVector3& point, const deVector3& impulse);
 
-	virtual void inertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor);
+	virtual void setInertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor);
 	virtual void biasForce(deVector6& P, const deVector6& V, const deVector3& WxV);
 	virtual void _abInertia(deMatrix6& Iah, const deMatrix6& L, const deMatrix6& Ia, const deTransform& X);
 	virtual void _abBiasForce(deVector6& Pah, const deMatrix6& L, const deMatrix6& Ia, const deVector6& C, const deVector6& Pa);

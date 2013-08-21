@@ -56,7 +56,7 @@ void taoABDynamics::updateLocalXTreeOut(taoDNode* root)
 
 void taoABDynamics::resetInertia(taoDNode* node)
 {
-	node->getABNode()->inertia(node->mass(), node->center(), node->inertia());
+	node->getABNode()->setInertia(node->mass(), node->center(), node->inertia());
 }
 
 void taoABDynamics::resetInertiaTreeOut(taoDNode* root)

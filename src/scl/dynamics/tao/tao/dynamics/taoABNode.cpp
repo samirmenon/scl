@@ -78,7 +78,7 @@ void taoABNodeNOJ::_abBiasForce(deVector6& Pah, const deMatrix6& L, const deMatr
 // Ii = Xc Ic Xtc
 //    = [ RMRt, -RMRt rx; rx RMRt, RIRt - rx RMRt rx]
 //    = [ M, -Mrx; rxM, RIRt - m rx rx]
-void taoABNodeNOJ::inertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor)
+void taoABNodeNOJ::setInertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor)
 {
 	//  inertia = RIRt - mass()*rx*rx
 	//  Ic = RIRt = inertia + mass()*rx*rx // change inertia
