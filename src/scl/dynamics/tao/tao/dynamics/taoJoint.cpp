@@ -168,7 +168,7 @@ void taoJointDOF1::clampDQ()
 		getVarDOF1()->dq_ = -getDQmax();
 }
 
-taoJointPrismatic::taoJointPrismatic(taoAxis axis) : taoJointDOF1(axis) 
+taoJointPrismatic::taoJointPrismatic(taoJointType axis) : taoJointDOF1(axis) 
 { 
 	setABJoint(new taoABJointPrismatic(axis, this));
 	switch (axis)
@@ -191,7 +191,7 @@ taoJointPrismatic::taoJointPrismatic(taoAxis axis) : taoJointDOF1(axis)
 	}
 }
 
-taoJointRevolute::taoJointRevolute(taoAxis axis) : taoJointDOF1(axis)
+taoJointRevolute::taoJointRevolute(taoJointType axis) : taoJointDOF1(axis)
 { 
 	setABJoint(new taoABJointRevolute(axis, this));
   switch (axis)

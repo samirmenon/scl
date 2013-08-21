@@ -252,9 +252,9 @@ protected:
 class taoJointDOF1 : public taoJoint
 {
 public:
-	taoJointDOF1(taoAxis axis) : _axis(axis) {}
+	taoJointDOF1(taoJointType axis) : _axis(axis) {}
 
-	taoAxis getAxis() const { return _axis; }
+	taoJointType getJointType() const { return _axis; }
 	virtual deInt getDOF() { return 1; }
 
 	virtual deVector6& getS();
@@ -307,7 +307,7 @@ public:
   virtual void getJgColumns(deVector6 * Jg_columns) const;
   
 private:
-	taoAxis _axis;
+	taoJointType _axis;
 };
 
 /*!
@@ -320,9 +320,9 @@ private:
 class taoJointPrismatic : public taoJointDOF1
 {
 public:
-	taoJointPrismatic(taoAxis axis);
+	taoJointPrismatic(taoJointType axis);
 	virtual void updateFrameLocal(deFrame* local) 
-	{ local->translation()[getAxis()] = getVarDOF1()->q_; }
+	{ local->translation()[getJointType()] = getVarDOF1()->q_; }
 
 	virtual void setABJoint(taoABJoint* joint)
 	{
@@ -353,10 +353,10 @@ protected:
 class taoJointRevolute : public taoJointDOF1
 {
 public:
-	taoJointRevolute(taoAxis axis);
+	taoJointRevolute(taoJointType axis);
 	virtual void updateFrameLocal(deFrame* local)
 	{
-		local->rotation().set(getAxis(), getVarDOF1()->q_);
+		local->rotation().set(getJointType(), getVarDOF1()->q_);
 	}
 
   virtual void setABJoint(taoABJoint* joint)

@@ -203,13 +203,13 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
       }
       std::string jaxis;
       taoJointDOF1 const * jdof1(dynamic_cast<taoJointDOF1 const *>(joint));
-      if (TAO_AXIS_X == jdof1->getAxis()) {
+      if (TAO_AXIS_X == jdof1->getJointType()) {
 	jaxis = "X";
       }
-      else if (TAO_AXIS_Y == jdof1->getAxis()) {
+      else if (TAO_AXIS_Y == jdof1->getJointType()) {
 	jaxis = "Y";
       }
-      else if (TAO_AXIS_Z == jdof1->getAxis()) {
+      else if (TAO_AXIS_Z == jdof1->getJointType()) {
 	jaxis = "Z";
       }
       else {
@@ -317,13 +317,13 @@ std::string inertia_matrix_to_string(deMatrix3 const & mx)
       }
       std::string jaxis;
       taoJointDOF1 const * jdof1(dynamic_cast<taoJointDOF1 const *>(joint));
-      if (TAO_AXIS_X == jdof1->getAxis()) {
+      if (TAO_AXIS_X == jdof1->getJointType()) {
 	jaxis = "0";//XXXX really soon: "x";
       }
-      else if (TAO_AXIS_Y == jdof1->getAxis()) {
+      else if (TAO_AXIS_Y == jdof1->getJointType()) {
 	jaxis = "1";//XXXX really soon: "y";
       }
-      else if (TAO_AXIS_Z == jdof1->getAxis()) {
+      else if (TAO_AXIS_Z == jdof1->getJointType()) {
 	jaxis = "2";//XXXX really soon: "z";
       }
       else {

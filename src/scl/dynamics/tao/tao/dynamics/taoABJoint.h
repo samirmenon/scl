@@ -238,7 +238,7 @@ private:
 class taoABJointPrismatic : public taoABJointDOF1
 {
 public:
-	taoABJointPrismatic(taoAxis axis, taoDJoint* joint) : taoABJointDOF1(joint)
+	taoABJointPrismatic(taoJointType axis, taoDJoint* joint) : taoABJointDOF1(joint)
 	{
 		deVector6 unit;
 		unit.zero();
@@ -259,7 +259,7 @@ public:
 class taoABJointRevolute : public taoABJointDOF1
 {
 public:
-	taoABJointRevolute(taoAxis axis, taoDJoint* joint) : taoABJointDOF1(joint)
+	taoABJointRevolute(taoJointType axis, taoDJoint* joint) : taoABJointDOF1(joint)
 	{
 		deVector6 unit;
 		unit.zero();
