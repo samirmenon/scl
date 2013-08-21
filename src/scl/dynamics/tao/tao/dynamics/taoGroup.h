@@ -61,6 +61,18 @@ public:
 	taoNodeRoot* removeRoot(const deInt id);
 	taoNodeRoot* findRoot(const deInt id);
 
+	/*!
+	 *  \remarks  this can be replaced by following 3 individual call.
+	 *  \remarks  control(), simulate(), updateTransformation()
+	 *
+	 *  \arg  time  control desired goal achieving time. this value
+	 *          is used to compute the goal frames.
+	 *          Also, this value should be greater than the last
+	 *          control time, taoControl::time() and less than equal
+	 *          to the current goal time set by taoControl::setGoalPosition().
+	 *  \arg  dt    integration time step.  notice that this value is independent to \a time.
+	 *  \arg  n   number of iteration of the loop if necessary
+	 */
 	void update(const deFloat time, const deFloat dt, const deInt n);
 	void control(const deFloat time);
 	void simulate(const deFloat dt);
