@@ -1355,16 +1355,17 @@ namespace scl {
             l->m_pointB = par2->getGlobalPos() + rotvec2; //Translate the rotated position vector from the frame's position.
 
             // Set the line's color.
-            cMaterial mat;
             if(msys.muscle_actuator_set_->force_actuator_max_(i) <= 0.0 || msys.muscle_actuator_set_->force_actuator_(i) <= 0.0)
-            { mat.setColorf(0.0,1.0,0.0); }
+            {
+              l->m_colorPointA.set(0.0,1.0,0.0);
+              l->m_colorPointB.set(0.0,1.0,0.0);
+            }
             else
             {
               double tmp_col = msys.muscle_actuator_set_->force_actuator_(i)/msys.muscle_actuator_set_->force_actuator_max_(i);
-              mat.setColorf(tmp_col,0.0,1 - tmp_col);
+              l->m_colorPointA.set(tmp_col, 0.0, 1 - tmp_col);
+              l->m_colorPointB.set(tmp_col, 0.0, 1 - tmp_col);
             }
-            l->setMaterial(mat,false);
-            l->setUseMaterial(true,false);
           }
         }
 
