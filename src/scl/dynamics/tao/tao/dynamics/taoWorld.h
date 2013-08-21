@@ -25,50 +25,9 @@
 
 #include "taoTypes.h"
 
-class taoGroup;
+#include "taoGroup.h"
+//class taoGroup;
 
-/*!
- *	\brief container class to hold dynamics groups.
- *	\ingroup taoDynamics
- *
- *	A world is a container object for dynamics groups that, in turn, are container 
- *	objects themselves holding dynamics characters, particle systems, 
- *	\remarks	There is only one world.
- */
-class taoWorld
-{
-public:
-	taoWorld() : _groupList(NULL) {}
-	~taoWorld();
-
-	taoGroup* getGroupList() { return _groupList; }
-
-	taoGroup* removeGroup(const deInt id);
-
-	void addGroup(taoGroup* g, const deInt id);
-
-	taoGroup* findGroup(const deInt id);
-
-	/*!
-	 *	\remarks	this can be replaced by following 3 individual call.
-	 *	\remarks	control(), simulate(), updateTransformation()
-	 *
-	 *	\arg	time	control desired goal achieving time. this value 
-	 *					is used to compute the goal frames.
-	 *					Also, this value should be greater than the last 
-	 *					control time, taoControl::time() and less than equal 
-	 *					to the current goal time set by taoControl::setGoalPosition().
-	 *	\arg	dt		integration time step.  notice that this value is independent to \a time.
-	 *	\arg	n		number of iteration of the loop if necessary
-	 */
-	void update(const deFloat time, const deFloat dt, const deInt n);
-
-	void control(const deFloat time);
-	void simulate(const deFloat dt);
-	void updateTransformation();
-
-private:
-	taoGroup* _groupList;
-};
+typedef taoGroup taoWorld;
 
 #endif // _taoWorld_h
