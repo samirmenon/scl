@@ -25,7 +25,7 @@
 
 #include "taoTypes.h"
 
-class taoABNode;
+class taoArticulatedBodyLink;
 class taoJoint;
 class deVector3;
 class deVector6;
@@ -63,9 +63,9 @@ public:
 	virtual taoJoint const * getJointList() const = 0;
 
 	//!	gets _abNode
-	virtual taoABNode* getABNode() { return _abNode; }
+	virtual taoArticulatedBodyLink* getABNode() { return _abNode; }
 	//!	sets _abNode
-	virtual void setABNode(taoABNode* node) { _abNode = node; }
+	virtual void setABNode(taoArticulatedBodyLink* node) { _abNode = node; }
 
 	//!	indicates if dynamics of node should be included for control
 	/*!	\retval	1	to propagate dynamics of node for control 
@@ -110,7 +110,7 @@ public:
 	virtual taoDNode const* getDSibling() const = 0;
 
 private:
-	taoABNode* _abNode;
+	taoArticulatedBodyLink* _abNode;
 	deInt _propagate;
 
 	/* *********************************************

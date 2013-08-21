@@ -34,12 +34,12 @@
  *
  *	This class provides node for articulated body.
  */
-class taoABNode
+class taoArticulatedBodyLink
 {
 public:
-	taoABNode() { _V.zero(); _A.zero(); _H.zero(), _Omega.zero(); }
+	taoArticulatedBodyLink() { _V.zero(); _A.zero(); _H.zero(), _Omega.zero(); }
 
-	virtual ~taoABNode() {}
+	virtual ~taoArticulatedBodyLink() {}
 
 	virtual void setFlag(deInt v) = 0;
 	virtual const deInt getFlag() const = 0;
@@ -157,7 +157,7 @@ private:
 	deMatrix6 _Omega;	// Op Sp Matrix inverse : diagonal terms
 };
 
-class taoABNodeRoot : public taoABNode
+class taoABNodeRoot : public taoArticulatedBodyLink
 {
 public:
 	virtual const deInt getFlag() const { return 0; }
@@ -207,7 +207,7 @@ public:
 	virtual const deInt getNOJ() const { return 0; }
 };
 
-class taoABNodeNOJ : public taoABNode
+class taoABNodeNOJ : public taoArticulatedBodyLink
 {
 public:
 	taoABNodeNOJ()
