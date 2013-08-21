@@ -24,7 +24,70 @@
 #define _taoWorld_h
 
 #include "taoTypes.h"
+#include <tao/matrix/TaoDeMath.h>
 
-#include "taoGroup.h"
+class taoDNode;
+class taoNode;
+class taoNodeRoot;
+
+/*!
+ *	\brief container class to hold dynamics characters
+ *	\ingroup taoDynamics
+ *
+ *	A group is a container object for dynamics characters, particle systems, 
+ *	rigid bodies, and articulated bodies. Characters in different groups can 
+ *	not interact, e.g., no collision between characters from two different groups. 
+ *	All characters in a group share common parameters such as integration time step, gravity, etc.
+ */
+class taoWorld
+{
+public:
+	taoWorld() : _id(-1), _isFixed(0), _rootList(NULL), _next(NULL) { _gravity.zero(); }
+	~taoWorld();
+
+	void setID(deInt i) { _id = i; }
+	const deInt getID() const { return _id; }
+
+	void setIsFixed(int f) { _isFixed = f; }
+	deInt getIsFixed() { return _isFixed; }
+
+	deVector3* gravity() { return &_gravity; }
+
+	void setNext(taoWorld* g) { _next = g; }
+	taoWorld* getNext() { return _next; }
+
+	taoNodeRoot* getRootList() { return _rootList; }
+	void addRoot(taoNodeRoot* r, const deInt id);
+	taoNodeRoot* removeRoot(const deInt id);
+	taoNodeRoot* findRoot(const deInt id);
+
+	/*!
+	 *  \remarks  this can be replaced by following 3 individual call.
+	 *  \remarks  simulate(), updateTransformation()
+	 *
+	 *  \arg  time  control desired goal achieving time. this value
+	 *          is used to compute the goal frames.
+	 *          Also, this value should be greater than the last
+	 *          control time, taoControl::time() and less than equal
+	 *          to the current goal time set by taoControl::setGoalPosition().
+	 *  \arg  dt    integration time step.  notice that this value is independent to \a time.
+	 *  \arg  n   number of iteration of the loop if necessary
+	 */
+	void update(const deFloat time, const deFloat dt, const deInt n);
+	void simulate(const deFloat dt);
+	void updateTransformation();
+
+	taoNodeRoot* unlinkFixed(taoNodeRoot* root, taoNode* node);
+	taoNodeRoot* unlinkFree(taoNodeRoot* root, taoNode* node, deFloat inertia, deFloat damping);
+
+	void sync(taoNodeRoot* root, deFloat time);
+
+private:
+	deInt _id;
+	deInt _isFixed;
+	deVector3 _gravity;
+	taoNodeRoot* _rootList;
+	taoWorld* _next;
+};
 
 #endif // _taoWorld_h
