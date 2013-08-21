@@ -113,6 +113,8 @@ namespace scl
       x_goal_.setZero(dof_task_);
       dx_goal_.setZero(dof_task_);
       ddx_goal_.setZero(dof_task_);
+
+      force_task_.setZero(dof_task_);
     }
     catch(std::exception& e)
     {

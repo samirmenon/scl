@@ -56,6 +56,8 @@ namespace scl
       dq_goal_.setZero(dof_task_);
       ddq_goal_.setZero(dof_task_);
 
+      force_task_.setZero(dof_task_);
+
       spatial_resolution_ = SCL_GCTASKSET_SPATIAL_RESOLUTION;
 
       /** Extract the extra params */

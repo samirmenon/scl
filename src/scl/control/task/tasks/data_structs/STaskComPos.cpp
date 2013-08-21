@@ -64,6 +64,8 @@ namespace scl
       x_goal_ = Eigen::Vector3d::Zero();
       dx_goal_ = Eigen::Vector3d::Zero();
       ddx_goal_ = Eigen::Vector3d::Zero();
+
+      force_task_ = Eigen::Vector3d::Zero();
     }
     catch(std::exception& e)
     {
