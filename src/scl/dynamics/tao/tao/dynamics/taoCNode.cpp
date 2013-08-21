@@ -21,7 +21,7 @@
  */
 
 
-#include "taoCNode.h"
+#include "taoDNode.h"
 #include <tao/matrix/TaoDeMath.h>
 
 // v1m = -u1 dot (V1[0] - p1x V1[1])
@@ -34,8 +34,8 @@
 // y1 = m1*(v1p - v1m)*u1
 // y2 = m2*(v2p - v2m)*u2
 // for pc 2 pc --> Ui === Uj
-deInt taoCNode::impact2(taoCNode* ni, const deVector3* Pie, const deVector3* Ui,
-						taoCNode* nj, const deVector3* Pje, const deVector3* Uj)
+deInt taoDNode::impact2(taoDNode* ni, const deVector3* Pie, const deVector3* Ui,
+						taoDNode* nj, const deVector3* Pje, const deVector3* Uj)
 {
 	deInt donei, donej;
 	deFloat mi, vpi, vmi, mj, vpj, vmj, edvm;
@@ -81,7 +81,7 @@ deInt taoCNode::impact2(taoCNode* ni, const deVector3* Pie, const deVector3* Ui,
 	return (donei && donej);
 }
 
-deInt taoCNode::impact1(const deVector3* Pie, const deVector3* Ui, const deFloat cor2, const deFloat cofg2)
+deInt taoDNode::impact1(const deVector3* Pie, const deVector3* Ui, const deFloat cor2, const deFloat cofg2)
 {
 	deFloat m, vp, vm;
 	deVector3 v;
@@ -102,7 +102,7 @@ deInt taoCNode::impact1(const deVector3* Pie, const deVector3* Ui, const deFloat
 	return _Impact1(Pie, Ui, &v, m, vp, vm, cofg2);
 }
 
-deInt taoCNode::_Impact1(const deVector3* Pie, const deVector3* Ui, const deVector3* V, const deFloat m, const deFloat vp, const deFloat vm, const deFloat cofg2)
+deInt taoDNode::_Impact1(const deVector3* Pie, const deVector3* Ui, const deVector3* V, const deFloat m, const deFloat vp, const deFloat vm, const deFloat cofg2)
 {
 	deFloat vtmag;
 	deVector3 v, ut;
@@ -133,7 +133,7 @@ deInt taoCNode::_Impact1(const deVector3* Pie, const deVector3* Ui, const deVect
 	return 1;
 }
 
-void taoCNode::_Friction(const deVector3* Pie, const deVector3* Ui, const deVector3* Ut, const deFloat vtmag, const deFloat m)
+void taoDNode::_Friction(const deVector3* Pie, const deVector3* Ui, const deVector3* Ut, const deFloat vtmag, const deFloat m)
 {
 	deFloat an, atmag;
 	deVector3 a, ft;
@@ -167,7 +167,7 @@ void taoCNode::_Friction(const deVector3* Pie, const deVector3* Ui, const deVect
 	}
 }
 
-deInt taoCNode::penetration1(const deVector3* Pie, const deVector3* Ui, const deVector3* pdist, const deFloat dt)
+deInt taoDNode::penetration1(const deVector3* Pie, const deVector3* Ui, const deVector3* pdist, const deFloat dt)
 {
 	deFloat m, vm;
 	deVector3 v, y;
