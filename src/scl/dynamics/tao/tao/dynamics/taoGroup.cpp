@@ -30,7 +30,7 @@
 #include "taoControlJt.h"
 #endif
 
-taoGroup::~taoGroup()
+taoWorld::~taoWorld()
 {
 	taoNodeRoot* r;
 	while (_rootList)
@@ -41,7 +41,7 @@ taoGroup::~taoGroup()
 	}
 }
 
-void taoGroup::update(const deFloat time, const deFloat dt, const deInt n)
+void taoWorld::update(const deFloat time, const deFloat dt, const deInt n)
 {
 	deInt i = 0;
 	while (i < n)
@@ -65,7 +65,7 @@ void taoGroup::update(const deFloat time, const deFloat dt, const deInt n)
 	}
 }
 
-void taoGroup::control(const deFloat time)
+void taoWorld::control(const deFloat time)
 {
 	taoNodeRoot* r = _rootList;
 	while (r)
@@ -81,7 +81,7 @@ void taoGroup::control(const deFloat time)
 	}
 }
 
-void taoGroup::simulate(const deFloat dt)
+void taoWorld::simulate(const deFloat dt)
 {
 	taoNodeRoot* r = _rootList;
 	while (r)
@@ -95,7 +95,7 @@ void taoGroup::simulate(const deFloat dt)
 	}
 }
 
-void taoGroup::updateTransformation()
+void taoWorld::updateTransformation()
 {
 	taoNodeRoot* r = _rootList;
 	while (r)
@@ -108,7 +108,7 @@ void taoGroup::updateTransformation()
 	}
 }
 
-void taoGroup::addRoot(taoNodeRoot* r, const deInt id)
+void taoWorld::addRoot(taoNodeRoot* r, const deInt id)
 {
 	r->setNext(_rootList);
 	_rootList = r;
@@ -117,7 +117,7 @@ void taoGroup::addRoot(taoNodeRoot* r, const deInt id)
 	r->setGroup(this);
 }
 
-taoNodeRoot* taoGroup::removeRoot(const deInt id)
+taoNodeRoot* taoWorld::removeRoot(const deInt id)
 {
 	taoNodeRoot* n, *g = _rootList;
 	if (g && g->getID() == id)
@@ -143,7 +143,7 @@ taoNodeRoot* taoGroup::removeRoot(const deInt id)
 	return NULL;
 }
 
-taoNodeRoot* taoGroup::findRoot(const deInt id)
+taoNodeRoot* taoWorld::findRoot(const deInt id)
 {
 	taoNodeRoot* r = _rootList;
 	while (r)
@@ -155,7 +155,7 @@ taoNodeRoot* taoGroup::findRoot(const deInt id)
 	return NULL;
 }
 
-taoNodeRoot* taoGroup::unlinkFixed(taoNodeRoot* root, taoNode* node)
+taoNodeRoot* taoWorld::unlinkFixed(taoNodeRoot* root, taoNode* node)
 {
 #ifdef TAO_CONTROL
 	if (root->getController())
@@ -183,7 +183,7 @@ taoNodeRoot* taoGroup::unlinkFixed(taoNodeRoot* root, taoNode* node)
 	return r;
 }
 
-taoNodeRoot* taoGroup::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat inertia, deFloat damping)
+taoNodeRoot* taoWorld::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat inertia, deFloat damping)
 {
 #ifdef TAO_CONTROL
 	if (root->getController())
@@ -245,7 +245,7 @@ taoNodeRoot* taoGroup::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat iner
 	return r;
 }
 
-void taoGroup::sync(taoNodeRoot* root, deFloat time)
+void taoWorld::sync(taoNodeRoot* root, deFloat time)
 {
 #ifdef TAO_CONTROL
 	if (root->getController())

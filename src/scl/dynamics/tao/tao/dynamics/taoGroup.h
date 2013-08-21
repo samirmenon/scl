@@ -39,11 +39,11 @@ class taoNodeRoot;
  *	not interact, e.g., no collision between characters from two different groups. 
  *	All characters in a group share common parameters such as integration time step, gravity, etc.
  */
-class taoGroup
+class taoWorld
 {
 public:
-	taoGroup() : _id(-1), _isFixed(0), _rootList(NULL), _next(NULL) { _gravity.zero(); }
-	~taoGroup();
+	taoWorld() : _id(-1), _isFixed(0), _rootList(NULL), _next(NULL) { _gravity.zero(); }
+	~taoWorld();
 
 	void setID(deInt i) { _id = i; }
 	const deInt getID() const { return _id; }
@@ -53,8 +53,8 @@ public:
 
 	deVector3* gravity() { return &_gravity; }
 
-	void setNext(taoGroup* g) { _next = g; }
-	taoGroup* getNext() { return _next; }
+	void setNext(taoWorld* g) { _next = g; }
+	taoWorld* getNext() { return _next; }
 
 	taoNodeRoot* getRootList() { return _rootList; }
 	void addRoot(taoNodeRoot* r, const deInt id);
@@ -88,7 +88,7 @@ private:
 	deInt _isFixed;
 	deVector3 _gravity;
 	taoNodeRoot* _rootList;
-	taoGroup* _next;
+	taoWorld* _next;
 };
 
 #endif // _taoGroup_h

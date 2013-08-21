@@ -26,8 +26,5 @@
 #include "taoTypes.h"
 
 #include "taoGroup.h"
-//class taoGroup;
-
-typedef taoGroup taoWorld;
 
 #endif // _taoWorld_h

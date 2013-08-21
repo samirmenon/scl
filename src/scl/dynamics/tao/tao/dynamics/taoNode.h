@@ -26,7 +26,7 @@
 #include "taoDNode.h"
 #include <tao/matrix/TaoDeMath.h>
 
-class taoGroup;
+class taoWorld;
 class taoControl;
 
 /*!
@@ -182,8 +182,8 @@ public:
 	void setNext(taoNodeRoot* r) { _next = r; }
 	taoNodeRoot* getNext() { return _next; }
 
-	void setGroup(taoGroup* g) { _group = g; }
-	taoGroup* getGroup() { return _group; }
+	void setGroup(taoWorld* g) { _group = g; }
+	taoWorld* getGroup() { return _group; }
 
 	void setController(taoControl* c) { _controller = c; }
 	taoControl* getController() { return _controller; }
@@ -197,7 +197,7 @@ private:
 	deFloat _zero; // YYY
 	deFrame _frameGlobal;
 
-	taoGroup* _group;
+	taoWorld* _group;
 	taoControl* _controller;
 
 	taoNode* _child;
