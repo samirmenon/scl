@@ -85,7 +85,6 @@ SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDNode.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoNode.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoArticulatedBodyLink.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/utility/TaoDeMassProp.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/utility/TaoDeLogger.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeQuaternionf.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeMatrix6.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeVector6.cpp

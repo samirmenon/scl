@@ -41,7 +41,6 @@
 
 #include <tao/matrix/TaoDeMath.h>
 #include <tao/utility/TaoDeMassProp.h>
-#include <tao/utility/TaoDeLogger.h>
 
 #include <tao/dynamics/taoTypes.h>
 
