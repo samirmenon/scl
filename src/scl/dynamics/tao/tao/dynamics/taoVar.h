@@ -29,7 +29,17 @@
 #endif // OSX
 
 #include <tao/matrix/TaoDeMath.h>
-#include "taoDVar.h"
+
+
+/*!  \brief abstract joint variable class for articulated body
+ *  \ingroup taoDynamics
+ *
+ *  This class should be used as a base class and implemented accordingly.
+ */
+class taoDVar
+{
+public:
+};
 
 /*!
  *	\brief 1-DOF joint variable class for articulated body
