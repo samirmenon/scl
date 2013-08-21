@@ -42,7 +42,7 @@
 class taoJoint : public taoDJoint
 {
 public:
-	taoJoint() : _type(TAO_JOINT_USER), _jcp(NULL), _clamp_dQ(0), _max_dQ(5), _damping(0), _inertia(0), _var(NULL), _next(NULL) {}
+	taoJoint() : _type(TAO_JOINT_USER), _clamp_dQ(0), _max_dQ(5), _damping(0), _inertia(0), _var(NULL), _next(NULL) {}
 	virtual ~taoJoint();
 
 	virtual deInt getDOF() = 0;
