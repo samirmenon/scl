@@ -51,6 +51,13 @@ public:
 
 	virtual const deMatrix6* I() const = 0;
 
+	/** NOTE TODO : The convoluted way in which this seems to have been called is :
+	 * class->function(class->getOmega())
+	 *
+	 * Instead of just class->function(){_Omega = ...}
+	 *
+	 * Ahh.. The elegance of it all.
+	 */
 	virtual deMatrix6* Omega() { return &_Omega; }
 	virtual deVector6* H() { return &_H; }
 
