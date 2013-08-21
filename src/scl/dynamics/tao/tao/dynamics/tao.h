@@ -46,7 +46,6 @@
 #include <tao/dynamics/taoTypes.h>
 
 #include <tao/dynamics/taoWorld.h>
-#include <tao/dynamics/taoWorld.h>
 #include <tao/dynamics/taoNode.h>
 #include <tao/dynamics/taoJoint.h>
 #include <tao/dynamics/taoVar.h>
