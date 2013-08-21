@@ -210,7 +210,7 @@ taoNodeRoot* taoGroup::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat iner
 	joint->setInertia(inertia);
 	joint->setDVar(new taoVarDOF1);
 	joint->reset();
-	joint->getVarDOF1()->_dQ = v[0][TAO_AXIS_X];
+	joint->getVarDOF1()->dq_ = v[0][TAO_AXIS_X];
 	node->addJoint(joint);
 
 	joint = new taoJointPrismatic(TAO_AXIS_Y);
@@ -218,7 +218,7 @@ taoNodeRoot* taoGroup::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat iner
 	joint->setInertia(inertia);
 	joint->setDVar(new taoVarDOF1);
 	joint->reset();
-	joint->getVarDOF1()->_dQ = v[0][TAO_AXIS_Y];
+	joint->getVarDOF1()->dq_ = v[0][TAO_AXIS_Y];
 	node->addJoint(joint);
 
 	joint = new taoJointPrismatic(TAO_AXIS_Z);
@@ -226,7 +226,7 @@ taoNodeRoot* taoGroup::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat iner
 	joint->setInertia(inertia);
 	joint->setDVar(new taoVarDOF1);
 	joint->reset();
-	joint->getVarDOF1()->_dQ = v[0][TAO_AXIS_Z];
+	joint->getVarDOF1()->dq_ = v[0][TAO_AXIS_Z];
 	node->addJoint(joint);
 
 	taoJointSpherical* joint2 = new taoJointSpherical();
@@ -234,7 +234,7 @@ taoNodeRoot* taoGroup::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat iner
 	joint2->setInertia(inertia);
 	joint2->setDVar(new taoVarSpherical);
 	joint2->reset();
-	joint2->getVarSpherical()->_dQ = v[1];
+	joint2->getVarSpherical()->dq_ = v[1];
 	node->addJoint(joint2);
 
 	node->addABNode();

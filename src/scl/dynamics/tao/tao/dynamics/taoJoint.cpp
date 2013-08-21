@@ -37,11 +37,11 @@ taoJointSpherical::taoJointSpherical()
 
 void taoJointSpherical::reset()
 {
-	getVarSpherical()->_Q.identity();
-	getVarSpherical()->_dQ.zero();
-	getVarSpherical()->_ddQ.zero();
-	getVarSpherical()->_Tau.zero();
-	getVarSpherical()->_dQrotated.zero();
+	getVarSpherical()->q_quat_.identity();
+	getVarSpherical()->dq_.zero();
+	getVarSpherical()->ddq_.zero();
+	getVarSpherical()->force_gc_.zero();
+	getVarSpherical()->dq_rotated_.zero();
 }
 
 void taoJointSpherical::addQdelta()
@@ -61,18 +61,18 @@ void taoJointSpherical::addQdelta()
 
 	/** Another example of obfuscated code.
 	 * The one above code probably does the same thing. */
-	dq0.multiply(getVarSpherical()->_Q, getVarSpherical()->_ddQ);
-	dq.velocity(getVarSpherical()->_Q, dq0);
-	getVarSpherical()->_Q += dq;		// YYY: consistentSign(); ?
-	getVarSpherical()->_Q.normalize();
+	dq0.multiply(getVarSpherical()->q_quat_, getVarSpherical()->ddq_);
+	dq.velocity(getVarSpherical()->q_quat_, dq0);
+	getVarSpherical()->q_quat_ += dq;		// YYY: consistentSign(); ?
+	getVarSpherical()->q_quat_.normalize();
 }
 
 void taoJointSpherical::addDQdelta()
 {
 	deVector3 ddq;
-	ddq.multiply(getVarSpherical()->_Q, getVarSpherical()->_ddQ);
-	getVarSpherical()->_dQrotated += ddq;
-	getVarSpherical()->_dQ.inversedMultiply(getVarSpherical()->_Q, getVarSpherical()->_dQrotated);
+	ddq.multiply(getVarSpherical()->q_quat_, getVarSpherical()->ddq_);
+	getVarSpherical()->dq_rotated_ += ddq;
+	getVarSpherical()->dq_.inversedMultiply(getVarSpherical()->q_quat_, getVarSpherical()->dq_rotated_);
 
 	if (getDQclamp()) 
 		clampDQ();
@@ -82,35 +82,35 @@ void taoJointSpherical::clampDQ()
 {
 	deInt changed = 0;
 	for (deInt i = 0; i < 3; i++)
-		if (getVarSpherical()->_dQ[i] > getDQmax())
+		if (getVarSpherical()->dq_[i] > getDQmax())
 		{
-			getVarSpherical()->_dQ[i] = getDQmax();
+			getVarSpherical()->dq_[i] = getDQmax();
 			changed = 1;
 		}
-		else if (getVarSpherical()->_dQ[i] < -getDQmax())
+		else if (getVarSpherical()->dq_[i] < -getDQmax())
 		{
-			getVarSpherical()->_dQ[i] = -getDQmax();
+			getVarSpherical()->dq_[i] = -getDQmax();
 			changed = 1;
 		}
 	if (changed)
-		getVarSpherical()->_dQrotated.multiply(getVarSpherical()->_Q, getVarSpherical()->_dQ);
+		getVarSpherical()->dq_rotated_.multiply(getVarSpherical()->q_quat_, getVarSpherical()->dq_);
 }
 
 void taoJointSpherical::integrate(const deFloat dt)
 {
 	deQuaternion dq;
-	dq.velocity(getVarSpherical()->_Q, getVarSpherical()->_dQrotated);
+	dq.velocity(getVarSpherical()->q_quat_, getVarSpherical()->dq_rotated_);
 	dq *= dt;
-	getVarSpherical()->_Q += dq;		// YYY: consistentSign(); ?
-	getVarSpherical()->_Q.normalize();
+	getVarSpherical()->q_quat_ += dq;		// YYY: consistentSign(); ?
+	getVarSpherical()->q_quat_.normalize();
 
 	deVector3 ddq;
-	ddq.multiply(getVarSpherical()->_Q, getVarSpherical()->_ddQ);
+	ddq.multiply(getVarSpherical()->q_quat_, getVarSpherical()->ddq_);
 	deVector3 tmp;	
 	tmp.multiply(ddq, dt);
-	getVarSpherical()->_dQrotated += tmp;
+	getVarSpherical()->dq_rotated_ += tmp;
 
-	getVarSpherical()->_dQ.inversedMultiply(getVarSpherical()->_Q, getVarSpherical()->_dQrotated);
+	getVarSpherical()->dq_.inversedMultiply(getVarSpherical()->q_quat_, getVarSpherical()->dq_rotated_);
 
 	if (getDQclamp()) 
 		clampDQ();
@@ -153,8 +153,8 @@ deVector6& taoJointDOF1::getS()
 
 void taoJointDOF1::integrate(const deFloat dt)
 {
-	getVarDOF1()->_Q += getVarDOF1()->_dQ * dt;
-	getVarDOF1()->_dQ += getVarDOF1()->_ddQ * dt;
+	getVarDOF1()->q_ += getVarDOF1()->dq_ * dt;
+	getVarDOF1()->dq_ += getVarDOF1()->ddq_ * dt;
 
 	if (getDQclamp()) 
 		clampDQ();
@@ -162,10 +162,10 @@ void taoJointDOF1::integrate(const deFloat dt)
 
 void taoJointDOF1::clampDQ()
 {
-	if (getVarDOF1()->_dQ > getDQmax())
-		getVarDOF1()->_dQ = getDQmax();
-	else if (getVarDOF1()->_dQ < -getDQmax())
-		getVarDOF1()->_dQ = -getDQmax();
+	if (getVarDOF1()->dq_ > getDQmax())
+		getVarDOF1()->dq_ = getDQmax();
+	else if (getVarDOF1()->dq_ < -getDQmax())
+		getVarDOF1()->dq_ = -getDQmax();
 }
 
 taoJointPrismatic::taoJointPrismatic(taoAxis axis) : taoJointDOF1(axis) 

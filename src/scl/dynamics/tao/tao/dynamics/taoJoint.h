@@ -174,22 +174,22 @@ public:
 
 	virtual void addQdelta();
 	virtual void addDQdelta();
-	virtual void zeroTau() { getVarSpherical()->_Tau.zero(); }
-	virtual void zeroDDQ() { getVarSpherical()->_ddQ.zero(); }
-	virtual void zeroDQ() { getVarSpherical()->_dQ.zero(); getVarSpherical()->_dQrotated.zero(); }
-	virtual void zeroQ() { getVarSpherical()->_Q.identity(); }
-	virtual void setTau(const deFloat* v) { getVarSpherical()->_Tau.set(v); }
-	virtual void setDDQ(const deFloat* v) { getVarSpherical()->_ddQ.set(v); }
-	virtual void setDQ(const deFloat* v) { getVarSpherical()->_dQ.set(v); }
-	virtual void setQ(const deFloat* v) { getVarSpherical()->_Q.set(v); }
-	virtual void getTau(deFloat* v) const { getVarSpherical()->_Tau.get(v); }
-	virtual void getDDQ(deFloat* v) const { getVarSpherical()->_ddQ.get(v); }
-	virtual void getDQ(deFloat* v) const { getVarSpherical()->_dQ.get(v); }
-	virtual void getQ(deFloat* v) const { deQuaternion const & q = getVarSpherical()->_Q; v[0] = q[0]; v[1] = q[1]; v[2] = q[2]; v[3] = q[3]; }
+	virtual void zeroTau() { getVarSpherical()->force_gc_.zero(); }
+	virtual void zeroDDQ() { getVarSpherical()->ddq_.zero(); }
+	virtual void zeroDQ() { getVarSpherical()->dq_.zero(); getVarSpherical()->dq_rotated_.zero(); }
+	virtual void zeroQ() { getVarSpherical()->q_quat_.identity(); }
+	virtual void setTau(const deFloat* v) { getVarSpherical()->force_gc_.set(v); }
+	virtual void setDDQ(const deFloat* v) { getVarSpherical()->ddq_.set(v); }
+	virtual void setDQ(const deFloat* v) { getVarSpherical()->dq_.set(v); }
+	virtual void setQ(const deFloat* v) { getVarSpherical()->q_quat_.set(v); }
+	virtual void getTau(deFloat* v) const { getVarSpherical()->force_gc_.get(v); }
+	virtual void getDDQ(deFloat* v) const { getVarSpherical()->ddq_.get(v); }
+	virtual void getDQ(deFloat* v) const { getVarSpherical()->dq_.get(v); }
+	virtual void getQ(deFloat* v) const { deQuaternion const & q = getVarSpherical()->q_quat_; v[0] = q[0]; v[1] = q[1]; v[2] = q[2]; v[3] = q[3]; }
 
 	virtual void clampDQ();
 	virtual void integrate(const deFloat dt);
-	virtual void updateFrameLocal(deFrame* local) { local->rotation() = getVarSpherical()->_Q; }
+	virtual void updateFrameLocal(deFrame* local) { local->rotation() = getVarSpherical()->q_quat_; }
 
 	/** The "documentation" used to say this (whatever that
 	    means exactly): "notice that in spherical joints the
@@ -261,30 +261,30 @@ public:
 
 	virtual void reset() 
 	{
-		getVarDOF1()->_Q = 0;
-		getVarDOF1()->_dQ = 0;
-		getVarDOF1()->_ddQ = 0;
-		getVarDOF1()->_Tau = 0;
+		getVarDOF1()->q_ = 0;
+		getVarDOF1()->dq_ = 0;
+		getVarDOF1()->ddq_ = 0;
+		getVarDOF1()->tau_ = 0;
 	}
 
 	virtual taoVarDOF1* getVarDOF1() { return (taoVarDOF1*)getDVar(); }
 	virtual taoVarDOF1 const * getVarDOF1() const { return (taoVarDOF1*)getDVar(); }
 
-	virtual void addQdelta() { getVarDOF1()->_Q += getVarDOF1()->_ddQ; }
-	virtual void addDQdelta() { getVarDOF1()->_dQ += getVarDOF1()->_ddQ; if (getDQclamp()) clampDQ(); }
-	virtual void zeroTau() { getVarDOF1()->_Tau = 0; }
-	virtual void zeroDDQ() { getVarDOF1()->_ddQ = 0; }
-	virtual void zeroDQ() { getVarDOF1()->_dQ = 0; }
-	virtual void zeroQ() { getVarDOF1()->_Q = 0; }
+	virtual void addQdelta() { getVarDOF1()->q_ += getVarDOF1()->ddq_; }
+	virtual void addDQdelta() { getVarDOF1()->dq_ += getVarDOF1()->ddq_; if (getDQclamp()) clampDQ(); }
+	virtual void zeroTau() { getVarDOF1()->tau_ = 0; }
+	virtual void zeroDDQ() { getVarDOF1()->ddq_ = 0; }
+	virtual void zeroDQ() { getVarDOF1()->dq_ = 0; }
+	virtual void zeroQ() { getVarDOF1()->q_ = 0; }
 
-	virtual void setTau(const deFloat* v) { getVarDOF1()->_Tau = *v; }
-	virtual void setDDQ(const deFloat* v) { getVarDOF1()->_ddQ = *v; }
-	virtual void setDQ(const deFloat* v) { getVarDOF1()->_dQ = *v; }
-	virtual void setQ(const deFloat* v) { getVarDOF1()->_Q = *v; }
-	virtual void getTau(deFloat* v) const { *v = getVarDOF1()->_Tau; }
-	virtual void getDDQ(deFloat* v) const { *v = getVarDOF1()->_ddQ; }
-	virtual void getDQ(deFloat* v) const { *v = getVarDOF1()->_dQ; }
-	virtual void getQ(deFloat* v) const { *v = getVarDOF1()->_Q; }
+	virtual void setTau(const deFloat* v) { getVarDOF1()->tau_ = *v; }
+	virtual void setDDQ(const deFloat* v) { getVarDOF1()->ddq_ = *v; }
+	virtual void setDQ(const deFloat* v) { getVarDOF1()->dq_ = *v; }
+	virtual void setQ(const deFloat* v) { getVarDOF1()->q_ = *v; }
+	virtual void getTau(deFloat* v) const { *v = getVarDOF1()->tau_; }
+	virtual void getDDQ(deFloat* v) const { *v = getVarDOF1()->ddq_; }
+	virtual void getDQ(deFloat* v) const { *v = getVarDOF1()->dq_; }
+	virtual void getQ(deFloat* v) const { *v = getVarDOF1()->q_; }
 
 	virtual void clampDQ();
 	virtual void integrate(const deFloat dt);
@@ -322,7 +322,7 @@ class taoJointPrismatic : public taoJointDOF1
 public:
 	taoJointPrismatic(taoAxis axis);
 	virtual void updateFrameLocal(deFrame* local) 
-	{ local->translation()[getAxis()] = getVarDOF1()->_Q; }
+	{ local->translation()[getAxis()] = getVarDOF1()->q_; }
 
 	virtual void setABJoint(taoABJoint* joint)
 	{
@@ -356,7 +356,7 @@ public:
 	taoJointRevolute(taoAxis axis);
 	virtual void updateFrameLocal(deFrame* local)
 	{
-		local->rotation().set(getAxis(), getVarDOF1()->_Q);
+		local->rotation().set(getAxis(), getVarDOF1()->q_);
 	}
 
   virtual void setABJoint(taoABJoint* joint)

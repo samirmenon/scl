@@ -29,11 +29,11 @@ void taoABJointDOF1::update_localX(const deTransform& home, const deFrame& local
 	deTransform local;
 
 	if (_S[1].dot(_S[1]) > DE_QUATERNION_EPSILON)
-		local.rotation().set(_S[1], getVarDOF1()->_Q);
+		local.rotation().set(_S[1], getVarDOF1()->q_);
 	else
 		local.identity();
 
-	local.translation().multiply(_S[0], getVarDOF1()->_Q);
+	local.translation().multiply(_S[0], getVarDOF1()->q_);
 	
 	localX().multiply(home, local);
 }
@@ -44,7 +44,7 @@ void taoABJointDOF1::update_localX(const deTransform& home, const deFrame& local
 void taoABJointDOF1::plusEq_SdQ(deVector6& V)
 {
 	deVector6 tmpV6;
-	tmpV6.multiply(_S, getVarDOF1()->_dQ);
+	tmpV6.multiply(_S, getVarDOF1()->dq_);
 	V += tmpV6;
 }
 
@@ -58,7 +58,7 @@ void taoABJointDOF1::plusEq_V_X_SdQ(deVector6& C, const deVector6& V)
 {
 	deVector6 tmpV6;
 	tmpV6.crossMultiply(V, _S);
-	tmpV6 *= getVarDOF1()->_dQ;
+	tmpV6 *= getVarDOF1()->dq_;
 	C += tmpV6;
 }
 
@@ -110,35 +110,35 @@ void taoABJointDOF1::plusEq_X_SbarT_Tau(deVector6& Pah, const deTransform& local
 {
 	deVector6 tmpV6;
 	tmpV6.xform(localX, _SbarT);
-	tmpV6 *= getVarDOF1()->_Tau;
+	tmpV6 *= getVarDOF1()->tau_;
 	Pah += tmpV6;
 }
 
 void taoABJointDOF1::compute_Tau(const deVector6& F)
 {
 // see taoABNode::netForce()
-	getVarDOF1()->_Tau = _S.dot(F) + getVarDOF1()->_ddQ * getInertia();
+	getVarDOF1()->tau_ = _S.dot(F) + getVarDOF1()->ddq_ * getInertia();
 }
 
 // ddQ = Dinv*(tau - St*Pa) - Sbar*(X Ah + Ci)
 // Ai = (hXi^T Ah + Ci) + Si ddqi;
 void taoABJointDOF1::compute_ddQ(const deVector6& Pa, const deVector6& XAh_C)
 {
-	getVarDOF1()->_ddQ = _Dinv * (getVarDOF1()->_Tau - _S.dot(Pa)) - _SbarT.dot(XAh_C);
+	getVarDOF1()->ddq_ = _Dinv * (getVarDOF1()->tau_ - _S.dot(Pa)) - _SbarT.dot(XAh_C);
 }
 void taoABJointDOF1::compute_ddQ_zeroTau(const deVector6& Pa, const deVector6& XAh_C)
 {
-	getVarDOF1()->_ddQ = -_Dinv * _S.dot(Pa) - _SbarT.dot(XAh_C);
+	getVarDOF1()->ddq_ = -_Dinv * _S.dot(Pa) - _SbarT.dot(XAh_C);
 }
 void taoABJointDOF1::compute_ddQ_zeroTauPa(const deVector6& XAh_C)
 {
-	getVarDOF1()->_ddQ = -_SbarT.dot(XAh_C);
+	getVarDOF1()->ddq_ = -_SbarT.dot(XAh_C);
 }
 
 void taoABJointDOF1::plusEq_SddQ(deVector6& A)
 {
 	deVector6 tmpV6;
-	tmpV6.multiply(_S, getVarDOF1()->_ddQ);
+	tmpV6.multiply(_S, getVarDOF1()->ddq_);
 	A += tmpV6;
 }
 
@@ -146,7 +146,7 @@ void taoABJointDOF1::minusEq_SdQ_damping(deVector6& B, const deMatrix6& Ia)
 {
 	deVector6 tmpV;
 	tmpV.multiply(Ia, _S);
-	tmpV *= getVarDOF1()->_dQ * (- getDamping());
+	tmpV *= getVarDOF1()->dq_ * (- getDamping());
 	B -= tmpV;
 }
 
@@ -161,14 +161,14 @@ void taoABJointDOF1::compute_Jg(const deTransform &globalX)
 void taoABJointDOF1::plusEq_Jg_ddQ(deVector6& Ag)
 {
 	deVector6 JddQ;
-	JddQ.multiply(_Jg, getVarDOF1()->_dQ);
+	JddQ.multiply(_Jg, getVarDOF1()->dq_);
 	Ag += JddQ;
 }
 
 // Tau += JgT * F
 void taoABJointDOF1::add2Tau_JgT_F(const deVector6& Fg)
 {
-	getVarDOF1()->_Tau += _Jg.dot(Fg);
+	getVarDOF1()->tau_ += _Jg.dot(Fg);
 }
 
 // F += S * inertia * ddQ
@@ -184,7 +184,7 @@ void taoABJointDOF1::plusEq_S_inertia_ddQ(deVector6& F, const deVector6& A)
 void taoABJointSpherical::update_localX(const deTransform& home, const deFrame& localFrame)
 {
 	deMatrix3 r;
-	r.set(getVarSpherical()->_Q);
+	r.set(getVarSpherical()->q_quat_);
 	localX().rotation().multiply(home.rotation(), r);
 	localX().translation() = localFrame.translation();
 }
@@ -194,7 +194,7 @@ void taoABJointSpherical::update_localX(const deTransform& home, const deFrame& 
 // xformT = [ Rt -Rtdx; 0 Rt ]
 void taoABJointSpherical::plusEq_SdQ(deVector6& V)
 {
-	V[1] += getVarSpherical()->_dQ;
+	V[1] += getVarSpherical()->dq_;
 }
 
 // Ci = Wi X Vi - Xt (Wh X Vh) + Vi X Si dqi
@@ -207,9 +207,9 @@ void taoABJointSpherical::plusEq_SdQ(deVector6& V)
 void taoABJointSpherical::plusEq_V_X_SdQ(deVector6& C, const deVector6& V)
 {
 	deVector3 tmpV3;
-	tmpV3.crossMultiply(V[0], getVarSpherical()->_dQ);
+	tmpV3.crossMultiply(V[0], getVarSpherical()->dq_);
 	C[0] += tmpV3;
-	tmpV3.crossMultiply(V[1], getVarSpherical()->_dQ);
+	tmpV3.crossMultiply(V[1], getVarSpherical()->dq_);
 	C[1] += tmpV3;
 }
 
@@ -250,8 +250,8 @@ void taoABJointSpherical::minusEq_X_SbarT_St(deMatrix6& L, const deTransform& lo
 void taoABJointSpherical::plusEq_X_SbarT_Tau(deVector6& Pah, const deTransform& localX)
 {
 	deVector6 tmpV61, tmpV62;
-	tmpV61[0].multiply(_SbarT[0], getVarSpherical()->_Tau);
-	tmpV61[1].multiply(_SbarT[1], getVarSpherical()->_Tau);
+	tmpV61[0].multiply(_SbarT[0], getVarSpherical()->force_gc_);
+	tmpV61[1].multiply(_SbarT[1], getVarSpherical()->force_gc_);
 	tmpV62.xform(localX, tmpV61);
 	Pah += tmpV62;
 }
@@ -259,8 +259,8 @@ void taoABJointSpherical::plusEq_X_SbarT_Tau(deVector6& Pah, const deTransform& 
 void taoABJointSpherical::compute_Tau(const deVector6& F)
 {
 // see taoABNode::netForce()
-	getVarSpherical()->_Tau.multiply(getVarSpherical()->_ddQ, getInertia());
-	getVarSpherical()->_Tau += F[1];
+	getVarSpherical()->force_gc_.multiply(getVarSpherical()->ddq_, getInertia());
+	getVarSpherical()->force_gc_ += F[1];
 }
 
 // ddQ = Dinv*(tau - St*Pa) - Sbar*(X Ah + Ci)
@@ -273,9 +273,9 @@ void taoABJointSpherical::compute_ddQ(const deVector6& Pa, const deVector6& XAh_
 	deVector3 tmpV, tmpV1;
 	// ddQ += Dinv * (tau - Pa)
 	// St Pa = Pa[1]
-	tmpV1.subtract(getVarSpherical()->_Tau, Pa[1]);
+	tmpV1.subtract(getVarSpherical()->force_gc_, Pa[1]);
 	tmpV.multiply(_Dinv, tmpV1);
-	getVarSpherical()->_ddQ += tmpV;
+	getVarSpherical()->ddq_ += tmpV;
 }
 
 // ddQ = Dinv*(- St*Pa) - Sbar*(X Ah + Ci)
@@ -290,7 +290,7 @@ void taoABJointSpherical::compute_ddQ_zeroTau(const deVector6& Pa, const deVecto
 	// ddQ += Dinv * (- Pa)
 	// St Pa = Pa[1]
 	tmpV.multiply(_Dinv, Pa[1]);  
-	getVarSpherical()->_ddQ -= tmpV;
+	getVarSpherical()->ddq_ -= tmpV;
 }
 
 // ddQ = - Sbar*(X Ah + Ci) = (SbarT)^t * (X Ah + Ci)
@@ -298,20 +298,20 @@ void taoABJointSpherical::compute_ddQ_zeroTauPa(const deVector6& XAh_C)
 {
 	deVector3 tmpV;
 	tmpV.transposedMultiply(_SbarT[0], XAh_C[0]);
-	getVarSpherical()->_ddQ.negate(tmpV);
+	getVarSpherical()->ddq_.negate(tmpV);
 	tmpV.transposedMultiply(_SbarT[1], XAh_C[1]);
-	getVarSpherical()->_ddQ -= tmpV;
+	getVarSpherical()->ddq_ -= tmpV;
 }
 
 void taoABJointSpherical::plusEq_SddQ(deVector6& A)
 {
-	A[1] += getVarSpherical()->_ddQ;
+	A[1] += getVarSpherical()->ddq_;
 }
 
 void taoABJointSpherical::minusEq_SdQ_damping(deVector6& B, const deMatrix6& Ia)
 {
 	deVector3 tmpV;
-	tmpV.multiply(Ia[1][1], getVarSpherical()->_dQ);
+	tmpV.multiply(Ia[1][1], getVarSpherical()->dq_);
 	tmpV *= (- getDamping());
 	B[1] -= tmpV;
 }
@@ -333,8 +333,8 @@ void taoABJointSpherical::compute_Jg(const deTransform &globalX)
 void taoABJointSpherical::plusEq_Jg_ddQ(deVector6& Ag)
 {
 	deVector6 JddQ;
-	JddQ[0].multiply(_Jg[0], getVarSpherical()->_dQ);
-	JddQ[1].multiply(_Jg[1], getVarSpherical()->_dQ);
+	JddQ[0].multiply(_Jg[0], getVarSpherical()->dq_);
+	JddQ[1].multiply(_Jg[1], getVarSpherical()->dq_);
 	Ag += JddQ;
 }
 
@@ -345,7 +345,7 @@ void taoABJointSpherical::add2Tau_JgT_F(const deVector6& Fg)
 	JtF.transposedMultiply(_Jg[0], Fg[0]);
 	JtF1.transposedMultiply(_Jg[1], Fg[1]);
 	JtF += JtF1;
-	getVarSpherical()->_Tau += JtF;
+	getVarSpherical()->force_gc_ += JtF;
 }
 
 // F += S * inertia * ddQ

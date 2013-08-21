@@ -50,10 +50,10 @@ public:
 class taoVarDOF1 : public taoDVar
 {
 public:
-	deFloat _Q;		//!<	joint position
-	deFloat _dQ;	//!<	joint velocity
-	deFloat _ddQ;	//!<	joint acceleration
-	deFloat _Tau;	//!<	joint force (torque)
+	deFloat q_;		//!<	joint position
+	deFloat dq_;	//!<	joint velocity
+	deFloat ddq_;	//!<	joint acceleration
+	deFloat tau_;	//!<	joint force (torque)
 };
 
 /*!
@@ -65,11 +65,11 @@ public:
 class taoVarSpherical : public taoDVar
 {
 public:
-	deQuaternion _Q;		//!<	joint position
-	deVector3 _dQ;			//!<	joint velocity in local frame
-	deVector3 _ddQ;			//!<	joint acceleration
-	deVector3 _Tau;			//!<	joint force (torque)
-	deVector3 _dQrotated;	//!<	joint velocity in reference (parent) frame
+	deQuaternion q_quat_;	//!<	joint position
+	deVector3 dq_;			  //!<	joint velocity in local frame
+	deVector3 ddq_;			  //!<	joint acceleration
+	deVector3 force_gc_;  //!<	joint force (torque)
+	deVector3 dq_rotated_;	//!<	joint velocity in reference (parent) frame
 };
 
 #endif // _taoVar_h
