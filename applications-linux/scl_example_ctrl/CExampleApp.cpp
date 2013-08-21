@@ -55,12 +55,11 @@ namespace scl_app
   scl::sBool CExampleApp::initMyController(const std::vector<std::string>& argv,
       scl::sUInt args_parsed)
   {
-    bool flag;
     try
     {
       //Ctr in array of args_parsed = (args_parsed - 1)
       //So ctr for un-parsed arg = (args_parsed - 1) + 1
-      scl::sUInt args_ctr = args_parsed, ui_points_used=0;
+      scl::sUInt args_ctr = args_parsed;
 
       // Check that we haven't finished parsing everything
       while(args_ctr < argv.size())
@@ -73,7 +72,7 @@ namespace scl_app
           std::cout<<"\n Possible example task options: -p (start paused) -l (log file), -com (com control task), -op (op point task)";
           args_ctr++;
         }
-    }
+      }
 
       return true;
     }
@@ -85,35 +84,51 @@ namespace scl_app
   scl::sBool CExampleApp::registerCustomDynamicTypes()
   { return registerExampleTaskType();  }
 
-  void CExampleApp::setInitialStateForUIAndDynamics()
+  scl::sBool CExampleApp::setInitialStateForUIAndDynamics()
   {
-    //Compute dynamics and servo once to initialize matrices.
-    robot_.computeDynamics();
-    robot_.computeNonControlOperations();
-    robot_.computeServo();
-    robot_.setGeneralizedCoordinatesToZero();
-    robot_.setGeneralizedVelocitiesToZero();
-    robot_.setGeneralizedAccelerationsToZero();
-
-    //Update the operational point tasks (if any)
-    std::vector<SUiCtrlPointData>::iterator it,ite;
-    for(it = taskvec_ui_ctrl_point_.begin(), ite = taskvec_ui_ctrl_point_.end(); it!=ite; ++it )
+    bool flag;
+    try
     {
-      assert(it->has_been_init_);
-      assert(NULL!=it->chai_pos_des_);
-      assert(NULL!=it->task_);
-      it->task_->getPos(it->pos_);
-#ifdef DEBUG
-      if( (3 != it->pos_.rows() && 1 != it->pos_.cols()) ||
-          (1 != it->pos_.rows() && 3 != it->pos_.cols()) )
-      { assert(false);  }
-#endif
-      db_->s_gui_.ui_point_[it->ui_pt_] = it->pos_;
+      //Compute dynamics and servo once to initialize matrices.
+      robot_.computeDynamics();
+      robot_.computeNonControlOperations();
+      robot_.computeServo();
+      robot_.setGeneralizedCoordinatesToZero();
+      robot_.setGeneralizedVelocitiesToZero();
+      robot_.setGeneralizedAccelerationsToZero();
 
-      //Using a tmp ref to simplify code.
-      Eigen::Vector3d& tmp_ref = db_->s_gui_.ui_point_[it->ui_pt_];
-      it->chai_pos_des_->setLocalPos(tmp_ref(0),tmp_ref(1),tmp_ref(2));
+      //Update the operational point tasks (if any)
+      std::vector<SUiCtrlPointData>::iterator it,ite;
+      for(it = taskvec_ui_ctrl_point_.begin(), ite = taskvec_ui_ctrl_point_.end(); it!=ite; ++it )
+      {
+        if(false == it->has_been_init_)
+        { throw(std::runtime_error(std::string("UI Task not intialized: ")+it->name_)); }
+
+        if(NULL==it->chai_pos_des_)
+        { throw(std::runtime_error(std::string("UI Task's chai position vector is NULL: ")+it->name_)); }
+
+        if(NULL==it->task_)
+        { throw(std::runtime_error(std::string("UI Task's control object is null: ")+it->name_)); }
+
+        it->task_->getPos(it->pos_);
+
+        flag = (3 == it->pos_.rows() && 1 == it->pos_.cols()) ||
+            (1 == it->pos_.rows() && 3 == it->pos_.cols());
+        if( false == flag )
+        { throw(std::runtime_error(std::string("UI task's control position vector size is incorrect: ")+it->name_)); }
+
+        db_->s_gui_.ui_point_[it->ui_pt_] = it->pos_;
+
+        //Using a tmp ref to simplify code.
+        Eigen::Vector3d& tmp_ref = db_->s_gui_.ui_point_[it->ui_pt_];
+        it->chai_pos_des_->setLocalPos(tmp_ref(0),tmp_ref(1),tmp_ref(2));
+      }
+
+      return true;
     }
+    catch(std::exception &e)
+    { std::cerr<<"\nCExampleApp::setInitialStateForUIAndDynamics() : "<<e.what(); }
+    return false;
   }
 
   void CExampleApp::stepMySimulation()

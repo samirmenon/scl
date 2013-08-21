@@ -69,7 +69,7 @@ namespace scl_app
 
     /** Sets all the ui points to their current position and
      * run the dynamics once to flush the state. */
-    void setInitialStateForUIAndDynamics();
+    virtual scl::sBool setInitialStateForUIAndDynamics();
   };
 
 }
