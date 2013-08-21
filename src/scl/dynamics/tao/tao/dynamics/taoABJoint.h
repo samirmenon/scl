@@ -62,10 +62,12 @@ public:
 	virtual deMatrix6& L() { return _L; }
 
 	virtual void update_localX(const deTransform& home, const deFrame& localFrame) = 0;
+
 	// Vi = hXi^T Vh + Si dqi;
 	// xform = [R 0; dxR R]
 	// xformT = [ Rt -Rtdx; 0 Rt ]
 	virtual void plusEq_SdQ(deVector6& V) = 0;
+
 	// Ci = Wi X Vi - Xt (Wh X Vh) + Vi X Si dqi
 	// V X = [v0 ; v1] X = [ v1x , v0x ; 0 , v1x]
 	// WxV = [ 0 ; v1 ] x [ v0 ; v1 ]
@@ -73,45 +75,59 @@ public:
 	//     = [ wxv ; 0 ]
 	// Xt * WxV = [ Rt -Rtdx; 0 Rt ] [ wxv ; 0 ] = [ Rt WxV ; 0 ]
 	virtual void plusEq_V_X_SdQ(deVector6& C, const deVector6& V) = 0;
+
 	// Dinv = inv(St Ia S)
 	// SbarT = Ia S Dinv
 	// hLi = hXi [ 1 - Si Sbari ]^T = hXi [1 - Sbari^T Si^T] = X - X SbarT St
 	// Lt = [1 - S Sbar] Xt
 	virtual void compute_Dinv_and_SbarT(const deMatrix6& Ia) = 0;
+
 	virtual void minusEq_X_SbarT_St(deMatrix6& L, const deTransform& localX) = 0;
+
 	// Pah = Ph - Fexth + sum [ Li (Iai Ci + Pai) + X SbarTi taui ]
 	virtual void plusEq_X_SbarT_Tau(deVector6& Pah, const deTransform& localX) = 0;
+
 	// ddQ = Dinv*(tau - St*Pa) - Sbar*(X Ah + Ci)
 	// Ai = (hXi^T Ah + Ci) + Si ddqi;
 	virtual void compute_ddQ(const deVector6& Pa, const deVector6& XAh_C) = 0;
+
 	virtual void compute_ddQ_zeroTau(const deVector6& Pa, const deVector6& XAh_C) = 0;
+
 	// d dQ = Dinv*(- St*Ya) - Sbar*(X dVh)
 	// dVi = (hXi^T dVh) + Si d dqi;
 	virtual void compute_ddQ_zeroTauPa(const deVector6& XAh_C) = 0;
+
 	virtual void compute_Tau(const deVector6& F) = 0;
 
 	virtual void plusEq_SddQ(deVector6& A) = 0;
 
 	virtual void minusEq_SdQ_damping(deVector6& B, const deMatrix6& Ia) = 0;
+
 	virtual void plusEq_S_Dinv_St(deMatrix6& Omega) = 0;
 
 	// 0Jn = Jn = iXn^T Si = 0Xi^(-T) Si
 	// where 0Xi^(-T) = [ R rxR; 0 R ]
 	virtual void compute_Jg(const deTransform &globalX) = 0;
+
 	// Ag += Jg * ddQ
 	virtual void plusEq_Jg_ddQ(deVector6& Ag) = 0;
+
 	// Tau += JgT * F
 	virtual void add2Tau_JgT_F(const deVector6& Fg) = 0;
+
 	// F += S * inertia * A
 	virtual void plusEq_S_inertia_ddQ(deVector6& F, const deVector6& A) = 0;
 
 	virtual deFloat getDamping() { return _joint->getDamping(); }
+
 	virtual deFloat getInertia() { return _joint->getInertia(); }
 
 	virtual taoDVar* getDVar() { return _joint->getDVar(); }
 
 	virtual void zeroTau() { _joint->zeroTau(); }
+
 	virtual void addDQdelta() { _joint->addDQdelta(); }
+
 	virtual void addQdelta() { _joint->addQdelta(); }
 
 private:
