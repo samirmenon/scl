@@ -25,12 +25,7 @@
 
 #include <tao/matrix/TaoDeTypes.h>
 
-#undef TAO_CONTROL
-//#define TAO_CONTROL
-
 typedef enum {TAO_AXIS_X = 0, TAO_AXIS_Y = 1, TAO_AXIS_Z = 2, TAO_AXIS_S = 3, TAO_AXIS_USER = 4} taoAxis;
 typedef enum {TAO_JOINT_PRISMATIC, TAO_JOINT_REVOLUTE, TAO_JOINT_SPHERICAL, TAO_JOINT_USER} taoJointType;
-#ifdef TAO_CONTROL
-typedef enum {TAO_CONTROL_ZERO, TAO_CONTROL_FLOAT, TAO_CONTROL_PD, TAO_CONTROL_GOALPOSITION} taoControlType;
-#endif
+
 #endif // _taoTypes_h

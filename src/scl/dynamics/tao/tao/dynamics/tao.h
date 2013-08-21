@@ -51,10 +51,6 @@
 #include <tao/dynamics/taoJoint.h>
 #include <tao/dynamics/taoVar.h>
 
-#ifdef TAO_CONTROL
-#include "taoControlJt.h"
-#endif
-
 #include <tao/dynamics/taoDynamics.h>
 
 #endif // _tao_h

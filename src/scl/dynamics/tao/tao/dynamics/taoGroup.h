@@ -63,7 +63,7 @@ public:
 
 	/*!
 	 *  \remarks  this can be replaced by following 3 individual call.
-	 *  \remarks  control(), simulate(), updateTransformation()
+	 *  \remarks  simulate(), updateTransformation()
 	 *
 	 *  \arg  time  control desired goal achieving time. this value
 	 *          is used to compute the goal frames.
@@ -74,7 +74,6 @@ public:
 	 *  \arg  n   number of iteration of the loop if necessary
 	 */
 	void update(const deFloat time, const deFloat dt, const deInt n);
-	void control(const deFloat time);
 	void simulate(const deFloat dt);
 	void updateTransformation();
 

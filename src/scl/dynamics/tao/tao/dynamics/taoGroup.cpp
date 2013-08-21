@@ -26,10 +26,6 @@
 #include <tao/dynamics/taoNode.h>
 #include <tao/dynamics/taoDynamics.h>
 
-#ifdef TAO_CONTROL
-#include "taoControlJt.h"
-#endif
-
 taoWorld::~taoWorld()
 {
 	taoNodeRoot* r;
@@ -51,10 +47,6 @@ void taoWorld::update(const deFloat time, const deFloat dt, const deInt n)
 		{
 			if (!r->getIsFixed())
 			{
-#ifdef TAO_CONTROL
-				if (r->getController())
-					r->getController()->control(time);
-#endif
 				taoDynamics::fwdDynamics(r, &_gravity);
 				taoDynamics::integrate(r, dt);
 				taoDynamics::updateTransformation(r);
@@ -62,22 +54,6 @@ void taoWorld::update(const deFloat time, const deFloat dt, const deInt n)
 			r = r->getNext();
 		}
 		i++;
-	}
-}
-
-void taoWorld::control(const deFloat time)
-{
-	taoNodeRoot* r = _rootList;
-	while (r)
-	{
-		if (!r->getIsFixed())
-		{
-#ifdef TAO_CONTROL
-			if (r->getController())
-				r->getController()->control(time);
-#endif
-		}
-		r = r->getNext();
 	}
 }
 
@@ -157,11 +133,6 @@ taoNodeRoot* taoWorld::findRoot(const deInt id)
 
 taoNodeRoot* taoWorld::unlinkFixed(taoNodeRoot* root, taoNode* node)
 {
-#ifdef TAO_CONTROL
-	if (root->getController())
-		root->getController()->deleteParamTree(node);
-#endif
-
 	taoNodeRoot* r = new taoNodeRoot(*node->frameGlobal());
 
 	node->unlink();
@@ -185,11 +156,6 @@ taoNodeRoot* taoWorld::unlinkFixed(taoNodeRoot* root, taoNode* node)
 
 taoNodeRoot* taoWorld::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat inertia, deFloat damping)
 {
-#ifdef TAO_CONTROL
-	if (root->getController())
-		root->getController()->deleteParamTree(node);
-#endif
-
 	deVector6 v = *node->velocity();
 	taoNodeRoot* r = new taoNodeRoot(*node->frameGlobal());
 
@@ -247,11 +213,6 @@ taoNodeRoot* taoWorld::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat iner
 
 void taoWorld::sync(taoNodeRoot* root, deFloat time)
 {
-#ifdef TAO_CONTROL
-	if (root->getController())
-		root->getController()->reset(time);
-#endif
-
 	root->sync();
 
 	taoDynamics::initialize(root);

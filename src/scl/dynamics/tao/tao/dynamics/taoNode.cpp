@@ -25,10 +25,6 @@
 #include "taoABNode.h"
 #include <tao/dynamics/taoDynamics.h>
 
-#ifdef TAO_CONTROL
-#include "taoControl.h"
-#endif
-
 deVector6* taoNode::velocity()
 {
 	return getABNode()->V();
@@ -267,9 +263,6 @@ taoNodeRoot::taoNodeRoot(deFrame const & global)
 
 taoNodeRoot::~taoNodeRoot()
 {
-#ifdef TAO_CONTROL
-	delete getController();
-#endif
 	delete getABNode();
 	if (_child)
 		_DeleteNodeTree(_child);
