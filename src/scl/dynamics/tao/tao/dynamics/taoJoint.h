@@ -24,11 +24,16 @@
 #define _taoJoint_h
 
 #include "taoDJoint.h"
+#include "taoABJoint.h"
 #include "taoVar.h"
 #include "taoTypes.h"
 #include <tao/matrix/TaoDeMath.h>
 
+#include <cassert>
+#include <iostream>
+
 class taoABJoint;
+//NOTE TODO Samir > This class doesn't even exist.
 class taoJCParam;
 
 /*!
@@ -41,7 +46,7 @@ class taoJCParam;
 class taoJoint : public taoDJoint
 {
 public:
-	taoJoint() : _type(TAO_JOINT_USER), _abJoint(NULL), _jcp(NULL), _clamp_dQ(0), _max_dQ(5), _damping(0), _inertia(0), _var(NULL), _next(NULL) {}
+	taoJoint() : _type(TAO_JOINT_USER), _jcp(NULL), _clamp_dQ(0), _max_dQ(5), _damping(0), _inertia(0), _var(NULL), _next(NULL) {}
 	virtual ~taoJoint();
 
 	virtual deInt getDOF() = 0;
@@ -54,9 +59,9 @@ public:
 	void setType(taoJointType t) { _type = t; }
 	taoJointType getType() const { return _type; }
 
-	void setABJoint(taoABJoint* joint) { _abJoint = joint; }
-	taoABJoint* getABJoint() { return _abJoint; }
-	taoABJoint const * getABJoint() const { return _abJoint; }
+	virtual void setABJoint(taoABJoint* joint) = 0;
+	virtual taoABJoint* getABJoint() = 0;
+	virtual taoABJoint const * getABJoint() const = 0;
 
 	void setJCParam(taoJCParam* jcp) { _jcp = jcp; }
 	taoJCParam* getJCParam() { return _jcp; }
@@ -123,7 +128,11 @@ public:
   
 private:
 	taoJointType _type;
-	taoABJoint* _abJoint;
+	// NOTE TODO. Samir > This stupid class has no business keeping these pointers.
+	// Ideally getABJoint() and getJCParam() should be virtual and equal to zero.
+	// The subclass should maintain the actual objects. For now there will be
+	// useless dynamic casts in numerous places because of this design.
+//	taoABJoint* _abJoint;
 	taoJCParam* _jcp;
 
 	deInt _clamp_dQ;
@@ -160,6 +169,21 @@ public:
 
 	virtual taoVarSpherical* getVarSpherical() { return (taoVarSpherical*)getDVar(); }
 	virtual taoVarSpherical const * getVarSpherical() const { return (taoVarSpherical*)getDVar(); }
+
+	virtual void setABJoint(taoABJoint* joint)
+	{
+	  taoABJointSpherical * tmp = dynamic_cast<taoABJointSpherical *>(joint);
+	  if(NULL == tmp)
+	  {
+	    std::cout <<"\ntaoJointPrismatic::setABJoint(): Incorrect joint type passed. Can't set ABJoint";
+	    assert(false);
+	  }
+	  if(NULL== _abJoint) { delete _abJoint; }
+	  _abJoint = tmp;
+	}
+
+	virtual taoABJoint* getABJoint(){ return _abJoint; }
+	virtual taoABJoint const * getABJoint() const { return _abJoint; }
 
 	virtual void addQdelta();
 	virtual void addDQdelta();
@@ -226,6 +250,9 @@ public:
       polymorphic form. */
   virtual void getJgColumns(deVector6 * Jg_columns) const;
   
+protected:
+  taoABJointSpherical * _abJoint;
+
 };
 
 /*!
@@ -309,6 +336,24 @@ public:
 	taoJointPrismatic(taoAxis axis);
 	virtual void updateFrameLocal(deFrame* local) 
 	{ local->translation()[getAxis()] = getVarDOF1()->_Q; }
+
+	virtual void setABJoint(taoABJoint* joint)
+	{
+	  taoABJointPrismatic * tmp = dynamic_cast<taoABJointPrismatic *>(joint);
+	  if(NULL == tmp)
+	  {
+	    std::cout <<"\ntaoJointPrismatic::setABJoint(): Incorrect joint type passed. Can't set ABJoint";
+	    assert(false);
+	  }
+	  if(NULL== _abJoint) { delete _abJoint; }
+	  _abJoint = tmp;
+	}
+
+	virtual taoABJoint* getABJoint(){ return _abJoint; }
+	virtual taoABJoint const * getABJoint() const { return _abJoint; }
+
+protected:
+	taoABJointPrismatic *_abJoint;
 };
 
 /*!
@@ -326,6 +371,24 @@ public:
 	{
 		local->rotation().set(getAxis(), getVarDOF1()->_Q);
 	}
+
+  virtual void setABJoint(taoABJoint* joint)
+  {
+    taoABJointRevolute * tmp = dynamic_cast<taoABJointRevolute *>(joint);
+    if(NULL == tmp)
+    {
+      std::cout <<"\ntaoJointPrismatic::setABJoint(): Incorrect joint type passed. Can't set ABJoint";
+      assert(false);
+    }
+    if(NULL== _abJoint) { delete _abJoint; }
+    _abJoint = tmp;
+  }
+
+  virtual taoABJoint* getABJoint(){ return _abJoint; }
+  virtual taoABJoint const * getABJoint() const { return _abJoint; }
+
+protected:
+  taoABJointRevolute *_abJoint;
 };
 
 /*!
@@ -340,6 +403,19 @@ class taoJointUser : public taoJointDOF1
 public:
 	taoJointUser();
 	//virtual void updateFrameLocal(deFrame* local) = 0;
+
+
+  virtual void setABJoint(taoABJoint* joint)
+  {
+    if(NULL== _abJoint) { delete _abJoint; }
+    _abJoint = joint;
+  }
+
+  virtual taoABJoint* getABJoint(){ return _abJoint; }
+  virtual taoABJoint const * getABJoint() const { return _abJoint; }
+
+protected:
+  taoABJoint* _abJoint;
 };
 
 #endif // _taoJoint_h

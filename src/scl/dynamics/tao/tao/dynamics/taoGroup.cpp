@@ -229,7 +229,7 @@ taoNodeRoot* taoGroup::unlinkFree(taoNodeRoot* root, taoNode* node, deFloat iner
 	joint->getVarDOF1()->_dQ = v[0][TAO_AXIS_Z];
 	node->addJoint(joint);
 
-	taoJointSpherical* joint2 = new taoJointSpherical;
+	taoJointSpherical* joint2 = new taoJointSpherical();
 	joint2->setDamping(damping);
 	joint2->setInertia(inertia);
 	joint2->setDVar(new taoVarSpherical);

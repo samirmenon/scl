@@ -33,7 +33,9 @@ class taoDVar;
  *	\brief abstract joint class for articulated body
  *	\ingroup taoDynamics
  *
- *	This class should be used as a base class and implemented accordingly.	
+ *	This class should be used as a base class and implemented accordingly.
+ *
+ *	NOTE TODO Samir > This class is useless! Delete it.
  */
 class taoDJoint
 {
