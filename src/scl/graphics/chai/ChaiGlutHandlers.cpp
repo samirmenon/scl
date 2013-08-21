@@ -123,6 +123,7 @@ namespace scl_chai_glut_interface
       glutInitWindowSize(chai_glob_ds->GLOB_chaiDbptr->gl_width_, chai_glob_ds->GLOB_chaiDbptr->gl_height_);
       glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
       glutCreateWindow("scl_busylizzy");
+      glewInit();
 
       //Set up glut's handlers
       glutDisplayFunc(scl_chai_glut_interface::updateGraphics);
