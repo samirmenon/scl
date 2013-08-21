@@ -32,10 +32,6 @@
 #include <cassert>
 #include <iostream>
 
-class taoABJoint;
-//NOTE TODO Samir > This class doesn't even exist.
-class taoJCParam;
-
 /*!
  *	\brief		Base joint class for articulated body
  *	\ingroup	taoDynamics
@@ -62,9 +58,6 @@ public:
 	virtual void setABJoint(taoABJoint* joint) = 0;
 	virtual taoABJoint* getABJoint() = 0;
 	virtual taoABJoint const * getABJoint() const = 0;
-
-	void setJCParam(taoJCParam* jcp) { _jcp = jcp; }
-	taoJCParam* getJCParam() { return _jcp; }
 
 	void setDQclamp(deInt b) { _clamp_dQ = b; }
 	deInt getDQclamp() { return _clamp_dQ; }
@@ -128,12 +121,6 @@ public:
   
 private:
 	taoJointType _type;
-	// NOTE TODO. Samir > This stupid class has no business keeping these pointers.
-	// Ideally getABJoint() and getJCParam() should be virtual and equal to zero.
-	// The subclass should maintain the actual objects. For now there will be
-	// useless dynamic casts in numerous places because of this design.
-//	taoABJoint* _abJoint;
-	taoJCParam* _jcp;
 
 	deInt _clamp_dQ;
 	deFloat _max_dQ;
