@@ -207,10 +207,10 @@ public:
 	virtual const deInt getNOJ() const { return 0; }
 };
 
-class taoABNodeNOJ : public taoArticulatedBodyLink
+class taoArticulatedBodyLinkNJoints0 : public taoArticulatedBodyLink
 {
 public:
-	taoABNodeNOJ()
+	taoArticulatedBodyLinkNJoints0()
 	{
 		_flag = 0;
 		_Ic.zero();
@@ -247,7 +247,7 @@ private:
 	deMatrix6 _I;
 };
 
-class taoABNodeNOJ1 : public taoABNodeNOJ
+class taoABNodeNOJ1 : public taoArticulatedBodyLinkNJoints0
 {
 public:
 	taoABNodeNOJ1() : _joint(NULL) {}
@@ -287,7 +287,7 @@ private:
 	taoABJoint* _joint;
 };
 
-class taoABNodeNOJn : public taoABNodeNOJ
+class taoABNodeNOJn : public taoArticulatedBodyLinkNJoints0
 {
 public:
 	taoABNodeNOJn() : _noj(0), _joint(NULL) {}

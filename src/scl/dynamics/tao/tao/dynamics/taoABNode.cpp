@@ -26,12 +26,12 @@
 
 #include <assert.h>
 
-void taoABNodeNOJ::abInertiaInit(deMatrix6& Ia)
+void taoArticulatedBodyLinkNJoints0::abInertiaInit(deMatrix6& Ia)
 { 
 	Ia = *I();
 }
 
-void taoABNodeNOJ::impulseInit(const deVector3& point, const deVector3& impulse)
+void taoArticulatedBodyLinkNJoints0::impulseInit(const deVector3& point, const deVector3& impulse)
 {
 	deVector6& Ya = *Pa();
 
@@ -44,7 +44,7 @@ void taoABNodeNOJ::impulseInit(const deVector3& point, const deVector3& impulse)
 
 
 // Pa -= Fext
-void taoABNodeNOJ::externalForce(deVector6& Pa, const deVector6& G, const deVector6& Fext)
+void taoArticulatedBodyLinkNJoints0::externalForce(deVector6& Pa, const deVector6& G, const deVector6& Fext)
 {
 	Pa -= G;
 	Pa -= Fext;
@@ -54,7 +54,7 @@ void taoABNodeNOJ::externalForce(deVector6& Pa, const deVector6& G, const deVect
 // since D != S^t Ia S but D == S^t Ia S + joint inertia
 // Solution:
 // Iah	= Ih + sum [ Li Iai Xti ] --> does work with joint inertia
-void taoABNodeNOJ::_abInertia(deMatrix6& Iah, const deMatrix6& L, const deMatrix6& Ia, const deTransform& X)
+void taoArticulatedBodyLinkNJoints0::_abInertia(deMatrix6& Iah, const deMatrix6& L, const deMatrix6& Ia, const deTransform& X)
 {
 	deMatrix6 tmpM6, m1 ,m2;
 	//tmpM6.similarityXform(L, Ia);
@@ -64,7 +64,7 @@ void taoABNodeNOJ::_abInertia(deMatrix6& Iah, const deMatrix6& L, const deMatrix
 	Iah += tmpM6;
 }
 // Pah = Ph - Fexth + sum [ Li (Iai Ci + Pai) + X SbarTi taui ]
-void taoABNodeNOJ::_abBiasForce(deVector6& Pah, const deMatrix6& L, const deMatrix6& Ia, const deVector6& C, const deVector6& Pa)
+void taoArticulatedBodyLinkNJoints0::_abBiasForce(deVector6& Pah, const deMatrix6& L, const deMatrix6& Ia, const deVector6& C, const deVector6& Pa)
 {
 	deVector6 tmpV61, tmpV62;
 
@@ -78,7 +78,7 @@ void taoABNodeNOJ::_abBiasForce(deVector6& Pah, const deMatrix6& L, const deMatr
 // Ii = Xc Ic Xtc
 //    = [ RMRt, -RMRt rx; rx RMRt, RIRt - rx RMRt rx]
 //    = [ M, -Mrx; rxM, RIRt - m rx rx]
-void taoABNodeNOJ::setInertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor)
+void taoArticulatedBodyLinkNJoints0::setInertia(const deFloat* mass, const deVector3* centerOfMass, const deMatrix3* inertiaTensor)
 {
 	//  inertia = RIRt - mass()*rx*rx
 	//  Ic = RIRt = inertia + mass()*rx*rx // change inertia
@@ -100,7 +100,7 @@ void taoABNodeNOJ::setInertia(const deFloat* mass, const deVector3* centerOfMass
 //
 // Pi = Xc (Wc X Ic Vc) - Ii (Wi X Vi)  
 //    = Xc (Wc X [mi vc; Ic wc]) -Ii (Wi X Vi)
-void taoABNodeNOJ::biasForce(deVector6& P, const deVector6& V, const deVector3& WxV)
+void taoArticulatedBodyLinkNJoints0::biasForce(deVector6& P, const deVector6& V, const deVector3& WxV)
 {
 	// R = I_3;
 	// Vc = Xtc Vi
@@ -134,7 +134,7 @@ void taoABNodeNOJ::biasForce(deVector6& P, const deVector6& V, const deVector3& 
 	P -= tmpV6;
 }
 
-deFloat taoABNodeNOJ::kineticEnergy(deVector6& V, const deVector6& Vh)
+deFloat taoArticulatedBodyLinkNJoints0::kineticEnergy(deVector6& V, const deVector6& Vh)
 {
 	deVector3 WxV, WhxVh;
 	deVector6 IV;
@@ -148,7 +148,7 @@ deFloat taoABNodeNOJ::kineticEnergy(deVector6& V, const deVector6& Vh)
 	return V.dot(IV) / 2;
 }
 
-deFloat taoABNodeNOJ::potentialEnergy(const deVector3& gh, const deFrame& globalFrame, const deFloat mass, const deVector3& centerOfMass)
+deFloat taoArticulatedBodyLinkNJoints0::potentialEnergy(const deVector3& gh, const deFrame& globalFrame, const deFloat mass, const deVector3& centerOfMass)
 {
 	deVector3 h;
 
