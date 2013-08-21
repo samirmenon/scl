@@ -20,6 +20,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/** Edited 2013-08-21 : Samir Menon <smenon@stanford.edu>
+ */
+
 #ifndef _taoDNode_h
 #define _taoDNode_h
 
@@ -35,6 +38,8 @@ class deMatrix3;
 /*!
  *	\brief abstract node class for articulated body
  *	\ingroup taoDynamics
+ *
+ *  A dynamics node = {Articulated Body Link + Set of associated Joints}.
  *
  *	This class should be used as a base class and implemented accordingly.	
  */

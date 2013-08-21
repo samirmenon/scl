@@ -20,6 +20,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/** Edited 2013-08-20 : Samir Menon <smenon@stanford.edu>
+ */
+
 #ifndef _taoWorld_h
 #define _taoWorld_h
 

@@ -20,6 +20,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/** Edited 2013-08-21 : Samir Menon <smenon@stanford.edu>
+ */
+
 #ifndef _taoDJoint_h
 #define _taoDJoint_h
 

@@ -26,6 +26,9 @@
 // 07/11/06: Luis Sentis. lsentis@ai.stanford.edu: 
 //		Modified _Read and _Write functions to work on branching robots.
 
+/** Edited 2013-08-21 : Samir Menon <smenon@stanford.edu>
+ */
+
 
 #include <tao/dynamics/taoDynamics.h>
 #include "taoDNode.h"

@@ -20,6 +20,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/** Edited 2013-08-21 : Samir Menon <smenon@stanford.edu>
+ */
 
 #include "taoWorld.h"
 #include <tao/dynamics/taoJoint.h>
