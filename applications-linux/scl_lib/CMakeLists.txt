@@ -76,7 +76,7 @@ SET(CTR_TRAJ_SRC ${SCL_INC_DIR}/control/trajectory/OTG/TypeIOTG.cpp
                  ${SCL_INC_DIR}/control/trajectory/OTG/TypeIOTGProfiles.cpp
    )
 
-SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoCNode.cpp
+SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDNode.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABDynamics.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABJoint.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoWorld.cpp
