@@ -258,7 +258,7 @@ taoNodeRoot::taoNodeRoot(deFrame const & global)
 
 	_next = NULL;
 
-	setABNode(new taoABNodeRoot);
+	setABNode(new taoArticulatedBodyLinkRoot);
 }
 
 taoNodeRoot::~taoNodeRoot()

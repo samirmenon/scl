@@ -157,7 +157,7 @@ private:
 	deMatrix6 _Omega;	// Op Sp Matrix inverse : diagonal terms
 };
 
-class taoABNodeRoot : public taoArticulatedBodyLink
+class taoArticulatedBodyLinkRoot : public taoArticulatedBodyLink
 {
 public:
 	virtual const deInt getFlag() const { return 0; }
