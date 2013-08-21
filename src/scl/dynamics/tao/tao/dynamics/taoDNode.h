@@ -24,7 +24,6 @@
 #define _taoDNode_h
 
 #include "taoTypes.h"
-#include "taoCNode.h"
 
 class taoABNode;
 class taoJoint;
@@ -39,7 +38,7 @@ class deMatrix3;
  *
  *	This class should be used as a base class and implemented accordingly.	
  */
-class taoDNode : public taoCNode
+class taoDNode
 {
 public:
 	taoDNode() : _abNode(NULL), _propagate(1),
@@ -118,6 +117,22 @@ private:
 	 *           Moved here from taoDNode
 	 * ********************************************* */
 public:
+	//! global frame for the dynamics computation
+	/*!
+	 *  \note for taoNodeRB, this is the center of mass frame.
+	 *  \note for taoNode, this is the same frame getFrameGraphics()
+	 */
+	virtual deFrame* frameGlobal() = 0;
+	virtual deFrame const * frameGlobal() const = 0;
+	//! global frame for graphics display
+	/*!
+	 *  \note for taoNodeRB, this is the graphics origin frame without the offset.
+	 *  \note for taoNodeRB, setFrameGraphics() should be used to set this frame.
+	 *  \note for taoNode, this is the same frame as frameGlobal()
+	 *  \retval Fg is filled with the frame info for graphics sync.
+	 */
+	virtual void getFrameGraphics(deFrame* Fg) = 0;
+
 	virtual void setID(const deInt id) { _id = id; }
 	virtual deInt getID() const { return _id; }
 
@@ -212,6 +227,8 @@ public:
 	 *  \note this method is assuming a node is colliding with a non-moving node.
 	 */
 	virtual deInt penetration1(const deVector3* Pie, const deVector3* Ui, const deVector3* pdist, const deFloat dt);
+
+	std::string name_;
 
 private:
 	deInt _id;

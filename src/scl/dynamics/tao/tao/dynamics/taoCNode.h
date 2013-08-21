@@ -27,8 +27,12 @@
 
 #include <tao/matrix/TaoDeTypes.h>
 
+#include "taoDNode.h"
+
 class deVector3;
 class deFrame;
+
+typedef taoDNode taoCNode;
 
 /*!
  *	\brief		Contact node class
@@ -37,31 +41,16 @@ class deFrame;
  *	This provides a base node class for other node involving collision.
  *	\sa	taoDNode, taoNode, taoNodeRB, taoNodePS
  */
-class taoCNode
-{
-public:
-  std::string name_;
-
-	taoCNode() {}
-	virtual ~taoCNode() {}
-
-	//!	global frame for the dynamics computation
-	/*!	
-	 *	\note	for taoNodeRB, this is the center of mass frame.
-	 *	\note	for taoNode, this is the same frame getFrameGraphics()
-	 */
-	virtual deFrame* frameGlobal() = 0;
-	virtual deFrame const * frameGlobal() const = 0;
-	//!	global frame for graphics display
-	/*!
-	 *	\note	for taoNodeRB, this is the graphics origin frame without the offset.
-	 *	\note	for taoNodeRB, setFrameGraphics() should be used to set this frame.
-	 *	\note	for taoNode, this is the same frame as frameGlobal()
-	 *	\retval	Fg is filled with the frame info for graphics sync.	
-	 */
-	virtual void getFrameGraphics(deFrame* Fg) = 0;
-
-
-};
+//class taoCNode
+//{
+//public:
+//  std::string name_;
+//
+//	taoCNode() {}
+//	virtual ~taoCNode() {}
+//
+//
+//
+//};
 
 #endif // _taoCNode_h
