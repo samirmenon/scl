@@ -80,7 +80,6 @@ SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDNode.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABDynamics.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABJoint.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoWorld.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoGroup.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDynamics.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoJoint.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoNode.cpp
