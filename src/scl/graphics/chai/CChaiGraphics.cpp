@@ -444,12 +444,9 @@ namespace scl {
             tmp_mat(0,2) = tmp_rot_mat(0,2); tmp_mat(1,2) = tmp_rot_mat(1,2); tmp_mat(2,2) = tmp_rot_mat(2,2);
             tmp->setLocalRot(tmp_mat);
 
-            // NOTE TODO : Chai mesh scaling is now isotropic. Bug #27 as of v3.0.
-            // Only using X-scaling. Fix later
-            tmp->scale(lnk_gr.scaling_(0),true);
-            //cVector3d tmp_scale;
-            //tmp_scale[0] = lnk_gr.scaling_(0); tmp_scale[1] = lnk_gr.scaling_(1); tmp_scale[2] = lnk_gr.scaling_(2);
-            //tmp->scale(tmp_scale,true);
+            // Scale the graphics object
+            tmp->scaleXYZ(lnk_gr.scaling_(0),lnk_gr.scaling_(1),lnk_gr.scaling_(2));
+            std::cout<<"\n\nSCALING : "<<arg_link->name_<<" : "<< lnk_gr.scaling_.transpose();
 
             //Use display lists : Uses the graphics card for faster rendering
             // NOTE : Possibly corrupts the rendering. Disable if required.
