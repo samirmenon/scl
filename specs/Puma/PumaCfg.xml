@@ -16,6 +16,7 @@
 				        <name>Puma/graphics/base_bl.obj</name>
 				        <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
 				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				        <scaling>1.000000 1.000000 1.000000</scaling>
 				        <collision_type>0</collision_type>
 			        </obj_file>
             </graphics>
