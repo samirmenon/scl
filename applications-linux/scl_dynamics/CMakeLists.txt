@@ -82,4 +82,4 @@ target_link_libraries(scl_dynamics ${CHAI_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_dynamics gomp GL GLU GLEW glut ncurses)
+target_link_libraries(scl_dynamics gomp GL GLU GLEW glut ncurses rt dl)

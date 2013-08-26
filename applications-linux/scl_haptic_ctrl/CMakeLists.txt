@@ -138,4 +138,4 @@ target_link_libraries(scl_haptic_ctrl ${CDHD_LIBRARY} ${CDRD_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_haptic_ctrl gomp GL GLU GLEW glut ncurses usb-1.0 pthread rt pci z)
+target_link_libraries(scl_haptic_ctrl gomp GL GLU GLEW glut ncurses usb-1.0 pthread rt pci z dl)
