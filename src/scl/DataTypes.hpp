@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef SCL_DEFINITIONS_HPP_
-#define SCL_DEFINITIONS_HPP_
+#ifndef DATA_TYPES_HPP_
+#define DATA_TYPES_HPP_
 
 #include <string>
 
@@ -122,4 +122,4 @@ namespace scl
   ///////////////////////////THE END/////////////////////////////
 }
 
-#endif /* SCL_DEFINITIONS_HPP_ */
+#endif /* DATA_TYPES_HPP_ */
