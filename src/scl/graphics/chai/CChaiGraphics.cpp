@@ -446,7 +446,9 @@ namespace scl {
 
             // Scale the graphics object
             tmp->scaleXYZ(lnk_gr.scaling_(0),lnk_gr.scaling_(1),lnk_gr.scaling_(2));
-            std::cout<<"\n\nSCALING : "<<arg_link->name_<<" : "<< lnk_gr.scaling_.transpose();
+#ifdef DEBUG
+            std::cout<<"\nGraphics link scaling : "<<arg_link->name_<<" : "<< lnk_gr.scaling_.transpose();
+#endif
 
             //Use display lists : Uses the graphics card for faster rendering
             // NOTE : Possibly corrupts the rendering. Disable if required.
