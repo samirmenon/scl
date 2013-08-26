@@ -240,8 +240,7 @@ SET(GR_LIBS_ALL_SRC ${GIF_SRC} ${3DS_SRC} ${JPEG_SRC} ${PNG_SRC})
 ######################END OF SRC DEFS##############
 
 ADD_DEFINITIONS(-DLINUX -DdDOUBLE -DC_ENABLE_DELTA_DEVICE_SUPPORT)
-ADD_DEFINITIONS(-lpthread -lrt -lpci -lz -lusb-1.0
-				-lGL -lGLU -lGLEW -lglut -fPIC)
+ADD_DEFINITIONS(-fPIC)
 
 
 #Set the build mode to debug by default
@@ -289,3 +288,5 @@ find_library( DRD_LIBRARY NAMES drd
 
 target_link_libraries(chai3d ${DHD_LIBRARY} ${DRD_LIBRARY})
 
+############### Link all system libraries
+target_link_libraries(chai3d pthread rt pci z usb-1.0 GL GLU GLEW glut)
