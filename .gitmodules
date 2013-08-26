@@ -1,3 +1,6 @@
 [submodule "3rdparty/sUtil"]
 	path = 3rdparty/sUtil
 	url = git://github.com/samirmenon/sUtil.git 
+[submodule "3rdparty/otgtypeii"]
+	path = 3rdparty/otgtypeii
+	url = git@bitbucket.org:samirmenon/otgtypeii.git
