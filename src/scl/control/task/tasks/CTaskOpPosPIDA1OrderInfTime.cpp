@@ -216,8 +216,7 @@ bool CTaskOpPosPIDA1OrderInfTime::computeServo(const SRobotSensorData* arg_senso
       tmp_int_dt /= data_->integral_gain_time_constt_;
       // All the array() casts are for element wise operations.
       data_->integral_force_ = data_->integral_force_.array() +
-          data_->ki_.array() * (data_->x_goal_ - data_->x_).array();
-      data_->integral_force_ *= tmp_int_dt;
+          data_->ki_.array() * (data_->x_goal_ - data_->x_).array() * tmp_int_dt;
 
       //Add the integral force.
       data_->ddx_ += data_->integral_force_;
