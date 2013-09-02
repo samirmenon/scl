@@ -243,15 +243,12 @@ namespace scl
     // implementing/using registerTaoDynamics() in DbRegisterFunctions.cpp
 
     // Set generalized coordinates
+    state_.position_ = sensor_data->q_;
     size_t const npos(sensor_data->q_.rows());
-    state_.position_.resize(npos);
-    memcpy(&state_.position_[0], sensor_data->q_.data(), npos * sizeof(double));
     js_model->q_  = sensor_data->q_;
 
     // Set generalized velocities.
-    size_t const nvel(sensor_data->dq_.rows());
-    state_.velocity_.resize(nvel);
-    memcpy(&state_.velocity_[0], sensor_data->dq_.data(), nvel * sizeof(double));
+    state_.velocity_ = sensor_data->dq_;
     js_model->dq_  = sensor_data->dq_;
 
     // No external forces on the system
