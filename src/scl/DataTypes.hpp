@@ -83,6 +83,10 @@ namespace scl
   /** Integration timestep : 1ms   */
   #define SCL_INTEGRATION_TSTEP 0.001
 
+  /** Any position change lesser than 0.1mm will be considered zero.
+   * This value sets the spatial resolution for controllers etc. */
+  #define SCL_MINIMUM_POSITION_CHANGE 0.0001
+
   /** Two strings */
   struct sString2
   { std::string data_[2]; };
