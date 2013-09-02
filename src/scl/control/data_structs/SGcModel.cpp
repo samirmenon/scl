@@ -50,17 +50,19 @@ namespace scl
       Ainv_.setIdentity(arg_robot_dof,arg_robot_dof);
       b_.setZero(arg_robot_dof);
       g_.setZero(arg_robot_dof);
+      q_.setZero(arg_robot_dof);
+      dq_.setZero(arg_robot_dof);
       pos_com_.setZero(3);
 
       for(sUInt i=0;i<arg_robot_dof;++i)
       {
-        SCOMInfo com;
+        SRigidBodyDyn com;
         com.J_com_.setZero(6, arg_robot_dof);
-        com.T_com_ = Eigen::Affine3d::Identity();
+        com.T_o_lnk_ = Eigen::Affine3d::Identity();
         com.link_ds_ = NULL;
         com.name_ = "";
         com.link_dynamic_id_ = NULL;
-        coms_.push_back(com);
+        link_ds_.push_back(com);
       }
     }
     catch(std::exception& e)
