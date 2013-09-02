@@ -236,9 +236,6 @@ namespace scl
       return false;
     }
 
-    // NOTE TODO: jspace should probably use Eigen already in
-    // jspace::State (instead of std::vector<double>)
-
     // NOTE : If you get a segfault here, you probably need to finish
     // implementing/using registerTaoDynamics() in DbRegisterFunctions.cpp
 
