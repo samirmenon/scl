@@ -208,10 +208,10 @@ namespace scl
       // Set up the center of mass properties of the robot
       data_->gc_model_.mass_ = 0.0;
 
-      std::vector<SGcModel::SCOMInfo>::iterator itcom,itcome;
+      std::vector<SGcModel::SRigidBodyDyn>::iterator itcom,itcome;
       sutil::CMappedTree<std::string, SRigidBody>::const_iterator itr,itre;
       //Set the center of mass position for each link.
-      for(itcom = data_->gc_model_.coms_.begin(), itcome =data_->gc_model_.coms_.end(),
+      for(itcom = data_->gc_model_.link_ds_.begin(), itcome =data_->gc_model_.link_ds_.end(),
           itr = data_->robot_->robot_br_rep_.begin(),itre = data_->robot_->robot_br_rep_.end();
           itcom!=itcome; ++itcom,++itr)
       {
@@ -223,7 +223,7 @@ namespace scl
         {// gc and dynamics should have same dof.
           std::stringstream ss;
           ss<<"Inconsistent model. Gc model has more entries ["
-              <<data_->gc_model_.coms_.size()<<"] than the robot's mapped tree ["
+              <<data_->gc_model_.link_ds_.size()<<"] than the robot's mapped tree ["
               <<data_->robot_->robot_br_rep_.size()<<"]";
           throw(std::runtime_error(ss.str()));
         }
@@ -241,7 +241,7 @@ namespace scl
         {
           std::stringstream ss;
           ss<<"Inconsistent model. Gc model has less entries ["
-              <<data_->gc_model_.coms_.size()<<"] than the robot's mapped tree ["
+              <<data_->gc_model_.link_ds_.size()<<"] than the robot's mapped tree ["
               <<data_->robot_->robot_br_rep_.size()-1<<"]"; //-1 in br_rep_.size to remove root.
           throw(std::runtime_error(ss.str()));
         }

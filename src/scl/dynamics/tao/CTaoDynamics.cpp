@@ -241,14 +241,23 @@ namespace scl
 
     // NOTE : If you get a segfault here, you probably need to finish
     // implementing/using registerTaoDynamics() in DbRegisterFunctions.cpp
-    size_t const npos(sensor_data->q_.rows());
 
+    // Set generalized coordinates
+    size_t const npos(sensor_data->q_.rows());
     state_.position_.resize(npos);
     memcpy(&state_.position_[0], sensor_data->q_.data(), npos * sizeof(double));
+    js_model->q_  = sensor_data->q_;
+
+    // Set generalized velocities.
     size_t const nvel(sensor_data->dq_.rows());
     state_.velocity_.resize(nvel);
     memcpy(&state_.velocity_[0], sensor_data->dq_.data(), nvel * sizeof(double));
+    js_model->dq_  = sensor_data->dq_;
+
+    // No external forces on the system
     state_.force_.setZero(npos);
+
+    // Update the model based on the system's state.
     model_->update(state_);
 
     if ( ! model_->getMassInertia(js_model->A_)) {
@@ -271,21 +280,21 @@ namespace scl
     bool flag;
     js_model->pos_com_.setZero(3);
     Eigen::Vector3d tmp_lnk_com;
-    std::vector<SGcModel::SCOMInfo>::iterator it, ite;
-    for(it = js_model->coms_.begin(), ite = js_model->coms_.end(); it!=ite;++it)
+    std::vector<SGcModel::SRigidBodyDyn>::iterator it, ite;
+    for(it = js_model->link_ds_.begin(), ite = js_model->link_ds_.end(); it!=ite;++it)
     {
       if(NULL == it->link_dynamic_id_)
       {
         fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Com properties not initialized in controller impl\n");
         return false;
       }
-      flag = calculateTransformationMatrix(it->link_dynamic_id_,it->T_com_);
+      flag = calculateTransformationMatrix(it->link_dynamic_id_,it->T_o_lnk_);
       if(false == flag) {
         fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Com transformation matrix computation failed\n");
         return false;
       }
 
-      tmp_lnk_com = it->T_com_ * it->link_ds_->com_;
+      tmp_lnk_com = it->T_o_lnk_ * it->link_ds_->com_;
       tmp_lnk_com *= it->link_ds_->mass_;
       js_model->pos_com_ += tmp_lnk_com;
       if ( ! calculateJacobian(it->link_dynamic_id_, tmp_lnk_com ,it->J_com_)) {
@@ -293,6 +302,7 @@ namespace scl
         return false;
       }
     }
+
     js_model->pos_com_ = js_model->pos_com_.array() / js_model->mass_;
 
     return true;

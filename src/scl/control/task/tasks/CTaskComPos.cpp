@@ -222,8 +222,8 @@ namespace scl
 
       //Compute the COM Jacobian : sum over all the link com jacobians
       data_->jacobian_.setZero(3, data_->robot_->dof_);
-      std::vector<SGcModel::SCOMInfo>::const_iterator it,ite;
-      for(it = data_->gc_model_->coms_.begin(), ite = data_->gc_model_->coms_.end(); it!=ite; ++it)
+      std::vector<SGcModel::SRigidBodyDyn>::const_iterator it,ite;
+      for(it = data_->gc_model_->link_ds_.begin(), ite = data_->gc_model_->link_ds_.end(); it!=ite; ++it)
       { data_->jacobian_ += it->J_com_.block(0,0,3,data_->robot_->dof_);  }
 
       data_->jacobian_ = J_premultiplier_ * data_->jacobian_;
