@@ -159,9 +159,11 @@ int main(int argc, char** argv)
 #ifdef DEBUG
       std::cout<<"\nTesting Tao And Robot Ids "<<robot_name;
 
-      sutil::CMappedTree<std::string, scl::SRigidBody> br = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)->robot_br_rep_;
+      sutil::CMappedTree<std::string, scl::SRigidBody> br =
+          scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)->robot_br_rep_;
       sutil::CMappedTree<std::string, scl::SRigidBody>::iterator it,ite;
-      for(it = br.begin(), ite = br.end(); it!=ite; ++it)
+      for(it = br.begin(), ite = br.end();
+          it!=ite; ++it)
       {
         taoDNode * tmp = (taoDNode *)tao_dyn_int.getIdForLink(it->name_);
         if(S_NULL == tmp)
@@ -174,7 +176,7 @@ int main(int argc, char** argv)
         }
         else
         {
-        std::cout<<"\n Link "<<it->link_id_<<" : "<<it->name_<<"     Tao : "<<tmp->name_;
+          std::cout<<"\n Link "<<it->link_id_<<" : "<<it->name_<<"\tTao : "<<tmp->getID()<<" : "<<tmp->name_;
         }
       }
 #endif
