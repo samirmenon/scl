@@ -386,7 +386,9 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
       tmp_root->link_id_ = -1;
       delete tmp_link_ds; tmp_link_ds = S_NULL;
 
-      //Now read the generic robot specification from the spec file.
+      // *****************************************************************
+      //                    Now parse the remaining robot spec
+      // *****************************************************************
       flag = readRobotSpecFromFile(spec_file, spec, arg_robot);
       if(false == flag)
       {
@@ -395,7 +397,9 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
         throw(std::runtime_error(err));
       }
 
-      //Now read the generic muscle specification from the spec file.
+      // *****************************************************************
+      //                 Now parse the muscle spec if it exists
+      // *****************************************************************
       if("" != spec_muscle)
       {
         flag = readMuscleSpecFromFile(spec_file, spec_muscle, /*ret val */arg_robot);
@@ -407,10 +411,41 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
         }
       }
 
+      // *****************************************************************
+      //           Now organize all the links in the data struct etc.
+      // *****************************************************************
       arg_robot.dof_ = arg_robot.robot_br_rep_.size() - 1;//The root node is stationary
       flag = arg_robot.robot_br_rep_.linkNodes();
       if(false == flag)
       { throw(std::runtime_error("Could not link robot's nodes.")); }
+
+      std::vector<std::string> tmp_sort_order;
+      tmp_sort_order.resize(arg_robot.robot_br_rep_.size());
+      sutil::CMappedTree<std::string, SRigidBody>::iterator its,itse;//For sorting
+      for(its = arg_robot.robot_br_rep_.begin(), itse = arg_robot.robot_br_rep_.end();
+          its!=itse; ++its)
+      {
+        if(0 <= its->link_id_) //Non-root node
+        { tmp_sort_order[its->link_id_] = its->name_; }
+        else if(-1 == its->link_id_) //Root node
+        { tmp_sort_order[arg_robot.robot_br_rep_.size()-1] = its->name_; }
+      }
+
+      flag = arg_robot.robot_br_rep_.sort(tmp_sort_order);
+      if(false == flag)
+      {
+        std::string err;
+        err ="Could not sort the robot's mapped tree (" + arg_robot.name_ +")";
+        throw(std::runtime_error(err));
+      }
+
+      // Print sorted node order
+#ifdef DEBUG
+      std::cout<<"\nreadRobotFromFile() : Sorted links for "<<arg_robot.name_;
+      for(its = arg_robot.robot_br_rep_.begin(), itse = arg_robot.robot_br_rep_.end();
+          its!=itse; ++its)
+      { std::cout<<"\n\t"<<its->link_id_<<" : "<<its->name_;  }
+#endif
 
       //Set up the remaining robot variables
       arg_robot.gc_pos_limit_max_.setZero(arg_robot.dof_);
