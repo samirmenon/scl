@@ -19,6 +19,8 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+/** Edited 2013-09-09 : Samir Menon <smenon@stanford.edu>
+ */
 
 #ifndef _deFrame_h
 #define _deFrame_h
@@ -28,6 +30,8 @@
  *
  *	This class consists of a quaternion for rotation and a vector for translation.
  *	\sa deVector3, deQuaternion, deTransform
+ *
+ *	This is used to store all the transformations between different geometric objects.
  */
 class deFrame
 {
@@ -39,16 +43,16 @@ public:
   inline deFrame(deFloat tx, deFloat ty, deFloat tz)
   { set(deQuaternion(), deVector3(tx, ty, tz)); }
   
-  inline deFrame(deFrame const & orig): _q(orig._q), _v(orig._v) {}
+  inline deFrame(deFrame const & orig): ori_quat_(orig.ori_quat_), translation_(orig.translation_) {}
   
 	//! \return rotation part
-	deQuaternion& rotation() { return _q; }
+	deQuaternion& rotation() { return ori_quat_; }
 	//! \return rotation part
-	const deQuaternion& rotation() const { return _q; }
+	const deQuaternion& rotation() const { return ori_quat_; }
 	//! \return translation part
-	deVector3& translation() { return _v;; }
+	deVector3& translation() { return translation_;; }
 	//! \return translation part
-	const deVector3& translation() const { return _v; }
+	const deVector3& translation() const { return translation_; }
 	//! this = identity matrix
 	DE_MATH_API void identity();
 	//! this = f
@@ -106,8 +110,8 @@ public:
 	DE_MATH_API void set(const deQuaternion& q, const deVector3& v);
 
 private:
-	deQuaternion _q;
-	deVector3 _v;
+	deQuaternion ori_quat_;
+	deVector3 translation_;
 };
 
 #endif // _deFrame_h

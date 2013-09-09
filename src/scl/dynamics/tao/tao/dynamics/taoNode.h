@@ -79,6 +79,7 @@ public:
 	 */
 	virtual void addForce(const deVector6* f) { _Fext += *f; }
 
+	/** This function updates two frames. parent_T_node (_frameLocal), and origin_T_node (_frameGlobal) */
 	virtual void updateFrame();
 	virtual void integrate(deFloat dt);
 	

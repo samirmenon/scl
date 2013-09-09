@@ -98,7 +98,7 @@ void taoNode::deleteJointABNode()
 	}
 	delete getABNode();
 }
-
+/** This function updates two frames. parent_T_node (_frameLocal), and origin_T_node (_frameGlobal) */
 void taoNode::updateFrame()
 {
 #if 0
@@ -110,8 +110,8 @@ void taoNode::updateFrame()
 	{
 		fl.identity();
 		j->updateFrameLocal(&fl);
-		_frameGlobal = _frameLocal;
-		_frameLocal.multiply(_frameGlobal, fl);
+		_frameGlobal = _frameLocal; // Need to make tmp copy of self to avoid overwrite in next line
+		_frameLocal.multiply(_frameGlobal, fl); // _frameLocal = _frameGlobal * fl
 	}
 #endif
 	_frameGlobal.multiply(*_parent->frameGlobal(), _frameLocal);

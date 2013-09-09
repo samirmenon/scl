@@ -23,13 +23,13 @@
 #ifndef _deFrame_inl
 #define _deFrame_inl
 	
-DE_MATH_API void deFrame::identity() { _q.identity(); _v.zero(); }
-DE_MATH_API void deFrame::operator=(const deFrame & f) { _q = f._q; _v = f._v; } 
+DE_MATH_API void deFrame::identity() { ori_quat_.identity(); translation_.zero(); }
+DE_MATH_API void deFrame::operator=(const deFrame & f) { ori_quat_ = f.ori_quat_; translation_ = f.translation_; } 
 //! this = f1 * f2 = [r1,p1][r2,p2] = [r1*r2, r1*p2 + p1]
 DE_MATH_API void deFrame::multiply(const deFrame& f1, const deFrame& f2) {
-	_q.multiply(f1.rotation(), f2.rotation());
-	_v.multiply(f1.rotation(), f2.translation());
-	_v += f1.translation();
+	ori_quat_.multiply(f1.rotation(), f2.rotation());
+	translation_.multiply(f1.rotation(), f2.translation());
+	translation_ += f1.translation();
 }
 //! this = f1^-1 * f2 
 //       = ~[r1,p1][r2,p2] = [~r1, -(~r1*p1)][r2,p2] = [~r1*r2, ~r1*p2 - (~r1*p1)]
@@ -37,25 +37,25 @@ DE_MATH_API void deFrame::multiply(const deFrame& f1, const deFrame& f2) {
 DE_MATH_API void deFrame::inversedMultiply(const deFrame& f1, const deFrame& f2) {
 	deVector3 p;
 	p.subtract(f2.translation(), f1.translation());
-	_v.inversedMultiply(f1.rotation(), p);
-	_q.inversedMultiply(f1.rotation(), f2.rotation());
+	translation_.inversedMultiply(f1.rotation(), p);
+	ori_quat_.inversedMultiply(f1.rotation(), f2.rotation());
 }
 //! this = f1 * f2^-1 
 //       = [r1,p1]~[r2,p2] = [r1,p1][~r2, -(~r2*p2)] = [r1*~r2, -r1*(~r2*p2) + p1]
 //       = [r1*~r2, -r1*~r2*p2 + p1]
 DE_MATH_API void deFrame::multiplyInversed(const deFrame& f1, const deFrame& f2) {
-	_q.multiplyInversed(f1.rotation(), f2.rotation());
-	_v.multiply(_q, f2.translation());
-	_v.subtract(f1.translation(), _v);
+	ori_quat_.multiplyInversed(f1.rotation(), f2.rotation());
+	translation_.multiply(ori_quat_, f2.translation());
+	translation_.subtract(f1.translation(), translation_);
 }
 //! this = f^-1 =  ~[r,p] = [~r, -(~r*p)]
 DE_MATH_API void deFrame::inverse(const deFrame& f) {
-	_q.inverse(f.rotation());
-	_v.multiply(_q, f.translation());
-	_v.negate(_v);
+	ori_quat_.inverse(f.rotation());
+	translation_.multiply(ori_quat_, f.translation());
+	translation_.negate(translation_);
 }
-DE_MATH_API void deFrame::set(const deTransform& t) { _q.set(t.rotation()); _v = t.translation(); }
-DE_MATH_API void deFrame::set(const deQuaternion& q, const deVector3& v) { _q = q; _v = v; }
+DE_MATH_API void deFrame::set(const deTransform& t) { ori_quat_.set(t.rotation()); translation_ = t.translation(); }
+DE_MATH_API void deFrame::set(const deQuaternion& q, const deVector3& v) { ori_quat_ = q; translation_ = v; }
 
 #endif // _deFrame_inl
 
