@@ -34,7 +34,7 @@ $ sh make_rel.sh
 $ ./scl_eg_ctrl ../../specs/Pr2/Pr2Cfg.xml Pr2Bot opc -ui hand2 -ui hand
 
 
-Up-to-date installation instructions - see Getting started in our wiki:
+Detailed installation instructions - see Getting started in our wiki:
 https://bitbucket.org/samirmenon/scl-manips-group/wiki/install/getting_started
 
 ==========================================================================================
@@ -53,12 +53,9 @@ $ cd ~/scl-manips-group.git/specs
 - You can look at the config files. The controllers are specified with xml.
 
 * Writing your own controllers:
-- Look at the applications-linux directory and copy paste the example controller
+- Use the create new controller script in the applications-linux directory (follow instructions):
+$ sh create_new_ctrl.sh
 - Some applications use cmake. and for them use `mkdir build && cd build && cmake .. && make`
 - Others use a makefile and you can build each one using `make release` or `make` (debug mode)
-
-
-Up-to date documentation you can find also in our wiki:
-https://bitbucket.org/samirmenon/scl-manips-group/wiki/
 
 ==========================================================================================
