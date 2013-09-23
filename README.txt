@@ -33,6 +33,7 @@ $ cd ../scl_example_ctrl
 $ sh make_rel.sh
 $ ./scl_eg_ctrl ../../specs/Pr2/Pr2Cfg.xml Pr2Bot opc -ui hand2 -ui hand
 
+You can move the robot's hands around using the 'w s a d q e' and 'u j h k y i' keys on the keyboard
 
 Detailed installation instructions - see Getting started in our wiki:
 https://bitbucket.org/samirmenon/scl-manips-group/wiki/install/getting_started
