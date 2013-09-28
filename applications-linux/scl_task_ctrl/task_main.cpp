@@ -82,8 +82,21 @@ namespace scl_app
   void  CSclAppTask::stepMySimulation()
   {
     sutil::CSystemClock::tick(db->sim_dt_);//Tick the clock.
-
     tsk->setGoalPos(db->s_gui_.ui_point_[0]); //Interact with the gui
+
+    //Add some markers to display trajectory every 1000 ticks.
+    if(ctrl_ctr%10000 == 0)
+    {
+      if(traj_markers_added_so_far_ < SCL_TASK_APP_MAX_MARKERS_TO_ADD)
+      {
+        /** Render a sphere at the op-point task's position */
+        Eigen::Vector3d tmp = db->s_gui_.ui_point_[0];
+        bool flag = chai_gr.addSphereToRender(tmp,traj_markers_[traj_markers_added_so_far_]);
+        if(false == flag)
+        { std::cout<<"\nERROR : Could not add marker. Time = "<<sutil::CSystemClock::getSysTime();  }
+        traj_markers_added_so_far_++;
+      }
+    }
 
     if(op_link2_set)//Use only if the second task was also initialized.
     { tsk2->setGoalPos(db->s_gui_.ui_point_[1]); }

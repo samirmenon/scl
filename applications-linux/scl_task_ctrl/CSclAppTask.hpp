@@ -61,6 +61,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //User modified includes to suit your application
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 
+#define SCL_TASK_APP_MAX_MARKERS_TO_ADD 200
 
 namespace scl_app
 {
@@ -146,6 +147,9 @@ namespace scl_app
 
     std::fstream log_file_;             //Logs vectors of [q, dq, x]
     std::fstream log_file_J_;           //Logs J
+
+    chai3d::cGenericObject* traj_markers_[SCL_TASK_APP_MAX_MARKERS_TO_ADD];
+    int traj_markers_added_so_far_;
   };
 
 
@@ -251,6 +255,7 @@ namespace scl_app
 
         ctrl_ctr=0;//Controller computation counter
         gr_ctr=0;//Controller computation counter
+        traj_markers_added_so_far_=0;
 
         //Simulation loop.
         std::cout<<"\nStarting simulation. Integration timestep: "<<db->sim_dt_<<std::flush;
