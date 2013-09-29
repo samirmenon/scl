@@ -102,7 +102,10 @@ SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDNode.cpp
             ${SCL_INC_DIR}/dynamics/tao/CTaoRepCreator.cpp
    )
 
-SET(LOTUS_PARSER_SRC ${SCL_INC_DIR}/parser/sclparser/CSclParser.cpp
+SET(DYN_ANALYTIC_SRC ${SCL_INC_DIR}/dynamics/analytic/CDynamicsAnalyticRPP.cpp
+   )
+   
+SET(SCL_PARSER_SRC ${SCL_INC_DIR}/parser/sclparser/CSclParser.cpp
                      ${SCL_INC_DIR}/parser/sclparser/tixml_parser/CSclTiXmlParser.cpp
    )
 
@@ -121,8 +124,8 @@ ADD_DEFINITIONS(-DTIXML_USE_STL)
 
 SET(ALLSRC ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} 
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
-           ${TAO_SRC} 
-					 ${LOTUS_PARSER_SRC} ${SAI_PARSER_SRC} ${OSIM_PARSER_SRC} ${TIXML_SRC})
+           ${TAO_SRC} ${DYN_ANALYTIC_SRC}
+					 ${SCL_PARSER_SRC} ${SAI_PARSER_SRC} ${OSIM_PARSER_SRC} ${TIXML_SRC})
 
 #Set the build mode to debug by default
 #SET(CMAKE_BUILD_TYPE Debug)
