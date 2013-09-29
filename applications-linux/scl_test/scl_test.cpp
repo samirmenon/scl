@@ -109,6 +109,16 @@ int main(int argc, char** argv)
     ++id;
 
     if((tid==0)||(tid==id))
+    {//Test Analytic vs. Tao Dynamics
+      std::cout<<"\n\nTest #"<<id<<". Analytic vs. Tao Dynamics [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_dynamics_analytic_rpp(id);
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
     {//Test Dynamics
       std::cout<<"\n\nTest #"<<id<<". Tao Dynamics [Sys time, Sim time :"
           <<sutil::CSystemClock::getSysTime()<<" "

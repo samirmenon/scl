@@ -40,6 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Tao Dynamics
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>
+#include <scl/dynamics/analytic/CDynamicsAnalyticRPP.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -183,6 +184,184 @@ namespace scl_test
       std::cout<<"\nTest Result ("<<r_id++<<") Simulation Took Time : "<<t2-t1 <<" sec";
 #endif
 
+      //Delete stuff
+      if(S_NULL!= dynamics)  {  delete dynamics; dynamics = S_NULL; }
+
+      std::cout<<"\nTest #"<<id<<" : Succeeded.";
+    }
+    catch (std::exception& ee)
+    {
+      std::cout<<"\nTest Result ("<<r_id++<<") : "<<ee.what();
+      std::cout<<"\nTest #"<<id<<" : Failed.";
+
+      if(S_NULL!= dynamics)  {  delete dynamics; dynamics = S_NULL; }
+    }
+  }
+
+  /** Tests the performance of analytical dynamics implementations in scl. */
+  void test_dynamics_analytic_rpp(int id)
+  {
+    scl::CTaoDynamics * dynamics = S_NULL;
+    scl::sUInt r_id=0;
+    bool flag;
+
+    try
+    {
+      //0. Create vars
+      long long i; //Counters
+      long long imax; //Counter limits
+      sClock t1,t2; //Clocks: pre and post
+
+      //Test database
+      scl::SDatabase * db = scl::CDatabase::getData();
+      if(S_NULL==db)
+      { throw(std::runtime_error("Database not initialized."));  }
+      else
+      { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized database"<<std::flush;  }
+
+      db->dir_specs_ = scl::CDatabase::getData()->cwd_ + std::string("../../specs/");
+
+      //0. Parse the file for robots
+      std::string tmp_infile;
+      tmp_infile = db->dir_specs_ + "Bot-RPP/Bot-RPPCfg.xml";
+      std::cout<<"\nTest Result ("<<r_id++<<")  Opening file : "<<tmp_infile;
+
+      scl_parser::CSclParser tmp_lparser;
+
+      //1 Create robot from the file specification (And register it with the db)
+      std::string robot_name = "rppbot";
+      flag = scl_registry::parseRobot(tmp_infile, robot_name, &tmp_lparser);
+      if(false == flag)
+      { throw(std::runtime_error("Could not register robot with the database"));  }
+      else
+      {
+        std::cout<<"\nTest Result ("<<r_id++<<")  Created a robot "
+            <<robot_name<<" on the pile"<<std::flush;
+      }
+
+      // Check the robot was parsed.
+      scl::SRobotParsedData *rob_ds = db->s_parser_.robots_.at(robot_name);
+      if(NULL == rob_ds)
+      { throw(std::runtime_error("Could not find registered robot in the database"));  }
+
+#ifdef DEBUG
+      std::cout<<"\nPrinting parsed robot "<<rob_ds->name_;
+      scl_util::printRobotLinkTree( *(rob_ds->robot_br_rep_.getRootNode()), 0);
+#endif
+
+      //*********** Create the dynamics computational object *************
+      dynamics = new scl::CTaoDynamics();
+      if (S_NULL==dynamics)
+      { throw(std::runtime_error("Failed to allocate memory for tao dynamics."));  }
+
+      // Initialize the dynamics computational object
+      flag = dynamics->init(*rob_ds);
+      if (false==flag) { throw(std::runtime_error("Failed to initialize tao dynamics."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized tao dynamics for the robot.";  }
+
+      //*********** Create and intialize the analytic dynamics computational object *************
+      scl::CDynamicsAnalyticRPP dyn_anlyt;
+      flag = dyn_anlyt.init(*rob_ds);
+      if (false==flag) { throw(std::runtime_error("Failed to initialize analytic dynamics."));  }
+
+      SRobotIOData * io_ds;
+      io_ds = scl::CDatabase::getData()->s_io_.io_data_.at(robot_name);
+      if(S_NULL == io_ds)
+      { throw(std::runtime_error("Could not find the robot's I/O data structure in the database"));  }
+
+      //******************* Now test the actual implementation ******************
+      io_ds->sensors_.q_.setZero(3);
+      io_ds->sensors_.dq_.setZero(3);
+      io_ds->sensors_.ddq_.setZero(3);
+
+      dynamics->integrate(*io_ds, 0.001); // Sets the dynamic state. Also sets q to some nonzero value.
+
+      // *********************************************************************************************************
+      // Set up variables.
+      std::string link_name;
+      Eigen::Affine3d Ttao, Tanlyt;
+
+      // Test Transformation matrices : Link 0
+      link_name = "link0";
+
+      flag = dynamics->calculateTransformationMatrix(dynamics->getIdForLink(link_name),Ttao);
+      if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
+
+      flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
+          dyn_anlyt.getIdForLink("root"), Tanlyt);
+      if (false==flag) { throw(std::runtime_error("Failed to compute analytic transformation matrix."));  }
+
+      for(int i=0; i<4; i++)
+        for(int j=0; j<4; j++)
+        { flag = flag && (Ttao.matrix()(i,j) == Tanlyt.matrix()(i,j)); }
+
+      if (false==flag)
+      {
+        std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+        std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+        throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
+      }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
+
+      // TODO : DELME
+      std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+      std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+
+      // *********************************************************************************************************
+      // Test Transformation matrices : Link 1
+      link_name = "link1";
+
+      flag = dynamics->calculateTransformationMatrix(dynamics->getIdForLink(link_name),Ttao);
+      if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
+
+      flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
+          dyn_anlyt.getIdForLink("root"), Tanlyt);
+      if (false==flag) { throw(std::runtime_error("Failed to compute analytic transformation matrix."));  }
+
+      for(int i=0; i<4; i++)
+        for(int j=0; j<4; j++)
+        { flag = flag && (Ttao.matrix()(i,j) == Tanlyt.matrix()(i,j)); }
+
+      if (false==flag)
+      {
+        std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+        std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+        throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
+      }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
+
+      // TODO : DELME
+      std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+      std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+
+      // *********************************************************************************************************
+      // Test Transformation matrices : Link 2
+      link_name = "link2";
+
+      flag = dynamics->calculateTransformationMatrix(dynamics->getIdForLink(link_name),Ttao);
+      if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
+
+      flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
+          dyn_anlyt.getIdForLink("root"), Tanlyt);
+      if (false==flag) { throw(std::runtime_error("Failed to compute analytic transformation matrix."));  }
+
+      for(int i=0; i<4; i++)
+        for(int j=0; j<4; j++)
+        { flag = flag && (Ttao.matrix()(i,j) == Tanlyt.matrix()(i,j)); }
+
+      if (false==flag)
+      {
+        std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+        std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+        throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
+      }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
+
+      // TODO : DELME
+      std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+      std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+
+      // ********************************************************************************************************
       //Delete stuff
       if(S_NULL!= dynamics)  {  delete dynamics; dynamics = S_NULL; }
 
