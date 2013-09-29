@@ -67,9 +67,9 @@ public:
    */
   virtual sBool calculateTransformationMatrix(
       /** The generalized coordinates */
-      const Eigen::VectorXd &q_,
+      const Eigen::VectorXd &arg_q,
       /** The link at which the transformation matrix is to be calculated */
-      sUInt arg_link_id,
+      sInt arg_link_id,
       /** The link up to which the transformation matrix is to be calculated */
       sUInt arg_ancestor_link_id,
       /** The transformation matrix will be saved here. */
@@ -86,9 +86,9 @@ public:
    */
   virtual sBool calculateJacobian(
       /** The generalized coordinates */
-      const Eigen::VectorXd &q_,
+      const Eigen::VectorXd &arg_q,
       /** The link at which the Jacobian is to be calculated */
-      sUInt arg_link_id,
+      sInt arg_link_id,
       /** The offset from the link's frame (in local coordinates). */
       const Eigen::VectorXd& arg_pos_local,
       /** The Jacobian will be saved here. */
@@ -105,7 +105,7 @@ public:
    */
   virtual sBool calculateFullDynamics(
       /** The generalized coordinates */
-      const Eigen::VectorXd &q_,
+      const Eigen::VectorXd &arg_q,
       /** All individual dynamics matrices will be saved here. */
       SGcModel& arg_gc_model)=0;
 
