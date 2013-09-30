@@ -142,7 +142,7 @@ namespace scl
 
     arg_Mgc(0,0) = 4.34453 + arg_q(1) * (4.375 + 8*arg_q(1));
     arg_Mgc(1,1) = 8.0;
-    arg_Mgc(0,0) = 3.0;
+    arg_Mgc(2,2) = 3.0;
 
     return true;
   }
