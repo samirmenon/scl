@@ -422,4 +422,81 @@ namespace scl
     return pe;
   }
 
+  /** TODO : This dynamics engine implementation should be stateless.
+   * This present system is because the intermediate jspace implementation
+   * has an extra data layer. Should be cleaned up in the future. */
+  sBool CTaoDynamics::setGeneralizedCoordinates(Eigen::VectorXd &arg_q)
+  {
+    if(false == has_been_init_){return false; }
+
+    //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
+    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
+
+    //Uses the cc tree to integrate the dynamics.
+    for (size_t ii(0); ii < ndof_; ++ii)
+    {
+      sInt io_ds_idx;
+      io_ds_idx = tao_tree->info[ii].node->getID();
+
+      sFloat q;
+      q = arg_q(io_ds_idx);
+
+      taoJoint * joint(tao_tree->info[ii].node->getJointList());
+      joint->setQ(&q);
+    }
+    return true;
+  }
+
+  /** TODO : This dynamics engine implementation should be stateless.
+   * This present system is because the intermediate jspace implementation
+   * has an extra data layer. Should be cleaned up in the future. */
+  sBool CTaoDynamics::setGeneralizedVelocities(Eigen::VectorXd &arg_dq)
+  {
+    if(false == has_been_init_){return false; }
+
+    //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
+    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
+
+    //Uses the cc tree to integrate the dynamics.
+    for (size_t ii(0); ii < ndof_; ++ii)
+    {
+      sInt io_ds_idx;
+      io_ds_idx = tao_tree->info[ii].node->getID();
+
+      sFloat dq;
+      dq = arg_dq(io_ds_idx);
+
+      taoJoint * joint(tao_tree->info[ii].node->getJointList());
+      joint->setDQ(&dq);
+    }
+    return true;
+  }
+
+  /** Sets the external generalized forces
+   *
+   * TODO : This dynamics engine implementation should be stateless.
+   * This present system is because the intermediate jspace implementation
+   * has an extra data layer. Should be cleaned up in the future. */
+  sBool CTaoDynamics::setGeneralizedForces(Eigen::VectorXd &arg_fgc)
+  {
+    if(false == has_been_init_){return false; }
+
+    //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
+    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
+
+    //Uses the cc tree to integrate the dynamics.
+    for (size_t ii(0); ii < ndof_; ++ii)
+    {
+      sInt io_ds_idx;
+      io_ds_idx = tao_tree->info[ii].node->getID();
+
+      sFloat tau;
+      tau = arg_fgc(io_ds_idx);
+
+      taoJoint * joint(tao_tree->info[ii].node->getJointList());
+      joint->setTau(&tau);//Set the joint torques to be applied.
+    }
+    return true;
+  }
+
 }

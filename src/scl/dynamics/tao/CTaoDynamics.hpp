@@ -162,6 +162,27 @@ namespace scl
     /** Gets the robot's potential energy */
     virtual sFloat getPotentialEnergy();
 
+    /** Sets the generalized coordinates
+     *
+     * TODO : This dynamics engine implementation should be stateless.
+     * This present system is because the intermediate jspace implementation
+     * has an extra data layer. Should be cleaned up in the future. */
+    sBool setGeneralizedCoordinates(Eigen::VectorXd &arg_q);
+
+    /** Sets the generalized velocities
+     *
+     * TODO : This dynamics engine implementation should be stateless.
+     * This present system is because the intermediate jspace implementation
+     * has an extra data layer. Should be cleaned up in the future. */
+    sBool setGeneralizedVelocities(Eigen::VectorXd &arg_dq);
+
+    /** Sets the external generalized forces
+     *
+     * TODO : This dynamics engine implementation should be stateless.
+     * This present system is because the intermediate jspace implementation
+     * has an extra data layer. Should be cleaned up in the future. */
+    sBool setGeneralizedForces(Eigen::VectorXd &arg_fgc);
+
     /* *******************************************************************
      *                      Initialization functions.
      * ******************************************************************* */
