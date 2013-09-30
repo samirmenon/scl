@@ -54,29 +54,12 @@ namespace scl {
  * data. Pass in the model configuration as an argument
  * and return the new state and/or dynamics matrices.
  */
-class CDynamicsBase {
+class CDynamicsBase
+{
 public:
-  /** Default constructor sets the initialization state to false */
-  CDynamicsBase() : has_been_init_(false){}
-
-  /** Default destructor does nothing */
-  virtual ~CDynamicsBase(){}
-
-  /** Initializes the dynamics to be computed for a
-   * specific robot.
-   *
-   * Returns,
-   * true : Succeeds in creating a dynamics object
-   *
-   * false : If it can't find the robot or if the information
-   * is inconsistent with what the implementation requires,
-   * it returns false
-   */
-  virtual sBool init(const SRobotParsedData& arg_robot_data)=0;
-
-  /** Initialization state */
-  virtual sBool hasBeenInit() {  return has_been_init_;  }
-
+  /* *******************************************************************
+   *                      Computational functions.
+   * ******************************************************************* */
   /** Updates the joint space model matrices
    * (Everything in SGcModel)
    */
@@ -91,16 +74,6 @@ public:
           Contains Mass matrix, Inverse Mass matrix, centrifugal/
           coriolis force vector, and gravity vector.*/
              SGcModel * arg_gc_model)=0;
-
-  /** Gives an id for a link name.
-   *
-   * Enables using calculateJacobain without:
-   * 1. Storing any dynamic-engine specific objects in
-   *    the controller.
-   * 2. Using inefficient repeated string based
-   *    lookup (usually with maps)
-   */
-  virtual const void* getIdForLink(std::string arg_link_name)=0;
 
   /** Calculates the Transformation Matrix for the robot to which
    * this dynamics object is assigned.
@@ -181,11 +154,48 @@ public:
        * Up to the integrator implementation. */
       const sFloat arg_time_interval)=0;
 
+  /* *******************************************************************
+   *                      Dynamics State functions.
+   * ******************************************************************* */
   /** Gets the robot's kinetic energy */
   virtual sFloat getKineticEnergy()=0;
 
   /** Gets the robot's potential energy */
   virtual sFloat getPotentialEnergy()=0;
+
+  /** Gives an id for a link name.
+   *
+   * Enables using calculateJacobain without:
+   * 1. Storing any dynamic-engine specific objects in
+   *    the controller.
+   * 2. Using inefficient repeated string based
+   *    lookup (usually with maps)
+   */
+  virtual const void* getIdForLink(std::string arg_link_name)=0;
+
+  /* *******************************************************************
+   *                      Initialization functions.
+   * ******************************************************************* */
+  /** Default constructor sets the initialization state to false */
+  CDynamicsBase() : has_been_init_(false){}
+
+  /** Default destructor does nothing */
+  virtual ~CDynamicsBase(){}
+
+  /** Initializes the dynamics to be computed for a
+   * specific robot.
+   *
+   * Returns,
+   * true : Succeeds in creating a dynamics object
+   *
+   * false : If it can't find the robot or if the information
+   * is inconsistent with what the implementation requires,
+   * it returns false
+   */
+  virtual sBool init(const SRobotParsedData& arg_robot_data)=0;
+
+  /** Initialization state */
+  virtual sBool hasBeenInit() {  return has_been_init_;  }
 
 protected:
   /** True if the dynamics object has been initialized for a given
