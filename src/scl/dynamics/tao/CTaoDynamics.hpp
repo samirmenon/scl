@@ -62,17 +62,12 @@ namespace scl
   class CTaoDynamics : public CDynamicsBase
   {
   public:
-    CTaoDynamics();
-    virtual ~CTaoDynamics();
-
-    /** Initialize the CTaoDynamics with the TAO trees it needs in
-     * order to update the kinematics and/or dynamics of a robot.
-     *
-     * Accesses the database.
-     *
-     * \return True if everything went according to plan. */
-    virtual bool init(const SRobotParsedData& arg_robot_data);
-
+    /* *******************************************************************
+     *                      Computational functions.
+     * ******************************************************************* */
+    /** Updates the joint space model matrices
+     * (Everything in SGcModel)
+     */
     virtual bool updateModelMatrices(/**
 				This is where there current robot state is read when
 				updateModelMatrices() is called. */
@@ -158,11 +153,29 @@ namespace scl
          * dt so set it to a small value. */
         const sFloat arg_time_interval);
 
+    /* *******************************************************************
+     *                      Dynamics State functions.
+     * ******************************************************************* */
     /** Gets the robot's kinetic energy */
     virtual sFloat getKineticEnergy();
 
     /** Gets the robot's potential energy */
     virtual sFloat getPotentialEnergy();
+
+    /* *******************************************************************
+     *                      Initialization functions.
+     * ******************************************************************* */
+    /** Default constructor sets the initialization state to false */
+    CTaoDynamics();
+    virtual ~CTaoDynamics();
+
+    /** Initialize the CTaoDynamics with the TAO trees it needs in
+     * order to update the kinematics and/or dynamics of a robot.
+     *
+     * Accesses the database.
+     *
+     * \return True if everything went according to plan. */
+    virtual bool init(const SRobotParsedData& arg_robot_data);
 
   private:
     /** The robot's name */
