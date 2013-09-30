@@ -277,89 +277,90 @@ namespace scl_test
       dynamics->integrate(*io_ds, 0.001); // Sets the dynamic state. Also sets q to some nonzero value.
 
       // *********************************************************************************************************
+      //                                   Test Transformation Matrices
+      // *********************************************************************************************************
       // Set up variables.
       std::string link_name;
       Eigen::Affine3d Ttao, Tanlyt;
+      sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
 
-      // Test Transformation matrices : Link 0
-      link_name = "link0";
-
-      flag = dynamics->calculateTransformationMatrix(dynamics->getIdForLink(link_name),Ttao);
-      if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
-
-      flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
-          dyn_anlyt.getIdForLink("root"), Tanlyt);
-      if (false==flag) { throw(std::runtime_error("Failed to compute analytic transformation matrix."));  }
-
-      for(int i=0; i<4; i++)
-        for(int j=0; j<4; j++)
-        { flag = flag && (Ttao.matrix()(i,j) == Tanlyt.matrix()(i,j)); }
-
-      if (false==flag)
+      // Loop through all links and get transformations.
+      for(it = rob_ds->robot_br_rep_.begin(), ite = rob_ds->robot_br_rep_.end();
+          it!=ite; ++it)
       {
+        // Test : Link 0
+        link_name = it->name_;
+
+        // Skip the root node (all matrices are zero).
+        if(link_name == "ground") { continue; }
+
+        flag = dynamics->calculateTransformationMatrix(dynamics->getIdForLink(link_name),Ttao);
+        if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
+
+        flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
+            dyn_anlyt.getIdForLink("root"), Tanlyt);
+        if (false==flag) { throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));  }
+
+        for(int i=0; i<4; i++)
+          for(int j=0; j<4; j++)
+          { flag = flag && (Ttao.matrix()(i,j) == Tanlyt.matrix()(i,j)); }
+
+        if (false==flag)
+        {
+          std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+          std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+          throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
+        }
+        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
+
+#ifdef DEBUG
         std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
         std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
-        throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
+#endif
       }
-      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
-
-      // TODO : DELME
-      std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
-      std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
 
       // *********************************************************************************************************
-      // Test Transformation matrices : Link 1
-      link_name = "link1";
-
-      flag = dynamics->calculateTransformationMatrix(dynamics->getIdForLink(link_name),Ttao);
-      if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
-
-      flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
-          dyn_anlyt.getIdForLink("root"), Tanlyt);
-      if (false==flag) { throw(std::runtime_error("Failed to compute analytic transformation matrix."));  }
-
-      for(int i=0; i<4; i++)
-        for(int j=0; j<4; j++)
-        { flag = flag && (Ttao.matrix()(i,j) == Tanlyt.matrix()(i,j)); }
-
-      if (false==flag)
-      {
-        std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
-        std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
-        throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
-      }
-      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
-
-      // TODO : DELME
-      std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
-      std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
-
+      //                                         Test Com Jacobians
       // *********************************************************************************************************
-      // Test Transformation matrices : Link 2
-      link_name = "link2";
+      // Set up variables.
+      Eigen::MatrixXd Jcom_tao, Jcom_anlyt;
+      Eigen::VectorXd pos;
+      pos.setZero(3);
 
-      flag = dynamics->calculateTransformationMatrix(dynamics->getIdForLink(link_name),Ttao);
-      if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
-
-      flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
-          dyn_anlyt.getIdForLink("root"), Tanlyt);
-      if (false==flag) { throw(std::runtime_error("Failed to compute analytic transformation matrix."));  }
-
-      for(int i=0; i<4; i++)
-        for(int j=0; j<4; j++)
-        { flag = flag && (Ttao.matrix()(i,j) == Tanlyt.matrix()(i,j)); }
-
-      if (false==flag)
+      for(it = rob_ds->robot_br_rep_.begin(), ite = rob_ds->robot_br_rep_.end();
+          it!=ite; ++it)
       {
-        std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
-        std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
-        throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
-      }
-      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
+        // Test : Link 0
+        link_name = it->name_;
 
-      // TODO : DELME
-      std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
-      std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+        // Skip the root node (all matrices are zero).
+        if(link_name == "ground") { continue; }
+
+        pos = it->com_;
+        pos<<0,0,0;
+        flag = dynamics->calculateJacobian(dynamics->getIdForLink(link_name),pos,Jcom_tao);
+        if (false==flag) { throw(std::runtime_error("Failed to compute tao com Jacobian."));  }
+
+        flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
+        if (false==flag) { throw(std::runtime_error("Failed to compute analytic com Jacobian."));  }
+
+        for(int i=0; i<3; i++)
+          for(int j=0; j<3; j++)
+          { flag = flag && (Jcom_tao(i,j) == Jcom_anlyt(i,j)); }
+
+        if (false==flag)
+        {
+          std::cout<<"\nTao Jcom_"<<link_name<<":\n"<<Jcom_tao;
+          std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
+          throw(std::runtime_error("Tao and analytic Jacobians don't match."));
+        }
+        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
+
+#ifdef DEBUG
+        std::cout<<"\nTao Jcom_"<<link_name<<":\n"<<Jcom_tao;
+        std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
+#endif
+      }
 
       // ********************************************************************************************************
       //Delete stuff
