@@ -212,7 +212,6 @@ namespace scl
           arg_T = (tmp * arg_T);
           computeT1_2(arg_q, tmp);
           arg_T = (arg_T * tmp);
-          std::cout<<"\nTOrg->2\n"<<arg_T.matrix();
         }
         else
         { flag = false; }
