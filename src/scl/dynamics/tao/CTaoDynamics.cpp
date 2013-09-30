@@ -401,7 +401,7 @@ namespace scl
     return true;
   }
 
-  /***
+  /**
    * Gets the robot's kinetic energy
    */
   sFloat CTaoDynamics::getKineticEnergy()
@@ -411,7 +411,7 @@ namespace scl
     return ke;
   }
 
-  /***
+  /**
    * Gets the robot's potential energy
    */
   sFloat CTaoDynamics::getPotentialEnergy()
