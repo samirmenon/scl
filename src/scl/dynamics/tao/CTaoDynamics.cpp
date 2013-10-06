@@ -370,7 +370,7 @@ namespace scl
       {//Iterate over all joints, get a J column for each
         tmp_j->getJgColumns(&tmp_J_col);
 
-        // NOTE TODO : Neat way to get the id of this joint.
+        // NOTE TODO : Need a neater way to get this joint's id
         int col_id = tmp_node->getID();
 
         // Fill in the col of the Jacobian
