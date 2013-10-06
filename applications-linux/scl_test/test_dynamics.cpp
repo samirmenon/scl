@@ -205,6 +205,8 @@ namespace scl_test
     scl::sUInt r_id=0;
     bool flag;
 
+    const double test_precision = 0.00001;
+
     try
     {
       //0. Create vars
@@ -331,7 +333,7 @@ namespace scl_test
 
         for(int i=0; i<4 && flag; i++)
           for(int j=0; j<4 && flag; j++)
-          { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<0.001);  }
+          { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision);  }
 
         if (false==flag)
         {
@@ -384,7 +386,7 @@ namespace scl_test
 
               for(int i=0; i<4 && flag; i++)
                 for(int j=0; j<4 && flag; j++)
-                { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<0.001); }
+                { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision); }
 
               if (false==flag)
               {
@@ -413,7 +415,7 @@ namespace scl_test
 
       for(int i=0; i<3; i++)
         for(int j=0; j<3; j++)
-        { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<0.001); }
+        { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<test_precision); }
 
       if (false==flag)
       {
@@ -449,7 +451,7 @@ namespace scl_test
 
             for(int i=0; i<3; i++)
               for(int j=0; j<3; j++)
-              { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<0.001); }
+              { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<test_precision); }
 
             if (false==flag)
             {
@@ -487,7 +489,7 @@ namespace scl_test
 
         for(int i=0; i<3; i++)
           for(int j=0; j<3; j++)
-          { flag = flag && fabs(Jcom_tao(i,j) - Jcom_anlyt(i,j)) < 0.001; }
+          { flag = flag && fabs(Jcom_tao(i,j) - Jcom_anlyt(i,j)) < test_precision; }
 
         if (false==flag)
         {
