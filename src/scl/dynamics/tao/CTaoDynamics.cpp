@@ -322,16 +322,16 @@ namespace scl
       const void* arg_link_id,
       Eigen::Affine3d& arg_T)
   {
-    taoDNode * tao_link_addr;
-    tao_link_addr = static_cast<taoDNode *>(const_cast<void*>(arg_link_id));
+    taoDNode * tao_node;
+    tao_node = static_cast<taoDNode *>(const_cast<void*>(arg_link_id));
 
-    if (NULL == tao_link_addr)
+    if (NULL == tao_node)
     { return false; }
 
     // Update the link frame in tao.
-    tao_link_addr->updateFrame();
+    tao_node->updateFrame();
 
-    deFrame const * tao_frame(tao_link_addr->frameGlobal());
+    deFrame const * tao_frame(tao_node->frameGlobal());
     deQuaternion const & tao_quat(tao_frame->rotation());
     deVector3 const & tao_trans(tao_frame->translation());
 
@@ -351,10 +351,50 @@ namespace scl
       const Eigen::VectorXd& arg_pos_global,
       Eigen::MatrixXd& arg_J)
   {
-    const taoDNode * link_addr;
-    link_addr = static_cast<const taoDNode *>(arg_link_id);
-    bool flag = model_->computeJacobian(link_addr,arg_pos_global,arg_J);
+    taoDNode * tmp_node;
+    tmp_node = static_cast<taoDNode *>(const_cast<void*>(arg_link_id));
+    bool flag = model_->computeJacobian(tmp_node,arg_pos_global,arg_J);
     return flag;
+
+    if (NULL == tmp_node) { return false;  }
+
+    // Zero the Jacobian
+    arg_J = Eigen::MatrixXd::Zero(6, ndof_);
+
+    deVector6 tmp_J_col; //Compute the Jacobian col by col.
+    while(false == tmp_node->isRoot())
+    {//Iterate over all nodes
+      // Get the joint
+      taoJoint* tmp_j = tmp_node->getJointList();
+      while(NULL!=tmp_j)
+      {//Iterate over all joints, get a J column for each
+        tmp_j->getJgColumns(&tmp_J_col);
+
+        // NOTE TODO : Neat way to get the id of this joint.
+        int col_id = tmp_node->getID();
+
+        // Fill in the col of the Jacobian
+        for (int irow=0; irow < 6; ++irow)
+        { arg_J(irow, col_id) = tmp_J_col.elementAt(irow); }
+
+        // Add the effect of the joint rotation on the translational
+        // velocity at the global point (column-wise cross product with
+        // [gx;gy;gz]). Note that Jg_col.elementAt(3) is the
+        // contribution to omega_x etc, because the upper 3 elements of
+        // Jg_col are v_x etc.  (And don't ask me why we have to
+        // subtract the cross product, it probably got inverted
+        // somewhere)
+        arg_J(0, col_id) -= -arg_pos_global(2) * tmp_J_col.elementAt(4) + arg_pos_global(1) * tmp_J_col.elementAt(5);
+        arg_J(1, col_id) -=  arg_pos_global(2) * tmp_J_col.elementAt(3) - arg_pos_global(0) * tmp_J_col.elementAt(5);
+        arg_J(2, col_id) -= -arg_pos_global(1) * tmp_J_col.elementAt(3) + arg_pos_global(0) * tmp_J_col.elementAt(4);
+
+        // NOTE TODO : Fix this later. Should loop over all joint dofs
+        break;
+        tmp_j = tmp_j->getNext(); //Move to next joint. Terminate when over.
+      }
+      tmp_node = tmp_node->getDParent(); //Move to next parent. Terminate at root.
+    }
+    return true;
   }
 
   sBool CTaoDynamics::integrate(SRobotIOData& arg_inputs, const sFloat arg_time_interval)
