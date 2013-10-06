@@ -322,10 +322,25 @@ namespace scl
       const void* arg_link_id,
       Eigen::Affine3d& arg_T)
   {
-    const taoDNode * link_addr;
-    link_addr = static_cast<const taoDNode *>(arg_link_id);
-    bool flag = model_->getGlobalFrame(link_addr,arg_T);
-    return flag;
+    const taoDNode * tao_link_addr;
+    tao_link_addr = static_cast<const taoDNode *>(arg_link_id);
+
+    if (NULL == tao_link_addr)
+    { return false; }
+
+    deFrame const * tao_frame(tao_link_addr->frameGlobal());
+    deQuaternion const & tao_quat(tao_frame->rotation());
+    deVector3 const & tao_trans(tao_frame->translation());
+
+    // Initialize the affine tranform as a pure translation.
+    arg_T = Eigen::Translation3d(tao_trans[0], tao_trans[1], tao_trans[2]);
+
+    // Then multiply the rotation part.
+    // Note: Eigen::Quaternion(w, x, y, z) asks for w first, (but stores it as xyzw)
+    // deQuaternion(qx, qy, qz, qw) asks for w last and stores it as xyzw.
+    arg_T *= Eigen::Quaternion<double>(/*w*/tao_quat[3/*w*/], /*x*/tao_quat[0], /*y*/tao_quat[1], /*z*/tao_quat[2]);
+
+    return true;
   }
 
   sBool CTaoDynamics::calculateJacobian(
@@ -438,8 +453,8 @@ namespace scl
   {
     if(false == has_been_init_){return false; }
 
-    //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
-    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
+    //We will integrate the kgm tree (arbit. We could integrate the kgm tree as well).
+    jspace::STaoTreeInfo * tao_tree = model_->_getKGMTree();
 
     //Uses the cc tree to integrate the dynamics.
     for (size_t ii(0); ii < ndof_; ++ii)
@@ -453,6 +468,23 @@ namespace scl
       taoJoint * joint(tao_tree->info[ii].node->getJointList());
       joint->setQ(&q);
     }
+
+    //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
+    jspace::STaoTreeInfo * tao_tree_cc = model_->_getCCTree();
+
+    //Uses the cc tree to integrate the dynamics.
+    for (size_t ii(0); ii < ndof_; ++ii)
+    {
+      sInt io_ds_idx;
+      io_ds_idx = tao_tree_cc->info[ii].node->getID();
+
+      sFloat q;
+      q = arg_q(io_ds_idx);
+
+      taoJoint * joint(tao_tree_cc->info[ii].node->getJointList());
+      joint->setQ(&q);
+    }
+
     return true;
   }
 
@@ -464,7 +496,7 @@ namespace scl
     if(false == has_been_init_){return false; }
 
     //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
-    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
+    jspace::STaoTreeInfo * tao_tree = model_->_getKGMTree();
 
     //Uses the cc tree to integrate the dynamics.
     for (size_t ii(0); ii < ndof_; ++ii)
@@ -476,6 +508,22 @@ namespace scl
       dq = arg_dq(io_ds_idx);
 
       taoJoint * joint(tao_tree->info[ii].node->getJointList());
+      joint->setDQ(&dq);
+    }
+
+    //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
+    jspace::STaoTreeInfo * tao_tree_cc = model_->_getCCTree();
+
+    //Uses the cc tree to integrate the dynamics.
+    for (size_t ii(0); ii < ndof_; ++ii)
+    {
+      sInt io_ds_idx;
+      io_ds_idx = tao_tree_cc->info[ii].node->getID();
+
+      sFloat dq;
+      dq = arg_dq(io_ds_idx);
+
+      taoJoint * joint(tao_tree_cc->info[ii].node->getJointList());
       joint->setDQ(&dq);
     }
     return true;
@@ -491,7 +539,7 @@ namespace scl
     if(false == has_been_init_){return false; }
 
     //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
-    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
+    jspace::STaoTreeInfo * tao_tree = model_->_getKGMTree();
 
     //Uses the cc tree to integrate the dynamics.
     for (size_t ii(0); ii < ndof_; ++ii)
@@ -503,6 +551,22 @@ namespace scl
       tau = arg_fgc(io_ds_idx);
 
       taoJoint * joint(tao_tree->info[ii].node->getJointList());
+      joint->setTau(&tau);//Set the joint torques to be applied.
+    }
+
+    //We will integrate the cc tree (arbit. We could integrate the kgm tree as well).
+    jspace::STaoTreeInfo * tao_tree_cc = model_->_getCCTree();
+
+    //Uses the cc tree to integrate the dynamics.
+    for (size_t ii(0); ii < ndof_; ++ii)
+    {
+      sInt io_ds_idx;
+      io_ds_idx = tao_tree_cc->info[ii].node->getID();
+
+      sFloat tau;
+      tau = arg_fgc(io_ds_idx);
+
+      taoJoint * joint(tao_tree_cc->info[ii].node->getJointList());
       joint->setTau(&tau);//Set the joint torques to be applied.
     }
     return true;
