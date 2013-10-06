@@ -44,6 +44,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/dynamics/tao/jspace/State.hpp>
 
+#include <scl/dynamics/tao/tao/dynamics/taoNode.h>
+#include <scl/dynamics/tao/tao/dynamics/taoJoint.h>
+#include <scl/dynamics/tao/tao/dynamics/taoDynamics.h>
+
 class taoDNode;
 
 namespace jspace {
@@ -201,6 +205,9 @@ namespace scl
   private:
     /** The robot's name */
     std::string robot_name_;
+
+    /** Store pointers to the tao trees */
+    taoNodeRoot *tao_tree_q_root_, *tao_tree_q_dq_root_;
 
     /** The joint space model, a helper class that wraps around tao
      * and computes the robot's dynamics. */

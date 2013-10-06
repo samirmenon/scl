@@ -38,10 +38,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/tao/jspace/Model.hpp>
 #include <scl/control/data_structs/SGcModel.hpp>
 
-#include <scl/dynamics/tao/tao/dynamics/taoNode.h>
-#include <scl/dynamics/tao/tao/dynamics/taoJoint.h>
-#include <scl/dynamics/tao/tao/dynamics/taoDynamics.h>
-
 #include <string>
 #include <vector>
 #include <iostream>
@@ -136,22 +132,14 @@ namespace scl
     gravity_ = arg_robot_data.gravity_;
 
     //Initialize the tao tree
-    taoNodeRoot * kgm_root(scl::CTaoRepCreator::taoRootRepCreator(arg_robot_data));
-    if ( ! kgm_root) {
+    tao_tree_q_root_ = scl::CTaoRepCreator::taoRootRepCreator(arg_robot_data);
+    if ( ! tao_tree_q_root_) {
       std::cout << "scl::CTaoDynamics::init(`" << robot_name_
           << "'): scl::CTaoRepCreator::taoRootRepCreator() failed [invalid robot name?]\n";
       return false;
     }
-#ifdef DEBUG
-    else
-    {
-      std::cout << "\nscl::CTaoDynamics::init(`" << robot_name_
-          << "'): scl::CTaoRepCreator::taoRootRepCreator() created a kgm tree";
-    }
-    std::cout<<std::flush;
-#endif
 
-    if ( ! tao_consistency_check(kgm_root)) {
+    if ( ! tao_consistency_check(tao_tree_q_root_)) {
       std::cout << "scl::CTaoDynamics::init(`" << robot_name_
           << "'): consistency check failed on TAO tree\n";
       return false;
@@ -160,24 +148,15 @@ namespace scl
     // Parse it again to get a second copy. Extra cost only incurred
     // at init time, so that should be acceptable, although it would
     // be cleaner to have TAO tree deep copy functionality somewhere.
-    taoNodeRoot * cc_root;
-    cc_root = scl::CTaoRepCreator::taoRootRepCreator(arg_robot_data);
-    if ( ! cc_root) {
+    tao_tree_q_dq_root_ = scl::CTaoRepCreator::taoRootRepCreator(arg_robot_data);
+    if ( ! tao_tree_q_dq_root_) {
       std::cout << "scl::CTaoDynamics::init(`" << robot_name_
           << "'): scl::CTaoRepCreator::taoRootRepCreator(cc) failed [invalid robot name?]\n";
       return false;
     }
-#ifdef DEBUG
-    else
-    {
-      std::cout << "\nscl::CTaoDynamics::init(`" << robot_name_
-          << "'): scl::CTaoRepCreator::taoRootRepCreator() created a cc tree";
-    }
-    std::cout<<std::flush;
-#endif
 
-    jspace::STaoTreeInfo * kgm_tree(jspace::create_bare_tao_tree_info(kgm_root));
-    jspace::STaoTreeInfo * cc_tree(jspace::create_bare_tao_tree_info(cc_root));
+    jspace::STaoTreeInfo * js_q_tree(jspace::create_bare_tao_tree_info(tao_tree_q_root_));
+    jspace::STaoTreeInfo * js_q_dq_tree(jspace::create_bare_tao_tree_info(tao_tree_q_dq_root_));
 
     //NOTE TODO Perhaps this was what TRY_TO_CONVERT_NAMES achieved
     sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::const_iterator itbr, itbre;
@@ -188,9 +167,9 @@ namespace scl
       std::vector<jspace::STaoNodeInfo>::iterator it, ite, icc;
 
       //Name the stuff in the kgm tree
-      it = kgm_tree->info.begin();
-      icc = cc_tree->info.begin();
-      ite = kgm_tree->info.end();
+      it = js_q_tree->info.begin();
+      icc = js_q_dq_tree->info.begin();
+      ite = js_q_tree->info.end();
       for (/**/; it != ite; ++it, ++icc)
       {
         const SRigidBody& l_ds = *itbr;
@@ -210,7 +189,7 @@ namespace scl
     }
 
     model_ = new jspace::Model();
-    model_->init(kgm_tree, cc_tree, gravity_(0), gravity_(1), gravity_(2), 0);
+    model_->init(js_q_tree, js_q_dq_tree, gravity_(0), gravity_(1), gravity_(2), 0);
     ndof_ = model_->getNDOF();
     state_.init(ndof_, ndof_, 0);
 
