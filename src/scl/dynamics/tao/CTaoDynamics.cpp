@@ -322,11 +322,14 @@ namespace scl
       const void* arg_link_id,
       Eigen::Affine3d& arg_T)
   {
-    const taoDNode * tao_link_addr;
-    tao_link_addr = static_cast<const taoDNode *>(arg_link_id);
+    taoDNode * tao_link_addr;
+    tao_link_addr = static_cast<taoDNode *>(const_cast<void*>(arg_link_id));
 
     if (NULL == tao_link_addr)
     { return false; }
+
+    // Update the link frame in tao.
+    tao_link_addr->updateFrame();
 
     deFrame const * tao_frame(tao_link_addr->frameGlobal());
     deQuaternion const & tao_quat(tao_frame->rotation());
