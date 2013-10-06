@@ -377,16 +377,17 @@ namespace scl
         for (int irow=0; irow < 6; ++irow)
         { arg_J(irow, col_id) = tmp_J_col.elementAt(irow); }
 
-        // Add the effect of the joint rotation on the translational
-        // velocity at the global point (column-wise cross product with
-        // [gx;gy;gz]). Note that Jg_col.elementAt(3) is the
-        // contribution to omega_x etc, because the upper 3 elements of
-        // Jg_col are v_x etc.  (And don't ask me why we have to
-        // subtract the cross product, it probably got inverted
-        // somewhere)
-        arg_J(0, col_id) -= -arg_pos_global(2) * tmp_J_col.elementAt(4) + arg_pos_global(1) * tmp_J_col.elementAt(5);
-        arg_J(1, col_id) -=  arg_pos_global(2) * tmp_J_col.elementAt(3) - arg_pos_global(0) * tmp_J_col.elementAt(5);
-        arg_J(2, col_id) -= -arg_pos_global(1) * tmp_J_col.elementAt(3) + arg_pos_global(0) * tmp_J_col.elementAt(4);
+        // NOTE TODO: v_op = v_trans + v_rot. But v_rot isn't accounted for in tao. Why???
+        // So, d(v_glob)/dqi += d(ω_joint)/dqi x r_glob
+        // dx = J * dq
+        // J_col_i = [dx/dqi dy/dqi dz/dqi dωx/dqi dωy/dqi dωz/dqi]'
+        const Eigen::VectorXd &r = arg_pos_global;
+        double wx = tmp_J_col.elementAt(3), wy = tmp_J_col.elementAt(4), wz = tmp_J_col.elementAt(5);
+        // Cross prod: wx/qi ry K - wx/qi rz J - wy/qi rx K + wy/qi rz I + wz/qi rx J - wz/qi ry I
+        //           = wy/qi rz I - wz/qi ry I + wz/qi rx J - wx/qi rz J + wx/qi ry K - wy/qi rx K
+        arg_J(0, col_id) += wy * r(2) - wz * r(1) ;
+        arg_J(1, col_id) += wz * r(0) - wx * r(2) ;
+        arg_J(2, col_id) += wx * r(1) - wy * r(0);
 
         // NOTE TODO : Fix this later. Should loop over all joint dofs
         break;
