@@ -393,7 +393,6 @@ namespace scl_test
                 std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
                 throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
               }
-              else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
             }
           }
       std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for all links and gcs [-pi,pi]";
