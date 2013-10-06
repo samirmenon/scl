@@ -220,15 +220,15 @@ namespace scl
 
 
   bool CTaoDynamics::
-  updateModelMatrices(SRobotSensorData const * sensor_data,
-      SGcModel * js_model)
+  updateModelMatrices(SRobotSensorData const * arg_sensor_data,
+      SGcModel * arg_gc_model)
   {
-    if ( ! sensor_data) {
+    if ( ! arg_sensor_data) {
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): sensor_data is NULL\n");
       return false;
     }
-    if ( ! js_model) {
-      fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): js_model is NULL\n");
+    if ( ! arg_gc_model) {
+      fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): arg_gc_model is NULL\n");
       return false;
     }
     if ( ! model_) {
@@ -240,13 +240,13 @@ namespace scl
     // implementing/using registerTaoDynamics() in DbRegisterFunctions.cpp
 
     // Set generalized coordinates
-    state_.position_ = sensor_data->q_;
-    size_t const npos(sensor_data->q_.rows());
-    js_model->q_  = sensor_data->q_;
+    state_.position_ = arg_sensor_data->q_;
+    size_t const npos(arg_sensor_data->q_.rows());
+    arg_gc_model->q_  = arg_sensor_data->q_;
 
     // Set generalized velocities.
-    state_.velocity_ = sensor_data->dq_;
-    js_model->dq_  = sensor_data->dq_;
+    state_.velocity_ = arg_sensor_data->dq_;
+    arg_gc_model->dq_  = arg_sensor_data->dq_;
 
     // No external forces on the system
     state_.force_.setZero(npos);
@@ -254,28 +254,28 @@ namespace scl
     // Update the model based on the system's state.
     model_->update(state_);
 
-    if ( ! model_->getMassInertia(js_model->A_)) {
+    if ( ! model_->getMassInertia(arg_gc_model->A_)) {
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getMassInertia() failed\n");
       return false;
     }
-    if ( ! model_->getInverseMassInertia(js_model->Ainv_)) {
+    if ( ! model_->getInverseMassInertia(arg_gc_model->Ainv_)) {
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getInverseMassInertia() failed\n");
       return false;
     }
-    if ( ! model_->getCoriolisCentrifugal(js_model->b_)) {
+    if ( ! model_->getCoriolisCentrifugal(arg_gc_model->b_)) {
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getCoriolisCentrifugal() failed\n");
       return false;
     }
-    if ( ! model_->getGravity(js_model->g_)) {
+    if ( ! model_->getGravity(arg_gc_model->g_)) {
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getGravity() failed\n");
       return false;
     }
 
     bool flag;
-    js_model->pos_com_.setZero(3);
+    arg_gc_model->pos_com_.setZero(3);
     Eigen::Vector3d tmp_lnk_com;
     sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it, ite;
-    for(it = js_model->link_ds_.begin(), ite = js_model->link_ds_.end(); it!=ite;++it)
+    for(it = arg_gc_model->link_ds_.begin(), ite = arg_gc_model->link_ds_.end(); it!=ite;++it)
     {
       // No matrices need to be computed for the root nodes (those are fixed, non-dynamic).
       if(it->link_ds_->is_root_)
@@ -299,14 +299,14 @@ namespace scl
 
       tmp_lnk_com = it->T_o_lnk_ * it->link_ds_->com_;
       tmp_lnk_com *= it->link_ds_->mass_;
-      js_model->pos_com_ += tmp_lnk_com;
+      arg_gc_model->pos_com_ += tmp_lnk_com;
       if ( ! calculateJacobian(it->link_dynamic_id_, tmp_lnk_com ,it->J_com_)) {
         fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Could not compute the com Jacobian at link : %s\n",it->name_.c_str());
         return false;
       }
     }
 
-    js_model->pos_com_ = js_model->pos_com_.array() / js_model->mass_;
+    arg_gc_model->pos_com_ = arg_gc_model->pos_com_.array() / arg_gc_model->mass_;
 
     return true;
   }

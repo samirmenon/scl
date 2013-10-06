@@ -71,13 +71,13 @@ namespace scl
     virtual bool updateModelMatrices(/**
 				This is where there current robot state is read when
 				updateModelMatrices() is called. */
-        SRobotSensorData const * sensor_data,
+        SRobotSensorData const * arg_sensor_data,
         /**
 				Pointer to the joint-space model structure for the
 				robot. This is the place where the matrices reside
 				that will get updated when calling
 				updateModelMatrices(). */
-        SGcModel * js_model);
+        SGcModel * arg_gc_model);
 
     /** Gives an id for a link name.
      *
