@@ -454,8 +454,7 @@ namespace scl
    */
   sFloat CTaoDynamics::getKineticEnergy()
   {
-    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
-    sFloat ke = taoDynamics::kineticEnergy(tao_tree->root);
+    sFloat ke = taoDynamics::kineticEnergy(tao_tree_q_dq_root_);
     return ke;
   }
 
@@ -464,9 +463,11 @@ namespace scl
    */
   sFloat CTaoDynamics::getPotentialEnergy()
   {
-    deVector3 gravity(0,0,-9.81);
-    jspace::STaoTreeInfo * tao_tree = model_->_getCCTree();
-    sFloat pe = taoDynamics::potentialEnergy(tao_tree->root, &gravity);
+    if (gravity_.norm()<0.0001)
+    { return 0; }
+
+    deVector3 gravity(gravity_(0),gravity_(1),gravity_(2));
+    sFloat pe = taoDynamics::potentialEnergy(tao_tree_q_dq_root_, &gravity);
     return pe;
   }
 
