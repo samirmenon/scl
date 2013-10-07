@@ -180,8 +180,8 @@ public:
 
 private:
 	deVector6 velocity_;
-	deVector6 _A;
-	deVector6 _H;		
+	deVector6 _A;    // NOTE TODO : What is this?
+	deVector6 _H;    // NOTE TODO : What is this?
 	deMatrix6 _Omega;	// Op Sp Matrix inverse : diagonal terms
 };
 
