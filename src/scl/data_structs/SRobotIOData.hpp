@@ -61,21 +61,6 @@ namespace scl
     /** The sensed generalized forces (Eg. joint torques) */
     Eigen::VectorXd force_gc_measured_;
 
-    /** The external forces applied on the robot. The
-     * code expects these to be few in number O(n) and
-     * appear/disappear relatively rarely:
-     *
-     * Eg.
-     * a) By a user interacting through a gui
-     * b) By a physical force on a real robot
-     *
-     * NOTE TODO : Consider using a CMappedList here
-     * instead of the vector. The vector doesn't support
-     * removing contacts very efficiently if there are a
-     * large number of contacts. CMappedList is much
-     * faster at removal/insertion. */
-    std::vector<SForce*> forces_external_;
-
     /** The external forces applied on the robot. The code
      * expects these to be numerous O(n^k), k>1. These may
      * also appear/disappear frequently:
@@ -89,7 +74,7 @@ namespace scl
      * particular contact regularly (if you care about
      * it). The standard case will iterate over all
      * in an arbitrary order. */
-    sutil::CMappedList<std::string, SForce> forces_external_transient_;
+    sutil::CMappedList<std::string, SForce> forces_external_;
   };
 
 
