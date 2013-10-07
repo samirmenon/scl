@@ -244,6 +244,25 @@ namespace scl_test
       if(NULL == rob_ds)
       { throw(std::runtime_error("Could not find registered robot in the database"));  }
 
+      // IF the robot wasn't sorted, issue a warning and set present order as sorted
+      std::vector<std::string> tmp_sort_order;
+      flag = rob_ds->robot_br_rep_.sort_get_order(tmp_sort_order);
+      if(false == flag)
+      {
+        std::cout<<"\nWARNING : Robot branching representation is not sorted by default. Sorting. Robot = "<<rob_ds->name_;
+
+        // Get the present node ordering.
+        sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
+        for(it = rob_ds->robot_br_rep_.begin(), ite = rob_ds->robot_br_rep_.end();
+                  it!=ite; ++it)
+        { tmp_sort_order.push_back(it->name_); }
+
+        // Sort it.
+        flag = rob_ds->robot_br_rep_.sort(tmp_sort_order);
+        if(false == flag)
+        { throw(std::runtime_error("Could not sort unsorted robot branching representation."));  }
+      }
+
 #ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<rob_ds->name_;
       scl_util::printRobotLinkTree( *(rob_ds->robot_br_rep_.getRootNode()), 0);
@@ -281,24 +300,9 @@ namespace scl_test
       // *********************************************************************************************************
       // These are used to compute the full dynamics model later in the code..
       scl::SGcModel rob_gc_model;
-      flag = rob_gc_model.init(rob_ds->dof_);
-      if(false == flag)
+      flag = rob_gc_model.init(*rob_ds);
+      if(true == flag)
       { throw(std::runtime_error("Could not create a dynamic object for the robot"));  }
-
-      sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
-      // Loop through all links and set com properties.
-      for(it = rob_ds->robot_br_rep_.begin(), ite = rob_ds->robot_br_rep_.end(), i=0;
-          it!=ite; ++it, ++i)
-      {
-        const SRigidBody& rb = *it;
-        if(rb.is_root_) { continue;  } // Do not process root.
-
-        scl::SRigidBodyDyn& rbdyn = rob_gc_model.link_ds_[i];
-
-        rbdyn.link_ds_ = &rb;
-        rbdyn.link_dynamic_id_ = dynamics->getIdForLink(rb.name_);
-        rbdyn.name_ = rb.name_;
-      }
 
       // *********************************************************************************************************
       //                                   Test Transformation Matrices
@@ -308,6 +312,7 @@ namespace scl_test
       Eigen::Affine3d Ttao, Tanlyt;
 
       // Loop through all links and get transformations.
+      sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
       for(it = rob_ds->robot_br_rep_.begin(), ite = rob_ds->robot_br_rep_.end();
           it!=ite; ++it)
       {
