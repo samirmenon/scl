@@ -39,31 +39,57 @@ namespace scl
   SGcModel::SGcModel() : mass_(-1)
   { }
 
-  sBool SGcModel::init(const sUInt arg_robot_dof)
+  sBool SGcModel::init(const SRobotParsedData& arg_robot_data)
   {
     try
     {
-      if(0==arg_robot_dof)
+      if(false == arg_robot_data.has_been_init_)
+      { throw(std::runtime_error("Passed uninitialized robot data structure")); }
+
+      int ndof = arg_robot_data.dof_;
+      if(0==ndof)
       { throw(std::runtime_error("Can not initialize for a parent-robot with 0 dof")); }
 
-      A_.setIdentity(arg_robot_dof,arg_robot_dof);
-      Ainv_.setIdentity(arg_robot_dof,arg_robot_dof);
-      b_.setZero(arg_robot_dof);
-      g_.setZero(arg_robot_dof);
-      q_.setZero(arg_robot_dof);
-      dq_.setZero(arg_robot_dof);
+      A_.setIdentity(ndof,ndof);
+      Ainv_.setIdentity(ndof,ndof);
+      b_.setZero(ndof);
+      g_.setZero(ndof);
+      q_.setZero(ndof);
+      dq_.setZero(ndof);
       pos_com_.setZero(3);
 
-      for(sUInt i=0;i<arg_robot_dof;++i)
+      sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
+      for(it = arg_robot_data.robot_br_rep_.begin(), ite = arg_robot_data.robot_br_rep_.end();
+          it!=ite; ++it)
       {
-        SRigidBodyDyn com;
-        com.J_com_.setZero(6, arg_robot_dof);
-        com.T_o_lnk_ = Eigen::Affine3d::Identity();
-        com.link_ds_ = NULL;
-        com.name_ = "";
-        com.link_dynamic_id_ = NULL;
-        link_ds_.push_back(com);
+        const SRigidBody& rb = *it;
+        SRigidBodyDyn *com = link_ds_.create(rb.name_,rb.is_root_);
+        if(NULL == com)
+        { throw(std::runtime_error( std::string("Could not create dyn node: ")+ rb.name_+std::string("for robot: ")+rb.robot_name_ )); }
+
+        com->J_com_.setZero(6, ndof);
+        com->T_o_lnk_ = Eigen::Affine3d::Identity();
+        com->T_lnk_ = Eigen::Affine3d::Identity();
+
+        com->link_ds_ = &rb;
+        com->link_dynamic_id_ = NULL;
+
+        com->name_ = rb.name_;
+        com->parent_name_ = rb.parent_name_;
       }
+
+      bool flag = link_ds_.linkNodes();
+      if(false == flag)
+      { throw(std::runtime_error( "Could not link the dynamic nodes into a tree" )); }
+
+      // Sort the underlying list for the new tree
+      std::vector<std::string> tmp_sort_order;
+      flag = arg_robot_data.robot_br_rep_.sort_get_order(tmp_sort_order);
+      { throw(std::runtime_error( "Could not obtain sort order from passed robot parsed data" )); }
+
+      // Sort the underlying list for the new tree
+      flag = link_ds_.sort(tmp_sort_order);
+      { throw(std::runtime_error( "Could not sort dynamic node tree" )); }
     }
     catch(std::exception& e)
     {

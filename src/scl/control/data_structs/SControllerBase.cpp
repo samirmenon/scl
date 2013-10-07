@@ -73,7 +73,7 @@ namespace scl
       robot_ = arg_robot_ds;
       io_data_ = arg_io_data;
 
-      flag = gc_model_.init(arg_robot_ds->dof_);
+      flag = gc_model_.init(*arg_robot_ds);
       if(false == flag)
       { throw(std::runtime_error("Could not initialize generalized coordinate dynamic matrices")); }
     }

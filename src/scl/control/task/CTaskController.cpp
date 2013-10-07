@@ -76,7 +76,7 @@ namespace scl
 
       // Set up the center of mass properties of the robot
       data_->gc_model_.mass_ = 0.0;
-      std::vector<SRigidBodyDyn>::iterator itcom,itcome;
+      sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator itcom,itcome;
       sutil::CMappedTree<std::string, SRigidBody>::const_iterator itr,itre;
       //Set the center of mass position for each link.
       for(itcom = data_->gc_model_.link_ds_.begin(), itcome =data_->gc_model_.link_ds_.end(),

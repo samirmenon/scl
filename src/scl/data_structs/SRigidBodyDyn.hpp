@@ -45,7 +45,13 @@ namespace scl
    * to compute most control parameters. However, caching them greatly simplifies the control
    * code. Moreover, caching may also lead to some performance gains when the dynamics is
    * computed at a lower rate and/or when the information here is reused over and over
-   * in complex controllers.*/
+   * in complex controllers.
+   *
+   * To be consistent with our tree convention, this contains:
+   * a) std::string name_;
+   * b) std::string parent_name_;
+   * c) SRigidBodyDyn* parent_addr_;
+   * d) std::vector<SRigidBodyDyn*> child_addrs_;*/
   class SRigidBodyDyn
   {
   public:
@@ -69,23 +75,26 @@ namespace scl
      *     x_parent_frame_com_ = T_lnk_ * x_com_; */
     Eigen::Affine3d T_lnk_;
 
-    /** The link's name.
-     * This is redundant, but primarily for error checks,
-     * since external libraries might not maintain the same
-     * numeric ordering scheme used in scl.
-     *
-     * The errors primarily arise because of an inconsistent
-     * initialization sequence between the two, which would lead
-     * to mixed link ids. */
-    std::string name_;
-
     /** The data structure pointing to the static link information */
     const SRigidBody* link_ds_;
 
     /** The dynamics engine's id.
      * This, again, is redundant like the name. But simplifies
-     * and speeds up error checks. */
+     * and speeds up error checks.
+     *
+     * NOTE TODO : Delete this. This shouldn't be here. It's purpose
+     * was to primarily update a link quickly. But dynamics implementations
+     * either cache data or recompute a lot of it, which removes the
+     * potential efficiency gained here. */
     const void* link_dynamic_id_;
+
+    /** Requirements to create a mapped tree of objects */
+    /** The link's name and its parent. For the tree structure. */
+    std::string name_, parent_name_;
+    /** This is automatically created by the map */
+    SRigidBodyDyn* parent_addr_;
+    /** This is automatically created by the map */
+    std::vector<SRigidBodyDyn*> child_addrs_;
   };
 
 } /* namespace scl */

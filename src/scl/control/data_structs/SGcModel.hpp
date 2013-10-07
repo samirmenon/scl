@@ -92,7 +92,7 @@ namespace scl
 
     /** A vector of the dynamics information for all the rigid bodies in the
      * articulated body */
-    std::vector<SRigidBodyDyn> link_ds_;
+    sutil::CMappedTree<std::string, SRigidBodyDyn> link_ds_;
 
     /* *********************************************************************
      *                      Initialization functions
@@ -101,7 +101,7 @@ namespace scl
     SGcModel();
 
     /** Initialization function sets up the matrix sizes */
-    sBool init(const sUInt arg_robot_dof);
+    sBool init(const SRobotParsedData& arg_robot_data);
   };
 }
 
