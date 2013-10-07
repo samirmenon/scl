@@ -125,12 +125,12 @@ namespace scl
 
     /** Joint positions and velocities are necessary
      * and sufficient to determine the system's state. */
-    void setJointPositions(const Eigen::VectorXd &arg_pos)
+    void setGcPosition(const Eigen::VectorXd &arg_pos)
     { sensors_.q_ = arg_pos;  }
 
     /** Joint positions and velocities are necessary
      * and sufficient to determine the system's state. */
-    void setJointVelocities(const Eigen::VectorXd &arg_vel)
+    void setGcVelocity(const Eigen::VectorXd &arg_vel)
     { sensors_.dq_ = arg_vel;  }
 
     /** Prints all the robot info to the screen */

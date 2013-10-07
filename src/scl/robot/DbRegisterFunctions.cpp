@@ -207,7 +207,7 @@ namespace scl_registry
       if(false==flag)
       { throw(std::runtime_error("Could not initialize the robot's I/O data structure.")); }
 
-      rob_io->setJointPositions(rob->gc_pos_default_);
+      rob_io->setGcPosition(rob->gc_pos_default_);
 
       rob->has_been_init_ = true;
 
