@@ -293,7 +293,7 @@ namespace scl_test
         const SRigidBody& rb = *it;
         if(rb.is_root_) { continue;  } // Do not process root.
 
-        SGcModel::SRigidBodyDyn& rbdyn = rob_gc_model.link_ds_[i];
+        scl::SRigidBodyDyn& rbdyn = rob_gc_model.link_ds_[i];
 
         rbdyn.link_ds_ = &rb;
         rbdyn.link_dynamic_id_ = dynamics->getIdForLink(rb.name_);
