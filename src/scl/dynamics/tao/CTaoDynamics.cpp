@@ -339,6 +339,10 @@ namespace scl
     // Zero the Jacobian
     arg_J = Eigen::MatrixXd::Zero(6, ndof_);
 
+    //Update all the transformation matrices etc.
+    taoDynamics::updateTransformation(tao_tree_q_root_);
+    taoDynamics::globalJacobian(tao_tree_q_root_);
+
     deVector6 tmp_J_col; //Compute the Jacobian col by col.
     while(false == tmp_node->isRoot())
     {//Iterate over all nodes
