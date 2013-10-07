@@ -350,7 +350,7 @@ namespace scl_test
       }
 
       // *********************************************************************************************************
-      //                          Test Generalized Inertia Matrix for a range of GCs
+      //                               Test Transformation Matrix for a range of GCs
       // *********************************************************************************************************
       double gcstep=0.1;
       for (double a=-3.14;a<3.14;a+=gcstep)
