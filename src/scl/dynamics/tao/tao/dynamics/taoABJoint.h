@@ -248,9 +248,16 @@ public:
 	virtual deVector6& Jg() { return _Jg; }
 
 private:
+	/** _S is a selection matrix that consists of a translation and a rotation
+	 * part. All zeros except the axes moved by this joint.
+	 * Ie. px : _S[0][0] = 1; // All other entries are zero
+	 *     rz : _S[1][2] = 1; // All other entries are zero */
 	deVector6 _S;
+	// NOTE TODO : What is this?
 	deVector6 _SbarT;
+	// NOTE TODO : What is this?
 	deFloat _Dinv;
+	/** The Jacobian column vector corresponding to this joint */
 	deVector6 _Jg;
 };
 
