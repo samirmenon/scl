@@ -274,7 +274,7 @@ namespace scl
     bool flag;
     js_model->pos_com_.setZero(3);
     Eigen::Vector3d tmp_lnk_com;
-    std::vector<SGcModel::SRigidBodyDyn>::iterator it, ite;
+    std::vector<SRigidBodyDyn>::iterator it, ite;
     for(it = js_model->link_ds_.begin(), ite = js_model->link_ds_.end(); it!=ite;++it)
     {
       if(NULL == it->link_dynamic_id_)
