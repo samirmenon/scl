@@ -85,6 +85,7 @@ namespace scl
       // Sort the underlying list for the new tree
       std::vector<std::string> tmp_sort_order;
       flag = arg_robot_data.robot_br_rep_.sort_get_order(tmp_sort_order);
+      if(false == flag)
       { throw(std::runtime_error( "Could not obtain sort order from passed robot parsed data" )); }
 
       // Sort the underlying list for the new tree
