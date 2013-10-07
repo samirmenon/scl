@@ -89,11 +89,13 @@ void taoABDynamics::opSpaceInertiaMatrixOut(taoDNode* root, const deMatrix6* Oah
 }
 
 void taoABDynamics::globalJacobianOut(taoDNode* root)
-{
-	root->getABNode()->globalJacobian(*root->frameGlobal());
+{//Computes the jacobian column for each root's subtree. Recursive.
+  taoArticulatedBodyLink* tmp_node = root->getABNode();
+  const deFrame& glob_frame = *(root->frameGlobal());
+	tmp_node->globalJacobian(glob_frame);// NOTE : This does nothing for the root node.
 
 	for (taoDNode* n = root->getDChild(); n != NULL; n = n->getDSibling())
-		globalJacobianOut(n);
+  { globalJacobianOut(n); } // Iterate over all child nodes.
 }
 
 void taoABDynamics::biasAccelerationOut(taoDNode* root, const deVector6* Hh)
