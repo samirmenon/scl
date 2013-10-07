@@ -333,8 +333,6 @@ namespace scl
   {
     taoDNode * tmp_node;
     tmp_node = static_cast<taoDNode *>(const_cast<void*>(arg_link_id));
-    bool flag = model_->computeJacobian(tmp_node,arg_pos_global,arg_J);
-    return flag;
 
     if (NULL == tmp_node) { return false;  }
 
