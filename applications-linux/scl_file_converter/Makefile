@@ -8,12 +8,13 @@ SYS_ARCH = $(shell echo `uname -m`)
 
 ############################# SPECIFY ALL LIBS ############################
 #scl lib
-WBC_INC_DIR = ../../src/scl/
-WBC_DBG_LIB_DIR = -L../scl_lib/debug/ -Wl,--rpath=../scl_lib/debug/
-WBC_FIN_LIB_DIR = -L../scl_lib/release/ -Wl,--rpath=../scl_lib/release/
-WBC_LIBS = -lscl
-WBC_DEFS_DBG = -DTIXML_USE_STL -DASSERT=assert -DDEBUG=1
-WBC_DEFS_FIN = -DTIXML_USE_STL
+SCL_INC_DIR = ../../src/scl/
+TAO_INC_DIR = ../../src/scl/dynamics/tao
+SCL_DBG_LIB_DIR = -L../scl_lib/debug/ -Wl,--rpath=../scl_lib/debug/
+SCL_FIN_LIB_DIR = -L../scl_lib/release/ -Wl,--rpath=../scl_lib/release/
+SCL_LIBS = -lscl
+SCL_DEFS_DBG = -DTIXML_USE_STL -DASSERT=assert -DDEBUG=1
+SCL_DEFS_FIN = -DTIXML_USE_STL
 
 #3rd party lib : Eigen (local install)
 EIGEN_INC_DIR = ../../3rdparty/eigen/
@@ -23,22 +24,22 @@ SUTIL_INC_DIR = ../../3rdparty/sUtil/src/
 
 ############################# INCLUDE AND LINK OPTIONS ############################
 #Collate all the include directiories
-INCLUDEDIRS = -I../../src/ -I$(WBC_INC_DIR) \
+INCLUDEDIRS = -I../../src/ -I$(SCL_INC_DIR) -I$(TAO_INC_DIR) \
               -I$(EIGEN_INC_DIR) \
               -I$(SUTIL_INC_DIR)
 
 #Combine all libs to be linked
 ###Debug
-LINK_DBG_DIRS = $(WBC_DBG_LIB_DIR) 
-LINK_LIBS_DBG = $(WBC_LIBS) 
+LINK_DBG_DIRS = $(SCL_DBG_LIB_DIR) 
+LINK_LIBS_DBG = $(SCL_LIBS) 
 
 ###Final (Release)
-LINK_FIN_DIRS = $(WBC_FIN_LIB_DIR) 
-LINK_LIBS_FIN = $(WBC_LIBS)
+LINK_FIN_DIRS = $(SCL_FIN_LIB_DIR) 
+LINK_LIBS_FIN = $(SCL_LIBS)
 
 #Combine other defs
-DEFS_DBG = $(WBC_DEFS_DBG)
-DEFS_FIN = $(WBC_DEFS_FIN)
+DEFS_DBG = $(SCL_DEFS_DBG)
+DEFS_FIN = $(SCL_DEFS_FIN)
 
 ############################# Compile options ############################
 DBGFLAGS = -Wall -ggdb -pg -O0 \
