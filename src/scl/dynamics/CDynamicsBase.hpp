@@ -75,11 +75,10 @@ public:
           coriolis force vector, and gravity vector.*/
              SGcModel * arg_gc_model)=0;
 
-  /** Calculates the Transformation Matrix for the robot to which
+  /** Calculates a Transformation Matrix for some link on the robot to which
    * this dynamics object is assigned.
    *
-   * The Transformation Matrix is specified by a link and an offset
-   * (in task space dimensions)from that link and is given by:
+   * The Transformation Matrix performs the operation:
    *
    *           x_global_coords = T * x_link_coords
    *
