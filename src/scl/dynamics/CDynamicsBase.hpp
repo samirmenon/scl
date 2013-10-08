@@ -60,20 +60,18 @@ public:
   /* *******************************************************************
    *                      Computational functions.
    * ******************************************************************* */
-  /** Updates the joint space model matrices
-   * (Everything in SGcModel)
+  /** Updates the joint space model matrices (Everything in SGcModel).
+   *
+   * This is the most efficient method to access the standard matrices.
+   * Computing transformations and Jacobians individually is typically
+   * wasteful.
    */
-  virtual sBool updateModelMatrices(/**
-          This is where there current robot state is read when
-          updateModelMatrices() is called. Contains q, dq, ddq,
-          and a vector of external forces.*/
-             SRobotSensorData const * arg_io_data,
-             /** Pointer to the joint-space model structure for the
-          robot. This is the place where the matrices reside
-          that will get updated when calling updateModelMatrices().
-          Contains Mass matrix, Inverse Mass matrix, centrifugal/
-          coriolis force vector, and gravity vector.*/
-             SGcModel * arg_gc_model)=0;
+  virtual sBool updateModelMatrices(/** Current robot state. q, dq, ddq,
+            sensed generalized forces and perceived external forces.*/
+      const SRobotSensorData * arg_sensor_data,
+      /** Individual link Jacobians, and composite intertial,
+            centrifugal/coriolis gravity estimates.*/
+      SGcModel * arg_gc_model)=0;
 
   /** Calculates a Transformation Matrix for some link on the robot to which
    * this dynamics object is assigned.
