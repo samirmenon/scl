@@ -90,6 +90,7 @@ namespace scl
 
       // Sort the underlying list for the new tree
       flag = link_ds_.sort(tmp_sort_order);
+      if(false==flag)
       { throw(std::runtime_error( "Could not sort dynamic node tree" )); }
     }
     catch(std::exception& e)
