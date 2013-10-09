@@ -85,7 +85,7 @@ namespace scl
       {
         //Note : The root node doesn't move, has infinite mass, and doesn't
         //       have a com jacobian. So skip it.
-        while(itr->is_root_) { ++itr; }
+        if(itr->is_root_) { continue; }
 
         if(itr == itre)
         {// gc and dynamics should have same dof.

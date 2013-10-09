@@ -277,10 +277,19 @@ namespace scl
     sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it, ite;
     for(it = js_model->link_ds_.begin(), ite = js_model->link_ds_.end(); it!=ite;++it)
     {
+      // No matrices need to be computed for the root nodes (those are fixed, non-dynamic).
+      if(it->link_ds_->is_root_)
+      { continue; }
+
       if(NULL == it->link_dynamic_id_)
       {
-        fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Com properties not initialized in controller impl\n");
-        return false;
+        fprintf(stdout, "scl::CTaoDynamics::updateModelMatrices(): Com link dynamic id not initialized for '%s'. Binding to tao dynamics.\n", it->name_.c_str());
+        it->link_dynamic_id_ = getIdForLink(it->name_);
+        if(NULL == it->link_dynamic_id_)
+        {
+          fprintf(stdout, "scl::CTaoDynamics::updateModelMatrices(): Error : Could not generate Tao dynamics ID for '%s'.\n");
+          return false;
+        }
       }
       flag = calculateTransformationMatrix(it->link_dynamic_id_,it->T_o_lnk_);
       if(false == flag) {
