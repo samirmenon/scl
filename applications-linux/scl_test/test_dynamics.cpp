@@ -199,7 +199,7 @@ namespace scl_test
   }
 
   /** Tests the performance of analytical dynamics implementations in scl. */
-  void test_dynamics_analytic_rpp(int id)
+  void test_dynamics_tao_vs_analytic_rpp(int id)
   {
     scl::CTaoDynamics * dynamics = S_NULL;
     scl::sUInt r_id=0;

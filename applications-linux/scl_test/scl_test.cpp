@@ -113,7 +113,7 @@ int main(int argc, char** argv)
       std::cout<<"\n\nTest #"<<id<<". Analytic vs. Tao Dynamics [Sys time, Sim time :"
           <<sutil::CSystemClock::getSysTime()<<" "
           <<sutil::CSystemClock::getSimTime()<<"]";
-      scl_test::test_dynamics_analytic_rpp(id);
+      scl_test::test_dynamics_tao_vs_analytic_rpp(id);
       scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
     }
     ++id;

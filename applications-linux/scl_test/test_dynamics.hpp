@@ -47,7 +47,7 @@ namespace scl_test
    * RPP bot and compares them with the tao dynamics implementation.
    *
    * Tests tao's accuracy. */
-  void test_dynamics_analytic_rpp(int id);
+  void test_dynamics_tao_vs_analytic_rpp(int id);
 }
 #endif /* TEST_DYNAMICS_HPP_ */
 
