@@ -43,6 +43,8 @@ git branch -D $your_git_branch_name"_ctrl_dev"
 git branch $your_git_branch_name"_ctrl_dev"
 git checkout $your_git_branch_name"_ctrl_dev"
 git add *pp
+git add tasks/*pp
+git add tasks/data_structs/*pp
 git add *sh
 git add CMakeLists.txt
 git commit . -m "Adding new controller: "$your_name
