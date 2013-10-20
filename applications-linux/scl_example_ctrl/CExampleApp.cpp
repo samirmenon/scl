@@ -31,6 +31,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CExampleApp.hpp"
 #include "tasks/CTaskGcEmpty.hpp"
+#include "tasks/CTaskOpExample.hpp"
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SDatabase.hpp>
@@ -69,7 +70,7 @@ namespace scl_app
         // { }
         if(true)
         {
-          std::cout<<"\n Possible example task options: -p (start paused) -l (log file), -com (com control task), -op (op point task)";
+          std::cout<<"\n Possible example task options: -xxx (you can change me to suit your needs!)";
           args_ctr++;
         }
       }
@@ -85,6 +86,7 @@ namespace scl_app
   {
     bool flag;
     flag = registerType_TaskGcEmpty();
+    flag = flag && registerType_TaskOpExample();
     return flag;
   }
 
