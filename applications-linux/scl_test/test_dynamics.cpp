@@ -307,7 +307,7 @@ namespace scl_test
       // These are used to compute the full dynamics model later in the code..
       scl::SGcModel rob_gc_model;
       flag = rob_gc_model.init(*rob_ds);
-      if(true == flag)
+      if(false == flag)
       { throw(std::runtime_error("Could not create a dynamic object for the robot"));  }
 
       // *********************************************************************************************************
