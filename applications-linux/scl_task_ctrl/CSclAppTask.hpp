@@ -93,12 +93,20 @@ namespace scl_app
     /** Default constructor. Sets stuff to zero. */
     CSclAppTask()
     {
+      db_ = S_NULL;
+
       ctrl = S_NULL;           //Use a task controller
       op_link_name = "not_init";
       op_link2_name = "not_init";
       tsk = S_NULL; tsk2 = S_NULL;;
       tsk_ds = S_NULL; tsk2_ds = S_NULL;
       op_link_set = false; op_link2_set = false;
+
+      ctrl_ctr_ = 0;
+      gr_ctr_ = 0;
+      t_start_ = 0.0;
+      t_end_ = 0.0;
+      traj_markers_added_so_far_ = 0;
     }
 
     /** Destructor: Cleans up */
@@ -127,23 +135,23 @@ namespace scl_app
     void runMainLoop();
 
     //Data types. Feel free to use them.
-    scl::SDatabase* db;                 //Generic database (for sharing data)
+    scl::SDatabase* db_;                 //Generic database (for sharing data)
 
-    std::vector<std::string> robots_parsed;   //Parsed robots
-    std::vector<std::string> graphics_parsed; //Parsed graphics views
+    std::vector<std::string> robots_parsed_;   //Parsed robots
+    std::vector<std::string> graphics_parsed_; //Parsed graphics views
 
-    std::string robot_name;             //Currently selected robot
-    std::string ctrl_name;              //Currently selected controller
+    std::string robot_name_;             //Currently selected robot
+    std::string ctrl_name_;              //Currently selected controller
 
-    scl::CRobot robot;                  //Generic robot
-    scl::SRobotIOData* rob_io_ds;       //Access the robot's sensors and actuators
+    scl::CRobot robot_;                  //Generic robot
+    scl::SRobotIOData* rob_io_ds_;       //Access the robot's sensors and actuators
 
-    scl::CTaoDynamics* tao_dyn;          //Generic tao dynamics
-    scl::CChaiGraphics chai_gr;         //Generic chai graphics
+    scl::CTaoDynamics* tao_dyn_;          //Generic tao dynamics
+    scl::CChaiGraphics chai_gr_;         //Generic chai graphics
 
-    scl::sLongLong ctrl_ctr;            //Controller computation counter
-    scl::sLongLong gr_ctr;              //Controller computation counter
-    scl::sFloat t_start, t_end;         //Start and end times
+    scl::sLongLong ctrl_ctr_;            //Controller computation counter
+    scl::sLongLong gr_ctr_;              //Controller computation counter
+    scl::sFloat t_start_, t_end_;         //Start and end times
 
     std::fstream log_file_;             //Logs vectors of [q, dq, x]
     std::fstream log_file_J_;           //Logs J
@@ -175,10 +183,10 @@ namespace scl_app
         //1. Initialize the database and clock.
         if(false == sutil::CSystemClock::start()) { throw(std::runtime_error("Could not start clock"));  }
 
-        db = scl::CDatabase::getData(); //Sanity Check
-        if(S_NULL==db) { throw(std::runtime_error("Database not initialized"));  }
+        db_ = scl::CDatabase::getData(); //Sanity Check
+        if(S_NULL==db_) { throw(std::runtime_error("Database not initialized"));  }
 
-        db->dir_specs_ = db->cwd_ + std::string("../../specs/"); //Set the specs dir so scl knows where the graphics are.
+        db_->dir_specs_ = db_->cwd_ + std::string("../../specs/"); //Set the specs dir so scl knows where the graphics are.
 
         //For parsing controllers
         flag = scl_registry::registerNativeDynamicTypes();
@@ -193,47 +201,47 @@ namespace scl_app
         /******************************File Parsing************************************/
         scl_parser::CSclParser tmp_lparser;//Use the scl tinyxml parser
         flag = scl_registry::parseEverythingInFile(tmp_infile,
-            &tmp_lparser,&robots_parsed,&graphics_parsed);
-        if((false == flag) || (robots_parsed.size()<=0)
-            || (graphics_parsed.size()<=0) )
+            &tmp_lparser,&robots_parsed_,&graphics_parsed_);
+        if((false == flag) || (robots_parsed_.size()<=0)
+            || (graphics_parsed_.size()<=0) )
         { throw(std::runtime_error("Could not parse the file"));  }
 
-        robot_name = argv[2];
-        if(!scl_util::isStringInVector(robot_name,robots_parsed))
+        robot_name_ = argv[2];
+        if(!scl_util::isStringInVector(robot_name_,robots_parsed_))
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
         /******************************TaoDynamics************************************/
-        tao_dyn = new scl::CTaoDynamics();
-        flag = tao_dyn->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
+        tao_dyn_ = new scl::CTaoDynamics();
+        flag = tao_dyn_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
         if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
         /******************************ChaiGlut Graphics************************************/
-        if(!db->s_gui_.glut_initialized_)
+        if(!db_->s_gui_.glut_initialized_)
         {
           glutInit(&argc, argv);
-          db->s_gui_.glut_initialized_ = true;
+          db_->s_gui_.glut_initialized_ = true;
         }
 
-        flag = chai_gr.initGraphics(graphics_parsed[0]);
+        flag = chai_gr_.initGraphics(graphics_parsed_[0]);
         if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
 
-        flag = chai_gr.addRobotToRender(robot_name);
+        flag = chai_gr_.addRobotToRender(robot_name_);
         if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
 
-        if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_parsed[0], &chai_gr))
+        if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_parsed_[0], &chai_gr_))
         { throw(std::runtime_error("Glut initialization error")); }
 
         /******************************Shared I/O Data Structure************************************/
-        rob_io_ds = db->s_io_.io_data_.at(robot_name);
-        if(S_NULL == rob_io_ds)
+        rob_io_ds_ = db_->s_io_.io_data_.at(robot_name_);
+        if(S_NULL == rob_io_ds_)
         { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
         /**********************Initialize Robot Dynamics and Controller*******************/
-        flag = robot.initFromDb(robot_name,tao_dyn,tao_dyn);//Note: The robot deletes these pointers.
+        flag = robot_.initFromDb(robot_name_,tao_dyn_,tao_dyn_);//Note: The robot deletes these pointers.
         if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
 
-        ctrl_name = argv[3];
-        flag = robot.setControllerCurrent(ctrl_name);
+        ctrl_name_ = argv[3];
+        flag = robot_.setControllerCurrent(ctrl_name_);
         if(false == flag) { throw(std::runtime_error("Could not initialize robot's controller"));  }
 
         /**********************Initialize Single Control Task *******************/
@@ -242,23 +250,23 @@ namespace scl_app
         { throw(std::runtime_error("Could not initialize user's custom controller"));  }
 
         /******************************Initialize Log File **********************/
-        std::string tmp_name = robot_name + std::string(".log");
+        std::string tmp_name = robot_name_ + std::string(".log");
         log_file_.open(tmp_name.c_str(),std::fstream::out);
         if(!log_file_.is_open())
         { throw(std::runtime_error(std::string("Could not open log file: ") + tmp_name));  }
 
-        tmp_name = robot_name + std::string("_J.log");
+        tmp_name = robot_name_ + std::string("_J.log");
         log_file_J_.open(tmp_name.c_str(),std::fstream::out);
         if(!log_file_J_.is_open())
         { throw(std::runtime_error(std::string("Could not open log file for Jacobian: ") + tmp_name));  }
 
 
-        ctrl_ctr=0;//Controller computation counter
-        gr_ctr=0;//Controller computation counter
+        ctrl_ctr_=0;//Controller computation counter
+        gr_ctr_=0;//Controller computation counter
         traj_markers_added_so_far_=0;
 
         //Simulation loop.
-        std::cout<<"\nStarting simulation. Integration timestep: "<<db->sim_dt_<<std::flush;
+        std::cout<<"\nStarting simulation. Integration timestep: "<<db_->sim_dt_<<std::flush;
 
         return true;
       }
@@ -275,11 +283,11 @@ namespace scl_app
   {
     /****************************Print Collected Statistics*****************************/
     std::cout<<"\nTotal Simulated Time : "<<sutil::CSystemClock::getSimTime() <<" sec";
-    std::cout<<"\nTotal Control Model and Servo Updates : "<<ctrl_ctr;
-    std::cout<<"\nTotal Graphics Updates                : "<<gr_ctr;
+    std::cout<<"\nTotal Control Model and Servo Updates : "<<ctrl_ctr_;
+    std::cout<<"\nTotal Graphics Updates                : "<<gr_ctr_;
 
     /******************************Termination************************************/
-    bool flag = chai_gr.destroyGraphics();
+    bool flag = chai_gr_.destroyGraphics();
     if(false == flag) { std::cout<<"\nError deallocating graphics pointers"; } //Sanity check.
 
     std::cout<<"\nEnd Time:"<<sutil::CSystemClock::getSysTime();
@@ -315,8 +323,8 @@ namespace scl_app
 
           if(scl::CDatabase::getData()->param_logging_on_)
           {//Logs vectors of [q, dq, x, J]
-            log_file_<<rob_io_ds->sensors_.q_.transpose()<<" "
-                  <<rob_io_ds->sensors_.dq_.transpose()<<" "
+            log_file_<<rob_io_ds_->sensors_.q_.transpose()<<" "
+                  <<rob_io_ds_->sensors_.dq_.transpose()<<" "
                   <<scl::CDatabase::getData()->s_gui_.ui_point_[0].transpose()
                   <<std::endl;
             log_file_J_<<tsk_ds->jacobian_<<std::endl;
@@ -331,7 +339,7 @@ namespace scl_app
           const timespec ts = {0, 15000000};//Sleep for 15ms
           nanosleep(&ts,NULL);
           glutMainLoopEvent(); //Update the graphics
-          gr_ctr++;
+          gr_ctr_++;
         }
       }
     }//End of threaded region
@@ -356,7 +364,7 @@ namespace scl_app
       { gr_skip_ctr++; continue; }
       gr_skip_ctr = 0;
       glutMainLoopEvent(); //Update the graphics
-      gr_ctr++;
+      gr_ctr_++;
     }
   }
 
