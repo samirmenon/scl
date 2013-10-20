@@ -34,11 +34,58 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef ROBOTMATH_HPP_
 #define ROBOTMATH_HPP_
 
+#include <scl/DataTypes.hpp>
 #include <Eigen/Dense>
 #include <math.h>
 
 namespace scl
 {
+  /** Creates a transformation matrix from a given joint specification
+   * and a generalized coordinate. */
+  sBool sclTransform(Eigen::Affine3d &arg_T, const Eigen::Vector3d &arg_offset,
+      const sFloat arg_q, const sJointType arg_jtype)
+  {
+    bool flag = true;
+
+    // Set up the transform depending on the joint type.
+    switch(arg_jtype)
+    {
+      case JOINT_TYPE_PRISMATIC_X:
+        arg_T.setIdentity();
+        arg_T.translation() = arg_offset;
+        arg_T.translation()(0) += arg_q;
+        break;
+      case JOINT_TYPE_PRISMATIC_Y:
+        arg_T.setIdentity();
+        arg_T.translation() = arg_offset;
+        arg_T.translation()(1) += arg_q;
+        break;
+      case JOINT_TYPE_PRISMATIC_Z:
+        arg_T.setIdentity();
+        arg_T.translation() = arg_offset;
+        arg_T.translation()(2) += arg_q;
+        break;
+      case JOINT_TYPE_REVOLUTE_X:
+        arg_T.setIdentity();
+        arg_T.translation() = arg_offset;
+        arg_T.rotate(Eigen::AngleAxisd(arg_q, Eigen::Vector3d::UnitX()));
+        break;
+      case JOINT_TYPE_REVOLUTE_Y:
+        arg_T.setIdentity();
+        arg_T.translation() = arg_offset;
+        arg_T.rotate(Eigen::AngleAxisd(arg_q, Eigen::Vector3d::UnitY()));
+        break;
+      case JOINT_TYPE_REVOLUTE_Z:
+        arg_T.setIdentity();
+        arg_T.translation() = arg_offset;
+        arg_T.rotate(Eigen::AngleAxisd(arg_q, Eigen::Vector3d::UnitZ()));
+        break;
+      default:
+        flag = false;
+        break;
+    }
+    return flag;
+  }
 
   /**
    * Creates a transformation matrix given a set of dh parameters
@@ -78,29 +125,31 @@ namespace scl
    * http://www.euclideanspace.com/maths/geometry/rotations/
    * conversions/quaternionToAngle/index.htm
    */
-  void quat2axisangle(const Eigen::Quaternion<sFloat> & arg_q,
+  sBool quat2axisangle(const Eigen::Quaternion<sFloat> & arg_q,
       Eigen::Vector4d & arg_aa)
   {
-    //1. Normalize the quaternion
-    if (arg_q.norm() > 1)
-    { arg_q.normalize(); }
+    //Error if the quaternion isn't normalized
+    if( fabs(arg_q.norm() - 1) > SCL_MINIMUM_POSITION_CHANGE)
+    { return false; }
 
-    arg_aa[3] = 2 * acos(arg_q[3]);
+    arg_aa[3] = 2 * acos(arg_q.w());
 
-    sFloat s = sqrt(1- (arg_q[3]*arg_q[3]));
+    sFloat s = sqrt(1- (arg_q.w()*arg_q.w()));
 
     if (s < 0.001)
     {// If s close to zero then direction of axis not important
-      arg_aa[0] = arg_q[0];
-      arg_aa[1] = arg_q[1];
-      arg_aa[2] = arg_q[2];
+      arg_aa[0] = arg_q.x();
+      arg_aa[1] = arg_q.y();
+      arg_aa[2] = arg_q.z();
     }
     else
     {
-      arg_aa[0] = arg_q[0]/s;
-      arg_aa[1] = arg_q[1]/s;
-      arg_aa[2] = arg_q[2]/s;
+      arg_aa[0] = arg_q.x()/s;
+      arg_aa[1] = arg_q.y()/s;
+      arg_aa[2] = arg_q.z()/s;
     }
+
+    return true;
  }
 }
 
