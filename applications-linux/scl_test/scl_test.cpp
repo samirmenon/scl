@@ -38,6 +38,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include "test_robot_controller.hpp"
 //Test tao dynamics engine
 #include "test_dynamics.hpp"
+//Test scl dynamics engine
+#include "test_dynamics_scl.hpp"
 //Test chai graphic rendering
 #include "test_graphics.hpp"
 
@@ -114,6 +116,16 @@ int main(int argc, char** argv)
           <<sutil::CSystemClock::getSysTime()<<" "
           <<sutil::CSystemClock::getSimTime()<<"]";
       scl_test::test_dynamics_tao_vs_analytic_rpp(id);
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Analytic vs. Tao Dynamics
+      std::cout<<"\n\nTest #"<<id<<". Analytic vs. Scl Dynamics [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_dynamics_scl_vs_analytic_rpp(id);
       scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
     }
     ++id;
