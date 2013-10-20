@@ -21,7 +21,7 @@ License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
  */
 /*
- * \file CTaskGcEmpty.cpp
+ * \file CTaskGcExample.cpp
  *
  *  Created on: Oct 20, 2013
  *
@@ -30,7 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "CTaskGcEmpty.hpp"
+#include "CTaskGcExample.hpp"
 
 #include <scl/Singletons.hpp>
 
@@ -40,16 +40,16 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl_app
 {
-  CTaskGcEmpty::CTaskGcEmpty() :
+  CTaskGcExample::CTaskGcExample() :
       scl::CTaskBase(),
       data_(S_NULL),
       link_dynamic_id_(S_NULL)
   {}
 
-  CTaskGcEmpty::~CTaskGcEmpty()
+  CTaskGcExample::~CTaskGcExample()
   {}
 
-  bool CTaskGcEmpty::computeServo(const scl::SRobotSensorData* arg_sensors)
+  bool CTaskGcExample::computeServo(const scl::SRobotSensorData* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -66,7 +66,7 @@ namespace scl_app
   }
 
 
-  bool CTaskGcEmpty::computeModel()
+  bool CTaskGcExample::computeModel()
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -83,10 +83,10 @@ namespace scl_app
     { return false; }
   }
 
-  scl::STaskBase* CTaskGcEmpty::getTaskData()
+  scl::STaskBase* CTaskGcExample::getTaskData()
   { return data_; }
 
-  bool CTaskGcEmpty::init(scl::STaskBase* arg_task_data,
+  bool CTaskGcExample::init(scl::STaskBase* arg_task_data,
       scl::CDynamicsBase* arg_dynamics)
   {
     try
@@ -103,7 +103,7 @@ namespace scl_app
       if(false == arg_dynamics->hasBeenInit())
       { throw(std::runtime_error("Passed an uninitialized dynamics object"));  }
 
-      data_ = dynamic_cast<STaskGcEmpty*>(arg_task_data);
+      data_ = dynamic_cast<STaskGcExample*>(arg_task_data);
       dynamics_ = arg_dynamics;
 
       link_dynamic_id_ = dynamics_->getIdForLink("end-effector");
@@ -114,13 +114,13 @@ namespace scl_app
     }
     catch(std::exception& e)
     {
-      std::cerr<<"\nCTaskGcEmpty::init() :"<<e.what();
+      std::cerr<<"\nCTaskGcExample::init() :"<<e.what();
       has_been_init_ = false;
     }
     return has_been_init_;
   }
 
-  void CTaskGcEmpty::reset()
+  void CTaskGcExample::reset()
   {
     data_ = S_NULL;
     dynamics_ = S_NULL;
@@ -129,7 +129,7 @@ namespace scl_app
 
 
   /*******************************************
-            Dynamic Type : CTaskGcEmpty
+            Dynamic Type : CTaskGcExample
 
    NOTE : To enable dynamic typing for tasks, you
    must define the types for the "CTaskName" computation
@@ -143,13 +143,13 @@ namespace scl_app
     bool flag;
     try
     {
-      sutil::CDynamicType<std::string,scl_app::CTaskGcEmpty> typeCTaskGcEmpty(std::string("CTaskGcEmpty"));
-      flag = typeCTaskGcEmpty.registerType();
-      if(false == flag) {throw(std::runtime_error("Could not register type CTaskGcEmpty"));}
+      sutil::CDynamicType<std::string,scl_app::CTaskGcExample> typeCTaskGcExample(std::string("CTaskGcExample"));
+      flag = typeCTaskGcExample.registerType();
+      if(false == flag) {throw(std::runtime_error("Could not register type CTaskGcExample"));}
 
-      sutil::CDynamicType<std::string,scl_app::STaskGcEmpty> typeSTaskGcEmpty(std::string("STaskGcEmpty"));
-      flag = typeSTaskGcEmpty.registerType();
-      if(false == flag) {throw(std::runtime_error("Could not register type STaskGcEmpty"));}
+      sutil::CDynamicType<std::string,scl_app::STaskGcExample> typeSTaskGcExample(std::string("STaskGcExample"));
+      flag = typeSTaskGcExample.registerType();
+      if(false == flag) {throw(std::runtime_error("Could not register type STaskGcExample"));}
 
 #ifdef DEBUG
       std::cout<<"\nregisterExampleTaskType() : Registered my cool task with the database";

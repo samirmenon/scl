@@ -30,7 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "CExampleApp.hpp"
-#include "tasks/CTaskGcEmpty.hpp"
+#include "tasks/CTaskGcExample.hpp"
 #include "tasks/CTaskOpExample.hpp"
 
 #include <scl/DataTypes.hpp>

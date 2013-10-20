@@ -21,7 +21,7 @@ License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
  */
 /*
- * STaskGcEmpty.hpp
+ * STaskGcExample.hpp
  *
  *  Created on: Oct 20, 2013
  *
@@ -30,19 +30,19 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef STASKGCEMPTY_HPP_
-#define STASKGCEMPYT_HPP_
+#ifndef STASKGCEXAMPLE_HPP_
+#define STASKGCEXAMPLE_HPP_
 
 #include <scl/control/task/data_structs/STaskBase.hpp>
 
 namespace scl_app
 {
 
-  class STaskGcEmpty : public scl::STaskBase
+  class STaskGcExample : public scl::STaskBase
   {
   public:
-    STaskGcEmpty(){}
-    virtual ~STaskGcEmpty(){}
+    STaskGcExample(){}
+    virtual ~STaskGcExample(){}
 
     /** Processes the task's non standard parameters, which the
      * init() function stores in the task_nonstd_params_.
@@ -54,4 +54,4 @@ namespace scl_app
   };
 
 } /* namespace scl_app */
-#endif /* STASKGCEMPTY_HPP_ */
+#endif /* STASKGCEXAMPLE_HPP_ */

@@ -21,7 +21,7 @@ License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
  */
 /*
- * \file CTaskGcEmpty.hpp
+ * \file CTaskGcExample.hpp
  *
  *  Created on: Oct 20, 2013
  *
@@ -30,12 +30,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CTASKGCEMPTY_HPP_
-#define CTASKGCEMPTY_HPP_
+#ifndef CTASKGCEXAMPLE_HPP_
+#define CTASKGCEXAMPLE_HPP_
 
 #include <scl/control/task/CTaskBase.hpp>
 
-#include "data_structs/STaskGcEmpty.hpp"
+#include "data_structs/STaskGcExample.hpp"
 
 namespace scl_app
 {
@@ -46,7 +46,7 @@ namespace scl_app
   scl::sBool registerType_TaskGcEmpty();
 
   /** This is my cool new task. */
-  class CTaskGcEmpty : public scl::CTaskBase
+  class CTaskGcExample : public scl::CTaskBase
   {
   public:
     /*******************************************
@@ -72,12 +72,12 @@ namespace scl_app
     virtual void reset();
 
   public:
-    CTaskGcEmpty();
-    virtual ~CTaskGcEmpty();
+    CTaskGcExample();
+    virtual ~CTaskGcExample();
 
   protected:
     //This will be filled in from the file
-    STaskGcEmpty* data_;
+    STaskGcExample* data_;
 
     //TODO : Add what you want.
     //myCoolDataType data2_;
@@ -86,4 +86,4 @@ namespace scl_app
   };
 }
 
-#endif /* CTaskGcEmpty_HPP_ */
+#endif /* CTaskGcExample_HPP_ */
