@@ -1,26 +1,36 @@
-/* Copyright (C) 2011  Samir Menon, Stanford University
+/* This file is part of scl, a control and simulation library
+for robots and biomechanical models.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+scl is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+Alternatively, you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of
+the License, or (at your option) any later version.
+
+scl is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+You should have received a copy of the GNU Lesser General Public
+License and a copy of the GNU General Public License along with
+scl. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
- * CExampleTask.cpp
+ * \file CTaskGcEmpty.cpp
  *
- *  Created on: Apr 12, 2011
- *      Author: samir
+ *  Created on: Oct 20, 2013
+ *
+ *  Copyright (C) 2013
+ *
+ *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "CExampleTask.hpp"
+#include "CTaskGcEmpty.hpp"
 
 #include <scl/Singletons.hpp>
 
@@ -30,16 +40,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl_app
 {
-  CExampleTask::CExampleTask() :
+  CTaskGcEmpty::CTaskGcEmpty() :
       scl::CTaskBase(),
       data_(S_NULL),
       link_dynamic_id_(S_NULL)
   {}
 
-  CExampleTask::~CExampleTask()
+  CTaskGcEmpty::~CTaskGcEmpty()
   {}
 
-  bool CExampleTask::computeServo(const scl::SRobotSensorData* arg_sensors)
+  bool CTaskGcEmpty::computeServo(const scl::SRobotSensorData* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -56,7 +66,7 @@ namespace scl_app
   }
 
 
-  bool CExampleTask::computeModel()
+  bool CTaskGcEmpty::computeModel()
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -73,10 +83,10 @@ namespace scl_app
     { return false; }
   }
 
-  scl::STaskBase* CExampleTask::getTaskData()
+  scl::STaskBase* CTaskGcEmpty::getTaskData()
   { return data_; }
 
-  bool CExampleTask::init(scl::STaskBase* arg_task_data,
+  bool CTaskGcEmpty::init(scl::STaskBase* arg_task_data,
       scl::CDynamicsBase* arg_dynamics)
   {
     try
@@ -93,7 +103,7 @@ namespace scl_app
       if(false == arg_dynamics->hasBeenInit())
       { throw(std::runtime_error("Passed an uninitialized dynamics object"));  }
 
-      data_ = dynamic_cast<SExampleTask*>(arg_task_data);
+      data_ = dynamic_cast<STaskGcEmpty*>(arg_task_data);
       dynamics_ = arg_dynamics;
 
       link_dynamic_id_ = dynamics_->getIdForLink("end-effector");
@@ -104,13 +114,13 @@ namespace scl_app
     }
     catch(std::exception& e)
     {
-      std::cerr<<"\nCExampleTask::init() :"<<e.what();
+      std::cerr<<"\nCTaskGcEmpty::init() :"<<e.what();
       has_been_init_ = false;
     }
     return has_been_init_;
   }
 
-  void CExampleTask::reset()
+  void CTaskGcEmpty::reset()
   {
     data_ = S_NULL;
     dynamics_ = S_NULL;
@@ -119,7 +129,7 @@ namespace scl_app
 
 
   /*******************************************
-            Dynamic Type : CExampleTask
+            Dynamic Type : CTaskGcEmpty
 
    NOTE : To enable dynamic typing for tasks, you
    must define the types for the "CTaskName" computation
@@ -128,18 +138,18 @@ namespace scl_app
    Why? So that you have a quick and easy way to specify
    custom xml parameters in the *Cfg.xml file.
    *******************************************/
-  scl::sBool registerExampleTaskType()
+  scl::sBool registerType_TaskGcEmpty()
   {
     bool flag;
     try
     {
-      sutil::CDynamicType<std::string,scl_app::CExampleTask> typeCExampleTask(std::string("CExampleTask"));
-      flag = typeCExampleTask.registerType();
-      if(false == flag) {throw(std::runtime_error("Could not register type CExampleTask"));}
+      sutil::CDynamicType<std::string,scl_app::CTaskGcEmpty> typeCTaskGcEmpty(std::string("CTaskGcEmpty"));
+      flag = typeCTaskGcEmpty.registerType();
+      if(false == flag) {throw(std::runtime_error("Could not register type CTaskGcEmpty"));}
 
-      sutil::CDynamicType<std::string,scl_app::SExampleTask> typeSExampleTask(std::string("SExampleTask"));
-      flag = typeSExampleTask.registerType();
-      if(false == flag) {throw(std::runtime_error("Could not register type SExampleTask"));}
+      sutil::CDynamicType<std::string,scl_app::STaskGcEmpty> typeSTaskGcEmpty(std::string("STaskGcEmpty"));
+      flag = typeSTaskGcEmpty.registerType();
+      if(false == flag) {throw(std::runtime_error("Could not register type STaskGcEmpty"));}
 
 #ifdef DEBUG
       std::cout<<"\nregisterExampleTaskType() : Registered my cool task with the database";

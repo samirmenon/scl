@@ -1,31 +1,41 @@
-/* Copyright (C) 2011  Samir Menon, Stanford University
+/* This file is part of scl, a control and simulation library
+for robots and biomechanical models.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+scl is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+Alternatively, you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of
+the License, or (at your option) any later version.
+
+scl is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+You should have received a copy of the GNU Lesser General Public
+License and a copy of the GNU General Public License along with
+scl. If not, see <http://www.gnu.org/licenses/>.
+ */
 /*
- * CExampleTask.hpp
+ * \file CTaskGcEmpty.hpp
  *
- *  Created on: Apr 12, 2011
- *      Author: Samir Menon
+ *  Created on: Oct 20, 2013
+ *
+ *  Copyright (C) 2013
+ *
+ *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CEXAMPLETASK_HPP_
-#define CEXAMPLETASK_HPP_
+#ifndef CTASKGCEMPTY_HPP_
+#define CTASKGCEMPTY_HPP_
 
 #include <scl/control/task/CTaskBase.hpp>
 
-#include "SExampleTask.hpp"
+#include "data_structs/STaskGcEmpty.hpp"
 
 namespace scl_app
 {
@@ -33,10 +43,10 @@ namespace scl_app
   /** Function to register task with the database and enable
    * dynamic typing. Call this function if you want your
    * task to be initialized by specifying stuff in a file. */
-  scl::sBool registerExampleTaskType();
+  scl::sBool registerType_TaskGcEmpty();
 
   /** This is my cool new task. */
-  class CExampleTask : public scl::CTaskBase
+  class CTaskGcEmpty : public scl::CTaskBase
   {
   public:
     /*******************************************
@@ -62,12 +72,12 @@ namespace scl_app
     virtual void reset();
 
   public:
-    CExampleTask();
-    virtual ~CExampleTask();
+    CTaskGcEmpty();
+    virtual ~CTaskGcEmpty();
 
   protected:
     //This will be filled in from the file
-    SExampleTask* data_;
+    STaskGcEmpty* data_;
 
     //TODO : Add what you want.
     //myCoolDataType data2_;
@@ -76,4 +86,4 @@ namespace scl_app
   };
 }
 
-#endif /* CEXAMPLETASK_HPP_ */
+#endif /* CTaskGcEmpty_HPP_ */

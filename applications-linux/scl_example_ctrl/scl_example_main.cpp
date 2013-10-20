@@ -30,7 +30,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "CExampleApp.hpp"
-#include "CExampleTask.hpp"
 #include "ExampleCallbacks.hpp"
 
 #ifdef GRAPHICS_ON

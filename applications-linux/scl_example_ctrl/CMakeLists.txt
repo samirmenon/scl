@@ -47,7 +47,7 @@ SET(EG_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_example_ctrl/)
 
 SET(ALL_SRC ${EG_BASE_DIR}scl_example_main.cpp 
             ${EG_BASE_DIR}CExampleApp.cpp 
-            ${EG_BASE_DIR}CExampleTask.cpp
+            ${EG_BASE_DIR}tasks/CTaskGcEmpty.cpp
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
             ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
