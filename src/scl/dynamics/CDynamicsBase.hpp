@@ -174,7 +174,7 @@ public:
    *                      Initialization functions.
    * ******************************************************************* */
   /** Default constructor sets the initialization state to false */
-  CDynamicsBase() : has_been_init_(false){}
+  CDynamicsBase() : has_been_init_(false), robot_parsed_data_(NULL){}
 
   /** Default destructor does nothing */
   virtual ~CDynamicsBase(){}
@@ -197,7 +197,10 @@ public:
 protected:
   /** True if the dynamics object has been initialized for a given
    * robot */
-   sBool has_been_init_;
+  sBool has_been_init_;
+
+  /** A read-only pointer to access parsed data */
+  const SRobotParsedData* robot_parsed_data_;
 };
 
 }
