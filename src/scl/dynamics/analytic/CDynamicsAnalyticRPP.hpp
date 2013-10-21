@@ -110,6 +110,8 @@ namespace scl
      *               Analytic Computation functions
      * ************************************************************** */
 
+    /** NOTE : The affine offset includes the offset of the global origin to
+     * the robot's origin. This is hard wired for now. */
     void computeTOrg_0(const Eigen::VectorXd &arg_q,
           Eigen::Affine3d& arg_T);
 

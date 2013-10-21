@@ -43,6 +43,8 @@ namespace scl
     Eigen::Matrix4d tmp;
     tmp.setIdentity();
 
+    // NOTE : The offset includes the offset of the global origin to the robot's origin.
+    // This is hard wired for now.
     tmp(0,0) = cos(arg_q(0));    tmp(0,1) = -sin(arg_q(0));   tmp(0,2) = 0;     tmp(0,3) = pos_root_in_global_org_(0);
     tmp(1,0) = sin(arg_q(0));    tmp(1,1) = cos(arg_q(0));    tmp(1,2) = 0;     tmp(1,3) = pos_root_in_global_org_(1);
     tmp(2,0) = 0;                tmp(2,1) = 0;                tmp(2,2) = 1;     tmp(2,3) = pos_root_in_global_org_(2)+1;
