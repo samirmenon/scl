@@ -162,6 +162,52 @@ namespace scl_test
         { throw(std::runtime_error("Could not create a dynamic object for the robot"));  }
 
         // *********************************************************************************************************
+        //                                     Test Transformation Matrix
+        // *********************************************************************************************************
+        // Set up variables.
+        Eigen::Affine3d Tscl, Tanlyt;
+        std::string link_name;
+
+        // Note q is zero here.
+        sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
+        for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
+            it!=ite; ++it)
+        {
+          // Test : Link 0
+          link_name = it->name_;
+
+          // Skip the root node (all matrices are zero).
+          if(it->link_ds_->is_root_) { continue; }
+
+          flag = dynamics.calculateTransformationMatrixForLink(*it,io_ds->sensors_.q_);
+          if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
+          Tscl = it->T_lnk_;
+
+          flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, it->link_ds_->link_id_,
+              it->link_ds_->link_id_-1/**NOTE: Trf to parent, not root*/, Tanlyt);
+          if (false==flag) {
+            throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));
+          }
+
+          for(int i=0; i<4 && flag; i++)
+            for(int j=0; j<4 && flag; j++)
+            { flag = flag && (fabs(Tscl.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision);  }
+
+          if (false==flag)
+          {
+            std::cout<<"\nScl transform Org->"<<link_name<<":\n"<<Tscl.matrix();
+            std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+            throw(std::runtime_error("Scl and analytic transformation matrices don't match."));
+          }
+          else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl transformations match for zero position : "<<link_name;  }
+
+#ifdef DEBUG
+          std::cout<<"\nScl transform Org->"<<link_name<<":\n"<<Tscl.matrix();
+          std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+#endif
+        }
+
+        // *********************************************************************************************************
         //                                         Test Com Jacobians
         // *********************************************************************************************************
         // Set up variables.
