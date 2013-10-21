@@ -75,6 +75,12 @@ namespace scl
      *     x_parent_frame_com_ = T_lnk_ * x_com_; */
     Eigen::Affine3d T_lnk_;
 
+    /** The generalized coordinate values at which the transformations
+     * and jacobians were updated.
+     * NOTE TODO : All dynamics engine implementations don't currently
+     * support setting these. So be careful while using them. */
+    sFloat q_J_, q_T_, q_T_o_;
+
     /** The data structure pointing to the static link information */
     const SRigidBody* link_ds_;
 
@@ -95,6 +101,11 @@ namespace scl
     SRigidBodyDyn* parent_addr_;
     /** This is automatically created by the map */
     std::vector<SRigidBodyDyn*> child_addrs_;
+
+    /** Constructor : Sets stuff to zero/NULL */
+    SRigidBodyDyn() : q_J_(0.0), q_T_(0.0), q_T_o_(0.0), link_ds_(S_NULL),
+        link_dynamic_id_(S_NULL), name_(""), parent_name_(""),
+        parent_addr_(S_NULL) {}
   };
 
 } /* namespace scl */
