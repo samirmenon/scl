@@ -84,7 +84,13 @@ namespace scl
   #define SCL_INTEGRATION_TSTEP 0.001
 
   /** Any position change lesser than 0.1mm will be considered zero.
-   * This value sets the spatial resolution for controllers etc. */
+   * This value sets the spatial resolution for controllers etc.
+   *
+   * NOTE : In general, SCL will use the following for all computation:
+   * sFloat epsilon = std::numeric_limits<sFloat>::epsilon();
+   *
+   * This define should ONLY be used for controllers to check whether
+   * they meet a goal etc.*/
   #define SCL_MINIMUM_POSITION_CHANGE 0.0001
 
   /** Two strings */
