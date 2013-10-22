@@ -102,8 +102,11 @@ namespace scl
     /** This is automatically created by the map */
     std::vector<SRigidBodyDyn*> child_addrs_;
 
-    /** Constructor : Sets stuff to zero/NULL */
-    SRigidBodyDyn() : q_J_(0.0), q_T_(0.0), q_T_o_(0.0), link_ds_(S_NULL),
+    /** Constructor : Sets stuff to NaN/NULL */
+    SRigidBodyDyn() : q_J_(std::numeric_limits<sFloat>::quiet_NaN()),
+        q_T_(std::numeric_limits<sFloat>::quiet_NaN()),
+        q_T_o_(std::numeric_limits<sFloat>::quiet_NaN()),
+        link_ds_(S_NULL),
         link_dynamic_id_(S_NULL), name_(""), parent_name_(""),
         parent_addr_(S_NULL) {}
   };
