@@ -118,21 +118,59 @@ namespace scl
       const bool arg_flag_include_origin_offset)
   {
     bool flag;
-    // For origin (root) nodes, include the global origin offset.
+
+    //The matrix is already up to date. Just return.
+    // Update if q_T_ is NaN (never initialized before).
+    if( fabs(arg_q(arg_link.link_ds_->link_id_) - arg_link.q_T_) <
+        std::numeric_limits<sFloat>::epsilon() && false == std::isnan(arg_link.q_T_))
+    { return true;  }
+
+    // For origin (root) nodes, include the global origin translation/rotation if required.
+    // NOTE : This allows us to provide a global origin + robot-specific origin(s).
+    // By doing so, we don't have to manually change the robot's origin specification
+    // when we use the same config file multiple times to create multiple instances
+    // of the same robot. Ie. This is important to support a "root" node in the *Cfg.xml
+    // with a constant offset from it's parent..
     if(arg_flag_include_origin_offset && arg_link.parent_addr_->link_ds_->is_root_)
     {
       flag = sclTransform(arg_link.T_lnk_,
           arg_link.link_ds_->pos_in_parent_ + arg_link.parent_addr_->link_ds_->pos_in_parent_,
           arg_q(arg_link.link_ds_->link_id_), arg_link.link_ds_->joint_type_);
+
+      arg_link.T_lnk_.rotate(arg_link.parent_addr_->link_ds_->ori_parent_quat_);
     }
     else
-    {
+    { // For all other nodes, just use the position in parent.
       flag = sclTransform(arg_link.T_lnk_, arg_link.link_ds_->pos_in_parent_,
           arg_q(arg_link.link_ds_->link_id_), arg_link.link_ds_->joint_type_);
     }
 
+    // If successful, update the gc for this transformation matrix update.
+    if(flag)
+    { arg_link.q_T_ = arg_q(arg_link.link_ds_->link_id_); }
+
     return flag;
   }
+
+  /** Calculates the Transformation Matrix for the robot to which
+   * this dynamics object is assigned.
+   *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords
+   * Note that the local transformation matrices are updated in
+   * all the link data structs from arg_link to arg_ancestor.
+   */
+  sBool CDynamicsScl::calculateTransformationMatrixForLink(
+      /** The link at which the transformation matrix is to be calculated */
+      SRigidBodyDyn& arg_link,
+      /** The link up to which the transformation matrix is to be calculated */
+      SRigidBodyDyn& arg_ancestor,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q,
+      /** Include the offset from global origin to robot's origin */
+      const bool arg_flag_include_origin_offset)
+  {
+    return false;
+  }
+
 
   /** Initializes the dynamics to be computed for a specific robot.
    *  Returns:

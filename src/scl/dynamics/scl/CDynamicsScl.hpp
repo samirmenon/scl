@@ -96,7 +96,23 @@ public:
   virtual sBool calculateTransformationMatrixForLink(
       /** The link at which the transformation matrix is to be calculated */
       SRigidBodyDyn& arg_link,
-      /** The transformation matrix will be saved here. */
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q,
+      /** Include the offset from global origin to robot's origin */
+      const bool arg_flag_include_origin_offset=true);
+
+  /** Calculates the Transformation Matrix for the robot to which
+   * this dynamics object is assigned.
+   *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords
+   * Note that the local transformation matrices are updated in
+   * all the link data structs from arg_link to arg_ancestor.
+   */
+  virtual sBool calculateTransformationMatrixForLink(
+      /** The link at which the transformation matrix is to be calculated */
+      SRigidBodyDyn& arg_link,
+      /** The link up to which the transformation matrix is to be calculated */
+      SRigidBodyDyn& arg_ancestor,
+      /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** Include the offset from global origin to robot's origin */
       const bool arg_flag_include_origin_offset=true);
