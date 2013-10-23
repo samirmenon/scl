@@ -141,22 +141,25 @@ public:
 
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
-   *
+   *                dx = Jx . dq
    * The Jacobian is specified by a link and an offset (in task space
-   * dimensions)from that link
+   * dimensions)from that link.
    */
   sBool calculateJacobian(
-      /** The link at which the Jacobian is to be calculated */
-      const void* arg_link_id,
-      /** The link in whose coordinate frame the Jacobian is to be calculated */
-      const void* arg_link_ancestor,
-      /** The offset from the link's frame (in link coordinates). */
-      const Eigen::VectorXd& arg_pos_local,
-      /** The GC model contains the transformation matrices */
-      const SGcModel& arg_gc_model,
       /** The Jacobain will be saved here. */
-      Eigen::MatrixXd& arg_J)
-  { return false; }
+      Eigen::MatrixXd& arg_J,
+      /** The link at which the Jacobian is to be calculated */
+      SRigidBodyDyn& arg_link,
+      /** The link up to which the Jacobian is to be calculated
+       * Pass NULL to compute the Jacobian up to the global root. */
+      const SRigidBodyDyn* arg_ancestor,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q,
+      /** The offset from the link's frame (in link coordinates). */
+      const Eigen::Vector3d& arg_pos_local,
+      /** Whether to recompute the transformations up to the ancestor
+       * Default = true. Set to false to speed things up.*/
+      const bool arg_recompute_transforms=true);
 
   /** Not supported. */
   virtual sBool calculateContactExternalForces(

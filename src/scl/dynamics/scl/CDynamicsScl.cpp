@@ -183,6 +183,108 @@ namespace scl
     return flag;
   }
 
+  /** Calculates the Jacobian for the robot to which this dynamics
+   * object is assigned.
+   *                dx = Jx . dq
+   * The Jacobian is specified by a link and an offset (in task space
+   * dimensions)from that link.
+   */
+  sBool CDynamicsScl::calculateJacobian(
+      /** The Jacobain will be saved here. */
+      Eigen::MatrixXd& arg_J,
+      /** The link at which the Jacobian is to be calculated */
+      SRigidBodyDyn& arg_link,
+      /** The link up to which the Jacobian is to be calculated
+       * Pass NULL to compute the Jacobian up to the global root. */
+      const SRigidBodyDyn* arg_ancestor,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q,
+      /** The offset from the link's frame (in link coordinates). */
+      const Eigen::Vector3d& arg_pos_local,
+      /** Whether to recompute the transformations up to the ancestor
+       * Default = true. Set to false to speed things up.*/
+      const bool arg_recompute_transforms)
+  {
+    bool flag = true;
+
+    //To efficiently walk up the tree to the node's ancestor.
+    SRigidBodyDyn *rbd = &arg_link;
+
+    if(arg_recompute_transforms)
+    {//Recompute the transformation matrices.
+      //Walk up the tree.
+      while(flag && rbd != arg_ancestor)
+      {//Keep going till you reach the ancestor
+        flag = calculateTransformationMatrixForLink(*rbd, arg_q);
+#ifdef DEBUG
+        if(false == flag)
+        {
+          std::cerr<<"\nCDynamicsScl::calculateJacobian() : Could not compute transforms.";
+          return false;
+        }
+#endif
+        rbd = rbd->parent_addr_;
+      }
+      //Reset the pointer to the current node for further processing
+      rbd = &arg_link;
+    }
+
+    //Reset Jacobian to zero. Good if ancestor is node itself
+    arg_J.setZero(6,arg_q.rows());
+
+    //Temporary transform to track position up to the present point.
+    Eigen::Affine3d T_to_joint;
+    T_to_joint.setIdentity();
+    Eigen::Vector3d pos_wrt_joint, tmp;
+
+    //Walk up the tree.
+    while(flag && rbd != arg_ancestor)
+    {//Keep going till you reach the ancestor
+      const int i = rbd->link_ds_->link_id_;
+      switch(rbd->link_ds_->joint_type_)
+      {
+        case JOINT_TYPE_PRISMATIC_X:
+          arg_J(0,i) = 1;
+          break;
+        case JOINT_TYPE_PRISMATIC_Y:
+          arg_J(1,i) = 1;
+          break;
+        case JOINT_TYPE_PRISMATIC_Z:
+          arg_J(2,i) = 1;
+          break;
+        case JOINT_TYPE_REVOLUTE_X:
+          arg_J(3,i) = 1;
+          pos_wrt_joint = T_to_joint * arg_pos_local;
+          arg_J.block(0,i,3,1) = pos_wrt_joint.cross(Eigen::Vector3d::UnitX());
+          break;
+        case JOINT_TYPE_REVOLUTE_Y:
+          arg_J(4,i) = 1;
+          pos_wrt_joint = T_to_joint * arg_pos_local;
+          arg_J.block(0,i,3,1) = Eigen::Vector3d::UnitY().cross(pos_wrt_joint);
+          break;
+        case JOINT_TYPE_REVOLUTE_Z:
+          arg_J(5,i) = 1;
+          pos_wrt_joint = T_to_joint * arg_pos_local;
+          arg_J.block(0,i,3,1) = Eigen::Vector3d::UnitZ().cross(pos_wrt_joint);
+          break;
+        default:
+          if(rbd->link_ds_->is_root_)//Root node has no joint.
+          { break;  }
+          flag = false;
+#ifdef DEBUG
+          std::cerr<<"\nCDynamicsScl::calculateJacobian() : Found unknown jount type: "<<rbd->link_ds_->joint_type_;
+#endif
+          break;
+      }
+      rbd = rbd->parent_addr_;
+      //Move the transform one frame back.
+      if(S_NULL != rbd)//Exit when reached global origin
+      { T_to_joint = rbd->T_lnk_ * T_to_joint;  }
+    }
+
+    return flag;
+  }
+
 
   /** Initializes the dynamics to be computed for a specific robot.
    *  Returns:
