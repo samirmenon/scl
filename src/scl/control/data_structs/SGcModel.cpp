@@ -77,8 +77,8 @@ namespace scl
         if(rb.is_root_)
         {//The root node doesn't move, so we can already compute the translations.
           com->T_o_lnk_.setIdentity();
-          com->T_o_lnk_.translation() = com->link_ds_->pos_in_parent_;
           com->T_o_lnk_.rotate(com->link_ds_->ori_parent_quat_);
+          com->T_o_lnk_.translate(com->link_ds_->pos_in_parent_);
           com->T_lnk_ = com->T_o_lnk_;
 
           //Default is NaN, which indicates that these values weren't initialized.
