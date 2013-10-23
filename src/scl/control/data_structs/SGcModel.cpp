@@ -67,15 +67,32 @@ namespace scl
         if(NULL == com)
         { throw(std::runtime_error( std::string("Could not create dyn node: ")+ rb.name_+std::string("for robot: ")+rb.robot_name_ )); }
 
-        com->J_com_.setZero(6, ndof);
-        com->T_o_lnk_ = Eigen::Affine3d::Identity();
-        com->T_lnk_ = Eigen::Affine3d::Identity();
-
+        com->name_ = rb.name_;
+        com->parent_name_ = rb.parent_name_;
         com->link_ds_ = &rb;
         com->link_dynamic_id_ = NULL;
 
-        com->name_ = rb.name_;
-        com->parent_name_ = rb.parent_name_;
+        com->J_com_.setZero(6, ndof);
+
+        if(rb.is_root_)
+        {//The root node doesn't move, so we can already compute the translations.
+          com->T_o_lnk_.setIdentity();
+          com->T_o_lnk_.translation() = com->link_ds_->pos_in_parent_;
+          com->T_o_lnk_.rotate(com->link_ds_->ori_parent_quat_);
+          com->T_lnk_ = com->T_o_lnk_;
+
+          //Default is NaN, which indicates that these values weren't initialized.
+          //Set to zero to indicate that they are now initialized. (actual value has no
+          //meaning since the root node never moves).
+          com->q_J_ = 0.0;
+          com->q_T_ = 0.0;
+          com->q_T_o_ = 0.0;
+        }
+        else
+        {
+          com->T_o_lnk_.setIdentity();
+          com->T_lnk_.setIdentity();
+        }
       }
 
       bool flag = link_ds_.linkNodes();
