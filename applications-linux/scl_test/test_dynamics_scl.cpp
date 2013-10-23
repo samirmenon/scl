@@ -311,7 +311,7 @@ namespace scl_test
             }
         std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl transformations to origin match for all links and gcs [-pi,pi]";
 
-      /*  // *********************************************************************************************************
+        // *********************************************************************************************************
         //                                         Test Com Jacobians
         // *********************************************************************************************************
         // Set up variables.
@@ -319,18 +319,18 @@ namespace scl_test
         Eigen::VectorXd pos;
         pos.setZero(3);
 
-        sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
-        for(it = rob_ds->robot_br_rep_.begin(), ite = rob_ds->robot_br_rep_.end();
+        for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
             it!=ite; ++it)
         {
+          SRigidBodyDyn &rbd = *it;
           // Test : Link 0
-          link_name = it->name_;
+          link_name = rbd.name_;
 
           // Skip the root node (all matrices are zero).
-          if(it->is_root_) { continue; }
+          if(rbd.link_ds_->is_root_) { continue; }
 
-          pos = it->com_;
-          flag = dynamics.calculateJacobian(dynamics.getIdForLink(link_name),pos,Jcom_scl);
+          pos = rbd.link_ds_->com_;
+          flag = dynamics.calculateJacobian(Jcom_scl, *it, NULL, io_ds->sensors_.q_, pos);
           if (false==flag) { throw(std::runtime_error("Failed to compute scl com Jacobian."));  }
 
           flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
@@ -352,7 +352,7 @@ namespace scl_test
           std::cout<<"\nScl Jcom_"<<link_name<<":\n"<<Jcom_scl;
           std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
 #endif
-        }*/
+        }
 
         // ********************************************************************************************************
         std::cout<<"\nTest #"<<id<<" : Succeeded.";
