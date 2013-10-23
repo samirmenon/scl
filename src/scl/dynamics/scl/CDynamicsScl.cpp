@@ -113,37 +113,32 @@ namespace scl
       /** The link at which the transformation matrix is to be calculated */
       SRigidBodyDyn& arg_link,
       /** The transformation matrix will be saved here. */
-      const Eigen::VectorXd& arg_q,
-      /** Include the offset from global origin to robot's origin */
-      const bool arg_flag_include_origin_offset)
+      const Eigen::VectorXd& arg_q)
   {
     bool flag;
 
     //The matrix is already up to date. Just return.
     // Update if q_T_ is NaN (never initialized before).
-    if( fabs(arg_q(arg_link.link_ds_->link_id_) - arg_link.q_T_) <
-        std::numeric_limits<sFloat>::epsilon() && false == std::isnan(arg_link.q_T_))
-    { return true;  }
-
-    // For origin (root) nodes, include the global origin translation/rotation if required.
-    // NOTE : This allows us to provide a global origin + robot-specific origin(s).
-    // By doing so, we don't have to manually change the robot's origin specification
-    // when we use the same config file multiple times to create multiple instances
-    // of the same robot. Ie. This is important to support a "root" node in the *Cfg.xml
-    // with a constant offset from it's parent..
-    if(arg_flag_include_origin_offset && arg_link.parent_addr_->link_ds_->is_root_)
-    {
-      flag = sclTransform(arg_link.T_lnk_,
-          arg_link.link_ds_->pos_in_parent_ + arg_link.parent_addr_->link_ds_->pos_in_parent_,
-          arg_q(arg_link.link_ds_->link_id_), arg_link.link_ds_->joint_type_);
-
-      arg_link.T_lnk_.rotate(arg_link.parent_addr_->link_ds_->ori_parent_quat_);
+    if(false == arg_link.link_ds_->is_root_){
+      //Not root, and gc didn't change, and has been computed atleast once before.
+      if( fabs(arg_q(arg_link.link_ds_->link_id_) - arg_link.q_T_) <
+          std::numeric_limits<sFloat>::epsilon() &&
+          false == std::isnan(arg_link.q_T_))
+      { return true;  }
     }
-    else
-    { // For all other nodes, just use the position in parent.
-      flag = sclTransform(arg_link.T_lnk_, arg_link.link_ds_->pos_in_parent_,
-          arg_q(arg_link.link_ds_->link_id_), arg_link.link_ds_->joint_type_);
+    else{
+#ifdef DEBUG
+      //The root link never changes after it has been set. And it should have been set
+      //at the time the rigid body dyn setup was initialized.
+      if(true == std::isnan(arg_link.q_T_))
+      { return false;  }
+#endif
+      return true;
     }
+
+    // Compute the transformation matrix.
+    flag = sclTransform(arg_link.T_lnk_, arg_link.link_ds_->pos_in_parent_,
+        arg_q(arg_link.link_ds_->link_id_), arg_link.link_ds_->joint_type_);
 
     // If successful, update the gc for this transformation matrix update.
     if(flag)
@@ -159,16 +154,33 @@ namespace scl
    * all the link data structs from arg_link to arg_ancestor.
    */
   sBool CDynamicsScl::calculateTransformationMatrixForLink(
+      /** The transformation matrix in which to store the answer */
+      Eigen::Affine3d& arg_T,
       /** The link at which the transformation matrix is to be calculated */
       SRigidBodyDyn& arg_link,
-      /** The link up to which the transformation matrix is to be calculated */
-      SRigidBodyDyn& arg_ancestor,
+      /** The link up to which the transformation matrix is to be calculated.
+       * Pass NULL to compute the transform up to the global root. */
+      const SRigidBodyDyn* arg_ancestor,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q,
-      /** Include the offset from global origin to robot's origin */
-      const bool arg_flag_include_origin_offset)
+      const Eigen::VectorXd& arg_q)
   {
-    return false;
+    bool flag = true;
+
+    //First compute all the transformations from the link to its ancestor.
+    SRigidBodyDyn *rbd = &arg_link;
+
+    //Reset transform to identity. Good if ancestor is node itself
+    arg_T.setIdentity();
+
+    //Walk up the tree.
+    while(rbd != arg_ancestor)
+    {//Keep going till you reach the ancestor
+      flag = calculateTransformationMatrixForLink(*rbd, arg_q);
+      arg_T = rbd->T_lnk_ * arg_T;
+      rbd = rbd->parent_addr_;
+    }
+
+    return flag;
   }
 
 
