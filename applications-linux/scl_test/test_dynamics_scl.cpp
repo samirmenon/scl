@@ -347,6 +347,7 @@ namespace scl_test
 
           if (false==flag)
           {
+            std::cout<<"\n\nCom pos: "<<rbd.link_ds_->com_.transpose();
             std::cout<<"\nScl Jcom_"<<link_name<<":\n"<<Jcom_scl;
             std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
             throw(std::runtime_error("Scl and analytic Jacobians don't match."));
@@ -354,6 +355,7 @@ namespace scl_test
           else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl com Jacobians match for zero position : "<<link_name;  }
 
 #ifdef DEBUG
+          std::cout<<"\n\nCom pos: "<<rbd.link_ds_->com_.transpose();
           std::cout<<"\nScl Jcom_"<<link_name<<":\n"<<Jcom_scl;
           std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
 #endif
