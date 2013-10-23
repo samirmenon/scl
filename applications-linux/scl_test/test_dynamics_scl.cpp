@@ -165,7 +165,7 @@ namespace scl_test
         //                                     Test Transformation Matrix For Each Link
         // *********************************************************************************************************
         // Set up variables.
-        Eigen::Affine3d Tanlyt;
+        Eigen::Affine3d Tanlyt, Tscl;
         std::string link_name;
 
         // Note q is zero here.
@@ -181,7 +181,11 @@ namespace scl_test
 
           flag = dynamics.calculateTransformationMatrixForLink(*it,io_ds->sensors_.q_);
           if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
-          Eigen::Affine3d &Tscl = it->T_lnk_;
+          Tscl = it->T_lnk_;
+
+          // The analytic implementation also includes the global origin to robot origin offset.
+          if(it->parent_addr_->link_ds_->is_root_)
+          { Tscl = it->parent_addr_->T_lnk_ * Tscl;}
 
           flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, it->link_ds_->link_id_,
               it->link_ds_->link_id_-1/**NOTE: Trf to parent, not root*/, Tanlyt);
@@ -210,7 +214,11 @@ namespace scl_test
         // *********************************************************************************************************
         //                    Test Transformation Matrix For Each Link For A Range of GCs
         // *********************************************************************************************************
+#ifdef DEBUG
+        double gcstep=1;
+#else
         double gcstep=0.1;
+#endif
         for (double a=-3.14;a<3.14;a+=gcstep)
           for (double b=-3.14;b<3.14;b+=gcstep)
             for (double c=-3.14;c<3.14;c+=gcstep)
@@ -230,7 +238,11 @@ namespace scl_test
 
                 flag = dynamics.calculateTransformationMatrixForLink(*it,io_ds->sensors_.q_);
                 if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
-                Eigen::Affine3d &Tscl = it->T_lnk_;
+                Tscl = it->T_lnk_;
+
+                // The analytic implementation also includes the global origin to robot origin offset.
+                if(it->parent_addr_->link_ds_->is_root_)
+                { Tscl = it->parent_addr_->T_lnk_ * Tscl;}
 
                 flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, it->link_ds_->link_id_,
                     it->link_ds_->link_id_-1/**NOTE: Trf to parent, not root*/, Tanlyt);
@@ -253,6 +265,51 @@ namespace scl_test
 
             }
         std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl transformations match for all links and gcs [-pi,pi]";
+
+        // *********************************************************************************************************
+        //                    Test Transformation Matrix For Each Link to Origin For A Range of GCs
+        // *********************************************************************************************************
+        for (double a=-3.14;a<3.14;a+=gcstep)
+          for (double b=-3.14;b<3.14;b+=gcstep)
+            for (double c=-3.14;c<3.14;c+=gcstep)
+            {
+              io_ds->sensors_.q_(0) = a;
+              io_ds->sensors_.q_(1) = b;
+              io_ds->sensors_.q_(2) = c;
+
+              for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
+                  it!=ite; ++it)
+              {
+                // Test : Link 0
+                link_name = it->name_;
+
+                // Skip the root node (all matrices are zero).
+                if(it->link_ds_->is_root_) { continue; }
+
+                flag = dynamics.calculateTransformationMatrixForLink(Tscl, *it, NULL, io_ds->sensors_.q_);
+                if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
+
+                flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, it->link_ds_->link_id_,
+                    -1/**NOTE: Trf to root*/, Tanlyt);
+                if (false==flag) {
+                  throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));
+                }
+
+                for(int i=0; i<4 && flag; i++)
+                  for(int j=0; j<4 && flag; j++)
+                  { flag = flag && (fabs(Tscl.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision);  }
+
+                if (false==flag)
+                {
+                  std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+                  std::cout<<"\nScl transform Org->"<<link_name<<":\n"<<Tscl.matrix();
+                  std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+                  throw(std::runtime_error("Scl and analytic transformation matrices to origin don't match."));
+                }
+              }
+
+            }
+        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl transformations to origin match for all links and gcs [-pi,pi]";
 
       /*  // *********************************************************************************************************
         //                                         Test Com Jacobians
