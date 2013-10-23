@@ -111,8 +111,10 @@ namespace scl
         break;
 
       case 2:
-        arg_J(0,0) = 0.3625*cos(arg_q(0)) - (.5+arg_q(1)) * cos(arg_q(0)); arg_J(0,1) = -sin(arg_q(0)); arg_J(0,2) = 0;
-        arg_J(0,0) = 0.3625*sin(arg_q(0)) - (.5+arg_q(1)) * sin(arg_q(0)); arg_J(0,1) = cos(arg_q(0)); arg_J(0,2) = 0;
+        arg_J(0,0) = 0.3625*cos(arg_q(0)) - (.5+arg_q(1)) * cos(arg_q(0));
+                                    arg_J(0,1) = -sin(arg_q(0)); arg_J(0,2) = 0;
+        arg_J(1,0) = 0.3625*sin(arg_q(0)) - (.5+arg_q(1)) * sin(arg_q(0));
+                                    arg_J(1,1) = cos(arg_q(0)); arg_J(1,2) = 0;
         arg_J(2,0) = 0;             arg_J(2,1) = 0;             arg_J(2,2) = 1;
         arg_J(3,0) = 0;             arg_J(3,1) = 0;             arg_J(3,2) = 0;
         arg_J(4,0) = 0;             arg_J(4,1) = 0;             arg_J(4,2) = 0;
