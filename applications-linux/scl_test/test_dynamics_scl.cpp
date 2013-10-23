@@ -319,6 +319,11 @@ namespace scl_test
         Eigen::VectorXd pos;
         pos.setZero(3);
 
+        // Set gcs to zero
+        io_ds->sensors_.q_(0) = 0.0;
+        io_ds->sensors_.q_(1) = 0.0;
+        io_ds->sensors_.q_(2) = 0.0;
+
         for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
             it!=ite; ++it)
         {
