@@ -268,7 +268,8 @@ namespace scl_test
               }
 
             }
-        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl transformations match for all links and gcs [-pi,pi]";
+        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl transformations match for all links and gcs [-pi,pi]. "
+            <<pow(double(int(6.28/double(gcstep))),3)*3<<" Transforms tested.";
 
         // *********************************************************************************************************
         //                    Test Transformation Matrix For Each Link to Origin For A Range of GCs
@@ -316,7 +317,8 @@ namespace scl_test
               }
 
             }
-        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl transformations to origin match for all links and gcs [-pi,pi]";
+        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl transformations to origin match for all links and gcs [-pi,pi]. "
+            <<pow(double(int(6.28/double(gcstep))),3)*3<<" Transforms tested.";
 
         // *********************************************************************************************************
         //                                         Test Com Jacobians
@@ -380,8 +382,8 @@ namespace scl_test
         pos.setZero(3);
 
         for (double a=-3.14;a<3.14;a+=gcstep)
-          for (double b=0;b<3.14;b+=gcstep)
-            for (double c=0;c<3.14;c+=gcstep)
+          for (double b=-3.14;b<3.14;b+=gcstep)
+            for (double c=-3.14;c<3.14;c+=gcstep)
             {
               io_ds->sensors_.q_(0) = a;
               io_ds->sensors_.q_(1) = b;
@@ -416,10 +418,56 @@ namespace scl_test
                   std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
                   throw(std::runtime_error("Scl and analytic Jacobians don't match."));
                 }
-                else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl com Jacobians match for zero position : "<<link_name;  }
               }
             }
-        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl Jacobians match for all links and gcs [-pi,pi]";
+        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl Jacobians match for all links and gcs [-pi,pi]. "
+            <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians tested.";
+
+        // *********************************************************************************************************
+        //                                Test Com Jacobians Performance
+        // *********************************************************************************************************
+#ifdef DEBUG
+        std::cout<<"\n\n *** Testing Jacobian performance for a variety of GCs *** ";
+#endif
+        gcstep = gcstep / 2.0;
+        //Test Analytic dynamics performance
+        t1 = sutil::CSystemClock::getSysTime();
+        for (double a=-3.14;a<3.14;a+=gcstep)
+          for (double b=-3.14;b<3.14;b+=gcstep)
+            for (double c=-3.14;c<3.14;c+=gcstep)
+            {
+              io_ds->sensors_.q_<<a,b,c;
+              for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
+                  it!=ite; ++it)
+              {
+                if(it->link_ds_->is_root_) { continue; } // Skip the root node (all matrices are zero).
+                dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(it->name_), Jcom_anlyt);
+              }
+            }
+        t2 = sutil::CSystemClock::getSysTime();
+        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic Jacobian performance: "
+            <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
+            <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
+
+        //Test SCL dynamics performance
+        t1 = sutil::CSystemClock::getSysTime();
+        for (double a=-3.14;a<3.14;a+=gcstep)
+          for (double b=-3.14;b<3.14;b+=gcstep)
+            for (double c=-3.14;c<3.14;c+=gcstep)
+            {
+              io_ds->sensors_.q_<<a,b,c;
+              for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
+                  it!=ite; ++it)
+              {
+                // Skip the root node (all matrices are zero).
+                if(it->link_ds_->is_root_) { continue; }
+                dynamics.calculateJacobian(Jcom_scl, *it, NULL, io_ds->sensors_.q_, it->link_ds_->com_);
+              }
+            }
+        t2 = sutil::CSystemClock::getSysTime();
+        std::cout<<"\nTest Result ("<<r_id++<<")  Scl Jacobian performance: "
+            <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
+            <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
 
         // ********************************************************************************************************
         std::cout<<"\nTest #"<<id<<" : Succeeded.";
