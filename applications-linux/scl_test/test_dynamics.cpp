@@ -506,6 +506,55 @@ namespace scl_test
 #endif
       }
 
+      // *********************************************************************************************************
+      //                                Test Com Jacobians Performance
+      // *********************************************************************************************************
+#ifdef DEBUG
+      std::cout<<"\n\n *** Testing Jacobian performance for a variety of GCs *** ";
+#endif
+      gcstep = gcstep / 2.0;
+      //Test Analytic dynamics performance
+      sutil::CMappedTree<std::string, SRigidBodyDyn>::const_iterator itd,itde;
+      t1 = sutil::CSystemClock::getSysTime();
+      for (double a=-3.14;a<3.14;a+=gcstep)
+        for (double b=-3.14;b<3.14;b+=gcstep)
+          for (double c=-3.14;c<3.14;c+=gcstep)
+          {
+            io_ds->sensors_.q_<<a,b,c;
+            for(itd = rob_gc_model.link_ds_.begin(), itde = rob_gc_model.link_ds_.end();
+                itd!=itde; ++itd)
+            {
+              if(itd->link_ds_->is_root_) { continue; } // Skip the root node (all matrices are zero).
+              dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(itd->name_), Jcom_anlyt);
+            }
+          }
+      t2 = sutil::CSystemClock::getSysTime();
+      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic Jacobian performance: "
+          <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
+          <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
+
+      //Test SCL dynamics performance
+      t1 = sutil::CSystemClock::getSysTime();
+      for (double a=-3.14;a<3.14;a+=gcstep)
+        for (double b=-3.14;b<3.14;b+=gcstep)
+          for (double c=-3.14;c<3.14;c+=gcstep)
+          {
+            io_ds->sensors_.q_<<a,b,c;
+            for(it = rob_ds->robot_br_rep_.begin(), ite = rob_ds->robot_br_rep_.end();
+                it!=ite; ++it)
+            {
+              // Skip the root node (all matrices are zero).
+              if(it->is_root_) { continue; }
+              dynamics->calculateJacobian(dynamics->getIdForLink(link_name),it->com_,Jcom_tao);
+            }
+          }
+      t2 = sutil::CSystemClock::getSysTime();
+      std::cout<<"\nTest Result ("<<r_id++<<")  Tao Jacobian performance: "
+          <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
+          <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
+
+      // ********************************************************************************************************
+
       // ********************************************************************************************************
       //Delete stuff
       if(S_NULL!= dynamics)  {  delete dynamics; dynamics = S_NULL; }
