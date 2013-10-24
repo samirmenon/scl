@@ -257,53 +257,38 @@ namespace scl
       switch(rbd->link_ds_->joint_type_)
       {
         case JOINT_TYPE_PRISMATIC_X:
-          arg_J(0,i) = 1;
+          arg_J.block(0,i,3,1) = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitX();
           break;
         case JOINT_TYPE_PRISMATIC_Y:
-          arg_J(1,i) = 1;
+          arg_J.block(0,i,3,1) = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitY();
           break;
         case JOINT_TYPE_PRISMATIC_Z:
-          arg_J(2,i) = 1;
+          arg_J.block(0,i,3,1) = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitZ();
           break;
         case JOINT_TYPE_REVOLUTE_X:
           arg_J(3,i) = 1;
           pos_wrt_joint = T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitX();
           arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
-#ifdef DEBUG
-          std::cout<<"\nCDynamicsScl::calculateJacobian() : Ax glob. "<<rbd->name_<<": "<<axis_global_frame.transpose();
-#endif
           break;
         case JOINT_TYPE_REVOLUTE_Y:
           arg_J(4,i) = 1;
           pos_wrt_joint = T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitY();
           arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
-#ifdef DEBUG
-          std::cout<<"\nCDynamicsScl::calculateJacobian() : Ax glob. "<<rbd->name_<<": "<<axis_global_frame.transpose();
-#endif
           break;
         case JOINT_TYPE_REVOLUTE_Z:
           arg_J(5,i) = 1;
           pos_wrt_joint = T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitZ();
           arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
-#ifdef DEBUG
-          std::cout<<"\nCDynamicsScl::calculateJacobian() : Ax glob. "<<rbd->name_<<": "<<axis_global_frame.transpose();
-#endif
           break;
         default:
           if(rbd->link_ds_->is_root_)//Root node has no joint.
           { break;  }
           flag = false;
-#ifdef DEBUG
-          std::cerr<<"\nCDynamicsScl::calculateJacobian() : Found unknown jount type: "<<rbd->link_ds_->joint_type_;
-#endif
           break;
       }
-#ifdef DEBUG
-      std::cout<<"\nCDynamicsScl::calculateJacobian() : Pos wrt. "<<rbd->name_<<": "<<pos_wrt_joint.transpose();
-#endif
       //Move the transform one frame back.
       if(S_NULL != rbd)//Exit when reached global origin
       { T_to_joint = rbd->T_lnk_ * T_to_joint;  }
