@@ -389,6 +389,9 @@ namespace scl_test
               io_ds->sensors_.q_(1) = b;
               io_ds->sensors_.q_(2) = c;
 
+              flag = dynamics.updateTransformationMatrices(rob_gc_model.link_ds_,io_ds->sensors_.q_);
+              if (false==flag) { throw(std::runtime_error("Failed to update transformation matrices."));  }
+
               for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
                   it!=ite; ++it)
               {
@@ -400,7 +403,7 @@ namespace scl_test
                 if(rbd.link_ds_->is_root_) { continue; }
 
                 pos = rbd.link_ds_->com_;
-                flag = dynamics.calculateJacobian(Jcom_scl, *it, io_ds->sensors_.q_, pos);
+                flag = dynamics.calculateJacobian(Jcom_scl, *it, io_ds->sensors_.q_, pos, false);
                 if (false==flag) { throw(std::runtime_error("Failed to compute scl com Jacobian."));  }
 
                 flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
@@ -456,12 +459,13 @@ namespace scl_test
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
               io_ds->sensors_.q_<<a,b,c;
+              flag = dynamics.updateTransformationMatrices(rob_gc_model.link_ds_,io_ds->sensors_.q_);
               for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
                   it!=ite; ++it)
               {
                 // Skip the root node (all matrices are zero).
                 if(it->link_ds_->is_root_) { continue; }
-                dynamics.calculateJacobian(Jcom_scl, *it, io_ds->sensors_.q_, it->link_ds_->com_);
+                dynamics.calculateJacobian(Jcom_scl, *it, io_ds->sensors_.q_, it->link_ds_->com_, false);
               }
             }
         t2 = sutil::CSystemClock::getSysTime();
