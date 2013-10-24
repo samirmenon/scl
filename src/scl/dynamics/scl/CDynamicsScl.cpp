@@ -180,6 +180,12 @@ namespace scl
       rbd = rbd->parent_addr_;
     }
 
+    if(S_NULL == arg_ancestor && false == arg_link.link_ds_->is_root_)//Updated link to origin.
+    {
+      arg_link.T_o_lnk_ = arg_T;
+      arg_link.q_T_o_ = arg_q(arg_link.link_ds_->link_id_);
+    }
+
     return flag;
   }
 
@@ -212,17 +218,17 @@ namespace scl
 
     if(arg_recompute_transforms)
     {//Recompute the transformation matrices.
+      Eigen::Affine3d Ttmp;
       //Walk up the tree.
       while(flag && rbd != arg_ancestor)
       {//Keep going till you reach the ancestor
-        flag = calculateTransformationMatrixForLink(*rbd, arg_q);
-#ifdef DEBUG
+        //Gets global transforms for all links.
+        flag = calculateTransformationMatrixForLink(Ttmp,*rbd,NULL,arg_q);
         if(false == flag)
         {
           std::cerr<<"\nCDynamicsScl::calculateJacobian() : Could not compute transforms.";
           return false;
         }
-#endif
         rbd = rbd->parent_addr_;
       }
       //Reset the pointer to the current node for further processing
@@ -235,10 +241,17 @@ namespace scl
     //Temporary transform to track position up to the present point.
     Eigen::Affine3d T_to_joint;
     T_to_joint.setIdentity();
-    Eigen::Vector3d pos_wrt_joint, tmp;
+    Eigen::Vector3d pos_wrt_joint, axis_global_frame;
 
     //Walk up the tree.
-    while(flag && rbd != arg_ancestor)
+    const SRigidBodyDyn* up_link;
+    //NOTE TODO: This avoids reaching global root. J might be incorrect for
+    // robot roots that are at a different orientation than the global root.
+    if(S_NULL == arg_ancestor)
+    { up_link = arg_ancestor; }
+    else
+    { up_link = arg_ancestor->parent_addr_; }
+    while(flag && rbd != up_link)
     {//Keep going till you reach the ancestor
       const int i = rbd->link_ds_->link_id_;
       switch(rbd->link_ds_->joint_type_)
@@ -255,17 +268,29 @@ namespace scl
         case JOINT_TYPE_REVOLUTE_X:
           arg_J(3,i) = 1;
           pos_wrt_joint = T_to_joint * arg_pos_local;
-          arg_J.block(0,i,3,1) = pos_wrt_joint.cross(Eigen::Vector3d::UnitX());
+          axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitX();
+          arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
+#ifdef DEBUG
+          std::cout<<"\nCDynamicsScl::calculateJacobian() : Ax glob. "<<rbd->name_<<": "<<axis_global_frame.transpose();
+#endif
           break;
         case JOINT_TYPE_REVOLUTE_Y:
           arg_J(4,i) = 1;
           pos_wrt_joint = T_to_joint * arg_pos_local;
-          arg_J.block(0,i,3,1) = Eigen::Vector3d::UnitY().cross(pos_wrt_joint);
+          axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitY();
+          arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
+#ifdef DEBUG
+          std::cout<<"\nCDynamicsScl::calculateJacobian() : Ax glob. "<<rbd->name_<<": "<<axis_global_frame.transpose();
+#endif
           break;
         case JOINT_TYPE_REVOLUTE_Z:
           arg_J(5,i) = 1;
           pos_wrt_joint = T_to_joint * arg_pos_local;
-          arg_J.block(0,i,3,1) = Eigen::Vector3d::UnitZ().cross(pos_wrt_joint);
+          axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitZ();
+          arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
+#ifdef DEBUG
+          std::cout<<"\nCDynamicsScl::calculateJacobian() : Ax glob. "<<rbd->name_<<": "<<axis_global_frame.transpose();
+#endif
           break;
         default:
           if(rbd->link_ds_->is_root_)//Root node has no joint.
@@ -276,10 +301,14 @@ namespace scl
 #endif
           break;
       }
-      rbd = rbd->parent_addr_;
+#ifdef DEBUG
+      std::cout<<"\nCDynamicsScl::calculateJacobian() : Pos wrt. "<<rbd->name_<<": "<<pos_wrt_joint.transpose();
+#endif
       //Move the transform one frame back.
       if(S_NULL != rbd)//Exit when reached global origin
       { T_to_joint = rbd->T_lnk_ * T_to_joint;  }
+      //Move up one link.
+      rbd = rbd->parent_addr_;
     }
 
     return flag;
