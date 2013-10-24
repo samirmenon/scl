@@ -371,6 +371,56 @@ namespace scl_test
 #endif
         }
 
+        // *********************************************************************************************************
+        //                                         Test Com Jacobians for a variety of GCs
+        // *********************************************************************************************************
+#ifdef DEBUG
+        std::cout<<"\n\n *** Testing center of mass Jacobians for a variety of GCs *** ";
+#endif
+        pos.setZero(3);
+
+        for (double a=-3.14;a<3.14;a+=gcstep)
+          for (double b=0;b<3.14;b+=gcstep)
+            for (double c=0;c<3.14;c+=gcstep)
+            {
+              io_ds->sensors_.q_(0) = a;
+              io_ds->sensors_.q_(1) = b;
+              io_ds->sensors_.q_(2) = c;
+
+              for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
+                  it!=ite; ++it)
+              {
+                SRigidBodyDyn &rbd = *it;
+                // Test : Link 0
+                link_name = rbd.name_;
+
+                // Skip the root node (all matrices are zero).
+                if(rbd.link_ds_->is_root_) { continue; }
+
+                pos = rbd.link_ds_->com_;
+                flag = dynamics.calculateJacobian(Jcom_scl, *it, NULL, io_ds->sensors_.q_, pos);
+                if (false==flag) { throw(std::runtime_error("Failed to compute scl com Jacobian."));  }
+
+                flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
+                if (false==flag) { throw(std::runtime_error("Failed to compute analytic com Jacobian."));  }
+
+                for(int i=0; i<3; i++)
+                  for(int j=0; j<3; j++)
+                  { flag = flag && fabs(Jcom_scl(i,j) - Jcom_anlyt(i,j)) < test_precision; }
+
+                if (false==flag)
+                {
+                  std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+                  std::cout<<"\nCom pos: "<<rbd.link_ds_->com_.transpose();
+                  std::cout<<"\nScl Jcom_"<<link_name<<":\n"<<Jcom_scl;
+                  std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
+                  throw(std::runtime_error("Scl and analytic Jacobians don't match."));
+                }
+                else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl com Jacobians match for zero position : "<<link_name;  }
+              }
+            }
+        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl Jacobians match for all links and gcs [-pi,pi]";
+
         // ********************************************************************************************************
         std::cout<<"\nTest #"<<id<<" : Succeeded.";
       }
