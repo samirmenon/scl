@@ -473,6 +473,67 @@ namespace scl_test
             <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
             <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
 
+
+        // *********************************************************************************************************
+        //                                         Test Generalized Inertia Matrix
+        // *********************************************************************************************************
+        // Set up variables.
+        Eigen::MatrixXd Mgc_anlyt;
+
+        flag = dynamics.updateModelMatrices(&(io_ds->sensors_),&rob_gc_model);
+        if (false==flag) { throw(std::runtime_error("Failed to compute scl model matrices (for generalized inertia)."));  }
+
+        flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
+        if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
+
+        for(int i=0; i<3; i++)
+          for(int j=0; j<3; j++)
+          { flag = flag && (fabs(rob_gc_model.A_(i,j) - Mgc_anlyt(i,j))<test_precision); }
+
+        if (false==flag)
+        {
+          std::cout<<"\nScl Mgc:\n"<<rob_gc_model.A_;
+          std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
+          throw(std::runtime_error("Scl and analytic Generalized Inertias don't match."));
+        }
+        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl Generalized Inertias match for zero position";  }
+
+#ifdef DEBUG
+        std::cout<<"\nScl Mgc:\n"<<rob_gc_model.A_;
+        std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
+#endif
+
+        // *********************************************************************************************************
+        //                          Test Generalized Inertia Matrix for a range of GCs
+        // *********************************************************************************************************
+        for (double a=-3.14;a<3.14;a+=gcstep)
+          for (double b=-3.14;b<3.14;b+=gcstep)
+            for (double c=-3.14;c<3.14;c+=gcstep)
+            {
+              io_ds->sensors_.q_(0) = a;
+              io_ds->sensors_.q_(1) = b;
+              io_ds->sensors_.q_(2) = c;
+
+              flag = dynamics.updateModelMatrices(&(io_ds->sensors_),&rob_gc_model);
+              if (false==flag) { throw(std::runtime_error("Failed to compute scl model matrices (for generalized inertia)."));  }
+
+              flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
+              if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
+
+              for(int i=0; i<3; i++)
+                for(int j=0; j<3; j++)
+                { flag = flag && (fabs(rob_gc_model.A_(i,j) - Mgc_anlyt(i,j))<test_precision); }
+
+              if (false==flag)
+              {
+                std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+                std::cout<<"\nScl Mgc:\n"<<rob_gc_model.A_;
+                std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
+                throw(std::runtime_error("Scl and analytic Generalized Inertias don't match."));
+              }
+            }
+        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl Generalized Inertias match for all gcs [-pi, pi]";
+
         // ********************************************************************************************************
         std::cout<<"\nTest #"<<id<<" : Succeeded.";
       }
