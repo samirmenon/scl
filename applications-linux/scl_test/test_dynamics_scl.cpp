@@ -472,6 +472,7 @@ namespace scl_test
         std::cout<<"\nTest Result ("<<r_id++<<")  Scl Jacobian performance: "
             <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
             <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
+        gcstep = gcstep * 2.0;
 
 
         // *********************************************************************************************************
@@ -533,6 +534,28 @@ namespace scl_test
               }
             }
         std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl Generalized Inertias match for all gcs [-pi, pi]";
+
+        // *********************************************************************************************************
+        //                                Test GC Model Update Performance
+        // *********************************************************************************************************
+#ifdef DEBUG
+        std::cout<<"\n\n *** Testing GC Model update performance for a variety of GCs *** ";
+#endif
+        gcstep = gcstep / 2.0;
+        //Test SCL dynamics performance
+        t1 = sutil::CSystemClock::getSysTime();
+        for (double a=-3.14;a<3.14;a+=gcstep)
+          for (double b=-3.14;b<3.14;b+=gcstep)
+            for (double c=-3.14;c<3.14;c+=gcstep)
+            {
+              io_ds->sensors_.q_<<a,b,c;
+              dynamics.updateModelMatrices(&(io_ds->sensors_),&rob_gc_model);
+            }
+        t2 = sutil::CSystemClock::getSysTime();
+        std::cout<<"\nTest Result ("<<r_id++<<")  Scl model update performance: "
+            <<pow(double(int(6.28/double(gcstep))),3)*3<<" updates in "<<t2-t1<<"s. \n\t\tFreq : "
+            <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
+
 
         // ********************************************************************************************************
         std::cout<<"\nTest #"<<id<<" : Succeeded.";
