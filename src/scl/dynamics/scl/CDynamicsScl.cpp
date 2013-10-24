@@ -200,9 +200,6 @@ namespace scl
       Eigen::MatrixXd& arg_J,
       /** The link at which the Jacobian is to be calculated */
       SRigidBodyDyn& arg_link,
-      /** The link up to which the Jacobian is to be calculated
-       * Pass NULL to compute the Jacobian up to the global root. */
-      const SRigidBodyDyn* arg_ancestor,
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
@@ -220,7 +217,7 @@ namespace scl
     {//Recompute the transformation matrices.
       Eigen::Affine3d Ttmp;
       //Walk up the tree.
-      while(flag && rbd != arg_ancestor)
+      while(flag && rbd != S_NULL)
       {//Keep going till you reach the ancestor
         //Gets global transforms for all links.
         flag = calculateTransformationMatrixForLink(Ttmp,*rbd,NULL,arg_q);
@@ -241,17 +238,10 @@ namespace scl
     //Temporary transform to track position up to the present point.
     Eigen::Affine3d T_to_joint;
     T_to_joint.setIdentity();
-    Eigen::Vector3d pos_wrt_joint, axis_global_frame;
+    Eigen::Vector3d pos_wrt_joint_global_frame, axis_global_frame;
 
     //Walk up the tree.
-    const SRigidBodyDyn* up_link;
-    //NOTE TODO: This avoids reaching global root. J might be incorrect for
-    // robot roots that are at a different orientation than the global root.
-    if(S_NULL == arg_ancestor)
-    { up_link = arg_ancestor; }
-    else
-    { up_link = arg_ancestor->parent_addr_; }
-    while(flag && rbd != up_link)
+    while(flag && rbd != NULL)
     {//Keep going till you reach the ancestor
       const int i = rbd->link_ds_->link_id_;
       switch(rbd->link_ds_->joint_type_)
@@ -267,34 +257,31 @@ namespace scl
           break;
         case JOINT_TYPE_REVOLUTE_X:
           arg_J(3,i) = 1;
-          pos_wrt_joint = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
+          pos_wrt_joint_global_frame = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitX();
-          arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
+          arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint_global_frame);
           break;
         case JOINT_TYPE_REVOLUTE_Y:
           arg_J(4,i) = 1;
-          pos_wrt_joint = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
+          pos_wrt_joint_global_frame = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitY();
-          arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
+          arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint_global_frame);
           break;
         case JOINT_TYPE_REVOLUTE_Z:
           arg_J(5,i) = 1;
-          pos_wrt_joint = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
+          pos_wrt_joint_global_frame = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitZ();
-          arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
+          arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint_global_frame);
           break;
         default:
           if(rbd->link_ds_->is_root_)//Root node has no joint.
           { break;  }
           flag = false;
           break;
-      }
-      //Move the transform one frame back.
-      if(S_NULL != rbd)//Exit when reached global origin
-      { T_to_joint = rbd->T_lnk_ * T_to_joint;  }
-      //Move up one link.
-      rbd = rbd->parent_addr_;
-    }
+      }//End of switch
+      T_to_joint = rbd->T_lnk_ * T_to_joint; //Move the transform one frame back.
+      rbd = rbd->parent_addr_;               //Move up one link.
+    }//End of while loop moving up the rigid body dyn tree
 
     return flag;
   }
