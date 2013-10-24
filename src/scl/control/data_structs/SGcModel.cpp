@@ -84,9 +84,7 @@ namespace scl
           //Default is NaN, which indicates that these values weren't initialized.
           //Set to zero to indicate that they are now initialized. (actual value has no
           //meaning since the root node never moves).
-          com->q_J_ = 0.0;
           com->q_T_ = 0.0;
-          com->q_T_o_ = 0.0;
         }
         else
         {

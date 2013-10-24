@@ -68,14 +68,27 @@ namespace scl
     { flag = flag && calculateJacobian(it->J_com_,*it, q, it->link_ds_->com_,false); }
 
     //3. Update A and Ainv_
-    //arg_gc_model->A_ =
-    //arg_gc_model->Ainv_
+    // NOTE TODO : Implement a more efficient way to do this.
+    int dof = robot_parsed_data_->dof_;
+    arg_gc_model->A_.setZero(dof, dof);
+    for(it = rbtree.begin(), ite = rbtree.end(); it!=ite; ++it)
+    {
+      if(it->link_ds_->is_root_){ continue;  }//Root doesn't move
+      arg_gc_model->A_ += it->link_ds_->mass_ * (it->J_com_.block(0,0,3,dof).transpose() * it->J_com_.block(0,0,3,dof));
+      arg_gc_model->A_ += it->J_com_.block(3,0,3,dof).transpose() * it->link_ds_->inertia_ * it->J_com_.block(3,0,3,dof);
+    }
+    arg_gc_model->Ainv_ = arg_gc_model->A_.inverse(); //A is always invertible.
 
     //4. Update b_
     //arg_gc_model->b_
 
     //5. Update g_
-    //arg_gc_model->g_
+    arg_gc_model->g_.setZero(dof);
+    for(it = rbtree.begin(), ite = rbtree.end(); it!=ite; ++it)
+    {
+      if(it->link_ds_->is_root_){ continue;  }//Root doesn't experience gravity
+      arg_gc_model->g_ += it->J_com_.transpose() * robot_parsed_data_->gravity_;
+    }
 
     return flag;
   }
