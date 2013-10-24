@@ -189,6 +189,37 @@ namespace scl
     return flag;
   }
 
+  /** Updates the Transformation Matrices for the robot to which
+   * this dynamics object is assigned.
+   *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords */
+  sBool CDynamicsScl::updateTransformationMatrices(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  {
+    bool flag = true;
+    sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
+
+    //1. First update the link transforms
+    for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
+    { flag = flag && calculateTransformationMatrixForLink(*it, arg_q); }
+
+    //2. Next update the origin transforms
+    for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
+    {
+      it->T_o_lnk_ = it->T_lnk_;
+      Eigen::Affine3d &To = it->T_o_lnk_;
+      SRigidBodyDyn *rbd = it->parent_addr_;
+      while(rbd != NULL)
+      {
+        To = rbd->T_lnk_ * To;
+        rbd = rbd->parent_addr_;
+      }
+    }
+    return flag;
+  }
+
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
    *                dx = Jx . dq

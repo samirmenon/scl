@@ -121,6 +121,15 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q);
 
+  /** Updates the Transformation Matrices for the robot to which
+   * this dynamics object is assigned.
+   *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords */
+  virtual sBool updateTransformationMatrices(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q);
+
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
    *
