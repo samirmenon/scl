@@ -267,19 +267,19 @@ namespace scl
           break;
         case JOINT_TYPE_REVOLUTE_X:
           arg_J(3,i) = 1;
-          pos_wrt_joint = T_to_joint * arg_pos_local;
+          pos_wrt_joint = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitX();
           arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
           break;
         case JOINT_TYPE_REVOLUTE_Y:
           arg_J(4,i) = 1;
-          pos_wrt_joint = T_to_joint * arg_pos_local;
+          pos_wrt_joint = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitY();
           arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
           break;
         case JOINT_TYPE_REVOLUTE_Z:
           arg_J(5,i) = 1;
-          pos_wrt_joint = T_to_joint * arg_pos_local;
+          pos_wrt_joint = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitZ();
           arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint);
           break;
