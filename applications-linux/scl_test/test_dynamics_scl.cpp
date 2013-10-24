@@ -164,6 +164,9 @@ namespace scl_test
         // *********************************************************************************************************
         //                                     Test Transformation Matrix For Each Link
         // *********************************************************************************************************
+#ifdef DEBUG
+        std::cout<<"\n\n *** Testing Transformation Matrix For Each Link to Parent For Zero position *** ";
+#endif
         // Set up variables.
         Eigen::Affine3d Tanlyt, Tscl;
         std::string link_name;
@@ -215,6 +218,7 @@ namespace scl_test
         //                    Test Transformation Matrix For Each Link For A Range of GCs
         // *********************************************************************************************************
 #ifdef DEBUG
+        std::cout<<"\n\n *** Testing Transformation Matrix For Each Link to Parent For A Range of GCs *** ";
         double gcstep=1;
 #else
         double gcstep=0.1;
@@ -269,6 +273,9 @@ namespace scl_test
         // *********************************************************************************************************
         //                    Test Transformation Matrix For Each Link to Origin For A Range of GCs
         // *********************************************************************************************************
+#ifdef DEBUG
+        std::cout<<"\n\n *** Testing Transformation Matrix For Each Link to Origin For A Range of GCs *** ";
+#endif
         for (double a=-3.14;a<3.14;a+=gcstep)
           for (double b=-3.14;b<3.14;b+=gcstep)
             for (double c=-3.14;c<3.14;c+=gcstep)
@@ -314,6 +321,9 @@ namespace scl_test
         // *********************************************************************************************************
         //                                         Test Com Jacobians
         // *********************************************************************************************************
+#ifdef DEBUG
+        std::cout<<"\n\n *** Testing center of mass Jacobians *** ";
+#endif
         // Set up variables.
         Eigen::MatrixXd Jcom_scl, Jcom_anlyt;
         Eigen::VectorXd pos;
@@ -347,7 +357,7 @@ namespace scl_test
 
           if (false==flag)
           {
-            std::cout<<"\n\nCom pos: "<<rbd.link_ds_->com_.transpose();
+            std::cout<<"\nCom pos: "<<rbd.link_ds_->com_.transpose();
             std::cout<<"\nScl Jcom_"<<link_name<<":\n"<<Jcom_scl;
             std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
             throw(std::runtime_error("Scl and analytic Jacobians don't match."));
@@ -355,7 +365,7 @@ namespace scl_test
           else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl com Jacobians match for zero position : "<<link_name;  }
 
 #ifdef DEBUG
-          std::cout<<"\n\nCom pos: "<<rbd.link_ds_->com_.transpose();
+          std::cout<<"\nCom pos: "<<rbd.link_ds_->com_.transpose();
           std::cout<<"\nScl Jcom_"<<link_name<<":\n"<<Jcom_scl;
           std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
 #endif
