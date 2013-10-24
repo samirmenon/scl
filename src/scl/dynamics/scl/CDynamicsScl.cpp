@@ -53,55 +53,31 @@ namespace scl
     bool flag = true;
     const Eigen::VectorXd &q = arg_sensor_data->q_;
     const Eigen::VectorXd &dq = arg_sensor_data->dq_;
+    sutil::CMappedTree<std::string, SRigidBodyDyn> &rbtree = arg_gc_model->link_ds_;
+
+    //0. Update the coordinates
+    arg_gc_model->q_ = q;
+    arg_gc_model->dq_ = dq;
 
     //1. Update the transformation matrices. Everything else depends on it.
-    sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
-    for(it = arg_gc_model->link_ds_.begin(), ite = arg_gc_model->link_ds_.end();
-        it!=ite; ++it)
-    {// Loop over all the links.
-      SRigidBodyDyn &rbd = *it;
-      const SRigidBody &rb = *(it->link_ds_);
-      int i = rbd.link_ds_->link_id_;
-      flag = flag && sclTransform(rbd.T_lnk_, rb.pos_in_parent_, q(i), rb.joint_type_);
-    }
-    if(false == flag)
-    { return false; }
+    flag = flag && updateTransformationMatrices(rbtree, q);
 
     //2. Update the com Jacobians.
-    for(it = arg_gc_model->link_ds_.begin(), ite = arg_gc_model->link_ds_.end();
-        it!=ite; ++it)
-    {// Loop over all the links.
-      SRigidBodyDyn &rbd = *it;
-      const SRigidBody &rb = *(it->link_ds_);
-      int i = rbd.link_ds_->link_id_;
+    sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
+    for(it = rbtree.begin(), ite = rbtree.end(); it!=ite; ++it)
+    { flag = flag && calculateJacobian(it->J_com_,*it, q, it->link_ds_->com_,false); }
 
-      //For each link, set the Jacobian to zero. Then iterate over parents
-      //and set each column of J to its correct value
-      const SRigidBodyDyn* tmp = &rbd;
-      while( (NULL != tmp) && (false == tmp->link_ds_->is_root_) )
-      {//Abort if root
-        //Get the id to fill the Jacobian column
-        int icol = tmp->link_ds_->link_id_;
-        //J_Col = R_o_lnk * dtheta;
-        switch(tmp->link_ds_->joint_type_)
-        {
-          case JOINT_TYPE_REVOLUTE_X:
-            rbd.J_com_.col(icol) = tmp->T_o_lnk_.rotation() * Eigen::Vector3d::UnitX();
-            break;
+    //3. Update A and Ainv_
+    //arg_gc_model->A_ =
+    //arg_gc_model->Ainv_
 
-          case JOINT_TYPE_REVOLUTE_Y:
-            rbd.J_com_.col(icol) = tmp->T_o_lnk_.rotation() * Eigen::Vector3d::UnitY();
-            break;
+    //4. Update b_
+    //arg_gc_model->b_
 
-          case JOINT_TYPE_REVOLUTE_Z:
-            rbd.J_com_.col(icol) = tmp->T_o_lnk_.rotation() * Eigen::Vector3d::UnitZ();
-            break;
-          default:
-            break;
-        }
-      }
-    }
-    return true;
+    //5. Update g_
+    //arg_gc_model->g_
+
+    return flag;
   }
 
   /** Calculates the Transformation Matrix for the robot to which
@@ -181,10 +157,7 @@ namespace scl
     }
 
     if(S_NULL == arg_ancestor && false == arg_link.link_ds_->is_root_)//Updated link to origin.
-    {
-      arg_link.T_o_lnk_ = arg_T;
-      arg_link.q_T_o_ = arg_q(arg_link.link_ds_->link_id_);
-    }
+    { arg_link.T_o_lnk_ = arg_T; }
 
     return flag;
   }
