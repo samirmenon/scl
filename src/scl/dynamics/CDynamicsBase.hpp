@@ -163,7 +163,9 @@ public:
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q,
+      /** The current generalized velocities. */
+      const Eigen::VectorXd& arg_dq)
   { return false; }
 
   /** Gets the robot's potential energy */
@@ -182,7 +184,8 @@ public:
    * 2. Using inefficient repeated string based
    *    lookup (usually with maps)
    */
-  virtual const void* getIdForLink(std::string arg_link_name)=0;
+  virtual const void* getIdForLink(std::string arg_link_name)
+  { return NULL;  }
 
   /* *******************************************************************
    *                      Initialization functions.
