@@ -140,7 +140,7 @@ public:
    * The Jacobian is specified by a link and an offset (in task space
    * dimensions)from that link.
    */
-  sBool calculateJacobian(
+  sBool computeJacobian(
       /** The Jacobain will be saved here. */
       Eigen::MatrixXd& arg_J,
       /** The link at which the Jacobian is to be calculated */
@@ -158,6 +158,70 @@ public:
   { return false; }
 
   /* *******************************************************************
+   *                      Dynamics Helper functions.
+   * ******************************************************************* */
+  /** Updates the center of mass Jacobians for the robot  to which
+   * this dynamics object is assigned.
+   *      dx_com_origin_coords = tree_link.J_com_ * dq */
+  inline sBool computeJacobianComForAllLinks(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  {
+    if(false == has_been_init_){  return false; }
+    bool flag = true; sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
+    //Update the com Jacobians.
+    for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
+    { flag = flag && computeJacobian(it->J_com_,*it, arg_q, it->link_ds_->com_,false); }
+    return flag;
+  }
+
+  /** Updates the generalized inertia for the robot  to which
+   * this dynamics object is assigned.
+   *      Mgc = sum_link_i [ J_com_' * M_com_i * J_com_] */
+  inline sBool computeInertiaGC(Eigen::MatrixXd &ret_Mgc,
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  {
+    if(false == has_been_init_){  return false; }
+    bool flag = true; sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
+    int dof = robot_parsed_data_->dof_;
+    ret_Mgc.setZero(dof, dof);//Set the generalized inertia to zero.
+    for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
+    {//Compute each link's contribution to the overall Mgc
+      if(it->link_ds_->is_root_){ continue;  }//Root doesn't move
+      ret_Mgc += it->link_ds_->mass_ * (it->J_com_.block(0,0,3,dof).transpose() * it->J_com_.block(0,0,3,dof));
+      ret_Mgc += it->J_com_.block(3,0,3,dof).transpose() * it->link_ds_->inertia_ * it->J_com_.block(3,0,3,dof);
+    }
+    return flag;
+  }
+
+  /** Updates the center of mass Jacobians for the robot  to which
+   * this dynamics object is assigned.
+   *      dx_com_origin_coords = tree_link.J_com_ * dq */
+  inline sBool computeForceGravityGC(Eigen::VectorXd &ret_FgravGC,
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  {
+    if(false == has_been_init_){  return false; }
+    bool flag = true; sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
+    //Update the generalized gravity force vector.
+    int dof = robot_parsed_data_->dof_;
+    ret_FgravGC.setZero(dof);
+    for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
+    {
+      if(it->link_ds_->is_root_){ continue;  }//Root doesn't experience gravity
+      ret_FgravGC += it->J_com_.transpose() * robot_parsed_data_->gravity_;
+    }
+    return flag;
+  }
+
+  /* *******************************************************************
    *                      Dynamics State functions.
    * ******************************************************************* */
   /** Gets the robot's kinetic energy */
@@ -165,16 +229,16 @@ public:
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
-  { return false; }
+      const Eigen::VectorXd& arg_q,
+      /** The current generalized velocities. */
+      const Eigen::VectorXd& arg_dq);
 
   /** Gets the robot's potential energy */
   virtual sFloat computeEnergyPotential(
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
-  { return false; }
+      const Eigen::VectorXd& arg_q);
 
   /* *******************************************************************
    *                      Initialization functions.

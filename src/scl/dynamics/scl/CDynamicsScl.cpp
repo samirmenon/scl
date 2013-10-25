@@ -63,32 +63,17 @@ namespace scl
     flag = flag && updateTransformationMatrices(rbtree, q);
 
     //2. Update the com Jacobians.
-    sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
-    for(it = rbtree.begin(), ite = rbtree.end(); it!=ite; ++it)
-    { flag = flag && computeJacobian(it->J_com_,*it, q, it->link_ds_->com_,false); }
+    flag = flag && computeJacobianComForAllLinks(arg_gc_model->link_ds_,arg_sensor_data->q_);
 
-    //3. Update A and Ainv_
-    // NOTE TODO : Implement a more efficient way to do this.
-    int dof = robot_parsed_data_->dof_;
-    arg_gc_model->A_.setZero(dof, dof);
-    for(it = rbtree.begin(), ite = rbtree.end(); it!=ite; ++it)
-    {
-      if(it->link_ds_->is_root_){ continue;  }//Root doesn't move
-      arg_gc_model->A_ += it->link_ds_->mass_ * (it->J_com_.block(0,0,3,dof).transpose() * it->J_com_.block(0,0,3,dof));
-      arg_gc_model->A_ += it->J_com_.block(3,0,3,dof).transpose() * it->link_ds_->inertia_ * it->J_com_.block(3,0,3,dof);
-    }
+    //3. Update generalized inertia and its inverse
+    flag = flag && computeInertiaGC(arg_gc_model->A_, arg_gc_model->link_ds_, arg_sensor_data->q_);
     arg_gc_model->Ainv_ = arg_gc_model->A_.inverse(); //A is always invertible.
 
     //4. Update b_
     //arg_gc_model->b_
 
-    //5. Update g_
-    arg_gc_model->g_.setZero(dof);
-    for(it = rbtree.begin(), ite = rbtree.end(); it!=ite; ++it)
-    {
-      if(it->link_ds_->is_root_){ continue;  }//Root doesn't experience gravity
-      arg_gc_model->g_ += it->J_com_.transpose() * robot_parsed_data_->gravity_;
-    }
+    //5. Update the generalized gravity force
+    flag = flag && computeForceGravityGC(arg_gc_model->g_, arg_gc_model->link_ds_, arg_sensor_data->q_);
 
     return flag;
   }
@@ -301,6 +286,77 @@ namespace scl
     }//End of while loop moving up the rigid body dyn tree
 
     return flag;
+  }
+
+
+  /** Gets the robot's kinetic energy */
+  sFloat CDynamicsScl::computeEnergyKinetic(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q,
+      /** The current generalized velocities. */
+      const Eigen::VectorXd& arg_dq)
+  {
+    if(false == has_been_init_) { return std::numeric_limits<sFloat>::quiet_NaN(); }
+#ifdef DEBUG
+    if(arg_q.rows() != static_cast<int>(arg_tree.size())-1 || arg_q.rows() != arg_dq.rows())
+    { return std::numeric_limits<sFloat>::quiet_NaN(); }
+#endif
+
+    bool flag; sFloat ret_ke = 0.0;
+    int dof = arg_q.rows();
+
+    // Update transformations for computing the Jacobians, which are used to compute KE
+    flag = updateTransformationMatrices(arg_tree, arg_q);
+    flag = flag && computeJacobianComForAllLinks(arg_tree,arg_q);
+    if(false == flag){ return std::numeric_limits<sFloat>::quiet_NaN(); }
+
+    // Compute kinetic energy
+    sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
+    for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
+    {// Walk over all links.
+      if(it->link_ds_->is_root_){ continue;  }//Root doesn't move
+      // Kinetic energy at the link due to translation.
+      ret_ke += it->link_ds_->mass_ * (arg_dq.transpose() * it->J_com_.block(0,0,3,dof).transpose())
+                  * (it->J_com_.block(0,0,3,dof) * arg_dq);
+      // Kinetic energy at the link due to rotation.
+      ret_ke += (arg_dq.transpose() * it->J_com_.block(3,0,3,dof).transpose())
+                  * it->link_ds_->inertia_
+                  * (it->J_com_.block(3,0,3,dof)*arg_dq);
+    }
+
+    return ret_ke;
+  }
+
+  /** Gets the robot's potential energy */
+  sFloat CDynamicsScl::computeEnergyPotential(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  {
+    if(false == has_been_init_) { return std::numeric_limits<sFloat>::quiet_NaN(); }
+#ifdef DEBUG
+    if(arg_q.rows() != static_cast<int>(arg_tree.size())-1)
+    { return std::numeric_limits<sFloat>::quiet_NaN(); }
+#endif
+
+    sFloat ret_pe = 0.0;
+
+    // Update transformations, which are necessary to find the com vectors in Origin coords
+    if(false == updateTransformationMatrices(arg_tree, arg_q))
+    { return std::numeric_limits<sFloat>::quiet_NaN(); }
+
+    sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
+    for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
+    {
+      if(it->link_ds_->is_root_){ continue;  }//Root doesn't experience gravity
+      ret_pe += it->link_ds_->mass_ * static_cast<double>((it->T_o_lnk_ * it->link_ds_->com_).transpose()
+          * robot_parsed_data_->gravity_);
+    }
+
+    return ret_pe;
   }
 
 
