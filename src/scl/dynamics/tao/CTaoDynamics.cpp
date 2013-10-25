@@ -280,7 +280,7 @@ namespace scl
       tmp_lnk_com = it->T_o_lnk_ * it->link_ds_->com_;
       tmp_lnk_com *= it->link_ds_->mass_;
       arg_gc_model->pos_com_ += tmp_lnk_com;
-      if ( ! calculateJacobian(it->link_dynamic_id_, tmp_lnk_com ,it->J_com_)) {
+      if ( ! computeJacobian_Depracated(it->link_dynamic_id_, tmp_lnk_com ,it->J_com_)) {
         fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Could not compute the com Jacobian at link : %s\n",it->name_.c_str());
         return false;
       }
@@ -326,7 +326,7 @@ namespace scl
     return true;
   }
 
-  sBool CTaoDynamics::calculateJacobian(
+  sBool CTaoDynamics::computeJacobian_Depracated(
       const void* arg_link_id,
       const Eigen::VectorXd& arg_pos_global,
       Eigen::MatrixXd& arg_J)

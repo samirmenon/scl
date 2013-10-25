@@ -237,7 +237,7 @@ bool CTaskOpPos::computeModel()
     dynamics_->computeTransform_Depracated(data_->link_dynamic_id_,T);
     Eigen::Vector3d pos = T * data_->pos_in_parent_;
 
-    flag = flag && dynamics_->calculateJacobian(
+    flag = flag && dynamics_->computeJacobian_Depracated(
         data_->link_dynamic_id_,pos,data_->jacobian_);
 
     //Use the position jacobian only. This is an op-point task.

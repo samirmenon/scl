@@ -482,7 +482,7 @@ namespace scl_test
         if(it->is_root_) { continue; }
 
         pos = it->com_;
-        flag = dynamics->calculateJacobian(dynamics->getIdForLink(link_name),pos,Jcom_tao);
+        flag = dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),pos,Jcom_tao);
         if (false==flag) { throw(std::runtime_error("Failed to compute tao com Jacobian."));  }
 
         flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
@@ -545,7 +545,7 @@ namespace scl_test
             {
               // Skip the root node (all matrices are zero).
               if(it->is_root_) { continue; }
-              dynamics->calculateJacobian(dynamics->getIdForLink(link_name),it->com_,Jcom_tao);
+              dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),it->com_,Jcom_tao);
             }
           }
       t2 = sutil::CSystemClock::getSysTime();

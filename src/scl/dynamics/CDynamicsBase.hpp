@@ -98,7 +98,7 @@ public:
    * Uses id based link lookup. The dynamics implementation should
    * support this (maintain a map or something).
    */
-  virtual sBool calculateJacobian(
+  virtual sBool computeJacobian_Depracated(
       /** The link at which the Jacobian is to be calculated */
       const void* arg_link_id,
       /** The offset from the link's frame (in global coordinates). */

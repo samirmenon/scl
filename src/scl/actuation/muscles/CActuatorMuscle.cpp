@@ -226,7 +226,7 @@ namespace scl
         tmp_pt_set.x_glob_0_ = T * tmp_pt_set.position_in_parent_0_;
 
         //1.c.0: Compute Jacobians at the via points.
-        flag = flag && dynamics_->calculateJacobian(tmp_pt_set.dynamics_link_id_0_, tmp_pt_set.x_glob_0_, tmp_pt_set.J_0_);
+        flag = flag && dynamics_->computeJacobian_Depracated(tmp_pt_set.dynamics_link_id_0_, tmp_pt_set.x_glob_0_, tmp_pt_set.J_0_);
         //Use the position jacobian only. This is a point task.
         tmp_pt_set.J_0_ = tmp_pt_set.J_0_.block(0,0,3,robot_->dof_);
       }
@@ -237,7 +237,7 @@ namespace scl
         tmp_pt_set.x_glob_1_ = T * tmp_pt_set.position_in_parent_1_;
 
         //1.c.1: Compute Jacobians at the via points.
-        flag = flag && dynamics_->calculateJacobian(tmp_pt_set.dynamics_link_id_1_, tmp_pt_set.x_glob_1_, tmp_pt_set.J_1_);
+        flag = flag && dynamics_->computeJacobian_Depracated(tmp_pt_set.dynamics_link_id_1_, tmp_pt_set.x_glob_1_, tmp_pt_set.J_1_);
         //Use the position jacobian only. This is a point task.
         tmp_pt_set.J_1_ = tmp_pt_set.J_1_.block(0,0,3,robot_->dof_);
       }
