@@ -143,10 +143,10 @@ namespace scl
         const sFloat arg_time_interval);
 
     /** Gets the robot's kinetic energy */
-    virtual sFloat getKineticEnergy();
+    virtual sFloat getKineticEnergy_Depracated();
 
     /** Gets the robot's potential energy */
-    virtual sFloat getPotentialEnergy();
+    virtual sFloat getPotentialEnergy_Depracated();
 
     /** Constructor : Sets defaults */
     CSimbodyDynamics();

@@ -331,14 +331,14 @@ namespace scl
   }
 
   /** Gets the robot's kinetic energy */
-  sFloat CSimbodyDynamics::getKineticEnergy()
+  sFloat CSimbodyDynamics::getKineticEnergy_Depracated()
   {
     //NOTE TODO : Implement this later.
     return false;
   }
 
   /** Gets the robot's potential energy */
-  sFloat CSimbodyDynamics::getPotentialEnergy()
+  sFloat CSimbodyDynamics::getPotentialEnergy_Depracated()
   {
     //NOTE TODO : Implement this later.
     return false;

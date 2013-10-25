@@ -73,40 +73,9 @@ public:
             centrifugal/coriolis gravity estimates.*/
       SGcModel * arg_gc_model)=0;
 
-  /** Calculates a Transformation Matrix for some link on the robot to which
-   * this dynamics object is assigned.
-   *
-   * The Transformation Matrix performs the operation:
-   *
-   *           x_global_coords = T * x_link_coords
-   *
-   * Uses id based link lookup. The dynamics implementation should
-   * support this (maintain a map or something).
-   */
-  virtual sBool computeTransform_Depracated(
-      /** The link at which the transformation matrix is to be calculated */
-      const void* arg_link_id,
-      /** The transformation matrix will be saved here. */
-      Eigen::Affine3d& arg_T)
-  { return false; }
-
-  /** Calculates the Jacobian for the robot to which this dynamics
-   * object is assigned.
-   *
-   * The Jacobian is specified by a link and an offset (in task space
-   * dimensions)from that link
-   *
-   * Uses id based link lookup. The dynamics implementation should
-   * support this (maintain a map or something).
-   */
-  virtual sBool computeJacobian_Depracated(
-      /** The link at which the Jacobian is to be calculated */
-      const void* arg_link_id,
-      /** The offset from the link's frame (in global coordinates). */
-      const Eigen::VectorXd& arg_pos_global,
-      /** The Jacobain will be saved here. */
-      Eigen::MatrixXd& arg_J)
-  { return false; }
+  /* *******************************************************************
+   *                      Integrator functions.
+   * ******************************************************************* */
 
   /** Calculates the collision forces for the robot to which this dynamics
    * object is assigned.
@@ -150,14 +119,6 @@ public:
   /* *******************************************************************
    *                      Dynamics State functions.
    * ******************************************************************* */
-  /** Gets the robot's kinetic energy */
-  virtual sFloat getKineticEnergy()
-  { return false; }
-
-  /** Gets the robot's potential energy */
-  virtual sFloat getPotentialEnergy()
-  { return false; }
-
   /** Gets the robot's kinetic energy */
   virtual sFloat computeEnergyKinetic(
       /** The tree for which the transformation matrices are to be updated */
@@ -210,6 +171,53 @@ public:
 
   /** Initialization state */
   virtual sBool hasBeenInit() {  return has_been_init_;  }
+
+
+  /* *******************************************************************
+   *                      Depracated functions.
+   * ******************************************************************* */
+  /** Calculates a Transformation Matrix for some link on the robot to which
+   * this dynamics object is assigned.
+   *
+   * The Transformation Matrix performs the operation:
+   *
+   *           x_global_coords = T * x_link_coords
+   *
+   * Uses id based link lookup. The dynamics implementation should
+   * support this (maintain a map or something).
+   */
+  virtual sBool computeTransform_Depracated(
+      /** The link at which the transformation matrix is to be calculated */
+      const void* arg_link_id,
+      /** The transformation matrix will be saved here. */
+      Eigen::Affine3d& arg_T)
+  { return false; }
+
+  /** Calculates the Jacobian for the robot to which this dynamics
+   * object is assigned.
+   *
+   * The Jacobian is specified by a link and an offset (in task space
+   * dimensions)from that link
+   *
+   * Uses id based link lookup. The dynamics implementation should
+   * support this (maintain a map or something).
+   */
+  virtual sBool computeJacobian_Depracated(
+      /** The link at which the Jacobian is to be calculated */
+      const void* arg_link_id,
+      /** The offset from the link's frame (in global coordinates). */
+      const Eigen::VectorXd& arg_pos_global,
+      /** The Jacobain will be saved here. */
+      Eigen::MatrixXd& arg_J)
+  { return false; }
+
+  /** Gets the robot's kinetic energy */
+  virtual sFloat getKineticEnergy_Depracated()
+  { return false; }
+
+  /** Gets the robot's potential energy */
+  virtual sFloat getPotentialEnergy_Depracated()
+  { return false; }
 
 protected:
   /** True if the dynamics object has been initialized for a given

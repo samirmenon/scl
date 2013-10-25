@@ -454,7 +454,7 @@ namespace scl
   /**
    * Gets the robot's kinetic energy
    */
-  sFloat CTaoDynamics::getKineticEnergy()
+  sFloat CTaoDynamics::getKineticEnergy_Depracated()
   {
     sFloat ke = taoDynamics::kineticEnergy(tao_tree_q_dq_root_);
     return ke;
@@ -463,7 +463,7 @@ namespace scl
   /**
    * Gets the robot's potential energy
    */
-  sFloat CTaoDynamics::getPotentialEnergy()
+  sFloat CTaoDynamics::getPotentialEnergy_Depracated()
   {
     if (gravity_.norm()<0.0001)
     { return 0; }

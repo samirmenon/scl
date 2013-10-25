@@ -135,8 +135,8 @@ namespace scl_test
       if(false == flag)
       { throw(std::runtime_error("Could not integrate with the dynamics engine"));  }
 
-      ke[0] = dynamics->getKineticEnergy(); //Now you can get the energies
-      pe[0] = dynamics->getPotentialEnergy();
+      ke[0] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
+      pe[0] = dynamics->getPotentialEnergy_Depracated();
       if(0.001 > fabs(pe[0]))
       { throw(std::runtime_error("Zero potential energy at start."));  }
 
@@ -149,10 +149,10 @@ namespace scl_test
       }
       t2 = sutil::CSystemClock::getSysTime();
 
-      ke[1] = dynamics->getKineticEnergy(); //Now you can get the energies
+      ke[1] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
       if(0.001 > fabs(ke[1]))
       { throw(std::runtime_error("Zero kinetic energy after dynamics simulation."));  }
-      pe[1] = dynamics->getPotentialEnergy();
+      pe[1] = dynamics->getPotentialEnergy_Depracated();
       if(0.001 > fabs(pe[1]))
       { throw(std::runtime_error("Zero potential energy after dynamics simulation."));  }
 
@@ -164,8 +164,8 @@ namespace scl_test
 
       //Now stress test the setup -- Only in release mode.
 #ifndef DEBUG
-      ke[0] = dynamics->getKineticEnergy(); //Now you can get the energies
-      pe[0] = dynamics->getPotentialEnergy();
+      ke[0] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
+      pe[0] = dynamics->getPotentialEnergy_Depracated();
 
       imax = 20000;
       tstep = 0.0001;
@@ -176,8 +176,8 @@ namespace scl_test
       }
       t2 = sutil::CSystemClock::getSysTime();
 
-      ke[1] = dynamics->getKineticEnergy(); //Now you can get the energies
-      pe[1] = dynamics->getPotentialEnergy();
+      ke[1] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
+      pe[1] = dynamics->getPotentialEnergy_Depracated();
       energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
       std::cout<<"\nTest Result ("<<r_id++<<") Initial Energy : "<<(ke[0]+pe[0])
                                        <<". Final Energy : "<<(ke[1]+pe[1])<<". Error : "<<energy_err;

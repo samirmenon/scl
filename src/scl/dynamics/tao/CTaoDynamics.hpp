@@ -161,10 +161,10 @@ namespace scl
      *                      Dynamics State functions.
      * ******************************************************************* */
     /** Gets the robot's kinetic energy */
-    virtual sFloat getKineticEnergy();
+    virtual sFloat getKineticEnergy_Depracated();
 
     /** Gets the robot's potential energy */
-    virtual sFloat getPotentialEnergy();
+    virtual sFloat getPotentialEnergy_Depracated();
 
     /** Sets the generalized coordinates
      *

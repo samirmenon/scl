@@ -154,8 +154,8 @@ int main(int argc, char** argv)
       flag = tao_dyn.integrate((*rob_io_ds),scl::CDatabase::getData()->sim_dt_); //Need to integrate once to flush the state
       if(false == flag)
       { throw(std::runtime_error("Could not integrate with the dynamics engine"));  }
-      ke[0] = tao_dyn.getKineticEnergy(); //Now you can get the energies
-      pe[0] = tao_dyn.getPotentialEnergy();
+      ke[0] = tao_dyn.getKineticEnergy_Depracated(); //Now you can get the energies
+      pe[0] = tao_dyn.getPotentialEnergy_Depracated();
 
       scl::sLongLong gr_ctr=0;//Graphics computation counter
 
@@ -193,8 +193,8 @@ int main(int argc, char** argv)
       t_end = sutil::CSystemClock::getSysTime();
 
       /****************************Print Collected Statistics*****************************/
-      ke[1] = tao_dyn.getKineticEnergy(); //Now you can get the energies
-      pe[1] = tao_dyn.getPotentialEnergy();
+      ke[1] = tao_dyn.getKineticEnergy_Depracated(); //Now you can get the energies
+      pe[1] = tao_dyn.getPotentialEnergy_Depracated();
       scl::sFloat energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
       std::cout<< "\n\nSimulation Statistics:\nInitial Energy: "<<(ke[0]+pe[0])
                <<". Final Energy : "<<(ke[1]+pe[1])<<". Error: "<<energy_err;
