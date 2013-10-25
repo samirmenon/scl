@@ -147,6 +147,9 @@ namespace scl_test
         if(S_NULL == io_ds)
         { throw(std::runtime_error("Could not find the robot's I/O data structure in the database"));  }
 
+        //Easier access.
+        Eigen::VectorXd &q = io_ds->sensors_.q_;
+
         //******************* Now test the actual implementation ******************
         io_ds->sensors_.q_.setZero(3);
         io_ds->sensors_.dq_.setZero(3);
@@ -182,7 +185,7 @@ namespace scl_test
           // Skip the root node (all matrices are zero).
           if(it->link_ds_->is_root_) { continue; }
 
-          flag = dynamics.computeTransform(*it,io_ds->sensors_.q_);
+          flag = dynamics.computeTransform(*it,q);
           if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
           Tscl = it->T_lnk_;
 
@@ -190,7 +193,7 @@ namespace scl_test
           if(it->parent_addr_->link_ds_->is_root_)
           { Tscl = it->parent_addr_->T_lnk_ * Tscl;}
 
-          flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, it->link_ds_->link_id_,
+          flag = dyn_anlyt.calculateTransformationMatrix(q, it->link_ds_->link_id_,
               it->link_ds_->link_id_-1/**NOTE: Trf to parent, not root*/, Tanlyt);
           if (false==flag) {
             throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));
@@ -227,9 +230,7 @@ namespace scl_test
           for (double b=-3.14;b<3.14;b+=gcstep)
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
-              io_ds->sensors_.q_(0) = a;
-              io_ds->sensors_.q_(1) = b;
-              io_ds->sensors_.q_(2) = c;
+              q << a, b, c;
 
               for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
                   it!=ite; ++it)
@@ -240,7 +241,7 @@ namespace scl_test
                 // Skip the root node (all matrices are zero).
                 if(it->link_ds_->is_root_) { continue; }
 
-                flag = dynamics.computeTransform(*it,io_ds->sensors_.q_);
+                flag = dynamics.computeTransform(*it,q);
                 if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
                 Tscl = it->T_lnk_;
 
@@ -248,7 +249,7 @@ namespace scl_test
                 if(it->parent_addr_->link_ds_->is_root_)
                 { Tscl = it->parent_addr_->T_lnk_ * Tscl;}
 
-                flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, it->link_ds_->link_id_,
+                flag = dyn_anlyt.calculateTransformationMatrix(q, it->link_ds_->link_id_,
                     it->link_ds_->link_id_-1/**NOTE: Trf to parent, not root*/, Tanlyt);
                 if (false==flag) {
                   throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));
@@ -260,7 +261,7 @@ namespace scl_test
 
                 if (false==flag)
                 {
-                  std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+                  std::cout<<"\nGeneralized Coordinates: "<<q.transpose();
                   std::cout<<"\nScl transform Org->"<<link_name<<":\n"<<Tscl.matrix();
                   std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
                   throw(std::runtime_error("Scl and analytic transformation matrices don't match."));
@@ -281,9 +282,7 @@ namespace scl_test
           for (double b=-3.14;b<3.14;b+=gcstep)
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
-              io_ds->sensors_.q_(0) = a;
-              io_ds->sensors_.q_(1) = b;
-              io_ds->sensors_.q_(2) = c;
+              q << a, b, c;
 
               for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
                   it!=ite; ++it)
@@ -294,10 +293,10 @@ namespace scl_test
                 // Skip the root node (all matrices are zero).
                 if(it->link_ds_->is_root_) { continue; }
 
-                flag = dynamics.computeTransformToAncestor(Tscl, *it, NULL, io_ds->sensors_.q_);
+                flag = dynamics.computeTransformToAncestor(Tscl, *it, NULL, q);
                 if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
 
-                flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, it->link_ds_->link_id_,
+                flag = dyn_anlyt.calculateTransformationMatrix(q, it->link_ds_->link_id_,
                     -1/**NOTE: Trf to root*/, Tanlyt);
                 if (false==flag) {
                   throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));
@@ -309,7 +308,7 @@ namespace scl_test
 
                 if (false==flag)
                 {
-                  std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+                  std::cout<<"\nGeneralized Coordinates: "<<q.transpose();
                   std::cout<<"\nScl transform Org->"<<link_name<<":\n"<<Tscl.matrix();
                   std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
                   throw(std::runtime_error("Scl and analytic transformation matrices to origin don't match."));
@@ -332,9 +331,7 @@ namespace scl_test
         pos.setZero(3);
 
         // Set gcs to zero
-        io_ds->sensors_.q_(0) = 0.0;
-        io_ds->sensors_.q_(1) = 0.0;
-        io_ds->sensors_.q_(2) = 0.0;
+        q << 0.0, 0.0, 0.0;
 
         for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
             it!=ite; ++it)
@@ -347,10 +344,10 @@ namespace scl_test
           if(rbd.link_ds_->is_root_) { continue; }
 
           pos = rbd.link_ds_->com_;
-          flag = dynamics.computeJacobian(Jcom_scl, *it, io_ds->sensors_.q_, pos);
+          flag = dynamics.computeJacobian(Jcom_scl, *it, q, pos);
           if (false==flag) { throw(std::runtime_error("Failed to compute scl com Jacobian."));  }
 
-          flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
+          flag = dyn_anlyt.computeJcom(q, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
           if (false==flag) { throw(std::runtime_error("Failed to compute analytic com Jacobian."));  }
 
           for(int i=0; i<3; i++)
@@ -385,11 +382,9 @@ namespace scl_test
           for (double b=-3.14;b<3.14;b+=gcstep)
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
-              io_ds->sensors_.q_(0) = a;
-              io_ds->sensors_.q_(1) = b;
-              io_ds->sensors_.q_(2) = c;
+              q << a, b ,c;
 
-              flag = dynamics.updateTransformationMatrices(rob_gc_model.link_ds_,io_ds->sensors_.q_);
+              flag = dynamics.updateTransformationMatrices(rob_gc_model.link_ds_,q);
               if (false==flag) { throw(std::runtime_error("Failed to update transformation matrices."));  }
 
               for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
@@ -403,10 +398,10 @@ namespace scl_test
                 if(rbd.link_ds_->is_root_) { continue; }
 
                 pos = rbd.link_ds_->com_;
-                flag = dynamics.computeJacobian(Jcom_scl, *it, io_ds->sensors_.q_, pos, false);
+                flag = dynamics.computeJacobian(Jcom_scl, *it, q, pos, false);
                 if (false==flag) { throw(std::runtime_error("Failed to compute scl com Jacobian."));  }
 
-                flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
+                flag = dyn_anlyt.computeJcom(q, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
                 if (false==flag) { throw(std::runtime_error("Failed to compute analytic com Jacobian."));  }
 
                 for(int i=0; i<3; i++)
@@ -415,7 +410,7 @@ namespace scl_test
 
                 if (false==flag)
                 {
-                  std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+                  std::cout<<"\nGeneralized Coordinates: "<<q.transpose();
                   std::cout<<"\nCom pos: "<<rbd.link_ds_->com_.transpose();
                   std::cout<<"\nScl Jcom_"<<link_name<<":\n"<<Jcom_scl;
                   std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
@@ -439,12 +434,12 @@ namespace scl_test
           for (double b=-3.14;b<3.14;b+=gcstep)
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
-              io_ds->sensors_.q_<<a,b,c;
+              q<<a,b,c;
               for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
                   it!=ite; ++it)
               {
                 if(it->link_ds_->is_root_) { continue; } // Skip the root node (all matrices are zero).
-                dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(it->name_), Jcom_anlyt);
+                dyn_anlyt.computeJcom(q, dyn_anlyt.getIdForLink(it->name_), Jcom_anlyt);
               }
             }
         t2 = sutil::CSystemClock::getSysTime();
@@ -458,14 +453,14 @@ namespace scl_test
           for (double b=-3.14;b<3.14;b+=gcstep)
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
-              io_ds->sensors_.q_<<a,b,c;
-              flag = dynamics.updateTransformationMatrices(rob_gc_model.link_ds_,io_ds->sensors_.q_);
+              q<<a,b,c;
+              flag = dynamics.updateTransformationMatrices(rob_gc_model.link_ds_,q);
               for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
                   it!=ite; ++it)
               {
                 // Skip the root node (all matrices are zero).
                 if(it->link_ds_->is_root_) { continue; }
-                dynamics.computeJacobian(Jcom_scl, *it, io_ds->sensors_.q_, it->link_ds_->com_, false);
+                dynamics.computeJacobian(Jcom_scl, *it, q, it->link_ds_->com_, false);
               }
             }
         t2 = sutil::CSystemClock::getSysTime();
@@ -484,7 +479,7 @@ namespace scl_test
         flag = dynamics.computeGCModel(&(io_ds->sensors_),&rob_gc_model);
         if (false==flag) { throw(std::runtime_error("Failed to compute scl model matrices (for generalized inertia)."));  }
 
-        flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
+        flag = dyn_anlyt.computeMgc(q, Mgc_anlyt);
         if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
 
         for(int i=0; i<3; i++)
@@ -511,14 +506,12 @@ namespace scl_test
           for (double b=-3.14;b<3.14;b+=gcstep)
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
-              io_ds->sensors_.q_(0) = a;
-              io_ds->sensors_.q_(1) = b;
-              io_ds->sensors_.q_(2) = c;
+              q << a, b, c;
 
               flag = dynamics.computeGCModel(&(io_ds->sensors_),&rob_gc_model);
               if (false==flag) { throw(std::runtime_error("Failed to compute scl model matrices (for generalized inertia)."));  }
 
-              flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
+              flag = dyn_anlyt.computeMgc(q, Mgc_anlyt);
               if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
 
               for(int i=0; i<3; i++)
@@ -527,7 +520,7 @@ namespace scl_test
 
               if (false==flag)
               {
-                std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+                std::cout<<"\nGeneralized Coordinates: "<<q.transpose();
                 std::cout<<"\nScl Mgc:\n"<<rob_gc_model.A_;
                 std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
                 throw(std::runtime_error("Scl and analytic Generalized Inertias don't match."));
@@ -536,20 +529,63 @@ namespace scl_test
         std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl Generalized Inertias match for all gcs [-pi, pi]";
 
         // *********************************************************************************************************
-        //                                Test GC Model Update Performance
+        //                                Test Mgc Update Performance
         // *********************************************************************************************************
 #ifdef DEBUG
-        std::cout<<"\n\n *** Testing GC Model update performance for a variety of GCs *** ";
+        std::cout<<"\n\n *** Testing Mgc update performance for a variety of GCs *** ";
 #endif
         gcstep = gcstep / 2.0;
+        //Test Analytic dynamics performance
+        t1 = sutil::CSystemClock::getSysTime();
+        for (double a=-3.14;a<3.14;a+=gcstep)
+          for (double b=-3.14;b<3.14;b+=gcstep)
+            for (double c=-3.14;c<3.14;c+=gcstep)
+            {
+              q<<a,b,c;
+              //1. Update the transformation matrices. Everything else depends on it.
+              dyn_anlyt.computeMgc(q,rob_gc_model.A_);
+            }
+        t2 = sutil::CSystemClock::getSysTime();
+        std::cout<<"\nTest Result ("<<r_id++<<")  Analytic Mgc update performance: "
+            <<pow(double(int(6.28/double(gcstep))),3)*3<<" updates in "<<t2-t1<<"s. \n\t\tFreq : "
+            <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
+
         //Test SCL dynamics performance
         t1 = sutil::CSystemClock::getSysTime();
         for (double a=-3.14;a<3.14;a+=gcstep)
           for (double b=-3.14;b<3.14;b+=gcstep)
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
-              io_ds->sensors_.q_<<a,b,c;
-              dynamics.computeGCModel(&(io_ds->sensors_),&rob_gc_model);
+              q<<a,b,c;
+              //1. Update the transformation matrices. Everything else depends on it.
+              dynamics.updateTransformationMatrices(rob_gc_model.link_ds_, q);
+
+              //2. Update the com Jacobians.
+              dynamics.computeJacobianComForAllLinks(rob_gc_model.link_ds_,q);
+
+              //3. Update generalized inertia
+              dynamics.computeInertiaGC(rob_gc_model.A_, rob_gc_model.link_ds_, q);
+            }
+        t2 = sutil::CSystemClock::getSysTime();
+        std::cout<<"\nTest Result ("<<r_id++<<")  Scl Mgc update performance: "
+            <<pow(double(int(6.28/double(gcstep))),3)*3<<" updates in "<<t2-t1<<"s. \n\t\tFreq : "
+            <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
+
+        // *********************************************************************************************************
+        //                                Test GC Model Update Performance
+        // *********************************************************************************************************
+#ifdef DEBUG
+        std::cout<<"\n\n *** Testing GC Model update performance for a variety of GCs *** ";
+#endif
+        //Test SCL dynamics performance
+        t1 = sutil::CSystemClock::getSysTime();
+        for (double a=-3.14;a<3.14;a+=gcstep)
+          for (double b=-3.14;b<3.14;b+=gcstep)
+            for (double c=-3.14;c<3.14;c+=gcstep)
+            {
+              q<<a,b,c;
+              //Update the GC Model
+              dynamics.computeGCModel(&(io_ds->sensors_), &rob_gc_model);
             }
         t2 = sutil::CSystemClock::getSysTime();
         std::cout<<"\nTest Result ("<<r_id++<<")  Scl model update performance: "
