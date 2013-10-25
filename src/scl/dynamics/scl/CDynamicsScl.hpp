@@ -58,7 +58,7 @@ namespace scl
   {
 public:
   /* *******************************************************************
-   *                      Computational functions.
+   *                      Overall Computational function.
    * ******************************************************************* */
     /** Updates the joint space model matrices (Everything in SGcModel).
      *
@@ -73,10 +73,13 @@ public:
           centrifugal/coriolis gravity estimates. */
       SGcModel * arg_gc_model);
 
+  /* *******************************************************************
+   *                      Coordinate Transformations
+   * ******************************************************************* */
   /** Updates the Transformation Matrices for the robot to which
    * this dynamics object is assigned.
    *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords */
-  virtual sBool updateTransformationMatrices(
+  inline virtual sBool computeTransformsForAllLinks(
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
@@ -115,6 +118,9 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q);
 
+  /* *******************************************************************
+   *                      Coordinate Jacobians
+   * ******************************************************************* */
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
    *            dx_global_origin = Jx . dq
@@ -157,9 +163,6 @@ public:
       const bool arg_recompute_transforms=true)
   { return false; }
 
-  /* *******************************************************************
-   *                      Dynamics Helper functions.
-   * ******************************************************************* */
   /** Updates the center of mass Jacobians for the robot  to which
    * this dynamics object is assigned.
    *      dx_com_origin_coords = tree_link.J_com_ * dq */
@@ -177,6 +180,9 @@ public:
     return flag;
   }
 
+  /* *******************************************************************
+   *                      Dynamics Helper functions.
+   * ******************************************************************* */
   /** Updates the generalized inertia for the robot  to which
    * this dynamics object is assigned.
    *      Mgc = sum_link_i [ J_com_' * M_com_i * J_com_] */

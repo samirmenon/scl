@@ -60,7 +60,7 @@ namespace scl
     arg_gc_model->dq_ = dq;
 
     //1. Update the transformation matrices. Everything else depends on it.
-    flag = flag && updateTransformationMatrices(rbtree, q);
+    flag = flag && computeTransformsForAllLinks(rbtree, q);
 
     //2. Update the com Jacobians.
     flag = flag && computeJacobianComForAllLinks(arg_gc_model->link_ds_,arg_sensor_data->q_);
@@ -163,7 +163,7 @@ namespace scl
   /** Updates the Transformation Matrices for the robot to which
    * this dynamics object is assigned.
    *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords */
-  sBool CDynamicsScl::updateTransformationMatrices(
+  sBool CDynamicsScl::computeTransformsForAllLinks(
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
@@ -308,7 +308,7 @@ namespace scl
     int dof = arg_q.rows();
 
     // Update transformations for computing the Jacobians, which are used to compute KE
-    flag = updateTransformationMatrices(arg_tree, arg_q);
+    flag = computeTransformsForAllLinks(arg_tree, arg_q);
     flag = flag && computeJacobianComForAllLinks(arg_tree,arg_q);
     if(false == flag){ return std::numeric_limits<sFloat>::quiet_NaN(); }
 
@@ -345,7 +345,7 @@ namespace scl
     sFloat ret_pe = 0.0;
 
     // Update transformations, which are necessary to find the com vectors in Origin coords
-    if(false == updateTransformationMatrices(arg_tree, arg_q))
+    if(false == computeTransformsForAllLinks(arg_tree, arg_q))
     { return std::numeric_limits<sFloat>::quiet_NaN(); }
 
     sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
