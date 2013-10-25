@@ -50,6 +50,7 @@ namespace scl
       const SRobotParsedData *arg_robot,
       const SRobotIOData *arg_rob_io_ds,
       const SMuscleSystem *arg_msys,
+      const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
       CDynamicsBase *arg_dynamics)
   {
     bool flag;
@@ -146,21 +147,30 @@ namespace scl
             pt_set->J_0_.setZero(3, robot_->dof_);
           }
 
-          //NOTE : These return NULL for root nodes. Need special code to handle that.
-          pt_set->dynamics_link_id_0_ = dynamics_->getIdForLink(tmp_pt_0.parent_link_);
-          pt_set->dynamics_link_id_1_ = dynamics_->getIdForLink(tmp_pt_1.parent_link_);
+          // Get the dynamic objects (used to compute the Jacobian later).
+          pt_set->rigid_body_dyn_0_ = arg_rbdtree.at_const(pt_set->parent_link_0_);
+          if(S_NULL == pt_set->rigid_body_dyn_0_)
+          { throw(std::runtime_error(std::string("Could not find link dyn object: ") + pt_set->parent_link_0_)); }
+          pt_set->rigid_body_dyn_1_ = arg_rbdtree.at_const(pt_set->parent_link_1_);
+          if(S_NULL == pt_set->rigid_body_dyn_1_)
+          { throw(std::runtime_error(std::string("Could not find link dyn object: ") + pt_set->parent_link_1_)); }
 
           // NOTE TODO : This is a quirk of tao. Each link has one dof.
+          // Ie. For now, we have a single dof between parent and child links.
           // Can be improved later. Generalize for different dynamics engines.
-          // For spherical coordinates, for instance, 3 gc ids should be returned.
+          // Spherical joints, for instance, should return 3 gc ids.
           if(0 == tmp_parent_link)
-          {
+          {//Indicate which link in the pair corresponds to the child.
             pt_set->child_link_id_ = 1;
+            // Indicate which gcs are going to be modified by the joint between
+            // the parent and child link.
             pt_set->scl_gc_id_.push_back(tmp_rb_1->link_id_);
           }
           else
-          {
+          {//Indicate which link in the pair corresponds to the child.
             pt_set->child_link_id_ = 0;
+            // Indicate which gcs are going to be modified by the joint between
+            // the parent and child link.
             pt_set->scl_gc_id_.push_back(tmp_rb_0->link_id_);
           }
         }
@@ -207,6 +217,7 @@ namespace scl
 
     //Zero the Jacobian. And get the latest gc configuration.
     ret_J.Zero(robot_->dof_);
+    data_.q_curr_ = robot_io_ds_->sensors_.q_;
     data_.dq_curr_ = robot_io_ds_->sensors_.dq_;
 
     //1. Iterate over all gc spanning muscle via-points.
@@ -221,23 +232,17 @@ namespace scl
 
       // The root never moves. x_glob_0_ is constant (computed at init) and J = all zeros.
       if(false == tmp_pt_set.is_root_0_){
-        //1.b.0: Compute point offset in global coords
-        flag = dynamics_->computeTransform_Depracated(tmp_pt_set.dynamics_link_id_0_,T);
-        tmp_pt_set.x_glob_0_ = T * tmp_pt_set.position_in_parent_0_;
-
-        //1.c.0: Compute Jacobians at the via points.
-        flag = flag && dynamics_->computeJacobian_Depracated(tmp_pt_set.dynamics_link_id_0_, tmp_pt_set.x_glob_0_, tmp_pt_set.J_0_);
+        //1.b.0: Compute Jacobians at the via points.
+        flag = flag && dynamics_->computeJacobian(tmp_pt_set.J_0_, *tmp_pt_set.rigid_body_dyn_0_,
+            data_.q_curr_, tmp_pt_set.position_in_parent_0_);
         //Use the position jacobian only. This is a point task.
         tmp_pt_set.J_0_ = tmp_pt_set.J_0_.block(0,0,3,robot_->dof_);
       }
 
       if(false == tmp_pt_set.is_root_1_){
-        //1.b.1: Compute point offset in global coords
-        flag = flag && dynamics_->computeTransform_Depracated(tmp_pt_set.dynamics_link_id_1_,T);
-        tmp_pt_set.x_glob_1_ = T * tmp_pt_set.position_in_parent_1_;
-
-        //1.c.1: Compute Jacobians at the via points.
-        flag = flag && dynamics_->computeJacobian_Depracated(tmp_pt_set.dynamics_link_id_1_, tmp_pt_set.x_glob_1_, tmp_pt_set.J_1_);
+        //1.b.1: Compute Jacobians at the via points.
+        flag = flag && dynamics_->computeJacobian(tmp_pt_set.J_1_, *tmp_pt_set.rigid_body_dyn_1_,
+            data_.q_curr_, tmp_pt_set.position_in_parent_1_);
         //Use the position jacobian only. This is a point task.
         tmp_pt_set.J_1_ = tmp_pt_set.J_1_.block(0,0,3,robot_->dof_);
       }

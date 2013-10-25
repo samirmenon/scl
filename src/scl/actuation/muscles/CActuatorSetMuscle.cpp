@@ -49,6 +49,7 @@ namespace scl
       const SRobotParsedData *arg_robot,
       const SRobotIOData *arg_rob_io_ds,
       const SMuscleSystem *arg_msys,
+      const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
       CDynamicsBase *arg_dynamics)
   {
     bool flag;
@@ -85,7 +86,7 @@ namespace scl
         if(NULL == musc)
         { throw(std::runtime_error(std::string("Could not create muscle: ")+it->name_)); }
 
-        flag = musc->init(it->name_,arg_robot, arg_rob_io_ds, arg_msys, arg_dynamics);
+        flag = musc->init(it->name_,arg_robot, arg_rob_io_ds, arg_msys, arg_rbdtree, arg_dynamics);
         if(false == flag)
         { throw(std::runtime_error(std::string("Could not initialize muscle: ")+it->name_)); }
       }

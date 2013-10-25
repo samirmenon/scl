@@ -74,7 +74,7 @@ namespace scl
       /** The generalized coordinate spanned. This determines the columns
        * of the Jacobian that we will pay attention to. Only the actuated
        * gc columns are relevant while computing the muscle Jacobian. */
-      const void* dynamics_link_id_0_, *dynamics_link_id_1_;
+      const SRigidBodyDyn* rigid_body_dyn_0_, *rigid_body_dyn_1_;
 
       /** Is one of the links root. */
       bool is_root_0_, is_root_1_;
@@ -90,7 +90,7 @@ namespace scl
       /** Default constructor. Sets stuff to null */
       SViaPointSet() :
         parent_link_0_(""), parent_link_1_(""),
-        dynamics_link_id_0_(NULL), dynamics_link_id_1_(NULL),
+        rigid_body_dyn_0_(NULL), rigid_body_dyn_1_(NULL),
         is_root_0_(false),is_root_1_(false),
         child_link_id_(-1) {}
     };

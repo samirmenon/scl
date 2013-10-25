@@ -107,6 +107,7 @@ namespace scl
         const SRobotParsedData *arg_robot,
         const SRobotIOData *arg_rob_io_ds,
         const SMuscleSystem *arg_msys,
+        const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
         CDynamicsBase *arg_dynamics);
 
     /** Has this actuator been initialized */
