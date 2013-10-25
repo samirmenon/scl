@@ -249,7 +249,7 @@ namespace scl
    * Uses id based link lookup. The dynamics implementation should
    * support this (maintain a map or something).
    */
-  sBool CSimbodyDynamics::calculateTransformationMatrix(
+  sBool CSimbodyDynamics::computeTransform_Depracated(
       /** The link at which the transformation matrix is
        * to be calculated */
       const void* arg_link_id,

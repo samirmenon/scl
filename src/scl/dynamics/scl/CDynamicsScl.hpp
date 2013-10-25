@@ -186,7 +186,7 @@ public:
    * Uses id based link lookup. The dynamics implementation should
    * support this (maintain a map or something).
    */
-  virtual sBool calculateTransformationMatrix(
+  virtual sBool computeTransform_Depracated(
       /** The link at which the transformation matrix is to be calculated */
       const void* arg_link_id,
       /** The transformation matrix will be saved here. */

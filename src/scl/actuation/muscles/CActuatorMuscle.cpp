@@ -222,7 +222,7 @@ namespace scl
       // The root never moves. x_glob_0_ is constant (computed at init) and J = all zeros.
       if(false == tmp_pt_set.is_root_0_){
         //1.b.0: Compute point offset in global coords
-        flag = dynamics_->calculateTransformationMatrix(tmp_pt_set.dynamics_link_id_0_,T);
+        flag = dynamics_->computeTransform_Depracated(tmp_pt_set.dynamics_link_id_0_,T);
         tmp_pt_set.x_glob_0_ = T * tmp_pt_set.position_in_parent_0_;
 
         //1.c.0: Compute Jacobians at the via points.
@@ -233,7 +233,7 @@ namespace scl
 
       if(false == tmp_pt_set.is_root_1_){
         //1.b.1: Compute point offset in global coords
-        flag = flag && dynamics_->calculateTransformationMatrix(tmp_pt_set.dynamics_link_id_1_,T);
+        flag = flag && dynamics_->computeTransform_Depracated(tmp_pt_set.dynamics_link_id_1_,T);
         tmp_pt_set.x_glob_1_ = T * tmp_pt_set.position_in_parent_1_;
 
         //1.c.1: Compute Jacobians at the via points.

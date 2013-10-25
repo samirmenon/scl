@@ -325,7 +325,7 @@ namespace scl_test
         // Skip the root node (all matrices are zero).
         if(it->is_root_) { continue; }
 
-        flag = dynamics->calculateTransformationMatrix(dynamics->getIdForLink(link_name),Ttao);
+        flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
         if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
 
         flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
@@ -378,7 +378,7 @@ namespace scl_test
               // Skip the root node (all matrices are zero).
               if(it->is_root_) { continue; }
 
-              flag = dynamics->calculateTransformationMatrix(dynamics->getIdForLink(link_name),Ttao);
+              flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
               if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
 
               flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),

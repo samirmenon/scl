@@ -271,7 +271,7 @@ namespace scl
           return false;
         }
       }
-      flag = calculateTransformationMatrix(it->link_dynamic_id_,it->T_o_lnk_);
+      flag = computeTransform_Depracated(it->link_dynamic_id_,it->T_o_lnk_);
       if(false == flag) {
         fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): Error : Com transformation matrix computation failed\n");
         return false;
@@ -298,7 +298,7 @@ namespace scl
     return static_cast<const void*>(tmp);
   }
 
-  sBool CTaoDynamics::calculateTransformationMatrix(
+  sBool CTaoDynamics::computeTransform_Depracated(
       const void* arg_link_id,
       Eigen::Affine3d& arg_T)
   {

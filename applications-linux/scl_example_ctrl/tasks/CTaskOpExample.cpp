@@ -184,7 +184,7 @@ namespace scl_app
     {
       //Step 1: Find position of the op_point
       Eigen::Affine3d T;
-      dynamics_->calculateTransformationMatrix(data_->link_dynamic_id_,T);
+      dynamics_->computeTransform_Depracated(data_->link_dynamic_id_,T);
       data_->x_ = T * data_->pos_in_parent_;
 
       Eigen::MatrixXd &tmp_J = data_->jacobian_;
@@ -237,7 +237,7 @@ namespace scl_app
       const SGcModel* gcm = data_->gc_model_;
 
       Eigen::Affine3d T;
-      dynamics_->calculateTransformationMatrix(data_->link_dynamic_id_,T);
+      dynamics_->computeTransform_Depracated(data_->link_dynamic_id_,T);
       Eigen::Vector3d pos = T * data_->pos_in_parent_;
 
       flag = flag && dynamics_->calculateJacobian(
