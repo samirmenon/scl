@@ -146,6 +146,24 @@ public:
 
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
+   *            dx_global_origin = Jx . dq
+   * The Jacobian is specified by a link and an offset (in task space
+   * dimensions)from that link.
+   * ** CONST VERSION : NOTE : The regular version should call this. **
+   */
+  virtual sBool computeJacobian(
+      /** The Jacobain will be saved here. */
+      Eigen::MatrixXd& arg_J,
+      /** The link at which the Jacobian is to be calculated */
+      const SRigidBodyDyn& arg_link,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q,
+      /** The offset from the link's frame (in link coordinates). */
+      const Eigen::Vector3d& arg_pos_local) const
+  { return false; }
+
+  /** Calculates the Jacobian for the robot to which this dynamics
+   * object is assigned.
    *            dx_ancestor_coords = Jx . dq
    * The Jacobian is specified by a link and an offset (in task space
    * dimensions)from that link.
