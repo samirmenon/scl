@@ -267,7 +267,7 @@ namespace scl
         it->link_dynamic_id_ = getIdForLink(it->name_);
         if(NULL == it->link_dynamic_id_)
         {
-          fprintf(stdout, "scl::CTaoDynamics::updateModelMatrices(): Error : Could not generate Tao dynamics ID for '%s'.\n");
+          fprintf(stdout, "scl::CTaoDynamics::updateModelMatrices(): Error : Could not generate Tao dynamics ID for '%s'.\n", it->name_.c_str());
           return false;
         }
       }

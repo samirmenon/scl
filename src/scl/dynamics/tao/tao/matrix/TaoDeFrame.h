@@ -50,7 +50,7 @@ public:
 	//! \return rotation part
 	const deQuaternion& rotation() const { return ori_quat_; }
 	//! \return translation part
-	deVector3& translation() { return translation_;; }
+	deVector3& translation() { return translation_; }
 	//! \return translation part
 	const deVector3& translation() const { return translation_; }
 	//! this = identity matrix
