@@ -94,6 +94,8 @@ namespace scl_app
     CSclAppTask()
     {
       db_ = S_NULL;
+      rob_io_ds_ = S_NULL;
+      tao_dyn_ = S_NULL;
 
       ctrl = S_NULL;           //Use a task controller
       op_link_name = "not_init";
