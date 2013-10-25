@@ -165,7 +165,7 @@ namespace scl
    * Uses id based link lookup. The dynamics implementation should
    * support this (maintain a map or something).
    */
-  sBool CDynamicsAnalyticRPP::calculateTransformationMatrix(
+  sBool CDynamicsAnalyticRPP::computeTransformationMatrix(
       /** The generalized coordinates */
       const Eigen::VectorXd &arg_q,
       /** The link at which the transformation matrix is to be calculated */

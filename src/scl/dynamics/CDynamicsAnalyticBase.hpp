@@ -54,6 +54,18 @@ namespace scl {
  */
 class CDynamicsAnalyticBase {
 public:
+  /** Updates the generalized coordinate model matrices (Everything in SGcModel).
+   *
+   * This is the most efficient method to access the standard matrices.
+   * Computing transformations and Jacobians individually is typically
+   * wasteful.
+   */
+  virtual sBool computeGCModel(
+      /** The generalized coordinates */
+      const Eigen::VectorXd &arg_q,
+      /** All individual dynamics matrices will be saved here. */
+      SGcModel& arg_gc_model)=0;
+
   /** Calculates the Transformation Matrix for the robot to which
    * this dynamics object is assigned.
    *
@@ -65,7 +77,7 @@ public:
    * Uses id based link lookup. The dynamics implementation should
    * support this (maintain a map or something).
    */
-  virtual sBool calculateTransformationMatrix(
+  virtual sBool computeTransformationMatrix(
       /** The generalized coordinates */
       const Eigen::VectorXd &arg_q,
       /** The link at which the transformation matrix is to be calculated */
@@ -84,7 +96,7 @@ public:
    * Uses id based link lookup. The dynamics implementation should
    * support this (maintain a map or something).
    */
-  virtual sBool calculateJacobian(
+  virtual sBool computeJacobian(
       /** The generalized coordinates */
       const Eigen::VectorXd &arg_q,
       /** The link at which the Jacobian is to be calculated */
@@ -93,21 +105,6 @@ public:
       const Eigen::VectorXd& arg_pos_local,
       /** The Jacobian will be saved here. */
       Eigen::MatrixXd& arg_J)=0;
-
-  /** Calculates the Jacobian for the robot to which this dynamics
-   * object is assigned.
-   *
-   * The Jacobian is specified by a link and an offset (in task space
-   * dimensions)from that link
-   *
-   * Uses id based link lookup. The dynamics implementation should
-   * support this (maintain a map or something).
-   */
-  virtual sBool calculateFullDynamics(
-      /** The generalized coordinates */
-      const Eigen::VectorXd &arg_q,
-      /** All individual dynamics matrices will be saved here. */
-      SGcModel& arg_gc_model)=0;
 
   /* **************************************************************
    *                   Data access functions

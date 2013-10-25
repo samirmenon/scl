@@ -60,7 +60,7 @@ namespace scl
      * Uses id based link lookup. The dynamics implementation should
      * support this (maintain a map or something).
      */
-    virtual sBool calculateTransformationMatrix(
+    virtual sBool computeTransformationMatrix(
         /** The generalized coordinates */
         const Eigen::VectorXd &arg_q,
         /** The link at which the transformation matrix is to be calculated */
@@ -79,7 +79,7 @@ namespace scl
      * Uses id based link lookup. The dynamics implementation should
      * support this (maintain a map or something).
      */
-    virtual sBool calculateJacobian(
+    virtual sBool computeJacobian(
         /** The generalized coordinates */
         const Eigen::VectorXd &arg_q,
         /** The link at which the Jacobian is to be calculated */
@@ -99,7 +99,7 @@ namespace scl
      * Uses id based link lookup. The dynamics implementation should
      * support this (maintain a map or something).
      */
-    virtual sBool calculateFullDynamics(
+    virtual sBool computeGCModel(
         /** The generalized coordinates */
         const Eigen::VectorXd &arg_q,
         /** All individual dynamics matrices will be saved here. */

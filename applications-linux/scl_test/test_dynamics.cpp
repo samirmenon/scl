@@ -328,7 +328,7 @@ namespace scl_test
         flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
         if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
 
-        flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
+        flag = dyn_anlyt.computeTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
             dyn_anlyt.getIdForLink("root"), Tanlyt);
         if (false==flag) { throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));  }
 
@@ -381,7 +381,7 @@ namespace scl_test
               flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
               if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
 
-              flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
+              flag = dyn_anlyt.computeTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
                   dyn_anlyt.getIdForLink("root"), Tanlyt);
               if (false==flag) { throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));  }
 

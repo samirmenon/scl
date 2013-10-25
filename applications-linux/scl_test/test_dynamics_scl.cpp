@@ -193,7 +193,7 @@ namespace scl_test
           if(it->parent_addr_->link_ds_->is_root_)
           { Tscl = it->parent_addr_->T_lnk_ * Tscl;}
 
-          flag = dyn_anlyt.calculateTransformationMatrix(q, it->link_ds_->link_id_,
+          flag = dyn_anlyt.computeTransformationMatrix(q, it->link_ds_->link_id_,
               it->link_ds_->link_id_-1/**NOTE: Trf to parent, not root*/, Tanlyt);
           if (false==flag) {
             throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));
@@ -249,7 +249,7 @@ namespace scl_test
                 if(it->parent_addr_->link_ds_->is_root_)
                 { Tscl = it->parent_addr_->T_lnk_ * Tscl;}
 
-                flag = dyn_anlyt.calculateTransformationMatrix(q, it->link_ds_->link_id_,
+                flag = dyn_anlyt.computeTransformationMatrix(q, it->link_ds_->link_id_,
                     it->link_ds_->link_id_-1/**NOTE: Trf to parent, not root*/, Tanlyt);
                 if (false==flag) {
                   throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));
@@ -296,7 +296,7 @@ namespace scl_test
                 flag = dynamics.computeTransformToAncestor(Tscl, *it, NULL, q);
                 if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
 
-                flag = dyn_anlyt.calculateTransformationMatrix(q, it->link_ds_->link_id_,
+                flag = dyn_anlyt.computeTransformationMatrix(q, it->link_ds_->link_id_,
                     -1/**NOTE: Trf to root*/, Tanlyt);
                 if (false==flag) {
                   throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));
