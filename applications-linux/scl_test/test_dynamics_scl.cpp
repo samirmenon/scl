@@ -481,7 +481,7 @@ namespace scl_test
         // Set up variables.
         Eigen::MatrixXd Mgc_anlyt;
 
-        flag = dynamics.updateModelMatrices(&(io_ds->sensors_),&rob_gc_model);
+        flag = dynamics.computeGCModel(&(io_ds->sensors_),&rob_gc_model);
         if (false==flag) { throw(std::runtime_error("Failed to compute scl model matrices (for generalized inertia)."));  }
 
         flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
@@ -515,7 +515,7 @@ namespace scl_test
               io_ds->sensors_.q_(1) = b;
               io_ds->sensors_.q_(2) = c;
 
-              flag = dynamics.updateModelMatrices(&(io_ds->sensors_),&rob_gc_model);
+              flag = dynamics.computeGCModel(&(io_ds->sensors_),&rob_gc_model);
               if (false==flag) { throw(std::runtime_error("Failed to compute scl model matrices (for generalized inertia)."));  }
 
               flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
@@ -549,7 +549,7 @@ namespace scl_test
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
               io_ds->sensors_.q_<<a,b,c;
-              dynamics.updateModelMatrices(&(io_ds->sensors_),&rob_gc_model);
+              dynamics.computeGCModel(&(io_ds->sensors_),&rob_gc_model);
             }
         t2 = sutil::CSystemClock::getSysTime();
         std::cout<<"\nTest Result ("<<r_id++<<")  Scl model update performance: "

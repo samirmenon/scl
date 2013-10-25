@@ -57,7 +57,7 @@ namespace scl
      * \return True if everything went according to plan. */
     virtual bool init(const SRobotParsedData& arg_robot_data);
 
-    virtual bool updateModelMatrices(/**
+    virtual bool computeGCModel(/**
         This is where there current robot state is read when
         updateModelMatrices() is called. */
         SRobotSensorData const * sensor_data,

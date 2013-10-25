@@ -209,7 +209,7 @@ namespace scl
     return false;
   }
 
-  bool CSimbodyDynamics::updateModelMatrices(/**
+  bool CSimbodyDynamics::computeGCModel(/**
       This is where there current robot state is read when
       updateModelMatrices() is called. */
       SRobotSensorData const * sensor_data,

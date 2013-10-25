@@ -60,13 +60,13 @@ public:
   /* *******************************************************************
    *                      Computational functions.
    * ******************************************************************* */
-  /** Updates the joint space model matrices (Everything in SGcModel).
+  /** Updates the generalized coordinate model matrices (Everything in SGcModel).
    *
    * This is the most efficient method to access the standard matrices.
    * Computing transformations and Jacobians individually is typically
    * wasteful.
    */
-  virtual sBool updateModelMatrices(/** Current robot state. q, dq, ddq,
+  virtual sBool computeGCModel(/** Current robot state. q, dq, ddq,
             sensed generalized forces and perceived external forces.*/
       const SRobotSensorData * arg_sensor_data,
       /** Individual link Jacobians, and composite intertial,

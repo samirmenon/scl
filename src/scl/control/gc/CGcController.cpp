@@ -176,7 +176,7 @@ namespace scl
 
   sBool CGcController::computeDynamics()
   {
-    bool flag = dynamics_->updateModelMatrices(&(data_->io_data_->sensors_),&(data_->gc_model_));
+    bool flag = dynamics_->computeGCModel(&(data_->io_data_->sensors_),&(data_->gc_model_));
     return flag;
   }
 

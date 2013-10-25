@@ -72,7 +72,7 @@ namespace scl
     /** Updates the joint space model matrices
      * (Everything in SGcModel)
      */
-    virtual bool updateModelMatrices(/**
+    virtual bool computeGCModel(/**
 				This is where there current robot state is read when
 				updateModelMatrices() is called. */
         SRobotSensorData const * arg_sensor_data,

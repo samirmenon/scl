@@ -539,7 +539,7 @@ namespace scl
     sBool flag=true;
 
     //Update the joint space dynamic matrices
-    flag = dynamics_->updateModelMatrices(&(data_->io_data_->sensors_), &(data_->gc_model_));
+    flag = dynamics_->computeGCModel(&(data_->io_data_->sensors_), &(data_->gc_model_));
 
     // Compute the task space dynamics
     if(0==task_count_)

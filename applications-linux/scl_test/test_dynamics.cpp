@@ -406,7 +406,7 @@ namespace scl_test
       // Set up variables.
       Eigen::MatrixXd Mgc_tao, Mgc_anlyt;
 
-      flag = dynamics->updateModelMatrices(&(io_ds->sensors_),&rob_gc_model);
+      flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
       if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
 
       Mgc_tao = rob_gc_model.A_;
@@ -442,7 +442,7 @@ namespace scl_test
             io_ds->sensors_.q_(1) = b;
             io_ds->sensors_.q_(2) = c;
 
-            flag = dynamics->updateModelMatrices(&(io_ds->sensors_),&rob_gc_model);
+            flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
             if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
 
             Mgc_tao = rob_gc_model.A_;

@@ -43,7 +43,7 @@ namespace scl
   /** Updates the joint space model matrices
    * (Everything in SGcModel)
    */
-  sBool CDynamicsScl::updateModelMatrices(/** Current robot state. q, dq, ddq,
+  sBool CDynamicsScl::computeGCModel(/** Current robot state. q, dq, ddq,
               sensed generalized forces and perceived external forces.*/
         const SRobotSensorData * arg_sensor_data,
         /** Individual link Jacobians, and composite intertial,
