@@ -65,7 +65,7 @@ namespace scl
     //2. Update the com Jacobians.
     sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
     for(it = rbtree.begin(), ite = rbtree.end(); it!=ite; ++it)
-    { flag = flag && calculateJacobian(it->J_com_,*it, q, it->link_ds_->com_,false); }
+    { flag = flag && computeJacobian(it->J_com_,*it, q, it->link_ds_->com_,false); }
 
     //3. Update A and Ainv_
     // NOTE TODO : Implement a more efficient way to do this.
@@ -98,7 +98,7 @@ namespace scl
    *        x_parent_link_coords = arg_link.T_lnk_ * x_link_coords
    * Note that the matrix is stored in the passed link data struct.
    */
-  sBool CDynamicsScl::calculateTransformationMatrixForLink(
+  sBool CDynamicsScl::computeTransform(
       /** The link at which the transformation matrix is to be calculated */
       SRigidBodyDyn& arg_link,
       /** The transformation matrix will be saved here. */
@@ -142,7 +142,7 @@ namespace scl
    * Note that the local transformation matrices are updated in
    * all the link data structs from arg_link to arg_ancestor.
    */
-  sBool CDynamicsScl::calculateTransformationMatrixForLink(
+  sBool CDynamicsScl::computeTransformToAncestor(
       /** The transformation matrix in which to store the answer */
       Eigen::Affine3d& arg_T,
       /** The link at which the transformation matrix is to be calculated */
@@ -164,7 +164,7 @@ namespace scl
     //Walk up the tree.
     while(rbd != arg_ancestor)
     {//Keep going till you reach the ancestor
-      flag = calculateTransformationMatrixForLink(*rbd, arg_q);
+      flag = computeTransform(*rbd, arg_q);
       arg_T = rbd->T_lnk_ * arg_T;
       rbd = rbd->parent_addr_;
     }
@@ -189,7 +189,7 @@ namespace scl
 
     //1. First update the link transforms
     for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
-    { flag = flag && calculateTransformationMatrixForLink(*it, arg_q); }
+    { flag = flag && computeTransform(*it, arg_q); }
 
     //2. Next update the origin transforms
     for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
@@ -212,7 +212,7 @@ namespace scl
    * The Jacobian is specified by a link and an offset (in task space
    * dimensions)from that link.
    */
-  sBool CDynamicsScl::calculateJacobian(
+  sBool CDynamicsScl::computeJacobian(
       /** The Jacobain will be saved here. */
       Eigen::MatrixXd& arg_J,
       /** The link at which the Jacobian is to be calculated */
@@ -237,7 +237,7 @@ namespace scl
       while(flag && rbd != S_NULL)
       {//Keep going till you reach the ancestor
         //Gets global transforms for all links.
-        flag = calculateTransformationMatrixForLink(Ttmp,*rbd,NULL,arg_q);
+        flag = computeTransformToAncestor(Ttmp,*rbd,NULL,arg_q);
         if(false == flag)
         {
           std::cerr<<"\nCDynamicsScl::calculateJacobian() : Could not compute transforms.";

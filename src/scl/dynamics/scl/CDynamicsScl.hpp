@@ -60,40 +60,34 @@ public:
   /* *******************************************************************
    *                      Computational functions.
    * ******************************************************************* */
-  /** Updates the joint space model matrices
-   * (Everything in SGcModel)
-   */
+    /** Updates the joint space model matrices (Everything in SGcModel).
+     *
+     * This is the most efficient method to access the standard matrices.
+     * Computing transformations and Jacobians individually is typically
+     * wasteful.
+     */
   virtual sBool updateModelMatrices(/** Current robot state. q, dq, ddq,
             sensed generalized forces and perceived external forces.*/
       const SRobotSensorData * arg_sensor_data,
       /** Individual link Jacobians, and composite intertial,
-            centrifugal/coriolis gravity estimates.*/
+          centrifugal/coriolis gravity estimates. */
       SGcModel * arg_gc_model);
 
-  /** Calculates the Transformation Matrix for the robot to which
+  /** Updates the Transformation Matrices for the robot to which
    * this dynamics object is assigned.
-   *
-   * The Transformation Matrix is specified by a link and an offset
-   * (in task space dimensions)from that link and is given by:
-   *
-   *           x_global_coords = T * x_link_coords
-   *
-   * Uses id based link lookup. The dynamics implementation should
-   * support this (maintain a map or something).
-   */
-  virtual sBool calculateTransformationMatrix(
-      /** The link at which the transformation matrix is to be calculated */
-      const void* arg_link_id,
-      /** The transformation matrix will be saved here. */
-      Eigen::Affine3d& arg_T)
-  { return false; }
+   *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords */
+  virtual sBool updateTransformationMatrices(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q);
 
   /** Calculates the Transformation Matrix for the robot to which
    * this dynamics object is assigned.
    *        x_parent_link_coords = arg_link.T_lnk_ * x_link_coords
    * Note that the matrix is stored in the passed link data struct.
    */
-  virtual sBool calculateTransformationMatrixForLink(
+  virtual sBool computeTransform(
       /** The link at which the transformation matrix is to be calculated */
       SRigidBodyDyn& arg_link,
       /** The current generalized coordinates. */
@@ -110,7 +104,7 @@ public:
    * has a node allocated for it. And the global scl origin, for which
    * you should pass in a NULL as ancestor.
    */
-  virtual sBool calculateTransformationMatrixForLink(
+  virtual sBool computeTransformToAncestor(
       /** The transformation matrix in which to store the answer */
       Eigen::Affine3d& arg_T,
       /** The link at which the transformation matrix is to be calculated */
@@ -121,40 +115,13 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q);
 
-  /** Updates the Transformation Matrices for the robot to which
-   * this dynamics object is assigned.
-   *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords */
-  virtual sBool updateTransformationMatrices(
-      /** The tree for which the transformation matrices are to be updated */
-      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
-      /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q);
-
-  /** Calculates the Jacobian for the robot to which this dynamics
-   * object is assigned.
-   *
-   * The Jacobian is specified by a link and an offset (in task space
-   * dimensions)from that link
-   *
-   * Uses id based link lookup. The dynamics implementation should
-   * support this (maintain a map or something).
-   */
-  virtual sBool calculateJacobian(
-      /** The link at which the Jacobian is to be calculated */
-      const void* arg_link_id,
-      /** The offset from the link's frame (in global coordinates). */
-      const Eigen::VectorXd& arg_pos_global,
-      /** The Jacobain will be saved here. */
-      Eigen::MatrixXd& arg_J)
-  { return false; }
-
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
    *            dx_global_origin = Jx . dq
    * The Jacobian is specified by a link and an offset (in task space
    * dimensions)from that link.
    */
-  sBool calculateJacobian(
+  sBool computeJacobian(
       /** The Jacobain will be saved here. */
       Eigen::MatrixXd& arg_J,
       /** The link at which the Jacobian is to be calculated */
@@ -188,6 +155,42 @@ public:
       /** Whether to recompute the transformations up to the ancestor
        * Default = true. Set to false to speed things up.*/
       const bool arg_recompute_transforms=true)
+  { return false; }
+
+  /** Calculates the Jacobian for the robot to which this dynamics
+   * object is assigned.
+   *
+   * The Jacobian is specified by a link and an offset (in task space
+   * dimensions)from that link
+   *
+   * Uses id based link lookup. The dynamics implementation should
+   * support this (maintain a map or something).
+   */
+  virtual sBool calculateJacobian(
+      /** The link at which the Jacobian is to be calculated */
+      const void* arg_link_id,
+      /** The offset from the link's frame (in global coordinates). */
+      const Eigen::VectorXd& arg_pos_global,
+      /** The Jacobain will be saved here. */
+      Eigen::MatrixXd& arg_J)
+  { return false; }
+
+  /** Calculates the Transformation Matrix for the robot to which
+   * this dynamics object is assigned.
+   *
+   * The Transformation Matrix is specified by a link and an offset
+   * (in task space dimensions)from that link and is given by:
+   *
+   *           x_global_coords = T * x_link_coords
+   *
+   * Uses id based link lookup. The dynamics implementation should
+   * support this (maintain a map or something).
+   */
+  virtual sBool calculateTransformationMatrix(
+      /** The link at which the transformation matrix is to be calculated */
+      const void* arg_link_id,
+      /** The transformation matrix will be saved here. */
+      Eigen::Affine3d& arg_T)
   { return false; }
 
   /** Not supported. */
