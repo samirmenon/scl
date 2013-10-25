@@ -234,6 +234,31 @@ namespace scl
       rbd = &arg_link;
     }
 
+    return flag;
+  }
+
+  /** Calculates the Jacobian for the robot to which this dynamics
+   * object is assigned.
+   *            dx_global_origin = Jx . dq
+   * The Jacobian is specified by a link and an offset (in task space
+   * dimensions)from that link.
+   * ** CONST VERSION **
+   */
+  sBool CDynamicsScl::computeJacobian(
+      /** The Jacobain will be saved here. */
+      Eigen::MatrixXd& arg_J,
+      /** The link at which the Jacobian is to be calculated */
+      const SRigidBodyDyn& arg_link,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q,
+      /** The offset from the link's frame (in link coordinates). */
+      const Eigen::Vector3d& arg_pos_local) const
+  {
+    bool flag = true;
+
+    //To efficiently walk up the tree to the node's ancestor.
+    const SRigidBodyDyn *rbd = &arg_link;
+
     //Reset Jacobian to zero. Good if ancestor is node itself
     arg_J.setZero(6,arg_q.rows());
 
