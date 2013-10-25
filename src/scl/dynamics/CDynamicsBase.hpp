@@ -74,6 +74,54 @@ public:
       SGcModel * arg_gc_model)=0;
 
   /* *******************************************************************
+   *                      Coordinate Transformations
+   * ******************************************************************* */
+  /** Updates the Transformation Matrices for the robot to which
+   * this dynamics object is assigned.
+   *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords */
+  virtual sBool computeTransformsForAllLinks(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  { return false; }
+
+  /** Calculates the Transformation Matrix for the robot to which
+   * this dynamics object is assigned.
+   *        x_parent_link_coords = arg_link.T_lnk_ * x_link_coords
+   * Note that the matrix is stored in the passed link data struct.
+   */
+  virtual sBool computeTransform(
+      /** The link at which the transformation matrix is to be calculated */
+      SRigidBodyDyn& arg_link,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  { return false; }
+
+  /** Calculates the Transformation Matrix for the robot to which
+   * this dynamics object is assigned.
+   *      x_ancestor_link_coords = arg_link.T_lnk_ * x_link_coords
+   *
+   * Note that the local transformation matrices are updated in
+   * all the link data structs from arg_link to arg_ancestor.
+   *
+   * Also note that there are two origins, robot origin, which actually
+   * has a node allocated for it. And the global scl origin, for which
+   * you should pass in a NULL as ancestor.
+   */
+  virtual sBool computeTransformToAncestor(
+      /** The transformation matrix in which to store the answer */
+      Eigen::Affine3d& arg_T,
+      /** The link at which the transformation matrix is to be calculated */
+      SRigidBodyDyn& arg_link,
+      /** The link up to which the transformation matrix is to be calculated
+       * Pass NULL to compute the transform up to the global root. */
+      const SRigidBodyDyn* arg_ancestor,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  { return false; }
+
+  /* *******************************************************************
    *                      Integrator functions.
    * ******************************************************************* */
 
