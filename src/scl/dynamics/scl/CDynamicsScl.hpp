@@ -60,7 +60,7 @@ public:
   /* *******************************************************************
    *                      Overall Computational function.
    * ******************************************************************* */
-    /** Updates the joint space model matrices (Everything in SGcModel).
+    /** Updates the generalized coordinate model (Everything in SGcModel).
      *
      * This is the most efficient method to access the standard matrices.
      * Computing transformations and Jacobians individually is typically
@@ -127,7 +127,7 @@ public:
    * The Jacobian is specified by a link and an offset (in task space
    * dimensions)from that link.
    */
-  sBool computeJacobian(
+  virtual sBool computeJacobian(
       /** The Jacobain will be saved here. */
       Eigen::MatrixXd& arg_J,
       /** The link at which the Jacobian is to be calculated */
@@ -146,7 +146,7 @@ public:
    * The Jacobian is specified by a link and an offset (in task space
    * dimensions)from that link.
    */
-  sBool computeJacobian(
+  virtual sBool computeJacobian(
       /** The Jacobain will be saved here. */
       Eigen::MatrixXd& arg_J,
       /** The link at which the Jacobian is to be calculated */
