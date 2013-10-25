@@ -384,7 +384,7 @@ namespace scl_test
             {
               q << a, b ,c;
 
-              flag = dynamics.updateTransformationMatrices(rob_gc_model.link_ds_,q);
+              flag = dynamics.computeTransformsForAllLinks(rob_gc_model.link_ds_,q);
               if (false==flag) { throw(std::runtime_error("Failed to update transformation matrices."));  }
 
               for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
@@ -454,7 +454,7 @@ namespace scl_test
             for (double c=-3.14;c<3.14;c+=gcstep)
             {
               q<<a,b,c;
-              flag = dynamics.updateTransformationMatrices(rob_gc_model.link_ds_,q);
+              flag = dynamics.computeTransformsForAllLinks(rob_gc_model.link_ds_,q);
               for(it = rob_gc_model.link_ds_.begin(), ite = rob_gc_model.link_ds_.end();
                   it!=ite; ++it)
               {
@@ -558,7 +558,7 @@ namespace scl_test
             {
               q<<a,b,c;
               //1. Update the transformation matrices. Everything else depends on it.
-              dynamics.updateTransformationMatrices(rob_gc_model.link_ds_, q);
+              dynamics.computeTransformsForAllLinks(rob_gc_model.link_ds_, q);
 
               //2. Update the com Jacobians.
               dynamics.computeJacobianComForAllLinks(rob_gc_model.link_ds_,q);
