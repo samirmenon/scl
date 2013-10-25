@@ -151,10 +151,28 @@ public:
    *                      Dynamics State functions.
    * ******************************************************************* */
   /** Gets the robot's kinetic energy */
-  virtual sFloat getKineticEnergy()=0;
+  virtual sFloat getKineticEnergy()
+  { return false; }
 
   /** Gets the robot's potential energy */
-  virtual sFloat getPotentialEnergy()=0;
+  virtual sFloat getPotentialEnergy()
+  { return false; }
+
+  /** Gets the robot's kinetic energy */
+  virtual sFloat computeEnergyKinetic(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  { return false; }
+
+  /** Gets the robot's potential energy */
+  virtual sFloat computeEnergyPotential(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
+  { return false; }
 
   /** Gives an id for a link name.
    *

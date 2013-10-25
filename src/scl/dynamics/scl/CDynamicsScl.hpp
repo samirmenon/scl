@@ -161,23 +161,20 @@ public:
    *                      Dynamics State functions.
    * ******************************************************************* */
   /** Gets the robot's kinetic energy */
-  virtual sFloat getKineticEnergy()
+  virtual sFloat computeEnergyKinetic(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
   { return false; }
 
   /** Gets the robot's potential energy */
-  virtual sFloat getPotentialEnergy()
+  virtual sFloat computeEnergyPotential(
+      /** The tree for which the transformation matrices are to be updated */
+      sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q)
   { return false; }
-
-  /** Gives an id for a link name.
-   *
-   * Enables using calculateJacobain without:
-   * 1. Storing any dynamic-engine specific objects in
-   *    the controller.
-   * 2. Using inefficient repeated string based
-   *    lookup (usually with maps)
-   */
-  virtual const void* getIdForLink(std::string arg_link_name)
-  { return NULL; }
 
   /* *******************************************************************
    *                      Initialization functions.
