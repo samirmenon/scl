@@ -119,7 +119,7 @@ public:
       const Eigen::VectorXd& arg_q);
 
   /* *******************************************************************
-   *                      Coordinate Jacobians
+   *                      Compute Jacobians
    * ******************************************************************* */
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
