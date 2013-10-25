@@ -39,6 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 #include <scl/dynamics/tao/tao/dynamics/taoDNode.h>
+#include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/actuation/muscles/CActuatorSetMuscle.hpp>
 
 #include <sutil/CSystemClock.hpp>
@@ -157,10 +158,15 @@ int main(int argc, char** argv)
       scl_util::printRobotLinkTree(*( rob_ds->robot_br_rep_.getRootNode()),0);
 #endif
 
-      /******************************TaoDynamics************************************/
-      scl::CTaoDynamics tao_dyn_int;
-      flag = tao_dyn_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
+      /**************************Initialize Tao Dynamics for Integrator********************************/
+      scl::CTaoDynamics dyn_tao_int;
+      flag = dyn_tao_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
+
+      /***************************Initialize Scl Dynamics for Algorithms********************/
+      scl::CDynamicsScl dyn_scl; //Use for model updates.
+      flag = dyn_scl.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)); //Reads stuff from the database.
+      if(false == flag) { throw(std::runtime_error("Could not initialize dynamics object"));  }
 
       /******************************Shared I/O Data Structure************************************/
       scl::SRobotIOData* rob_io_ds;
@@ -168,22 +174,19 @@ int main(int argc, char** argv)
       if(S_NULL == rob_io_ds)
       { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
-      /**********************Initialize Robot Dynamics and Controller*******************/
-      scl::CTaoDynamics tao_dyn; //Use for model updates.
-      flag = tao_dyn.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)); //Reads stuff from the database.
-      if(false == flag) { throw(std::runtime_error("Could not initialize dynamics object"));  }
-
+      /**************************Initialize Robot Controller*******************/
       scl::SGcController * gc_ctrl_ds;
       gc_ctrl_ds = dynamic_cast<scl::SGcController*>(*(db->s_controller_.controllers_.at(ctrl_name)));
       if(S_NULL == gc_ctrl_ds) { throw(std::runtime_error("Could not find the controller in the database"));  }
 
       scl::CGcController robot_gc_ctrl;
-      flag = robot_gc_ctrl.init(gc_ctrl_ds,&tao_dyn_int);
+      flag = robot_gc_ctrl.init(gc_ctrl_ds,&dyn_scl);
       if(false == flag) { throw(std::runtime_error("Could not initialize the controller object"));  }
 
       /**********************Initialize Muscle Actuator Model & Dynamics*******************/
       scl::CActuatorSetMuscle rob_mset;
-      flag = rob_mset.init(rob_ds->muscle_system_.name_, rob_ds, rob_io_ds, &(rob_ds->muscle_system_), &tao_dyn);
+      flag = rob_mset.init(rob_ds->muscle_system_.name_, /** parsed */ rob_ds, rob_io_ds, &(rob_ds->muscle_system_),
+          /** rbd tree */ gc_ctrl_ds->gc_model_.link_ds_, /** dynamics */ &dyn_scl);
       if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set"));  }
 
       // Create an actuator set in the database
@@ -259,7 +262,7 @@ int main(int argc, char** argv)
             sutil::CSystemClock::tick(db->sim_dt_);
 
             //1. Simulation Dynamics
-            flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+            flag = dyn_tao_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
             //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
             //2. Update the controller
@@ -322,7 +325,7 @@ int main(int argc, char** argv)
         assert(rob_io_ds == gc_ctrl_ds->io_data_);
 
         //1. Simulation Dynamics
-        flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+        flag = dyn_tao_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
 //        rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
         //2. Update the controller
