@@ -182,7 +182,7 @@ namespace scl_test
           // Skip the root node (all matrices are zero).
           if(it->link_ds_->is_root_) { continue; }
 
-          flag = dynamics.calculateTransformationMatrixForLink(*it,io_ds->sensors_.q_);
+          flag = dynamics.computeTransform(*it,io_ds->sensors_.q_);
           if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
           Tscl = it->T_lnk_;
 
@@ -240,7 +240,7 @@ namespace scl_test
                 // Skip the root node (all matrices are zero).
                 if(it->link_ds_->is_root_) { continue; }
 
-                flag = dynamics.calculateTransformationMatrixForLink(*it,io_ds->sensors_.q_);
+                flag = dynamics.computeTransform(*it,io_ds->sensors_.q_);
                 if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
                 Tscl = it->T_lnk_;
 
@@ -294,7 +294,7 @@ namespace scl_test
                 // Skip the root node (all matrices are zero).
                 if(it->link_ds_->is_root_) { continue; }
 
-                flag = dynamics.calculateTransformationMatrixForLink(Tscl, *it, NULL, io_ds->sensors_.q_);
+                flag = dynamics.computeTransformToAncestor(Tscl, *it, NULL, io_ds->sensors_.q_);
                 if (false==flag) { throw(std::runtime_error("Failed to compute scl link transformation matrix."));  }
 
                 flag = dyn_anlyt.calculateTransformationMatrix(io_ds->sensors_.q_, it->link_ds_->link_id_,
@@ -347,7 +347,7 @@ namespace scl_test
           if(rbd.link_ds_->is_root_) { continue; }
 
           pos = rbd.link_ds_->com_;
-          flag = dynamics.calculateJacobian(Jcom_scl, *it, io_ds->sensors_.q_, pos);
+          flag = dynamics.computeJacobian(Jcom_scl, *it, io_ds->sensors_.q_, pos);
           if (false==flag) { throw(std::runtime_error("Failed to compute scl com Jacobian."));  }
 
           flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
@@ -403,7 +403,7 @@ namespace scl_test
                 if(rbd.link_ds_->is_root_) { continue; }
 
                 pos = rbd.link_ds_->com_;
-                flag = dynamics.calculateJacobian(Jcom_scl, *it, io_ds->sensors_.q_, pos, false);
+                flag = dynamics.computeJacobian(Jcom_scl, *it, io_ds->sensors_.q_, pos, false);
                 if (false==flag) { throw(std::runtime_error("Failed to compute scl com Jacobian."));  }
 
                 flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
@@ -465,7 +465,7 @@ namespace scl_test
               {
                 // Skip the root node (all matrices are zero).
                 if(it->link_ds_->is_root_) { continue; }
-                dynamics.calculateJacobian(Jcom_scl, *it, io_ds->sensors_.q_, it->link_ds_->com_, false);
+                dynamics.computeJacobian(Jcom_scl, *it, io_ds->sensors_.q_, it->link_ds_->com_, false);
               }
             }
         t2 = sutil::CSystemClock::getSysTime();
