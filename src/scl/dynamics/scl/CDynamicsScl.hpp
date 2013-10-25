@@ -151,13 +151,13 @@ public:
       Eigen::MatrixXd& arg_J,
       /** The link at which the Jacobian is to be calculated */
       SRigidBodyDyn& arg_link,
-      /** The link up to which the Jacobian is to be calculated
-       * Pass NULL to compute the Jacobian up to the global root. */
-      const SRigidBodyDyn* arg_ancestor,
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
       const Eigen::Vector3d& arg_pos_local,
+      /** The link up to which the Jacobian is to be calculated
+       * Pass NULL to compute the Jacobian up to the global root. */
+      const SRigidBodyDyn* arg_ancestor=S_NULL,
       /** Whether to recompute the transformations up to the ancestor
        * Default = true. Set to false to speed things up.*/
       const bool arg_recompute_transforms=true)
