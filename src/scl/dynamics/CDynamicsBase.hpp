@@ -87,7 +87,8 @@ public:
       /** The link at which the transformation matrix is to be calculated */
       const void* arg_link_id,
       /** The transformation matrix will be saved here. */
-      Eigen::Affine3d& arg_T)=0;
+      Eigen::Affine3d& arg_T)
+  { return false; }
 
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
@@ -104,7 +105,8 @@ public:
       /** The offset from the link's frame (in global coordinates). */
       const Eigen::VectorXd& arg_pos_global,
       /** The Jacobain will be saved here. */
-      Eigen::MatrixXd& arg_J)=0;
+      Eigen::MatrixXd& arg_J)
+  { return false; }
 
   /** Calculates the collision forces for the robot to which this dynamics
    * object is assigned.
@@ -115,31 +117,24 @@ public:
    * NOTE : The dynamics engine may delete forces from the passed mapped list
    * at will. Do not store pointers to them at random places in your code.
    */
-  virtual sBool computeExternalContactForces(/**
+  virtual sBool computeExternalContacts(/**
           This is where the simulator will store the contact
           forces. It may use the std::string to identify when
           to remove or re-add forces.*/
-          sutil::CMappedList<std::string, SForce> & arg_contact_forces)
+          sutil::CMappedList<std::string, SForce> & arg_contacts)
   {   /** As of now, this is optional for dynamics engines */ return false; }
 
   /** Integrates the robot's state.
    * Uses the given applied forces, torques, positions and velocities
-   * and its internal dynamic model to compute
-   * new positions and velocities.
-   *
-   * This version performs the entire set of operations on
-   * the SRobotIOData data structure.
+   * and its internal dynamic model to compute new positions and velocities.
+   * Operates on the SRobotIOData data structure.
    *
    * Reads from, and updates:
-   * arg_inputs_.sensors_.q_
-   * arg_inputs_.sensors_.dq_
-   * arg_inputs_.sensors_.ddq_
+   *    arg_inputs_.sensors_.q_, dq_, ddq_
    *
    * Reads from:
-   * arg_inputs_.sensors_.forces_external_
-   * arg_inputs_.sensors_.forces_external_transient_
-   * arg_inputs_.sensors_.force_gc_measured_
-   * arg_inputs_.actuators_.force_gc_commanded_
+   *    arg_inputs_.sensors_.forces_external_
+   *    arg_inputs_.actuators_.force_gc_commanded_
    */
   virtual sBool integrate(
       /** The existing generalized coordinates, velocities and
@@ -149,7 +144,8 @@ public:
       /** The time across which the system should integrate the
        * dynamics. Could take fixed steps or dynamic ones in between.
        * Up to the integrator implementation. */
-      const sFloat arg_time_interval)=0;
+      const sFloat arg_time_interval)
+  { return false; }
 
   /* *******************************************************************
    *                      Dynamics State functions.

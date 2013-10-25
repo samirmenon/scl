@@ -157,52 +157,6 @@ public:
       const bool arg_recompute_transforms=true)
   { return false; }
 
-  /** Calculates the Jacobian for the robot to which this dynamics
-   * object is assigned.
-   *
-   * The Jacobian is specified by a link and an offset (in task space
-   * dimensions)from that link
-   *
-   * Uses id based link lookup. The dynamics implementation should
-   * support this (maintain a map or something).
-   */
-  virtual sBool computeJacobian_Depracated(
-      /** The link at which the Jacobian is to be calculated */
-      const void* arg_link_id,
-      /** The offset from the link's frame (in global coordinates). */
-      const Eigen::VectorXd& arg_pos_global,
-      /** The Jacobain will be saved here. */
-      Eigen::MatrixXd& arg_J)
-  { return false; }
-
-  /** Calculates the Transformation Matrix for the robot to which
-   * this dynamics object is assigned.
-   *
-   * The Transformation Matrix is specified by a link and an offset
-   * (in task space dimensions)from that link and is given by:
-   *
-   *           x_global_coords = T * x_link_coords
-   *
-   * Uses id based link lookup. The dynamics implementation should
-   * support this (maintain a map or something).
-   */
-  virtual sBool computeTransform_Depracated(
-      /** The link at which the transformation matrix is to be calculated */
-      const void* arg_link_id,
-      /** The transformation matrix will be saved here. */
-      Eigen::Affine3d& arg_T)
-  { return false; }
-
-  /** Not supported. */
-  virtual sBool computeExternalContacts(
-          sutil::CMappedList<std::string, SForce> & arg_contact_forces)
-  { return false; }
-
-  /** Not supported. */
-  virtual sBool integrate(SRobotIOData& arg_inputs_,
-      const sFloat arg_time_interval)
-  { return false; }
-
   /* *******************************************************************
    *                      Dynamics State functions.
    * ******************************************************************* */
