@@ -115,7 +115,7 @@ public:
    * NOTE : The dynamics engine may delete forces from the passed mapped list
    * at will. Do not store pointers to them at random places in your code.
    */
-  virtual sBool calculateContactExternalForces(/**
+  virtual sBool computeExternalContactForces(/**
           This is where the simulator will store the contact
           forces. It may use the std::string to identify when
           to remove or re-add forces.*/

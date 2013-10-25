@@ -194,7 +194,7 @@ public:
   { return false; }
 
   /** Not supported. */
-  virtual sBool calculateContactExternalForces(
+  virtual sBool computeExternalContacts(
           sutil::CMappedList<std::string, SForce> & arg_contact_forces)
   { return false; }
 
