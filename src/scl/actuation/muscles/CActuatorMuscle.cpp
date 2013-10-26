@@ -95,7 +95,7 @@ namespace scl
       // pairs. So reaching the second last will test for all possible pairs
       for(int i=0; i<n_pts-1; ++i)
       {
-        bool tmp_parent_link=-1;
+        int tmp_parent_link=-1;
 
         const SMusclePoint& tmp_pt_0 = muscle_->points_[i]; //tmp reference
         const SMusclePoint& tmp_pt_1 = muscle_->points_[i+1]; //tmp reference
