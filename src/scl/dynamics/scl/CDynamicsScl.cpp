@@ -197,7 +197,7 @@ namespace scl
    * The Jacobian is specified by a link and an offset (in task space
    * dimensions)from that link.
    */
-  sBool CDynamicsScl::computeJacobian(
+  sBool CDynamicsScl::computeJacobianWithTransforms(
       /** The Jacobain will be saved here. */
       Eigen::MatrixXd& arg_J,
       /** The link at which the Jacobian is to be calculated */
@@ -205,34 +205,20 @@ namespace scl
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
-      const Eigen::Vector3d& arg_pos_local,
-      /** Whether to recompute the transformations up to the ancestor
-       * Default = true. Set to false to speed things up.*/
-      const bool arg_recompute_transforms)
+      const Eigen::Vector3d& arg_pos_local)
   {
     bool flag = true;
 
-    //To efficiently walk up the tree to the node's ancestor.
+    //Walk up the tree to the node's ancestor, compute all Transforms
     SRigidBodyDyn *rbd = &arg_link;
-
-    if(arg_recompute_transforms)
-    {//Recompute the transformation matrices.
-      Eigen::Affine3d Ttmp;
-      //Walk up the tree.
-      while(flag && rbd != S_NULL)
-      {//Keep going till you reach the ancestor
-        //Gets global transforms for all links.
-        flag = computeTransformToAncestor(Ttmp,*rbd,NULL,arg_q);
-        if(false == flag)
-        {
-          std::cerr<<"\nCDynamicsScl::calculateJacobian() : Could not compute transforms.";
-          return false;
-        }
-        rbd = rbd->parent_addr_;
-      }
-      //Reset the pointer to the current node for further processing
-      rbd = &arg_link;
+    Eigen::Affine3d Ttmp; // NOTE TODO: Should have a function that doesn't need a temp matrix
+    while(flag && rbd != S_NULL)
+    {//Gets global transforms for all links.
+      flag = flag && computeTransformToAncestor(Ttmp,*rbd,NULL,arg_q);
+      rbd = rbd->parent_addr_;
     }
+    // Now compute the Jacobian
+    flag = flag && computeJacobian(arg_J, arg_link, arg_q, arg_pos_local);
 
     return flag;
   }

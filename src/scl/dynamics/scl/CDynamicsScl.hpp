@@ -127,18 +127,16 @@ public:
    * The Jacobian is specified by a link and an offset (in task space
    * dimensions)from that link.
    */
-  virtual sBool computeJacobian(
+  virtual sBool computeJacobianWithTransforms(
       /** The Jacobain will be saved here. */
       Eigen::MatrixXd& arg_J,
-      /** The link at which the Jacobian is to be calculated */
+      /** The link at which the Jacobian is to be calculated. Transforms
+       * are updated in this link and ancestors in the tree. */
       SRigidBodyDyn& arg_link,
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
-      const Eigen::Vector3d& arg_pos_local,
-      /** Whether to recompute the transformations up to the ancestor
-       * Default = true. Set to false to speed things up.*/
-      const bool arg_recompute_transforms=true);
+      const Eigen::Vector3d& arg_pos_local);
 
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
@@ -187,13 +185,13 @@ public:
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   {
     if(false == has_been_init_){  return false; }
     bool flag = true; sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
     //Update the com Jacobians.
     for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
-    { flag = flag && computeJacobian(it->J_com_,*it, arg_q, it->link_ds_->com_,false); }
+    { flag = flag && computeJacobian(it->J_com_,*it, arg_q, it->link_ds_->com_); }
     return flag;
   }
 
@@ -239,7 +237,7 @@ public:
     for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
     {
       if(it->link_ds_->is_root_){ continue;  }//Root doesn't experience gravity
-      ret_FgravGC += it->J_com_.transpose() * robot_parsed_data_->gravity_;
+      ret_FgravGC += it->J_com_.block(0,0,3,dof).transpose() * robot_parsed_data_->gravity_;
     }
     return flag;
   }
