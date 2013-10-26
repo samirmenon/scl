@@ -962,6 +962,7 @@ namespace scl {
             cColorf muscleColor(1,0,0,0.5);        //R,G,B,Alpha
             tmp_l->m_colorPointA = muscleColor;
             tmp_l->m_colorPointB = muscleColor;
+            tmp_l->setLineWidth(4.0);
             tmp_l->setShowEnabled(true,true);
 
             //Save the line's graphics object
@@ -1305,9 +1306,6 @@ namespace scl {
       if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
       #endif
 
-//      //The preliminaries
-//      glLineWidth(CHAI_MUSC_THICKNESS);                   // Muscle line size (pixels)
-
       // Recompute global positions : Required for the muscle points
       data_->chai_world_->computeGlobalPositions(true);
 
@@ -1354,17 +1352,9 @@ namespace scl {
             l->m_pointB = par2->getGlobalPos() + rotvec2; //Translate the rotated position vector from the frame's position.
 
             // Set the line's color.
-            if(msys.muscle_actuator_set_->force_actuator_max_(i) <= 0.0 || msys.muscle_actuator_set_->force_actuator_(i) <= 0.0)
-            {
-              l->m_colorPointA.set(0.0,1.0,0.0);
-              l->m_colorPointB.set(0.0,1.0,0.0);
-            }
-            else
-            {
-              double tmp_col = msys.muscle_actuator_set_->force_actuator_(i)/msys.muscle_actuator_set_->force_actuator_max_(i);
-              l->m_colorPointA.set(tmp_col, 0.0, 1 - tmp_col);
-              l->m_colorPointB.set(tmp_col, 0.0, 1 - tmp_col);
-            }
+            double tmp_col = msys.muscle_actuator_set_->force_actuator_(i)/msys.muscle_actuator_set_->force_actuator_max_(i);
+            l->m_colorPointA.set(tmp_col, 0.0, 1 - tmp_col);
+            l->m_colorPointB.set(tmp_col, 0.0, 1 - tmp_col);
           }
         }
 
