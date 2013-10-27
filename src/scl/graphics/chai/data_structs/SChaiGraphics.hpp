@@ -195,9 +195,6 @@ public:
   /** Container for all the muscle objects to be rendered */
   sutil::CMappedList<std::string, SGraphicsMsys> muscles_rendered_;
 
-  /** Camera translation/rotation coordinates (spherical) */
-  scl::sFloat cam_sph_x_,cam_sph_h_,cam_sph_v_;
-
   /** Gui properties */
   bool mouse_mode_cam_; //manipulate the camera or forces
 
@@ -222,10 +219,6 @@ public:
     gl_width_ = 1080;
     gl_height_ = 800;
     running_ = false;
-
-    cam_sph_x_=3.0;
-    cam_sph_h_= 0.0;
-    cam_sph_v_=0.0;
 
     //Mouse defaults
     mouse_mode_cam_ = true;
