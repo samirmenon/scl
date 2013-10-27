@@ -59,7 +59,7 @@ namespace scl
       pos_com_.setZero(3);
 
       sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
-      for(it = arg_robot_data.robot_br_rep_.begin(), ite = arg_robot_data.robot_br_rep_.end();
+      for(it = arg_robot_data.robot_tree_.begin(), ite = arg_robot_data.robot_tree_.end();
           it!=ite; ++it)
       {
         const SRigidBody& rb = *it;
@@ -99,7 +99,7 @@ namespace scl
 
       // Sort the underlying list for the new tree
       std::vector<std::string> tmp_sort_order;
-      flag = arg_robot_data.robot_br_rep_.sort_get_order(tmp_sort_order);
+      flag = arg_robot_data.robot_tree_.sort_get_order(tmp_sort_order);
       if(false == flag)
       { throw(std::runtime_error( "Could not obtain sort order from passed robot parsed data" )); }
 

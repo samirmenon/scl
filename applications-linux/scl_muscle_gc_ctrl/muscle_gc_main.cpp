@@ -155,7 +155,7 @@ int main(int argc, char** argv)
 
 #ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<robot_name;
-      scl_util::printRobotLinkTree(*( rob_ds->robot_br_rep_.getRootNode()),0);
+      scl_util::printRobotLinkTree(*( rob_ds->robot_tree_.getRootNode()),0);
 #endif
 
       /**************************Initialize Tao Dynamics for Integrator********************************/

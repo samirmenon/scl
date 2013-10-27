@@ -109,26 +109,26 @@ namespace scl_test
 
         // IF the robot wasn't sorted, issue a warning and set present order as sorted
         std::vector<std::string> tmp_sort_order;
-        flag = rob_ds->robot_br_rep_.sort_get_order(tmp_sort_order);
+        flag = rob_ds->robot_tree_.sort_get_order(tmp_sort_order);
         if(false == flag)
         {
           std::cout<<"\nWARNING : Robot branching representation is not sorted by default. Sorting. Robot = "<<rob_ds->name_;
 
           // Get the present node ordering.
           sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
-          for(it = rob_ds->robot_br_rep_.begin(), ite = rob_ds->robot_br_rep_.end();
+          for(it = rob_ds->robot_tree_.begin(), ite = rob_ds->robot_tree_.end();
                     it!=ite; ++it)
           { tmp_sort_order.push_back(it->name_); }
 
           // Sort it.
-          flag = rob_ds->robot_br_rep_.sort(tmp_sort_order);
+          flag = rob_ds->robot_tree_.sort(tmp_sort_order);
           if(false == flag)
           { throw(std::runtime_error("Could not sort unsorted robot branching representation."));  }
         }
 
   #ifdef DEBUG
         std::cout<<"\nPrinting parsed robot "<<rob_ds->name_;
-        scl_util::printRobotLinkTree( *(rob_ds->robot_br_rep_.getRootNode()), 0);
+        scl_util::printRobotLinkTree( *(rob_ds->robot_tree_.getRootNode()), 0);
   #endif
 
         //*********** Create the dynamics computational object *************

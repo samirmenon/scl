@@ -79,7 +79,7 @@ taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const SRobotParsedData& arg_robot
     //Traverse the robotRoot's tree and construct a tao tree structure
     //************************
     //Step 2a: Find the desired robot root.
-    const sutil::CMappedTree<std::string, SRigidBody> & br = arg_robot.robot_br_rep_;
+    const sutil::CMappedTree<std::string, SRigidBody> & br = arg_robot.robot_tree_;
     tmp_root = br.getRootNodeConst();//The root node.
     if (tmp_root == NULL)
     { throw(std::runtime_error("Robot doesn't have valid root node"));}

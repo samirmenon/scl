@@ -104,18 +104,18 @@ namespace scl
         { continue; } //Bot points are connected to same link. Don't contribute to J. Ignore.
 
         //Test that the parent links for both muscle attachment points exist in the robot
-        const SRigidBody *tmp_rb_0 = arg_robot->robot_br_rep_.at_const(tmp_pt_0.parent_link_);
+        const SRigidBody *tmp_rb_0 = arg_robot->robot_tree_.at_const(tmp_pt_0.parent_link_);
         if(NULL == tmp_rb_0)
         { throw(std::runtime_error(std::string("Could not find parent link for muscle: ")+tmp_pt_0.parent_link_)); }
 
-        const SRigidBody *tmp_rb_1 = arg_robot->robot_br_rep_.at_const(tmp_pt_1.parent_link_);
+        const SRigidBody *tmp_rb_1 = arg_robot->robot_tree_.at_const(tmp_pt_1.parent_link_);
         if(NULL == tmp_rb_1)
         { throw(std::runtime_error(std::string("Could not find parent link for muscle: ")+tmp_pt_1.parent_link_)); }
 
         //Check which of the two links is the parent (useful for determining the dynamics -> getIdForLink())
-        if(arg_robot->robot_br_rep_.isAncestor(tmp_rb_0, tmp_rb_1))
+        if(arg_robot->robot_tree_.isAncestor(tmp_rb_0, tmp_rb_1))
         { tmp_child_link_id = 0;  }
-        else if(arg_robot->robot_br_rep_.isAncestor(tmp_rb_1, tmp_rb_0))
+        else if(arg_robot->robot_tree_.isAncestor(tmp_rb_1, tmp_rb_0))
         { tmp_child_link_id = 1;  }
         else
         { throw(std::runtime_error(std::string("Parent links for successive muscle via points disconnected at: ")+arg_name)); }

@@ -157,8 +157,8 @@ namespace scl
 
       //NOTE TODO Perhaps this was what TRY_TO_CONVERT_NAMES achieved
       sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::const_iterator itbr, itbre;
-      for(itbr = arg_robot_data.robot_br_rep_.begin(),
-          itbre = arg_robot_data.robot_br_rep_.end();
+      for(itbr = arg_robot_data.robot_tree_.begin(),
+          itbre = arg_robot_data.robot_tree_.end();
           itbr!=itbre; ++itbr)
       {
         std::vector<jspace::STaoNodeInfo>::iterator it, ite, icc;

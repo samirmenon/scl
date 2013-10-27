@@ -69,7 +69,7 @@ bool CSaiParser::readRobotFromFile(const std::string& arg_file,
     tiHndl_link = tiHndl_world.FirstChild("baseNode");
 
     //Read in the root link. (baseNode)
-    tmp_link_ds = arg_robot.robot_br_rep_.create(root_link_name_, true); //Add the root link
+    tmp_link_ds = arg_robot.robot_tree_.create(root_link_name_, true); //Add the root link
     tmp_link_ds->init(); //Default params. Change it after converting to scl.
     tmp_link_ds->is_root_ = true;
     tmp_link_ds->name_ = root_link_name_;
@@ -80,8 +80,8 @@ bool CSaiParser::readRobotFromFile(const std::string& arg_file,
     if(false == flag )
     { throw(std::runtime_error("Could not read robot's links.")); }
 
-    arg_robot.dof_ = arg_robot.robot_br_rep_.size() - 1;//The root node is stationary
-    flag = arg_robot.robot_br_rep_.linkNodes();
+    arg_robot.dof_ = arg_robot.robot_tree_.size() - 1;//The root node is stationary
+    flag = arg_robot.robot_tree_.linkNodes();
     if(false == flag)
     { throw(std::runtime_error("Could not link robot's branching representation nodes.")); }
 
@@ -109,7 +109,7 @@ bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
     if(true == arg_is_root) //Root link is initialized outside this function.
     {
       lnk_name = root_link_name_;
-      tmp_link_ds = arg_robot.robot_br_rep_.at(lnk_name);
+      tmp_link_ds = arg_robot.robot_tree_.at(lnk_name);
       if(S_NULL == tmp_link_ds)
       { throw(std::runtime_error("Could not find root node in the branching representation"));  }
     }
@@ -124,7 +124,7 @@ bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
       else { throw(std::runtime_error("Could not read a link name.")); }
 
       //Create the link on the pile
-      tmp_link_ds = arg_robot.robot_br_rep_.create(lnk_name,false);
+      tmp_link_ds = arg_robot.robot_tree_.create(lnk_name,false);
       if(S_NULL == tmp_link_ds)
       {
         std::string msg;

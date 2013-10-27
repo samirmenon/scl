@@ -212,7 +212,7 @@ namespace scl
       sutil::CMappedTree<std::string, SRigidBody>::const_iterator itr,itre;
       //Set the center of mass position for each link.
       for(itcom = data_->gc_model_.link_ds_.begin(), itcome =data_->gc_model_.link_ds_.end(),
-          itr = data_->robot_->robot_br_rep_.begin(),itre = data_->robot_->robot_br_rep_.end();
+          itr = data_->robot_->robot_tree_.begin(),itre = data_->robot_->robot_tree_.end();
           itcom!=itcome; ++itcom,++itr)
       {
         //Note : The root node doesn't move, has infinite mass, and doesn't
@@ -224,7 +224,7 @@ namespace scl
           std::stringstream ss;
           ss<<"Inconsistent model. Gc model has more entries ["
               <<data_->gc_model_.link_ds_.size()<<"] than the robot's mapped tree ["
-              <<data_->robot_->robot_br_rep_.size()<<"]";
+              <<data_->robot_->robot_tree_.size()<<"]";
           throw(std::runtime_error(ss.str()));
         }
 
@@ -242,7 +242,7 @@ namespace scl
           std::stringstream ss;
           ss<<"Inconsistent model. Gc model has less entries ["
               <<data_->gc_model_.link_ds_.size()<<"] than the robot's mapped tree ["
-              <<data_->robot_->robot_br_rep_.size()-1<<"]"; //-1 in br_rep_.size to remove root.
+              <<data_->robot_->robot_tree_.size()-1<<"]"; //-1 in br_rep_.size to remove root.
           throw(std::runtime_error(ss.str()));
         }
       }

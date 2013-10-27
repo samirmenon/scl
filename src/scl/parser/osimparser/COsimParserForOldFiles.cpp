@@ -350,18 +350,18 @@ namespace scl_parser {
        * it finds a non-weld-joint parent-link.
        ***********************************************************/
 
-      flag = tmp_welded_robot.robot_br_rep_.linkNodes();
+      flag = tmp_welded_robot.robot_tree_.linkNodes();
       if(false == flag) { throw(std::runtime_error("Could not link weld joints"));  }
 
       sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::iterator it, ite;
-      for(it = tmp_welded_robot.robot_br_rep_.begin(), ite = tmp_welded_robot.robot_br_rep_.end(); it!=ite; ++it)
+      for(it = tmp_welded_robot.robot_tree_.begin(), ite = tmp_welded_robot.robot_tree_.end(); it!=ite; ++it)
       {
         SRigidBody& lnk = *it;
 
         SRigidBody* par;
         if(S_NULL == lnk.parent_addr_)
         {//Orphan weld joint. Its parent must be a custom joint
-          par = arg_robot.robot_br_rep_.at(lnk.parent_name_);
+          par = arg_robot.robot_tree_.at(lnk.parent_name_);
           if((S_NULL == par) && (false == lnk.is_root_))
           {
             std::string s;
@@ -421,20 +421,20 @@ namespace scl_parser {
        *  parents through the weld joints.
        ***********************************************************/
 
-      for(it = arg_robot.robot_br_rep_.begin(), ite = arg_robot.robot_br_rep_.end(); it!=ite; ++it)
+      for(it = arg_robot.robot_tree_.begin(), ite = arg_robot.robot_tree_.end(); it!=ite; ++it)
       {
         SRigidBody& lnk = *it;
 
         if(true == lnk.is_root_)//Nothing needed here.
         { continue; }
 
-        if(S_NULL == arg_robot.robot_br_rep_.at(lnk.parent_name_))
+        if(S_NULL == arg_robot.robot_tree_.at(lnk.parent_name_))
         {
           Eigen::Vector3d pos_in_parent = lnk.pos_in_parent_;
           Eigen::Quaternion<scl::sFloat> ori_in_parent = lnk.ori_parent_quat_;
 
           //Its parent isn't in the custom joint links. Must be in the weld joint links.
-          SRigidBody* wpar = tmp_welded_robot.robot_br_rep_.at(lnk.parent_name_);
+          SRigidBody* wpar = tmp_welded_robot.robot_tree_.at(lnk.parent_name_);
           if(S_NULL == wpar)
           {
             std::string s; s = "No parent weld link (" + lnk.parent_name_
@@ -453,7 +453,7 @@ namespace scl_parser {
           { throw(std::runtime_error("Found a path to ground from a weld joint node. Invalid state"));  }
 
           SRigidBody* cpar;//Find the custom joint parent, and link the custom joint to it.
-          cpar = arg_robot.robot_br_rep_.at(wpar->parent_name_);
+          cpar = arg_robot.robot_tree_.at(wpar->parent_name_);
           if(S_NULL == cpar)
           {
             std::string s; s = "No parent custom joint (" + wpar->parent_name_
@@ -516,7 +516,7 @@ namespace scl_parser {
       if(body_name == "ground")
       {
         //Root link is always ground in osim
-        SRigidBody* lnk = arg_robot.robot_br_rep_.create(body_name,true);
+        SRigidBody* lnk = arg_robot.robot_tree_.create(body_name,true);
         if(S_NULL == lnk)
         { throw(std::runtime_error("Can't allocate a link on the pile"));  }
         lnk->name_ = "ground";
@@ -539,7 +539,7 @@ namespace scl_parser {
        ***********************************************************/
       if("WeldJoint" == arg_joint_type)
       {//Is not a joint. So don't parse the joint stuff except the parent name and pos
-        lnk = arg_robot.robot_br_rep_.create(body_name,false);
+        lnk = arg_robot.robot_tree_.create(body_name,false);
         if(S_NULL == lnk)
         {
           std::string s; s= "Can't allocate a link on the pile : " + body_name;
@@ -594,7 +594,7 @@ namespace scl_parser {
           }
 
           //Allocate the link on the pile
-          lnk = arg_robot.robot_br_rep_.create(lnk_name,false);
+          lnk = arg_robot.robot_tree_.create(lnk_name,false);
           if(S_NULL == lnk)
           {
             std::string s;

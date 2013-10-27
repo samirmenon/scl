@@ -98,7 +98,7 @@ namespace scl
 
       link_name_ = parent_link_name;
 
-      link_ds_ = dynamic_cast<const SRigidBody *>(robot_->robot_br_rep_.at_const(link_name_));
+      link_ds_ = dynamic_cast<const SRigidBody *>(robot_->robot_tree_.at_const(link_name_));
       if(S_NULL == link_ds_)
       { throw(std::runtime_error("Could not find the parent link in the parsed robot data structure"));  }
 

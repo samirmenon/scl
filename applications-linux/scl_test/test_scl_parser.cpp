@@ -86,7 +86,7 @@ void test_scl_parser(int id)
       throw(std::runtime_error(err.c_str()));  }
     else  { std::cout<<"\nTest Result ("<<r_id++<<") Read robot ("+robot_names[0]+") from file.";  }
 
-    flag = tmp_robot.robot_br_rep_.linkNodes();
+    flag = tmp_robot.robot_tree_.linkNodes();
     if(false==flag)
     { throw(std::runtime_error("Connect links into a \'branching representation\' tree: Failed"));  }
     else
@@ -97,7 +97,7 @@ void test_scl_parser(int id)
 
     std::cout<<"\nTest Result ("<<r_id++<<") Printing links:";
     sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::iterator itbr,itbre;
-    for(itbr = tmp_robot.robot_br_rep_.begin(), itbre = tmp_robot.robot_br_rep_.end();
+    for(itbr = tmp_robot.robot_tree_.begin(), itbre = tmp_robot.robot_tree_.end();
         itbr!=itbre; ++itbr)
     {
       scl::SRigidBody& tmp_link = *itbr;
@@ -121,7 +121,7 @@ void test_scl_parser(int id)
 
     //7. Test Map (Idx and name of pointed object should match)
     const std::string test_link_name("ground");
-    scl::SRigidBody* tmp_link = tmp_robot.robot_br_rep_.at(test_link_name);
+    scl::SRigidBody* tmp_link = tmp_robot.robot_tree_.at(test_link_name);
     if(S_NULL == tmp_link)
     {
       throw(std::runtime_error(

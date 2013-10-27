@@ -79,7 +79,7 @@ namespace scl
       //*******Step 2***********
       //Set up the root node
       //************************
-      const sutil::CMappedTree<std::string, SRobotLink> & br = arg_robot_data.robot_br_rep_;
+      const sutil::CMappedTree<std::string, SRobotLink> & br = arg_robot_data.robot_tree_;
       const SRobotLink* tmp_root = br.getRootNodeConst();//The root node.
       if (tmp_root == NULL)
       { throw(std::runtime_error("Robot doesn't have valid root node"));}

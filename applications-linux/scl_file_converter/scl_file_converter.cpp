@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 
       //3. Create a parser that can parse the specific filetype (Parsers inherit from CParserBase)
       scl::SRobotParsedData tmp_robot; //Will parse a robot into this data structure.
-      tmp_robot.robot_br_rep_.clear();
+      tmp_robot.robot_tree_.clear();
       scl::SMuscleSystem tmp_msys;
       tmp_msys.muscles_.clear();
 
@@ -113,7 +113,7 @@ int main(int argc, char** argv)
           std::cout<<"\nCould not read OSIM xml file. Trying parser for older file types.";
           scl_parser::COsimParserForOldFiles tmp_osim_parser_old;
           //Clear out stuff that has already been read in.
-          tmp_robot.robot_br_rep_.clear();
+          tmp_robot.robot_tree_.clear();
           tmp_msys.muscles_.clear();
           //Try the older parser.
           flag = tmp_osim_parser_old.readOsimBiomechFromFile(tmp_infile, tmp_robot, tmp_msys);
