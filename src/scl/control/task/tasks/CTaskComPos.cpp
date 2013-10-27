@@ -296,7 +296,7 @@ namespace scl
           data_->jacobian_.transpose() * data_->jacobian_dyn_inv_.transpose();
 
       // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-      data_->mu_.setZero(data_->dof_task_,1);
+      data_->force_task_cc_.setZero(data_->dof_task_,1);
 
       // J' * J_dyn_inv' * g(q)
       data_->force_task_grav_ =  data_->jacobian_dyn_inv_.transpose() * data_->gc_model_->g_;

@@ -853,7 +853,7 @@ namespace scl
             <<"\nJinv "<<(*it)->jacobian_dyn_inv_
             <<"\n L "<<(*it)->M_task_
             <<"\n Linv "<<(*it)->M_task_inv_
-            <<"\n "<<(*it)->mu_
+            <<"\n "<<(*it)->force_task_cc_
             <<" "<<(*it)->force_task_grav_;
         logged_something = true;
       }

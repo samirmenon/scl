@@ -121,7 +121,7 @@ namespace scl
      * Controls cc forces in a subspace of the entire gc space so
      * that the operational point experience no cc forces. Other points,
      * however, do.*/
-    Eigen::MatrixXd mu_;
+    Eigen::MatrixXd force_task_cc_;
 
     /** Task-space gravity force vector.
      * Controls gravity in a subspace of the entire gc space so
