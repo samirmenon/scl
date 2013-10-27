@@ -197,7 +197,7 @@ bool CTaskOpPos::computeServo(const SRobotSensorData* arg_sensors)
 
     //Obtain force to be applied to a unit mass floating about
     //in space (ie. A dynamically decoupled mass).
-    data_->ddx_ = data_->ka_.array() * data_->ddx_goal_.array();
+    data_->ddx_ = data_->ka_.array() * (data_->ddx_goal_ - data_->ddx_).array();
     data_->ddx_ += tmp2 + tmp1;
 
     data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max

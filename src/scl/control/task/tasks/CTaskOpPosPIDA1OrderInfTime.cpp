@@ -202,7 +202,7 @@ bool CTaskOpPosPIDA1OrderInfTime::computeServo(const SRobotSensorData* arg_senso
 
     //Obtain force to be applied to a unit mass floating about
     //in space (ie. A dynamically decoupled mass).
-    data_->ddx_ = data_->ka_.array() * data_->ddx_goal_.array();
+    data_->ddx_ = data_->ka_.array() * (data_->ddx_goal_ - data_->ddx_).array();
     data_->ddx_ += tmp2 + tmp1;
 
     // Compute the integral force

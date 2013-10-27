@@ -183,7 +183,7 @@ namespace scl
 
         //Obtain force to be applied to a unit mass floating about
         //in space (ie. A dynamically decoupled mass).
-        data_->force_task_[i] = data_->ka_(i) * data_->ddq_goal_[i];
+        data_->force_task_[i] = data_->ka_(i) * (data_->ddq_goal_[i] - arg_sensors->ddq_[data_->q_sel_[i]]);
         data_->force_task_[i] += tmp2 + tmp1;
 
         //Min of self and max
