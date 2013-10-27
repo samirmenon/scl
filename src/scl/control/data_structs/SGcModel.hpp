@@ -66,10 +66,10 @@ namespace scl
     /** M_gc_inv_ : Generalized inertia matrix inverse */
     Eigen::MatrixXd M_gc_inv_;
 
-    /** force_gc_cc_ : Coriolis+centrifugal torque vector */
+    /** force_gc_cc_ : Generalized coriolis+centrifugal force vector */
     Eigen::VectorXd force_gc_cc_;
 
-    /** g : Gravity torque vector */
+    /** force_gc_grav_ : Generalized gravity force vector */
     Eigen::VectorXd force_gc_grav_;
 
     /** The generalized coordinates and velocity at the time
@@ -87,7 +87,7 @@ namespace scl
     /** com : Center of mass vector */
     Eigen::Vector3d pos_com_;
 
-    /** m : Mass of the robot in Euclidean coords */
+    /** mass_ : Mass of the robot in Euclidean coords */
     sFloat mass_;
 
     /** A vector of the dynamics information for all the rigid bodies in the
