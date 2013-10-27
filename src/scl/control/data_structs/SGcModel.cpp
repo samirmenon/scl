@@ -59,11 +59,11 @@ namespace scl
       pos_com_.setZero(3);
 
       sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
-      for(it = arg_robot_data.robot_tree_.begin(), ite = arg_robot_data.robot_tree_.end();
+      for(it = arg_robot_data.rb_tree_.begin(), ite = arg_robot_data.rb_tree_.end();
           it!=ite; ++it)
       {
         const SRigidBody& rb = *it;
-        SRigidBodyDyn *com = link_ds_.create(rb.name_,rb.is_root_);
+        SRigidBodyDyn *com = rbdyn_tree_.create(rb.name_,rb.is_root_);
         if(NULL == com)
         { throw(std::runtime_error( std::string("Could not create dyn node: ")+ rb.name_+std::string("for robot: ")+rb.robot_name_ )); }
 
@@ -93,18 +93,18 @@ namespace scl
         }
       }
 
-      bool flag = link_ds_.linkNodes();
+      bool flag = rbdyn_tree_.linkNodes();
       if(false == flag)
       { throw(std::runtime_error( "Could not link the dynamic nodes into a tree" )); }
 
       // Sort the underlying list for the new tree
       std::vector<std::string> tmp_sort_order;
-      flag = arg_robot_data.robot_tree_.sort_get_order(tmp_sort_order);
+      flag = arg_robot_data.rb_tree_.sort_get_order(tmp_sort_order);
       if(false == flag)
       { throw(std::runtime_error( "Could not obtain sort order from passed robot parsed data" )); }
 
       // Sort the underlying list for the new tree
-      flag = link_ds_.sort(tmp_sort_order);
+      flag = rbdyn_tree_.sort(tmp_sort_order);
       if(false==flag)
       { throw(std::runtime_error( "Could not sort dynamic node tree" )); }
     }

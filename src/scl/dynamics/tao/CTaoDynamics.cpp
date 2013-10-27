@@ -157,8 +157,8 @@ namespace scl
 
       //NOTE TODO Perhaps this was what TRY_TO_CONVERT_NAMES achieved
       sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::const_iterator itbr, itbre;
-      for(itbr = arg_robot_data.robot_tree_.begin(),
-          itbre = arg_robot_data.robot_tree_.end();
+      for(itbr = arg_robot_data.rb_tree_.begin(),
+          itbre = arg_robot_data.rb_tree_.end();
           itbr!=itbre; ++itbr)
       {
         std::vector<jspace::STaoNodeInfo>::iterator it, ite, icc;
@@ -255,7 +255,7 @@ namespace scl
     arg_gc_model->pos_com_.setZero(3);
     Eigen::Vector3d tmp_lnk_com;
     sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it, ite;
-    for(it = arg_gc_model->link_ds_.begin(), ite = arg_gc_model->link_ds_.end(); it!=ite;++it)
+    for(it = arg_gc_model->rbdyn_tree_.begin(), ite = arg_gc_model->rbdyn_tree_.end(); it!=ite;++it)
     {
       // No matrices need to be computed for the root nodes (those are fixed, non-dynamic).
       if(it->link_ds_->is_root_)

@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 #ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<robot_name;
       scl::SRobotParsedData *rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
-      scl_util::printRobotLinkTree(*(rob_ds->robot_tree_.getRootNode()),0);
+      scl_util::printRobotLinkTree(*(rob_ds->rb_tree_.getRootNode()),0);
 #endif
 
       /******************************TaoDynamics************************************/

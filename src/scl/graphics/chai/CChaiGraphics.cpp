@@ -261,7 +261,7 @@ namespace scl {
       }
 
       //2. Now obtain the robot root link's static (parser) data.
-      tmp_root_link = robdef->robot_tree_.getRootNode();
+      tmp_root_link = robdef->rb_tree_.getRootNode();
       if(S_NULL == tmp_root_link)
       { throw(std::runtime_error("Found a robot without any links"));  }
       if(tmp_root_link->robot_name_ != arg_robot)

@@ -113,7 +113,7 @@ namespace scl_test
 #ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "
           <<db->s_parser_.robots_.at(robot_name)->name_;
-      scl_util::printRobotLinkTree(*( db->s_parser_.robots_.at(robot_name)->robot_tree_.getRootNode()),0);
+      scl_util::printRobotLinkTree(*( db->s_parser_.robots_.at(robot_name)->rb_tree_.getRootNode()),0);
 #endif
 
       //Initialize the dynamics computational object
@@ -249,26 +249,26 @@ namespace scl_test
 
       // IF the robot wasn't sorted, issue a warning and set present order as sorted
       std::vector<std::string> tmp_sort_order;
-      flag = rob_ds->robot_tree_.sort_get_order(tmp_sort_order);
+      flag = rob_ds->rb_tree_.sort_get_order(tmp_sort_order);
       if(false == flag)
       {
         std::cout<<"\nWARNING : Robot branching representation is not sorted by default. Sorting. Robot = "<<rob_ds->name_;
 
         // Get the present node ordering.
         sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
-        for(it = rob_ds->robot_tree_.begin(), ite = rob_ds->robot_tree_.end();
+        for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
                   it!=ite; ++it)
         { tmp_sort_order.push_back(it->name_); }
 
         // Sort it.
-        flag = rob_ds->robot_tree_.sort(tmp_sort_order);
+        flag = rob_ds->rb_tree_.sort(tmp_sort_order);
         if(false == flag)
         { throw(std::runtime_error("Could not sort unsorted robot branching representation."));  }
       }
 
 #ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<rob_ds->name_;
-      scl_util::printRobotLinkTree( *(rob_ds->robot_tree_.getRootNode()), 0);
+      scl_util::printRobotLinkTree( *(rob_ds->rb_tree_.getRootNode()), 0);
 #endif
 
       //*********** Create the dynamics computational object *************
@@ -316,7 +316,7 @@ namespace scl_test
 
       // Loop through all links and get transformations.
       sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
-      for(it = rob_ds->robot_tree_.begin(), ite = rob_ds->robot_tree_.end();
+      for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
           it!=ite; ++it)
       {
         // Test : Link 0
@@ -369,7 +369,7 @@ namespace scl_test
             }
 
             // Loop through all links and get transformations.
-            for(it = rob_ds->robot_tree_.begin(), ite = rob_ds->robot_tree_.end();
+            for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
                 it!=ite; ++it)
             {
               // Test : Link 0
@@ -472,7 +472,7 @@ namespace scl_test
       Eigen::VectorXd pos;
       pos.setZero(3);
 
-      for(it = rob_ds->robot_tree_.begin(), ite = rob_ds->robot_tree_.end();
+      for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
           it!=ite; ++it)
       {
         // Test : Link 0
@@ -521,7 +521,7 @@ namespace scl_test
           for (double c=-3.14;c<3.14;c+=gcstep)
           {
             io_ds->sensors_.q_<<a,b,c;
-            for(itd = rob_gc_model.link_ds_.begin(), itde = rob_gc_model.link_ds_.end();
+            for(itd = rob_gc_model.rbdyn_tree_.begin(), itde = rob_gc_model.rbdyn_tree_.end();
                 itd!=itde; ++itd)
             {
               if(itd->link_ds_->is_root_) { continue; } // Skip the root node (all matrices are zero).
@@ -540,7 +540,7 @@ namespace scl_test
           for (double c=-3.14;c<3.14;c+=gcstep)
           {
             io_ds->sensors_.q_<<a,b,c;
-            for(it = rob_ds->robot_tree_.begin(), ite = rob_ds->robot_tree_.end();
+            for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
                 it!=ite; ++it)
             {
               // Skip the root node (all matrices are zero).

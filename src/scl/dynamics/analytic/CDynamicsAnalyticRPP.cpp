@@ -233,7 +233,7 @@ namespace scl
 
   sBool CDynamicsAnalyticRPP::init(const SRobotParsedData& arg_robot_data)
   {
-    const SRigidBody * tmp = arg_robot_data.robot_tree_.getRootNodeConst();
+    const SRigidBody * tmp = arg_robot_data.rb_tree_.getRootNodeConst();
     if(NULL == tmp)
     {
       std::cout<<"\nCDynamicsAnalyticRPP::init() : Error. Couldn't find robot root node";

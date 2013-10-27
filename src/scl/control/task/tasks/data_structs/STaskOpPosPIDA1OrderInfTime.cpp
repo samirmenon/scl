@@ -117,7 +117,7 @@ namespace scl
       if(0>=link_name_.size())
       { throw(std::runtime_error("Parent link's name is too short."));  }
 
-      link_ds_ = dynamic_cast<const SRigidBody *>(robot_->robot_tree_.at_const(link_name_));
+      link_ds_ = dynamic_cast<const SRigidBody *>(robot_->rb_tree_.at_const(link_name_));
       if(S_NULL == link_ds_)
       { throw(std::runtime_error("Could not find the parent link in the parsed robot data structure"));  }
 

@@ -155,7 +155,7 @@ int main(int argc, char** argv)
 
 #ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<robot_name;
-      scl_util::printRobotLinkTree(*( rob_ds->robot_tree_.getRootNode()),0);
+      scl_util::printRobotLinkTree(*( rob_ds->rb_tree_.getRootNode()),0);
 #endif
 
       /**************************Initialize Tao Dynamics for Integrator********************************/
@@ -186,7 +186,7 @@ int main(int argc, char** argv)
       /**********************Initialize Muscle Actuator Model & Dynamics*******************/
       scl::CActuatorSetMuscle rob_mset;
       flag = rob_mset.init(rob_ds->muscle_system_.name_, /** parsed */ rob_ds, rob_io_ds, &(rob_ds->muscle_system_),
-          /** rbd tree */ gc_ctrl_ds->gc_model_.link_ds_, /** dynamics */ &dyn_scl);
+          /** rbd tree */ gc_ctrl_ds->gc_model_.rbdyn_tree_, /** dynamics */ &dyn_scl);
       if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set"));  }
 
       // Create an actuator set in the database

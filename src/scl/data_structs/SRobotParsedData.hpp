@@ -55,7 +55,7 @@ struct SRobotParsedData : public SObject
 public:
   /** The branching representation will store a tree of SRigidBody nodes
    * and will maintain a mapping between their names and the nodes. */
-  sutil::CMappedTree<std::string, SRigidBody> robot_tree_;
+  sutil::CMappedTree<std::string, SRigidBody> rb_tree_;
 
   /** The indices of the different links in the mapped tree */
   std::vector<std::string> robot_tree_numeric_id_to_name_;

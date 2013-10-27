@@ -92,7 +92,7 @@ namespace scl
 
     /** A vector of the dynamics information for all the rigid bodies in the
      * articulated body */
-    sutil::CMappedTree<std::string, SRigidBodyDyn> link_ds_;
+    sutil::CMappedTree<std::string, SRigidBodyDyn> rbdyn_tree_;
 
     /* *********************************************************************
      *                      Initialization functions

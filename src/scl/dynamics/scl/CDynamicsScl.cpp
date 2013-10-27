@@ -53,7 +53,7 @@ namespace scl
     bool flag = true;
     const Eigen::VectorXd &q = arg_sensor_data->q_;
     const Eigen::VectorXd &dq = arg_sensor_data->dq_;
-    sutil::CMappedTree<std::string, SRigidBodyDyn> &rbtree = arg_gc_model->link_ds_;
+    sutil::CMappedTree<std::string, SRigidBodyDyn> &rbtree = arg_gc_model->rbdyn_tree_;
 
     //0. Update the coordinates
     arg_gc_model->q_ = q;
@@ -63,17 +63,17 @@ namespace scl
     flag = flag && computeTransformsForAllLinks(rbtree, q);
 
     //2. Update the com Jacobians.
-    flag = flag && computeJacobianComForAllLinks(arg_gc_model->link_ds_,arg_sensor_data->q_);
+    flag = flag && computeJacobianComForAllLinks(arg_gc_model->rbdyn_tree_,arg_sensor_data->q_);
 
     //3. Update generalized inertia and its inverse
-    flag = flag && computeInertiaGC(arg_gc_model->M_gc_, arg_gc_model->link_ds_, arg_sensor_data->q_);
+    flag = flag && computeInertiaGC(arg_gc_model->M_gc_, arg_gc_model->rbdyn_tree_, arg_sensor_data->q_);
     arg_gc_model->M_gc_inv_ = arg_gc_model->M_gc_.inverse(); //A is always invertible.
 
     //4. Update b_
     //arg_gc_model->b_
 
     //5. Update the generalized gravity force
-    flag = flag && computeForceGravityGC(arg_gc_model->force_gc_grav_, arg_gc_model->link_ds_, arg_sensor_data->q_);
+    flag = flag && computeForceGravityGC(arg_gc_model->force_gc_grav_, arg_gc_model->rbdyn_tree_, arg_sensor_data->q_);
 
     return flag;
   }

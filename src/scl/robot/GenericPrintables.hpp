@@ -211,7 +211,7 @@ namespace scl
 
         //Also add the links
         sutil::CMappedTree<std::string, scl::SRigidBody>::iterator itl, itle;
-        for(itl = rob.robot_tree_.begin(), itle = rob.robot_tree_.end();
+        for(itl = rob.rb_tree_.begin(), itle = rob.rb_tree_.end();
             itl!=itle; ++itl)
         {
           scl::SRigidBody& l = *itl;

@@ -223,7 +223,7 @@ namespace scl
       //Compute the COM Jacobian : sum over all the link com jacobians
       data_->J_.setZero(3, data_->robot_->dof_);
       sutil::CMappedTree<std::string, SRigidBodyDyn>::const_iterator it,ite;
-      for(it = data_->gc_model_->link_ds_.begin(), ite = data_->gc_model_->link_ds_.end(); it!=ite; ++it)
+      for(it = data_->gc_model_->rbdyn_tree_.begin(), ite = data_->gc_model_->rbdyn_tree_.end(); it!=ite; ++it)
       { data_->J_ += it->J_com_.block(0,0,3,data_->robot_->dof_);  }
 
       data_->J_ = J_premultiplier_ * data_->J_;
