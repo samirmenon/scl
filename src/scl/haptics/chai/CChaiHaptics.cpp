@@ -155,11 +155,11 @@ namespace scl
         it!=ite && itv!=itve; ++it, ++itv)
     {// Now read the state from the devices.
       cVector3d tmpv;
-      int tmp =(*it)->getPosition(tmpv); //Read position into tmpv
+      bool device_ready =(*it)->getPosition(tmpv); //Read position into tmpv
       Eigen::Vector3d tmp_vec;
       tmp_vec<<tmpv(0),tmpv(1),tmpv(2);
       *itv = tmp_vec;                       //Set the positions in the vector
-      if (0 != tmp)
+      if (false == device_ready)
       { std::cout<<"\nWARNING : Could not read position of haptic device: "<<i; }
       i++;
     }
