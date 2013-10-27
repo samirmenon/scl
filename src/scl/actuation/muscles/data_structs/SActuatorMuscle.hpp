@@ -59,7 +59,7 @@ namespace scl
 
       /** The two via points that span one or more generalized
        * coords */
-      Eigen::Vector3d position_in_parent_0_, position_in_parent_1_;
+      Eigen::Vector3d pos_in_parent_0_, pos_in_parent_1_;
 
       /** The two via points that span one or more generalized
        * coords (in global coordinates) */

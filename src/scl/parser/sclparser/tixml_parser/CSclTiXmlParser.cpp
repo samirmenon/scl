@@ -762,9 +762,9 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         if ( muscle_datal2 )
         {
           std::stringstream ss(muscle_datal2->FirstChild()->Value());
-          ss>>tmp_musc_pt.point_(0);
-          ss>>tmp_musc_pt.point_(1);
-          ss>>tmp_musc_pt.point_(2);
+          ss>>tmp_musc_pt.pos_in_parent_(0);
+          ss>>tmp_musc_pt.pos_in_parent_(1);
+          ss>>tmp_musc_pt.pos_in_parent_(2);
         }
         else
         {throw(std::runtime_error("Error reading parent link name"));}

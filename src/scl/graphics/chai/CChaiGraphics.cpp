@@ -938,7 +938,7 @@ namespace scl {
           gr_mpt.graphics_parent_ = gr_lnk;
 
           gr_mpt.pos_ = new cVector3d();
-          gr_mpt.pos_->set(it->point_(0),it->point_(1),it->point_(2));
+          gr_mpt.pos_->set(it->pos_in_parent_(0),it->pos_in_parent_(1),it->pos_in_parent_(2));
 
           if(it2!=ite)
           {
@@ -952,7 +952,7 @@ namespace scl {
             gr_mpt.graphics_parent_next_ = gr_lnk2;
 
             gr_mpt.pos_next_ = new cVector3d();
-            gr_mpt.pos_next_->set(it2->point_(0),it2->point_(1),it2->point_(2));
+            gr_mpt.pos_next_->set(it2->pos_in_parent_(0),it2->pos_in_parent_(1),it2->pos_in_parent_(2));
 
             //Set up a line : The initial coordinates don't matter and will be immediately
             //updated with global coordinates of the skeletonwhile rendering.

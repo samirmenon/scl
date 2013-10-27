@@ -49,7 +49,7 @@ namespace scl
   {
   public:
     /** xyz coordinates of an attachment point */
-    Eigen::Vector3d point_;
+    Eigen::Vector3d pos_in_parent_;
 
     /** The link to which this muscle point attaches */
     std::string parent_link_;

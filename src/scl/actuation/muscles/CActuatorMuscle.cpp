@@ -95,84 +95,88 @@ namespace scl
       // pairs. So reaching the second last will test for all possible pairs
       for(int i=0; i<n_pts-1; ++i)
       {
-        int tmp_parent_link=-1;
+        int tmp_child_link_id=-1;
 
         const SMusclePoint& tmp_pt_0 = muscle_->points_[i]; //tmp reference
         const SMusclePoint& tmp_pt_1 = muscle_->points_[i+1]; //tmp reference
 
-        //Test that the parent links exist in the robot
+        if(tmp_pt_0.parent_link_ == tmp_pt_1.parent_link_)
+        { continue; } //Bot points are connected to same link. Don't contribute to J. Ignore.
+
+        //Test that the parent links for both muscle attachment points exist in the robot
         const SRigidBody *tmp_rb_0 = arg_robot->robot_br_rep_.at_const(tmp_pt_0.parent_link_);
         if(NULL == tmp_rb_0)
         { throw(std::runtime_error(std::string("Could not find parent link for muscle: ")+tmp_pt_0.parent_link_)); }
-        //Check which of the two links is the parent (useful for determining the dynamics -> getIdForLink())
-        if(tmp_pt_1.parent_link_ == tmp_rb_0->parent_name_)
-        { tmp_parent_link = 1;  }
 
         const SRigidBody *tmp_rb_1 = arg_robot->robot_br_rep_.at_const(tmp_pt_1.parent_link_);
         if(NULL == tmp_rb_1)
         { throw(std::runtime_error(std::string("Could not find parent link for muscle: ")+tmp_pt_1.parent_link_)); }
-        //Check which of the two links is the parent (useful for determining the dynamics -> getIdForLink())
-        if(tmp_pt_0.parent_link_ == tmp_rb_1->parent_name_)
-        { tmp_parent_link = 0;  }
 
-        if(-1==tmp_parent_link)
+        //Check which of the two links is the parent (useful for determining the dynamics -> getIdForLink())
+        if(arg_robot->robot_br_rep_.isAncestor(tmp_rb_0, tmp_rb_1))
+        { tmp_child_link_id = 0;  }
+        else if(arg_robot->robot_br_rep_.isAncestor(tmp_rb_1, tmp_rb_0))
+        { tmp_child_link_id = 1;  }
+        else
         { throw(std::runtime_error(std::string("Parent links for successive muscle via points disconnected at: ")+arg_name)); }
 
-        // **********************
-        //Detect link transition.
-        if(tmp_pt_0.parent_link_ != tmp_pt_1.parent_link_)
-        {// This set of via points contributes to muscle length changes. Use it.
-          SActuatorMuscle::SViaPointSet* pt_set = data_.via_point_set_.create(i);
-          if(NULL == pt_set)
-          { throw(std::runtime_error("Could not find created via point in the mapped list")); }
+        // This set of via points contributes to muscle length changes.
+        // Now actually set via point set data struct properties.
+        SActuatorMuscle::SViaPointSet* pt_set = data_.via_point_set_.create(i);
+        if(NULL == pt_set)
+        { throw(std::runtime_error("Could not find created via point in the mapped list")); }
 
-          // Set the parent links
-          pt_set->parent_link_0_ = tmp_pt_0.parent_link_;
-          pt_set->parent_link_1_ = tmp_pt_1.parent_link_;
+        // Set the parent links
+        pt_set->parent_link_0_ = tmp_pt_0.parent_link_;
+        pt_set->parent_link_1_ = tmp_pt_1.parent_link_;
 
-          pt_set->position_in_parent_0_ = tmp_pt_0.point_;
-          pt_set->position_in_parent_1_ = tmp_pt_1.point_;
+        pt_set->pos_in_parent_0_ = tmp_pt_0.pos_in_parent_;
+        pt_set->pos_in_parent_1_ = tmp_pt_1.pos_in_parent_;
 
-          // For root links, the via point positions are constant
-          if(tmp_rb_0->is_root_){
-            pt_set->is_root_0_ = true;
-            pt_set->x_glob_0_ = pt_set->position_in_parent_0_+tmp_rb_0->pos_in_parent_;
-            pt_set->dx_glob_0_.setZero();
-            pt_set->J_0_.setZero(3, robot_->dof_);
-          }
-          if(tmp_rb_1->is_root_){
-            pt_set->is_root_1_ = true;
-            pt_set->x_glob_1_ = pt_set->position_in_parent_1_+tmp_rb_1->pos_in_parent_;
-            pt_set->dx_glob_1_.setZero();
-            pt_set->J_0_.setZero(3, robot_->dof_);
-          }
+        //Indicate which link in the pair corresponds to the child.
+        pt_set->child_link_id_ = tmp_child_link_id;
 
-          // Get the dynamic objects (used to compute the Jacobian later).
-          pt_set->rigid_body_dyn_0_ = arg_rbdtree.at_const(pt_set->parent_link_0_);
-          if(S_NULL == pt_set->rigid_body_dyn_0_)
-          { throw(std::runtime_error(std::string("Could not find link dyn object: ") + pt_set->parent_link_0_)); }
-          pt_set->rigid_body_dyn_1_ = arg_rbdtree.at_const(pt_set->parent_link_1_);
-          if(S_NULL == pt_set->rigid_body_dyn_1_)
-          { throw(std::runtime_error(std::string("Could not find link dyn object: ") + pt_set->parent_link_1_)); }
+        // For root links, the via point positions are constant
+        if(tmp_rb_0->is_root_){
+          pt_set->is_root_0_ = true;
+          pt_set->x_glob_0_ = pt_set->pos_in_parent_0_+tmp_rb_0->pos_in_parent_;
+          pt_set->dx_glob_0_.setZero();
+          pt_set->J_0_.setZero(3, robot_->dof_);
+        }
+        if(tmp_rb_1->is_root_){
+          pt_set->is_root_1_ = true;
+          pt_set->x_glob_1_ = pt_set->pos_in_parent_1_+tmp_rb_1->pos_in_parent_;
+          pt_set->dx_glob_1_.setZero();
+          pt_set->J_0_.setZero(3, robot_->dof_);
+        }
+#ifdef DEBUG
+        if(tmp_rb_0->is_root_ && tmp_rb_0->is_root_)
+        { throw(std::runtime_error(std::string("Both point set parent links are root nodes: ")+tmp_pt_0.parent_link_+
+            std::string(", ")+ tmp_pt_1.parent_link_)); }
+#endif
 
-          // NOTE TODO : This is a quirk of tao. Each link has one dof.
-          // Ie. For now, we have a single dof between parent and child links.
-          // Can be improved later. Generalize for different dynamics engines.
-          // Spherical joints, for instance, should return 3 gc ids.
-          if(0 == tmp_parent_link)
-          {//Indicate which link in the pair corresponds to the child.
-            pt_set->child_link_id_ = 1;
-            // Indicate which gcs are going to be modified by the joint between
-            // the parent and child link.
-            pt_set->scl_gc_id_.push_back(tmp_rb_1->link_id_);
-          }
-          else
-          {//Indicate which link in the pair corresponds to the child.
-            pt_set->child_link_id_ = 0;
-            // Indicate which gcs are going to be modified by the joint between
-            // the parent and child link.
-            pt_set->scl_gc_id_.push_back(tmp_rb_0->link_id_);
-          }
+        // Get the dynamic objects (used to compute the Jacobian later).
+        pt_set->rigid_body_dyn_0_ = arg_rbdtree.at_const(pt_set->parent_link_0_);
+        if(S_NULL == pt_set->rigid_body_dyn_0_)
+        { throw(std::runtime_error(std::string("Could not find link dyn object: ") + pt_set->parent_link_0_)); }
+        pt_set->rigid_body_dyn_1_ = arg_rbdtree.at_const(pt_set->parent_link_1_);
+        if(S_NULL == pt_set->rigid_body_dyn_1_)
+        { throw(std::runtime_error(std::string("Could not find link dyn object: ") + pt_set->parent_link_1_)); }
+
+        const SRigidBody* child = NULL;
+        if(0 == pt_set->child_link_id_)
+        { child = pt_set->rigid_body_dyn_0_->link_ds_;  }
+        else if(1 == pt_set->child_link_id_)
+        { child = pt_set->rigid_body_dyn_1_->link_ds_;  }
+
+        if(NULL == child)
+        { throw(std::runtime_error("Rigid body pointer for child link is null in the rbd tree")); }
+
+        // NOTE TODO : Add support for multiple GCs per joint.
+        while(S_NULL != child)
+        {// Indicate which gcs are going to be modified by the joint between the parent and child link.
+          pt_set->scl_gc_id_.push_back(child->link_id_);
+          child = child->parent_addr_;
         }
       }// End of for loop: At this point of time, we have all the relevant point sets in data_.via_point_set_
 
@@ -234,7 +238,7 @@ namespace scl
       if(false == tmp_pt_set.is_root_0_){
         //1.b.0: Compute Jacobians at the via points.
         flag = flag && dynamics_->computeJacobian(tmp_pt_set.J_0_, *tmp_pt_set.rigid_body_dyn_0_,
-            data_.q_curr_, tmp_pt_set.position_in_parent_0_);
+            data_.q_curr_, tmp_pt_set.pos_in_parent_0_);
         //Use the position jacobian only. This is a point task.
         tmp_pt_set.J_0_ = tmp_pt_set.J_0_.block(0,0,3,robot_->dof_);
       }
@@ -242,7 +246,7 @@ namespace scl
       if(false == tmp_pt_set.is_root_1_){
         //1.b.1: Compute Jacobians at the via points.
         flag = flag && dynamics_->computeJacobian(tmp_pt_set.J_1_, *tmp_pt_set.rigid_body_dyn_1_,
-            data_.q_curr_, tmp_pt_set.position_in_parent_1_);
+            data_.q_curr_, tmp_pt_set.pos_in_parent_1_);
         //Use the position jacobian only. This is a point task.
         tmp_pt_set.J_1_ = tmp_pt_set.J_1_.block(0,0,3,robot_->dof_);
       }

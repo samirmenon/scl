@@ -301,7 +301,7 @@ namespace scl_parser {
               throw(std::runtime_error(msg.c_str()));
             }
             std::stringstream ss(_muspt.FirstChild("location").ToElement()->FirstChild()->Value());
-            ss>>tmp.point_(0); ss>>tmp.point_(1); ss>>tmp.point_(2);
+            ss>>tmp.pos_in_parent_(0); ss>>tmp.pos_in_parent_(1); ss>>tmp.pos_in_parent_(2);
 
             if(S_NULL == _muspt.FirstChild("body").ToElement())
             {
@@ -324,7 +324,7 @@ namespace scl_parser {
           mus->points_.push_back(tmp);
 
 #ifdef DEBUG
-          std::cout<<"\n"<<model_name <<" ("<<muscle_name<<") Pt#"<<tmp.position_on_muscle_<<" Lnk: "<<tmp.parent_link_<<" Pos: "<<tmp.point_.transpose();
+          std::cout<<"\n"<<model_name <<" ("<<muscle_name<<") Pt#"<<tmp.position_on_muscle_<<" Lnk: "<<tmp.parent_link_<<" Pos: "<<tmp.pos_in_parent_.transpose();
 #endif
         }
 

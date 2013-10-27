@@ -35,7 +35,7 @@ namespace scl
 {
   SMusclePoint::SMusclePoint()
   {
-    point_ = Eigen::Vector3d::Zero();
+    pos_in_parent_ = Eigen::Vector3d::Zero();
     parent_link_ = "";
     position_on_muscle_ = 0;
   }
