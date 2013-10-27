@@ -73,8 +73,8 @@ namespace scl
       data_ = dynamic_cast<STaskComPos*>(arg_task_data);
       data_->jacobian_.setZero(3, data_->robot_->dof_);
       data_->jacobian_dyn_inv_.setZero(data_->robot_->dof_, 3);
-      data_->lambda_.setZero(3,3);
-      data_->lambda_inv_.setZero(3,3);
+      data_->M_task_.setZero(3,3);
+      data_->M_task_inv_.setZero(3,3);
 
       dynamics_ = arg_dynamics;
 
@@ -87,7 +87,7 @@ namespace scl
       //Try to use the householder qr instead of the svd in general
       //Computing this once here initializes memory and resizes qr_
       //It will be used later.
-      qr_.compute(data_->lambda_);
+      qr_.compute(data_->M_task_);
 
       has_been_init_ = true;
     }
@@ -195,7 +195,7 @@ namespace scl
       data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
       data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
-      data_->force_task_ = data_->lambda_ * data_->ddx_ + data_->p_;
+      data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->p_;
 
       // T = J' ( M x F* + p)
       // We do not use the centrifugal/coriolis forces. They can cause instabilities.
@@ -230,7 +230,7 @@ namespace scl
 
       //Operational space mass/KE matrix:
       //Lambda = (J * Ainv * J')^-1
-      data_->lambda_inv_ = data_->jacobian_ * data_->gc_model_->M_gc_inv_ * data_->jacobian_.transpose();
+      data_->M_task_inv_ = data_->jacobian_ * data_->gc_model_->M_gc_inv_ * data_->jacobian_.transpose();
 
       if(!lambda_inv_singular_)
       {
@@ -240,9 +240,9 @@ namespace scl
         //rate than the servo (aka. 1/20 or lesser), use an n-k rank
         //approximation with the SVD for stable inverses at the cost of a k-rank loss
         //of control.
-        qr_.compute(data_->lambda_inv_);
+        qr_.compute(data_->M_task_inv_);
         if(qr_.isInvertible())
-        { data_->lambda_ = qr_.inverse();  }
+        { data_->M_task_ = qr_.inverse();  }
         else
         {
           std::cout<<"\nCTaskComPos::computeModel() : Warning. Lambda_inv is rank deficient. Using svd. Rank = "<<qr_.rank();
@@ -255,7 +255,7 @@ namespace scl
         //Use a Jacobi svd. No preconditioner is required coz lambda inv is square.
         //NOTE : This is slower and generally performs worse than the simple inversion
         //for small (3x3) matrices that are usually used in op-space controllers.
-        svd_.compute(data_->lambda_inv_,
+        svd_.compute(data_->M_task_inv_,
             Eigen::ComputeThinU | Eigen::ComputeThinV | Eigen::ColPivHouseholderQRPreconditioner);
 
         //NOTE : A threshold of .005 works quite well for most robots.
@@ -277,7 +277,7 @@ namespace scl
         { singular_values_(2,2) = 1.0/svd_.singularValues()(2);  }
         else { singular_values_(2,2) = 0.0; }
 
-        data_->lambda_ = svd_.matrixV() * singular_values_ * svd_.matrixU().transpose();
+        data_->M_task_ = svd_.matrixV() * singular_values_ * svd_.matrixU().transpose();
 
         //Turn off the svd after 20 iterations
         //Don't worry, the qr will pop back to svd if it is still singular
@@ -288,7 +288,7 @@ namespace scl
 
       //Compute the Jacobian dynamically consistent generalized inverse :
       //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
-      data_->jacobian_dyn_inv_ = data_->gc_model_->M_gc_inv_ * data_->jacobian_.transpose() * data_->lambda_;
+      data_->jacobian_dyn_inv_ = data_->gc_model_->M_gc_inv_ * data_->jacobian_.transpose() * data_->M_task_;
 
       //J' * J_dyn_inv'
       sUInt dof = data_->robot_->dof_;

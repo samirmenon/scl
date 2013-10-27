@@ -155,8 +155,8 @@ namespace scl
       jacobian_.setZero(dof_task_,robot_->dof_);
       jacobian_dyn_inv_.setZero(robot_->dof_,dof_task_);
       null_space_.setZero(robot_->dof_,robot_->dof_);
-      lambda_.setZero(dof_task_,dof_task_);
-      lambda_inv_.setZero(dof_task_,dof_task_);
+      M_task_.setZero(dof_task_,dof_task_);
+      M_task_inv_.setZero(dof_task_,dof_task_);
       mu_.setZero(dof_task_,1);
       p_.setZero(dof_task_,1);
 

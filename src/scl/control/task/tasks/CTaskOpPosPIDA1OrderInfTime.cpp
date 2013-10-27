@@ -91,7 +91,7 @@ namespace scl
       //Try to use the householder qr instead of the svd in general
       //Computing this once here initializes memory and resizes qr_
       //It will be used later.
-      qr_.compute(data_->lambda_);
+      qr_.compute(data_->M_task_);
 
       has_been_init_ = true;
     }
@@ -226,9 +226,9 @@ bool CTaskOpPosPIDA1OrderInfTime::computeServo(const SRobotSensorData* arg_senso
     data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
     if(flag_compute_gravity_)
-    { data_->force_task_ = data_->lambda_ * data_->ddx_ + data_->p_;  }
+    { data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->p_;  }
     else
-    { data_->force_task_ = data_->lambda_ * data_->ddx_;  }
+    { data_->force_task_ = data_->M_task_ * data_->ddx_;  }
 
     // T = J' ( M x F* + p)
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
@@ -267,7 +267,7 @@ bool CTaskOpPosPIDA1OrderInfTime::computeModel()
 
     //Operational space mass/KE matrix:
     //Lambda = (J * Ainv * J')^-1
-    data_->lambda_inv_ = data_->jacobian_ * gcm->M_gc_inv_ * data_->jacobian_.transpose();
+    data_->M_task_inv_ = data_->jacobian_ * gcm->M_gc_inv_ * data_->jacobian_.transpose();
 
     if(!lambda_inv_singular_)
     {
@@ -275,9 +275,9 @@ bool CTaskOpPosPIDA1OrderInfTime::computeModel()
       //3x3 matrix inversion behaves quite well. Even near singularities where
       //singular values go down to ~0.001. If the model is coarse, use a n-k rank
       //approximation with the SVD for a k rank loss in a singularity.
-      qr_.compute(data_->lambda_inv_);
+      qr_.compute(data_->M_task_inv_);
       if(qr_.isInvertible())
-      { data_->lambda_ = qr_.inverse();  }
+      { data_->M_task_ = qr_.inverse();  }
       else
       {
         std::cout<<"\nCTaskOpPosPIDA1OrderInfTime::computeModel() : Warning. Lambda_inv is rank deficient. Using svd. Rank = "<<qr_.rank();
@@ -290,7 +290,7 @@ bool CTaskOpPosPIDA1OrderInfTime::computeModel()
       //Use a Jacobi svd. No preconditioner is required coz lambda inv is square.
       //NOTE : This is slower and generally performs worse than the simple inversion
       //for small (3x3) matrices that are usually used in op-space controllers.
-      svd_.compute(data_->lambda_inv_,
+      svd_.compute(data_->M_task_inv_,
           Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
 
 #ifdef DEBUG
@@ -316,7 +316,7 @@ bool CTaskOpPosPIDA1OrderInfTime::computeModel()
       { singular_values_(2,2) = 1.0/svd_.singularValues()(2);  }
       else { singular_values_(2,2) = 0.0; }
 
-      data_->lambda_ = svd_.matrixV() * singular_values_ * svd_.matrixU().transpose();
+      data_->M_task_ = svd_.matrixV() * singular_values_ * svd_.matrixU().transpose();
 
       //Turn off the svd after 20 iterations
       //Don't worry, the qr will pop back to svd if it is still singular
@@ -327,7 +327,7 @@ bool CTaskOpPosPIDA1OrderInfTime::computeModel()
 
     //Compute the Jacobian dynamically consistent generalized inverse :
     //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
-    data_->jacobian_dyn_inv_ = gcm->M_gc_inv_ * data_->jacobian_.transpose() * data_->lambda_;
+    data_->jacobian_dyn_inv_ = gcm->M_gc_inv_ * data_->jacobian_.transpose() * data_->M_task_;
 
     //J' * J_dyn_inv'
     sUInt dof = data_->robot_->dof_;

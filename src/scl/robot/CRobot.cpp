@@ -851,8 +851,8 @@ namespace scl
             <<" "<<(*it)->force_gc_.transpose()
             <<"\nJ "<<(*it)->jacobian_
             <<"\nJinv "<<(*it)->jacobian_dyn_inv_
-            <<"\n L "<<(*it)->lambda_
-            <<"\n Linv "<<(*it)->lambda_inv_
+            <<"\n L "<<(*it)->M_task_
+            <<"\n Linv "<<(*it)->M_task_inv_
             <<"\n "<<(*it)->mu_
             <<" "<<(*it)->p_;
         logged_something = true;

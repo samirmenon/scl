@@ -115,7 +115,7 @@ namespace scl
     Eigen::MatrixXd null_space_;
 
     /** Task-space mass matrix */
-    Eigen::MatrixXd lambda_, lambda_inv_;
+    Eigen::MatrixXd M_task_, M_task_inv_;
 
     /** Task-space centrifugal/coriolis force vector
      * Controls cc forces in a subspace of the entire gc space so
