@@ -66,8 +66,8 @@ namespace scl
     flag = flag && computeJacobianComForAllLinks(arg_gc_model->link_ds_,arg_sensor_data->q_);
 
     //3. Update generalized inertia and its inverse
-    flag = flag && computeInertiaGC(arg_gc_model->A_, arg_gc_model->link_ds_, arg_sensor_data->q_);
-    arg_gc_model->Ainv_ = arg_gc_model->A_.inverse(); //A is always invertible.
+    flag = flag && computeInertiaGC(arg_gc_model->M_gc_, arg_gc_model->link_ds_, arg_sensor_data->q_);
+    arg_gc_model->M_gc_inv_ = arg_gc_model->M_gc_.inverse(); //A is always invertible.
 
     //4. Update b_
     //arg_gc_model->b_

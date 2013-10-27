@@ -61,10 +61,10 @@ namespace scl
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     /** A: Mass matrix */
-    Eigen::MatrixXd A_;
+    Eigen::MatrixXd M_gc_;
 
     /** Ainv : Mass matrix inverse */
-    Eigen::MatrixXd Ainv_;
+    Eigen::MatrixXd M_gc_inv_;
 
     /** b : Coriolis+centrifugal torque vector */
     Eigen::VectorXd b_;

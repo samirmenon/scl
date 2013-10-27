@@ -70,7 +70,7 @@ namespace scl
     tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-    data_->des_force_gc_ = data_->gc_model_.A_ * tmp3 + data_->gc_model_.g_;
+    data_->des_force_gc_ = data_->gc_model_.M_gc_ * tmp3 + data_->gc_model_.g_;
 
     return true;
   }
@@ -95,7 +95,7 @@ namespace scl
     tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-    data_->des_force_gc_ = data_->gc_model_.A_ * tmp3 + data_->gc_model_.g_;
+    data_->des_force_gc_ = data_->gc_model_.M_gc_ * tmp3 + data_->gc_model_.g_;
 
     return true;
   }
@@ -140,7 +140,7 @@ namespace scl
     tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-    data_->des_force_gc_ = data_->gc_model_.A_ * tmp3 + data_->gc_model_.g_;
+    data_->des_force_gc_ = data_->gc_model_.M_gc_ * tmp3 + data_->gc_model_.g_;
 
     return true;
   }
@@ -157,12 +157,12 @@ namespace scl
     tmp1 = tmp1.array().min(data_->force_gc_max_.array()); // Remain below the upper bound.
     tmp1 = tmp1.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
-    data_->des_force_gc_ = data_->gc_model_.A_ * tmp1 + data_->gc_model_.g_;
+    data_->des_force_gc_ = data_->gc_model_.M_gc_ * tmp1 + data_->gc_model_.g_;
 
 #ifdef DEBUG
-    Eigen::VectorXd tmp2 = data_->gc_model_.A_ * tmp1;
+    Eigen::VectorXd tmp2 = data_->gc_model_.M_gc_ * tmp1;
     std::cout<<"\n******* F* *******\n"<<tmp1.transpose()
-        <<"\n******* A *******\n"<<data_->gc_model_.A_
+        <<"\n******* A *******\n"<<data_->gc_model_.M_gc_
         <<"\n******* g *******\n"<<data_->gc_model_.g_.transpose()
         <<"\n******* q *******\n"<<data_->io_data_->sensors_.q_.transpose()
         <<"\n******* dq *******\n"<<data_->io_data_->sensors_.dq_.transpose()

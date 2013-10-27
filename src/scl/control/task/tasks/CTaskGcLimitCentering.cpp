@@ -146,7 +146,7 @@ namespace scl
       data_->force_task_ = data_->force_task_.array().min(data_->force_task_max_.array());//Min of self and max
       data_->force_task_ = data_->force_task_.array().max(data_->force_task_min_.array());//Max of self and min
 
-      data_->force_gc_ =  data_->gc_model_->A_ * data_->force_task_ + data_->gc_model_->g_;
+      data_->force_gc_ =  data_->gc_model_->M_gc_ * data_->force_task_ + data_->gc_model_->g_;
       return true;
     }
     else

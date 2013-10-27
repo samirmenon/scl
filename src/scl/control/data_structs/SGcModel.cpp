@@ -50,8 +50,8 @@ namespace scl
       if(0==ndof)
       { throw(std::runtime_error("Can not initialize for a parent-robot with 0 dof")); }
 
-      A_.setIdentity(ndof,ndof);
-      Ainv_.setIdentity(ndof,ndof);
+      M_gc_.setIdentity(ndof,ndof);
+      M_gc_inv_.setIdentity(ndof,ndof);
       b_.setZero(ndof);
       g_.setZero(ndof);
       q_.setZero(ndof);

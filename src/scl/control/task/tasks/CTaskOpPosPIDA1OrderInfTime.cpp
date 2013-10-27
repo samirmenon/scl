@@ -267,7 +267,7 @@ bool CTaskOpPosPIDA1OrderInfTime::computeModel()
 
     //Operational space mass/KE matrix:
     //Lambda = (J * Ainv * J')^-1
-    data_->lambda_inv_ = data_->jacobian_ * gcm->Ainv_ * data_->jacobian_.transpose();
+    data_->lambda_inv_ = data_->jacobian_ * gcm->M_gc_inv_ * data_->jacobian_.transpose();
 
     if(!lambda_inv_singular_)
     {
@@ -327,7 +327,7 @@ bool CTaskOpPosPIDA1OrderInfTime::computeModel()
 
     //Compute the Jacobian dynamically consistent generalized inverse :
     //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
-    data_->jacobian_dyn_inv_ = gcm->Ainv_ * data_->jacobian_.transpose() * data_->lambda_;
+    data_->jacobian_dyn_inv_ = gcm->M_gc_inv_ * data_->jacobian_.transpose() * data_->lambda_;
 
     //J' * J_dyn_inv'
     sUInt dof = data_->robot_->dof_;

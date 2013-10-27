@@ -409,7 +409,7 @@ namespace scl_test
       flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
       if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
 
-      Mgc_tao = rob_gc_model.A_;
+      Mgc_tao = rob_gc_model.M_gc_;
 
       flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
       if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
@@ -445,7 +445,7 @@ namespace scl_test
             flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
             if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
 
-            Mgc_tao = rob_gc_model.A_;
+            Mgc_tao = rob_gc_model.M_gc_;
 
             flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
             if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }

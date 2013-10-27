@@ -484,18 +484,18 @@ namespace scl_test
 
         for(int i=0; i<3; i++)
           for(int j=0; j<3; j++)
-          { flag = flag && (fabs(rob_gc_model.A_(i,j) - Mgc_anlyt(i,j))<test_precision); }
+          { flag = flag && (fabs(rob_gc_model.M_gc_(i,j) - Mgc_anlyt(i,j))<test_precision); }
 
         if (false==flag)
         {
-          std::cout<<"\nScl Mgc:\n"<<rob_gc_model.A_;
+          std::cout<<"\nScl Mgc:\n"<<rob_gc_model.M_gc_;
           std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
           throw(std::runtime_error("Scl and analytic Generalized Inertias don't match."));
         }
         else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl Generalized Inertias match for zero position";  }
 
 #ifdef DEBUG
-        std::cout<<"\nScl Mgc:\n"<<rob_gc_model.A_;
+        std::cout<<"\nScl Mgc:\n"<<rob_gc_model.M_gc_;
         std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
 #endif
 
@@ -516,12 +516,12 @@ namespace scl_test
 
               for(int i=0; i<3; i++)
                 for(int j=0; j<3; j++)
-                { flag = flag && (fabs(rob_gc_model.A_(i,j) - Mgc_anlyt(i,j))<test_precision); }
+                { flag = flag && (fabs(rob_gc_model.M_gc_(i,j) - Mgc_anlyt(i,j))<test_precision); }
 
               if (false==flag)
               {
                 std::cout<<"\nGeneralized Coordinates: "<<q.transpose();
-                std::cout<<"\nScl Mgc:\n"<<rob_gc_model.A_;
+                std::cout<<"\nScl Mgc:\n"<<rob_gc_model.M_gc_;
                 std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
                 throw(std::runtime_error("Scl and analytic Generalized Inertias don't match."));
               }
@@ -543,7 +543,7 @@ namespace scl_test
             {
               q<<a,b,c;
               //1. Update the transformation matrices. Everything else depends on it.
-              dyn_anlyt.computeMgc(q,rob_gc_model.A_);
+              dyn_anlyt.computeMgc(q,rob_gc_model.M_gc_);
             }
         t2 = sutil::CSystemClock::getSysTime();
         std::cout<<"\nTest Result ("<<r_id++<<")  Analytic Mgc update performance: "
@@ -564,7 +564,7 @@ namespace scl_test
               dynamics.computeJacobianComForAllLinks(rob_gc_model.link_ds_,q);
 
               //3. Update generalized inertia
-              dynamics.computeInertiaGC(rob_gc_model.A_, rob_gc_model.link_ds_, q);
+              dynamics.computeInertiaGC(rob_gc_model.M_gc_, rob_gc_model.link_ds_, q);
             }
         t2 = sutil::CSystemClock::getSysTime();
         std::cout<<"\nTest Result ("<<r_id++<<")  Scl Mgc update performance: "

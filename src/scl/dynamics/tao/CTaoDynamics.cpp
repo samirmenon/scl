@@ -234,11 +234,11 @@ namespace scl
     // Update the model based on the system's state.
     model_->update(state_);
 
-    if ( ! model_->getMassInertia(arg_gc_model->A_)) {
+    if ( ! model_->getMassInertia(arg_gc_model->M_gc_)) {
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getMassInertia() failed\n");
       return false;
     }
-    if ( ! model_->getInverseMassInertia(arg_gc_model->Ainv_)) {
+    if ( ! model_->getInverseMassInertia(arg_gc_model->M_gc_inv_)) {
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getInverseMassInertia() failed\n");
       return false;
     }

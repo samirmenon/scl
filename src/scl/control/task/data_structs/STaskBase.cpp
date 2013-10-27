@@ -102,16 +102,16 @@ namespace scl
       //structure. And since it is a member object of one of those, it doesn't inherit from SObject and thus
       //doesn't have its own init function. So, unfortunately, to preserve the convention, we can't simply use
       //has_been_init_
-      if((sUInt)arg_gc_model->A_.rows()!=arg_robot_ds->dof_)
+      if((sUInt)arg_gc_model->M_gc_.rows()!=arg_robot_ds->dof_)
       { throw(std::runtime_error("Generalized coordinate mass matrix rows don't match the robot's dofs")); }
 
-      if(arg_gc_model->A_.rows()!=arg_gc_model->A_.cols())
+      if(arg_gc_model->M_gc_.rows()!=arg_gc_model->M_gc_.cols())
       { throw(std::runtime_error("Generalized coordinate mass matrix is not square")); }
 
-      if((sUInt)arg_gc_model->Ainv_.rows()!=arg_robot_ds->dof_)
+      if((sUInt)arg_gc_model->M_gc_inv_.rows()!=arg_robot_ds->dof_)
       { throw(std::runtime_error("Generalized coordinate mass matrix inverse rows don't match the robot's dofs")); }
 
-      if(arg_gc_model->Ainv_.rows()!=arg_gc_model->Ainv_.cols())
+      if(arg_gc_model->M_gc_inv_.rows()!=arg_gc_model->M_gc_inv_.cols())
       { throw(std::runtime_error("Generalized coordinate mass matrix inverse is not square")); }
 
       if((sUInt)arg_gc_model->b_.size()!=arg_robot_ds->dof_)
