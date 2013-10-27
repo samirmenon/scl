@@ -108,7 +108,7 @@ namespace scl
      * Used for velocities. Note that we compute the generalized
      * inverse (the Jacobian is usually not full rank)
      * without inverting the jacobian itself. */
-    Eigen::MatrixXd jacobian_, jacobian_dyn_inv_;
+    Eigen::MatrixXd J_, J_dyn_inv_;
 
     /** The task's null space. Used to compute the
      * range space of lower priority tasks. */

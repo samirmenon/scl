@@ -71,8 +71,8 @@ namespace scl
       { throw(std::runtime_error("Passed an uninitialized dynamics object"));  }
 
       data_ = dynamic_cast<STaskComPos*>(arg_task_data);
-      data_->jacobian_.setZero(3, data_->robot_->dof_);
-      data_->jacobian_dyn_inv_.setZero(data_->robot_->dof_, 3);
+      data_->J_.setZero(3, data_->robot_->dof_);
+      data_->J_dyn_inv_.setZero(data_->robot_->dof_, 3);
       data_->M_task_.setZero(3,3);
       data_->M_task_inv_.setZero(3,3);
 
@@ -176,7 +176,7 @@ namespace scl
 #endif
     if(data_->has_been_init_)
     {
-      Eigen::MatrixXd &tmp_J = data_->jacobian_;
+      Eigen::MatrixXd &tmp_J = data_->J_;
       //Global coordinates : dx = J . dq
       data_->dx_ = tmp_J * arg_sensors->dq_;
 
@@ -199,7 +199,7 @@ namespace scl
 
       // T = J' ( M x F* + p)
       // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-      data_->force_gc_ = data_->jacobian_.transpose() * data_->force_task_;
+      data_->force_gc_ = data_->J_.transpose() * data_->force_task_;
 
       return true;
     }
@@ -221,16 +221,16 @@ namespace scl
       data_->x_ = data_->gc_model_->pos_com_;
 
       //Compute the COM Jacobian : sum over all the link com jacobians
-      data_->jacobian_.setZero(3, data_->robot_->dof_);
+      data_->J_.setZero(3, data_->robot_->dof_);
       sutil::CMappedTree<std::string, SRigidBodyDyn>::const_iterator it,ite;
       for(it = data_->gc_model_->link_ds_.begin(), ite = data_->gc_model_->link_ds_.end(); it!=ite; ++it)
-      { data_->jacobian_ += it->J_com_.block(0,0,3,data_->robot_->dof_);  }
+      { data_->J_ += it->J_com_.block(0,0,3,data_->robot_->dof_);  }
 
-      data_->jacobian_ = J_premultiplier_ * data_->jacobian_;
+      data_->J_ = J_premultiplier_ * data_->J_;
 
       //Operational space mass/KE matrix:
       //Lambda = (J * Ainv * J')^-1
-      data_->M_task_inv_ = data_->jacobian_ * data_->gc_model_->M_gc_inv_ * data_->jacobian_.transpose();
+      data_->M_task_inv_ = data_->J_ * data_->gc_model_->M_gc_inv_ * data_->J_.transpose();
 
       if(!lambda_inv_singular_)
       {
@@ -288,18 +288,18 @@ namespace scl
 
       //Compute the Jacobian dynamically consistent generalized inverse :
       //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
-      data_->jacobian_dyn_inv_ = data_->gc_model_->M_gc_inv_ * data_->jacobian_.transpose() * data_->M_task_;
+      data_->J_dyn_inv_ = data_->gc_model_->M_gc_inv_ * data_->J_.transpose() * data_->M_task_;
 
       //J' * J_dyn_inv'
       sUInt dof = data_->robot_->dof_;
       data_->null_space_ = Eigen::MatrixXd::Identity(dof, dof) -
-          data_->jacobian_.transpose() * data_->jacobian_dyn_inv_.transpose();
+          data_->J_.transpose() * data_->J_dyn_inv_.transpose();
 
       // We do not use the centrifugal/coriolis forces. They can cause instabilities.
       data_->force_task_cc_.setZero(data_->dof_task_,1);
 
       // J' * J_dyn_inv' * g(q)
-      data_->force_task_grav_ =  data_->jacobian_dyn_inv_.transpose() * data_->gc_model_->g_;
+      data_->force_task_grav_ =  data_->J_dyn_inv_.transpose() * data_->gc_model_->g_;
 
       return true;
     }

@@ -315,7 +315,7 @@ namespace scl_app
                   <<rob_io_ds->sensors_.dq_.transpose()<<" "
                   <<scl::CDatabase::getData()->s_gui_.ui_point_[0].transpose()
                   <<std::endl;
-            log_file_J_<<tsk_ds->jacobian_<<std::endl;
+            log_file_J_<<tsk_ds->J_<<std::endl;
           }
         }
       }

@@ -849,8 +849,8 @@ namespace scl
         log_file_<<"\nPri "<<(*it)->priority_
             <<" "<<(*it)->force_task_.transpose()
             <<" "<<(*it)->force_gc_.transpose()
-            <<"\nJ "<<(*it)->jacobian_
-            <<"\nJinv "<<(*it)->jacobian_dyn_inv_
+            <<"\nJ "<<(*it)->J_
+            <<"\nJinv "<<(*it)->J_dyn_inv_
             <<"\n L "<<(*it)->M_task_
             <<"\n Linv "<<(*it)->M_task_inv_
             <<"\n "<<(*it)->force_task_cc_

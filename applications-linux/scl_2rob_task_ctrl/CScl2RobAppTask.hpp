@@ -344,8 +344,8 @@ namespace scl_app
                   <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i].transpose()
                   <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i+1].transpose()
                   <<std::endl;
-              log_file_J_[i]<<tsk_ds[i]->jacobian_<<std::endl;
-              log_file_J_[i]<<tsk2_ds[i]->jacobian_<<std::endl;
+              log_file_J_[i]<<tsk_ds[i]->J_<<std::endl;
+              log_file_J_[i]<<tsk2_ds[i]->J_<<std::endl;
             }
           }
         }

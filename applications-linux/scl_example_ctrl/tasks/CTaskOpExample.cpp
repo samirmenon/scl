@@ -187,7 +187,7 @@ namespace scl_app
       dynamics_->computeTransform_Depracated(data_->link_dynamic_id_,T);
       data_->x_ = T * data_->pos_in_parent_;
 
-      Eigen::MatrixXd &tmp_J = data_->jacobian_;
+      Eigen::MatrixXd &tmp_J = data_->J_;
       //Global coordinates : dx = J . dq
       data_->dx_ = tmp_J * arg_sensors->dq_;
 
@@ -213,7 +213,7 @@ namespace scl_app
 
       // T = J' ( M x F* + p)
       // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-      data_->force_gc_ = data_->jacobian_.transpose() * data_->force_task_;
+      data_->force_gc_ = data_->J_.transpose() * data_->force_task_;
 
       return true;
     }
@@ -241,14 +241,14 @@ namespace scl_app
       Eigen::Vector3d pos = T * data_->pos_in_parent_;
 
       flag = flag && dynamics_->computeJacobian_Depracated(
-          data_->link_dynamic_id_,pos,data_->jacobian_);
+          data_->link_dynamic_id_,pos,data_->J_);
 
       //Use the position jacobian only. This is an op-point task.
-      data_->jacobian_ = data_->jacobian_.block(0,0,3,data_->robot_->dof_);
+      data_->J_ = data_->J_.block(0,0,3,data_->robot_->dof_);
 
       //Operational space mass/KE matrix:
       //Lambda = (J * Ainv * J')^-1
-      data_->M_task_inv_ = data_->jacobian_ * gcm->M_gc_inv_ * data_->jacobian_.transpose();
+      data_->M_task_inv_ = data_->J_ * gcm->M_gc_inv_ * data_->J_.transpose();
 
       if(!lambda_inv_singular_)
       {
@@ -308,19 +308,19 @@ namespace scl_app
 
       //Compute the Jacobian dynamically consistent generalized inverse :
       //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
-      data_->jacobian_dyn_inv_ = gcm->M_gc_inv_ * data_->jacobian_.transpose() * data_->M_task_;
+      data_->J_dyn_inv_ = gcm->M_gc_inv_ * data_->J_.transpose() * data_->M_task_;
 
       //J' * J_dyn_inv'
       sUInt dof = data_->robot_->dof_;
       data_->null_space_ = Eigen::MatrixXd::Identity(dof, dof) -
-          data_->jacobian_.transpose() * data_->jacobian_dyn_inv_.transpose();
+          data_->J_.transpose() * data_->J_dyn_inv_.transpose();
 
       // We do not use the centrifugal/coriolis forces. They can cause instabilities.
       data_->force_task_cc_.setZero(data_->dof_task_,1);
 
       // J' * J_dyn_inv' * g(q)
       if(flag_compute_gravity_)
-      { data_->force_task_grav_ =  data_->jacobian_dyn_inv_.transpose() * gcm->g_;  }
+      { data_->force_task_grav_ =  data_->J_dyn_inv_.transpose() * gcm->g_;  }
 
       return flag;
     }

@@ -152,8 +152,8 @@ namespace scl
       gc_model_ = arg_gc_model;
 
       //Set up the dynamics model
-      jacobian_.setZero(dof_task_,robot_->dof_);
-      jacobian_dyn_inv_.setZero(robot_->dof_,dof_task_);
+      J_.setZero(dof_task_,robot_->dof_);
+      J_dyn_inv_.setZero(robot_->dof_,dof_task_);
       null_space_.setZero(robot_->dof_,robot_->dof_);
       M_task_.setZero(dof_task_,dof_task_);
       M_task_inv_.setZero(dof_task_,dof_task_);
