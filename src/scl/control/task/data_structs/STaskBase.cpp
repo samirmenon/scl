@@ -158,7 +158,7 @@ namespace scl
       M_task_.setZero(dof_task_,dof_task_);
       M_task_inv_.setZero(dof_task_,dof_task_);
       mu_.setZero(dof_task_,1);
-      p_.setZero(dof_task_,1);
+      force_task_grav_.setZero(dof_task_,1);
 
       //Set up the servo
       force_task_.setZero(dof_task_);

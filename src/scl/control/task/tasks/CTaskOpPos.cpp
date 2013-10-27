@@ -204,7 +204,7 @@ bool CTaskOpPos::computeServo(const SRobotSensorData* arg_sensors)
     data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
     if(flag_compute_gravity_)
-    { data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->p_;  }
+    { data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->force_task_grav_;  }
     else
     { data_->force_task_ = data_->M_task_ * data_->ddx_;  }
 
@@ -317,7 +317,7 @@ bool CTaskOpPos::computeModel()
 
     // J' * J_dyn_inv' * g(q)
     if(flag_compute_gravity_)
-    { data_->p_ =  data_->jacobian_dyn_inv_.transpose() * gcm->g_;  }
+    { data_->force_task_grav_ =  data_->jacobian_dyn_inv_.transpose() * gcm->g_;  }
 
     return flag;
   }

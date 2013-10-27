@@ -854,7 +854,7 @@ namespace scl
             <<"\n L "<<(*it)->M_task_
             <<"\n Linv "<<(*it)->M_task_inv_
             <<"\n "<<(*it)->mu_
-            <<" "<<(*it)->p_;
+            <<" "<<(*it)->force_task_grav_;
         logged_something = true;
       }
     }

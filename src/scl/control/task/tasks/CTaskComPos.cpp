@@ -195,7 +195,7 @@ namespace scl
       data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
       data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
-      data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->p_;
+      data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->force_task_grav_;
 
       // T = J' ( M x F* + p)
       // We do not use the centrifugal/coriolis forces. They can cause instabilities.
@@ -299,7 +299,7 @@ namespace scl
       data_->mu_.setZero(data_->dof_task_,1);
 
       // J' * J_dyn_inv' * g(q)
-      data_->p_ =  data_->jacobian_dyn_inv_.transpose() * data_->gc_model_->g_;
+      data_->force_task_grav_ =  data_->jacobian_dyn_inv_.transpose() * data_->gc_model_->g_;
 
       return true;
     }

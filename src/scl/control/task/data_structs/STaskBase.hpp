@@ -127,7 +127,7 @@ namespace scl
      * Controls gravity in a subspace of the entire gc space so
      * that the operational point is massless. Other points experience
      * gravity.*/
-    Eigen::MatrixXd p_;
+    Eigen::MatrixXd force_task_grav_;
 
     /** Task space forces
      * Computed by : the task-servo
