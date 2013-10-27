@@ -132,20 +132,6 @@ public:
   Eigen::Matrix4d t_from_parent_;
 
   /**
-   * Position and orientation in global coordinates
-   * (wrt the ground frame)
-   * And the transformation matrix from the global
-   * frame to this frame
-   */
-  Eigen::Vector3d pos_global_;
-
-  sRotationType ori_type_global_;
-  Eigen::Quaternion<sFloat> ori_global_quat_;
-  Eigen::AngleAxis<sFloat> ori_global_axis_angle_;
-
-  Eigen::Matrix4d t_global_;
-
-  /**
    * Mass and inertia properties
    */
   Eigen::Vector3d com_; //Center of mass
