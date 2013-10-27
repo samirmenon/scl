@@ -150,7 +150,7 @@ namespace scl
           pt_set->J_0_.setZero(3, robot_->dof_);
         }
 #ifdef DEBUG
-        if(tmp_rb_0->is_root_ && tmp_rb_0->is_root_)
+        if(tmp_rb_0->is_root_ && tmp_rb_1->is_root_)
         { throw(std::runtime_error(std::string("Both point set parent links are root nodes: ")+tmp_pt_0.parent_link_+
             std::string(", ")+ tmp_pt_1.parent_link_)); }
 #endif
@@ -163,17 +163,23 @@ namespace scl
         if(S_NULL == pt_set->rigid_body_dyn_1_)
         { throw(std::runtime_error(std::string("Could not find link dyn object: ") + pt_set->parent_link_1_)); }
 
-        const SRigidBody* child = NULL;
+        const SRigidBody* child = NULL, *parent = NULL;
         if(0 == pt_set->child_link_id_)
-        { child = pt_set->rigid_body_dyn_0_->link_ds_;  }
+        {
+          child = pt_set->rigid_body_dyn_0_->link_ds_;
+          parent = pt_set->rigid_body_dyn_1_->link_ds_;
+        }
         else if(1 == pt_set->child_link_id_)
-        { child = pt_set->rigid_body_dyn_1_->link_ds_;  }
+        {
+          child = pt_set->rigid_body_dyn_1_->link_ds_;
+          parent = pt_set->rigid_body_dyn_0_->link_ds_;
+        }
 
-        if(NULL == child)
-        { throw(std::runtime_error("Rigid body pointer for child link is null in the rbd tree")); }
+        if(NULL == child || NULL == parent)
+        { throw(std::runtime_error("Rigid body pointer for child or parent link is null in the rbd tree")); }
 
         // NOTE TODO : Add support for multiple GCs per joint.
-        while(S_NULL != child)
+        while(parent != child)
         {// Indicate which gcs are going to be modified by the joint between the parent and child link.
           pt_set->scl_gc_id_.push_back(child->link_id_);
           child = child->parent_addr_;
