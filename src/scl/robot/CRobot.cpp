@@ -833,7 +833,7 @@ namespace scl
     {
       log_file_<<"\nA "<<data_.controller_current_->gc_model_.M_gc_
           <<"\nAinv "<<data_.controller_current_->gc_model_.M_gc_inv_
-          <<"\n"<<data_.controller_current_->gc_model_.b_.transpose()
+          <<"\n"<<data_.controller_current_->gc_model_.force_gc_cc_.transpose()
           <<" "<<data_.controller_current_->gc_model_.g_.transpose();
       logged_something = true;
     }

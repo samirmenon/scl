@@ -242,7 +242,7 @@ namespace scl
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getInverseMassInertia() failed\n");
       return false;
     }
-    if ( ! model_->getCoriolisCentrifugal(arg_gc_model->b_)) {
+    if ( ! model_->getCoriolisCentrifugal(arg_gc_model->force_gc_cc_)) {
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getCoriolisCentrifugal() failed\n");
       return false;
     }

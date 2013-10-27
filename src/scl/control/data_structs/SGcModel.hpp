@@ -60,14 +60,14 @@ namespace scl
     // See http://eigen.tuxfamily.org/dox/StructHavingEigenMembers.html
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-    /** A: Mass matrix */
+    /** M_gc_: Generalized inertia matrix */
     Eigen::MatrixXd M_gc_;
 
-    /** Ainv : Mass matrix inverse */
+    /** M_gc_inv_ : Generalized inertia matrix inverse */
     Eigen::MatrixXd M_gc_inv_;
 
-    /** b : Coriolis+centrifugal torque vector */
-    Eigen::VectorXd b_;
+    /** force_gc_cc_ : Coriolis+centrifugal torque vector */
+    Eigen::VectorXd force_gc_cc_;
 
     /** g : Gravity torque vector */
     Eigen::VectorXd g_;
