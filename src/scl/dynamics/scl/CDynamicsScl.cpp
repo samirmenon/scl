@@ -73,7 +73,7 @@ namespace scl
     //arg_gc_model->b_
 
     //5. Update the generalized gravity force
-    flag = flag && computeForceGravityGC(arg_gc_model->g_, arg_gc_model->link_ds_, arg_sensor_data->q_);
+    flag = flag && computeForceGravityGC(arg_gc_model->force_gc_grav_, arg_gc_model->link_ds_, arg_sensor_data->q_);
 
     return flag;
   }

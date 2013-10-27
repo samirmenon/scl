@@ -70,7 +70,7 @@ namespace scl
     Eigen::VectorXd force_gc_cc_;
 
     /** g : Gravity torque vector */
-    Eigen::VectorXd g_;
+    Eigen::VectorXd force_gc_grav_;
 
     /** The generalized coordinates and velocity at the time
      * the model was last updated. Since the dynamics are completely

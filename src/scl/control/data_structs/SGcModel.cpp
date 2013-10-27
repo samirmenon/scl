@@ -53,7 +53,7 @@ namespace scl
       M_gc_.setIdentity(ndof,ndof);
       M_gc_inv_.setIdentity(ndof,ndof);
       force_gc_cc_.setZero(ndof);
-      g_.setZero(ndof);
+      force_gc_grav_.setZero(ndof);
       q_.setZero(ndof);
       dq_.setZero(ndof);
       pos_com_.setZero(3);

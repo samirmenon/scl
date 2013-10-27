@@ -339,7 +339,7 @@ bool CTaskOpPosPIDA1OrderInfTime::computeModel()
 
     // J' * J_dyn_inv' * g(q)
     if(flag_compute_gravity_)
-    { data_->force_task_grav_ =  data_->J_dyn_inv_.transpose() * gcm->g_;  }
+    { data_->force_task_grav_ =  data_->J_dyn_inv_.transpose() * gcm->force_gc_grav_;  }
 
     return flag;
   }

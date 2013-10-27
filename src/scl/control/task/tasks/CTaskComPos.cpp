@@ -299,7 +299,7 @@ namespace scl
       data_->force_task_cc_.setZero(data_->dof_task_,1);
 
       // J' * J_dyn_inv' * g(q)
-      data_->force_task_grav_ =  data_->J_dyn_inv_.transpose() * data_->gc_model_->g_;
+      data_->force_task_grav_ =  data_->J_dyn_inv_.transpose() * data_->gc_model_->force_gc_grav_;
 
       return true;
     }

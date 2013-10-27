@@ -117,7 +117,7 @@ namespace scl
       if((sUInt)arg_gc_model->force_gc_cc_.size()!=arg_robot_ds->dof_)
       { throw(std::runtime_error("Centrifugal-coriolis force vector doesn't match the robot's dofs")); }
 
-      if((sUInt)arg_gc_model->g_.size()!=arg_robot_ds->dof_)
+      if((sUInt)arg_gc_model->force_gc_grav_.size()!=arg_robot_ds->dof_)
       { throw(std::runtime_error("Gravity force vector doesn't match the robot's dofs")); }
 
 

@@ -246,7 +246,7 @@ namespace scl
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getCoriolisCentrifugal() failed\n");
       return false;
     }
-    if ( ! model_->getGravity(arg_gc_model->g_)) {
+    if ( ! model_->getGravity(arg_gc_model->force_gc_grav_)) {
       fprintf(stderr, "scl::CTaoDynamics::updateModelMatrices(): model_->getGravity() failed\n");
       return false;
     }
