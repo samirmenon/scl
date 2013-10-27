@@ -65,6 +65,8 @@ namespace scl
 
       force_gc_.setZero(dof_task_);
       force_task_.setZero(dof_task_);
+
+      gravity_enabled_ = true;
     }
     catch(std::exception& e)
     {

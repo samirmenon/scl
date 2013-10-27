@@ -53,6 +53,8 @@ namespace scl
 
     sFloat spatial_resolution_;     //Meters
 
+    sBool gravity_enabled_;
+
     /** Default constructor sets stuff to S_NULL */
     STaskGc();
 

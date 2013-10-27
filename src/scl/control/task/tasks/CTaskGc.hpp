@@ -96,6 +96,12 @@ namespace scl
     virtual bool init(STaskBase* arg_task_data,
         CDynamicsBase* arg_dynamics);
 
+    bool setFlagCompensateForGravity(const bool arg_grav_enabled)
+    {
+      if(NULL == data_){return false;}
+      else{ data_->gravity_enabled_ = arg_grav_enabled; return true;  }
+    }
+
     /** Resets the task by removing its data.
      * NOTE : Does not deallocate its data structure*/
     virtual void reset();
