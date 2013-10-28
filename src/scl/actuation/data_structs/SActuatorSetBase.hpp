@@ -45,14 +45,8 @@ namespace scl
     /* ******************************************************
      *                        Data
      * ****************************************************** */
-    /** The actuator set forces in the generalized coordinates */
-    Eigen::VectorXd force_gc_;
-
     /** The actuator set forces in the actuator coordinates */
     Eigen::VectorXd force_actuator_;
-
-    /** The actuator set force limits in the actuator coordinates */
-    Eigen::VectorXd force_actuator_max_, force_actuator_min_;
 
     /** The Jacobian that maps actuator forces into gc forces
      *  => force_gc_ = J_ * force_actuator_;
