@@ -185,7 +185,7 @@ int main(int argc, char** argv)
 
       /**********************Initialize Muscle Actuator Model & Dynamics*******************/
       scl::CActuatorSetMuscle rob_mset;
-      flag = rob_mset.init(rob_ds->muscle_system_.name_, /** parsed */ rob_ds, rob_io_ds, &(rob_ds->muscle_system_),
+      flag = rob_mset.init(rob_ds->muscle_system_.name_, /** parsed */ rob_ds, &(rob_ds->muscle_system_),
           /** rbd tree */ gc_ctrl_ds->gc_model_.rbdyn_tree_, /** dynamics */ &dyn_scl);
       if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set"));  }
 
@@ -199,7 +199,7 @@ int main(int argc, char** argv)
 
       // Run the compute Jacobian function once (resizes the matrix etc.).
       Eigen::MatrixXd rob_muscle_J, rob_muscle_Jpinv;
-      flag = rob_mset.computeJacobian(rob_muscle_J);
+      flag = rob_mset.computeJacobian(rob_io_ds->sensors_.q_, rob_io_ds->sensors_.dq_, rob_muscle_J);
       if(false == flag) { throw(std::runtime_error("Could not use muscle actuator set to compute a Jacobian"));  }
 
       // Set up an SVD to compute the inv to get muscle activation for gc control
@@ -274,7 +274,7 @@ int main(int argc, char** argv)
             {
               robot_gc_ctrl.computeKinematics();
               robot_gc_ctrl.computeDynamics();
-              rob_mset.computeJacobian(rob_muscle_J);
+              rob_mset.computeJacobian(rob_io_ds->sensors_.q_, rob_io_ds->sensors_.dq_, rob_muscle_J);
 
               // Compute svd to set up matrix sizes etc.
               rob_svd.compute(rob_muscle_J.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
@@ -337,7 +337,7 @@ int main(int argc, char** argv)
         {
           robot_gc_ctrl.computeKinematics();
           robot_gc_ctrl.computeDynamics();
-          rob_mset.computeJacobian(rob_muscle_J);
+          rob_mset.computeJacobian(rob_io_ds->sensors_.q_, rob_io_ds->sensors_.dq_, rob_muscle_J);
 
           // Compute svd to set up matrix sizes etc.
           rob_svd.compute(rob_muscle_J.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
