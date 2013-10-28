@@ -171,7 +171,7 @@ namespace scl
       /** The link at which the transformation matrix is to be calculated */
       sInt arg_link_id,
       /** The link up to which the transformation matrix is to be calculated */
-      sUInt arg_ancestor_link_id,
+      sInt arg_ancestor_link_id,
       /** The transformation matrix will be saved here. */
       Eigen::Affine3d& arg_T)
   {

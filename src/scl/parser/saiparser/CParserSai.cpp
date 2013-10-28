@@ -84,14 +84,13 @@ bool CParserSai::readRobotFromFile(const std::string& arg_file,
     flag = arg_robot.rb_tree_.linkNodes();
     if(false == flag)
     { throw(std::runtime_error("Could not link robot's branching representation nodes.")); }
-
-    return true;
   }
   catch(std::exception& e)
   {
     std::cerr<<"\nCParserSai::readRobotFromFile("<<arg_file<<") : "<<e.what();
     return false;
   }
+  return true;
 }
 
 
@@ -344,13 +343,12 @@ bool CParserSai::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
         throw(std::runtime_error(msg.c_str()));
       }
     }//END Loop over jointNodes
-
-    return true;
   }
   catch(std::exception& e)
   {
     std::cerr<<"\nCParserSai::readLink() : "<<e.what();
     return false;
   }
+  return true;
 }
 }

@@ -140,7 +140,7 @@ namespace scl
          * However, we also have to set the acceleration and velocity
          * so it is just more straightforward to loop through the code.
          */
-        for(int i=0; i< data_.io_data_->dof_;++i)
+        for(sUInt i=0; i< data_.io_data_->dof_;++i)
         {
 #ifdef DEBUG
           //Logical check.

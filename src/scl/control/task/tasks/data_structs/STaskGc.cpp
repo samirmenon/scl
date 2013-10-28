@@ -41,7 +41,8 @@ namespace scl
 #define SCL_GCTASK_SPATIAL_RESOLUTION 0.005
 
   STaskGc::STaskGc():
-    spatial_resolution_(SCL_GCTASK_SPATIAL_RESOLUTION)
+    spatial_resolution_(SCL_GCTASK_SPATIAL_RESOLUTION),
+    gravity_enabled_(false)
   { }
 
   STaskGc::~STaskGc()
