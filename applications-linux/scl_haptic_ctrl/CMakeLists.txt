@@ -66,7 +66,7 @@ SET(EG_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_haptic_ctrl/)
 
 SET(ALL_SRC ${EG_BASE_DIR}scl_haptic_main.cpp 
             ${EG_BASE_DIR}CHapticApp.cpp 
-						${SCL_INC_DIR}/haptics/chai/CChaiHaptics.cpp 
+						${SCL_INC_DIR}/haptics/chai/CHapticsChai.cpp 
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
             ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)

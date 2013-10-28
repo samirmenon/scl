@@ -20,7 +20,7 @@
  License and a copy of the GNU General Public License along with
  scl. If not, see <http://www.gnu.org/licenses/>.
  */
-/* \file CChaiHaptics.cpp
+/* \file CHapticsChai.cpp
  *
  *  Created on: Sep 3, 2012
  *
@@ -29,7 +29,7 @@
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <scl/haptics/chai/CChaiHaptics.hpp>
+#include <scl/haptics/chai/CHapticsChai.hpp>
 #include <chai3d.h>
 
 #include <stdio.h>
@@ -41,7 +41,7 @@ using namespace chai3d;
 
 namespace scl
 {
-  CChaiHaptics::~CChaiHaptics()
+  CHapticsChai::~CHapticsChai()
   {
     closeConnectionToDevices();
     if(NULL!=haptics_handler_)
@@ -49,7 +49,7 @@ namespace scl
   }
 
 
-  scl::sInt CChaiHaptics::connectToDevices()
+  scl::sInt CHapticsChai::connectToDevices()
   {
     bool flag;
     try
@@ -63,7 +63,7 @@ namespace scl
       { throw(std::runtime_error("Could not create haptic handler (out of memory?)")); }
       else
       {
-        std::cout<<"\nCChaiHaptics::connectToDevices() : Searched and connected to ["
+        std::cout<<"\nCHapticsChai::connectToDevices() : Searched and connected to ["
             <<haptics_handler_->getNumDevices() <<"] devices";
       }
 
@@ -100,7 +100,7 @@ namespace scl
     }
     catch (std::exception& e)
     {
-      std::cerr << "\nCChaiHaptics::connectToDevices() :" << e.what();
+      std::cerr << "\nCHapticsChai::connectToDevices() :" << e.what();
       return 0;
     }
     return haptic_devices_.size();
@@ -109,12 +109,12 @@ namespace scl
   /** Get the present state of a single haptic devices. This is typically
    * the position, but can also include the orientation and/or a push
    * button. */
-  scl::sBool CChaiHaptics::getHapticDevicePosition(
+  scl::sBool CHapticsChai::getHapticDevicePosition(
       const sUInt arg_id, Eigen::VectorXd& ret_pos_vec) const
   {
     if(arg_id >= haptics_handler_->getNumDevices())
     {
-      std::cout<<"\nCChaiHaptics::getHapticDevicePosition() : Error:"
+      std::cout<<"\nCHapticsChai::getHapticDevicePosition() : Error:"
           <<"\n\tThe requested haptic ID is greater than the number of connected devices";
       return false;
     }
@@ -125,7 +125,7 @@ namespace scl
     cVector3d tmpv;
     int tmp = haptic_devices_[arg_id]->getPosition(tmpv);
     if (0 != tmp)
-    { std::cout<<"\nCChaiHaptics::getHapticDevicePosition() : WARNING : \n\tCould not read position of haptic device: "<<arg_id; }
+    { std::cout<<"\nCHapticsChai::getHapticDevicePosition() : WARNING : \n\tCould not read position of haptic device: "<<arg_id; }
 
     Eigen::Vector3d tmp_vec;
     tmp_vec<<tmpv(0),tmpv(1),tmpv(2);
@@ -134,12 +134,12 @@ namespace scl
     return true;
   }
 
-  bool CChaiHaptics::getAllHapticDevicePositions (
+  bool CHapticsChai::getAllHapticDevicePositions (
       std::vector<Eigen::VectorXd>& ret_pos_vec) const
   {
     if(ret_pos_vec.size() > haptics_handler_->getNumDevices())
     {
-      std::cout<<"\nCChaiHaptics::getAllHapticDevicePositions () : Error:"
+      std::cout<<"\nCHapticsChai::getAllHapticDevicePositions () : Error:"
           <<"\n\tThe passed vector has more elements than the number of connected devices";
       return false;
     }
@@ -166,7 +166,7 @@ namespace scl
     return true;
   }
 
-  bool CChaiHaptics::closeConnectionToDevices()
+  bool CHapticsChai::closeConnectionToDevices()
   {
     bool flag = true;
     // ***********************************************************

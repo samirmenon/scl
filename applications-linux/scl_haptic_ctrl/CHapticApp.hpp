@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/graphics/chai/data_structs/SGraphicsChai.hpp>
 
-#include <scl/haptics/chai/CChaiHaptics.hpp>
+#include <scl/haptics/chai/CHapticsChai.hpp>
 
 namespace scl_app
 {
@@ -79,7 +79,7 @@ namespace scl_app
     // ****************************************************
     //For controlling op points with haptics
     //The app will support dual-mode control, with the haptics controlling op points.
-    scl::CChaiHaptics haptics_;
+    scl::CHapticsChai haptics_;
     scl::sUInt num_haptic_devices_to_use_; //These will directly control ui-points.
     scl::sBool has_been_init_haptics_;
     std::vector<Eigen::VectorXd> haptic_pos_;

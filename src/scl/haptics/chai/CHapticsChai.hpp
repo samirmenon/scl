@@ -20,7 +20,7 @@
  License and a copy of the GNU General Public License along with
  scl. If not, see <http://www.gnu.org/licenses/>.
  */
-/* \file CChaiHaptics.hpp
+/* \file CHapticsChai.hpp
  *
  *  Created on: Sep 3, 2012
  *
@@ -51,7 +51,7 @@ class cGenericHapticDevice;
 
 namespace scl
 {
-  class CChaiHaptics : public CHapticsBase
+  class CHapticsChai : public CHapticsBase
   {
   public:
     /* ********************************************************
@@ -93,10 +93,10 @@ namespace scl
      *                 INITIALIZTION FUNCTIONS
      * ******************************************************** */
     /** Default constructor. Does nothing. */
-    CChaiHaptics() : CHapticsBase(), haptics_handler_(NULL) {}
+    CHapticsChai() : CHapticsBase(), haptics_handler_(NULL) {}
 
     /** Default destructor. Closes haptic connections. */
-    ~CChaiHaptics();
+    ~CHapticsChai();
 
     /* ********************************************************
      *                    DATA STRUCTURES
