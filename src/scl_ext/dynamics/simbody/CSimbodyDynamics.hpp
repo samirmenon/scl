@@ -156,7 +156,7 @@ namespace scl
 
   private:
     /** Adds a non-root link */
-    sBool addNonRootLink(SimTK::MobilizedBody& arg_parent, const SRobotLink& arg_child_lnk);
+    sBool addNonRootLink(SimTK::MobilizedBody& arg_parent, const SRigidBody& arg_child_lnk);
 
     /** The robot's name */
     std::string robot_name_;

@@ -79,12 +79,12 @@ namespace scl
       //*******Step 2***********
       //Set up the root node
       //************************
-      const sutil::CMappedTree<std::string, SRobotLink> & br = arg_robot_data.rb_tree_;
-      const SRobotLink* tmp_root = br.getRootNodeConst();//The root node.
+      const sutil::CMappedTree<std::string, SRigidBody> & br = arg_robot_data.rb_tree_;
+      const SRigidBody* tmp_root = br.getRootNodeConst();//The root node.
       if (tmp_root == NULL)
       { throw(std::runtime_error("Robot doesn't have valid root node"));}
       if(false == tmp_root->is_root_)
-      { throw(std::runtime_error("Robot's branching representation returns root with SRobotLink::is_root_==false."));}
+      { throw(std::runtime_error("Robot's branching representation returns root with SRigidBody::is_root_==false."));}
 
       //Set the starting body to the ground
       SimTK::MobilizedBody last = simbody_matter_.updGround();
@@ -108,7 +108,7 @@ namespace scl
       //*******Step 3***********
       //Traverse the robotRoot's tree and construct a Simbody tree structure
       //************************
-      std::vector<SRobotLink*>::const_iterator it, ite;
+      std::vector<SRigidBody*>::const_iterator it, ite;
       for(it= tmp_root->child_addrs_.begin(), ite = tmp_root->child_addrs_.end();
           it!=ite; ++it)
       {
@@ -139,7 +139,7 @@ namespace scl
     return false;
   }
 
-  sBool CSimbodyDynamics::addNonRootLink(SimTK::MobilizedBody& arg_parent, const SRobotLink& arg_child_lnk)
+  sBool CSimbodyDynamics::addNonRootLink(SimTK::MobilizedBody& arg_parent, const SRigidBody& arg_child_lnk)
   {
     sBool flag;
     try
@@ -189,7 +189,7 @@ namespace scl
       SimTK::MassProperties_<SimTK::Real> tmp_mass(m,com,inertia);
       arg_parent.setDefaultMassProperties(tmp_mass);
 
-      std::vector<SRobotLink*>::const_iterator it, ite;
+      std::vector<SRigidBody*>::const_iterator it, ite;
       for(it= arg_child_lnk.child_addrs_.begin(), ite = arg_child_lnk.child_addrs_.end();
           it!=ite; ++it)
       {
@@ -328,6 +328,8 @@ namespace scl
     arg_inputs.sensors_.q_(i) = simbody_state_.getQ()[i]; ++i;
     arg_inputs.sensors_.q_(i) = simbody_state_.getQ()[i]; ++i;
     arg_inputs.sensors_.q_(i) = simbody_state_.getQ()[i]; ++i;
+
+    return true;
   }
 
   /** Gets the robot's kinetic energy */
