@@ -76,4 +76,4 @@ public:
 };
 
 }
-#endif /* CLOTUSTIXMLPARSER_H_ */
+#endif /* CPARSERSCLTIXML_H_ */
