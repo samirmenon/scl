@@ -43,8 +43,7 @@ namespace scl
 {
 
   SControllerGc::SControllerGc() : SControllerBase(),
-      integral_gain_time_pre_(-1), integral_gain_time_curr_(-1),
-      integral_gain_time_constt_(-1), integral_gain_time_max_(-1)
+      integral_gain_time_pre_(-1), integral_gain_time_curr_(-1)
   {}
 
   bool SControllerGc::init(const std::string & arg_controller_name,
@@ -56,9 +55,7 @@ namespace scl
       const Eigen::VectorXd & arg_ka,
       const Eigen::VectorXd & arg_ki,
       const Eigen::VectorXd & arg_fgc_max,
-      const Eigen::VectorXd & arg_fgc_min,
-      const sFloat arg_integral_gain_time_constt,
-      const sFloat arg_integral_gain_time_max)
+      const Eigen::VectorXd & arg_fgc_min)
   {
     bool flag;
     try
@@ -86,12 +83,6 @@ namespace scl
 
       if((1!=arg_fgc_min.size()) && (dof!=(sUInt)arg_fgc_min.size()))
       { throw(std::runtime_error("Minimum gc-force vector size should be 1 or robot-dof")); }
-
-      if(0>=arg_integral_gain_time_constt)
-      { throw(std::runtime_error("Integral gain time constant must be greater than 0")); }
-
-      if(0>=arg_integral_gain_time_max)
-      { throw(std::runtime_error("Integral gain max interval time must be greater than 0")); }
 
       if(1==arg_kp.size())
       {kp_.setConstant(dof,arg_kp(0));}
@@ -122,10 +113,6 @@ namespace scl
         if(force_gc_min_(i)>= force_gc_max_(i))
         { throw(std::runtime_error("Specified minimum gc-force exceeds specified maximum gc-force.")); }
       }
-
-      // Integral gain will get activated the first time
-      integral_gain_time_constt_ = arg_integral_gain_time_constt;
-      integral_gain_time_max_ = arg_integral_gain_time_max;
 
       integral_gain_time_curr_ = -1;
       integral_gain_time_pre_ = -1;

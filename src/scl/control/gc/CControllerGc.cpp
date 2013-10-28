@@ -119,17 +119,9 @@ namespace scl
     tmp3 = data_->ka_.array() * tmp3.array();
 
     double tmp_int_dt = data_->integral_gain_time_curr_ - data_->integral_gain_time_pre_;
-    if(data_->integral_gain_time_max_ <= tmp_int_dt)
-    {// Reset the integral gain, since the system has lost sync with real-time
-      data_->integral_force_.setZero(data_->robot_->dof_);
-    }
-    else
-    {
-      tmp_int_dt /= data_->integral_gain_time_constt_;
-      // All the array() casts are for element wise operations.
-      data_->integral_force_ = data_->integral_force_.array() +
-          data_->ki_.array() * (data_->des_q_ - data_->io_data_->sensors_.q_).array() * tmp_int_dt;
-    }
+    // All the array() casts are for element wise operations.
+    data_->integral_force_ = data_->integral_force_.array() +
+        data_->ki_.array() * (data_->des_q_ - data_->io_data_->sensors_.q_).array() * tmp_int_dt;
 
     //Obtain force to be applied to a unit mass floating about
     //in space (ie. A dynamically decoupled mass).

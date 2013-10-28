@@ -207,20 +207,13 @@ bool CTaskOpPosPIDA1OrderInfTime::computeServo(const SRobotSensors* arg_sensors)
 
     // Compute the integral force
     double tmp_int_dt = data_->integral_gain_time_curr_ - data_->integral_gain_time_pre_;
-    if(data_->integral_gain_time_max_ <= tmp_int_dt)
-    {// Reset the integral gain, since the system has lost sync with real-time
-      data_->integral_force_.setZero(data_->dof_task_);
-    }
-    else
-    {
-      tmp_int_dt /= data_->integral_gain_time_constt_;
-      // All the array() casts are for element wise operations.
-      data_->integral_force_ = data_->integral_force_.array() +
-          data_->ki_.array() * (data_->x_goal_ - data_->x_).array() * tmp_int_dt;
+    // All the array() casts are for element wise operations.
+    data_->integral_force_ = data_->integral_force_.array() +
+        data_->ki_.array() * (data_->x_goal_ - data_->x_).array() * tmp_int_dt;
 
-      //Add the integral force.
-      data_->ddx_ += data_->integral_force_;
-    }
+    //Add the integral force.
+    data_->ddx_ += data_->integral_force_;
+
 
     data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
     data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min

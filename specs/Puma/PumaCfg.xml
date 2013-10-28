@@ -120,8 +120,6 @@
             <kv>25</kv>
             <ka>0</ka>
             <ki>10</ki>
-            <integral_time_constt>0.1</integral_time_constt>
-            <integral_time_max>0.05</integral_time_max>
             <force_max>100</force_max>
             <force_min>-100</force_min>
         </task>

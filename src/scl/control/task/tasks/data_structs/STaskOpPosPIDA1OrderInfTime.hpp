@@ -64,18 +64,10 @@ namespace scl
 
     const void *link_dynamic_id_;   //For quickly obtaining a task Jacobian
 
-    /** Set the integral gain decay rate. Ie. Degrade last timestep's
-     * influence by x%
-     *
-     * Typical use in a PID controller
-     *
-     * if( (t_curr - t_pre) > integral_gain_time_max_ )
-     * { Force = 0; }
-     * else
-     * { Force = Force + ki * pos_err * (t_curr - t_pre) / integral_gain_time_constt_; }
+    /** Typical use in a PID controller:
+     *  Force = Force + ki * pos_err * (t_curr - t_pre);
      * */
-    sFloat integral_gain_time_pre_, integral_gain_time_curr_,
-           integral_gain_time_constt_, integral_gain_time_max_;
+    sFloat integral_gain_time_pre_, integral_gain_time_curr_;
 
     /** Default constructor sets stuff to S_NULL */
     STaskOpPosPIDA1OrderInfTime();

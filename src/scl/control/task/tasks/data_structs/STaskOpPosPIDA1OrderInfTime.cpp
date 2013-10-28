@@ -46,8 +46,7 @@ namespace scl
       link_ds_(S_NULL),
       spatial_resolution_(SCL_COPPTTASK_SPATIAL_RESOLUTION),
       link_dynamic_id_(S_NULL),
-      integral_gain_time_pre_(-1),integral_gain_time_curr_(-1),
-      integral_gain_time_constt_(-1), integral_gain_time_max_(-1)
+      integral_gain_time_pre_(-1),integral_gain_time_curr_(-1)
   { }
 
   STaskOpPosPIDA1OrderInfTime::~STaskOpPosPIDA1OrderInfTime()
@@ -62,8 +61,7 @@ namespace scl
       { throw(std::runtime_error("Operational point tasks MUST have 3 dofs (xyz translation at a point)."));  }
 
       /** Extract the extra params. Check that we have all of them. */
-      bool contains_plink = false, contains_posinp = false,
-          contains_int_tau = false, contains_int_tmax = false;
+      bool contains_plink = false, contains_posinp = false;
 
       std::vector<scl::sString2>::const_iterator it,ite;
       for(it = task_nonstd_params_.begin(), ite = task_nonstd_params_.end();
@@ -85,20 +83,6 @@ namespace scl
 
           contains_posinp = true;
         }
-        else if(param.data_[0] == std::string("integral_time_constt"))
-        {
-          std::stringstream ss(param.data_[1]);
-          ss>> integral_gain_time_constt_;
-
-          contains_int_tau = true;
-        }
-        else if(param.data_[0] == std::string("integral_time_max"))
-        {
-          std::stringstream ss(param.data_[1]);
-          ss>> integral_gain_time_max_;
-
-          contains_int_tmax = true;
-        }
       }
 
       //Error checks
@@ -107,12 +91,6 @@ namespace scl
 
       if(false == contains_posinp)
       { throw(std::runtime_error("Task's nonstandard params do not contain a pos in parent."));  }
-
-      if(false == contains_int_tau)
-      { throw(std::runtime_error("Task's nonstandard params do not contain integral_time_constt."));  }
-
-      if(false == contains_int_tmax)
-      { throw(std::runtime_error("Task's nonstandard params do not contain integral_time_max."));  }
 
       if(0>=link_name_.size())
       { throw(std::runtime_error("Parent link's name is too short."));  }

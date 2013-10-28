@@ -80,14 +80,9 @@ namespace scl
      * influence by x%
      *
      * Typical use in a PID controller
-     *
-     * if( (t_curr - t_pre) > integral_gain_time_max_ )
-     * { Force = 0; }
-     * else
-     * { Force = Force + ki * pos_err * (t_curr - t_pre) / integral_gain_time_constt_; }
+     *  Force = Force + ki * pos_err * (t_curr - t_pre);
      * */
-    sFloat integral_gain_time_pre_, integral_gain_time_curr_,
-           integral_gain_time_constt_, integral_gain_time_max_;
+    sFloat integral_gain_time_pre_, integral_gain_time_curr_;
 
     /** The integral force term. Required because integral control is not
      * time invariant. */
@@ -109,12 +104,7 @@ namespace scl
         const Eigen::VectorXd & arg_ka,
         const Eigen::VectorXd & arg_ki,
         const Eigen::VectorXd & arg_fgc_max,
-        const Eigen::VectorXd & arg_fgc_min,
-        /** Default:0.1s time constant for the integral gain */
-        const sFloat arg_integral_gain_time_constt=0.1,
-        /** If the integral gain is not recomputed for this time,
-         * the force term is reset. */
-        const sFloat arg_integral_gain_time_max=0.05);
+        const Eigen::VectorXd & arg_fgc_min);
 
     /** Inherits:
       std::string name_;
