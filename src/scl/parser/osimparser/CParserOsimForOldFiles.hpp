@@ -20,17 +20,17 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file COsimParser.hpp
+/* \file CParserOsimForOldFiles.hpp
  *
- *  Created on: May, 2010
+ *  Created on: Jan, 2011
  *
- *  Copyright (C) 2010
+ *  Copyright (C) 2011
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef COSIMPARSER_HPP_
-#define COSIMPARSER_HPP_
+#ifndef CPARSEROSIMFOROLDFILES_HPP_
+#define CPARSEROSIMFOROLDFILES_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/parser/CParserBase.hpp>
@@ -43,8 +43,10 @@ namespace scl_parser
 {
 
   /** This class implements a limited subset of the CParserBase API
-   * for the "Osim" file format. */
-  class COsimParser: public CParserBase
+   * for the "Osim" file format:
+   *
+   * Supports reading files of the type : UpperLowerBody.osim */
+  class CParserOsimForOldFiles: public CParserBase
   {
   public:
     /** Only support reading from Osim files. Use the file converter
@@ -100,8 +102,8 @@ namespace scl_parser
         std::vector<std::string>& arg_robot_names)
     { return false; }
 
-    COsimParser() : root_link_name_("ground") {}
-    virtual ~COsimParser() {}
+    CParserOsimForOldFiles() : root_link_name_("ground") {}
+    virtual ~CParserOsimForOldFiles() {}
 
   private:
     /** Osim link specification reader:
@@ -120,10 +122,10 @@ namespace scl_parser
       struct SOsimCoordinate{
         scl::sFloat default_pos_,min_,max_;
         std::string coord_name_;
-        scl::sBool is_rot_;
       };
       struct SOsimTransformAxis{
         std::string name_, coord_name_;
+        scl::sBool is_rot_;
         Eigen::Vector3d axis_;
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
       };
@@ -137,7 +139,6 @@ namespace scl_parser
 #ifdef _WINDOWS
   private:
 #endif
-
     /** Reads a joint for a body.
      * Will be converted into multiple joints/links for scl. */
     bool readJoint(
@@ -149,4 +150,4 @@ namespace scl_parser
 
 }
 
-#endif /*COSIMPARSER_HPP_*/
+#endif /*CPARSEROSIMFOROLDFILES_HPP_*/

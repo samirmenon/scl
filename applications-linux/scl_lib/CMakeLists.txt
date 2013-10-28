@@ -111,8 +111,8 @@ SET(SCL_PARSER_SRC ${SCL_INC_DIR}/parser/sclparser/CParserScl.cpp
 
 SET(SAI_PARSER_SRC ${SCL_INC_DIR}/parser/saiparser/CParserSai.cpp)
 
-SET(OSIM_PARSER_SRC ${SCL_INC_DIR}/parser/osimparser/COsimParser.cpp
-                    ${SCL_INC_DIR}/parser/osimparser/COsimParserForOldFiles.cpp)
+SET(OSIM_PARSER_SRC ${SCL_INC_DIR}/parser/osimparser/CParserOsim.cpp
+                    ${SCL_INC_DIR}/parser/osimparser/CParserOsimForOldFiles.cpp)
 
 #Set tinyxml stuff
 SET(TIXML_SRC ${SCL_INC_DIR}/parser/scl_tinyxml/scl_tinystr.cpp

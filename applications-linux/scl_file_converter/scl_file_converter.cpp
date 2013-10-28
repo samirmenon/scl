@@ -46,8 +46,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/parser/saiparser/CParserSai.hpp>
-#include <scl/parser/osimparser/COsimParser.hpp>
-#include <scl/parser/osimparser/COsimParserForOldFiles.hpp>
+#include <scl/parser/osimparser/CParserOsim.hpp>
+#include <scl/parser/osimparser/CParserOsimForOldFiles.hpp>
 
 #include <scl/util/DatabaseUtils.hpp>
 
@@ -106,12 +106,12 @@ int main(int argc, char** argv)
         std::cout<<"\nWARNING : OSIM presently loads muscles and rigid bodies. It does not add inter-joint constraints.";
         std::cout<<"\nWARNING : OSIM support REQUIRES unique link and joint names for all links.";
         std::cout<<"\nWARNING : OSIM support REQUIRES a root link named --ground--.";
-        scl_parser::COsimParser tmp_osim_parser;
+        scl_parser::CParserOsim tmp_osim_parser;
         flag = tmp_osim_parser.readOsimBiomechFromFile(tmp_infile, tmp_robot, tmp_msys);
         if(false == flag)
         {
           std::cout<<"\nCould not read OSIM xml file. Trying parser for older file types.";
-          scl_parser::COsimParserForOldFiles tmp_osim_parser_old;
+          scl_parser::CParserOsimForOldFiles tmp_osim_parser_old;
           //Clear out stuff that has already been read in.
           tmp_robot.rb_tree_.clear();
           tmp_msys.muscles_.clear();

@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file COsimParser.cpp
+/* \file CParserOsim.cpp
  *
  *  Created on: May, 2010
  *
@@ -30,7 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //The Class definition.
-#include <scl/parser/osimparser/COsimParser.hpp>
+#include <scl/parser/osimparser/CParserOsim.hpp>
 
 //The required data structures
 #include <scl/Singletons.hpp>
@@ -49,7 +49,7 @@ using namespace scl;
 #include <iomanip>
 
 namespace scl_parser {
-  bool COsimParser::readOsimBiomechFromFile(const std::string& arg_file,
+  bool CParserOsim::readOsimBiomechFromFile(const std::string& arg_file,
       scl::SRobotParsed& arg_biomech,
       scl::SMuscleSetParsed& arg_msys)
   {
@@ -67,11 +67,11 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParser::readOsimBiomechFromFile() : "<<e.what(); }
+    { std::cerr<<"\nCParserOsim::readOsimBiomechFromFile() : "<<e.what(); }
     return false;
   }
 
-  bool COsimParser::readMuscleSysFromFile(
+  bool CParserOsim::readMuscleSysFromFile(
       const std::string& arg_file,
       const std::string& arg_msys_name,
       scl::SMuscleSetParsed& arg_msys)
@@ -337,13 +337,13 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParser::readMuscleSysFromFile() : "<<e.what(); }
+    { std::cerr<<"\nCParserOsim::readMuscleSysFromFile() : "<<e.what(); }
     return false;
   }
 
   /* Since the Osim format only has one robot in a file, the "arg_robot_name"
    * argument is not used. */
-  bool COsimParser::readRobotFromFile(
+  bool CParserOsim::readRobotFromFile(
       const std::string& arg_file,
       const std::string& arg_robot_name,
       scl::SRobotParsed& arg_robot)
@@ -563,7 +563,7 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParser::readRobotFromFile("<<arg_file<<") : "<<e.what(); }
+    { std::cerr<<"\nCParserOsim::readRobotFromFile("<<arg_file<<") : "<<e.what(); }
     return false;
   }
 
@@ -571,7 +571,7 @@ namespace scl_parser {
   /** Osim link specification reader:
    * In case a body has multiple coordinates, it creates a series
    * of joints/links for all the coordinates. */
-  bool COsimParser::readBody(
+  bool CParserOsim::readBody(
       const scl_tinyxml::TiXmlHandle& arg_tiHndl_body,
       scl::SRobotParsed& arg_robot,
       const std::string& arg_joint_type)
@@ -632,7 +632,7 @@ namespace scl_parser {
       else if("CustomJoint" == arg_joint_type)
       {//Parse custom joints using the transform axes.
         sutil::CMappedList<std::basic_string<char>,
-        scl_parser::COsimParser::SOsimJoint::SOsimTransformAxis>::iterator it, ite;
+        scl_parser::CParserOsim::SOsimJoint::SOsimTransformAxis>::iterator it, ite;
 
         for(it = j.trf_axes_.begin(), ite = j.trf_axes_.end(); it!=ite; ++it)
         {
@@ -657,7 +657,7 @@ namespace scl_parser {
 
           std::string lnk_name;
           sutil::CMappedList<std::basic_string<char>,
-          scl_parser::COsimParser::SOsimJoint::SOsimTransformAxis>::iterator it2(it);
+          scl_parser::CParserOsim::SOsimJoint::SOsimTransformAxis>::iterator it2(it);
           ++it2;
           if(ite == it2)
           {//If this is the last link, name it to the actual body
@@ -671,7 +671,7 @@ namespace scl_parser {
           //Allocate the link on the pile
           if(S_NULL != arg_robot.rb_tree_.at(lnk_name))
           {
-            std::cout<<"\nCOsimParser::readBody("<<body_name<<") : WARNING : Duplicate transform axis. Ignoring: "<<tr.name_;
+            std::cout<<"\nCParserOsim::readBody("<<body_name<<") : WARNING : Duplicate transform axis. Ignoring: "<<tr.name_;
             continue;
           }
           lnk = arg_robot.rb_tree_.create(lnk_name,false);
@@ -811,14 +811,14 @@ namespace scl_parser {
         if(NULL == arg_tiHndl_body.FirstChild("VisibleObject").FirstChild("GeometrySet").
             FirstChild("objects").FirstChild("DisplayGeometry").ToElement())
         {//Check if there are any graphics files
-          std::cout<<"\nCOsimParser::readBody("<<body_name<<") : WARNING No geometry_files";
+          std::cout<<"\nCParserOsim::readBody("<<body_name<<") : WARNING No geometry_files";
         }
         else
         {
           Eigen::Vector3d scale_fac; //Temporarily store the scale factors and use them to init the viz objects.
           if(NULL == arg_tiHndl_body.FirstChild("VisibleObject").FirstChild("scale_factors").ToElement())
           {
-            std::cout<<"\nCOsimParser::readBody() : WARNING : No scale_factors. At body : " << body_name<<". Setting to 1,1,1.";
+            std::cout<<"\nCParserOsim::readBody() : WARNING : No scale_factors. At body : " << body_name<<". Setting to 1,1,1.";
             scale_fac(0) = 1.0; scale_fac(1) = 1.0; scale_fac(2) = 1.0;
           }
           else
@@ -885,7 +885,7 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParser::readBody("<<body_name<<") : "<<e.what(); }
+    { std::cerr<<"\nCParserOsim::readBody("<<body_name<<") : "<<e.what(); }
     return false;
   }
 
@@ -897,7 +897,7 @@ namespace scl_parser {
    *
    * WeldJoint: Osim uses 0dof weld joints. These will be eliminated.
    */
-  bool COsimParser::readJoint(
+  bool CParserOsim::readJoint(
       const scl_tinyxml::TiXmlHandle& arg_tiHndl_jnt,
       SOsimJoint& arg_joint)
   {
@@ -1013,7 +1013,7 @@ namespace scl_parser {
 
         if(S_NULL == tiHndl_trax.FirstChild("coordinates").ToElement()->FirstChild())
         {//Check if the transform axis is junk.. There seem to be tons of these.
-          std::cout<<"\nCOsimParser::readJoint("<<joint_name<<") : WARNING Found junk transform axis: "<<trax_name;
+          std::cout<<"\nCParserOsim::readJoint("<<joint_name<<") : WARNING Found junk transform axis: "<<trax_name;
           continue;
         }
 
@@ -1047,7 +1047,7 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParser::readJoint("<<joint_name<<") : "<<e.what(); }
+    { std::cerr<<"\nCParserOsim::readJoint("<<joint_name<<") : "<<e.what(); }
     return false;
   }
 

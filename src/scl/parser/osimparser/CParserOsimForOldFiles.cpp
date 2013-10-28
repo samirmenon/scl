@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file COsimParserForOldFiles.cpp
+/* \file CParserOsimForOldFiles.cpp
  *
  *  Created on: Jan, 2011
  *
@@ -30,7 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //The Class definition.
-#include <scl/parser/osimparser/COsimParserForOldFiles.hpp>
+#include <scl/parser/osimparser/CParserOsimForOldFiles.hpp>
 
 //The required data structures
 #include <scl/Singletons.hpp>
@@ -49,7 +49,7 @@ using namespace scl;
 #include <iomanip>
 
 namespace scl_parser {
-  bool COsimParserForOldFiles::readOsimBiomechFromFile(const std::string& arg_file,
+  bool CParserOsimForOldFiles::readOsimBiomechFromFile(const std::string& arg_file,
       scl::SRobotParsed& arg_biomech,
       scl::SMuscleSetParsed& arg_msys)
   {
@@ -67,11 +67,11 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParserForOldFiles::readOsimBiomechFromFile() : "<<e.what();  }
+    { std::cerr<<"\nCParserOsimForOldFiles::readOsimBiomechFromFile() : "<<e.what();  }
     return false;
   }
 
-  bool COsimParserForOldFiles::readMuscleSysFromFile(
+  bool CParserOsimForOldFiles::readMuscleSysFromFile(
       const std::string& arg_file,
       const std::string& arg_msys_name,
       scl::SMuscleSetParsed& arg_msys)
@@ -252,13 +252,13 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParserForOldFiles::readMuscleSysFromFile() : "<<e.what();  }
+    { std::cerr<<"\nCParserOsimForOldFiles::readMuscleSysFromFile() : "<<e.what();  }
     return false;
   }
 
   /* Since the Osim format only has one robot in a file, the "arg_robot_name"
    * argument is not used. */
-  bool COsimParserForOldFiles::readRobotFromFile(
+  bool CParserOsimForOldFiles::readRobotFromFile(
       const std::string& arg_file,
       const std::string& arg_robot_name,
       scl::SRobotParsed& arg_robot)
@@ -488,7 +488,7 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParserForOldFiles::readRobotFromFile("<<arg_file<<") : "<<e.what();  }
+    { std::cerr<<"\nCParserOsimForOldFiles::readRobotFromFile("<<arg_file<<") : "<<e.what();  }
     return false;
   }
 
@@ -496,7 +496,7 @@ namespace scl_parser {
   /** Osim link specification reader:
    * In case a body has multiple coordinates, it creates a series
    * of joints/links for all the coordinates. */
-  bool COsimParserForOldFiles::readBody(
+  bool CParserOsimForOldFiles::readBody(
       const scl_tinyxml::TiXmlHandle& arg_tiHndl_body,
       scl::SRobotParsed& arg_robot,
       const std::string& arg_joint_type)
@@ -557,7 +557,7 @@ namespace scl_parser {
       else if("CustomJoint" == arg_joint_type)
       {//Parse custom joints using the transform axes.
         sutil::CMappedList<std::basic_string<char>,
-        scl_parser::COsimParserForOldFiles::SOsimJoint::SOsimTransformAxis>::iterator it, ite;
+        scl_parser::CParserOsimForOldFiles::SOsimJoint::SOsimTransformAxis>::iterator it, ite;
 
         for(it = j.trf_axes_.begin(), ite = j.trf_axes_.end(); it!=ite; ++it)
         {
@@ -582,7 +582,7 @@ namespace scl_parser {
 
           std::string lnk_name;
           sutil::CMappedList<std::basic_string<char>,
-          scl_parser::COsimParserForOldFiles::SOsimJoint::SOsimTransformAxis>::iterator it2(it);
+          scl_parser::CParserOsimForOldFiles::SOsimJoint::SOsimTransformAxis>::iterator it2(it);
           ++it2;
           if(ite == it2)
           {//If this is the last link, name it to the actual body
@@ -730,7 +730,7 @@ namespace scl_parser {
         Eigen::Vector3d scale_fac; //Temporarily store the scale factors and use them to init the viz objects.
         if(NULL == arg_tiHndl_body.FirstChild("VisibleObject").FirstChild("scale_factors").ToElement())
         {
-          std::cout<<"\nCOsimParserForOldFiles::readBody() : WARNING : No scale_factors. At body : " << body_name<<". Setting to 1,1,1.";
+          std::cout<<"\nCParserOsimForOldFiles::readBody() : WARNING : No scale_factors. At body : " << body_name<<". Setting to 1,1,1.";
           scale_fac(0) = 1.0; scale_fac(1) = 1.0; scale_fac(2) = 1.0;
         }
         else
@@ -782,7 +782,7 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParserForOldFiles::readBody("<<body_name<<") : "<<e.what();  }
+    { std::cerr<<"\nCParserOsimForOldFiles::readBody("<<body_name<<") : "<<e.what();  }
     return false;
   }
 
@@ -794,7 +794,7 @@ namespace scl_parser {
    *
    * WeldJoint: Osim uses 0dof weld joints. These will be eliminated.
    */
-  bool COsimParserForOldFiles::readJoint(
+  bool CParserOsimForOldFiles::readJoint(
       const scl_tinyxml::TiXmlHandle& arg_tiHndl_jnt,
       SOsimJoint& arg_joint)
   {
@@ -930,7 +930,7 @@ namespace scl_parser {
       return true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCOsimParserForOldFiles::readJoint() : "<<e.what();  }
+    { std::cerr<<"\nCParserOsimForOldFiles::readJoint() : "<<e.what();  }
     return false;
   }
 
