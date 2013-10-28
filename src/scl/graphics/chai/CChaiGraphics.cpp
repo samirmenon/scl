@@ -1353,11 +1353,21 @@ namespace scl {
 
             // Set the line's color.
             double tmp_col = msys.muscle_actuator_set_->force_actuator_(i)/msys.muscle_actuator_set_->force_actuator_max_(i);
-            l->m_colorPointA.set(tmp_col, 0.0, 1 - tmp_col);
-            l->m_colorPointB.set(tmp_col, 0.0, 1 - tmp_col);
+            if(tmp_col > 0.0)
+            {
+              l->m_colorPointA.set(tmp_col, 0.0, 1 - tmp_col);
+              l->m_colorPointB.set(tmp_col, 0.0, 1 - tmp_col);
+            }
+            else
+            {
+              l->m_colorPointA.set(0.0, -tmp_col, 1 + tmp_col);
+              l->m_colorPointB.set(0.0, -tmp_col, 1 + tmp_col);
+#ifdef DEBUG
+              std::cerr<<"\nCChaiGraphics::updateGraphicsForMuscles() : Warning : Negative muscle activation at :"<<it->name_;
+#endif
+            }
           }
         }
-
         //Advance to the next muscle
       }
     }
