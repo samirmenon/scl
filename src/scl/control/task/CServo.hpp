@@ -54,8 +54,19 @@ namespace scl {
   class CServo : public SObject
   {
   public:
+    /** Computes the command forces (in generalized coordinate;
+     * usually joint torques) by accepting the latest
+     * forces from the task servos and filtering them
+     * through their range spaces.
+     *
+     * Assumes that the range spaces are computed by a
+     * controller implementation (orthogonal task-levels
+     * or any other style) */
+    bool computeControlForces();
+
     /** Default constructor. Does nothing. */
-    CServo(): SObject("CServo") {}
+    CServo(): SObject("CServo"), data_(NULL) {}
+
     /** Default destructor. Does nothing. */
     virtual ~CServo(){}
 
@@ -67,16 +78,6 @@ namespace scl {
     /** Resets the servo to its default state (so that
      * an new controller may be attached to it). */
     void reset();
-
-    /** Computes the command forces (in generalized coordinate;
-     * usually joint torques) by accepting the latest
-     * forces from the task servos and filtering them
-     * through their range spaces.
-     *
-     * Assumes that the range spaces are computed by a
-     * controller implementation (orthogonal task-levels
-     * or any other style) */
-    bool computeControlForces();
 
   private:
       /** All the data a servo loop should ever need
