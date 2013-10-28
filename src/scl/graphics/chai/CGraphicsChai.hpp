@@ -100,7 +100,7 @@ public:
    * parser data pointer is already set.
    * 2. Creates child objects for the passed SGraphicsPhysicalLink, sets their parser
    * data pointers, and recursively sets them by calling itself. */
-  sBool addRobotLink(SGraphicsPhysicalLink* arg_robot_link);
+  sBool addRobotLink(SGraphicsChaiRigidBody* arg_robot_link);
 
   /** Adds a static mesh to render. Indexed by its name.
    *

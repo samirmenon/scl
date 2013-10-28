@@ -239,7 +239,7 @@ namespace scl {
   sBool CGraphicsChai::addRobotToRender(const std::string& arg_robot)
   {
     const SRigidBody * tmp_root_link = S_NULL;
-    SGraphicsPhysicalLink* robot_brrep_root = S_NULL;
+    SGraphicsChaiRigidBody* robot_brrep_root = S_NULL;
     bool flag;
     try
     {
@@ -269,7 +269,7 @@ namespace scl {
 
       //3. Create a new robot tree on the graphics robot pile
       //(Ie. Create a (physics+graphics) branching-representation)
-      sutil::CMappedTree<std::string, SGraphicsPhysicalLink>* rob_gr_brrep;
+      sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr_brrep;
       rob_gr_brrep = data_->robots_rendered_.create(arg_robot);
       if(S_NULL==rob_gr_brrep)
       { throw(std::runtime_error("Couldn't create a (physics+graphics) representation for the robot on the pile"));  }
@@ -352,13 +352,13 @@ namespace scl {
       if(!has_been_init_) { return false; }
 
       //1. Get the robot tree on the graphics robot pile
-      sutil::CMappedTree<std::string, SGraphicsPhysicalLink>* rob_gr_brrep;
+      sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr_brrep;
       rob_gr_brrep = data_->robots_rendered_.at(arg_robot);
       if(S_NULL==rob_gr_brrep)
       { throw(std::runtime_error("Couldn't find a graphics representation for the robot"));  }
 
       //2. Remove it from the chai graphics.
-      SGraphicsPhysicalLink* gr_root = rob_gr_brrep->getRootNode();
+      SGraphicsChaiRigidBody* gr_root = rob_gr_brrep->getRootNode();
       if(S_NULL == gr_root)
       { throw(std::runtime_error("Robot's graphics rendering root is NULL. Invalid data state, chai data might be corrupted."));  }
 
@@ -384,7 +384,7 @@ namespace scl {
     return true;
   }
 
-  sBool CGraphicsChai::addRobotLink(SGraphicsPhysicalLink* arg_link)
+  sBool CGraphicsChai::addRobotLink(SGraphicsChaiRigidBody* arg_link)
   {
     try
     {
@@ -604,7 +604,7 @@ namespace scl {
 #endif
 
       //3. Now initialize nodes on the graphics branching structure for the children
-      sutil::CMappedTree<std::string, SGraphicsPhysicalLink>* rob_gr_brrep;
+      sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr_brrep;
       rob_gr_brrep = data_->robots_rendered_.at(arg_link->robot_link_->robot_name_);
 
       //4. Create the children (recurse)
@@ -614,7 +614,7 @@ namespace scl {
           it!=ite;++it)
       {
         //Create a non-root link in the branching structure
-        SGraphicsPhysicalLink* child_link = rob_gr_brrep->create((*it)->name_,false);
+        SGraphicsChaiRigidBody* child_link = rob_gr_brrep->create((*it)->name_,false);
         child_link->robot_link_ = (*it); //Set its data
         child_link->graphics_obj_ = S_NULL; //Set its data
         child_link->parent_name_ = arg_link->name_; //Set its name
@@ -661,7 +661,7 @@ namespace scl {
       const Eigen::Matrix3d& arg_rot)
   {
     cMultiMesh* tmp_chai_mesh = S_NULL;
-    SGraphicsMesh* tmp_mesh_ds = S_NULL;
+    SGraphicsChaiMesh* tmp_mesh_ds = S_NULL;
     try
     {
       if(!has_been_init_) { return false; }
@@ -714,7 +714,7 @@ namespace scl {
       const Eigen::Matrix3d& arg_rot)
   {
     cMultiMesh* tmp_chai_mesh = S_NULL;
-    SGraphicsMesh* tmp_mesh_ds = S_NULL;
+    SGraphicsChaiMesh* tmp_mesh_ds = S_NULL;
     try
     {
       if(!has_been_init_) { return false; }
@@ -743,7 +743,7 @@ namespace scl {
       tmp_chai_mesh->setLocalRot(tmp_mat); //Set rotation
 
       //4. Get mesh's parent data structure pointing to the chai object
-      SGraphicsMesh* tmp_parent_mesh_ds = S_NULL;
+      SGraphicsChaiMesh* tmp_parent_mesh_ds = S_NULL;
       tmp_parent_mesh_ds = data_->meshes_rendered_.at(arg_parent_name);
       if(S_NULL == tmp_parent_mesh_ds)
       { throw(std::runtime_error("Could not find the parent mesh data structure."));  }
@@ -779,7 +779,7 @@ namespace scl {
       if(!has_been_init_) { return false; }
 
       //1. Get mesh data structure pointing to the chai object
-      SGraphicsMesh* tmp_mesh_ds = S_NULL;
+      SGraphicsChaiMesh* tmp_mesh_ds = S_NULL;
       tmp_mesh_ds = data_->meshes_rendered_.at(arg_mesh_name);
       if(S_NULL == tmp_mesh_ds)
       { throw(std::runtime_error("Could not find the named mesh data structure."));  }
@@ -812,7 +812,7 @@ namespace scl {
       { throw(std::runtime_error("Scale factors must be positive."));  }
 
       //1. Get mesh data structure pointing to the chai object
-      SGraphicsMesh* tmp_mesh_ds = S_NULL;
+      SGraphicsChaiMesh* tmp_mesh_ds = S_NULL;
       tmp_mesh_ds = data_->meshes_rendered_.at(arg_mesh_name);
       if(S_NULL == tmp_mesh_ds)
       { throw(std::runtime_error("Could not find the named mesh data structure."));  }
@@ -846,7 +846,7 @@ namespace scl {
       SDatabase* db = CDatabase::getData();
       if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
 
-      sutil::CMappedTree<std::string, SGraphicsPhysicalLink>* rob_gr;
+      sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr;
       rob_gr = data_->robots_rendered_.at(arg_robot);
       if(S_NULL==rob_gr)//Require an existing robot to render muscles.
       { throw(std::runtime_error("Couldn't find a (physics+graphics) representation for the robot on the pile"));  }
@@ -874,7 +874,7 @@ namespace scl {
       const sBool add_musc_via_points)
   {
     std::string musc_name("");
-    SGraphicsMsys *msys_gr = NULL;
+    SGraphicsChaiMuscleSet *msys_gr = NULL;
     try
     {
       if(!has_been_init_) { return false; }
@@ -883,7 +883,7 @@ namespace scl {
       SDatabase* db = CDatabase::getData();
       if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
 
-      sutil::CMappedTree<std::string, SGraphicsPhysicalLink>* rob_gr;
+      sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr;
       rob_gr = data_->robots_rendered_.at(arg_robot);
       if(S_NULL==rob_gr)//Require an existing robot to render muscles.
       { throw(std::runtime_error("Couldn't find a (physics+graphics) representation for the robot on the pile"));  }
@@ -900,8 +900,8 @@ namespace scl {
       if(NULL == mptr)
       { throw(std::runtime_error(std::string("Robot's actuator set doesn't contain muscle actuator set: ") + arg_msys.name_));  }
 
-      msys_gr->muscle_actuator_set_ = dynamic_cast<const SActuatorSetMuscle *>(*mptr);
-      if(NULL == msys_gr->muscle_actuator_set_)
+      msys_gr->muscle_actuator_set_parsed_ = dynamic_cast<const SActuatorSetMuscle *>(*mptr);
+      if(NULL == msys_gr->muscle_actuator_set_parsed_)
       { throw(std::runtime_error(std::string("Robot's io data structure doesn't contain muscle actuator set: ") + arg_msys.name_));  }
 
       // Make sure the graphics object's name matches the muscle spec.
@@ -916,9 +916,9 @@ namespace scl {
 
         musc_name = mus.name_;//For debugging. Useful to know where it failed.
 
-        SGraphicsMsys::SGraphicsMuscle gr_musc;//Initialize this and plug it into the msys
+        SGraphicsChaiMuscleSet::SGraphicsChaiMuscle gr_musc;//Initialize this and plug it into the msys
         // Set the static parsed object
-        gr_musc.m_parsed_ = &mus;
+        gr_musc.muscle_parsed_ = &mus;
 
         std::vector<SMusclePointParsed>::const_iterator it,it2,ite;
         for(it = mus.points_.begin(), ite = mus.points_.end();
@@ -926,7 +926,7 @@ namespace scl {
         {
           it2 = it+1;
 
-          SGraphicsPhysicalLink* gr_lnk = rob_gr->at((*it).parent_link_);
+          SGraphicsChaiRigidBody* gr_lnk = rob_gr->at((*it).parent_link_);
           if(S_NULL == gr_lnk)
           {
             std::cout<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle: "
@@ -934,7 +934,7 @@ namespace scl {
             continue;
           }
 
-          SGraphicsMsys::SGraphicsMuscle::SGraphicsMusclePoint gr_mpt;//Initialize this and plug it into the muscle
+          SGraphicsChaiMuscleSet::SGraphicsChaiMuscle::SGraphicsChaiMusclePoint gr_mpt;//Initialize this and plug it into the muscle
 
           //Get the parent chai graphics object
           gr_mpt.graphics_parent_ = gr_lnk;
@@ -944,7 +944,7 @@ namespace scl {
 
           if(it2!=ite)
           {
-            SGraphicsPhysicalLink* gr_lnk2 = rob_gr->at((*it2).parent_link_);
+            SGraphicsChaiRigidBody* gr_lnk2 = rob_gr->at((*it2).parent_link_);
             if(S_NULL == gr_lnk2)
             {
               std::cout<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle upcoming : "
@@ -990,11 +990,11 @@ namespace scl {
           }
 
           //Add the point to the muscle
-          gr_musc.mpt_.push_back(gr_mpt);
+          gr_musc.muscle_graphics_pt_.push_back(gr_mpt);
         }
 
         //Add the muscle to the rendering system.
-        msys_gr->msys_.push_back(gr_musc);
+        msys_gr->muscle_graphics_set_.push_back(gr_musc);
 
         //Get the next muscle
       }
@@ -1025,7 +1025,7 @@ namespace scl {
       if(!has_been_init_) { return false; }
 
       /** Render a sphere at the link's position */
-      sutil::CMappedTree<std::string, scl::SGraphicsPhysicalLink> * rob_br = S_NULL;
+      sutil::CMappedTree<std::string, scl::SGraphicsChaiRigidBody> * rob_br = S_NULL;
       rob_br = data_->robots_rendered_.at(arg_robot);//Shortcut
       if(S_NULL == rob_br)
       { throw(std::runtime_error("Could not find robot"));  }
@@ -1169,13 +1169,13 @@ namespace scl {
 #endif
 
       //1. Loop over all the robots and update their graphics:
-      sutil::CMappedList<std::string, sutil::CMappedTree<std::string, scl::SGraphicsPhysicalLink>
+      sutil::CMappedList<std::string, sutil::CMappedTree<std::string, scl::SGraphicsChaiRigidBody>
       >::iterator it,ite;
       for(it = data_->robots_rendered_.begin(), ite = data_->robots_rendered_.end();
           it!=ite; ++it)
       {
         //1.a. Get the robot's branching representation and its io buffer
-        sutil::CMappedTree<std::string, SGraphicsPhysicalLink>& rob_brrep = *it;
+        sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>& rob_brrep = *it;
 
         //NOTE TODO : This is a bit inefficient. Find a better way to do this.
         const SRobotIO* rob_io;
@@ -1186,12 +1186,12 @@ namespace scl {
 #endif
 
         //1.b. Now iterate over the robot's links and update their transformation (from the parent)
-        sutil::CMappedTree<std::basic_string<char>, scl::SGraphicsPhysicalLink>::iterator itgr, itgre;
+        sutil::CMappedTree<std::basic_string<char>, scl::SGraphicsChaiRigidBody>::iterator itgr, itgre;
         for(itgr = rob_brrep.begin(), itgre = rob_brrep.end();
             itgr!=itgre; ++itgr)
         {
           //1.b.i. Obtain all the data structures.
-          SGraphicsPhysicalLink& lnk = *itgr;
+          SGraphicsChaiRigidBody& lnk = *itgr;
 
           const SRigidBody* lnk_robdata = lnk.robot_link_;
 #ifdef DEBUG
@@ -1312,30 +1312,30 @@ namespace scl {
       data_->chai_world_->computeGlobalPositions(true);
 
       //Loop over all the muscles and update their graphics:
-      sutil::CMappedList<std::basic_string<char>, scl::SGraphicsMsys>::iterator it,ite;
+      sutil::CMappedList<std::basic_string<char>, scl::SGraphicsChaiMuscleSet>::iterator it,ite;
       for(it = data_->muscles_rendered_.begin(), ite = data_->muscles_rendered_.end();
           it!=ite; ++it)
       {
         //Get a muscle system
-        SGraphicsMsys& msys = *it;
+        SGraphicsChaiMuscleSet& msys = *it;
 
-        std::vector<SGraphicsMsys::SGraphicsMuscle>::iterator itm,itme;
+        std::vector<SGraphicsChaiMuscleSet::SGraphicsChaiMuscle>::iterator itm,itme;
         int i=0;
-        for(itm = msys.msys_.begin(), itme = msys.msys_.end();
+        for(itm = msys.muscle_graphics_set_.begin(), itme = msys.muscle_graphics_set_.end();
             itm!=itme; ++itm, ++i)
         {
           //Determine the color of this muscle. The color will be applied to all segments.
           // NOTE : The color is red for max activation and blue for min force. Linspaced
           //        inc red, dec blue for increasing force.
           //Loop over all the muscles in a system.
-          std::vector<SGraphicsMsys::SGraphicsMuscle::SGraphicsMusclePoint>::iterator itmp,itmpe;
-          for(itmp = (*itm).mpt_.begin(), itmpe = (*itm).mpt_.end();
+          std::vector<SGraphicsChaiMuscleSet::SGraphicsChaiMuscle::SGraphicsChaiMusclePoint>::iterator itmp,itmpe;
+          for(itmp = (*itm).muscle_graphics_pt_.begin(), itmpe = (*itm).muscle_graphics_pt_.end();
               itmp!=itmpe; ++itmp)
           {//Loop over all the muscle connection points for a muscle
             if(S_NULL == itmp->graphics_via_line_)
               continue;//End point. No line segment
 
-            SGraphicsMsys::SGraphicsMuscle::SGraphicsMusclePoint& mp = *itmp;//Tmp ref
+            SGraphicsChaiMuscleSet::SGraphicsChaiMuscle::SGraphicsChaiMusclePoint& mp = *itmp;//Tmp ref
 
             //Reposition the line's end points if the parent links have moved, which they will.
             //(a) Get the parent graphics objects
@@ -1354,7 +1354,7 @@ namespace scl {
             l->m_pointB = par2->getGlobalPos() + rotvec2; //Translate the rotated position vector from the frame's position.
 
             // Set the line's color. Scale to max force generation ability.
-            double tmp_col = msys.muscle_actuator_set_->force_actuator_(i)/itm->m_parsed_->max_isometric_force_;
+            double tmp_col = msys.muscle_actuator_set_parsed_->force_actuator_(i)/itm->muscle_parsed_->max_isometric_force_;
             if(tmp_col > 0.0)
             {
               l->m_colorPointA.set(tmp_col, 0.0, 1 - tmp_col);//pow(1 - tmp_col,8));

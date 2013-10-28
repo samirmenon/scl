@@ -59,7 +59,7 @@ namespace scl
 /** Wbc's chai interface uses this to connect scl and chai objects.
  *
  * This represents a link upon which physics acts. */
-struct SGraphicsPhysicalLink
+struct SGraphicsChaiRigidBody
 {
 public:
   const SRigidBody* robot_link_;
@@ -73,11 +73,11 @@ public:
    * c) TNode* parent_addr_;
    * d) std::vector<TNode*> child_addrs_; */
   std::string name_, parent_name_;
-  SGraphicsPhysicalLink* parent_addr_;
-  std::vector<SGraphicsPhysicalLink*> child_addrs_;
+  SGraphicsChaiRigidBody* parent_addr_;
+  std::vector<SGraphicsChaiRigidBody*> child_addrs_;
 
 
-  SGraphicsPhysicalLink() :
+  SGraphicsChaiRigidBody() :
     robot_link_(S_NULL),
     graphics_obj_(S_NULL),
     io_data_(S_NULL),
@@ -86,14 +86,14 @@ public:
     parent_name_(""),
     parent_addr_(NULL)
   { }
-  ~SGraphicsPhysicalLink(){}
+  ~SGraphicsChaiRigidBody(){}
 };
 
 /**
  * This represents a mesh object which doesn't
  * experience any physics.
  */
-struct SGraphicsMesh
+struct SGraphicsChaiMesh
 {
 public:
   // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.
@@ -113,53 +113,53 @@ public:
 };
 
 /** The graphics representation for rendered muscles */
-struct SGraphicsMsys : public SObject
+struct SGraphicsChaiMuscleSet : public SObject
 {
   /** The graphics representation for one muscle */
-  struct SGraphicsMuscle
+  struct SGraphicsChaiMuscle
   {
     /** The graphics representation for one muscle point */
-    struct SGraphicsMusclePoint
+    struct SGraphicsChaiMusclePoint
     {//Chai's GPL license might now allow us to directly link. Hence have to separate stuff.
       //Hence use forward decls and pointers. Should have used static members instead
       chai3d::cVector3d* pos_;
-      SGraphicsPhysicalLink* graphics_parent_;//Access the chai and scl objects
+      SGraphicsChaiRigidBody* graphics_parent_;//Access the chai and scl objects
 
       chai3d::cVector3d* pos_next_;
-      SGraphicsPhysicalLink* graphics_parent_next_;//Access the chai and scl objects
+      SGraphicsChaiRigidBody* graphics_parent_next_;//Access the chai and scl objects
 
       chai3d::cGenericObject* graphics_via_point_;
       chai3d::cGenericObject* graphics_via_line_;
 
-      SGraphicsMusclePoint()
+      SGraphicsChaiMusclePoint()
       {
         pos_ = S_NULL; pos_next_ = S_NULL;
         graphics_parent_ = S_NULL; graphics_parent_next_ = S_NULL;
         graphics_via_point_ = S_NULL; graphics_via_line_ = S_NULL;
       }
-      ~SGraphicsMusclePoint()
+      ~SGraphicsChaiMusclePoint()
       {//NOTE TODO : Possible memory leak.
         // if(S_NULL!=pos_) { delete pos_;  }
       }
     }; //End of SGraphicsMusclePoint
 
     /** A set of muscle points to be rendered */
-    std::vector<SGraphicsMusclePoint> mpt_;
+    std::vector<SGraphicsChaiMusclePoint> muscle_graphics_pt_;
 
     /** A pointer to the parsed muscle object */
-    const SMuscleParsed * m_parsed_;
+    const SMuscleParsed * muscle_parsed_;
   }; // End of : SGraphicsMuscle
 
   /** A set of muscles to be rendered */
-  std::vector<SGraphicsMuscle> msys_;
+  std::vector<SGraphicsChaiMuscle> muscle_graphics_set_;
 
   /** A link to the muscle system's actuator set. For rendering
    * muscle activation for different motions */
-  const SActuatorSetMuscle * muscle_actuator_set_;
+  const SActuatorSetMuscle * muscle_actuator_set_parsed_;
 
   /** Constructor specifies type */
-  SGraphicsMsys() : SObject("SGraphicsMsys"),
-      muscle_actuator_set_(NULL){}
+  SGraphicsChaiMuscleSet() : SObject("SGraphicsMsys"),
+      muscle_actuator_set_parsed_(NULL){}
 };
 
 /** Enables passing data between a chai rendering instance and the scl control framework.
@@ -182,14 +182,14 @@ public:
 
   /** Container for all the robots to be rendered. */
   sutil::CMappedList<std::string,
-        sutil::CMappedTree<std::string, SGraphicsPhysicalLink>
+        sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>
         > robots_rendered_;
 
   /** Container for all the mesh objects to be rendered */
-  sutil::CMappedList<std::string, SGraphicsMesh> meshes_rendered_;
+  sutil::CMappedList<std::string, SGraphicsChaiMesh> meshes_rendered_;
 
   /** Container for all the muscle objects to be rendered */
-  sutil::CMappedList<std::string, SGraphicsMsys> muscles_rendered_;
+  sutil::CMappedList<std::string, SGraphicsChaiMuscleSet> muscles_rendered_;
 
   /** Gui properties */
   bool mouse_mode_cam_; //manipulate the camera or forces
