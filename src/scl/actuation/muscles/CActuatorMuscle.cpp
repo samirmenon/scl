@@ -39,7 +39,7 @@ namespace scl
 {
   /** Default constructor. Sets stuff to NULL. */
   CActuatorMuscle::CActuatorMuscle() :
-      robot_(NULL), robot_io_ds_(NULL),
+      robot_(NULL),
       msys_(NULL), muscle_(NULL), dynamics_(NULL)
   {}
 
@@ -48,7 +48,6 @@ namespace scl
    */
   sBool CActuatorMuscle::init(const std::string& arg_name,
       const SRobotParsedData *arg_robot,
-      const SRobotIOData *arg_rob_io_ds,
       const SMuscleSystem *arg_msys,
       const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
       CDynamicsBase *arg_dynamics)
@@ -59,8 +58,6 @@ namespace scl
       //Check pointers.
       if(NULL==arg_robot)
       { throw(std::runtime_error("Passed NULL robot parsed data struct")); }
-      if(NULL==arg_rob_io_ds)
-      { throw(std::runtime_error("Passed NULL robot io data struct")); }
       if(NULL==arg_msys)
       { throw(std::runtime_error("Passed NULL muscle spec data struct")); }
       if(false==arg_msys->has_been_init_)
@@ -73,7 +70,6 @@ namespace scl
 
       //Save pointers
       robot_ = arg_robot;
-      robot_io_ds_ = arg_rob_io_ds;
       msys_ = arg_msys;
       dynamics_ = arg_dynamics;
 
@@ -201,7 +197,6 @@ namespace scl
   {
 #ifdef DEBUG
     if(NULL == robot_) {  data_.has_been_init_ = false; return false; }
-    if(NULL == robot_io_ds_) {  data_.has_been_init_ = false; return false; }
     if(NULL == msys_) {  data_.has_been_init_ = false; return false; }
     if(false == msys_->has_been_init_) {  data_.has_been_init_ = false; return false; }
     if(NULL == muscle_) {  data_.has_been_init_ = false; return false; }
@@ -217,9 +212,20 @@ namespace scl
    * forces.
    *
    * Each actuator instance must implement this. */
-  sBool CActuatorMuscle::computeJacobian(Eigen::VectorXd& ret_J)
+  sBool CActuatorMuscle::computeJacobian(
+      const Eigen::VectorXd &arg_q,
+      const Eigen::VectorXd &arg_dq,
+      Eigen::VectorXd& ret_J)
   {//This function doesn't use std::exceptions (for speed).
     if(false == hasBeenInit()) { return data_.has_been_init_; }
+
+#ifdef DEBUG
+    if(arg_q.rows() != arg_dq.rows())
+    {
+      std::cerr<<"\nCActuatorMuscle::computeJacobian("<<data_.name_<<") : Passed q and dq have different sizes.";
+      return false;
+    }
+#endif
 
     //Compute the change in length at this point.
     bool flag = true;
@@ -227,8 +233,6 @@ namespace scl
 
     //Zero the Jacobian. And get the latest gc configuration.
     ret_J.Zero(robot_->dof_);
-    data_.q_curr_ = robot_io_ds_->sensors_.q_;
-    data_.dq_curr_ = robot_io_ds_->sensors_.dq_;
 
     //1. Iterate over all gc spanning muscle via-points.
     sutil::CMappedList<sUInt,SActuatorMuscle::SViaPointSet>::iterator it,ite;
@@ -244,7 +248,7 @@ namespace scl
       if(false == tmp_pt_set.is_root_0_){
         //1.b.0: Compute Jacobians at the via points.
         flag = flag && dynamics_->computeJacobian(tmp_pt_set.J_0_, *tmp_pt_set.rigid_body_dyn_0_,
-            data_.q_curr_, tmp_pt_set.pos_in_parent_0_);
+            arg_q, tmp_pt_set.pos_in_parent_0_);
         //Use the position jacobian only. This is a point task.
         tmp_pt_set.J_0_ = tmp_pt_set.J_0_.block(0,0,3,robot_->dof_);
       }
@@ -252,7 +256,7 @@ namespace scl
       if(false == tmp_pt_set.is_root_1_){
         //1.b.1: Compute Jacobians at the via points.
         flag = flag && dynamics_->computeJacobian(tmp_pt_set.J_1_, *tmp_pt_set.rigid_body_dyn_1_,
-            data_.q_curr_, tmp_pt_set.pos_in_parent_1_);
+            arg_q, tmp_pt_set.pos_in_parent_1_);
         //Use the position jacobian only. This is a point task.
         tmp_pt_set.J_1_ = tmp_pt_set.J_1_.block(0,0,3,robot_->dof_);
       }
@@ -269,9 +273,9 @@ namespace scl
 
         //2.a: Compute the instantaneous velocity due to the gc
         if(false == tmp_pt_set.is_root_0_)
-        { tmp_pt_set.dx_glob_0_ = tmp_pt_set.J_0_.col(jcol) * data_.dq_curr_(jcol); }
+        { tmp_pt_set.dx_glob_0_ = tmp_pt_set.J_0_.col(jcol) * arg_dq(jcol); }
         if(false == tmp_pt_set.is_root_1_)
-        { tmp_pt_set.dx_glob_1_ = tmp_pt_set.J_1_.col(jcol) * data_.dq_curr_(jcol); }
+        { tmp_pt_set.dx_glob_1_ = tmp_pt_set.J_1_.col(jcol) * arg_dq(jcol); }
 
         grad_gc = (tmp_pt_set.x_glob_1_+tmp_pt_set.dx_glob_1_-
                       tmp_pt_set.x_glob_0_-tmp_pt_set.dx_glob_0_).norm()

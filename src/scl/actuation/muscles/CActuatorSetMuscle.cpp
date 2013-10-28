@@ -39,7 +39,7 @@ namespace scl
   /** Default constructor. Sets stuff to NULL. */
   CActuatorSetMuscle::CActuatorSetMuscle() :
       CActuatorSetBase("CActuatorSetMuscle"),
-      robot_io_ds_(NULL), dynamics_(NULL)
+      dynamics_(NULL)
   {}
 
   /** Initializes the actuator. This involves determining whether the muscle
@@ -47,7 +47,6 @@ namespace scl
    */
   sBool CActuatorSetMuscle::init(const std::string& arg_name,
       const SRobotParsedData *arg_robot,
-      const SRobotIOData *arg_rob_io_ds,
       const SMuscleSystem *arg_msys,
       const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
       CDynamicsBase *arg_dynamics)
@@ -58,8 +57,6 @@ namespace scl
       //Check pointers.
       if(NULL==arg_robot)
       { throw(std::runtime_error("Passed NULL robot parsed data struct")); }
-      if(NULL==arg_rob_io_ds)
-      { throw(std::runtime_error("Passed NULL robot io data struct")); }
       if(NULL==arg_msys)
       { throw(std::runtime_error("Passed NULL muscle spec data struct")); }
       if(false==arg_msys->has_been_init_)
@@ -72,7 +69,6 @@ namespace scl
 
       //Save pointers
       data_.robot_ = arg_robot;
-      robot_io_ds_ = arg_rob_io_ds;
       data_.msys_ = arg_msys;
       dynamics_ = arg_dynamics;
 
@@ -86,7 +82,7 @@ namespace scl
         if(NULL == musc)
         { throw(std::runtime_error(std::string("Could not create muscle: ")+it->name_)); }
 
-        flag = musc->init(it->name_,arg_robot, arg_rob_io_ds, arg_msys, arg_rbdtree, arg_dynamics);
+        flag = musc->init(it->name_,arg_robot, arg_msys, arg_rbdtree, arg_dynamics);
         if(false == flag)
         { throw(std::runtime_error(std::string("Could not initialize muscle: ")+it->name_)); }
       }
@@ -106,7 +102,6 @@ namespace scl
   {
 #ifdef DEBUG
     if(NULL == data_.robot_) {  has_been_init_ = false; return false; }
-    if(NULL == robot_io_ds_) {  has_been_init_ = false; return false; }
     if(NULL == data_.msys_) {  has_been_init_ = false; return false; }
     if(false == data_.msys_->has_been_init_) {  has_been_init_ = false; return false; }
     if(NULL == dynamics_) {  has_been_init_ = false; return false; }
@@ -120,7 +115,10 @@ namespace scl
    * forces.
    *
    * Each actuator instance must implement this. */
-  sBool CActuatorSetMuscle::computeJacobian(Eigen::MatrixXd &ret_J)
+  sBool CActuatorSetMuscle::computeJacobian(
+      const Eigen::VectorXd arg_q,
+      const Eigen::VectorXd arg_dq,
+      Eigen::MatrixXd &ret_J)
   {//This function doesn't use std::exceptions (for speed).
     if(false == hasBeenInit()){ return false; }
     bool flag = true;
@@ -128,7 +126,6 @@ namespace scl
     // del-L_m = J del-q
     ret_J.resize(muscles_.size(),data_.robot_->dof_);
 
-    Eigen::VectorXd row_J;
     row_J.resize(data_.robot_->dof_);
 
     // Compute a row vector for each muscle to get the full muscle Jacobian
@@ -137,7 +134,7 @@ namespace scl
     for (i=0, itm = muscles_.begin(), itme = muscles_.end();
         itm != itme; ++itm,++i)
     {
-      flag = flag && itm->computeJacobian(row_J);
+      flag = flag && itm->computeJacobian(arg_q, arg_dq, row_J);
 #ifdef DEBUG
       if (false == flag) {  return false; }
 #endif

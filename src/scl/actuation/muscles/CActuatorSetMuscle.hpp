@@ -62,7 +62,10 @@ namespace scl
      *
      * Each actuator instance implements a row in the Jacobian. The actuator
      * set merely collates them. */
-    virtual sBool computeJacobian(Eigen::MatrixXd &ret_J);
+    virtual sBool computeJacobian(
+        const Eigen::VectorXd arg_q,
+        const Eigen::VectorXd arg_dq,
+        Eigen::MatrixXd &ret_J);
 
     /* *****************************************************************
      *                        Actuator Dynamics
@@ -104,7 +107,6 @@ namespace scl
      */
     virtual sBool init(const std::string& arg_name,
         const SRobotParsedData *arg_robot,
-        const SRobotIOData *arg_rob_io_ds,
         const SMuscleSystem *arg_msys,
         const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
         CDynamicsBase *arg_dynamics);
@@ -129,11 +131,11 @@ namespace scl
     /** The muscles in this set */
     sutil::CMappedList<std::string,CActuatorMuscle> muscles_;
 
-    /** The parent robot to which this actuator is attached */
-    const SRobotIOData *robot_io_ds_;
-
     /** Dynamics specification (to compute robot Jacobians) */
     CDynamicsBase *dynamics_;
+
+    /** Temporary object used while computing the Jacobian */
+    Eigen::VectorXd row_J;
   };
 
 } /* namespace scl */

@@ -67,7 +67,10 @@ namespace scl
      * forces.
      *
      * Each actuator instance must implement this. */
-    virtual sBool computeJacobian(Eigen::MatrixXd &ret_J)=0;
+    virtual sBool computeJacobian(
+        const Eigen::VectorXd arg_q,
+        const Eigen::VectorXd arg_dq,
+        Eigen::MatrixXd &ret_J)=0;
 
     /* *****************************************************************
      *                        Actuator Dynamics

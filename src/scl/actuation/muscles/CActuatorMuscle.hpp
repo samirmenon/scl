@@ -84,6 +84,10 @@ namespace scl
      * enable Jacobians wrt. some arbit link, and Jacobians with local xyz
      * offset wrt node. */
     virtual sBool computeJacobian(
+        /** The generalized coordinates */
+        const Eigen::VectorXd &arg_q,
+        /** The generalized velocities */
+        const Eigen::VectorXd &arg_dq,
         /** The Jacobian for this muscle
          * del.length = J * del.q
          *
@@ -105,7 +109,6 @@ namespace scl
      */
     virtual sBool init(const std::string& arg_name,
         const SRobotParsedData *arg_robot,
-        const SRobotIOData *arg_rob_io_ds,
         const SMuscleSystem *arg_msys,
         const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
         CDynamicsBase *arg_dynamics);
@@ -128,9 +131,6 @@ namespace scl
 
     /** The parent robot to which this actuator is attached */
     const SRobotParsedData *robot_;
-
-    /** The parent robot to which this actuator is attached */
-    const SRobotIOData *robot_io_ds_;
 
     /** The parsed muscle specification */
     const SMuscleSystem *msys_;
