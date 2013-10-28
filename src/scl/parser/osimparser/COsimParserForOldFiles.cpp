@@ -51,7 +51,7 @@ using namespace scl;
 namespace scl_parser {
   bool COsimParserForOldFiles::readOsimBiomechFromFile(const std::string& arg_file,
       scl::SRobotParsed& arg_biomech,
-      scl::SMuscleSystemParsed& arg_msys)
+      scl::SMuscleSetParsed& arg_msys)
   {
     sBool flag;
     try
@@ -74,7 +74,7 @@ namespace scl_parser {
   bool COsimParserForOldFiles::readMuscleSysFromFile(
       const std::string& arg_file,
       const std::string& arg_msys_name,
-      scl::SMuscleSystemParsed& arg_msys)
+      scl::SMuscleSetParsed& arg_msys)
   {
     sBool flag;
     try

@@ -851,7 +851,7 @@ namespace scl {
       if(S_NULL==rob_gr)//Require an existing robot to render muscles.
       { throw(std::runtime_error("Couldn't find a (physics+graphics) representation for the robot on the pile"));  }
 
-      SMuscleSystemParsed *msys_db = db->s_parser_.muscle_systems_.at(arg_msys);
+      SMuscleSetParsed *msys_db = db->s_parser_.muscle_systems_.at(arg_msys);
       if(S_NULL == msys_db) { throw(std::runtime_error("Could not find muscle system in the database. Did you pass the right name?"));  }
 
       flag = addMusclesToRender(arg_robot,*msys_db,add_musc_via_points);
@@ -870,7 +870,7 @@ namespace scl {
 
   sBool CChaiGraphics::addMusclesToRender(
       const std::string& arg_robot,
-      const SMuscleSystemParsed& arg_msys,
+      const SMuscleSetParsed& arg_msys,
       const sBool add_musc_via_points)
   {
     std::string musc_name("");

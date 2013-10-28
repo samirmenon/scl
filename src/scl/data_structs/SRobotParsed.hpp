@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <sutil/CMappedTree.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
-#include <scl/data_structs/SMuscleSystemParsed.hpp>
+#include <scl/data_structs/SMuscleSetParsed.hpp>
 
 #include <scl/data_structs/SObject.hpp>
 
@@ -62,7 +62,7 @@ public:
 
   /** The muscle specification contains a list of all muscle actuators
    * that are attached to this robot. */
-  SMuscleSystemParsed muscle_system_;
+  SMuscleSetParsed muscle_system_;
 
   /** The joint values don't go outside this range */
   Eigen::VectorXd gc_pos_limit_max_, gc_pos_limit_min_;

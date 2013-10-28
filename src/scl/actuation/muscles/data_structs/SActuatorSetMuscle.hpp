@@ -50,7 +50,7 @@ namespace scl
     const SRobotParsed *robot_;
 
     /** The parsed muscle specification */
-    const SMuscleSystemParsed *msys_;
+    const SMuscleSetParsed *msys_;
 
     /* ******************************************************
      *                        Initialization

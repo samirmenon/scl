@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsed.hpp>
-#include <scl/data_structs/SMuscleSystemParsed.hpp>
+#include <scl/data_structs/SMuscleSetParsed.hpp>
 
 #include <scl/control/gc/data_structs/SGcController.hpp>
 #include <scl/control/task/data_structs/STaskController.hpp>
@@ -106,7 +106,7 @@ namespace scl_parser
     /** Reads a muscle model from a file. */
     virtual bool readMuscleSysFromFile(const std::string& arg_file,
                 const std::string& arg_msys_name,
-                scl::SMuscleSystemParsed& arg_msys)
+                scl::SMuscleSetParsed& arg_msys)
     { return false; }
 
     /** Optional: Returns a list of graphics views in a file.

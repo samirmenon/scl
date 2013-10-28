@@ -42,7 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
-#include <scl/data_structs/SMuscleSystemParsed.hpp>
+#include <scl/data_structs/SMuscleSetParsed.hpp>
 
 //Yes. I know this is a hack. Remove the day we move CHAI
 //into mainstream. Right now all the code is GPL because
@@ -85,7 +85,7 @@ struct SParserData
    * muscle specs for a robot, but that's overkill. More modular to
    * just redefine the robot as something else and give it a new
    * muscle spec. */
-  sutil::CMappedList<std::string,SMuscleSystemParsed> muscle_systems_;
+  sutil::CMappedList<std::string,SMuscleSetParsed> muscle_systems_;
 
   /** The config file in which the robot and muscle system is specified.
    * This is typically set by a database registration function.

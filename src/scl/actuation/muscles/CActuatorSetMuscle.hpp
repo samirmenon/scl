@@ -107,7 +107,7 @@ namespace scl
      */
     virtual sBool init(const std::string& arg_name,
         const SRobotParsed *arg_robot,
-        const SMuscleSystemParsed *arg_msys,
+        const SMuscleSetParsed *arg_msys,
         const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
         CDynamicsBase *arg_dynamics);
 

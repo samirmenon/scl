@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SMuscleSystemParsed.hpp
+/* \file SMuscleSetParsed.hpp
  *
  *  Created on: May 9, 2011
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef SMUSCLESYSTEMPARSED_HPP_
-#define SMUSCLESYSTEMPARSED_HPP_
+#ifndef SMUSCLESETPARSED_HPP_
+#define SMUSCLESETPARSED_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
@@ -120,7 +120,7 @@ namespace scl
 
   /** All the data required to attach muscle actuators
    * to any robot.*/
-  class SMuscleSystemParsed : public SObject
+  class SMuscleSetParsed : public SObject
   {
   public:
     /** ******************** DATA *********************** */
@@ -143,9 +143,9 @@ namespace scl
 
     /** ******************** FUNCTIONS *********************** */
     /** Default constructor. Sets the type. */
-    SMuscleSystemParsed();
+    SMuscleSetParsed();
     /** Default destructor. Does nothing */
-    virtual ~SMuscleSystemParsed();
+    virtual ~SMuscleSetParsed();
   };
 
 }
