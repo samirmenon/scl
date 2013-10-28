@@ -135,7 +135,7 @@ namespace scl
     CDynamicsBase *dynamics_;
 
     /** Temporary object used while computing the Jacobian */
-    Eigen::VectorXd row_J;
+    Eigen::VectorXd row_J_;
   };
 
 } /* namespace scl */

@@ -126,7 +126,7 @@ namespace scl
     // del-L_m = J del-q
     ret_J.resize(muscles_.size(),data_.robot_->dof_);
 
-    row_J.resize(data_.robot_->dof_);
+    row_J_.resize(data_.robot_->dof_);
 
     // Compute a row vector for each muscle to get the full muscle Jacobian
     int i=0;
@@ -134,11 +134,11 @@ namespace scl
     for (i=0, itm = muscles_.begin(), itme = muscles_.end();
         itm != itme; ++itm,++i)
     {
-      flag = flag && itm->computeJacobian(arg_q, arg_dq, row_J);
+      flag = flag && itm->computeJacobian(arg_q, arg_dq, row_J_);
 #ifdef DEBUG
       if (false == flag) {  return false; }
 #endif
-      ret_J.row(i) = row_J;
+      ret_J.row(i) = row_J_;
     }
     return flag;
   }
