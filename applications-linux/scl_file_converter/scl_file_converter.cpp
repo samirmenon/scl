@@ -62,7 +62,7 @@ int main(int argc, char** argv)
   {
     std::cout<<"\nThis is a sample application to convert supported files (sai.xml, .osim) into a scl file format.";
     std::cout<<"\nThe command line input is: ./<executable> <input_file_name> <output_file_name>\n";
-    std::cout<<"\nNOTE : \n1. Link names must be uniqe!\n2. Numbers in xml tags must be separated by spaces (not commas!)"
+    std::cout<<"\nNOTE : \n1. Link names must be unique!\n2. Numbers in xml tags must be separated by spaces (not commas!)"
         <<"\n3. A zero rotation in quaternions is {0 0 0 1} NOT {0 0 0 0}"
         <<std::endl<<std::flush;
     return 0;
