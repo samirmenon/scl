@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/parser/sclparser/CSclParser.hpp>
+#include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 
 //Tao Dynamics
@@ -92,7 +92,7 @@ namespace scl_test
       tmp_infile = scl::CDatabase::getData()->cwd_+ file_name;
       std::cout<<"\nTest Result ("<<r_id++<<")  Opening file : "<<tmp_infile;
 
-      scl_parser::CSclParser tmp_lparser;
+      scl_parser::CParserScl tmp_lparser;
 
       //1 Create robot from a file specification (And register it with the db)
       std::vector<std::string> rob_names;
@@ -229,7 +229,7 @@ namespace scl_test
       tmp_infile = db->dir_specs_ + "Bot-RPP/Bot-RPPCfg.xml";
       std::cout<<"\nTest Result ("<<r_id++<<")  Opening file : "<<tmp_infile;
 
-      scl_parser::CSclParser tmp_lparser;
+      scl_parser::CParserScl tmp_lparser;
 
       //1 Create robot from the file specification (And register it with the db)
       std::string robot_name = "rppbot";

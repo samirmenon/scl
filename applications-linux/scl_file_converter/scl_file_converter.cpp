@@ -44,7 +44,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 
-#include <scl/parser/sclparser/CSclParser.hpp>
+#include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/parser/saiparser/CSaiParser.hpp>
 #include <scl/parser/osimparser/COsimParser.hpp>
 #include <scl/parser/osimparser/COsimParserForOldFiles.hpp>
@@ -127,7 +127,7 @@ int main(int argc, char** argv)
       { throw(std::runtime_error("Unrecognized input file type."));  }
 
       //4. Write the file into a scl output file
-      scl_parser::CSclParser tmp_scl_parser;
+      scl_parser::CParserScl tmp_scl_parser;
       flag = tmp_scl_parser.saveRobotToFile(tmp_robot,tmp_outfile);
       if(false == flag) { throw(std::runtime_error("Could not write to Scl xml file."));  }
 

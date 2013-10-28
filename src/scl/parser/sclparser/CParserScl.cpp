@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CSclParser.cpp
+/* \file CParserScl.cpp
  *
  *  Created on: May, 2010
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 //The Class definition.
-#include <scl/parser/sclparser/CSclParser.hpp>
+#include <scl/parser/sclparser/CParserScl.hpp>
 
 //The required data structures
 #include <scl/DataTypes.hpp>
@@ -86,7 +86,7 @@ namespace scl{
 
 namespace scl_parser {
 
-bool CSclParser::listRobotsInFile(const std::string& arg_file,
+bool CParserScl::listRobotsInFile(const std::string& arg_file,
     std::vector<std::string>& arg_robot_names)
 {
   bool flag;
@@ -130,14 +130,14 @@ bool CSclParser::listRobotsInFile(const std::string& arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCSclParser::listRobotsInFile() :"<<e.what();
+    std::cerr<<"\nCParserScl::listRobotsInFile() :"<<e.what();
     arg_robot_names.clear();
     return false;
   }
   return true; //Success.
 }
 
-bool CSclParser::readRobotFromFile(const std::string& arg_file,
+bool CParserScl::readRobotFromFile(const std::string& arg_file,
     const std::string& arg_robot_name,
     scl::SRobotParsed& arg_robot)
 {
@@ -475,14 +475,14 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
   catch(std::exception& e)
   {
     if(S_NULL!=tmp_link_ds) { delete tmp_link_ds; } //Clear out memory
-    std::cerr<<"\nCSclParser::readRobotFromFile("<<arg_file<<", "
+    std::cerr<<"\nCParserScl::readRobotFromFile("<<arg_file<<", "
         <<arg_robot_name<<") : "<<e.what();
   }
   return false;
 }
 
 
-bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
+bool CParserScl::readRobotSpecFromFile(const std::string& arg_spec_file,
     const std::string& arg_robot_spec_name,
     scl::SRobotParsed& arg_robot)
 {
@@ -578,13 +578,13 @@ bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
   catch(std::exception& e)
   {
     if(S_NULL!=tmp_link_ds) { delete tmp_link_ds; } //Clear out memory
-    std::cerr<<"\nCSclParser::readRobotSpecFromFile("
+    std::cerr<<"\nCParserScl::readRobotSpecFromFile("
         <<arg_spec_file<<"): "<<e.what();
   }
   return false;
 }
 
-bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
+bool CParserScl::readMuscleSpecFromFile(const std::string& arg_spec_file,
     const std::string& arg_muscle_spec_name,
     scl::SRobotParsed& arg_robot)
 {
@@ -690,12 +690,12 @@ bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
     return true;
   }
   catch(std::exception& e)
-  { std::cerr<<"\nCSclParser::readMuscleSpecFromFile("<<arg_spec_file<<"): "<<e.what(); }
+  { std::cerr<<"\nCParserScl::readMuscleSpecFromFile("<<arg_spec_file<<"): "<<e.what(); }
   return false;
 }
 
 
-bool CSclParser::saveRobotToFile(scl::SRobotParsed& arg_robot,
+bool CParserScl::saveRobotToFile(scl::SRobotParsed& arg_robot,
     const std::string &arg_file)
 {
   FILE* fp=S_NULL;
@@ -868,7 +868,7 @@ bool CSclParser::saveRobotToFile(scl::SRobotParsed& arg_robot,
 }
 
 
-bool CSclParser::readGraphicsFromFile(const std::string &arg_file,
+bool CParserScl::readGraphicsFromFile(const std::string &arg_file,
     const std::string &arg_graphics_name, scl::SGraphicsParsed& arg_graphics)
 {
   bool flag;
@@ -1004,7 +1004,7 @@ bool CSclParser::readGraphicsFromFile(const std::string &arg_file,
       }
       else
       {
-        std::cout<<"\nCSclParser::readGraphicsFromFile() : No background color. Setting to black {0.0, 0.0, 0.0}";
+        std::cout<<"\nCParserScl::readGraphicsFromFile() : No background color. Setting to black {0.0, 0.0, 0.0}";
         arg_graphics.background_color_[0] = 0.0;
         arg_graphics.background_color_[1] = 0.0;
         arg_graphics.background_color_[2] = 0.0;
@@ -1020,11 +1020,11 @@ bool CSclParser::readGraphicsFromFile(const std::string &arg_file,
     return true;
   }
   catch(std::exception& e)
-  { std::cerr<<"\nCSclParser::readGraphicsFromFile(): "<<e.what();  }
+  { std::cerr<<"\nCParserScl::readGraphicsFromFile(): "<<e.what();  }
   return false;
 }
 
-bool CSclParser::listGraphicsInFile(const std::string& arg_file,
+bool CParserScl::listGraphicsInFile(const std::string& arg_file,
     std::vector<std::string>& arg_graphics_names)
 {
   bool flag;
@@ -1076,14 +1076,14 @@ bool CSclParser::listGraphicsInFile(const std::string& arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCSclParser::listRobotsInFile() :"<<e.what();
+    std::cerr<<"\nCParserScl::listRobotsInFile() :"<<e.what();
     arg_graphics_names.clear();
     return false;
   }
   return true; //Success.
 }
 
-bool CSclParser::listControllersInFile(const std::string &arg_file,
+bool CParserScl::listControllersInFile(const std::string &arg_file,
       std::vector<std::pair<std::string,std::string> > &arg_ctrl_name_and_type)
 {
   bool flag;
@@ -1129,13 +1129,13 @@ bool CSclParser::listControllersInFile(const std::string &arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCSclParser::listControllersInFile() :"<<e.what();
+    std::cerr<<"\nCParserScl::listControllersInFile() :"<<e.what();
     return false;
   }
   return true; //Success.
 }
 
-bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
+bool CParserScl::readGcControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
       std::string &arg_must_use_robot,
       scl::SControllerGc& arg_ctrl)
@@ -1285,7 +1285,7 @@ bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
       else
       {
         arg_ctrl.ki_.setZero(1);
-        std::cerr<<"\nCSclParser::readGcControllerFromFile() : WARNING : In Controller ["<<arg_ctrl.name_
+        std::cerr<<"\nCParserScl::readGcControllerFromFile() : WARNING : In Controller ["<<arg_ctrl.name_
             <<"]No ki information. Setting to zero.";
       }
 
@@ -1336,13 +1336,13 @@ bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCSclParser::readGcControllerFromFile() : "<<e.what();
+    std::cerr<<"\nCParserScl::readGcControllerFromFile() : "<<e.what();
     return false;
   }
   return true; //Success.
 }
 
-bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
+bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
       std::string &arg_must_use_robot,
       scl::SControllerMultiTask& arg_ctrl,
@@ -1545,7 +1545,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         else
         {
           tmp_task->ki_.setZero(1);
-          std::cerr<<"\nCSclParser::readTaskControllerFromFile() : WARNING : Task ["<<tmp_task->name_
+          std::cerr<<"\nCParserScl::readTaskControllerFromFile() : WARNING : Task ["<<tmp_task->name_
               <<"]. No ki information. Setting to zero.";
         }
 
@@ -1630,7 +1630,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
           nonstd_param.data_[1] = tiElem_task_options->FirstChild()->Value();
 
 #ifdef DEBUG
-          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Read a non standard param: "<<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
+          std::cout<<"\nCParserScl::readTaskControllerFromFile() : Read a non standard param: "<<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
 #endif
 
           //Store the nonstandard param
@@ -1645,7 +1645,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         arg_taskvec.push_back(tmp_task);
 
 #ifdef DEBUG
-          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed task: "<<tmp_task->name_<<". Type: "<<tmp_task->type_task_;
+          std::cout<<"\nCParserScl::readTaskControllerFromFile() : Parsed task: "<<tmp_task->name_<<". Type: "<<tmp_task->type_task_;
 #endif
 
       }//End of loop over tasks in the xml file.
@@ -1714,7 +1714,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
           nonstd_param.data_[1] = tiElem_task_options->FirstChild()->Value();
 
 #ifdef DEBUG
-          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Read a non standard param: "
+          std::cout<<"\nCParserScl::readTaskControllerFromFile() : Read a non standard param: "
               <<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
 #endif
           //Store the nonstandard param
@@ -1724,7 +1724,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
         arg_task_non_ctrl_vec.push_back(tmp_task);
 
 #ifdef DEBUG
-        std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed non-control task: "<<tmp_task->name_<<". Type: "<<tmp_task->type_task_;
+        std::cout<<"\nCParserScl::readTaskControllerFromFile() : Parsed non-control task: "<<tmp_task->name_<<". Type: "<<tmp_task->type_task_;
 #endif
 
       }//End of loop over tasks in the xml file.
@@ -1735,7 +1735,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
 
 
 #ifdef DEBUG
-          std::cout<<"\nCSclParser::readTaskControllerFromFile() : Parsed controller: "<<arg_ctrl_name<<". Type: "<<arg_ctrl.type_ctrl_ds_;
+          std::cout<<"\nCParserScl::readTaskControllerFromFile() : Parsed controller: "<<arg_ctrl_name<<". Type: "<<arg_ctrl.type_ctrl_ds_;
 #endif
 
       //Successfully parsed atleast one controller from the file
@@ -1748,7 +1748,7 @@ bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCSclParser::readTaskControllerFromFile() : Error : "<<e.what();
+    std::cerr<<"\nCParserScl::readTaskControllerFromFile() : Error : "<<e.what();
     return false;
   }
   return true; //Success.

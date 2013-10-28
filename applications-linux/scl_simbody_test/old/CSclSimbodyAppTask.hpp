@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/parser/sclparser/CSclParser.hpp>
+#include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
 #include <scl/dynamics/simbody/CSimbodyDynamics.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>

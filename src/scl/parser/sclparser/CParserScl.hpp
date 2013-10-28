@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CSclParser.hpp
+/* \file CParserScl.hpp
  *
  *  Created on: May, 2010
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CLOTUSPARSER_HPP_
-#define CLOTUSPARSER_HPP_
+#ifndef CPARSERSCL_HPP_
+#define CPARSERSCL_HPP_
 
 #include <scl/parser/CParserBase.hpp>
 
@@ -46,10 +46,10 @@ namespace scl_parser {
  *
  * Please see the CParserBase API for more details.
  */
-class CSclParser: public CParserBase {
+class CParserScl: public CParserBase {
 public:
-  CSclParser(){}
-  virtual ~CSclParser(){}
+  CParserScl(){}
+  virtual ~CParserScl(){}
 
   virtual bool listRobotsInFile(const std::string& arg_file,
       std::vector<std::string>& arg_robot_names);

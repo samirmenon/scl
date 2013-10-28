@@ -45,7 +45,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/parser/sclparser/CSclParser.hpp>
+#include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 #include <sutil/CSystemClock.hpp>
 
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
       std::cout<<"Running scl benchmarks for input file: "<<tmp_infile;
 
       /******************************File Parsing************************************/
-      scl_parser::CSclParser tmp_lparser;//Use the scl tinyxml parser
+      scl_parser::CParserScl tmp_lparser;//Use the scl tinyxml parser
 
       std::string robot_name;
       if(argc==2)
