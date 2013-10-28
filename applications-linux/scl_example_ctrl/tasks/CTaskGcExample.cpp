@@ -49,7 +49,7 @@ namespace scl_app
   CTaskGcExample::~CTaskGcExample()
   {}
 
-  bool CTaskGcExample::computeServo(const scl::SRobotSensorData* arg_sensors)
+  bool CTaskGcExample::computeServo(const scl::SRobotSensors* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);

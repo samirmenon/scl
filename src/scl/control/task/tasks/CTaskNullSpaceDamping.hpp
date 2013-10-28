@@ -47,7 +47,7 @@ namespace scl
      * CTaskBase API
      *********************************/
     /** Computes the gc forces that resist gc velocity */
-    virtual bool computeServo(const SRobotSensorData* arg_sensors);
+    virtual bool computeServo(const SRobotSensors* arg_sensors);
 
     /** Sets the null space for the next level to zero. Ie.
      * any task below this one in the hierarchy is ignored. */

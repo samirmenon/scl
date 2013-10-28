@@ -54,7 +54,7 @@ namespace scl_app
      *******************************************/
     /** Computes the gc forces that resist gc velocity */
     virtual bool computeServo(
-        const scl::SRobotSensorData* arg_sensors);
+        const scl::SRobotSensors* arg_sensors);
 
     /** Does nothing. GC tasks don't require OSC models */
     virtual bool computeModel();

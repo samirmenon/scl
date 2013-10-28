@@ -120,7 +120,7 @@ namespace scl
   }
 
 
-  bool CTaskGcLimitCentering::computeServo(const SRobotSensorData* arg_sensors)
+  bool CTaskGcLimitCentering::computeServo(const SRobotSensors* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);

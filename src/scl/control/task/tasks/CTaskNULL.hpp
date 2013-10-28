@@ -73,7 +73,7 @@ public:
   virtual void reset();
 
   /** Computes the task torques */
-  virtual bool computeServo(const SRobotSensorData* arg_sensors);
+  virtual bool computeServo(const SRobotSensors* arg_sensors);
 
   /** Computes the dynamics (task model) */
   virtual bool computeModel();

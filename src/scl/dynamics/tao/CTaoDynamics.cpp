@@ -199,7 +199,7 @@ namespace scl
 
 
   bool CTaoDynamics::
-  computeGCModel(SRobotSensorData const * arg_sensor_data,
+  computeGCModel(SRobotSensors const * arg_sensor_data,
       SGcModel * arg_gc_model)
   {
     if ( ! arg_sensor_data) {

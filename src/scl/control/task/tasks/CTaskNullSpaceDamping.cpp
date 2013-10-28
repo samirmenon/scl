@@ -84,7 +84,7 @@ namespace scl
   }
 
 
-  bool CTaskNullSpaceDamping::computeServo(const SRobotSensorData* arg_sensors)
+  bool CTaskNullSpaceDamping::computeServo(const SRobotSensors* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);

@@ -43,7 +43,7 @@ namespace scl
 {
 
 struct SRigidBody;
-struct SRobotSensorData;
+struct SRobotSensors;
 
 class CGraphicsBase : public SObject
 {

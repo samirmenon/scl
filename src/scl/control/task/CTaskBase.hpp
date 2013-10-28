@@ -57,7 +57,7 @@ public:
    *                   Computation Functions
    * ************************************************************** */
   /** Computes the task torques */
-  virtual bool computeServo(const SRobotSensorData* arg_sensors)=0;
+  virtual bool computeServo(const SRobotSensors* arg_sensors)=0;
 
   /** Computes the dynamics (task model) */
   virtual bool computeModel()=0;

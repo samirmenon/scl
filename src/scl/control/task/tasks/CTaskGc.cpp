@@ -146,7 +146,7 @@ namespace scl
   }
 
 
-  bool CTaskGc::computeServo(const SRobotSensorData* arg_sensors)
+  bool CTaskGc::computeServo(const SRobotSensors* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);

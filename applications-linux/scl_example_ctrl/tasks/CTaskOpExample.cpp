@@ -173,7 +173,7 @@ namespace scl_app
   }
 
 
-  bool CTaskOpExample::computeServo(const SRobotSensorData* arg_sensors)
+  bool CTaskOpExample::computeServo(const SRobotSensors* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);

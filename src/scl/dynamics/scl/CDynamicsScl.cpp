@@ -45,7 +45,7 @@ namespace scl
    */
   sBool CDynamicsScl::computeGCModel(/** Current robot state. q, dq, ddq,
               sensed generalized forces and perceived external forces.*/
-        const SRobotSensorData * arg_sensor_data,
+        const SRobotSensors * arg_sensor_data,
         /** Individual link Jacobians, and composite intertial,
               centrifugal/coriolis gravity estimates.*/
         SGcModel * arg_gc_model)

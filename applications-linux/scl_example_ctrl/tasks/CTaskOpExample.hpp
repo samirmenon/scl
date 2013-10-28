@@ -67,7 +67,7 @@ namespace scl_app
      * CTaskBase API
      *********************************/
     /** Computes the task torques */
-    virtual bool computeServo(const scl::SRobotSensorData* arg_sensors);
+    virtual bool computeServo(const scl::SRobotSensors* arg_sensors);
 
     /** Computes the dynamics (task model)
      * Assumes that the data_->model_.gc_model_ has been updated. */

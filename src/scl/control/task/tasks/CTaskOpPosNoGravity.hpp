@@ -81,7 +81,7 @@ public:
   { return scl::CTaskOpPos::reset();  }
 
   /** Computes the task torques */
-  virtual bool computeServo(const SRobotSensorData* arg_sensors)
+  virtual bool computeServo(const SRobotSensors* arg_sensors)
   { return scl::CTaskOpPos::computeServo(arg_sensors);  }
 
   /** Computes the dynamics (task model)

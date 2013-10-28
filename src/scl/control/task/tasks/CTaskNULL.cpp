@@ -70,7 +70,7 @@ namespace scl
     has_been_init_ = false;
   }
 
-  bool CTaskNULL::computeServo(const SRobotSensorData* arg_sensors)
+  bool CTaskNULL::computeServo(const SRobotSensors* arg_sensors)
   {
     if(data_->has_been_init_)
     {

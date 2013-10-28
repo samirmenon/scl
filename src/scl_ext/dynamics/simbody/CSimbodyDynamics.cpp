@@ -212,7 +212,7 @@ namespace scl
   bool CSimbodyDynamics::computeGCModel(/**
       This is where there current robot state is read when
       updateModelMatrices() is called. */
-      SRobotSensorData const * sensor_data,
+      SRobotSensors const * sensor_data,
       /**
       Pointer to the joint-space model structure for the
       robot. This is the place where the matrices reside

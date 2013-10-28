@@ -55,7 +55,7 @@ namespace scl
 {
 
   class SGcModel;
-  struct SRobotSensorData;
+  struct SRobotSensors;
 
   /** Computes the dynamics of a robot model
    * using the TAO dynamics engine */
@@ -71,7 +71,7 @@ namespace scl
     virtual bool computeGCModel(/**
 				This is where there current robot state is read when
 				updateModelMatrices() is called. */
-        SRobotSensorData const * arg_sensor_data,
+        SRobotSensors const * arg_sensor_data,
         /**
 				Pointer to the joint-space model structure for the
 				robot. This is the place where the matrices reside
