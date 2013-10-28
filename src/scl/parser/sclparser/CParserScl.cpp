@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/util/HelperFunctions.hpp>
 
 //The tinyxml parser implementation for scl xml files
-#include <scl/parser/scl_tinyxml/scl_tinyxml.h>
+#include <scl_tinyxml/scl_tinyxml.h>
 #include <scl/parser/sclparser/tixml_parser/CParserSclTiXml.hpp>
 
 //The Standard cpp headers

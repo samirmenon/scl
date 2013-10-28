@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CPARSERSCLTIXML_H_
 
 
-#include <scl/parser/scl_tinyxml/scl_tinyxml.h>
+#include <scl_tinyxml/scl_tinyxml.h>
 
 //Include the data structures
 #include <scl/data_structs/SRobotParsed.hpp>

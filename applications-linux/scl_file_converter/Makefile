@@ -22,11 +22,14 @@ EIGEN_INC_DIR = ../../3rdparty/eigen/
 #3rd party lib : sUtil (local install)
 SUTIL_INC_DIR = ../../3rdparty/sUtil/src/
 
+#3rd part lib : scl_tinyxml (for parser)
+TIXML_INC_DIR = ../../3rdparty/tinyxml/
+
 ############################# INCLUDE AND LINK OPTIONS ############################
 #Collate all the include directiories
 INCLUDEDIRS = -I../../src/ -I$(SCL_INC_DIR) -I$(TAO_INC_DIR) \
               -I$(EIGEN_INC_DIR) \
-              -I$(SUTIL_INC_DIR)
+              -I$(SUTIL_INC_DIR) -I$(TIXML_INC_DIR)
 
 #Combine all libs to be linked
 ###Debug

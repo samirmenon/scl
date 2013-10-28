@@ -10,15 +10,18 @@ SET(SCL_INC_DIR ../../src/scl)
 #Eigen Includes
 SET(EIGEN_INC_DIR ../../3rdparty/eigen)
 
+#Tinyxml includes
+SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
+
 #sUtil Includes
 SET(SUTIL_INC_DIR ../../3rdparty/sUtil/src)
 
 SET(TAO_INC_DIR ${SCL_INC_DIR}/dynamics/tao)
 
-
+#Set all include directories
 INCLUDE_DIRECTORIES(../../src/ ${SCL_INC_DIR}
                     ${EIGEN_INC_DIR} ${TAO_INC_DIR}		    						
-                    ${SUTIL_INC_DIR} )
+                    ${SUTIL_INC_DIR} ${TIXML_INC_DIR} )
 
 #Set all the sources required for the library
 SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIO.cpp
@@ -115,10 +118,10 @@ SET(OSIM_PARSER_SRC ${SCL_INC_DIR}/parser/osimparser/CParserOsim.cpp
                     ${SCL_INC_DIR}/parser/osimparser/CParserOsimForOldFiles.cpp)
 
 #Set tinyxml stuff
-SET(TIXML_SRC ${SCL_INC_DIR}/parser/scl_tinyxml/scl_tinystr.cpp
-            ${SCL_INC_DIR}/parser/scl_tinyxml/scl_tinyxml.cpp
-            ${SCL_INC_DIR}/parser/scl_tinyxml/scl_tinyxmlerror.cpp
-            ${SCL_INC_DIR}/parser/scl_tinyxml/scl_tinyxmlparser.cpp
+SET(TIXML_SRC ${TIXML_INC_DIR}/scl_tinyxml/scl_tinystr.cpp
+            ${TIXML_INC_DIR}/scl_tinyxml/scl_tinyxml.cpp
+            ${TIXML_INC_DIR}/scl_tinyxml/scl_tinyxmlerror.cpp
+            ${TIXML_INC_DIR}/scl_tinyxml/scl_tinyxmlparser.cpp
    )
 ADD_DEFINITIONS(-DTIXML_USE_STL)
 

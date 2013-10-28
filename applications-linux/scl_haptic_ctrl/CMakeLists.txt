@@ -33,27 +33,30 @@ ADD_DEFINITIONS(-D_LINUX -DLINUX)
 ### (d) sUtil code
 SET(SUTIL_INC_DIR ${SCL_BASE_DIR}3rdparty/sUtil/src/)
 
-###(d) Cdhd
+### (e) scl_tinyxml (parser)
+SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
+
+###(f) Cdhd
 SET(CDHD_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/DHD/include)
 
-###(e) CGEL
+###(g) CGEL
 SET(CGEL_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/GEL/src)
 
-###(f) CGIFLIB
+###(h) CGIFLIB
 SET(CGIFLIB_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/giflib/include)
 
-###(g) CLIB3DS
+###(i) CLIB3DS
 SET(CLIB3DS_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/lib3ds/include)
 
-###(h) CLIBJPEG
+###(j) CLIBJPEG
 SET(CLIBJPEG_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/libjpeg/include)
 
-###(i) CLIBPNG
+###(k) CLIBPNG
 SET(CLIBPNG_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/libpng/include)
 
 ################Initialize the executable#################
 #Set the include directories
-INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR}
+INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR}
 ${CDHD_INC_DIR} ${CGEL_INC_DIR} ${CGIFLIB_INC_DIR} ${CLIB3DS_INC_DIR} ${CLIBJPEG_INC_DIR} ${CLIBPNG_INC_DIR} ) 
 
 #Set the compilation flags

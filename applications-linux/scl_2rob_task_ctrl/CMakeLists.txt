@@ -33,9 +33,12 @@ ADD_DEFINITIONS(-D_LINUX -DLINUX)
 ### (d) sUtil code
 SET(SUTIL_INC_DIR ${SCL_BASE_DIR}3rdparty/sUtil/src/)
 
+### (e) scl_tinyxml (parser)
+SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
+
 ################Initialize the executable#################
 #Set the include directories
-INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR}) 
+INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR}) 
 
 #Set the compilation flags
 SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp")
