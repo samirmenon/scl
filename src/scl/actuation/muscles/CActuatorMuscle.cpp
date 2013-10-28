@@ -232,7 +232,7 @@ namespace scl
     Eigen::Affine3d T;
 
     //Zero the Jacobian. And get the latest gc configuration.
-    ret_J.Zero(robot_->dof_);
+    ret_J.setZero(robot_->dof_);
 
     //1. Iterate over all gc spanning muscle via-points.
     sutil::CMappedList<sUInt,SActuatorMuscle::SViaPointSet>::iterator it,ite;
