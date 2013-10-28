@@ -72,7 +72,7 @@ namespace scl
     /** Inherited stuff:
     std::string robot_name_;
     const SRobotParsed* robot_;
-    SRobotIOData* io_data_;
+    SRobotIO* io_data_;
     SGcModel gc_model_;
     std::string name_;
     sBool has_been_init_; */
@@ -87,7 +87,7 @@ namespace scl
     /** Initializes the data structure */
     virtual sBool init(const std::string & arg_ctrl_name,
         const SRobotParsed* arg_robot_ds,
-        SRobotIOData* arg_io_data);
+        SRobotIO* arg_io_data);
   };
 }
 

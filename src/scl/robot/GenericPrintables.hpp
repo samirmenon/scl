@@ -32,7 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef GENERICPRINTABLES_HPP_
 #define GENERICPRINTABLES_HPP_
 
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/control/data_structs/SControllerBase.hpp>
@@ -83,9 +83,9 @@ namespace sutil
   }
 
   template <>
-  void printToStream<scl::SRobotIOData>(
+  void printToStream<scl::SRobotIO>(
       std::ostream& ostr,
-      const scl::SRobotIOData& arg_data
+      const scl::SRobotIO& arg_data
   )
   {
     ostr<<"\n Name: "<<arg_data.name_;
@@ -225,12 +225,12 @@ namespace scl
       }
 
       //Add all the IO data structures for all the robots
-      sutil::CMappedList<std::string, scl::SRobotIOData>::iterator iti,itie;
+      sutil::CMappedList<std::string, scl::SRobotIO>::iterator iti,itie;
       for(iti = scl::CDatabase::getData()->s_io_.io_data_.begin(),
           itie = scl::CDatabase::getData()->s_io_.io_data_.end();
           iti!=itie; ++iti)
       {
-        scl::SRobotIOData& io = *iti;
+        scl::SRobotIO& io = *iti;
         flag = sutil::printables::add(io.name_,io);
         if(false == flag)
         {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+

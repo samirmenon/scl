@@ -110,7 +110,7 @@ namespace scl
         CDynamicsBase* arg_dynamics,
         CDynamicsBase* arg_integrator,
         SRobotParsed *arg_robot,
-        SRobotIOData *arg_io_data,
+        SRobotIO *arg_io_data,
         std::vector<SControllerBase*>& arg_ctrls);
 
     /** Initialization state */

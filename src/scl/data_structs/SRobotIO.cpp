@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SRobotIOData.cpp
+/* \file SRobotIO.cpp
  *
  *  Created on: Dec 25, 2010
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 
 #include <stdexcept>
 #include <iostream>
@@ -37,13 +37,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-SRobotIOData::SRobotIOData() : SObject("SRobotIOData")
+SRobotIO::SRobotIO() : SObject("SRobotIO")
 {
   dof_ = 0;
   has_been_init_ = true;
 }
 
-sBool SRobotIOData::init(const std::string& arg_robot_name, const sUInt arg_robot_dof)
+sBool SRobotIO::init(const std::string& arg_robot_name, const sUInt arg_robot_dof)
 {
   try
   {
@@ -69,7 +69,7 @@ sBool SRobotIOData::init(const std::string& arg_robot_name, const sUInt arg_robo
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nSRobotIOData::init() : "<<e.what();
+    std::cerr<<"\nSRobotIO::init() : "<<e.what();
     //Will set init to false since state might be invalid.
     //Will not reset data to enable error handling and debugging.
     has_been_init_ = false;
@@ -78,15 +78,15 @@ sBool SRobotIOData::init(const std::string& arg_robot_name, const sUInt arg_robo
   return has_been_init_;
 }
 
-sBool SRobotIOData::printInfo()
+sBool SRobotIO::printInfo()
 {
   if(false == has_been_init_)
   {
-    std::cout<<"\nSRobotIOData::printInfo() : Not initialized. Can't print data. Ptr = "<<this;
+    std::cout<<"\nSRobotIO::printInfo() : Not initialized. Can't print data. Ptr = "<<this;
     return false;
   }
 
-  std::cout<<"\n-------SRobotIOData::printInfo()-------"
+  std::cout<<"\n-------SRobotIO::printInfo()-------"
       <<"\nName : "<<name_
       <<"\n Dof : "<<dof_
       <<"\n   Q : "<<sensors_.q_.transpose()

@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsed.hpp>
 
 #include <scl/data_structs/SObject.hpp>
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 
 #include <scl/data_structs/SGcModel.hpp>
 
@@ -58,7 +58,7 @@ namespace scl
     const SRobotParsed* robot_;
 
     /** Robot sensor and actuator data */
-    SRobotIOData* io_data_;
+    SRobotIO* io_data_;
 
     /** Pointer to the JSpace model DS. */
     SGcModel gc_model_;
@@ -72,7 +72,7 @@ namespace scl
     /** Initializes the data structure */
     virtual sBool init(const std::string & arg_controller_name,
         const SRobotParsed* arg_robot_ds,
-        SRobotIOData* arg_io_data);
+        SRobotIO* arg_io_data);
   };
 
 }

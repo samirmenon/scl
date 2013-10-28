@@ -891,7 +891,7 @@ namespace scl {
       msys_gr = data_->muscles_rendered_.create(arg_msys.name_);
       if(S_NULL == db) { throw(std::runtime_error("Could not create muscle rendering data struct on the pile"));  }
 
-      SRobotIOData *rob_io_ds = db->s_io_.io_data_.at(arg_robot);
+      SRobotIO *rob_io_ds = db->s_io_.io_data_.at(arg_robot);
       if(NULL == rob_io_ds)
       { throw(std::runtime_error(std::string("Couldn't find an io data structure for the robot on the pile: ") + arg_robot));  }
 
@@ -1178,7 +1178,7 @@ namespace scl {
         sutil::CMappedTree<std::string, SGraphicsPhysicalLink>& rob_brrep = *it;
 
         //NOTE TODO : This is a bit inefficient. Find a better way to do this.
-        const SRobotIOData* rob_io;
+        const SRobotIO* rob_io;
         std::string tmp_rob_name = !it;
         rob_io = db->s_io_.io_data_.at_const(tmp_rob_name);
 #ifdef DEBUG

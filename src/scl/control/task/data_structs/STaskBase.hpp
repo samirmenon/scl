@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/data_structs/SObject.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 
 #include <scl/data_structs/SGcModel.hpp>
 
@@ -197,7 +197,7 @@ namespace scl
         /** 0  task dof means a gc task. Ie. full dofs */
         const scl::sUInt arg_task_dof,
         SRobotParsed* arg_robot_ds,
-        SRobotIOData* arg_io_data,
+        SRobotIO* arg_io_data,
         /* The remaining variables initialize model_ and servo_ */
         const SGcModel* arg_gc_model,
         const Eigen::VectorXd & arg_kp,

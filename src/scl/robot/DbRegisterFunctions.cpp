@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsed.hpp>
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/gc/CGcController.hpp>
@@ -177,7 +177,7 @@ namespace scl_registry
   {
     bool flag;
     scl::SRobotParsed * rob=NULL;
-    scl::SRobotIOData * rob_io=NULL;
+    scl::SRobotIO * rob_io=NULL;
     try
     {
       if(NULL == scl::CDatabase::getData())

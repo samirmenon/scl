@@ -310,7 +310,7 @@ namespace scl_chai_glut_interface
         link_idx++;
 
         scl::SDatabase* db = scl::CDatabase::getData();
-        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        scl::SRobotIO* io = db->s_io_.io_data_.at(0);
         if(link_idx >= io->sensors_.q_.size())
         { link_idx = io->sensors_.q_.size()-1;  }
 
@@ -323,7 +323,7 @@ namespace scl_chai_glut_interface
         if(0>link_idx) link_idx = 0;
 
         scl::SDatabase* db = scl::CDatabase::getData();
-        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        scl::SRobotIO* io = db->s_io_.io_data_.at(0);
 
         std::cout<<"\nGLUT: "<<io->name_<<" : Link : "<<link_idx<<std::flush;
         chai_glob_ds->keys_active[static_cast<int>('-')] = false;
@@ -333,7 +333,7 @@ namespace scl_chai_glut_interface
       if (chai_glob_ds->keys_active[static_cast<int>('o')])
       {
         scl::SDatabase* db = scl::CDatabase::getData();
-        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        scl::SRobotIO* io = db->s_io_.io_data_.at(0);
         if(link_idx >= io->sensors_.q_.size())
         { link_idx = io->sensors_.q_.size()-1;  }
         io->sensors_.q_(link_idx) += 0.1;
@@ -341,7 +341,7 @@ namespace scl_chai_glut_interface
       if (chai_glob_ds->keys_active[static_cast<int>('O')])
       {
         scl::SDatabase* db = scl::CDatabase::getData();
-        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        scl::SRobotIO* io = db->s_io_.io_data_.at(0);
         if(link_idx >= io->sensors_.q_.size())
         { link_idx = io->sensors_.q_.size()-1;  }
         io->sensors_.q_(link_idx) += 0.3;
@@ -350,7 +350,7 @@ namespace scl_chai_glut_interface
       if (chai_glob_ds->keys_active[static_cast<int>('l')])
       {
         scl::SDatabase* db = scl::CDatabase::getData();
-        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        scl::SRobotIO* io = db->s_io_.io_data_.at(0);
         if(link_idx >= io->sensors_.q_.size())
         { link_idx = io->sensors_.q_.size()-1;  }
         io->sensors_.q_(link_idx) -= 0.1;
@@ -358,7 +358,7 @@ namespace scl_chai_glut_interface
       if (chai_glob_ds->keys_active[static_cast<int>('L')])
       {
         scl::SDatabase* db = scl::CDatabase::getData();
-        scl::SRobotIOData* io = db->s_io_.io_data_.at(0);
+        scl::SRobotIO* io = db->s_io_.io_data_.at(0);
         if(link_idx >= io->sensors_.q_.size())
         { link_idx = io->sensors_.q_.size()-1;  }
         io->sensors_.q_(link_idx) -= 0.3;

@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SRobotIOData.hpp
+/* \file SRobotIO.hpp
  *
  *  Created on: Jul 22, 2010
  *
@@ -28,8 +28,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */ 
-#ifndef SROBOTIODATA_HPP_
-#define SROBOTIODATA_HPP_
+#ifndef SROBOTIO_HPP_
+#define SROBOTIO_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
@@ -104,7 +104,7 @@ namespace scl
    *
    * NOTE : Objects of this struct have the same name as their
    *        parent robot. */
-  struct SRobotIOData : public SObject
+  struct SRobotIO : public SObject
   {
     /** The degrees of freedom of the robot that these sensors monitor */
     sUInt dof_;
@@ -117,7 +117,7 @@ namespace scl
     SRobotActuators actuators_;
 
     /** Constructor **/
-    SRobotIOData();
+    SRobotIO();
 
     /** Initializes the io data structure */
     sBool init(const std::string& arg_robot_name,
@@ -142,4 +142,4 @@ namespace scl
   };
 }
 
-#endif /* SROBOTIODATA_HPP_ */
+#endif /* SROBOTIO_HPP_ */

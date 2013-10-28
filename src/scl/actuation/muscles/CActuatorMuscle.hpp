@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SObject.hpp>
 
 //Needs to access parent robot kinematics
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
 

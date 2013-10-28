@@ -125,7 +125,7 @@ namespace scl_test
       if (false==flag) { throw(std::runtime_error("Failed to initialize tao dynamics."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized tao dynamics for the robot.";  }
 
-      SRobotIOData * io_ds;
+      SRobotIO * io_ds;
       io_ds = scl::CDatabase::getData()->s_io_.io_data_.at(robot_name);
       if(S_NULL == io_ds)
       { throw(std::runtime_error("Could not find the robot's I/O data structure in the database"));  }
@@ -286,7 +286,7 @@ namespace scl_test
       flag = dyn_anlyt.init(*rob_ds);
       if (false==flag) { throw(std::runtime_error("Failed to initialize analytic dynamics."));  }
 
-      SRobotIOData * io_ds;
+      SRobotIO * io_ds;
       io_ds = scl::CDatabase::getData()->s_io_.io_data_.at(robot_name);
       if(S_NULL == io_ds)
       { throw(std::runtime_error("Could not find the robot's I/O data structure in the database"));  }

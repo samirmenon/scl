@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SGcModel.hpp>
 #include <scl/dynamics/SDynamicsState.hpp>
 

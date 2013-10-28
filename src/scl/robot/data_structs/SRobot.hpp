@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/data_structs/SObject.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 
 #include <scl/control/task/data_structs/STaskController.hpp>
 #include <scl/control/gc/data_structs/SGcController.hpp>
@@ -55,7 +55,7 @@ namespace scl
   {
   public:
     SRobotParsed * parsed_robot_data_;
-    SRobotIOData* io_data_;
+    SRobotIO* io_data_;
 
     /** The robot's controller data structures. */
     sutil::CMappedList<std::string,SControllerBase*> controllers_;

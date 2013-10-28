@@ -102,7 +102,7 @@ namespace scl
     /* Initialization function. Sets all the control parameters */
     sBool init(const std::string & arg_controller_name,
         SRobotParsed* arg_robot_ds,
-        SRobotIOData* arg_robot_io_ds,
+        SRobotIO* arg_robot_io_ds,
         /* The remaining variables initialize the gc controller */
         const Eigen::VectorXd & arg_kp,
         const Eigen::VectorXd & arg_kv,
@@ -121,7 +121,7 @@ namespace scl
       sBool has_been_init_;
       std::string robot_name_;
       const SRobotParsed* robot_;
-      SRobotIOData* io_data_;
+      SRobotIO* io_data_;
       SGcModel gc_model_;
     */
   };

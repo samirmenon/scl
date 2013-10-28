@@ -33,8 +33,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CSIMBODYDYNAMICS_HPP_
 
 #include <scl/DataTypes.hpp>
-#include <scl/data_structs/SRobotIOData.hpp>
-#include <scl/control/data_structs/SGcModel.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
+#include <scl/data_structs/SGcModel.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
 
 #include <Simbody.h>
@@ -119,7 +119,7 @@ namespace scl
      * new positions and velocities.
      *
      * This version performs the entire set of operations on
-     * the SRobotIOData data structure.
+     * the SRobotIO data structure.
      *
      * Reads from, and updates:
      * arg_inputs_.sensors_.q_
@@ -134,7 +134,7 @@ namespace scl
         /** The existing generalized coordinates, velocities and
          * accelerations + The generalized forces + task (euclidean)
          * forces and the list of contact points and links. */
-        SRobotIOData& arg_inputs,
+        SRobotIO& arg_inputs,
         /** The time across which the system should integrate the
          * dynamics.
          *

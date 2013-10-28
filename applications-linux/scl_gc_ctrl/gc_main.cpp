@@ -195,7 +195,7 @@ int main(int argc, char** argv)
       { throw(std::runtime_error("Glut initialization error")); }
 
       /******************************Shared I/O Data Structure************************************/
-      scl::SRobotIOData* rob_io_ds;
+      scl::SRobotIO* rob_io_ds;
       rob_io_ds = db->s_io_.io_data_.at(robot_name);
       if(S_NULL == rob_io_ds)
       { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }

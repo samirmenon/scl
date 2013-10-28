@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 
 #include <scl/control/task/data_structs/STaskBase.hpp>
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 
 #include <scl/dynamics/CDynamicsBase.hpp>
 

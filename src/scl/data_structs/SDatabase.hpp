@@ -41,7 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Parser data --> Static information about the robot
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsed.hpp>
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SMuscleSetParsed.hpp>
 
 #include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>
@@ -215,7 +215,7 @@ struct SIOData
   /** A pile of io data objects containing robot sensor + actuator data.
    * String ID = Robot name
    * Each robot thus has a unique IO data structure. */
-  sutil::CMappedList<std::string, SRobotIOData> io_data_;
+  sutil::CMappedList<std::string, SRobotIO> io_data_;
 };
 
 

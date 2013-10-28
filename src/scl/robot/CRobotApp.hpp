@@ -156,7 +156,7 @@ namespace scl
     std::string ctrl_name_;              //Currently selected controller
 
     scl::CRobot robot_;                  //Generic robot
-    scl::SRobotIOData* rob_io_ds_;       //Access the robot's sensors and actuators
+    scl::SRobotIO* rob_io_ds_;       //Access the robot's sensors and actuators
 
     scl::CTaoDynamics* tao_dyn_;         //Generic tao dynamics
 

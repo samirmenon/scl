@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 #include <scl/actuation/muscles/data_structs/SActuatorSetMuscle.hpp>
 
 #include <sutil/CMappedList.hpp>
@@ -64,7 +64,7 @@ struct SGraphicsPhysicalLink
 public:
   const SRigidBody* robot_link_;
   chai3d::cGenericObject* graphics_obj_;
-  const SRobotIOData* io_data_;
+  const SRobotIO* io_data_;
   sInt io_data_idx_;
 
   /** For Satisfying the branching structure's constraints:

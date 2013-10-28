@@ -31,7 +31,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CTaoDynamics.hpp"
 
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>
 #include <scl/dynamics/tao/jspace/tao_util.hpp>
@@ -379,7 +379,7 @@ namespace scl
     return true;
   }
 
-  sBool CTaoDynamics::integrate(SRobotIOData& arg_inputs, const sFloat arg_time_interval)
+  sBool CTaoDynamics::integrate(SRobotIO& arg_inputs, const sFloat arg_time_interval)
   {
     //NOTE TODO : Implement this for applying external contact forces.
 

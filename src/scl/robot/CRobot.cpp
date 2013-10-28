@@ -194,7 +194,7 @@ namespace scl
 
       SRobotParsed *robot = db_->s_parser_.robots_.at(arg_robot_name);
       if(S_NULL == robot) { throw(std::runtime_error("Robot not parsed from file"));  }
-      SRobotIOData* io_data = db_->s_io_.io_data_.at(arg_robot_name);
+      SRobotIO* io_data = db_->s_io_.io_data_.at(arg_robot_name);
       if(S_NULL == io_data)
       {
         throw(std::runtime_error(
@@ -233,7 +233,7 @@ namespace scl
       CDynamicsBase* arg_dynamics,
       CDynamicsBase* arg_integrator,
       SRobotParsed *arg_robot,
-      SRobotIOData *arg_io_data,
+      SRobotIO *arg_io_data,
       std::vector<SControllerBase*>& arg_ctrls)
   {
     try

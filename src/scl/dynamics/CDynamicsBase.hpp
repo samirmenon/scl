@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 
-#include <scl/data_structs/SRobotIOData.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SGcModel.hpp>
 #include <scl/dynamics/SDynamicsState.hpp>
 
@@ -239,7 +239,7 @@ public:
   /** Integrates the robot's state.
    * Uses the given applied forces, torques, positions and velocities
    * and its internal dynamic model to compute new positions and velocities.
-   * Operates on the SRobotIOData data structure.
+   * Operates on the SRobotIO data structure.
    *
    * Reads from, and updates:
    *    arg_inputs_.sensors_.q_, dq_, ddq_
@@ -252,7 +252,7 @@ public:
       /** The existing generalized coordinates, velocities and
        * accelerations + The generalized forces + task (euclidean)
        * forces and the list of contact points and links. */
-      SRobotIOData& arg_inputs_,
+      SRobotIO& arg_inputs_,
       /** The time across which the system should integrate the
        * dynamics. Could take fixed steps or dynamic ones in between.
        * Up to the integrator implementation. */

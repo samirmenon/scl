@@ -21,7 +21,7 @@ INCLUDE_DIRECTORIES(../../src/ ${SCL_INC_DIR}
                     ${SUTIL_INC_DIR} )
 
 #Set all the sources required for the library
-SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIOData.cpp
+SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIO.cpp
            ${SCL_INC_DIR}/data_structs/SRigidBody.cpp
            ${SCL_INC_DIR}/data_structs/SGcModel.cpp
            ${SCL_INC_DIR}/data_structs/SMuscleSetParsed.cpp

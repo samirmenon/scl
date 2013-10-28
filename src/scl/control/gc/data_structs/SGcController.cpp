@@ -49,7 +49,7 @@ namespace scl
 
   bool SGcController::init(const std::string & arg_controller_name,
       SRobotParsed* arg_robot_ds,
-      SRobotIOData* arg_robot_io_ds,
+      SRobotIO* arg_robot_io_ds,
       /* The remaining variables initialize the gc controller */
       const Eigen::VectorXd & arg_kp,
       const Eigen::VectorXd & arg_kv,
