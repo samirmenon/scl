@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CSaiParser.cpp
+/* \file CParserSai.cpp
  *
  *  Created on: Jan, 2011
  *
@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <stdexcept>
 
 //The Class definition.
-#include <scl/parser/saiparser/CSaiParser.hpp>
+#include <scl/parser/saiparser/CParserSai.hpp>
 
 //The required data structures
 #include <scl/Singletons.hpp>
@@ -45,7 +45,7 @@ using namespace scl_tinyxml; //Tinyxml parser implementation is in a separate na
 
 namespace scl_parser {
 
-bool CSaiParser::readRobotFromFile(const std::string& arg_file,
+bool CParserSai::readRobotFromFile(const std::string& arg_file,
     const std::string& arg_robot_name,
     scl::SRobotParsed& arg_robot)
 {
@@ -89,13 +89,13 @@ bool CSaiParser::readRobotFromFile(const std::string& arg_file,
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCSaiParser::readRobotFromFile("<<arg_file<<") : "<<e.what();
+    std::cerr<<"\nCParserSai::readRobotFromFile("<<arg_file<<") : "<<e.what();
     return false;
   }
 }
 
 
-bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_root,
+bool CParserSai::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_root,
     const std::string& arg_parent_lnk_name, scl::SRobotParsed& arg_robot)
 {
   //NOTE : This function will recurse at the end.
@@ -349,7 +349,7 @@ bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
   }
   catch(std::exception& e)
   {
-    std::cerr<<"\nCSaiParser::readLink() : "<<e.what();
+    std::cerr<<"\nCParserSai::readLink() : "<<e.what();
     return false;
   }
 }

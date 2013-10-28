@@ -109,7 +109,7 @@ SET(SCL_PARSER_SRC ${SCL_INC_DIR}/parser/sclparser/CParserScl.cpp
                      ${SCL_INC_DIR}/parser/sclparser/tixml_parser/CParserSclTiXml.cpp
    )
 
-SET(SAI_PARSER_SRC ${SCL_INC_DIR}/parser/saiparser/CSaiParser.cpp)
+SET(SAI_PARSER_SRC ${SCL_INC_DIR}/parser/saiparser/CParserSai.cpp)
 
 SET(OSIM_PARSER_SRC ${SCL_INC_DIR}/parser/osimparser/COsimParser.cpp
                     ${SCL_INC_DIR}/parser/osimparser/COsimParserForOldFiles.cpp)

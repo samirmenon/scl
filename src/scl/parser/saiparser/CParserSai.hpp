@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CSaiParser.hpp
+/* \file CParserSai.hpp
  *
  *  Created on: Jan, 2011
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CSaiParser_HPP_
-#define CSaiParser_HPP_
+#ifndef CPARSERSAI_HPP_
+#define CPARSERSAI_HPP_
 
 #include <scl/parser/CParserBase.hpp>
 
@@ -45,10 +45,10 @@ namespace scl_parser {
  *
  * Uses tinyXml to parse files.
  */
-class CSaiParser: public CParserBase {
+class CParserSai: public CParserBase {
 public:
-  CSaiParser():root_link_name_("ground"){}
-  virtual ~CSaiParser(){}
+  CParserSai():root_link_name_("ground"){}
+  virtual ~CParserSai(){}
 
   virtual bool listRobotsInFile(const std::string& arg_file,
       std::vector<std::string>& arg_robot_names)
@@ -101,4 +101,4 @@ private:
 
 }
 
-#endif /*CSaiParser_HPP_*/
+#endif /*CPARSERSAI_HPP_*/

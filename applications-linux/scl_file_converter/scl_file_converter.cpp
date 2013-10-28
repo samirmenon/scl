@@ -45,7 +45,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/robot/DbRegisterFunctions.hpp>
 
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/parser/saiparser/CSaiParser.hpp>
+#include <scl/parser/saiparser/CParserSai.hpp>
 #include <scl/parser/osimparser/COsimParser.hpp>
 #include <scl/parser/osimparser/COsimParserForOldFiles.hpp>
 
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
         std::cout<<"\nWARNING : SAI support is only for reading ONE robot per file. Will convert the first robot to scl xml.";
         std::cout<<"\nWARNING : SAI support does NOT permit using commas in the xml (,). ONLY use spaces.";
         std::cout<<"\nWARNING : SAI support REQUIRES unique link and joint names for all links.";
-        scl_parser::CSaiParser tmp_sai_parser;
+        scl_parser::CParserSai tmp_sai_parser;
         flag = tmp_sai_parser.readRobotFromFile(tmp_infile, "I_Am_Superfluous", tmp_robot);
         if(false == flag) { throw(std::runtime_error("Could not read SAI xml file."));  }
       }
