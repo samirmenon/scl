@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file STaskController.cpp
+/* \file SControllerMultiTask.cpp
  *
  *  Created on: May 5, 2010
  *
@@ -36,23 +36,23 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  any subcomponent of Scl to use.
  */
 
-#include "STaskController.hpp"
+#include "SControllerMultiTask.hpp"
 
 #include <stdexcept>
 #include <iostream>
 
 namespace scl
 {
-  STaskController::STaskController() : SControllerBase()
+  SControllerMultiTask::SControllerMultiTask() : SControllerBase()
   {
-    type_ = "STaskController";
+    type_ = "SControllerMultiTask";
   }
 
-  STaskController::~STaskController()
+  SControllerMultiTask::~SControllerMultiTask()
   {}
 
   /** Initializes the data structure */
-  sBool STaskController::init(const std::string & arg_ctrl_name,
+  sBool SControllerMultiTask::init(const std::string & arg_ctrl_name,
       const SRobotParsed* arg_robot_ds,
       SRobotIO* arg_io_data)
   {

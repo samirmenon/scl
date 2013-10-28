@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define SDATABASE_HPP_
 
 //Controller data --> Dynamically updated information.
-#include <scl/control/task/data_structs/STaskController.hpp>
+#include <scl/control/task/data_structs/SControllerMultiTask.hpp>
 #include <scl/control/gc/data_structs/SControllerGc.hpp>
 
 //Parser data --> Static information about the robot

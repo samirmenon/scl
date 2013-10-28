@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <scl/Singletons.hpp>
-#include <scl/control/task/CTaskController.hpp>
+#include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
@@ -183,7 +183,7 @@ namespace scl
         scl::sUInt args_ctr = 4, ui_points_used=0;
 
         /** Test whether Controller is a task controller. If so, parse task options. */
-        CTaskController* tmp_task_ctrl = dynamic_cast<scl::CTaskController*> (robot_.getControllerCurrent());
+        CControllerMultiTask* tmp_task_ctrl = dynamic_cast<scl::CControllerMultiTask*> (robot_.getControllerCurrent());
         bool flag_is_curr_ctrl_task=false;
         if(S_NULL != tmp_task_ctrl)
         { flag_is_curr_ctrl_task = true;  }

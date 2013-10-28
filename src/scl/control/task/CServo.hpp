@@ -72,7 +72,7 @@ namespace scl {
 
     /** Initializes a servo.
      * NOTE : The arg_data pointer should point to a parent
-     * controller's STaskController object */
+     * controller's SControllerMultiTask object */
     bool init(const std::string &arg_ctrl_name, SServo* arg_data);
 
     /** Resets the servo to its default state (so that
@@ -84,7 +84,7 @@ namespace scl {
        * see doc/ControllerDesign.eps for more details.
        *
        * This a pointer because the actual data structure
-       * is stored in the STaskController (so that the
+       * is stored in the SControllerMultiTask (so that the
        * graphics, for instance, can access control torques).
        */
       SServo* data_;

@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/robot/CRobotApp.hpp>
 
-#include <scl/control/task/CTaskController.hpp>
+#include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/control/task/tasks/CTaskComPos.hpp>
 

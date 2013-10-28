@@ -47,9 +47,9 @@ SET(CTR_SRC ${SCL_INC_DIR}/control/data_structs/SControllerBase.cpp
             ${SCL_INC_DIR}/control/task/data_structs/SServo.cpp
             ${SCL_INC_DIR}/control/task/data_structs/STaskBase.cpp
             ${SCL_INC_DIR}/control/task/data_structs/SNonControlTaskBase.cpp
-            ${SCL_INC_DIR}/control/task/data_structs/STaskController.cpp
+            ${SCL_INC_DIR}/control/task/data_structs/SControllerMultiTask.cpp
             ${SCL_INC_DIR}/control/task/CServo.cpp
-            ${SCL_INC_DIR}/control/task/CTaskController.cpp
+            ${SCL_INC_DIR}/control/task/CControllerMultiTask.cpp
    )
    
 SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp

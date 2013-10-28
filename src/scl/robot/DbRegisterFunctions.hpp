@@ -143,7 +143,7 @@ namespace scl_registry
    *
    * 2. Initializes the static information in the data
    *    structure. */
-  scl::STaskController * parseTaskController(const std::string &arg_file,
+  scl::SControllerMultiTask * parseTaskController(const std::string &arg_file,
           const std::string &arg_robot_name,
           const std::string &arg_ctrl_name,
           scl_parser::CParserBase *arg_parser);

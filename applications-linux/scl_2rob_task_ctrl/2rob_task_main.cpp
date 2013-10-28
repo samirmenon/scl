@@ -42,7 +42,7 @@ namespace scl_app
     try
     {
       /** Initialize Single Control Task */
-      ctrl[arg_rob_idx] = (scl::CTaskController*) robot[arg_rob_idx].getControllerCurrent();
+      ctrl[arg_rob_idx] = (scl::CControllerMultiTask*) robot[arg_rob_idx].getControllerCurrent();
       if(S_NULL == ctrl[arg_rob_idx])
       { throw(std::runtime_error("Could not get current controller"));  }
 

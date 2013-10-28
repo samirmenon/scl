@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
   //Forward declaration allows pointers to the parent controller
-  class STaskController;
+  class SControllerMultiTask;
 
   /**
    * Contains all the data required to compute some (arbitrary)
@@ -65,7 +65,7 @@ namespace scl
   {
   public:
     /** The parent controller */
-    const STaskController* parent_controller_;
+    const SControllerMultiTask* parent_controller_;
 
     /** The type of the task */
     std::string type_task_;
@@ -102,7 +102,7 @@ namespace scl
         const std::vector<scl::sString2>& arg_nonstd_params);
 
     /** Sets the parent controller */
-    bool setParentController(const STaskController* arg_parent);
+    bool setParentController(const SControllerMultiTask* arg_parent);
 
     /** Processes the task's non standard parameters, which the
      * init() function stores in the task_nonstd_params_.

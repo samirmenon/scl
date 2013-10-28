@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CTaskController.hpp
+/* \file CControllerMultiTask.hpp
  *
  *  Created on: Jul 21, 2010
  *
@@ -29,11 +29,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CTASKCONTROLLER_HPP_
-#define CTASKCONTROLLER_HPP_
+#ifndef CCONTROLLERTASK_HPP_
+#define CCONTROLLERTASK_HPP_
 
 #include <scl/control/CControllerBase.hpp>
-#include <scl/control/task/data_structs/STaskController.hpp>
+#include <scl/control/task/data_structs/SControllerMultiTask.hpp>
 
 #include <scl/control/task/CTaskBase.hpp>
 #include <scl/control/task/CNonControlTaskBase.hpp>
@@ -86,17 +86,17 @@ namespace scl
    *            computeNonControlTasks();
    *          }
    */
-  class CTaskController : public CControllerBase
+  class CControllerMultiTask : public CControllerBase
   {
   public:
     /**********************************************
      *               CControllerBase API
      * ********************************************/
     /** Default constructor : just sets pointers to NULL */
-    CTaskController();
+    CControllerMultiTask();
 
     /** Default destructor : does nothing */
-    virtual ~CTaskController(){}
+    virtual ~CControllerMultiTask(){}
 
     /** Equal to task forces or generalized coordinate forces
      * depending on the type of controller that implements this API */
@@ -194,7 +194,7 @@ namespace scl
     bool computeRangeSpaces();
 
     /** All the data for this task-space controller */
-    STaskController * data_;
+    SControllerMultiTask * data_;
 
     /** The servo reads the task data and computes gc torques to be applied */
     CServo servo_;
@@ -222,4 +222,4 @@ namespace scl
 
 }
 
-#endif /* CTASKCONTROLLER_HPP_ */
+#endif /* CCONTROLLERTASK_HPP_ */

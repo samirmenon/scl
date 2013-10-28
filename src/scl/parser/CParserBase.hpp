@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SMuscleSetParsed.hpp>
 
 #include <scl/control/gc/data_structs/SControllerGc.hpp>
-#include <scl/control/task/data_structs/STaskController.hpp>
+#include <scl/control/task/data_structs/SControllerMultiTask.hpp>
 
 #include <string>
 #include <vector>
@@ -146,7 +146,7 @@ namespace scl_parser
     virtual bool readTaskControllerFromFile(const std::string &arg_file,
         const std::string &arg_ctrl_name,
         std::string &arg_must_use_robot,
-        scl::STaskController& arg_ctrl,
+        scl::SControllerMultiTask& arg_ctrl,
         /** Returns a vector of tasks that this task controller can execute.
          * Typically, the task controller will execute all of them simultaneously
          * with a priority order.*/

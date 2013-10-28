@@ -1345,7 +1345,7 @@ bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
 bool CSclParser::readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
       std::string &arg_must_use_robot,
-      scl::STaskController& arg_ctrl,
+      scl::SControllerMultiTask& arg_ctrl,
       std::vector<STaskBase*> &arg_taskvec,
       std::vector<SNonControlTaskBase*> &arg_task_non_ctrl_vec)
 {

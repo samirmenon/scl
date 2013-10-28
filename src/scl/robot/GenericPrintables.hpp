@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
-#include <scl/control/task/data_structs/STaskController.hpp>
+#include <scl/control/task/data_structs/SControllerMultiTask.hpp>
 
 #include <scl/Singletons.hpp>
 
@@ -145,9 +145,9 @@ namespace sutil
   }
 
   template <>
-  void printToStream<scl::STaskController>(
+  void printToStream<scl::SControllerMultiTask>(
       std::ostream& ostr,
-      const scl::STaskController& arg_data
+      const scl::SControllerMultiTask& arg_data
   )
   {
     ostr<<"\n Name: "<<arg_data.name_;
@@ -245,7 +245,7 @@ namespace scl
           itcte = scl::CDatabase::getData()->s_controller_.controllers_.end();
           itct!=itcte; ++itct)
       {
-        const scl::STaskController* ctrl = dynamic_cast<scl::STaskController*>(*itct);
+        const scl::SControllerMultiTask* ctrl = dynamic_cast<scl::SControllerMultiTask*>(*itct);
         if(S_NULL == ctrl)
         { continue;  } //Move on. Not a task controller.
         flag = sutil::printables::add(ctrl->name_,*ctrl);

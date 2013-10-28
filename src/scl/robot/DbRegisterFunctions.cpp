@@ -43,7 +43,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/gc/CControllerGc.hpp>
-#include <scl/control/task/CTaskController.hpp>
+#include <scl/control/task/CControllerMultiTask.hpp>
 
 #include <scl/control/task/data_structs/STaskBase.hpp>
 
@@ -333,21 +333,21 @@ namespace scl_registry
       }
   };
 
-  scl::STaskController * parseTaskController(const std::string &arg_file,
+  scl::SControllerMultiTask * parseTaskController(const std::string &arg_file,
         const std::string &arg_robot_name,
         const std::string &arg_ctrl_name,
         scl_parser::CParserBase *arg_parser)
   {
     //Will fill in information from a file into this. It will never be
     //completely initialized.
-    scl::STaskController tmp_ctrl;
+    scl::SControllerMultiTask tmp_ctrl;
     std::vector<scl::STaskBase*> taskvec;
     std::vector<scl::SNonControlTaskBase*> taskvec_non_ctrl;
 
     //Will be initialized (with the init function) and will be returned.
-    //The STaskController ds contains a multi-level pile map, which manages
+    //The SControllerMultiTask ds contains a multi-level pile map, which manages
     //the task hierarchy
-    scl::STaskController* ret_ctrl= S_NULL;
+    scl::SControllerMultiTask* ret_ctrl= S_NULL;
 
     scl::SDatabase* db;
     bool flag;
@@ -370,7 +370,7 @@ namespace scl_registry
       }
 
       //Create the controller
-      ret_ctrl = new scl::STaskController();
+      ret_ctrl = new scl::SControllerMultiTask();
       if(NULL == ret_ctrl)
       { throw (std::runtime_error("Could not allocate the controller data structure."));  }
 
@@ -565,7 +565,7 @@ namespace scl_registry
 #endif
 
       //Now register the data structure with the database
-      ret_ctrl->type_ctrl_ds_ = "STaskController";
+      ret_ctrl->type_ctrl_ds_ = "SControllerMultiTask";
 
       scl::SControllerBase** ret = db->s_controller_.controllers_.create(ret_ctrl->name_,ret_ctrl);
       if(NULL == ret)
@@ -585,7 +585,7 @@ namespace scl_registry
 
   /**
    * Registers the native dynamic types:
-   *  1. CControllerBase subclasses : CControllerGc, CTaskController
+   *  1. CControllerBase subclasses : CControllerGc, CControllerMultiTask
    *  2. CTaskBase subclasses : CTaskOpPos, CGcTask, CFrameTrackTask, CContactTask
    */
   scl::sBool registerNativeDynamicTypes()
@@ -597,9 +597,9 @@ namespace scl_registry
       flag = typeCGc.registerType();
       if(false == flag) {throw(std::runtime_error("CControllerGc"));}
 
-      sutil::CDynamicType<std::string,scl::CTaskController> typeCTask(std::string("CTaskController"));
+      sutil::CDynamicType<std::string,scl::CControllerMultiTask> typeCTask(std::string("CControllerMultiTask"));
       flag = typeCTask.registerType();
-      if(false == flag) {throw(std::runtime_error("CTaskController"));}
+      if(false == flag) {throw(std::runtime_error("CControllerMultiTask"));}
 
       sutil::CDynamicType<std::string,scl::CTaskOpPos> typeCTaskOpPos(std::string("CTaskOpPos"));
       flag = typeCTaskOpPos.registerType();

@@ -216,7 +216,7 @@ namespace scl
     return has_been_init_;
   }
 
-  bool STaskBase::setParentController(const STaskController* arg_parent)
+  bool STaskBase::setParentController(const SControllerMultiTask* arg_parent)
   {
     if(NULL == arg_parent)
     { return false; }

@@ -42,7 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/task/CServo.hpp>
-#include <scl/control/task/CTaskController.hpp>
+#include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/CTaskNULL.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 
@@ -343,8 +343,8 @@ namespace scl_test
       std::string controller_name = "sclBotController";
       scl::SControllerBase* tmp_ctrl_ds;
       tmp_ctrl_ds = scl_registry::registerController(robot_name, controller_name);
-      scl::STaskController* ctrl_ds=S_NULL;
-      ctrl_ds = dynamic_cast<scl::STaskController*>(tmp_ctrl_ds);
+      scl::SControllerMultiTask* ctrl_ds=S_NULL;
+      ctrl_ds = dynamic_cast<scl::SControllerMultiTask*>(tmp_ctrl_ds);
       if(S_NULL == ctrl_ds)
       { throw(std::runtime_error("Could not create the controller's data struct on the pile"));  }
       else
@@ -362,7 +362,7 @@ namespace scl_test
 
 
       //4. Initialize the controller (initializes the tao tree within the init function).
-      scl::CTaskController ctrl;
+      scl::CControllerMultiTask ctrl;
       flag = ctrl.init(ctrl_ds, dynamics);
       if(false == flag) { throw(std::runtime_error("Could not initialize the controller"));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized the controller" <<std::flush;  }
@@ -396,7 +396,7 @@ namespace scl_test
       else { std::cout<<"\nTest Result ("<<r_id++<<") Reset and reinitialized the controller" <<std::flush;  }
 
       //Get the Dynamics ds
-      scl::STaskController* c_ds = db->data_.s_controller_.task_controllers_.at(controller_name);
+      scl::SControllerMultiTask* c_ds = db->data_.s_controller_.task_controllers_.at(controller_name);
       if(S_NULL == c_ds)
       { throw(std::runtime_error("Couldn't access the controller's data structure in the database")); }
 

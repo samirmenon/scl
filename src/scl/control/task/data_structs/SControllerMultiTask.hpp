@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file STaskController.hpp
+/* \file SControllerMultiTask.hpp
  *
  *  Created on: May 5, 2010
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef STASKCONTROLLER_HPP_
-#define STASKCONTROLLER_HPP_
+#ifndef SCONTROLLERMULTITASK_HPP_
+#define SCONTROLLERMULTITASK_HPP_
 
 #include <vector>
 #include <list>
@@ -51,7 +51,7 @@ namespace scl
 
   /** Controller robot data structure. One such object
    * is stored in the database singleton for every controller.  */
-  class STaskController : public SControllerBase
+  class SControllerMultiTask : public SControllerBase
   {
   public:
     /** Pointer to the Servo DS. */
@@ -78,11 +78,11 @@ namespace scl
     sBool has_been_init_; */
 
     /** Constructor sets the initialization state to false */
-    STaskController();
+    SControllerMultiTask();
 
     /** Destructor does nothing.
      * NOTE : Someone else should delete the tasks. */
-    virtual ~STaskController();
+    virtual ~SControllerMultiTask();
 
     /** Initializes the data structure */
     virtual sBool init(const std::string & arg_ctrl_name,
@@ -91,4 +91,4 @@ namespace scl
   };
 }
 
-#endif /* STASKCONTROLLER_HPP_ */
+#endif /* SCONTROLLERMULTITASK_HPP_ */

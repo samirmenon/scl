@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/gc/CControllerGc.hpp>
-#include <scl/control/task/CTaskController.hpp>
+#include <scl/control/task/CControllerMultiTask.hpp>
 
 #include <sutil/CSystemClock.hpp>
 
@@ -379,8 +379,8 @@ namespace scl
       //Allocate an appropriate controller based on the passed data structure's type. NOTE TODO : Update with dynamic typing
       if(arg_ctrl_ds->type_ctrl_ds_ == "SControllerGc")
       { tmp_ctrl = new CControllerGc();  }
-      else if(arg_ctrl_ds->type_ctrl_ds_ == "STaskController")
-      { tmp_ctrl = new CTaskController(); }
+      else if(arg_ctrl_ds->type_ctrl_ds_ == "SControllerMultiTask")
+      { tmp_ctrl = new CControllerMultiTask(); }
       else
       {
         std::string s("Unrecognized controller type : ");
@@ -538,12 +538,12 @@ namespace scl
     }
     //Or they may be task controllers, in which case they have
     //multiple sets of gains, one for each task.
-    else if("STaskController" == ctrl->getType())
+    else if("SControllerMultiTask" == ctrl->getType())
     {
       //Task name is required for task controllers
       if(""==arg_task_name)
       { return false; }
-      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      SControllerMultiTask* ctrltask = dynamic_cast<SControllerMultiTask*>(ctrl);
       STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
       ret_gains = task->kp_;
       return true;
@@ -585,12 +585,12 @@ namespace scl
     }
     //Or they may be task controllers, in which case they have
     //multiple sets of gains, one for each task.
-    else if("STaskController" == ctrl->getType())
+    else if("SControllerMultiTask" == ctrl->getType())
     {
       //Task name is required for task controllers
       if(""==arg_task_name)
       { return false; }
-      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      SControllerMultiTask* ctrltask = dynamic_cast<SControllerMultiTask*>(ctrl);
       STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
       ret_gains = task->kv_;
       return true;
@@ -632,12 +632,12 @@ namespace scl
     }
     //Or they may be task controllers, in which case they have
     //multiple sets of gains, one for each task.
-    else if("STaskController" == ctrl->getType())
+    else if("SControllerMultiTask" == ctrl->getType())
     {
       //Task name is required for task controllers
       if(""==arg_task_name)
       { return false; }
-      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      SControllerMultiTask* ctrltask = dynamic_cast<SControllerMultiTask*>(ctrl);
       STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
       ret_gains = task->ki_;
       return true;
@@ -676,12 +676,12 @@ namespace scl
     }
     //Or they may be task controllers, in which case they have
     //multiple sets of gains, one for each task.
-    else if("STaskController" == ctrl->getType())
+    else if("SControllerMultiTask" == ctrl->getType())
     {
       //Task name is required for task controllers
       if(""==arg_task_name)
       { return false; }
-      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      SControllerMultiTask* ctrltask = dynamic_cast<SControllerMultiTask*>(ctrl);
       STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
       task->kp_ = arg_kp;
       return true;
@@ -719,12 +719,12 @@ namespace scl
     }
     //Or they may be task controllers, in which case they have
     //multiple sets of gains, one for each task.
-    else if("STaskController" == ctrl->getType())
+    else if("SControllerMultiTask" == ctrl->getType())
     {
       //Task name is required for task controllers
       if(""==arg_task_name)
       { return false; }
-      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      SControllerMultiTask* ctrltask = dynamic_cast<SControllerMultiTask*>(ctrl);
       STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
       task->kv_ = arg_kv;
       return true;
@@ -762,12 +762,12 @@ namespace scl
     }
     //Or they may be task controllers, in which case they have
     //multiple sets of gains, one for each task.
-    else if("STaskController" == ctrl->getType())
+    else if("SControllerMultiTask" == ctrl->getType())
     {
       //Task name is required for task controllers
       if(""==arg_task_name)
       { return false; }
-      STaskController* ctrltask = dynamic_cast<STaskController*>(ctrl);
+      SControllerMultiTask* ctrltask = dynamic_cast<SControllerMultiTask*>(ctrl);
       STaskBase* task = *(ctrltask->tasks_.at(arg_task_name));
       task->ki_ = arg_ki;
       return true;
@@ -841,7 +841,7 @@ namespace scl
     {
       //Well be careful to ask for task logging only when you use a task
       //controller! Else the dynamic cast won't work.
-      STaskController* ds = dynamic_cast<STaskController*>(data_.controller_current_);
+      SControllerMultiTask* ds = dynamic_cast<SControllerMultiTask*>(data_.controller_current_);
       sutil::CMappedMultiLevelList<std::string, STaskBase*>::const_iterator it,ite;
       for(it = ds->servo_.task_data_->begin(), ite = ds->servo_.task_data_->end();
           it != ite; ++it)

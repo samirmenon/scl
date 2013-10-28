@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CTaskController.cpp
+/* \file CControllerMultiTask.cpp
  *
  *  Created on: Jul 21, 2010
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "CTaskController.hpp"
+#include "CControllerMultiTask.hpp"
 
 #include <sutil/CRegisteredDynamicTypes.hpp>
 
@@ -42,7 +42,7 @@ namespace scl
   /**********************************************
    *               INITIALIZATION
    * ********************************************/
-  CTaskController::CTaskController() : CControllerBase()
+  CControllerMultiTask::CControllerMultiTask() : CControllerBase()
   {
     active_task_ = S_NULL;
     data_= S_NULL;
@@ -51,7 +51,7 @@ namespace scl
     task_non_ctrl_count_ = 0;
   }
 
-  sBool CTaskController::init(SControllerBase* arg_data,
+  sBool CControllerMultiTask::init(SControllerBase* arg_data,
       scl::CDynamicsBase* arg_dynamics)
   {
     try
@@ -65,7 +65,7 @@ namespace scl
       if(false==arg_data->has_been_init_)
       { throw(std::runtime_error("Uninitialized data structure passed."));  }
       //This ensures that the passed data was properly initialized for task controllers.
-      data_ = dynamic_cast<STaskController*>(arg_data);
+      data_ = dynamic_cast<SControllerMultiTask*>(arg_data);
 
       // Set up the dynamics
       if(NULL==arg_dynamics)
@@ -187,12 +187,12 @@ namespace scl
     catch(std::exception& e)
     {
       has_been_init_ = false;
-      std::cout<<"\nCTaskController::init() Error : "<<e.what();
+      std::cout<<"\nCControllerMultiTask::init() Error : "<<e.what();
     }
     return has_been_init_;
   }
 
-  sBool CTaskController::reset()
+  sBool CControllerMultiTask::reset()
   {
     //Remove all data references from this task controller.
     //It will require re-initialization after this.
@@ -225,14 +225,14 @@ namespace scl
     return true;
   }
 
-  sBool CTaskController::addTask(const std::string &arg_task_name,
+  sBool CControllerMultiTask::addTask(const std::string &arg_task_name,
       CTaskBase* arg_task, const sUInt arg_level)
   {
     sBool flag;
     try
     {
       if(NULL==data_)
-      { throw(std::runtime_error("CTaskController not initialized. Can't add task."));  }
+      { throw(std::runtime_error("CControllerMultiTask not initialized. Can't add task."));  }
 
       if(NULL==arg_task)
       { throw(std::runtime_error("Passed  a NULL task pointer. Can't do anything with it."));  }
@@ -253,11 +253,11 @@ namespace scl
       return true;
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::addTask() : Failed. "<<e.what(); }
+    { std::cout<<"\nCControllerMultiTask::addTask() : Failed. "<<e.what(); }
     return false;
   }
 
-  sBool CTaskController::removeTask(const std::string &arg_task_name)
+  sBool CControllerMultiTask::removeTask(const std::string &arg_task_name)
   {
     bool flag;
     try
@@ -286,14 +286,14 @@ namespace scl
     }
     catch(std::exception& e)
     {
-      std::cout<<"\nCTaskController::removeTask() : Failed. "<<e.what();
+      std::cout<<"\nCControllerMultiTask::removeTask() : Failed. "<<e.what();
       return false;
     }
     return true;
   }
 
   /** Returns the task by this name */
-  CTaskBase * CTaskController::getTask(const std::string& arg_name)
+  CTaskBase * CControllerMultiTask::getTask(const std::string& arg_name)
   {
     try
     {
@@ -308,11 +308,11 @@ namespace scl
       return *ret;
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::getTask() : Failed. "<<e.what(); }
+    { std::cout<<"\nCControllerMultiTask::getTask() : Failed. "<<e.what(); }
     return S_NULL;
   }
 
-  sUInt CTaskController::getNumTasks(const std::string& arg_type) const
+  sUInt CControllerMultiTask::getNumTasks(const std::string& arg_type) const
   {
     //Since the database is static but the task computational objects might be
     //removed and re-added on the fly, we count the tasks in the computational
@@ -334,7 +334,7 @@ namespace scl
   }
 
   /** Enables a task within the controller */
-  sBool CTaskController::activateTask(const std::string& arg_task_name)
+  sBool CControllerMultiTask::activateTask(const std::string& arg_task_name)
   {
     try
     {
@@ -349,12 +349,12 @@ namespace scl
       { throw(std::runtime_error("Could not activate task."));  }
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::activateTask() : Failed. "<<e.what();  }
+    { std::cout<<"\nCControllerMultiTask::activateTask() : Failed. "<<e.what();  }
     return false;
   }
 
   /** Disables a control task within the controller */
-  sBool CTaskController::deactivateTask(const std::string& arg_task_name)
+  sBool CControllerMultiTask::deactivateTask(const std::string& arg_task_name)
   {
     try
     {
@@ -369,7 +369,7 @@ namespace scl
       { throw(std::runtime_error("Could not deactivate task."));  }
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::activateTask() : Failed. "<<e.what();  }
+    { std::cout<<"\nCControllerMultiTask::activateTask() : Failed. "<<e.what();  }
     return false;
   }
 
@@ -377,14 +377,14 @@ namespace scl
   /**********************************************
    *               NON CONTROL TASKS
    ***********************************************/
-  sBool CTaskController::addNonControlTask(const std::string &arg_task_name,
+  sBool CControllerMultiTask::addNonControlTask(const std::string &arg_task_name,
       CNonControlTaskBase* arg_task)
   {
     sBool flag;
     try
     {
       if(NULL==data_)
-      { throw(std::runtime_error("CTaskController not initialized. Can't add task."));  }
+      { throw(std::runtime_error("CControllerMultiTask not initialized. Can't add task."));  }
 
       if(NULL==arg_task)
       { throw(std::runtime_error("Passed  a NULL task pointer. Can't do anything with it."));  }
@@ -404,11 +404,11 @@ namespace scl
       return true;
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::addNonControlTask() : Failed. "<<e.what(); }
+    { std::cout<<"\nCControllerMultiTask::addNonControlTask() : Failed. "<<e.what(); }
     return false;
   }
 
-  sBool CTaskController::removeNonControlTask(const std::string &arg_task_name)
+  sBool CControllerMultiTask::removeNonControlTask(const std::string &arg_task_name)
   {
     bool flag;
     try
@@ -428,12 +428,12 @@ namespace scl
       return true;
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::removeNonControlTask() : Failed. "<<e.what();  }
+    { std::cout<<"\nCControllerMultiTask::removeNonControlTask() : Failed. "<<e.what();  }
     return false;
   }
 
   /** Returns the task by this name */
-  CNonControlTaskBase* CTaskController::getNonControlTask(const std::string& arg_name)
+  CNonControlTaskBase* CControllerMultiTask::getNonControlTask(const std::string& arg_name)
   {
     try
     {
@@ -448,12 +448,12 @@ namespace scl
       return *ret;
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::getNonControlTask() : Failed. "<<e.what(); }
+    { std::cout<<"\nCControllerMultiTask::getNonControlTask() : Failed. "<<e.what(); }
     return S_NULL;
   }
 
   /** Enables a task within the controller */
-  sBool CTaskController::activateNonControlTask(const std::string& arg_task_name)
+  sBool CControllerMultiTask::activateNonControlTask(const std::string& arg_task_name)
   {
     try
     {
@@ -469,13 +469,13 @@ namespace scl
       return true;
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::activateNonControlTask() : Failed. "<<e.what();  }
+    { std::cout<<"\nCControllerMultiTask::activateNonControlTask() : Failed. "<<e.what();  }
     return false;
   }
 
 
   /** Disables a control task within the controller */
-  sBool CTaskController::deactivateNonControlTask(const std::string& arg_task_name)
+  sBool CControllerMultiTask::deactivateNonControlTask(const std::string& arg_task_name)
   {
     try
     {
@@ -491,14 +491,14 @@ namespace scl
       return true;
     }
     catch(std::exception& e)
-    { std::cout<<"\nCTaskController::deactivateNonControlTask() : Failed. "<<e.what();  }
+    { std::cout<<"\nCControllerMultiTask::deactivateNonControlTask() : Failed. "<<e.what();  }
     return false;
   }
 
   /**********************************************
    *               COMPUTATION
    ***********************************************/
-  sBool CTaskController::computeControlForces()
+  sBool CControllerMultiTask::computeControlForces()
   {
     //Compute the task torques
     sBool flag=true;
@@ -534,7 +534,7 @@ namespace scl
     return flag;
   }
 
-  sBool CTaskController::computeDynamics()
+  sBool CControllerMultiTask::computeDynamics()
   {
     sBool flag=true;
 
@@ -568,7 +568,7 @@ namespace scl
   }
 
   /** Computes the non-control tasks : I/O etc..     */
-  sBool CTaskController::computeNonControlOperations()
+  sBool CControllerMultiTask::computeNonControlOperations()
   {
     sBool flag=true;
 
@@ -593,7 +593,7 @@ namespace scl
     return flag;
   }
 
-  sBool CTaskController::computeRangeSpaces()
+  sBool CControllerMultiTask::computeRangeSpaces()
   {
     sUInt dof = data_->io_data_->dof_;
     if(1==task_count_)

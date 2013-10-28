@@ -41,7 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
-#include <scl/control/task/CTaskController.hpp>
+#include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/graphics/chai/CChaiGraphics.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
@@ -77,7 +77,7 @@ namespace scl_app
     /************************************************************************/
     /***********NOTE : You can modify this to suit your application *********/
     /************************************************************************/
-    scl::CTaskController* ctrl;           //Use a task controller
+    scl::CControllerMultiTask* ctrl;           //Use a task controller
 
     std::string op_link_name,op_link2_name;
     scl::CTaskOpPos* tsk, *tsk2;

@@ -33,12 +33,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CMTRACKCONTROLLER_HPP_
 #define CMTRACKCONTROLLER_HPP_
 
-#include <scl/control/task/CTaskController.hpp>
+#include <scl/control/task/CControllerMultiTask.hpp>
 
 namespace scl
 {
 
-  class CMtrackController : public scl::CTaskController
+  class CMtrackController : public scl::CControllerMultiTask
   {
   public:
     CMtrackController();
