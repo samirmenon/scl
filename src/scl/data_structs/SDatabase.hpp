@@ -44,16 +44,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotIOData.hpp>
 #include <scl/data_structs/SMuscleSetParsed.hpp>
 
-//Yes. I know this is a hack. Remove the day we move CHAI
-//into mainstream. Right now all the code is GPL because
-//CHAI is GPL.
-#ifndef SCL_USE_CHAI_GRAPHICS
-#define SCL_USE_CHAI_GRAPHICS 1
-#endif
-
-#ifdef SCL_USE_CHAI_GRAPHICS
 #include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>
-#endif
 
 //3rdparty Utils
 #include <sutil/CMappedList.hpp>
@@ -178,24 +169,15 @@ public:
 
 /** All the data updated by the gui
  *
- * NOTE :
- * The chai graphics are NOT compiled into
- * scl's dynamic lib. To enable chai graphics
- * 1. Set a compile flag:
- *
- * #define SCL_USE_CHAI_GRAPHICS 1
- *
- * 2. And while building the "application/executable", be sure to
- * link with the chai library. */
+ * NOTE : The chai graphics are NOT compiled into scl's dynamic lib.
+ * To enable chai graphics while building an "application/executable",
+ * be sure to link with the chai library. */
 struct SGuiData
 {
   // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.
   // See http://eigen.tuxfamily.org/dox/StructHavingEigenMembers.html
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  //NOTE TODO : Remove the ifdef and the PileMap and use a std::map instead
-  //All API implementing classes will NOT store their data in the database.
-#ifdef SCL_USE_CHAI_GRAPHICS
   /** A chai data structure :
    *
    * NOTE : Directly accessing the robot's configuration to render
@@ -204,7 +186,6 @@ struct SGuiData
    * angles change.
    */
   sutil::CMappedList<std::string,scl::SChaiGraphics> chai_data_;
-#endif
 
   /** Users may use these ui points in their controller for keyboard based control */
   Eigen::Vector3d ui_point_[SCL_NUM_UI_POINTS];

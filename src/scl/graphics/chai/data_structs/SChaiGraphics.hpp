@@ -28,13 +28,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
-
-//NOTE TODO : TMP. Remove this #define later
-#define SCL_USE_CHAI_GRAPHICS 1
-//END TODO
-
-#ifdef SCL_USE_CHAI_GRAPHICS
-
 #ifndef SCHAIGRAPHICS_HPP_
 #define SCHAIGRAPHICS_HPP_
 
@@ -239,5 +232,4 @@ public:
 
 }
 
-#endif /* SCHAIGRAPHICS_HPP_ */
 #endif
