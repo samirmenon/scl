@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //The tinyxml parser implementation for scl xml files
 #include <scl/parser/scl_tinyxml/scl_tinyxml.h>
-#include <scl/parser/sclparser/tixml_parser/CSclTiXmlParser.hpp>
+#include <scl/parser/sclparser/tixml_parser/CParserSclTiXml.hpp>
 
 //The Standard cpp headers
 #include <sstream>
@@ -376,7 +376,7 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
       { throw(std::runtime_error("Couldn't find a root link with the robot specification"));  }
 
       TiXmlHandle root_link_handle(tmp_ele); //Back to handles
-      flag = CSclTiXmlParser::readLink(root_link_handle, *tmp_link_ds, true);
+      flag = CParserSclTiXml::readLink(root_link_handle, *tmp_link_ds, true);
 
       SRigidBody* tmp_root = arg_robot.rb_tree_.create(tmp_link_ds->name_,*tmp_link_ds,true); //Add the root link
       if(S_NULL == tmp_root)
@@ -556,7 +556,7 @@ bool CParserScl::readRobotSpecFromFile(const std::string& arg_spec_file,
         if(S_NULL == tmp_link_ds) { throw(std::runtime_error("Couldn't allocate a root link")); }
         tmp_link_ds->init();
         tmp_link_ds->link_id_ = id; id++;
-        flag = CSclTiXmlParser::readLink(_child_link_handle, *tmp_link_ds, false);
+        flag = CParserSclTiXml::readLink(_child_link_handle, *tmp_link_ds, false);
         if(false == flag)
         { throw(std::runtime_error("Couldn't read a link")); }
         //Add the root node to the robdef
@@ -657,7 +657,7 @@ bool CParserScl::readMuscleSpecFromFile(const std::string& arg_spec_file,
 
         //Read in the xml data into the muscle object
         TiXmlHandle _child_link_handle(_child_link_element); //Back to handles
-        flag = CSclTiXmlParser::readMuscle(_child_link_handle, tmp_musc_ds, false);
+        flag = CParserSclTiXml::readMuscle(_child_link_handle, tmp_musc_ds, false);
         if(false == flag)
         { throw(std::runtime_error("Couldn't parse a muscle:")); }
 

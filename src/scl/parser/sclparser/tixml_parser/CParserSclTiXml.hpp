@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CSclTiXmlParser.hpp
+/* \file CParserSclTiXml.hpp
  *
  *  Created on: May, 2010
  *
@@ -29,11 +29,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CLOTUSTIXMLPARSER_H_
-#define CLOTUSTIXMLPARSER_H_
+#ifndef CPARSERSCLTIXML_H_
+#define CPARSERSCLTIXML_H_
 
-#include <iostream>
-#include <string>
+
 #include <scl/parser/scl_tinyxml/scl_tinyxml.h>
 
 //Include the data structures
@@ -43,6 +42,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/parser/CParserBase.hpp>
 
+#include <iostream>
+#include <string>
+
 namespace scl_parser {
 
 /**
@@ -51,13 +53,13 @@ namespace scl_parser {
  *
  * Stores the parsed information in passed data structures
  */
-class CSclTiXmlParser
+class CParserSclTiXml
 {
 private:
 
 public:
-  CSclTiXmlParser() {}
-  ~CSclTiXmlParser() {}
+  CParserSclTiXml() {}
+  ~CParserSclTiXml() {}
 
   /** Reads single links */
   static bool readLink(const scl_tinyxml::TiXmlHandle& arg_link_txml,

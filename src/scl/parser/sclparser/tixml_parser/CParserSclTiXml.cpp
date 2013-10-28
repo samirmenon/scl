@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CSclTiXmlParser.cpp
+/* \file CParserSclTiXml.cpp
  *
  *  Created on: May, 2010
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "CSclTiXmlParser.hpp"
+#include "CParserSclTiXml.hpp"
 
 #include <sstream>
 #include <iostream>
@@ -44,7 +44,7 @@ using namespace scl_tinyxml;
 
 namespace scl_parser {
 
-  bool CSclTiXmlParser::readLink(
+  bool CParserSclTiXml::readLink(
       const TiXmlHandle & arg_link_txml,
       scl::SRigidBody& arg_link_ds,
       bool arg_is_root)
@@ -136,7 +136,7 @@ namespace scl_parser {
             arg_link_ds.inertia_(0,2) = 0.0;
             arg_link_ds.inertia_(1,2) = 0.0;
 #ifdef DEBUG
-            std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+            std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                     <<"]. Only three inertia values specified at link : "
                 <<arg_link_ds.name_<<". \nConsider specifying all 6 : {Ixx, Iyy, Izz, Ixy, Ixz, Iyz}";
 #endif
@@ -170,7 +170,7 @@ namespace scl_parser {
         }
         else
         {
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
           <<"]. Error reading joint name";
         }
 
@@ -182,7 +182,7 @@ namespace scl_parser {
           ss>>arg_link_ds.parent_name_;
         }
         else  {
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Error reading parent link name";
         }
 
@@ -195,7 +195,7 @@ namespace scl_parser {
           ss>>arg_link_ds.joint_limit_upper_;
         }
         else  {
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Error reading joint limits";
         }
 
@@ -207,7 +207,7 @@ namespace scl_parser {
           ss>>arg_link_ds.joint_default_pos_;
         }
         else  {
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Error reading default joint position";
         }
 
@@ -248,7 +248,7 @@ namespace scl_parser {
         //Obj file paths are always relative to the specs directory.
         if("" == scl::CDatabase::getData()->dir_specs_)
         {
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : At link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : At link ["<<arg_link_ds.name_
                   <<"]. Specs directory not set in the database. Can't read link's obj file.";
           continue;
         }
@@ -274,7 +274,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Position in parent not found for obj file : "<<tgr.file_name_;
 #endif
         }
@@ -295,7 +295,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Orientation in parent not found for obj file : "<<tgr.file_name_;
 #endif
         }
@@ -314,7 +314,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Graphics scaling not found for obj file : "<<tgr.file_name_;
 #endif
         }
@@ -327,7 +327,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Collision type not found for obj file : "<<tgr.file_name_;
 #endif
         }
@@ -361,7 +361,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Position in parent not found for sphere";
 #endif
         }
@@ -401,7 +401,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Collision type not found for sphere";
 #endif
         }
@@ -436,7 +436,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Position in parent not found for cuboid";
 #endif
         }
@@ -457,7 +457,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Warning : Orientation in parent not found for cuboid";
 #endif
         }
@@ -477,7 +477,7 @@ namespace scl_parser {
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Warning : Graphics scaling not found for cuboid";
 #endif
         }
@@ -496,7 +496,7 @@ namespace scl_parser {
         }
         else{
 #ifdef DEBUG
-std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboid";
+std::cerr<< "\nCParserSclTiXml::readLink() : Warning : Color not found for cuboid";
 #endif
         }
 
@@ -508,7 +508,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Collision type not found for cuboid element";
 #endif
         }
@@ -543,7 +543,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Position in parent not found for cylinder";
 #endif
         }
@@ -564,7 +564,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Orientation in parent not found for cylinder";
 #endif
         }
@@ -584,7 +584,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
               <<"]. Graphics scaling not found for cylinder";
 #endif
         }
@@ -603,7 +603,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         }
         else{
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
               <<"]. Color not found for cylinder";
 #endif
         }
@@ -616,7 +616,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         }
         else  {
 #ifdef DEBUG
-          std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Collision type not found for cylinder";
 #endif
         }
@@ -632,20 +632,20 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         std::stringstream ss(link_data->FirstChild()->Value());
         ss>>arg_link_ds.collision_type_;
         flag_graphics_element_found = true;
-        std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+        std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                 <<"]. <graphics> <collision_type> tags are depracated. Use these in the graphics elements.";
       }
 
       if(flag_graphics_tag_found && (false == flag_graphics_element_found))
       {
-        std::cerr<< "\nCSclTiXmlParser::readLink() : WARNING : In link ["<<arg_link_ds.name_
+        std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
         <<"]. Found <graphics> tag but no sub-elements.";
       }
       //******************************** End of Graphics Stuff ******************************
     }
     catch(std::exception& e)
     {
-      std::cout<<"\nCSclTiXmlParser::readLink() : "<<e.what();
+      std::cout<<"\nCParserSclTiXml::readLink() : "<<e.what();
       return false;
     }
     return true;
@@ -654,7 +654,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
 
 
   /** Reads single links */
-  bool CSclTiXmlParser::readMuscle(const scl_tinyxml::TiXmlHandle& arg_musc_txml,
+  bool CParserSclTiXml::readMuscle(const scl_tinyxml::TiXmlHandle& arg_musc_txml,
       scl::SMuscleParsed& arg_muscle_ds, bool arg_is_root)
   {
     try
@@ -773,12 +773,12 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
       return true;
     }
     catch(std::exception& e)
-    { std::cout<<"\nCSclTiXmlParser::readMuscle() : "<< e.what(); }
+    { std::cout<<"\nCParserSclTiXml::readMuscle() : "<< e.what(); }
     return false;
   }
 
 
-  bool CSclTiXmlParser::readGraphics(
+  bool CParserSclTiXml::readGraphics(
         const TiXmlHandle &arg_graphics_data_txml,
         scl::SGraphicsParsed& arg_graphics_ds)
     {
@@ -847,7 +847,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         return true;
       }
       catch(std::exception& e)
-      { std::cout<<"\nCSclTiXmlParser::readGraphicsData() : "<< e.what(); }
+      { std::cout<<"\nCParserSclTiXml::readGraphicsData() : "<< e.what(); }
       return false;
     }
 }

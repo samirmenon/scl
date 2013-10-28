@@ -264,7 +264,7 @@ bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_
           tmp_link_ds->inertia_(0,2) = 0.0;
           tmp_link_ds->inertia_(1,2) = 0.0;
 #ifdef DEBUG
-          std::cout<<"\nCSclTiXmlParser::readLink() : WARNING : Only three inertia values specified at link : "
+          std::cout<<"\nCParserSclTiXml::readLink() : WARNING : Only three inertia values specified at link : "
               <<tmp_link_ds->name_<<". \nConsider specifying all 6 : {Ixx, Iyy, Izz, Ixy, Ixz, Iyz}";
 #endif
         }

@@ -106,7 +106,7 @@ SET(DYN_SCL_SRC ${SCL_INC_DIR}/dynamics/scl/CDynamicsScl.cpp
    )
    
 SET(SCL_PARSER_SRC ${SCL_INC_DIR}/parser/sclparser/CParserScl.cpp
-                     ${SCL_INC_DIR}/parser/sclparser/tixml_parser/CSclTiXmlParser.cpp
+                     ${SCL_INC_DIR}/parser/sclparser/tixml_parser/CParserSclTiXml.cpp
    )
 
 SET(SAI_PARSER_SRC ${SCL_INC_DIR}/parser/saiparser/CSaiParser.cpp)
