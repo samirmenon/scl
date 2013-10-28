@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //Data structures passed to the branching template
 #include <scl/data_structs/SRigidBody.hpp>
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsedData.hpp>
 #include <scl/data_structs/SMuscleSystemParsed.hpp>
 
@@ -48,7 +48,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl_parser
 {
-  /** This class is a base for reading a robot definition into an SRobotParsedData
+  /** This class is a base for reading a robot definition into an SRobotParsed
 	 * data structure.
 	 *
 	 * All file-format specific parsers will subclass this API class. */
@@ -73,12 +73,12 @@ namespace scl_parser
 		 * supported.
 		 *
 		 * NOTE : Subclass implementation details for the readRobotFromFile() function:
-     *   1) Add a bunch of SRigidBody links to the SRobotParsedData's branching representation,
+     *   1) Add a bunch of SRigidBody links to the SRobotParsed's branching representation,
      *      "robot_.robot_br_rep_", after reading in the values from a file
      *   2) When all the links have been read in, call "robot_.robot_br_rep_.linkNodes()"
      *
      * If you want to implement a new parser for a new filetype, please see how you
-     * should populate the SRobotParsedData data structure from an existing parser.
+     * should populate the SRobotParsed data structure from an existing parser.
      * Eg. The Scl parser implements the full API
 		 */
     virtual bool readRobotFromFile(const std::string& arg_file,
@@ -86,14 +86,14 @@ namespace scl_parser
         const std::string& arg_robot_name,
         /** The robot's data will be filled into
          * this data structure */
-        scl::SRobotParsedData& arg_robot)=0;
+        scl::SRobotParsed& arg_robot)=0;
 
     /** Saves a robot definition to file.
      * Takes the name of the robot and a file name as aguments.
      *
      * Looks up the robot in the database and writes it to a file
      * if it exists. */
-    virtual bool saveRobotToFile(scl::SRobotParsedData& arg_robot,
+    virtual bool saveRobotToFile(scl::SRobotParsed& arg_robot,
         const std::string &arg_file)
     { return false; }
 

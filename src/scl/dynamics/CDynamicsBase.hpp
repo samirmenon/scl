@@ -310,7 +310,7 @@ public:
    * is inconsistent with what the implementation requires,
    * it returns false
    */
-  virtual sBool init(const SRobotParsedData& arg_robot_data)=0;
+  virtual sBool init(const SRobotParsed& arg_robot_data)=0;
 
   /** Initialization state */
   virtual sBool hasBeenInit() {  return has_been_init_;  }
@@ -368,7 +368,7 @@ protected:
   sBool has_been_init_;
 
   /** A read-only pointer to access parsed data */
-  const SRobotParsedData* robot_parsed_data_;
+  const SRobotParsed* robot_parsed_data_;
 };
 
 }

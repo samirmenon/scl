@@ -109,7 +109,7 @@ namespace scl
 
 
   bool CTaoDynamics::
-  init(const SRobotParsedData& arg_robot_data)
+  init(const SRobotParsed& arg_robot_data)
   {
     try
     {

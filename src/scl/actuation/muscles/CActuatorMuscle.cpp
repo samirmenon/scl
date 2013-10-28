@@ -47,7 +47,7 @@ namespace scl
    * matches the robot etc. It also sets up the Jacobians to be computed etc.
    */
   sBool CActuatorMuscle::init(const std::string& arg_name,
-      const SRobotParsedData *arg_robot,
+      const SRobotParsed *arg_robot,
       const SMuscleSystemParsed *arg_msys,
       const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
       CDynamicsBase *arg_dynamics)

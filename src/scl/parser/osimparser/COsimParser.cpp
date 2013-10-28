@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //The required data structures
 #include <scl/Singletons.hpp>
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 
 //The tinyxml parser implementation for scl xml files
@@ -50,7 +50,7 @@ using namespace scl;
 
 namespace scl_parser {
   bool COsimParser::readOsimBiomechFromFile(const std::string& arg_file,
-      scl::SRobotParsedData& arg_biomech,
+      scl::SRobotParsed& arg_biomech,
       scl::SMuscleSystemParsed& arg_msys)
   {
     sBool flag;
@@ -346,7 +346,7 @@ namespace scl_parser {
   bool COsimParser::readRobotFromFile(
       const std::string& arg_file,
       const std::string& arg_robot_name,
-      scl::SRobotParsedData& arg_robot)
+      scl::SRobotParsed& arg_robot)
   {
     bool flag;
     try
@@ -401,7 +401,7 @@ namespace scl_parser {
        ***********************************************************/
       tiElem_body = tiHndl_model.FirstChild( "BodySet" ).FirstChild("objects").
           FirstChild("Body").ToElement();
-      scl::SRobotParsedData tmp_welded_robot;
+      scl::SRobotParsed tmp_welded_robot;
       //Iterating with TiXmlElement is faster than TiXmlHandle
       for(; tiElem_body; tiElem_body=tiElem_body->NextSiblingElement() )
       {
@@ -573,7 +573,7 @@ namespace scl_parser {
    * of joints/links for all the coordinates. */
   bool COsimParser::readBody(
       const scl_tinyxml::TiXmlHandle& arg_tiHndl_body,
-      scl::SRobotParsedData& arg_robot,
+      scl::SRobotParsed& arg_robot,
       const std::string& arg_joint_type)
   {
     bool flag;

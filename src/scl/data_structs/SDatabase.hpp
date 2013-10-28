@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/gc/data_structs/SGcController.hpp>
 
 //Parser data --> Static information about the robot
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsedData.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 #include <scl/data_structs/SMuscleSystemParsed.hpp>
@@ -75,7 +75,7 @@ struct SParserData
   sutil::CMappedList<std::string,SGraphicsParsedData> graphics_worlds_;
 
   /** Contains all the parsed robots. */
-  sutil::CMappedList<std::string,SRobotParsedData> robots_;
+  sutil::CMappedList<std::string,SRobotParsed> robots_;
 
   /** Contains all the parsed muscle systems
    *
@@ -101,11 +101,11 @@ struct SParserData
  * No controller can exist unless its robot is defined by
  * the parser.
  *
- * NOTE : SRobotParsedData is the statically loaded robot information
+ * NOTE : SRobotParsed is the statically loaded robot information
  * while SCrRobot contains the information about the robot
  * that the controller dynamically generates (eg. matrices)
  *
- * Each controller has : SRobotParsedData + SCrRobot
+ * Each controller has : SRobotParsed + SCrRobot
  *
  * Supports twofold robot lookup:
  * 1. Based on the static robot data (Useful if iterating

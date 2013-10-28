@@ -57,7 +57,7 @@ namespace scl
    * Accesses the database.
    *
    * \return True if everything went according to plan. */
-  bool CSimbodyDynamics::init(const SRobotParsedData& arg_robot_data)
+  bool CSimbodyDynamics::init(const SRobotParsed& arg_robot_data)
   {
     bool flag;
 

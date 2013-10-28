@@ -47,7 +47,7 @@ namespace scl
   SServo::SServo() : SObject("SServo"), task_data_(S_NULL)
   {}
 
-  sBool SServo::init(const SRobotParsedData* arg_robot_ds,
+  sBool SServo::init(const SRobotParsed* arg_robot_ds,
       sutil::CMappedMultiLevelList<std::string, STaskBase*>* arg_task_ds)
   {
     try

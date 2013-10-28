@@ -243,7 +243,7 @@ namespace scl_test
       }
 
       // Check the robot was parsed.
-      scl::SRobotParsedData *rob_ds = db->s_parser_.robots_.at(robot_name);
+      scl::SRobotParsed *rob_ds = db->s_parser_.robots_.at(robot_name);
       if(NULL == rob_ds)
       { throw(std::runtime_error("Could not find registered robot in the database"));  }
 

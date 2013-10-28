@@ -95,7 +95,7 @@ namespace scl_test
       /* NOTE TODO : This test needs to be re-written
       //1. Create robot
       std::string robot_name="sclBot";
-      scl::SRobotParsedData* rob_ds;
+      scl::SRobotParsed* rob_ds;
       // ************** Hard coded initialization for now.
       rob_ds = db->data_.s_parser_.robots_.create(robot_name);
       if(S_NULL==db){ throw(std::runtime_error("Could not create robot"));  }
@@ -309,7 +309,7 @@ namespace scl_test
       //1.b Create robot from a file specification (And register it with the db)
       std::string robot_name;
       robot_name = rob_names.at(0);
-      scl::SRobotParsedData* rob_ds;
+      scl::SRobotParsed* rob_ds;
       flag = scl_registry::parseRobot(tmp_infile, robot_name, &tmp_lparser);
       if(false == flag)
       { throw(std::runtime_error("Could not register robot with the database"));  }

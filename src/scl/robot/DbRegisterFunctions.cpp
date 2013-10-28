@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/Singletons.hpp>
 
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsedData.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 
@@ -171,12 +171,12 @@ namespace scl_registry
     return true;
   }
 
-  const scl::SRobotParsedData* parseRobot(const std::string &arg_file,
+  const scl::SRobotParsed* parseRobot(const std::string &arg_file,
                 const std::string &arg_robot_name,
                 scl_parser::CParserBase *arg_parser)
   {
     bool flag;
-    scl::SRobotParsedData * rob=NULL;
+    scl::SRobotParsed * rob=NULL;
     scl::SRobotIOData * rob_io=NULL;
     try
     {

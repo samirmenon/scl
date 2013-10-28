@@ -88,7 +88,7 @@ namespace scl_registry
    * Requires the parser implementation to include:
    * bool readRobotFromFile(const std::string &arg_file,
    *                        const std::string& arg_robot_name,
-   *                        scl::SRobotParsedData * arg_robot)
+   *                        scl::SRobotParsed * arg_robot)
    *
    * @param file_ : The file containing the robot definition
    *
@@ -97,7 +97,7 @@ namespace scl_registry
    * @return :
    *    success : A const pointer to the database entry
    *    failure : NULL */
-  const scl::SRobotParsedData*
+  const scl::SRobotParsed*
   parseRobot(const std::string &arg_file,
                 const std::string &arg_robot_name,
                 scl_parser::CParserBase *arg_parser);
@@ -107,7 +107,7 @@ namespace scl_registry
    *
    * Requires the parser implementation to include:
    * virtual bool readWorldFromFile(const std::string &arg_file,
-   *                                scl::SRobotParsedData * arg_robot)
+   *                                scl::SRobotParsed * arg_robot)
    *
    * @param file_ : The file containing the world definition
    *

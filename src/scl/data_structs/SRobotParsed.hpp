@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SRobotParsedData.hpp
+/* \file SRobotParsed.hpp
  *
  *  Created on: Jul 22, 2010
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */ 
 
-#ifndef SROBOTPARSEDDATA_HPP_
-#define SROBOTPARSEDDATA_HPP_
+#ifndef SROBOTPARSED_HPP_
+#define SROBOTPARSED_HPP_
 
 #include <string>
 
@@ -50,7 +50,7 @@ namespace scl
  * a robot. Each robot is completely defined by a tree of such
  * links.
  */
-struct SRobotParsedData : public SObject
+struct SRobotParsed : public SObject
 {
 public:
   /** The branching representation will store a tree of SRigidBody nodes
@@ -110,7 +110,7 @@ public:
   //std::string name_; //Inherited
   //sBool has_been_init_; //Inherited
 
-  SRobotParsedData() : SObject(std::string("SRobotParsedData") ),
+  SRobotParsed() : SObject(std::string("SRobotParsed") ),
       dof_(0)
   {
     //Flags to control SRobot's behavior
@@ -130,4 +130,4 @@ public:
 
 }//end of namespace scl_parser
 
-#endif /*SROBOTPARSEDDATA_HPP_*/
+#endif /*SROBOTPARSED_HPP_*/

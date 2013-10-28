@@ -169,7 +169,7 @@ namespace scl
      * true  : success
      * false : failure
      */
-    virtual sBool init(const SRobotParsedData& arg_robot_data);
+    virtual sBool init(const SRobotParsed& arg_robot_data);
 
     /** Initialization state */
     virtual sBool hasBeenInit() {  return has_been_init_;  }

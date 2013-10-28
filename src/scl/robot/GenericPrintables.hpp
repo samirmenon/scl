@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/data_structs/SRobotIOData.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
 #include <scl/control/task/data_structs/STaskController.hpp>
@@ -62,9 +62,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace sutil
 {
   template <>
-  void printToStream<scl::SRobotParsedData>(
+  void printToStream<scl::SRobotParsed>(
       std::ostream& ostr,
-      const scl::SRobotParsedData& arg_data
+      const scl::SRobotParsed& arg_data
   )
   {
     ostr<<"\n Name: "<<arg_data.name_;
@@ -192,12 +192,12 @@ namespace scl
           <<"\n\nscl>> print <printable name>"
           <<"\n\n"<<std::setw(10)<< "Printable information"<<std::setw(45)<<"Printable name\n";
       //Add all the robot links as printables.
-      sutil::CMappedList<std::string,scl::SRobotParsedData>::iterator it,ite;
+      sutil::CMappedList<std::string,scl::SRobotParsed>::iterator it,ite;
       for(it = scl::CDatabase::getData()->s_parser_.robots_.begin(),
           ite = scl::CDatabase::getData()->s_parser_.robots_.end();
           it!=ite;++it)
       {
-        scl::SRobotParsedData& rob = *it;
+        scl::SRobotParsed& rob = *it;
 
         //NOTE: In the database, the robot's parsed and IO data structures
         //are both indexed by the robot name. So we add "Parsed" here at the

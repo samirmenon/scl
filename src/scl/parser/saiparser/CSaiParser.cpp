@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //The required data structures
 #include <scl/Singletons.hpp>
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 
 using namespace scl;
@@ -47,7 +47,7 @@ namespace scl_parser {
 
 bool CSaiParser::readRobotFromFile(const std::string& arg_file,
     const std::string& arg_robot_name,
-    scl::SRobotParsedData& arg_robot)
+    scl::SRobotParsed& arg_robot)
 {
   bool flag;
   SRigidBody* tmp_link_ds=S_NULL;
@@ -96,7 +96,7 @@ bool CSaiParser::readRobotFromFile(const std::string& arg_file,
 
 
 bool CSaiParser::readLink(const TiXmlHandle& arg_tiHndl_link, const bool arg_is_root,
-    const std::string& arg_parent_lnk_name, scl::SRobotParsedData& arg_robot)
+    const std::string& arg_parent_lnk_name, scl::SRobotParsed& arg_robot)
 {
   //NOTE : This function will recurse at the end.
   TiXmlElement* link_data;

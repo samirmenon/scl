@@ -109,7 +109,7 @@ namespace scl
     sBool init(std::string arg_robot_name,
         CDynamicsBase* arg_dynamics,
         CDynamicsBase* arg_integrator,
-        SRobotParsedData *arg_robot,
+        SRobotParsed *arg_robot,
         SRobotIOData *arg_io_data,
         std::vector<SControllerBase*>& arg_ctrls);
 

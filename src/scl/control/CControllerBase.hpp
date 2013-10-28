@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 
 #include <scl/control/data_structs/SControllerBase.hpp>

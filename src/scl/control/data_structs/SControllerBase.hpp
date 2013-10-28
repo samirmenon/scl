@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 
 #include <scl/data_structs/SObject.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
@@ -55,7 +55,7 @@ namespace scl
     std::string type_ctrl_ds_;
 
     /** Pointer to the static robot data (parsed from a file) */
-    const SRobotParsedData* robot_;
+    const SRobotParsed* robot_;
 
     /** Robot sensor and actuator data */
     SRobotIOData* io_data_;
@@ -71,7 +71,7 @@ namespace scl
 
     /** Initializes the data structure */
     virtual sBool init(const std::string & arg_controller_name,
-        const SRobotParsedData* arg_robot_ds,
+        const SRobotParsed* arg_robot_ds,
         SRobotIOData* arg_io_data);
   };
 

@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SObject.hpp>
 
 //Needs to access parent robot kinematics
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
 
 namespace scl
@@ -47,7 +47,7 @@ namespace scl
      *                        Data
      * ****************************************************** */
     /** The parent robot to which this actuator is attached */
-    const SRobotParsedData *robot_;
+    const SRobotParsed *robot_;
 
     /** The parsed muscle specification */
     const SMuscleSystemParsed *msys_;

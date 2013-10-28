@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/parser/CParserBase.hpp>
 
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 
 #include <scl/parser/sclparser/CSclParser.hpp>
@@ -64,7 +64,7 @@ void test_scl_parser(int id)
     //0. Create a parser and objects to be filled in from a file.
     scl_parser::CSclParser tmp_parser;
 
-    scl::SRobotParsedData tmp_robot;
+    scl::SRobotParsed tmp_robot;
     scl::SGraphicsParsedData tmp_graphics;
 
     //1. Read in a file

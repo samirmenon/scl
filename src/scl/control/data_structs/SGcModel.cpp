@@ -39,7 +39,7 @@ namespace scl
   SGcModel::SGcModel() : mass_(-1)
   { }
 
-  sBool SGcModel::init(const SRobotParsedData& arg_robot_data)
+  sBool SGcModel::init(const SRobotParsed& arg_robot_data)
   {
     try
     {

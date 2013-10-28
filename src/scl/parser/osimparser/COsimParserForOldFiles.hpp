@@ -75,7 +75,7 @@ namespace scl_parser
      */
     virtual bool readOsimBiomechFromFile(
         const std::string& arg_file,
-        scl::SRobotParsedData& arg_biomech,
+        scl::SRobotParsed& arg_biomech,
         scl::SMuscleSystemParsed& arg_msys);
 
     /* Since the Osim format only has one robot in a file, the "arg_msys_name"
@@ -96,7 +96,7 @@ namespace scl_parser
     virtual bool readRobotFromFile(
         const std::string& arg_file,
         const std::string& arg_robot_name,
-        scl::SRobotParsedData& arg_robot);
+        scl::SRobotParsed& arg_robot);
 
     virtual bool listRobotsInFile(const std::string& arg_file,
         std::vector<std::string>& arg_robot_names)
@@ -111,7 +111,7 @@ namespace scl_parser
      * of joints/links for all the coordinates. */
     bool readBody(
         const scl_tinyxml::TiXmlHandle& arg_tiHndl_link,
-        scl::SRobotParsedData& arg_robot,
+        scl::SRobotParsed& arg_robot,
         const std::string& arg_joint_type);
 
 #ifdef _WINDOWS

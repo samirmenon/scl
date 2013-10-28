@@ -77,9 +77,9 @@ public:
   virtual bool readRobotFromFile(const std::string& arg_file,
       /** This argument is useless for SAI files. Only reads the first robot!!! */
       const std::string& arg_robot_name,
-      scl::SRobotParsedData& arg_robot_object);
+      scl::SRobotParsed& arg_robot_object);
 
-  virtual bool saveRobotToFile(scl::SRobotParsedData& arg_robot,
+  virtual bool saveRobotToFile(scl::SRobotParsed& arg_robot,
       const std::string &arg_file)
   { return false; }
 
@@ -94,7 +94,7 @@ public:
 private:
   /** Recursive SAI link specification reader */
   bool readLink(const scl_tinyxml::TiXmlHandle& arg_tiHndl_link, const bool arg_is_root,
-      const std::string& arg_parent_lnk_name, scl::SRobotParsedData& arg_robot);
+      const std::string& arg_parent_lnk_name, scl::SRobotParsed& arg_robot);
 
   const std::string root_link_name_;
 };

@@ -47,7 +47,7 @@ namespace scl
   SControllerBase::~SControllerBase() {}
 
   sBool SControllerBase::init(const std::string & arg_controller_name,
-      const SRobotParsedData* arg_robot_ds,
+      const SRobotParsed* arg_robot_ds,
       SRobotIOData* arg_io_data)
   {
     bool flag;

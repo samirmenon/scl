@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //Needs to access parent robot kinematics
 #include <scl/data_structs/SRobotIOData.hpp>
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
 
 #include <scl/actuation/muscles/data_structs/SActuatorMuscle.hpp>
@@ -135,7 +135,7 @@ namespace scl
      * matches the robot etc. It also sets up the Jacobians to be computed etc.
      */
     virtual sBool init(const std::string& arg_name,
-        const SRobotParsedData *arg_robot,
+        const SRobotParsed *arg_robot,
         const SMuscleSystemParsed *arg_msys,
         const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
         CDynamicsBase *arg_dynamics);
@@ -157,7 +157,7 @@ namespace scl
     SActuatorMuscle data_;
 
     /** The parent robot to which this actuator is attached */
-    const SRobotParsedData *robot_;
+    const SRobotParsed *robot_;
 
     /** The parsed muscle specification */
     const SMuscleSystemParsed *msys_;

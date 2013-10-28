@@ -250,7 +250,7 @@ namespace scl {
       if(S_NULL == db)
       { throw(std::runtime_error("Database not initialized"));  }
 
-      SRobotParsedData * robdef; //A pointer to the robot's static config.
+      SRobotParsed * robdef; //A pointer to the robot's static config.
       robdef = db->s_parser_.robots_.at(arg_robot);
 
       if(arg_robot != robdef->name_)

@@ -86,7 +86,7 @@ int main(int argc, char** argv)
       std::cout<<"\nInput File Type: "<<ftype;
 
       //3. Create a parser that can parse the specific filetype (Parsers inherit from CParserBase)
-      scl::SRobotParsedData tmp_robot; //Will parse a robot into this data structure.
+      scl::SRobotParsed tmp_robot; //Will parse a robot into this data structure.
       tmp_robot.rb_tree_.clear();
       scl::SMuscleSystemParsed tmp_msys;
       tmp_msys.muscles_.clear();

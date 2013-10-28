@@ -278,7 +278,7 @@ public:
    *             is inconsistent with what the implementation requires,
    *             it returns false
    */
-  virtual sBool init(const SRobotParsedData& arg_robot_data);
+  virtual sBool init(const SRobotParsed& arg_robot_data);
 };
 
 } /* namespace scl */

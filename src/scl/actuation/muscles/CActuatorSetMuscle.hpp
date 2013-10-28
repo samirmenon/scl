@@ -32,7 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CACTUATORSETMUSCLE_HPP_
 #define CACTUATORSETMUSCLE_HPP_
 
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
 #include <scl/actuation/CActuatorSetBase.hpp>
 #include <scl/actuation/muscles/CActuatorMuscle.hpp>
@@ -106,7 +106,7 @@ namespace scl
      * matches the robot etc. It also sets up the Jacobians to be computed etc.
      */
     virtual sBool init(const std::string& arg_name,
-        const SRobotParsedData *arg_robot,
+        const SRobotParsed *arg_robot,
         const SMuscleSystemParsed *arg_msys,
         const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
         CDynamicsBase *arg_dynamics);

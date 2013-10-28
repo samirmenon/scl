@@ -66,7 +66,7 @@ namespace scl {
      *
      * NOTE : Remember to dereference the vectors in taoNodeRoot
      */
-    static taoNodeRoot* taoRootRepCreator(const SRobotParsedData& arg_robot);
+    static taoNodeRoot* taoRootRepCreator(const SRobotParsed& arg_robot);
 
   private:
 

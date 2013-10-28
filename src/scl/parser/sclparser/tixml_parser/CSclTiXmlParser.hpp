@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/scl_tinyxml/scl_tinyxml.h>
 
 //Include the data structures
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsedData.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 

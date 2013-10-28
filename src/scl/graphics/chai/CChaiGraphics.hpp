@@ -32,7 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CCHAIGRAPHICS_HPP_
 
 #include <scl/DataTypes.hpp>
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 
 #include <scl/data_structs/SGraphicsParsedData.hpp>
 #include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>

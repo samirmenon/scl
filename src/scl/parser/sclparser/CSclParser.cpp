@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //The required data structures
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/util/HelperFunctions.hpp>
 
@@ -139,7 +139,7 @@ bool CSclParser::listRobotsInFile(const std::string& arg_file,
 
 bool CSclParser::readRobotFromFile(const std::string& arg_file,
     const std::string& arg_robot_name,
-    scl::SRobotParsedData& arg_robot)
+    scl::SRobotParsed& arg_robot)
 {
   bool flag;
   SRigidBody* tmp_link_ds=S_NULL;
@@ -484,7 +484,7 @@ bool CSclParser::readRobotFromFile(const std::string& arg_file,
 
 bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
     const std::string& arg_robot_spec_name,
-    scl::SRobotParsedData& arg_robot)
+    scl::SRobotParsed& arg_robot)
 {
   bool flag;
   SRigidBody* tmp_link_ds=S_NULL;
@@ -586,7 +586,7 @@ bool CSclParser::readRobotSpecFromFile(const std::string& arg_spec_file,
 
 bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
     const std::string& arg_muscle_spec_name,
-    scl::SRobotParsedData& arg_robot)
+    scl::SRobotParsed& arg_robot)
 {
   bool flag;
   try
@@ -695,7 +695,7 @@ bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
 }
 
 
-bool CSclParser::saveRobotToFile(scl::SRobotParsedData& arg_robot,
+bool CSclParser::saveRobotToFile(scl::SRobotParsed& arg_robot,
     const std::string &arg_file)
 {
   FILE* fp=S_NULL;

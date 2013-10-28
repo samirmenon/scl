@@ -31,7 +31,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>
 
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 
 #include <scl/dynamics/tao/tao/dynamics/taoDynamics.h>
 #include <scl/dynamics/tao/tao/dynamics/taoJoint.h>
@@ -61,7 +61,7 @@ namespace scl {
    *
    * NOTE : Remember to dereference the vectors in taoNodeRoot
    */
-taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const SRobotParsedData& arg_robot)
+taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const SRobotParsed& arg_robot)
 {
   const SRigidBody* tmp_root; // For parsing the database
   taoNodeRoot * ret_tao_root;  // Returns a root node

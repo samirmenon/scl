@@ -69,13 +69,13 @@ namespace scl
     sutil::CMappedMultiLevelList<std::string, STaskBase*>* task_data_;
 
     /** The robot's branching structure */
-    const SRobotParsedData* robot_;
+    const SRobotParsed* robot_;
 
     /** The default constructor does nothing */
     SServo();
 
     /** Initializes the servo and sets has_been_init_ to true */
-    sBool init(const SRobotParsedData* arg_robot_ds,
+    sBool init(const SRobotParsed* arg_robot_ds,
         sutil::CMappedMultiLevelList<std::string, STaskBase*>* arg_task_ds);
   };
 }

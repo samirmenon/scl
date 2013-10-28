@@ -200,7 +200,7 @@ namespace scl
      * Accesses the database.
      *
      * \return True if everything went according to plan. */
-    virtual bool init(const SRobotParsedData& arg_robot_data);
+    virtual bool init(const SRobotParsed& arg_robot_data);
 
   private:
     /** The robot's name */

@@ -99,7 +99,7 @@ namespace scl_test
       //NOTE TODO : Add code to test the controller's "accuracy" at following the trajectory.
 
       //Turn on the damping
-      scl::SRobotParsedData* tmp_rob = scl::CDatabase::getData()->s_parser_.robots_.at(arg_robot_name);
+      scl::SRobotParsed* tmp_rob = scl::CDatabase::getData()->s_parser_.robots_.at(arg_robot_name);
       tmp_rob->flag_apply_gc_damping_ = true;
       tmp_rob->damping_*=0;
       tmp_rob->damping_.array()+=0.05; //5% velocity loss per second

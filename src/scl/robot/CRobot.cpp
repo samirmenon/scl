@@ -192,7 +192,7 @@ namespace scl
       db_ = CDatabase::getData();
       if(S_NULL == db_) { throw(std::runtime_error("Database not initialized"));  }
 
-      SRobotParsedData *robot = db_->s_parser_.robots_.at(arg_robot_name);
+      SRobotParsed *robot = db_->s_parser_.robots_.at(arg_robot_name);
       if(S_NULL == robot) { throw(std::runtime_error("Robot not parsed from file"));  }
       SRobotIOData* io_data = db_->s_io_.io_data_.at(arg_robot_name);
       if(S_NULL == io_data)
@@ -232,7 +232,7 @@ namespace scl
   sBool CRobot::init(std::string arg_robot_name,
       CDynamicsBase* arg_dynamics,
       CDynamicsBase* arg_integrator,
-      SRobotParsedData *arg_robot,
+      SRobotParsed *arg_robot,
       SRobotIOData *arg_io_data,
       std::vector<SControllerBase*>& arg_ctrls)
   {

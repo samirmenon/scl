@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef SGCMODEL_HPP_
 #define SGCMODEL_HPP_
 
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SRigidBodyDyn.hpp>
 #include <scl/DataTypes.hpp>
 
@@ -101,7 +101,7 @@ namespace scl
     SGcModel();
 
     /** Initialization function sets up the matrix sizes */
-    sBool init(const SRobotParsedData& arg_robot_data);
+    sBool init(const SRobotParsed& arg_robot_data);
   };
 }
 

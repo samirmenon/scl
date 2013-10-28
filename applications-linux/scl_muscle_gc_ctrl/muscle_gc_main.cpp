@@ -149,7 +149,7 @@ int main(int argc, char** argv)
       if(S_NULL == scl_registry::parseGcController(tmp_infile, robot_name, ctrl_name, &tmp_lparser))
       { throw(std::runtime_error("Could not register controller with the database"));  }
 
-      scl::SRobotParsedData *rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
+      scl::SRobotParsed *rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
       if(NULL == rob_ds)
       { throw(std::runtime_error("Could not find robot in database after parsing"));  }
 

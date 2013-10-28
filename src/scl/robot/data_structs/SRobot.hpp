@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 
 #include <scl/data_structs/SObject.hpp>
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 
 #include <scl/control/task/data_structs/STaskController.hpp>
@@ -54,7 +54,7 @@ namespace scl
   class SRobot : public SObject
   {
   public:
-    SRobotParsedData * parsed_robot_data_;
+    SRobotParsed * parsed_robot_data_;
     SRobotIOData* io_data_;
 
     /** The robot's controller data structures. */

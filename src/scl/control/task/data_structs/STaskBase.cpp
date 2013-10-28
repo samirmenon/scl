@@ -56,7 +56,7 @@ namespace scl
       const sUInt arg_priority,
       /** 0  task dof means a gc task. Ie. full dofs */
       const scl::sUInt arg_task_dof,
-      SRobotParsedData* arg_robot_ds,
+      SRobotParsed* arg_robot_ds,
       SRobotIOData* arg_io_data,
       /* The remaining variables initialize model_ and servo_ */
       const SGcModel* arg_gc_model,

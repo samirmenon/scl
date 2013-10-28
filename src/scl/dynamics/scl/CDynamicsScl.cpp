@@ -376,7 +376,7 @@ namespace scl
    *     true : Always.
    *     false : If something is seriously wrong
    */
-  sBool CDynamicsScl::init(const SRobotParsedData& arg_robot_data)
+  sBool CDynamicsScl::init(const SRobotParsed& arg_robot_data)
   {
     try
     {

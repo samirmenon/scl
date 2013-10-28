@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/parser/CParserBase.hpp>
 
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsedData.hpp>
 
 namespace scl_parser {
@@ -56,9 +56,9 @@ public:
 
   virtual bool readRobotFromFile(const std::string& arg_file,
       const std::string& arg_robot_name,
-      scl::SRobotParsedData& arg_robot_object);
+      scl::SRobotParsed& arg_robot_object);
 
-  virtual bool saveRobotToFile(scl::SRobotParsedData& arg_robot,
+  virtual bool saveRobotToFile(scl::SRobotParsed& arg_robot,
       const std::string &arg_file);
 
   virtual bool listGraphicsInFile(const std::string& arg_file,
@@ -90,12 +90,12 @@ private:
   /** Reads a robot specification from a file */
   bool readRobotSpecFromFile(const std::string& arg_spec_file,
       const std::string& arg_robot_spec_name,
-      scl::SRobotParsedData& arg_robot);
+      scl::SRobotParsed& arg_robot);
 
   /** Reads a robot's muscle specification from a file */
   bool readMuscleSpecFromFile(const std::string& arg_spec_file,
       const std::string& arg_muscle_spec_name,
-      scl::SRobotParsedData& arg_robot);
+      scl::SRobotParsed& arg_robot);
 };
 
 }

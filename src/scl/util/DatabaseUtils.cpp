@@ -43,7 +43,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #include <scl/Singletons.hpp>
-#include <scl/data_structs/SRobotParsedData.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 
 using namespace scl;
 
@@ -90,7 +90,7 @@ namespace scl_util
         SMuscleSystemParsed *msys = db->s_parser_.muscle_systems_.at(arg_msys);
         if(S_NULL == msys) { throw(std::runtime_error("Could not find muscle system"));  }
 
-        SRobotParsedData *rob = db->s_parser_.robots_.at(arg_robot);
+        SRobotParsed *rob = db->s_parser_.robots_.at(arg_robot);
         if(S_NULL == rob) { throw(std::runtime_error("Could not find robot"));  }
 
         //NOTE TODO : Implement this.
