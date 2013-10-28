@@ -47,7 +47,7 @@ namespace scl
    */
   sBool CActuatorSetMuscle::init(const std::string& arg_name,
       const SRobotParsedData *arg_robot,
-      const SMuscleSystem *arg_msys,
+      const SMuscleSystemParsed *arg_msys,
       const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
       CDynamicsBase *arg_dynamics)
   {
@@ -73,7 +73,7 @@ namespace scl
       dynamics_ = arg_dynamics;
 
       // Initialize all the muscles in the muscle spec
-      sutil::CMappedList<std::string, SMuscle>::const_iterator it,ite;
+      sutil::CMappedList<std::string, SMuscleParsed>::const_iterator it,ite;
       for (it = arg_msys->muscles_.begin(), ite = arg_msys->muscles_.end();
           it != ite; ++it)
       {

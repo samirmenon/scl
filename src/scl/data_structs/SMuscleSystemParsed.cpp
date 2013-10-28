@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SMuscleSystem.cpp
+/* \file SMuscleSystemParsed.cpp
  *
  *  Created on: May 9, 2011
  *
@@ -29,21 +29,21 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "SMuscleSystem.hpp"
+#include "SMuscleSystemParsed.hpp"
 
 namespace scl
 {
-  SMusclePoint::SMusclePoint()
+  SMusclePointParsed::SMusclePointParsed()
   {
     pos_in_parent_ = Eigen::Vector3d::Zero();
     parent_link_ = "";
     position_on_muscle_ = 0;
   }
 
-  SMusclePoint::~SMusclePoint()
+  SMusclePointParsed::~SMusclePointParsed()
   { }
 
-  SMuscle::SMuscle()
+  SMuscleParsed::SMuscleParsed()
   {
     //Ref : Schutte93, Thelen03, Delp90
     max_isometric_force_ = 546.0;
@@ -64,10 +64,10 @@ namespace scl
     name_ = "";
   }
 
-  SMuscle::~SMuscle()
+  SMuscleParsed::~SMuscleParsed()
   {}
 
-  SMuscleSystem::SMuscleSystem() : SObject(std::string("SMuscleSystem"))
+  SMuscleSystemParsed::SMuscleSystemParsed() : SObject(std::string("SMuscleSystem"))
   {
     muscles_.clear();
     must_use_robot_ = "";
@@ -75,6 +75,6 @@ namespace scl
     render_muscle_via_pt_sz_ = 0.0;
   }
 
-  SMuscleSystem::~SMuscleSystem()
+  SMuscleSystemParsed::~SMuscleSystemParsed()
   { }
 }

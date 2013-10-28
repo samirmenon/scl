@@ -31,7 +31,7 @@
     <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
     <flag_logging_on>false</flag_logging_on>
     <flag_wireframe_on>false</flag_wireframe_on>
-    <option_axis_frame_size>0</option_axis_frame_size> <!-- All options are optional -->
+    <option_axis_frame_size>0.2</option_axis_frame_size> <!-- All options are optional -->
     <option_muscle_via_pt_sz>0.013</option_muscle_via_pt_sz>
   </robot>
   

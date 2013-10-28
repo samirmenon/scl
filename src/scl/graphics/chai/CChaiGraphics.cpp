@@ -851,7 +851,7 @@ namespace scl {
       if(S_NULL==rob_gr)//Require an existing robot to render muscles.
       { throw(std::runtime_error("Couldn't find a (physics+graphics) representation for the robot on the pile"));  }
 
-      SMuscleSystem *msys_db = db->s_parser_.muscle_systems_.at(arg_msys);
+      SMuscleSystemParsed *msys_db = db->s_parser_.muscle_systems_.at(arg_msys);
       if(S_NULL == msys_db) { throw(std::runtime_error("Could not find muscle system in the database. Did you pass the right name?"));  }
 
       flag = addMusclesToRender(arg_robot,*msys_db,add_musc_via_points);
@@ -870,7 +870,7 @@ namespace scl {
 
   sBool CChaiGraphics::addMusclesToRender(
       const std::string& arg_robot,
-      const SMuscleSystem& arg_msys,
+      const SMuscleSystemParsed& arg_msys,
       const sBool add_musc_via_points)
   {
     std::string musc_name("");
@@ -908,17 +908,17 @@ namespace scl {
       msys_gr->name_ = arg_msys.name_;
 
       // Now add all the muscles to the graphics muscle object
-      sutil::CMappedList<std::basic_string<char>, scl::SMuscle>::const_iterator it,ite;
+      sutil::CMappedList<std::basic_string<char>, scl::SMuscleParsed>::const_iterator it,ite;
       for(it = arg_msys.muscles_.begin(), ite = arg_msys.muscles_.end();
           it!=ite; ++it)
       {
-        const SMuscle &mus = *it;
+        const SMuscleParsed &mus = *it;
 
         musc_name = mus.name_;//For debugging. Useful to know where it failed.
 
         SGraphicsMsys::SGraphicsMuscle gr_musc;//Initialize this and plug it into the msys
 
-        std::vector<SMusclePoint>::const_iterator it,it2,ite;
+        std::vector<SMusclePointParsed>::const_iterator it,it2,ite;
         for(it = mus.points_.begin(), ite = mus.points_.end();
             it!=ite;++it)
         {

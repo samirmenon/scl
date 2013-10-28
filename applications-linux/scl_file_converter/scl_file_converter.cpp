@@ -88,7 +88,7 @@ int main(int argc, char** argv)
       //3. Create a parser that can parse the specific filetype (Parsers inherit from CParserBase)
       scl::SRobotParsedData tmp_robot; //Will parse a robot into this data structure.
       tmp_robot.rb_tree_.clear();
-      scl::SMuscleSystem tmp_msys;
+      scl::SMuscleSystemParsed tmp_msys;
       tmp_msys.muscles_.clear();
 
       if(ftype == ".xml") //SAI Xml format

@@ -76,7 +76,7 @@ namespace scl_parser
     virtual bool readOsimBiomechFromFile(
         const std::string& arg_file,
         scl::SRobotParsedData& arg_biomech,
-        scl::SMuscleSystem& arg_msys);
+        scl::SMuscleSystemParsed& arg_msys);
 
     /* Since the Osim format only has one robot in a file, the "arg_msys_name"
      * argument is not used.
@@ -89,7 +89,7 @@ namespace scl_parser
     virtual bool readMuscleSysFromFile(
         const std::string& arg_file,
         const std::string& arg_msys_name,
-        scl::SMuscleSystem& arg_msys);
+        scl::SMuscleSystemParsed& arg_msys);
 
     /* Since the Osim format only has one robot in a file, the "arg_robot_name"
      * argument is not used. */

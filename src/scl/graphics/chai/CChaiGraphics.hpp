@@ -149,7 +149,7 @@ public:
    * 2. A parent robot to whose links the muscles attach. */
   virtual sBool addMusclesToRender(
       const std::string& arg_robot,
-      const SMuscleSystem& arg_msys,
+      const SMuscleSystemParsed& arg_msys,
       const sBool add_musc_via_points);
 
   /** Removes a muscle system from the graphics rendering environment

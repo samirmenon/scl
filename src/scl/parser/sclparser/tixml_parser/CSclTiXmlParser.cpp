@@ -655,7 +655,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
 
   /** Reads single links */
   bool CSclTiXmlParser::readMuscle(const scl_tinyxml::TiXmlHandle& arg_musc_txml,
-      scl::SMuscle& arg_muscle_ds, bool arg_is_root)
+      scl::SMuscleParsed& arg_muscle_ds, bool arg_is_root)
   {
     try
     {
@@ -727,7 +727,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
       for(; muscle_data; muscle_data=muscle_data->NextSiblingElement("point") )
       { n_musc_points++; }
 
-      arg_muscle_ds.points_.resize(n_musc_points,SMusclePoint());
+      arg_muscle_ds.points_.resize(n_musc_points,SMusclePointParsed());
 
       // Iterate over all the muscle attachment points.
       muscle_data = arg_musc_txml.FirstChild( "muscle_points" ).FirstChild("point").ToElement();
@@ -744,7 +744,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
         { throw(std::runtime_error("Negative muscle point order (must be 0 to num_points-1)")); }
 
         //Store a reference to the current point (for simplicity)
-        SMusclePoint &tmp_musc_pt = arg_muscle_ds.points_[musc_order];
+        SMusclePointParsed &tmp_musc_pt = arg_muscle_ds.points_[musc_order];
         tmp_musc_pt.position_on_muscle_ = static_cast<sUInt>(musc_order);
 
         // Read in the parent link

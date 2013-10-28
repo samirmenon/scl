@@ -48,7 +48,7 @@ namespace scl
    */
   sBool CActuatorMuscle::init(const std::string& arg_name,
       const SRobotParsedData *arg_robot,
-      const SMuscleSystem *arg_msys,
+      const SMuscleSystemParsed *arg_msys,
       const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
       CDynamicsBase *arg_dynamics)
   {
@@ -93,8 +93,8 @@ namespace scl
       {
         int tmp_child_link_id=-1;
 
-        const SMusclePoint& tmp_pt_0 = muscle_->points_[i]; //tmp reference
-        const SMusclePoint& tmp_pt_1 = muscle_->points_[i+1]; //tmp reference
+        const SMusclePointParsed& tmp_pt_0 = muscle_->points_[i]; //tmp reference
+        const SMusclePointParsed& tmp_pt_1 = muscle_->points_[i+1]; //tmp reference
 
         if(tmp_pt_0.parent_link_ == tmp_pt_1.parent_link_)
         { continue; } //Bot points are connected to same link. Don't contribute to J. Ignore.

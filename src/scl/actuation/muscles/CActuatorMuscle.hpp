@@ -136,7 +136,7 @@ namespace scl
      */
     virtual sBool init(const std::string& arg_name,
         const SRobotParsedData *arg_robot,
-        const SMuscleSystem *arg_msys,
+        const SMuscleSystemParsed *arg_msys,
         const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
         CDynamicsBase *arg_dynamics);
 
@@ -160,10 +160,10 @@ namespace scl
     const SRobotParsedData *robot_;
 
     /** The parsed muscle specification */
-    const SMuscleSystem *msys_;
+    const SMuscleSystemParsed *msys_;
 
     /** The muscle in the system */
-    const SMuscle *muscle_;
+    const SMuscleParsed *muscle_;
 
     /** Dynamics specification (to compute robot Jacobians) */
     CDynamicsBase *dynamics_;

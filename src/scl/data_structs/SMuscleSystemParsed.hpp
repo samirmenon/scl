@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SMuscleSystem.hpp
+/* \file SMuscleSystemParsed.hpp
  *
  *  Created on: May 9, 2011
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef SMUSCLESYSTEM_HPP_
-#define SMUSCLESYSTEM_HPP_
+#ifndef SMUSCLESYSTEMPARSED_HPP_
+#define SMUSCLESYSTEMPARSED_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
@@ -45,7 +45,7 @@ namespace scl
 {
   /** A single muscle point. A muscle passes through
    * multiple points. */
-  class SMusclePoint
+  class SMusclePointParsed
   {
   public:
     /** xyz coordinates of an attachment point */
@@ -61,10 +61,10 @@ namespace scl
     sUInt position_on_muscle_;
 
     /** Default constructor. Sets defaults. */
-    SMusclePoint();
+    SMusclePointParsed();
 
     /** Default destructor. Does nothing. */
-    ~SMusclePoint();
+    ~SMusclePointParsed();
 
     /** To ensure new aligns the memory. Reqd for Eigen */
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -72,12 +72,12 @@ namespace scl
 
   /** A single muscle's specification:
    * Strings together a set of muscle points. */
-  class SMuscle
+  class SMuscleParsed
   {
   public:
     /** The muscle points should be ordered
      * by position_on_muscle_ */
-    std::vector<SMusclePoint> points_;
+    std::vector<SMusclePointParsed> points_;
 
     /** Maximum force that this muscle can exert */
     sFloat max_isometric_force_;
@@ -113,19 +113,19 @@ namespace scl
     std::string name_;
 
     /** Default constructor. Does nothing */
-    SMuscle();
+    SMuscleParsed();
     /** Default destructor. Does nothing */
-    ~SMuscle();
+    ~SMuscleParsed();
   };
 
   /** All the data required to attach muscle actuators
    * to any robot.*/
-  class SMuscleSystem : public SObject
+  class SMuscleSystemParsed : public SObject
   {
   public:
     /** ******************** DATA *********************** */
     /** A set of muscles */
-    sutil::CMappedList<std::string, SMuscle> muscles_;
+    sutil::CMappedList<std::string, SMuscleParsed> muscles_;
 
     /** The muscle numeric id to name map */
     std::vector<std::string> muscle_id_to_name_;
@@ -143,11 +143,11 @@ namespace scl
 
     /** ******************** FUNCTIONS *********************** */
     /** Default constructor. Sets the type. */
-    SMuscleSystem();
+    SMuscleSystemParsed();
     /** Default destructor. Does nothing */
-    virtual ~SMuscleSystem();
+    virtual ~SMuscleSystemParsed();
   };
 
 }
 
-#endif /* SMUSCLESYSTEM_HPP_ */
+#endif /* SMUSCLESYSTEMPARSED_HPP_ */

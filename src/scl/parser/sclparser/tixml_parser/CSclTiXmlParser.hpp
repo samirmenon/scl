@@ -65,7 +65,7 @@ public:
 
   /** Reads single links */
   static bool readMuscle(const scl_tinyxml::TiXmlHandle& arg_musc_txml,
-      scl::SMuscle& arg_muscle_ds, bool arg_is_root);
+      scl::SMuscleParsed& arg_muscle_ds, bool arg_is_root);
   
   /** Reads in graphics data */
   static bool readGraphics(

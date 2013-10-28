@@ -653,7 +653,7 @@ bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
       for(; _child_link_element; _child_link_element=_child_link_element->NextSiblingElement("muscle") )
       {
         //Allocate an object for the muscle to be parsed
-        SMuscle tmp_musc_ds;
+        SMuscleParsed tmp_musc_ds;
 
         //Read in the xml data into the muscle object
         TiXmlHandle _child_link_handle(_child_link_element); //Back to handles
@@ -662,7 +662,7 @@ bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
         { throw(std::runtime_error("Couldn't parse a muscle:")); }
 
         //Add the root node to the robdef
-        SMuscle *tmp_musc_ds2 = arg_robot.muscle_system_.muscles_.create(tmp_musc_ds.name_,tmp_musc_ds);
+        SMuscleParsed *tmp_musc_ds2 = arg_robot.muscle_system_.muscles_.create(tmp_musc_ds.name_,tmp_musc_ds);
         if(S_NULL == tmp_musc_ds2)
         { throw(std::runtime_error(std::string("Couldn't allocate a muscle (id taken already?):") + tmp_musc_ds.name_)); }
 
@@ -673,7 +673,7 @@ bool CSclParser::readMuscleSpecFromFile(const std::string& arg_spec_file,
       // NOTE TODO: This order should be specified in the config file.
       int i=0;
       arg_robot.muscle_system_.muscle_id_to_name_.resize(arg_robot.muscle_system_.muscles_.size());
-      sutil::CMappedList<std::string, SMuscle>::const_iterator itm,itme;
+      sutil::CMappedList<std::string, SMuscleParsed>::const_iterator itm,itme;
       for (i=0, itm = arg_robot.muscle_system_.muscles_.begin(), itme = arg_robot.muscle_system_.muscles_.end();
           itm != itme; ++itm, ++i)
       {

@@ -51,7 +51,7 @@ using namespace scl;
 namespace scl_parser {
   bool COsimParserForOldFiles::readOsimBiomechFromFile(const std::string& arg_file,
       scl::SRobotParsedData& arg_biomech,
-      scl::SMuscleSystem& arg_msys)
+      scl::SMuscleSystemParsed& arg_msys)
   {
     sBool flag;
     try
@@ -74,7 +74,7 @@ namespace scl_parser {
   bool COsimParserForOldFiles::readMuscleSysFromFile(
       const std::string& arg_file,
       const std::string& arg_msys_name,
-      scl::SMuscleSystem& arg_msys)
+      scl::SMuscleSystemParsed& arg_msys)
   {
     sBool flag;
     try
@@ -126,7 +126,7 @@ namespace scl_parser {
         else
         { muscle_name = tiElem_muscle->Attribute("name"); }
 
-        SMuscle* mus = arg_msys.muscles_.create(muscle_name);
+        SMuscleParsed* mus = arg_msys.muscles_.create(muscle_name);
         if(S_NULL == mus)
         {
           std::string s; s = "Can't allocate a muscle on the pile : " + muscle_name;
@@ -188,7 +188,7 @@ namespace scl_parser {
         for(; tiElem_muspt; tiElem_muspt=tiElem_muspt->NextSiblingElement() )
         {
           TiXmlHandle _muspt(tiElem_muspt);
-          SMusclePoint tmp;
+          SMusclePointParsed tmp;
 
           std::string element_name = _muspt.ToElement()->Value();
           if(element_name == "MusclePoint" ||
