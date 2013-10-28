@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
 
-#include <scl/data_structs/SGraphicsParsedData.hpp>
+#include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>
 #include <scl/graphics/CGraphicsBase.hpp>
 
@@ -228,12 +228,12 @@ public:
   SChaiGraphics* getChaiData()
   { return data_; }
 
-  SGraphicsParsedData* getParsedData()
+  SGraphicsParsed* getParsedData()
   { return data_parsed_;  }
 
 protected:
   SChaiGraphics* data_;
-  SGraphicsParsedData* data_parsed_;
+  SGraphicsParsed* data_parsed_;
 };
 
 }

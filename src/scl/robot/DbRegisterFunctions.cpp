@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/Singletons.hpp>
 
 #include <scl/data_structs/SRobotParsed.hpp>
-#include <scl/data_structs/SGraphicsParsedData.hpp>
+#include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 
 #include <scl/control/data_structs/SControllerBase.hpp>
@@ -229,12 +229,12 @@ namespace scl_registry
     return rob;
   }
 
-  const scl::SGraphicsParsedData* parseGraphics(const std::string &arg_file,
+  const scl::SGraphicsParsed* parseGraphics(const std::string &arg_file,
       std::string & arg_graphics_name,
       scl_parser::CParserBase *arg_parser)
   {
     bool flag;
-    scl::SGraphicsParsedData * tmp_gr=NULL;
+    scl::SGraphicsParsed * tmp_gr=NULL;
     try
     {
       if(NULL == scl::CDatabase::getData())

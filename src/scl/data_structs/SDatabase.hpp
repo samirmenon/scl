@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //Parser data --> Static information about the robot
 #include <scl/data_structs/SRobotParsed.hpp>
-#include <scl/data_structs/SGraphicsParsedData.hpp>
+#include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 #include <scl/data_structs/SMuscleSystemParsed.hpp>
 
@@ -72,7 +72,7 @@ namespace scl {
 struct SParserData
 {
   /** Contains all the parsed graphics views. */
-  sutil::CMappedList<std::string,SGraphicsParsedData> graphics_worlds_;
+  sutil::CMappedList<std::string,SGraphicsParsed> graphics_worlds_;
 
   /** Contains all the parsed robots. */
   sutil::CMappedList<std::string,SRobotParsed> robots_;

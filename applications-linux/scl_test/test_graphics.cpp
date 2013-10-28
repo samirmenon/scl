@@ -141,7 +141,7 @@ namespace scl_test
       }
 
       //2.b. Pull out the graphics's ds from the db
-      SGraphicsParsedData * gr_ds = db->s_parser_.graphics_worlds_.at(graphics_names[0]);
+      SGraphicsParsed * gr_ds = db->s_parser_.graphics_worlds_.at(graphics_names[0]);
       if(S_NULL==gr_ds)
       {
         throw(std::runtime_error(

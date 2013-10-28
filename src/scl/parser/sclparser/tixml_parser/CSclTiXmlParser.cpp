@@ -780,7 +780,7 @@ std::cerr<< "\nCSclTiXmlParser::readLink() : Warning : Color not found for cuboi
 
   bool CSclTiXmlParser::readGraphics(
         const TiXmlHandle &arg_graphics_data_txml,
-        scl::SGraphicsParsedData& arg_graphics_ds)
+        scl::SGraphicsParsed& arg_graphics_ds)
     {
       try
       {

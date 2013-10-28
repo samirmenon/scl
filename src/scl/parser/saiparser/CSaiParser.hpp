@@ -88,7 +88,7 @@ public:
   { return false; }
 
   virtual bool readGraphicsFromFile(const std::string &arg_file,
-      const std::string &arg_graphics_name, scl::SGraphicsParsedData& arg_graphics)
+      const std::string &arg_graphics_name, scl::SGraphicsParsed& arg_graphics)
   { return false; }
 
 private:

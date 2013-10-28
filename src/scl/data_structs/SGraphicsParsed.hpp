@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SGraphicsParsedData.hpp
+/* \file SGraphicsParsed.hpp
  *
  *  Created on: Sep 5, 2010
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef SGRAPHICSPARSEDDATA_HPP_
-#define SGRAPHICSPARSEDDATA_HPP_
+#ifndef SGRAPHICSPARSED_HPP_
+#define SGRAPHICSPARSED_HPP_
 
 #include <vector>
 #include <scl/DataTypes.hpp>
@@ -45,7 +45,7 @@ namespace scl
    *
    * Set cameras, lights etc. here.
    */
-  struct SGraphicsParsedData : public SObject
+  struct SGraphicsParsed : public SObject
   {
     /** To position and orient a light */
     struct SLight
@@ -65,9 +65,9 @@ namespace scl
     /** Light source */
     std::vector<SLight> lights_;
 
-    SGraphicsParsedData() : SObject(std::string("SGraphicsParsedData")){}
+    SGraphicsParsed() : SObject(std::string("SGraphicsParsed")){}
   };
 
 }
 
-#endif /* SGRAPHICSPARSEDDATA_HPP_ */
+#endif /* SGRAPHICSPARSED_HPP_ */

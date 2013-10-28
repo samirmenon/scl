@@ -116,7 +116,7 @@ namespace scl_registry
    * @return :
    *    success : A const pointer to the database entry
    *    failure : NULL */
-  const scl::SGraphicsParsedData*
+  const scl::SGraphicsParsed*
   parseGraphics(const std::string &arg_file,
                    std::string & arg_graphics_name,
                    scl_parser::CParserBase *arg_parser);

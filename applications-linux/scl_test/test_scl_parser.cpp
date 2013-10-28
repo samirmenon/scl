@@ -65,7 +65,7 @@ void test_scl_parser(int id)
     scl_parser::CSclParser tmp_parser;
 
     scl::SRobotParsed tmp_robot;
-    scl::SGraphicsParsedData tmp_graphics;
+    scl::SGraphicsParsed tmp_graphics;
 
     //1. Read in a file
     std::string tmp_infile;

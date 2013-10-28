@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/CParserBase.hpp>
 
 #include <scl/data_structs/SRobotParsed.hpp>
-#include <scl/data_structs/SGraphicsParsedData.hpp>
+#include <scl/data_structs/SGraphicsParsed.hpp>
 
 namespace scl_parser {
 
@@ -66,7 +66,7 @@ public:
 
   virtual bool readGraphicsFromFile(const std::string &arg_file,
       const std::string &arg_graphics_name,
-      scl::SGraphicsParsedData& arg_graphics);
+      scl::SGraphicsParsed& arg_graphics);
 
   virtual bool listControllersInFile(const std::string &arg_file,
       std::vector<std::pair<std::string,std::string> > &arg_ctrl_name_and_type);

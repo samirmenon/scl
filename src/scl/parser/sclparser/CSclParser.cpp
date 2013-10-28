@@ -869,7 +869,7 @@ bool CSclParser::saveRobotToFile(scl::SRobotParsed& arg_robot,
 
 
 bool CSclParser::readGraphicsFromFile(const std::string &arg_file,
-    const std::string &arg_graphics_name, scl::SGraphicsParsedData& arg_graphics)
+    const std::string &arg_graphics_name, scl::SGraphicsParsed& arg_graphics)
 {
   bool flag;
   try
@@ -967,7 +967,7 @@ bool CSclParser::readGraphicsFromFile(const std::string &arg_file,
       {
         TiXmlHandle _light_handle(tiElem_lights); //Back to handles
 
-        scl::SGraphicsParsedData::SLight tmp_light;
+        scl::SGraphicsParsed::SLight tmp_light;
         gr_data = _light_handle.FirstChildElement("pos").Element();
         if ( gr_data )
         {

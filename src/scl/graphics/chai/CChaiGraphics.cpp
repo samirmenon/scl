@@ -149,7 +149,7 @@ namespace scl {
             data_parsed_->cam_clipping_dist_[0], data_parsed_->cam_clipping_dist_[1]);
 
         // create a light source and attach it to the camera
-        std::vector<SGraphicsParsedData::SLight>::iterator it,ite;
+        std::vector<SGraphicsParsed::SLight>::iterator it,ite;
         ite = data_parsed_->lights_.end();
         for(it = data_parsed_->lights_.begin();
             it!=ite; ++it)

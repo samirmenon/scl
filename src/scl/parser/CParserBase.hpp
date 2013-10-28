@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Data structures passed to the branching template
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
-#include <scl/data_structs/SGraphicsParsedData.hpp>
+#include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/data_structs/SMuscleSystemParsed.hpp>
 
 #include <scl/control/gc/data_structs/SGcController.hpp>
@@ -121,7 +121,7 @@ namespace scl_parser
         const std::string &arg_graphics_name,
         /** The robot's data will be filled into
          * this data structure */
-        scl::SGraphicsParsedData& arg_graphics)
+        scl::SGraphicsParsed& arg_graphics)
     { return false; }
 
     /** Optional: The subclass may support read out the controller

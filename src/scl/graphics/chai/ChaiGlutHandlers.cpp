@@ -92,7 +92,7 @@ namespace scl_chai_glut_interface
 
       chai_glob_ds->GLOB_chaiDbptr = db->s_gui_.chai_data_.at(arg_graphics_name);
 
-      scl::SGraphicsParsedData* gr_parsed_ds = db->s_parser_.graphics_worlds_.at(arg_graphics_name);
+      scl::SGraphicsParsed* gr_parsed_ds = db->s_parser_.graphics_worlds_.at(arg_graphics_name);
       if(NULL == gr_parsed_ds)
       { throw(std::runtime_error("Could not find parsed graphics data structre in the database.")); }
       chai_glob_ds->cam_lookat_x_ = gr_parsed_ds->cam_lookat_(0);
@@ -507,7 +507,7 @@ namespace scl_chai_glut_interface
   {
     SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     // check values
-    static scl::SGraphicsParsedData* gr_ds = scl::CDatabase::getData()->s_parser_.graphics_worlds_.at(chai_glob_ds->GLOB_chaiDbptr->name_);
+    static scl::SGraphicsParsed* gr_ds = scl::CDatabase::getData()->s_parser_.graphics_worlds_.at(chai_glob_ds->GLOB_chaiDbptr->name_);
 
     if (chai_glob_ds->cam_sph_x_ < 0.1) { chai_glob_ds->cam_sph_x_ = 0.1; }
     if (chai_glob_ds->cam_sph_v_ > 89) { chai_glob_ds->cam_sph_v_ = 89; }

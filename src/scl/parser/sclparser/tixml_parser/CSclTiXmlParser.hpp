@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //Include the data structures
 #include <scl/data_structs/SRobotParsed.hpp>
-#include <scl/data_structs/SGraphicsParsedData.hpp>
+#include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 
 #include <scl/parser/CParserBase.hpp>
@@ -70,7 +70,7 @@ public:
   /** Reads in graphics data */
   static bool readGraphics(
       const scl_tinyxml::TiXmlHandle &arg_graphics_data_txml,
-      scl::SGraphicsParsedData& arg_graphics_ds);
+      scl::SGraphicsParsed& arg_graphics_ds);
 };
 
 }
