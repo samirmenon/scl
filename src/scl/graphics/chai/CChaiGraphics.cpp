@@ -900,7 +900,7 @@ namespace scl {
       if(NULL == mptr)
       { throw(std::runtime_error(std::string("Robot's actuator set doesn't contain muscle actuator set: ") + arg_msys.name_));  }
 
-      msys_gr->muscle_actuator_set_ = *mptr;
+      msys_gr->muscle_actuator_set_ = dynamic_cast<const SActuatorSetMuscle *>(*mptr);
       if(NULL == msys_gr->muscle_actuator_set_)
       { throw(std::runtime_error(std::string("Robot's io data structure doesn't contain muscle actuator set: ") + arg_msys.name_));  }
 
@@ -917,6 +917,8 @@ namespace scl {
         musc_name = mus.name_;//For debugging. Useful to know where it failed.
 
         SGraphicsMsys::SGraphicsMuscle gr_musc;//Initialize this and plug it into the msys
+        // Set the static parsed object
+        gr_musc.m_parsed_ = &mus;
 
         std::vector<SMusclePointParsed>::const_iterator it,it2,ite;
         for(it = mus.points_.begin(), ite = mus.points_.end();
@@ -962,7 +964,7 @@ namespace scl {
             cColorf muscleColor(1,0,0,0.5);        //R,G,B,Alpha
             tmp_l->m_colorPointA = muscleColor;
             tmp_l->m_colorPointB = muscleColor;
-            tmp_l->setLineWidth(4.0);
+            tmp_l->setLineWidth(5.0);
             tmp_l->setShowEnabled(true,true);
 
             //Save the line's graphics object
@@ -1351,17 +1353,17 @@ namespace scl {
             rotvec2 = par2->getGlobalRot() * (*(*itmp).pos_next_);//Rotate the point to this frame.
             l->m_pointB = par2->getGlobalPos() + rotvec2; //Translate the rotated position vector from the frame's position.
 
-            // Set the line's color.
-            double tmp_col = msys.muscle_actuator_set_->force_actuator_(i)/msys.muscle_actuator_set_->force_actuator_max_(i);
+            // Set the line's color. Scale to max force generation ability.
+            double tmp_col = msys.muscle_actuator_set_->force_actuator_(i)/itm->m_parsed_->max_isometric_force_;
             if(tmp_col > 0.0)
             {
-              l->m_colorPointA.set(tmp_col, 0.0, 1 - tmp_col);
-              l->m_colorPointB.set(tmp_col, 0.0, 1 - tmp_col);
+              l->m_colorPointA.set(tmp_col, 0.0, 1 - tmp_col);//pow(1 - tmp_col,8));
+              l->m_colorPointB.set(tmp_col, 0.0, 1 - tmp_col);//pow(1 - tmp_col,8));
             }
             else
             {
-              l->m_colorPointA.set(0.0, -tmp_col, 1 + tmp_col);
-              l->m_colorPointB.set(0.0, -tmp_col, 1 + tmp_col);
+              l->m_colorPointA.set(0.0, -tmp_col, 1 + tmp_col);//pow(1 + tmp_col,8));
+              l->m_colorPointB.set(0.0, -tmp_col, 1 + tmp_col);//pow(1 + tmp_col,8));
 #ifdef DEBUG
               std::cerr<<"\nCChaiGraphics::updateGraphicsForMuscles() : Warning : Negative muscle activation at :"<<it->name_;
 #endif

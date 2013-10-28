@@ -42,7 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SObject.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
-#include <scl/actuation/data_structs/SActuatorSetBase.hpp>
+#include <scl/actuation/muscles/data_structs/SActuatorSetMuscle.hpp>
 
 #include <sutil/CMappedList.hpp>
 #include <sutil/CMappedTree.hpp>
@@ -152,6 +152,9 @@ struct SGraphicsMsys : public SObject
 
     /** A set of muscle points to be rendered */
     std::vector<SGraphicsMusclePoint> mpt_;
+
+    /** A pointer to the parsed muscle object */
+    const SMuscleParsed * m_parsed_;
   }; // End of : SGraphicsMuscle
 
   /** A set of muscles to be rendered */
@@ -159,7 +162,7 @@ struct SGraphicsMsys : public SObject
 
   /** A link to the muscle system's actuator set. For rendering
    * muscle activation for different motions */
-  const SActuatorSetBase * muscle_actuator_set_;
+  const SActuatorSetMuscle * muscle_actuator_set_;
 
   /** Constructor specifies type */
   SGraphicsMsys() : SObject("SGraphicsMsys"),

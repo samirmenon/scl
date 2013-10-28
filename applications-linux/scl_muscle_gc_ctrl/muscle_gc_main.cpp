@@ -193,9 +193,7 @@ int main(int argc, char** argv)
       scl::SActuatorSetBase **pact = rob_io_ds->actuators_.actuator_sets_.create(rob_ds->muscle_system_.name_);
       *pact = rob_mset.getData();
       scl::SActuatorSetBase *act = *pact;
-      act->force_actuator_max_.setConstant(rob_mset.getNumberOfMuscles(),2);
-      act->force_actuator_min_.setConstant(rob_mset.getNumberOfMuscles(),0);
-      act->force_actuator_.setConstant(rob_mset.getNumberOfMuscles(),0);
+      act->force_actuator_.setZero(rob_mset.getNumberOfMuscles());
 
       // Run the compute Jacobian function once (resizes the matrix etc.).
       Eigen::MatrixXd rob_muscle_J, rob_muscle_Jpinv;
@@ -292,6 +290,7 @@ int main(int argc, char** argv)
               if(ctrl_ctr%5000 == 0)
               {
                 std::cout<<"\nJ':\n"<<rob_muscle_J.transpose();
+                std::cout<<"\nFgc':"<<rob_io_ds->actuators_.force_gc_commanded_.transpose();
                 std::cout<<"\nFm {";
                 for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
                 { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
