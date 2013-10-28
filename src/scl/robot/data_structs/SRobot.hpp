@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotIO.hpp>
 
 #include <scl/control/task/data_structs/STaskController.hpp>
-#include <scl/control/gc/data_structs/SGcController.hpp>
+#include <scl/control/gc/data_structs/SControllerGc.hpp>
 
 #include <sutil/CMappedList.hpp>
 

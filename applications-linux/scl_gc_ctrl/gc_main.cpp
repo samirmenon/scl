@@ -46,7 +46,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/graphics/chai/CChaiGraphics.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/control/task/CTaskController.hpp>
-#include <scl/control/gc/CGcController.hpp>
+#include <scl/control/gc/CControllerGc.hpp>
 #include <scl/parser/sclparser/CSclParser.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 #include <sutil/CSystemClock.hpp>
@@ -205,11 +205,11 @@ int main(int argc, char** argv)
       flag = tao_dyn.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)); //Reads stuff from the database.
       if(false == flag) { throw(std::runtime_error("Could not initialize dynamics object"));  }
 
-      scl::SGcController * gc_ctrl_ds;
-      gc_ctrl_ds = dynamic_cast<scl::SGcController*>(*(db->s_controller_.controllers_.at(ctrl_name)));
+      scl::SControllerGc * gc_ctrl_ds;
+      gc_ctrl_ds = dynamic_cast<scl::SControllerGc*>(*(db->s_controller_.controllers_.at(ctrl_name)));
       if(S_NULL == gc_ctrl_ds) { throw(std::runtime_error("Could not find the controller in the database"));  }
 
-      scl::CGcController robot_gc_ctrl;
+      scl::CControllerGc robot_gc_ctrl;
       flag = robot_gc_ctrl.init(gc_ctrl_ds,&tao_dyn_int);
       if(false == flag) { throw(std::runtime_error("Could not initialize the controller object"));  }
 

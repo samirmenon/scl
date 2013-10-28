@@ -86,7 +86,7 @@ namespace scl
      * The public init must accept a subclass of SControllerBase as its (pre-initialized)
      * data structure.
      *
-     * See CGcController's implementation for more details.
+     * See CControllerGc's implementation for more details.
      *
      * (has_been_setup_ == true) MUST BE a pre-requisite to running any controller.
      */

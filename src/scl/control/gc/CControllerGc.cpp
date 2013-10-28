@@ -21,7 +21,7 @@ License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
 /*
- * \file CGcController.cpp
+ * \file CControllerGc.cpp
  *
  *  Created on: Dec 29, 2010
  *
@@ -30,7 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <scl/control/gc/CGcController.hpp>
+#include <scl/control/gc/CControllerGc.hpp>
 
 #include <stdexcept>
 #include <iostream>
@@ -38,16 +38,16 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  CGcController::CGcController()
+  CControllerGc::CControllerGc()
   {
     data_ = S_NULL;
   }
 
-  CGcController::~CGcController()
+  CControllerGc::~CControllerGc()
   {}
 
 
-  sBool CGcController::computeControlForces()
+  sBool CControllerGc::computeControlForces()
   {
     //Compute the servo torques
     static Eigen::VectorXd tmp1, tmp2, tmp3;
@@ -75,7 +75,7 @@ namespace scl
     return true;
   }
 
-  sBool CGcController::computeControlForcesPD()
+  sBool CControllerGc::computeControlForcesPD()
   {
     //Compute the servo generalized forces :
     //F_gc_star = M(q) (-kp(q-q_des)-kv(dq/dt)) + b(q,dq/dt) + g(q)
@@ -100,7 +100,7 @@ namespace scl
     return true;
   }
 
-  sBool CGcController::computeControlForcesPIDA(const sFloat arg_time)
+  sBool CControllerGc::computeControlForcesPIDA(const sFloat arg_time)
   {
     // Take a time step
     data_->integral_gain_time_pre_ = data_->integral_gain_time_curr_;
@@ -145,7 +145,7 @@ namespace scl
     return true;
   }
 
-  sBool CGcController::computeFloatForces()
+  sBool CControllerGc::computeFloatForces()
   {
     //Compute the servo generalized forces : Gravity compensation + damping
     //F_gc_star = M(q) (-kp(q-q_des)-kv(dq/dt)) + b(q,dq/dt) + g(q)
@@ -174,17 +174,17 @@ namespace scl
     return true;
   }
 
-  sBool CGcController::computeDynamics()
+  sBool CControllerGc::computeDynamics()
   {
     bool flag = dynamics_->computeGCModel(&(data_->io_data_->sensors_),&(data_->gc_model_));
     return flag;
   }
 
-  const Eigen::VectorXd* CGcController::getControlForces()
+  const Eigen::VectorXd* CControllerGc::getControlForces()
   { return static_cast<const Eigen::VectorXd*>(& (data_->des_force_gc_)); }
 
 
-  sBool CGcController::init(SControllerBase* arg_data,
+  sBool CControllerGc::init(SControllerBase* arg_data,
       scl::CDynamicsBase* arg_dynamics)
   {
     try
@@ -197,7 +197,7 @@ namespace scl
       if(false==arg_data->has_been_init_)
       { throw(std::runtime_error("Uninitialized data structure passed."));  }
       //This ensures that the passed data was properly initialized for gc controllers.
-      data_ = dynamic_cast<SGcController*>(arg_data);
+      data_ = dynamic_cast<SControllerGc*>(arg_data);
 
       if(NULL==arg_dynamics)
       { throw(std::runtime_error("NULL dynamics object passed."));  }
@@ -252,12 +252,12 @@ namespace scl
     catch(std::exception& e)
     {
       has_been_init_ = false;
-      std::cout<<"\nCGcController::init() Error : "<<e.what();
+      std::cout<<"\nCControllerGc::init() Error : "<<e.what();
     }
     return has_been_init_;
   }
 
-  sBool CGcController::reset()
+  sBool CControllerGc::reset()
   {
     data_ = S_NULL;
     dynamics_ = S_NULL;

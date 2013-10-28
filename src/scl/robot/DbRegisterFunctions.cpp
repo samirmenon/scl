@@ -42,7 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotIO.hpp>
 
 #include <scl/control/data_structs/SControllerBase.hpp>
-#include <scl/control/gc/CGcController.hpp>
+#include <scl/control/gc/CControllerGc.hpp>
 #include <scl/control/task/CTaskController.hpp>
 
 #include <scl/control/task/data_structs/STaskBase.hpp>
@@ -265,16 +265,16 @@ namespace scl_registry
     return tmp_gr;
   }
 
-  scl::SGcController * parseGcController(const std::string &arg_file,
+  scl::SControllerGc * parseGcController(const std::string &arg_file,
       const std::string &arg_robot_name,
       const std::string &arg_ctrl_name,
       scl_parser::CParserBase *arg_parser)
   {
     //Will fill in information from a file into this. It will never be
     //completely initialized.
-    scl::SGcController tmp_ctrl;
+    scl::SControllerGc tmp_ctrl;
     //Will be initialized (with the init function) and will be returned.
-    scl::SGcController* ret_ctrl= S_NULL;
+    scl::SControllerGc* ret_ctrl= S_NULL;
     scl::SDatabase* db;
     bool flag;
     try
@@ -295,7 +295,7 @@ namespace scl_registry
         throw (std::runtime_error(err.c_str()));
       }
 
-      ret_ctrl = new scl::SGcController();
+      ret_ctrl = new scl::SControllerGc();
       if(NULL == ret_ctrl)
       { throw (std::runtime_error("Could not allocate the data structure."));  }
 
@@ -308,7 +308,7 @@ namespace scl_registry
       { throw (std::runtime_error("Could not initialize the controller's data structure."));  }
 
       //Now register the data structure with the database
-      ret_ctrl->type_ctrl_ds_ = "SGcController";
+      ret_ctrl->type_ctrl_ds_ = "SControllerGc";
 
       scl::SControllerBase** ret = db->s_controller_.controllers_.create(ret_ctrl->name_,ret_ctrl);
       if(NULL == ret)
@@ -585,7 +585,7 @@ namespace scl_registry
 
   /**
    * Registers the native dynamic types:
-   *  1. CControllerBase subclasses : CGcController, CTaskController
+   *  1. CControllerBase subclasses : CControllerGc, CTaskController
    *  2. CTaskBase subclasses : CTaskOpPos, CGcTask, CFrameTrackTask, CContactTask
    */
   scl::sBool registerNativeDynamicTypes()
@@ -593,9 +593,9 @@ namespace scl_registry
     bool flag;
     try
     {
-      sutil::CDynamicType<std::string,scl::CGcController> typeCGc(std::string("CGcController"));
+      sutil::CDynamicType<std::string,scl::CControllerGc> typeCGc(std::string("CControllerGc"));
       flag = typeCGc.registerType();
-      if(false == flag) {throw(std::runtime_error("CGcController"));}
+      if(false == flag) {throw(std::runtime_error("CControllerGc"));}
 
       sutil::CDynamicType<std::string,scl::CTaskController> typeCTask(std::string("CTaskController"));
       flag = typeCTask.registerType();

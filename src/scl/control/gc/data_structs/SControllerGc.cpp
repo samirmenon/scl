@@ -21,7 +21,7 @@ License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
 /*
- * \file SGcController.cpp
+ * \file SControllerGc.cpp
  *
  *  Created on: Dec 29, 2010
  *
@@ -30,7 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "SGcController.hpp"
+#include "SControllerGc.hpp"
 
 #include <vector>
 #include <list>
@@ -42,12 +42,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  SGcController::SGcController() : SControllerBase(),
+  SControllerGc::SControllerGc() : SControllerBase(),
       integral_gain_time_pre_(-1), integral_gain_time_curr_(-1),
       integral_gain_time_constt_(-1), integral_gain_time_max_(-1)
   {}
 
-  bool SGcController::init(const std::string & arg_controller_name,
+  bool SControllerGc::init(const std::string & arg_controller_name,
       SRobotParsed* arg_robot_ds,
       SRobotIO* arg_robot_io_ds,
       /* The remaining variables initialize the gc controller */
@@ -137,13 +137,13 @@ namespace scl
       des_dq_.setZero(dof);
       des_ddq_.setZero(dof);
 
-      type_ = "SGcController";
+      type_ = "SControllerGc";
 
       has_been_init_ = true;
     }
     catch(std::exception& e)
     {
-      std::cerr<<"\nSGcController::init() : "<<e.what();
+      std::cerr<<"\nSControllerGc::init() : "<<e.what();
 
       //Even if it was half-initialized, it might be in an invalid state now.
       //So, we will keep the past values for error handling / debugging.

@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/robot/CRobot.hpp>
 
 #include <scl/control/data_structs/SControllerBase.hpp>
-#include <scl/control/gc/CGcController.hpp>
+#include <scl/control/gc/CControllerGc.hpp>
 #include <scl/control/task/CTaskController.hpp>
 
 #include <sutil/CSystemClock.hpp>
@@ -377,8 +377,8 @@ namespace scl
       }
 
       //Allocate an appropriate controller based on the passed data structure's type. NOTE TODO : Update with dynamic typing
-      if(arg_ctrl_ds->type_ctrl_ds_ == "SGcController")
-      { tmp_ctrl = new CGcController();  }
+      if(arg_ctrl_ds->type_ctrl_ds_ == "SControllerGc")
+      { tmp_ctrl = new CControllerGc();  }
       else if(arg_ctrl_ds->type_ctrl_ds_ == "STaskController")
       { tmp_ctrl = new CTaskController(); }
       else
@@ -530,9 +530,9 @@ namespace scl
 
     //Controllers may either be gc, in which case they have
     //only one set of gains.
-    if("SGcController" == ctrl->getType())
+    if("SControllerGc" == ctrl->getType())
     {
-      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      SControllerGc* ctrlgc = dynamic_cast<SControllerGc*>(ctrl);
       ret_gains = ctrlgc->kp_;
       return true;
     }
@@ -577,9 +577,9 @@ namespace scl
 
     //Controllers may either be gc, in which case they have
     //only one set of gains.
-    if("SGcController" == ctrl->getType())
+    if("SControllerGc" == ctrl->getType())
     {
-      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      SControllerGc* ctrlgc = dynamic_cast<SControllerGc*>(ctrl);
       ret_gains = ctrlgc->kv_;
       return true;
     }
@@ -624,9 +624,9 @@ namespace scl
 
     //Controllers may either be gc, in which case they have
     //only one set of gains.
-    if("SGcController" == ctrl->getType())
+    if("SControllerGc" == ctrl->getType())
     {
-      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      SControllerGc* ctrlgc = dynamic_cast<SControllerGc*>(ctrl);
       ret_gains = ctrlgc->ki_;
       return true;
     }
@@ -668,9 +668,9 @@ namespace scl
 
     //Controllers may either be gc, in which case they have
     //only one set of gains.
-    if("SGcController" == ctrl->getType())
+    if("SControllerGc" == ctrl->getType())
     {
-      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      SControllerGc* ctrlgc = dynamic_cast<SControllerGc*>(ctrl);
       ctrlgc->kp_ = arg_kp;
       return true;
     }
@@ -711,9 +711,9 @@ namespace scl
 
     //Controllers may either be gc, in which case they have
     //only one set of gains.
-    if("SGcController" == ctrl->getType())
+    if("SControllerGc" == ctrl->getType())
     {
-      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      SControllerGc* ctrlgc = dynamic_cast<SControllerGc*>(ctrl);
       ctrlgc->kv_ = arg_kv;
       return true;
     }
@@ -754,9 +754,9 @@ namespace scl
 
     //Controllers may either be gc, in which case they have
     //only one set of gains.
-    if("SGcController" == ctrl->getType())
+    if("SControllerGc" == ctrl->getType())
     {
-      SGcController* ctrlgc = dynamic_cast<SGcController*>(ctrl);
+      SControllerGc* ctrlgc = dynamic_cast<SControllerGc*>(ctrl);
       ctrlgc->ki_ = arg_ki;
       return true;
     }

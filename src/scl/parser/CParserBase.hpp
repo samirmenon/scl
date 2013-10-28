@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/data_structs/SMuscleSetParsed.hpp>
 
-#include <scl/control/gc/data_structs/SGcController.hpp>
+#include <scl/control/gc/data_structs/SControllerGc.hpp>
 #include <scl/control/task/data_structs/STaskController.hpp>
 
 #include <string>
@@ -137,7 +137,7 @@ namespace scl_parser
     virtual bool readGcControllerFromFile(const std::string &arg_file,
         const std::string &arg_ctrl_name,
         std::string &arg_must_use_robot,
-        scl::SGcController& arg_ctrl)
+        scl::SControllerGc& arg_ctrl)
     { return false; }
 
     /** Optional: The subclass may support parsing task controller

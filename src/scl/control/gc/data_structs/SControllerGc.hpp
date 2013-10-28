@@ -21,7 +21,7 @@ License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
 /*
- * \file SGcController.hpp
+ * \file SControllerGc.hpp
  *
  *  Created on: Dec 29, 2010
  *
@@ -30,8 +30,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef SGCCONTROLLER_HPP_
-#define SGCCONTROLLER_HPP_
+#ifndef SCONTROLLERGC_HPP_
+#define SCONTROLLERGC_HPP_
 
 #include <vector>
 #include <list>
@@ -52,7 +52,7 @@ namespace scl
    * Supports dynamically decoupled control, which is equivalent to controlling
    * a unit mass in the generalized coordinates.
    */
-  class SGcController : public SControllerBase
+  class SControllerGc : public SControllerBase
   {
   public:
     /** Desired generalized coordinate forces (usually joint torques) */
@@ -97,7 +97,7 @@ namespace scl
      *              Initialization Functions
      * ******************************************************** */
     /** Constructor. Does nothing */
-    SGcController();
+    SControllerGc();
 
     /* Initialization function. Sets all the control parameters */
     sBool init(const std::string & arg_controller_name,

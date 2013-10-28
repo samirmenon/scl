@@ -21,7 +21,7 @@ License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
 /*
- * \file CGcController.hpp
+ * \file CControllerGc.hpp
  *
  *  Created on: Dec 29, 2010
  *
@@ -30,14 +30,14 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CGCCONTROLLER_HPP_
-#define CGCCONTROLLER_HPP_
+#ifndef CCONTROLLERGC_HPP_
+#define CCONTROLLERGC_HPP_
 
 #include <scl/DataTypes.hpp>
 
 #include <scl/control/CControllerBase.hpp>
 
-#include <scl/control/gc/data_structs/SGcController.hpp>
+#include <scl/control/gc/data_structs/SControllerGc.hpp>
 
 namespace scl
 {
@@ -52,17 +52,17 @@ namespace scl
    * Moreover, for redundant robots, such trajectories are energy sub-optimal
    * and require controlling motor task null spaces, which may be superfluous.
    */
-  class CGcController : public scl::CControllerBase
+  class CControllerGc : public scl::CControllerBase
   {
   public:
     /* ******************************************************************
      *                        CControllerBase API
      * ****************************************************************** */
     /** The constructor does nothing */
-    CGcController();
+    CControllerGc();
 
     /** The destructor does nothing */
-    virtual ~CGcController();
+    virtual ~CControllerGc();
 
     /** [PDA] : Computes generalized coordinate forces. Uses position,
      * velocity and acceleration set points and gains.
@@ -133,9 +133,9 @@ namespace scl
 
   protected:
 
-    SGcController* data_;
+    SControllerGc* data_;
   };
 
 }
 
-#endif /* CGCCONTROLLER_HPP_ */
+#endif /* CCONTROLLERGC_HPP_ */

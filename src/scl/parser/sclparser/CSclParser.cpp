@@ -1138,7 +1138,7 @@ bool CSclParser::listControllersInFile(const std::string &arg_file,
 bool CSclParser::readGcControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
       std::string &arg_must_use_robot,
-      scl::SGcController& arg_ctrl)
+      scl::SControllerGc& arg_ctrl)
 {
   bool flag;
   try

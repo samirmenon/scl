@@ -42,8 +42,8 @@ SET(ROBOT_SRC ${SCL_INC_DIR}/robot/CRobot.cpp
    )
 
 SET(CTR_SRC ${SCL_INC_DIR}/control/data_structs/SControllerBase.cpp
-            ${SCL_INC_DIR}/control/gc/data_structs/SGcController.cpp
-            ${SCL_INC_DIR}/control/gc/CGcController.cpp
+            ${SCL_INC_DIR}/control/gc/data_structs/SControllerGc.cpp
+            ${SCL_INC_DIR}/control/gc/CControllerGc.cpp
             ${SCL_INC_DIR}/control/task/data_structs/SServo.cpp
             ${SCL_INC_DIR}/control/task/data_structs/STaskBase.cpp
             ${SCL_INC_DIR}/control/task/data_structs/SNonControlTaskBase.cpp
