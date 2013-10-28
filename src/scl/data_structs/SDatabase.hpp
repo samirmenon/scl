@@ -44,7 +44,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SMuscleSetParsed.hpp>
 
-#include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>
+#include <scl/graphics/chai/data_structs/SGraphicsChai.hpp>
 
 //3rdparty Utils
 #include <sutil/CMappedList.hpp>
@@ -185,7 +185,7 @@ struct SGuiData
    * matrix (from the previous link) must be continuously updated as the joint
    * angles change.
    */
-  sutil::CMappedList<std::string,scl::SChaiGraphics> chai_data_;
+  sutil::CMappedList<std::string,scl::SGraphicsChai> chai_data_;
 
   /** Users may use these ui points in their controller for keyboard based control */
   Eigen::Vector3d ui_point_[SCL_NUM_UI_POINTS];

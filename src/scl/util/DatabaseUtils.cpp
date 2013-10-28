@@ -97,7 +97,7 @@ namespace scl_util
       }
       catch(std::exception& ee)
       {
-        std::cerr<<"\nCChaiGraphics::addMeshToRender() : "<<ee.what();
+        std::cerr<<"\nCGraphicsChai::addMeshToRender() : "<<ee.what();
         return false;
       }
       return true;

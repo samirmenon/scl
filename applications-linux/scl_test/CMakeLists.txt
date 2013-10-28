@@ -58,7 +58,7 @@ SET(ALL_SRC ${TEST_BASE_DIR}scl_test.cpp
             ${TEST_BASE_DIR}test_robot_controller.cpp 
             ${TEST_BASE_DIR}test_graphics.cpp
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
-            ${SCL_INC_DIR}/graphics/chai/CChaiGraphics.cpp 
+            ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp 
             ${SCL_INC_DIR}/dynamics/scl/CDynamicsScl.cpp)
 

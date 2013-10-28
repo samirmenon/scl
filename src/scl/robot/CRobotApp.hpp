@@ -39,7 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
 
 #ifdef GRAPHICS_ON
-#include <scl/graphics/chai/CChaiGraphics.hpp>
+#include <scl/graphics/chai/CGraphicsChai.hpp>
 #endif
 
 namespace scl
@@ -192,7 +192,7 @@ namespace scl
     //Graphics stuff
 #ifdef GRAPHICS_ON
     std::vector<std::string> graphics_parsed_; //Parsed graphics views
-    scl::CChaiGraphics chai_gr_;         //Generic chai graphics
+    scl::CGraphicsChai chai_gr_;         //Generic chai graphics
     scl::sLongLong gr_ctr_;              //Graphic update counter
     timespec ts_;                       //Sleep for graphics (nanoseconds)
     int gr_frm_skip_;                   //Graphics frames to skip (single-threaded mode)

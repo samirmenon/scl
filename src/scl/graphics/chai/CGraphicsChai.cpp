@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CChaiGraphics.cpp
+/* \file CGraphicsChai.cpp
  *
  *  Created on: Aug 26, 2010
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "CChaiGraphics.hpp"
+#include "CGraphicsChai.hpp"
 
 #include <scl/Singletons.hpp>
 
@@ -49,7 +49,7 @@ namespace scl {
   const sFloat CHAI_SPHERE_MUSC_VIA_RADIUS = 0.008; //m
   const sFloat CHAI_MUSC_THICKNESS = 10; //pixels
 
-  sBool CChaiGraphics::initGraphics(
+  sBool CGraphicsChai::initGraphics(
       const std::string & arg_graphics_name)
   {
     SDatabase* db=S_NULL;
@@ -94,7 +94,7 @@ namespace scl {
       data_parsed_ = db->s_parser_.graphics_worlds_.at(arg_graphics_name);
       if(S_NULL==data_parsed_)
       {
-        std::cout<<"\nCChaiGraphics::initGraphics() : Warning. Couldn't find the graphics' settings in the database. Setting to defaults.";
+        std::cout<<"\nCGraphicsChai::initGraphics() : Warning. Couldn't find the graphics' settings in the database. Setting to defaults.";
 
         //Set the background color (R,G,B) to black.
         data_->chai_world_->setBackgroundColor(0.0, 0.0, 0.0);
@@ -179,7 +179,7 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::initGraphics() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::initGraphics() : "<<ee.what();
       if(S_NULL!= data_->chai_cam_)
       {
         delete data_->chai_cam_;
@@ -204,7 +204,7 @@ namespace scl {
     return true;
   }
 
-  sBool CChaiGraphics::destroyGraphics()
+  sBool CGraphicsChai::destroyGraphics()
   {
     try
     {
@@ -230,13 +230,13 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::destroyGraphics() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::destroyGraphics() : "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::addRobotToRender(const std::string& arg_robot)
+  sBool CGraphicsChai::addRobotToRender(const std::string& arg_robot)
   {
     const SRigidBody * tmp_root_link = S_NULL;
     SGraphicsPhysicalLink* robot_brrep_root = S_NULL;
@@ -333,7 +333,7 @@ namespace scl {
         delete robot_brrep_root->graphics_obj_;
         robot_brrep_root->graphics_obj_ = S_NULL;
       }
-      std::cerr<<"\nCChaiGraphics::addRobotToRender() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addRobotToRender() : "<<ee.what();
       return false;
     }
     return true;
@@ -344,7 +344,7 @@ namespace scl {
    * A robot is defined as:
    * 1. Anything whose dynamics are integrated by the physics simulator
    * 2. Any real world entity subject to the laws of physics */
-  sBool CChaiGraphics::removeRobotFromRender(const std::string& arg_robot)
+  sBool CGraphicsChai::removeRobotFromRender(const std::string& arg_robot)
   {
     bool flag;
     try
@@ -378,13 +378,13 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::removeRobotFromRender() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::removeRobotFromRender() : "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::addRobotLink(SGraphicsPhysicalLink* arg_link)
+  sBool CGraphicsChai::addRobotLink(SGraphicsPhysicalLink* arg_link)
   {
     try
     {
@@ -650,13 +650,13 @@ namespace scl {
         delete arg_link->graphics_obj_;
         arg_link->graphics_obj_ = S_NULL;
       }
-      std::cerr<<"\nCChaiGraphics::addRobotLink() : Link="<<arg_link->robot_link_->name_<<", "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addRobotLink() : Link="<<arg_link->robot_link_->name_<<", "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::addMeshToRender(const std::string& arg_mesh_name,
+  sBool CGraphicsChai::addMeshToRender(const std::string& arg_mesh_name,
       const std::string& arg_mesh_file, const Eigen::Vector3d& arg_pos,
       const Eigen::Matrix3d& arg_rot)
   {
@@ -702,13 +702,13 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::addMeshToRender() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addMeshToRender() : "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::addMeshToParentInRender(const std::string& arg_mesh_name,
+  sBool CGraphicsChai::addMeshToParentInRender(const std::string& arg_mesh_name,
       const std::string& arg_parent_name,
       const std::string& arg_mesh_file, const Eigen::Vector3d& arg_pos,
       const Eigen::Matrix3d& arg_rot)
@@ -761,7 +761,7 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::addMeshToRender() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addMeshToRender() : "<<ee.what();
       return false;
     }
     return true;
@@ -771,7 +771,7 @@ namespace scl {
    *
    * A mesh is defined as anything that DOESN"T obey the laws of
    * physics. It is merely rendered (possibly with collision etc). */
-  sBool CChaiGraphics::removeMeshFromRender(const std::string& arg_mesh_name)
+  sBool CGraphicsChai::removeMeshFromRender(const std::string& arg_mesh_name)
   {
     bool flag;
     try
@@ -795,13 +795,13 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::removeMeshFromRender() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::removeMeshFromRender() : "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::scaleMesh(const std::string& arg_mesh_name,
+  sBool CGraphicsChai::scaleMesh(const std::string& arg_mesh_name,
       sFloat arg_x, sFloat arg_y, sFloat arg_z)
   {
     try
@@ -825,13 +825,13 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::scaleMesh() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::scaleMesh() : "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::addMusclesToRender(
+  sBool CGraphicsChai::addMusclesToRender(
       const std::string& arg_robot,
       const std::string& arg_msys,
       const sBool add_musc_via_points)
@@ -860,7 +860,7 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys<<") : "<<musc_name<<" : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys<<") : "<<musc_name<<" : "<<ee.what();
       return false;
     }
     return true;
@@ -868,7 +868,7 @@ namespace scl {
 
 
 
-  sBool CChaiGraphics::addMusclesToRender(
+  sBool CGraphicsChai::addMusclesToRender(
       const std::string& arg_robot,
       const SMuscleSetParsed& arg_msys,
       const sBool add_musc_via_points)
@@ -929,7 +929,7 @@ namespace scl {
           SGraphicsPhysicalLink* gr_lnk = rob_gr->at((*it).parent_link_);
           if(S_NULL == gr_lnk)
           {
-            std::cout<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle: "
+            std::cout<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle: "
                 <<musc_name<<". Missing parent link: "<<(*it).parent_link_;
             continue;
           }
@@ -947,7 +947,7 @@ namespace scl {
             SGraphicsPhysicalLink* gr_lnk2 = rob_gr->at((*it2).parent_link_);
             if(S_NULL == gr_lnk2)
             {
-              std::cout<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle upcoming : "
+              std::cout<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle upcoming : "
                   <<musc_name<<". Missing parent link: "<<(*it2).parent_link_;
               continue;
             }
@@ -986,7 +986,7 @@ namespace scl {
               gr_mpt.graphics_parent_->graphics_obj_->addChild(gr_mpt.graphics_via_point_);
             }
             else
-            { std::cerr<<"\nCChaiGraphics::addMusclesToRender(): WARNING: Inconsistent muscle via point state.";  }
+            { std::cerr<<"\nCGraphicsChai::addMusclesToRender(): WARNING: Inconsistent muscle via point state.";  }
           }
 
           //Add the point to the muscle
@@ -1004,7 +1004,7 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::addMusclesToRender("<<arg_msys.name_<<") : "<<musc_name<<" : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys.name_<<") : "<<musc_name<<" : "<<ee.what();
       if(NULL != msys_gr)
       { data_->muscles_rendered_.erase(arg_msys.name_); }
       return false;
@@ -1013,7 +1013,7 @@ namespace scl {
   }
 
 
-  sBool CChaiGraphics::addSphereToRender(
+  sBool CGraphicsChai::addSphereToRender(
         const std::string& arg_robot,
         const std::string& arg_link,
         const Eigen::Vector3d& arg_pos,
@@ -1054,13 +1054,13 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::addSphereToRender("<<arg_robot<<") : "<<arg_link<<" : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addSphereToRender("<<arg_robot<<") : "<<arg_link<<" : "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::addSphereToRender(
+  sBool CGraphicsChai::addSphereToRender(
         const Eigen::Vector3d& arg_pos,
         cGenericObject*& arg_ret_ptr,
         const sFloat arg_size)
@@ -1085,13 +1085,13 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::addSphereToRender(no-robot) : global-frame : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addSphereToRender(no-robot) : global-frame : "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::addBeltedEllipsoidToRender(
+  sBool CGraphicsChai::addBeltedEllipsoidToRender(
       const Eigen::Vector3d& arg_pos,
       cGenericObject*& arg_ret_ptr,
       const sFloat arg_size)
@@ -1118,13 +1118,13 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::addSphereToRender(no-robot) : global-frame : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addSphereToRender(no-robot) : global-frame : "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::updateGraphics()
+  sBool CGraphicsChai::updateGraphics()
   {
     bool flag = true;
 #ifdef DEBUG
@@ -1151,14 +1151,14 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::updateGraphics() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::updateGraphics() : "<<ee.what();
       return false;
     }
 #endif
     return flag;
   }
 
-  sBool CChaiGraphics::updateGraphicsForRobots()
+  sBool CGraphicsChai::updateGraphicsForRobots()
   {
     try
     {
@@ -1293,13 +1293,13 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::updateGraphicsForRobots() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::updateGraphicsForRobots() : "<<ee.what();
       return false;
     }
     return true;
   }
 
-  sBool CChaiGraphics::updateGraphicsForMuscles()
+  sBool CGraphicsChai::updateGraphicsForMuscles()
   {
     try
     {
@@ -1343,7 +1343,7 @@ namespace scl {
             cGenericObject *par2 = mp.graphics_parent_next_->graphics_obj_;
             cShapeLine* l = dynamic_cast<cShapeLine*>(itmp->graphics_via_line_);
             if(NULL == l)
-            { std::cerr<<"\nCChaiGraphics::updateGraphicsForMuscles() : Error : Could not obtain muscle line graphics object at :"<<it->name_; }
+            { std::cerr<<"\nCGraphicsChai::updateGraphicsForMuscles() : Error : Could not obtain muscle line graphics object at :"<<it->name_; }
 
             // Rotate the line's end points.
             cVector3d rotvec, rotvec2;
@@ -1365,7 +1365,7 @@ namespace scl {
               l->m_colorPointA.set(0.0, -tmp_col, 1 + tmp_col);//pow(1 + tmp_col,8));
               l->m_colorPointB.set(0.0, -tmp_col, 1 + tmp_col);//pow(1 + tmp_col,8));
 #ifdef DEBUG
-              std::cerr<<"\nCChaiGraphics::updateGraphicsForMuscles() : Warning : Negative muscle activation at :"<<it->name_;
+              std::cerr<<"\nCGraphicsChai::updateGraphicsForMuscles() : Warning : Negative muscle activation at :"<<it->name_;
 #endif
             }
           }
@@ -1375,7 +1375,7 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCChaiGraphics::updateGraphicsForMuscles() : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::updateGraphicsForMuscles() : "<<ee.what();
       return false;
     }
     return true;

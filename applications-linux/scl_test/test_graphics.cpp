@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CSclParser.hpp>
-#include <scl/graphics/chai/CChaiGraphics.hpp>
+#include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 
@@ -155,7 +155,7 @@ namespace scl_test
 
       /******************************Chai Initialization************************************/
       //3. Initialize a chai graphics object
-      CChaiGraphics chai_gr;
+      CGraphicsChai chai_gr;
       flag = chai_gr.initGraphics(gr_ds->name_);
       if(false==flag)
       { throw(std::runtime_error("Couldn't initialize chai graphics")); }

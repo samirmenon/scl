@@ -44,7 +44,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <sutil/CSingleton.hpp>
 
 #include "chai3d.h"
-#include <scl/graphics/chai/CChaiGraphics.hpp>
+#include <scl/graphics/chai/CGraphicsChai.hpp>
 
 #include <string>
 #include <iostream>
@@ -63,7 +63,7 @@ namespace scl_chai_glut_interface
     static const scl::sUInt OPTION_WINDOWDISPLAY=1;
     static const scl::sUInt OPTION_TOGGLE_MOUSE_CAM_SELECT=2;
 
-    scl::SChaiGraphics* GLOB_chaiDbptr;
+    scl::SGraphicsChai* GLOB_chaiDbptr;
 
     //Window information (and thus not stored in the
     //graphics--unlike the GL width and height)
@@ -77,7 +77,7 @@ namespace scl_chai_glut_interface
     /** Dynamic positioning for the camera lookat */
     scl::sFloat cam_lookat_x_, cam_lookat_y_, cam_lookat_z_;
 
-    scl::CChaiGraphics *chai_glut;
+    scl::CGraphicsChai *chai_glut;
 
     scl::sBool chai_glut_running;
 
@@ -94,7 +94,7 @@ namespace scl_chai_glut_interface
   // DECLARED FUNCTIONS
   //---------------------------------------------------------------------------
   bool initializeGlutForChai(const std::string & arg_graphics_name,
-      scl::CChaiGraphics *arg_chai_glut);
+      scl::CGraphicsChai *arg_chai_glut);
 
   // callback when the window display is resized
   void resizeWindow(int w, int h);

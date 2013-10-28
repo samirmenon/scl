@@ -43,7 +43,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/graphics/chai/CChaiGraphics.hpp>
+#include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/gc/CControllerGc.hpp>
@@ -184,7 +184,7 @@ int main(int argc, char** argv)
       /******************************ChaiGlut Graphics************************************/
       glutInit(&argc, argv);
 
-      scl::CChaiGraphics chai_gr;
+      scl::CGraphicsChai chai_gr;
       flag = chai_gr.initGraphics(graphics_names[0]);
       if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
 

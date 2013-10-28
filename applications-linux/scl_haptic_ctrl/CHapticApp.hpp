@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/control/task/tasks/CTaskComPos.hpp>
 
-#include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>
+#include <scl/graphics/chai/data_structs/SGraphicsChai.hpp>
 
 #include <scl/haptics/chai/CChaiHaptics.hpp>
 

@@ -66,7 +66,7 @@ namespace scl_chai_glut_interface
    * Picks the passed chai definition (by string name) on the pile
    */
   bool initializeGlutForChai(const std::string & arg_graphics_name,
-      scl::CChaiGraphics *arg_chai_glut)
+      scl::CGraphicsChai *arg_chai_glut)
   {
     try
     {

@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CChaiGraphics.hpp
+/* \file CGraphicsChai.hpp
  *
  *  Created on: Aug 26, 2010
  *
@@ -28,14 +28,14 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
-#ifndef CCHAIGRAPHICS_HPP_
-#define CCHAIGRAPHICS_HPP_
+#ifndef CGRAPHICSCHAI_HPP_
+#define CGRAPHICSCHAI_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
 
 #include <scl/data_structs/SGraphicsParsed.hpp>
-#include <scl/graphics/chai/data_structs/SChaiGraphics.hpp>
+#include <scl/graphics/chai/data_structs/SGraphicsChai.hpp>
 #include <scl/graphics/CGraphicsBase.hpp>
 
 #include <string>
@@ -45,7 +45,7 @@ namespace scl {
 /** This is the interface for using chai graphics.
  *
  * Enables rendering arbitrary scl robots. */
-class CChaiGraphics : public CGraphicsBase
+class CGraphicsChai : public CGraphicsBase
 {
 public:
   /********************************************************
@@ -80,7 +80,7 @@ public:
    * for different robots, and allows turning them on or off one-by-one.
    *
    * Also, since we maintain different trees (chai, dynamics, parser-data etc..), we
-   * need some way to connect nodes between them. Each "SChaiGraphics data_" stores
+   * need some way to connect nodes between them. Each "SGraphicsChai data_" stores
    * a pilemap of such trees in
    * sutil::CMappedList< string, sutil::CMappedTree<string, SGraphicsPhysicalLink> >
    * where the SGraphicsPhysicalLink object allows accessing links in all the different
@@ -219,20 +219,20 @@ public:
   virtual sBool updateGraphicsForMuscles();
 
   /** Default constructor. Sets stuff to NULL. */
-  CChaiGraphics() : CGraphicsBase()
+  CGraphicsChai() : CGraphicsBase()
   { data_ = S_NULL; data_parsed_ = S_NULL; }
 
   /** Default destructor. Does nothing */
-  virtual ~CChaiGraphics(){}
+  virtual ~CGraphicsChai(){}
 
-  SChaiGraphics* getChaiData()
+  SGraphicsChai* getChaiData()
   { return data_; }
 
   SGraphicsParsed* getParsedData()
   { return data_parsed_;  }
 
 protected:
-  SChaiGraphics* data_;
+  SGraphicsChai* data_;
   SGraphicsParsed* data_parsed_;
 };
 

@@ -43,7 +43,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
-#include <scl/graphics/chai/CChaiGraphics.hpp>
+#include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/robot/CRobot.hpp>
 #include <sutil/CSystemClock.hpp>
@@ -147,7 +147,7 @@ namespace scl_app
     scl::SRobotIO* rob_io_ds[2];       //Access the robot's sensors and actuators
 
     scl::CTaoDynamics* tao_dyn[2];          //Generic tao dynamics
-    scl::CChaiGraphics chai_gr;         //Generic chai graphics
+    scl::CGraphicsChai chai_gr;         //Generic chai graphics
 
     scl::sLongLong ctrl_ctr;            //Controller computation counter
     scl::sLongLong gr_ctr;              //Controller computation counter

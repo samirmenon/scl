@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SChaiGraphics.hpp
+/* \file SGraphicsChai.hpp
  *
  *  Created on: Aug 6, 2010
  *
@@ -28,8 +28,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
-#ifndef SCHAIGRAPHICS_HPP_
-#define SCHAIGRAPHICS_HPP_
+#ifndef SGRAPHICSCHAI_HPP_
+#define SGRAPHICSCHAI_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
@@ -168,7 +168,7 @@ struct SGraphicsMsys : public SObject
  * renders a mesh with each.
  *
  * NOTE : Chai deletes its own data. */
-class SChaiGraphics : public SObject
+class SGraphicsChai : public SObject
 {
 public:
   /**
@@ -206,7 +206,7 @@ public:
   sFloat running_;
 
   /** Constructor : Sets stuff to NULL. */
-  SChaiGraphics() : SObject(std::string("SChaiGraphics"))
+  SGraphicsChai() : SObject(std::string("SGraphicsChai"))
   {
     chai_cam_ = S_NULL;
     chai_world_ = S_NULL;
