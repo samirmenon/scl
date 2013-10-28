@@ -60,6 +60,7 @@ namespace scl
    * formulation of the muscle length gradient (Jacobian) matrix.
    * Computing the model pair-wise between gc crossing via-points
    * reduces the worst case complexity to O(n*2*k), where k are the
+   * gcs spanned by successive via-points.
    *
    * NOTE : This doesn't accommodate muscle via points that slide
    * across surfaces. While those are more biologically realistic,
@@ -72,11 +73,23 @@ namespace scl
     /* *****************************************************************
      *                        Actuation Model
      * ***************************************************************** */
-    /** Some actuator sets don't directly actuate the generalized coordinates
-     * and require a Jacobian to compute their contribution to the generalized
-     * forces.
+    /** Computes the contribution of a single muscle to the entire Jacobian.
      *
-     * Each actuator instance must implement this.
+     * Note for modeling biological musculoskeletal systems:
+     * Formulation is on a gc-by-gc basis. Ie. The muscle is considered piece-
+     * wise linear and each piece's contribution is measured independently.
+     * This is an approximation, but more detailed continuous models are hard
+     * to validate experimentally. Moreover, given the variability introduced
+     * by canonical musculoskeletal scaling, the errors introduced by piece-
+     * wise length gradients are probably within the envelope of experimental
+     * error. This demands biological investigation on a subject-by-subject
+     * basis.
+     *
+     * δl = J . δq          || l = muscle len. q = gen coord. J = row in Jm
+     * δli = J(i) . δq(i)   || δli = change across muscle's i'th spanned gc
+     * li = |x_fixed + x_pre_gc - (x_fixed+xpost_gc)| || Part of muscle doesn't
+     *                                                   move. || = L2 norm
+     * δli/δq(i) = δ(|x_pre_gc - xpost_gc|)/δq(i)     || Gradient wrt. q(i)
      *
      * NOTE TODO : This can be greatly improved by computing Jacobians wrt.
      * the parent link instead of wrt. the root node. Massive performance hit.
