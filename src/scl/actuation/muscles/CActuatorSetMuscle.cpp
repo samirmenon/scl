@@ -117,7 +117,6 @@ namespace scl
    * Each actuator instance must implement this. */
   sBool CActuatorSetMuscle::computeJacobian(
       const Eigen::VectorXd arg_q,
-      const Eigen::VectorXd arg_dq,
       Eigen::MatrixXd &ret_J)
   {//This function doesn't use std::exceptions (for speed).
     if(false == hasBeenInit()){ return false; }
@@ -134,7 +133,7 @@ namespace scl
     for (i=0, itm = muscles_.begin(), itme = muscles_.end();
         itm != itme; ++itm,++i)
     {
-      flag = flag && itm->computeJacobian(arg_q, arg_dq, row_J_);
+      flag = flag && itm->computeJacobian(arg_q, row_J_);
 #ifdef DEBUG
       if (false == flag) {  return false; }
 #endif

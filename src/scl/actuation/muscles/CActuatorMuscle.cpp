@@ -136,13 +136,11 @@ namespace scl
         if(tmp_rb_0->is_root_){
           pt_set->is_root_0_ = true;
           pt_set->x_glob_0_ = pt_set->pos_in_parent_0_+tmp_rb_0->pos_in_parent_;
-          pt_set->dx_glob_0_.setZero();
           pt_set->J_0_.setZero(3, robot_->dof_);
         }
         if(tmp_rb_1->is_root_){
           pt_set->is_root_1_ = true;
           pt_set->x_glob_1_ = pt_set->pos_in_parent_1_+tmp_rb_1->pos_in_parent_;
-          pt_set->dx_glob_1_.setZero();
           pt_set->J_0_.setZero(3, robot_->dof_);
         }
 #ifdef DEBUG
@@ -214,13 +212,12 @@ namespace scl
    * Each actuator instance must implement this. */
   sBool CActuatorMuscle::computeJacobian(
       const Eigen::VectorXd &arg_q,
-      const Eigen::VectorXd &arg_dq,
       Eigen::VectorXd& ret_J)
   {//This function doesn't use std::exceptions (for speed).
     if(false == hasBeenInit()) { return data_.has_been_init_; }
 
 #ifdef DEBUG
-    if(arg_q.rows() != arg_dq.rows())
+    if(arg_q.rows() != robot_->dof_)
     {
       std::cerr<<"\nCActuatorMuscle::computeJacobian("<<data_.name_<<") : Passed q and dq have different sizes.";
       return false;

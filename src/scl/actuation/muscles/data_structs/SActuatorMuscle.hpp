@@ -65,9 +65,6 @@ namespace scl
        * coords (in global coordinates) */
       Eigen::Vector3d x_glob_0_, x_glob_1_, x_glob_delta_;
 
-      /** The instantaneous change in the two via points (in global coordinates) */
-      Eigen::Vector3d dx_glob_0_, dx_glob_1_;
-
       /** The Jacobians at the via points */
       Eigen::MatrixXd J_0_, J_1_;
 

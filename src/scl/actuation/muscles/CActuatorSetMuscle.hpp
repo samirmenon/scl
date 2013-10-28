@@ -64,7 +64,6 @@ namespace scl
      * set merely collates them. */
     virtual sBool computeJacobian(
         const Eigen::VectorXd arg_q,
-        const Eigen::VectorXd arg_dq,
         Eigen::MatrixXd &ret_J);
 
     /* *****************************************************************

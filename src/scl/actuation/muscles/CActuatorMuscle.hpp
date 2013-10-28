@@ -113,8 +113,6 @@ namespace scl
     virtual sBool computeJacobian(
         /** The generalized coordinates */
         const Eigen::VectorXd &arg_q,
-        /** The generalized velocities */
-        const Eigen::VectorXd &arg_dq,
         /** The Jacobian for this muscle
          * del.length = J * del.q
          *
