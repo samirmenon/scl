@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */ 
 
-#ifndef SROBOTLINK_HPP_
-#define SROBOTLINK_HPP_
+#ifndef SRIGIDBODY_HPP_
+#define SRIGIDBODY_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
@@ -171,4 +171,4 @@ public:
 
 }//end of namespace scl_parser
 
-#endif /*ROBOTLINK_HPP_*/
+#endif /*SRIGIDBODY_HPP_*/
