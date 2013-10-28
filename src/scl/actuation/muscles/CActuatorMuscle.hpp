@@ -75,6 +75,9 @@ namespace scl
      * ***************************************************************** */
     /** Computes the contribution of a single muscle to the entire Jacobian.
      *
+     * Positive muscle force => Muscle contraction
+     * Negative muscle force => Muscle pushes (usually an error)
+     *
      * Note for modeling biological musculoskeletal systems:
      * Formulation is on a gc-by-gc basis. Ie. The muscle is considered piece-
      * wise linear and each piece's contribution is measured independently.
