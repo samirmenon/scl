@@ -85,11 +85,22 @@ namespace scl
      * error. This demands biological investigation on a subject-by-subject
      * basis.
      *
+     * To analytically compute the Jacobian, we use the following method:
+     *
      * δl = J . δq          || l = muscle len. q = gen coord. J = row in Jm
      * δli = J(i) . δq(i)   || δli = change across muscle's i'th spanned gc
      * li = |x_fixed + x_pre_gc - (x_fixed+xpost_gc)| || Part of muscle doesn't
      *                                                   move. || = L2 norm
      * δli/δq(i) = δ(|x_pre_gc - xpost_gc|)/δq(i)     || Gradient wrt. q(i)
+     *   = Gradient of path length between two attachment points (p0 and p1)
+     *   = δ/δq ( |p0 - p1| )
+     *   = δ/δq ( sqrt( (p0-p1)' * (p0-p1) ) )
+     *   = 1/(2 * sqrt( (p0-p1)' * (p0-p1) ) ) * δ/δq ( (p0-p1)' * (p0-p1) )
+     *   = 1/(2 * sqrt( (p0-p1)' * (p0-p1) ) ) * 2* (p0-p1)' δ/δq (p0-p1)
+     *   = 1/sqrt( (p0-p1)' * (p0-p1) ) * (p0-p1)' ( δ/δq (p0) - δ/δq (p1) )
+     *   = 1/d.norm() * d' ( δ/δq (p0) - δ/δq (p1) ); where d = p0 - p1
+     *
+     * J_muscle_i (row-vector) = Sum_over_attachment_point_pairs_di [ |d|^-1 * d' (J_p0 - J_p1) ]
      *
      * NOTE TODO : This can be greatly improved by computing Jacobians wrt.
      * the parent link instead of wrt. the root node. Massive performance hit.
