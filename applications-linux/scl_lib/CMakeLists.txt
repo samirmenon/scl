@@ -69,11 +69,8 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskComPos.cpp
    )
    
-SET(CTR_TRAJ_SRC ${SCL_INC_DIR}/control/trajectory/OTG/TypeIOTG.cpp
-                 ${SCL_INC_DIR}/control/trajectory/OTG/TypeIOTGDecision.cpp
-                 ${SCL_INC_DIR}/control/trajectory/OTG/TypeIOTGMath.cpp
-                 ${SCL_INC_DIR}/control/trajectory/OTG/TypeIOTGPolynomial.cpp
-                 ${SCL_INC_DIR}/control/trajectory/OTG/TypeIOTGProfiles.cpp
+# This needs some work. Should add basic trajectory generation support.
+SET(CTR_TRAJ_SRC 
    )
 
 SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDNode.cpp
