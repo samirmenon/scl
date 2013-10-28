@@ -30,7 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <scl/control/data_structs/SGcModel.hpp>
+#include <scl/data_structs/SGcModel.hpp>
 #include <stdexcept>
 #include <iostream>
 

@@ -32,21 +32,17 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CTAODYNAMICS_HPP_
 #define CTAODYNAMICS_HPP_
 
-#include <string>
-#include <Eigen/Dense>
-
 #include <scl/DataTypes.hpp>
-
-#include <scl/data_structs/SRobotIOData.hpp>
-#include <scl/control/data_structs/SGcModel.hpp>
-
 #include <scl/dynamics/CDynamicsBase.hpp>
-
 #include <scl/dynamics/tao/jspace/State.hpp>
-
 #include <scl/dynamics/tao/tao/dynamics/taoNode.h>
 #include <scl/dynamics/tao/tao/dynamics/taoJoint.h>
 #include <scl/dynamics/tao/tao/dynamics/taoDynamics.h>
+
+#include <Eigen/Dense>
+
+#include <string>
+
 
 class taoDNode;
 

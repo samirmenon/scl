@@ -36,7 +36,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>
 #include <scl/dynamics/tao/jspace/tao_util.hpp>
 #include <scl/dynamics/tao/jspace/Model.hpp>
-#include <scl/control/data_structs/SGcModel.hpp>
 
 #include <string>
 #include <vector>

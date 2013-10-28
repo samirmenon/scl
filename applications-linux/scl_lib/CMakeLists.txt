@@ -23,6 +23,7 @@ INCLUDE_DIRECTORIES(../../src/ ${SCL_INC_DIR}
 #Set all the sources required for the library
 SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIOData.cpp
            ${SCL_INC_DIR}/data_structs/SRigidBody.cpp
+           ${SCL_INC_DIR}/data_structs/SGcModel.cpp
            ${SCL_INC_DIR}/data_structs/SMuscleSetParsed.cpp
    )
 
@@ -41,7 +42,6 @@ SET(ROBOT_SRC ${SCL_INC_DIR}/robot/CRobot.cpp
    )
 
 SET(CTR_SRC ${SCL_INC_DIR}/control/data_structs/SControllerBase.cpp
-            ${SCL_INC_DIR}/control/data_structs/SGcModel.cpp
             ${SCL_INC_DIR}/control/gc/data_structs/SGcController.cpp
             ${SCL_INC_DIR}/control/gc/CGcController.cpp
             ${SCL_INC_DIR}/control/task/data_structs/SServo.cpp

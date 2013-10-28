@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SRobotIOData.hpp>
 
-#include <scl/control/data_structs/SGcModel.hpp>
+#include <scl/data_structs/SGcModel.hpp>
 
 namespace scl
 {
