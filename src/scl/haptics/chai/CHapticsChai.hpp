@@ -29,8 +29,8 @@
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CCHAIHAPTICS_HPP_
-#define CCHAIHAPTICS_HPP_
+#ifndef CHAPTICSCHAI_HPP_
+#define CHAPTICSCHAI_HPP_
 
 //For interfacing with chai
 #include <scl/haptics/CHapticsBase.hpp>
