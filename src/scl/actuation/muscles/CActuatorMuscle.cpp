@@ -229,7 +229,6 @@ namespace scl
 
     //Compute the change in length at this point.
     bool flag = true;
-    Eigen::Affine3d T;
 
     //Zero the Jacobian. And get the latest gc configuration.
     ret_J.setZero(robot_->dof_);
@@ -246,7 +245,10 @@ namespace scl
 
       // The root never moves. x_glob_0_ is constant (computed at init) and J = all zeros.
       if(false == tmp_pt_set.is_root_0_){
-        //1.b.0: Compute Jacobians at the via points.
+        //1.b.0: Compute point offset in global coords
+        tmp_pt_set.x_glob_0_ = tmp_pt_set.rigid_body_dyn_0_->T_o_lnk_ * tmp_pt_set.pos_in_parent_0_;
+
+        //1.c.0: Compute Jacobians at the via points.
         flag = flag && dynamics_->computeJacobian(tmp_pt_set.J_0_, *tmp_pt_set.rigid_body_dyn_0_,
             arg_q, tmp_pt_set.pos_in_parent_0_);
         //Use the position jacobian only. This is a point task.
@@ -254,16 +256,25 @@ namespace scl
       }
 
       if(false == tmp_pt_set.is_root_1_){
-        //1.b.1: Compute Jacobians at the via points.
+        //1.b.1: Compute point offset in global coords
+        tmp_pt_set.x_glob_1_ = tmp_pt_set.rigid_body_dyn_1_->T_o_lnk_ * tmp_pt_set.pos_in_parent_1_;
+
+        //1.c.1: Compute Jacobians at the via points.
         flag = flag && dynamics_->computeJacobian(tmp_pt_set.J_1_, *tmp_pt_set.rigid_body_dyn_1_,
             arg_q, tmp_pt_set.pos_in_parent_1_);
         //Use the position jacobian only. This is a point task.
         tmp_pt_set.J_1_ = tmp_pt_set.J_1_.block(0,0,3,robot_->dof_);
       }
 
+      tmp_pt_set.x_glob_delta_ = tmp_pt_set.x_glob_0_ - tmp_pt_set.x_glob_1_;
       if(false == flag){  return false; }
 
+#ifdef SCL_PRINT_INFO_MESSAGES
+      std::cout<<"\nMuscle gc point diffs: \n"<<tmp_pt_set.x_glob_delta_.transpose();
+#endif
+
       //2. Iterate over all the gcs between a set of via-points. Each gc's col will be populated.
+      // The contribution by the others is zero.
       std::vector<sUInt>::const_iterator its, itse;
       for(its = tmp_pt_set.scl_gc_id_.begin(), itse = tmp_pt_set.scl_gc_id_.end();
           its != itse; ++its)
@@ -271,19 +282,37 @@ namespace scl
         sUInt jcol = *its;// The column of the Jacobian to fill..
         double grad_gc;
 
-        //2.a: Compute the instantaneous velocity due to the gc
-        if(false == tmp_pt_set.is_root_0_)
-        { tmp_pt_set.dx_glob_0_ = tmp_pt_set.J_0_.col(jcol) * arg_dq(jcol); }
-        if(false == tmp_pt_set.is_root_1_)
-        { tmp_pt_set.dx_glob_1_ = tmp_pt_set.J_1_.col(jcol) * arg_dq(jcol); }
+        //2.a: Compute the instantaneous muscle section length change due to the gc
+        /*   = δ/δq ( |p0 - p1| )
+         *   = δ/δq ( sqrt( (p0-p1)' * (p0-p1) ) )
+         *   = 1/(2 * sqrt( (p0-p1)' * (p0-p1) ) ) * δ/δq ( (p0-p1)' * (p0-p1) )
+         *   = 1/(2 * sqrt( (p0-p1)' * (p0-p1) ) ) * 2* (p0-p1)' δ/δq (p0-p1)
+         *   = 1/sqrt( (p0-p1)' * (p0-p1) ) * (p0-p1)' ( δ/δq (p0) - δ/δq (p1) )
+         *   = 1/d.norm() * d' ( δ/δq (p0) - δ/δq (p1) ); where d = p0 - p1 */
+        // Using the above formula:
+        grad_gc = tmp_pt_set.x_glob_delta_.norm();
 
-        grad_gc = (tmp_pt_set.x_glob_1_+tmp_pt_set.dx_glob_1_-
-                      tmp_pt_set.x_glob_0_-tmp_pt_set.dx_glob_0_).norm()
-            - (tmp_pt_set.x_glob_1_-tmp_pt_set.x_glob_0_).norm();
+        // Avoid numerical precision errors
+        if(std::numeric_limits<sFloat>::min() > fabs(grad_gc))
+        { grad_gc = 0.0;  }
+        else
+        {
+          grad_gc = 1/grad_gc;
+          grad_gc *= tmp_pt_set.x_glob_delta_.transpose() * (tmp_pt_set.J_0_.col(jcol) - tmp_pt_set.J_1_.col(jcol));
+        }
 
         //2.b: Compute the muscle's length gradient wrt the gc
         ret_J(jcol) = grad_gc;
+
+#ifdef SCL_PRINT_INFO_MESSAGES
+        std::cout<<"["<<jcol<<". x:"<<tmp_pt_set.x_glob_delta_.transpose()<<". n: "<<tmp_pt_set.x_glob_delta_.norm()
+            <<". grad:"<<grad_gc<<"] ";
+#endif
       }
+#ifdef SCL_PRINT_INFO_MESSAGES
+      std::cout<<"\nJ0: \n"<<tmp_pt_set.J_0_;
+      std::cout<<"\nJ1: \n"<<tmp_pt_set.J_1_;
+#endif
     }
 
     return true;
