@@ -481,7 +481,7 @@ namespace scl
       return true;
     }
     catch(std::exception & e)
-    { std::cout<<"\nCRobot::selectController() Error : "<< e.what();  }
+    { std::cout<<"\nCRobot::setControllerCurrent("<<arg_ctrl_name<<", "<<data_.name_<<") Error : "<< e.what();  }
     return false;
   }
 

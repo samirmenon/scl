@@ -290,7 +290,7 @@ namespace scl_registry
 
       if(arg_robot_name != must_use_robot)
       {
-        std::string err = "Invalid robot specified. Controller will only work for : ";
+        std::string err = "Invalid robot specified. Controller must use: ";
         err = err+must_use_robot;
         throw (std::runtime_error(err.c_str()));
       }
@@ -319,7 +319,7 @@ namespace scl_registry
     }
     catch (std::exception& e)
     {
-      std::cout<<"\nparseTaskController() : Error : "<<e.what();
+      std::cout<<"\nparseGcController("<<arg_ctrl_name<<", "<<arg_robot_name<<") : "<<e.what();
       if(S_NULL!=ret_ctrl) { delete ret_ctrl;  }
       ret_ctrl = S_NULL;
     }
@@ -364,9 +364,7 @@ namespace scl_registry
 
       if(arg_robot_name != must_use_robot)
       {
-        std::string err = "Invalid robot specified. Controller will only work for : ";
-        err = err+must_use_robot;
-        throw (std::runtime_error(err.c_str()));
+        throw (std::runtime_error(std::string("Invalid robot specified. Controller must use: ")+must_use_robot));
       }
 
       //Create the controller
@@ -576,7 +574,7 @@ namespace scl_registry
     }
     catch (std::exception& e)
     {
-      std::cout<<"\nparseTaskController() : Error : "<<e.what();
+      std::cout<<"\nparseTaskController("<<arg_ctrl_name<<", "<<arg_robot_name<<") : "<<e.what();
       return NULL;
     }
     return ret_ctrl;

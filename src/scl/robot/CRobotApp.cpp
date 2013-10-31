@@ -184,9 +184,9 @@ namespace scl
 
         /** Test whether Controller is a task controller. If so, parse task options. */
         CControllerMultiTask* tmp_task_ctrl = dynamic_cast<scl::CControllerMultiTask*> (robot_.getControllerCurrent());
-        bool flag_is_curr_ctrl_task=false;
+        bool flag_is_task_controller = false;
         if(S_NULL != tmp_task_ctrl)
-        { flag_is_curr_ctrl_task = true;  }
+        { flag_is_task_controller = true;  }
 
         // Check that we haven't finished parsing everything
         while(args_ctr < argv.size())
@@ -211,6 +211,11 @@ namespace scl
           }
           else if (("-com" == argv[args_ctr]) || ("-op" == argv[args_ctr]) || ("-ui" == argv[args_ctr]))
           {// We know the next argument *should* be the op pos task's name
+            if(false == flag_is_task_controller)
+            {
+              std::cout<<"\nUI points are only supported for task controllers";
+              args_ctr+=2; continue;
+            }
             if(args_ctr+1 < argv.size())
             {
               if(ui_points_used >= SCL_NUM_UI_POINTS)
