@@ -63,33 +63,32 @@ namespace scl
           it!=ite; ++it)
       {
         const SRigidBody& rb = *it;
-        SRigidBodyDyn *com = rbdyn_tree_.create(rb.name_,rb.is_root_);
-        if(NULL == com)
+        SRigidBodyDyn *rbd = rbdyn_tree_.create(rb.name_,rb.is_root_);
+        if(NULL == rbd)
         { throw(std::runtime_error( std::string("Could not create dyn node: ")+ rb.name_+std::string("for robot: ")+rb.robot_name_ )); }
 
-        com->name_ = rb.name_;
-        com->parent_name_ = rb.parent_name_;
-        com->link_ds_ = &rb;
-        com->link_dynamic_id_ = NULL;
+        rbd->name_ = rb.name_;
+        rbd->parent_name_ = rb.parent_name_;
+        rbd->link_ds_ = &rb;
 
-        com->J_com_.setZero(6, ndof);
+        rbd->J_com_.setZero(6, ndof);
 
         if(rb.is_root_)
         {//The root node doesn't move, so we can already compute the translations.
-          com->T_o_lnk_.setIdentity();
-          com->T_o_lnk_.rotate(com->link_ds_->ori_parent_quat_);
-          com->T_o_lnk_.translate(com->link_ds_->pos_in_parent_);
-          com->T_lnk_ = com->T_o_lnk_;
+          rbd->T_o_lnk_.setIdentity();
+          rbd->T_o_lnk_.rotate(rbd->link_ds_->ori_parent_quat_);
+          rbd->T_o_lnk_.translate(rbd->link_ds_->pos_in_parent_);
+          rbd->T_lnk_ = rbd->T_o_lnk_;
 
           //Default is NaN, which indicates that these values weren't initialized.
           //Set to zero to indicate that they are now initialized. (actual value has no
           //meaning since the root node never moves).
-          com->q_T_ = 0.0;
+          rbd->q_T_ = 0.0;
         }
         else
         {
-          com->T_o_lnk_.setIdentity();
-          com->T_lnk_.setIdentity();
+          rbd->T_o_lnk_.setIdentity();
+          rbd->T_lnk_.setIdentity();
         }
       }
 
