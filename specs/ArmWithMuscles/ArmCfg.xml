@@ -92,6 +92,7 @@
     <kp>100</kp>
     <kv>10</kv>
     <ka>0</ka>
+    <ki>0</ki>
     <force_max>10</force_max>
     <force_min>-10</force_min>
   </controller>
@@ -102,6 +103,7 @@
     <kp>100</kp>
     <kv>10</kv>
     <ka>0</ka>
+    <ki>0</ki>
     <force_max>10</force_max>
     <force_min>-10</force_min>
   </controller>
@@ -113,12 +115,13 @@
       <task name="hand">
           <type>TaskOpPos</type>
           <parent_link>lower_arm5</parent_link>
-          <pos_in_parent>0  0.0  -0.8</pos_in_parent>
+          <pos_in_parent>0  0.0  0.0</pos_in_parent>
           <priority>0</priority>
           <task_dof>3</task_dof>
           <kp>200</kp>
           <kv>25</kv>
           <ka>0</ka>
+          <ki>0.0</ki>
           <force_max>100</force_max>
           <force_min>-100</force_min>
       </task>
@@ -131,24 +134,9 @@
           <kp>0</kp>
           <kv>40</kv>
           <ka>0</ka>
+          <ki>0.0</ki>
           <force_max>100</force_max>
           <force_min>-100</force_min>
       </task>
-
-      <!-- This task removes some range space
-           from the lower pri tasks
-           Note: Task dofs should match the gc set's size
-      <task name="JointAngleSetTask">
-          <type>TaskGcSet</type>
-          <priority>0</priority>
-          <task_dof>2</task_dof> 
-          <kp>10</kp>
-          <kv>4</kv>
-          <ka>0</ka>
-          <force_max>100</force_max>
-          <force_min>-100</force_min>
-          <gc_set_names>end-effector wrist-finger</gc_set_names>
-          <gc_set_pos_des>0.0 0.0</gc_set_pos_des>
-      </task> -->
   </controller>
 </scl>
