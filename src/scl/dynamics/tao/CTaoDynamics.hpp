@@ -65,64 +65,56 @@ namespace scl
     /* *******************************************************************
      *                      Computational functions.
      * ******************************************************************* */
-    /** Updates the joint space model matrices
-     * (Everything in SGcModel)
-     */
-    virtual bool computeGCModel(/**
-				This is where there current robot state is read when
-				updateModelMatrices() is called. */
+    /** BUGGY => DEPRACATED!!! */
+    virtual bool computeGCModel(
         SRobotSensors const * arg_sensor_data,
-        /**
-				Pointer to the joint-space model structure for the
-				robot. This is the place where the matrices reside
-				that will get updated when calling
-				updateModelMatrices(). */
-        SGcModel * arg_gc_model);
+        SGcModel * arg_gc_model)
+    { return false; }
 
-    /** Gives an id for a link name.
-     *
-     * Enables using calculateJacobain without:
-     * 1. Storing any dynamic-engine specific objects in
-     *    the controller.
-     * 2. Using inefficient repeated string based
-     *    lookup (usually with maps)
-     */
-    virtual const void* getIdForLink(std::string arg_link_name);
+//    /** Gives an id for a link name.
+//     *
+//     * Enables using calculateJacobain without:
+//     * 1. Storing any dynamic-engine specific objects in
+//     *    the controller.
+//     * 2. Using inefficient repeated string based
+//     *    lookup (usually with maps)
+//     */
+//    virtual const void* getIdForLink(std::string arg_link_name);
 
-    /** Calculates the Transformation Matrix for the robot to which
-     * this dynamics object is assigned.
-     *
-     * The Transformation Matrix is specified by a link and an offset
-     * (in task space dimensions)from that link and is given by:
-     *
-     *           x_global_coords = T * x_link_coords
-     *
-     * Uses id based link lookup. The dynamics implementation should
-     * support this (maintain a map or something).
-     */
-    virtual sBool computeTransform_Depracated(
-        /** The link at which the transformation matrix is
-         * to be calculated */
-        const void* arg_link_id,
-        /** The transformation matrix will be saved here. */
-        Eigen::Affine3d& arg_T);
+//    /** Calculates the Transformation Matrix for the robot to which
+//     * this dynamics object is assigned.
+//     *
+//     * The Transformation Matrix is specified by a link and an offset
+//     * (in task space dimensions)from that link and is given by:
+//     *
+//     *           x_global_coords = T * x_link_coords
+//     *
+//     * Uses id based link lookup. The dynamics implementation should
+//     * support this (maintain a map or something).
+//     */
+//    virtual sBool computeTransform_Depracated(
+//        /** The link at which the transformation matrix is
+//         * to be calculated */
+//        const void* arg_link_id,
+//        /** The transformation matrix will be saved here. */
+//        Eigen::Affine3d& arg_T);
 
-    /** Calculates the Jacobian for the robot to which this dynamics
-     * object is assigned.
-     *
-     * The Jacobian is specified by a link and an offset (in task space
-     * dimensions)from that link
-     *
-     * Uses id based link lookup. The dynamics implementation should
-     * support this (maintain a map or something).
-     */
-    virtual sBool computeJacobian_Depracated(
-        /** The link at which the Jacobian is to be calculated */
-        const void* arg_link_id,
-        /** The offset from the link's frame. */
-        const Eigen::VectorXd& arg_pos_global,
-        /** The Jacobain will be saved here. */
-        Eigen::MatrixXd& arg_J);
+//    /** Calculates the Jacobian for the robot to which this dynamics
+//     * object is assigned.
+//     *
+//     * The Jacobian is specified by a link and an offset (in task space
+//     * dimensions)from that link
+//     *
+//     * Uses id based link lookup. The dynamics implementation should
+//     * support this (maintain a map or something).
+//     */
+//    virtual sBool computeJacobian_Depracated(
+//        /** The link at which the Jacobian is to be calculated */
+//        const void* arg_link_id,
+//        /** The offset from the link's frame. */
+//        const Eigen::VectorXd& arg_pos_global,
+//        /** The Jacobain will be saved here. */
+//        Eigen::MatrixXd& arg_J);
 
     /** Integrates the robot's state.
      * Uses the given applied forces, torques, positions and velocities
@@ -156,11 +148,11 @@ namespace scl
     /* *******************************************************************
      *                      Dynamics State functions.
      * ******************************************************************* */
-    /** Gets the robot's kinetic energy */
-    virtual sFloat getKineticEnergy_Depracated();
+//    /** Gets the robot's kinetic energy */
+//    virtual sFloat getKineticEnergy_Depracated();
 
-    /** Gets the robot's potential energy */
-    virtual sFloat getPotentialEnergy_Depracated();
+//    /** Gets the robot's potential energy */
+//    virtual sFloat getPotentialEnergy_Depracated();
 
     /** Sets the generalized coordinates
      *
