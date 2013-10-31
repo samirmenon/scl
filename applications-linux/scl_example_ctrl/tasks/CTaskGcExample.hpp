@@ -57,7 +57,8 @@ namespace scl_app
         const scl::SRobotSensors* arg_sensors);
 
     /** Does nothing. GC tasks don't require OSC models */
-    virtual bool computeModel();
+    virtual bool computeModel(
+        const scl::SRobotSensors* arg_sensors);
 
     /** Return this task controller's task data structure.*/
     virtual scl::STaskBase* getTaskData();
@@ -81,8 +82,6 @@ namespace scl_app
 
     //TODO : Add what you want.
     //myCoolDataType data2_;
-
-    const void * link_dynamic_id_;
   };
 }
 

@@ -83,9 +83,9 @@ namespace scl_app
       data_ = dynamic_cast<STaskOpExample*>(arg_task_data);
 
       dynamics_ = arg_dynamics;
-      data_->link_dynamic_id_ = dynamics_->getIdForLink(data_->link_name_);
-      if(S_NULL == data_->link_dynamic_id_)
-      { throw(std::runtime_error("Couldn't find link in dynamics object")); }
+      data_->rbd_ = data_->gc_model_->rbdyn_tree_.at_const(data_->link_name_);
+      if(S_NULL == data_->rbd_)
+      { throw(std::runtime_error("Couldn't find link dynamics object")); }
 
       //Defaults
       singular_values_.setZero();
@@ -177,19 +177,16 @@ namespace scl_app
   {
 #ifdef DEBUG
     assert(has_been_init_);
-    assert(S_NULL!=data_->link_dynamic_id_);
+    assert(S_NULL!=data_->rbd_ );
     assert(S_NULL!=dynamics_);
 #endif
     if(data_->has_been_init_)
     {
-      //Step 1: Find position of the op_point
-      Eigen::Affine3d T;
-      dynamics_->computeTransform_Depracated(data_->link_dynamic_id_,T);
-      data_->x_ = T * data_->pos_in_parent_;
+      //Step 1: Find pos__
+      data_->x_ = data_->rbd_->T_o_lnk_ * data_->pos_in_parent_;
 
-      Eigen::MatrixXd &tmp_J = data_->J_;
       //Global coordinates : dx = J . dq
-      data_->dx_ = tmp_J * arg_sensors->dq_;
+      data_->dx_ = data_->J_ * arg_sensors->dq_;
 
       //Compute the servo torques
       tmp1 = (data_->x_goal_ - data_->x_);
@@ -223,12 +220,12 @@ namespace scl_app
 
   /** Computes the dynamics (task model)
    * Assumes that the data_->model_.gc_model_ has been updated. */
-  bool CTaskOpExample::computeModel()
+  bool CTaskOpExample::computeModel(const scl::SRobotSensors* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);
     assert(data_->has_been_init_);
-    assert(S_NULL!=data_->link_dynamic_id_);
+    assert(S_NULL!=data_->rbd_);
     assert(S_NULL!=dynamics_);
 #endif
     if(data_->has_been_init_)
@@ -236,12 +233,8 @@ namespace scl_app
       bool flag = true;
       const SGcModel* gcm = data_->gc_model_;
 
-      Eigen::Affine3d T;
-      dynamics_->computeTransform_Depracated(data_->link_dynamic_id_,T);
-      Eigen::Vector3d pos = T * data_->pos_in_parent_;
-
-      flag = flag && dynamics_->computeJacobian_Depracated(
-          data_->link_dynamic_id_,pos,data_->J_);
+      flag = flag && dynamics_->computeJacobian(data_->J_,*(data_->rbd_),
+              arg_sensors->q_,data_->pos_in_parent_);
 
       //Use the position jacobian only. This is an op-point task.
       data_->J_ = data_->J_.block(0,0,3,data_->robot_->dof_);

@@ -42,8 +42,7 @@ namespace scl_app
 {
   CTaskGcExample::CTaskGcExample() :
       scl::CTaskBase(),
-      data_(S_NULL),
-      link_dynamic_id_(S_NULL)
+      data_(S_NULL)
   {}
 
   CTaskGcExample::~CTaskGcExample()
@@ -66,7 +65,8 @@ namespace scl_app
   }
 
 
-  bool CTaskGcExample::computeModel()
+  bool CTaskGcExample::computeModel(
+      const scl::SRobotSensors* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -105,10 +105,6 @@ namespace scl_app
 
       data_ = dynamic_cast<STaskGcExample*>(arg_task_data);
       dynamics_ = arg_dynamics;
-
-      link_dynamic_id_ = dynamics_->getIdForLink("end-effector");
-      if(S_NULL == link_dynamic_id_)
-      { throw(std::runtime_error("The link dynamic id for this operational point's parent link is NULL. Probably due to un-initialized dynamics.")); }
 
       has_been_init_ = true;
     }
