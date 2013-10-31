@@ -83,16 +83,6 @@ namespace scl
     /** The data structure pointing to the static link information */
     const SRigidBody* link_ds_;
 
-    /** The dynamics engine's id.
-     * This, again, is redundant like the name. But simplifies
-     * and speeds up error checks.
-     *
-     * NOTE TODO : Delete this. This shouldn't be here. It's purpose
-     * was to primarily update a link quickly. But dynamics implementations
-     * either cache data or recompute a lot of it, which removes the
-     * potential efficiency gained here. */
-    const void* link_dynamic_id_;
-
     /** Requirements to create a mapped tree of objects */
     /** The link's name and its parent. For the tree structure. */
     std::string name_, parent_name_;
@@ -105,7 +95,7 @@ namespace scl
     SRigidBodyDyn() :
         q_T_(std::numeric_limits<sFloat>::quiet_NaN()),
         link_ds_(S_NULL),
-        link_dynamic_id_(S_NULL), name_(""), parent_name_(""),
+        name_(""), parent_name_(""),
         parent_addr_(S_NULL) {}
   };
 
