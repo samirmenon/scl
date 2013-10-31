@@ -81,7 +81,7 @@ namespace scl
     { return false; }
   }
 
-  bool CTaskNULL::computeModel()
+  bool CTaskNULL::computeModel(const SRobotSensors* arg_sensors)
   {
     if(data_->has_been_init_)
     { return true;  }

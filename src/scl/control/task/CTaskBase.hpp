@@ -60,7 +60,7 @@ public:
   virtual bool computeServo(const SRobotSensors* arg_sensors)=0;
 
   /** Computes the dynamics (task model) */
-  virtual bool computeModel()=0;
+  virtual bool computeModel(const SRobotSensors* arg_sensors)=0;
 
   /* **************************************************************
    *                   Status Get/Set Functions
@@ -123,6 +123,9 @@ public:
    * are up to date. Ready to contribute to a controller. */
   virtual sBool hasBeenInit() { return has_been_init_;  }
 
+  /* **************************************************************
+   *                   Runtime Enable/Disable Functions
+   * ************************************************************** */
   /** Activated = All dynamic parameters and data structures are
    * up to date and task is actively contributing to a controller.
    *

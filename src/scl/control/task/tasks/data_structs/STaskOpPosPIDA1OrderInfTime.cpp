@@ -45,7 +45,7 @@ namespace scl
       link_name_(""),
       link_ds_(S_NULL),
       spatial_resolution_(SCL_COPPTTASK_SPATIAL_RESOLUTION),
-      link_dynamic_id_(S_NULL),
+      rbd_(S_NULL),
       integral_gain_time_pre_(-1),integral_gain_time_curr_(-1)
   { }
 

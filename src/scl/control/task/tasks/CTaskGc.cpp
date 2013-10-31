@@ -187,7 +187,7 @@ namespace scl
 
   /** Sets the null space for the next level to zero. Ie.
    * any task below this one in the hierarchy is ignored. */
-  bool CTaskGc::computeModel()
+  bool CTaskGc::computeModel(const SRobotSensors* arg_sensors)
   {//Null space is set to zero by default and doesn't need to be set again.
     if(data_->has_been_init_)
     { return true; }

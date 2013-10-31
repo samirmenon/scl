@@ -97,7 +97,6 @@ namespace scl
         }
 
         itcom->name_ = itr->name_;
-        itcom->link_dynamic_id_ = dynamics_->getIdForLink(itcom->name_);
         itcom->link_ds_ = static_cast<const SRigidBody*>( &(*itr) );
 
         data_->gc_model_.mass_ += itcom->link_ds_->mass_;
@@ -545,7 +544,7 @@ namespace scl
     if(0==task_count_)
     { return false; }
     if(1==task_count_)
-    { flag = flag && active_task_->computeModel();  }
+    { flag = flag && active_task_->computeModel(&(data_->io_data_->sensors_));  }
     else
     {
       sutil::CMappedMultiLevelList<std::basic_string<char>, scl::CTaskBase*>::iterator it, ite;
@@ -557,7 +556,7 @@ namespace scl
         assert(task->getTaskData()->has_been_init_); //Must have been initialized by now
 #endif
         if(task->hasBeenActivated())
-        { flag = flag && task->computeModel();  }
+        { flag = flag && task->computeModel(&(data_->io_data_->sensors_));  }
       }
     }
 

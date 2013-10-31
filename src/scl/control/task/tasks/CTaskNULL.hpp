@@ -76,7 +76,7 @@ public:
   virtual bool computeServo(const SRobotSensors* arg_sensors);
 
   /** Computes the dynamics (task model) */
-  virtual bool computeModel();
+  virtual bool computeModel(const SRobotSensors* arg_sensors);
 
 private:
   /** The kinematic and dynamic data required to compute any arbitrary task. */

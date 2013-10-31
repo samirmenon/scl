@@ -58,7 +58,7 @@ namespace scl
 
     sFloat spatial_resolution_;     //Meters
 
-    const void *link_dynamic_id_;   //For quickly obtaining a task Jacobian
+    const SRigidBodyDyn *rbd_;   //For quickly obtaining a task Jacobian
 
     /** Default constructor sets stuff to S_NULL */
     STaskOpPos();

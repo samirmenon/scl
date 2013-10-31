@@ -62,7 +62,7 @@ namespace scl
 
     /** Sets the null space for the next level to zero. Ie.
      * any task below this one in the hierarchy is ignored. */
-    virtual bool computeModel();
+    virtual bool computeModel(const SRobotSensors* arg_sensors);
 
     /********************************
      * CTaskGcLimitCentering specific functions

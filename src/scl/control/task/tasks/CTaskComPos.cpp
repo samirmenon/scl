@@ -209,7 +209,7 @@ namespace scl
 
   /** Computes the dynamics (task model)
    * Assumes that the data_->model_.gc_model_ has been updated. */
-  bool CTaskComPos::computeModel()
+  bool CTaskComPos::computeModel(const SRobotSensors* arg_sensors)
   {
 #ifdef DEBUG
     assert(has_been_init_);

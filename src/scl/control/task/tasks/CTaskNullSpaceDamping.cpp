@@ -108,7 +108,7 @@ namespace scl
 
   /** Sets the null space for the next level to zero. Ie.
    * any task below this one in the hierarchy is ignored. */
-  bool CTaskNullSpaceDamping::computeModel()
+  bool CTaskNullSpaceDamping::computeModel(const SRobotSensors* arg_sensors)
   {
     if(data_->has_been_init_)
     {

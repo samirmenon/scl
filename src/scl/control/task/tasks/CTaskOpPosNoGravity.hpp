@@ -86,8 +86,8 @@ public:
 
   /** Computes the dynamics (task model)
    * Assumes that the data_->model_.gc_model_ has been updated. */
-  virtual bool computeModel()
-  { return scl::CTaskOpPos::computeModel();  }
+  virtual bool computeModel(const SRobotSensors* arg_sensors)
+  { return scl::CTaskOpPos::computeModel(arg_sensors);  }
 
   /********************************
    * CTaskOpPosNoGravity specific functions

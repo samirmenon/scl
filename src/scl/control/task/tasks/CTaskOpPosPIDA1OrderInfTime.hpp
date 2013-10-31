@@ -79,7 +79,7 @@ public:
 
   /** Computes the dynamics (task model)
    * Assumes that the data_->model_.gc_model_ has been updated. */
-  virtual bool computeModel();
+  virtual bool computeModel(const SRobotSensors* arg_sensors);
 
   /* **************************************************************
    *                   Status Get/Set Functions

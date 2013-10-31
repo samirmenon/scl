@@ -62,7 +62,7 @@ namespace scl
 
     sFloat spatial_resolution_;     //Meters
 
-    const void *link_dynamic_id_;   //For quickly obtaining a task Jacobian
+    const SRigidBodyDyn *rbd_;   //For quickly obtaining a task Jacobian
 
     /** Typical use in a PID controller:
      *  Force = Force + ki * pos_err * (t_curr - t_pre);

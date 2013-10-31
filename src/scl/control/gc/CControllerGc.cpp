@@ -221,7 +221,6 @@ namespace scl
         }
 
         itcom->name_ = itr->name_;
-        itcom->link_dynamic_id_ = dynamics_->getIdForLink(itcom->name_);
         itcom->link_ds_ = static_cast<const SRigidBody*>( &(*itr) );
 
         data_->gc_model_.mass_ += itcom->link_ds_->mass_;

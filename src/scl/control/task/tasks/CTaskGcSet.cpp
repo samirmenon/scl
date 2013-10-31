@@ -207,7 +207,7 @@ namespace scl
   /** Sets the null space for the next level. Ie.
    * any task below this one in the hierarchy can't control
    * the joints that this task controls. */
-  bool CTaskGcSet::computeModel()
+  bool CTaskGcSet::computeModel(const SRobotSensors* arg_sensors)
   {
     if(data_->has_been_init_)
     { return true;  }
