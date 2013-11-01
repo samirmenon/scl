@@ -237,8 +237,7 @@ public:
     for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
     {
       if(it->link_ds_->is_root_){ continue;  }//Root doesn't experience gravity
-      // NOTE: We subtract gravity, coz this is the force that will compensate for grav
-      ret_FgravGC -= it->link_ds_->mass_ * (it->J_com_.block(0,0,3,dof).transpose() * robot_parsed_data_->gravity_);
+      ret_FgravGC += it->link_ds_->mass_ * (it->J_com_.block(0,0,3,dof).transpose() * robot_parsed_data_->gravity_);
     }
     return flag;
   }
