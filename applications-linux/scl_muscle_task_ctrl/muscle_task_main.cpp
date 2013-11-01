@@ -89,7 +89,7 @@ namespace scl_app
     tsk->setGoalPos(db_->s_gui_.ui_point_[0]); //Interact with the gui
 
     //Add some markers to display trajectory every 1000 ticks.
-    if(ctrl_ctr_%10000 == 0)
+    if(ctrl_ctr_%2500 == 0)
     {
       if(traj_markers_added_so_far_ < SCL_TASK_APP_MAX_MARKERS_TO_ADD)
       {
@@ -128,6 +128,8 @@ namespace scl_app
       {
         std::cout<<"\nJ':\n"<<rob_muscle_J_.transpose();
         std::cout<<"\nFgc':"<<rob_io_ds_->actuators_.force_gc_commanded_.transpose();
+        std::cout<<"\nFgc_m':"<<(rob_muscle_J_.transpose() * act_->force_actuator_).transpose();
+        std::cout<<"\nFgc_diff':"<<(rob_io_ds_->actuators_.force_gc_commanded_ - rob_muscle_J_.transpose() * act_->force_actuator_).transpose();
         std::cout<<"\nFm {";
         for (int j=0; j<rob_mset_.getNumberOfMuscles(); j++)
         { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
