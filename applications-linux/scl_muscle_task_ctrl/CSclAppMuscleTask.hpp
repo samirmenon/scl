@@ -41,8 +41,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
+#include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
+#include <scl/actuation/muscles/CActuatorSetMuscle.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/robot/CRobot.hpp>
@@ -61,7 +63,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //User modified includes to suit your application
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 
-#define SCL_TASK_APP_MAX_MARKERS_TO_ADD 200
+#define SCL_TASK_APP_MAX_MARKERS_TO_ADD 2000
+const double SVD_THESHOLD = 0.0001;
 
 namespace scl_app
 {
@@ -95,7 +98,8 @@ namespace scl_app
     {
       db_ = S_NULL;
       rob_io_ds_ = S_NULL;
-      tao_dyn_ = S_NULL;
+      dyn_tao_ = S_NULL;
+      dyn_scl_ = S_NULL;
 
       ctrl = S_NULL;           //Use a task controller
       op_link_name = "not_init";
@@ -112,8 +116,7 @@ namespace scl_app
     }
 
     /** Destructor: Cleans up */
-    ~CSclAppMuscleTask()
-    { log_file_.close(); log_file_J_.close(); }
+    virtual ~CSclAppMuscleTask() { }
 
     /************************************************************************/
     /****************NOTE : You should NOT need to modify this **************/
@@ -146,17 +149,23 @@ namespace scl_app
     std::string ctrl_name_;              //Currently selected controller
 
     scl::CRobot robot_;                  //Generic robot
-    scl::SRobotIO* rob_io_ds_;       //Access the robot's sensors and actuators
+    scl::SRobotIO* rob_io_ds_;           //Access the robot's sensors and actuators
+    scl::SRobotParsed *rob_ds;           //The robot's parsed data structure
+    scl::SGcModel *gc_model_;            //The controller data struct
 
-    scl::CTaoDynamics* tao_dyn_;          //Generic tao dynamics
+    scl::CTaoDynamics* dyn_tao_;          //Generic tao dynamics
+    scl::CDynamicsScl* dyn_scl_;          //Generic tao dynamics
     scl::CGraphicsChai chai_gr_;         //Generic chai graphics
+
+    scl::CActuatorSetMuscle rob_mset_;   //Muscle actuator set
+    Eigen::MatrixXd rob_muscle_J_, rob_muscle_Jpinv_; //Pseudoinv
+    Eigen::JacobiSVD<Eigen::MatrixXd > rob_svd_;     //SVD
+    Eigen::MatrixXd rob_sing_val_;        // Singular value matrix for J'
+    scl::SActuatorSetMuscle *act_;         //The muscle set
 
     scl::sLongLong ctrl_ctr_;            //Controller computation counter
     scl::sLongLong gr_ctr_;              //Controller computation counter
-    scl::sFloat t_start_, t_end_;         //Start and end times
-
-    std::fstream log_file_;             //Logs vectors of [q, dq, x]
-    std::fstream log_file_J_;           //Logs J
+    scl::sFloat t_start_, t_end_;        //Start and end times
 
     chai3d::cGenericObject* traj_markers_[SCL_TASK_APP_MAX_MARKERS_TO_ADD];
     int traj_markers_added_so_far_;
@@ -212,10 +221,67 @@ namespace scl_app
         if(!scl_util::isStringInVector(robot_name_,robots_parsed_))
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
+        rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_);
+        if(NULL == rob_ds)
+        { throw(std::runtime_error("Could not find robot in database after parsing"));  }
+
         /******************************TaoDynamics************************************/
-        tao_dyn_ = new scl::CTaoDynamics();
-        flag = tao_dyn_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
+        dyn_tao_ = new scl::CTaoDynamics();
+        flag = dyn_tao_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
         if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
+
+        /******************************Scl Dynamics************************************/
+        dyn_scl_ = new scl::CDynamicsScl();
+        flag = dyn_scl_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
+        if(false == flag) { throw(std::runtime_error("Could not initialize dynamics algorithms"));  }
+
+        /******************************Shared I/O Data Structure************************************/
+        rob_io_ds_ = db_->s_io_.io_data_.at(robot_name_);
+        if(S_NULL == rob_io_ds_)
+        { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
+
+        /**********************Initialize Robot Dynamics and Controller*******************/
+        flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_tao_);//Note: The robot deletes these pointers.
+        if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
+
+        ctrl_name_ = argv[3];
+        flag = robot_.setControllerCurrent(ctrl_name_);
+        if(false == flag) { throw(std::runtime_error("Could not initialize robot's controller"));  }
+
+        /**********************Initialize Muscle Actuator Model & Dynamics*******************/
+        gc_model_ = &(robot_.getControllerDataStruct(ctrl_name_)->gc_model_);
+        flag = rob_mset_.init(rob_ds->muscle_system_.name_, /** parsed */ rob_ds, &(rob_ds->muscle_system_),
+            /** rbd tree */ gc_model_->rbdyn_tree_, /** dynamics */ dyn_scl_);
+        if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set"));  }
+
+        // Create an actuator set in the database
+        scl::SActuatorSetBase **pact = rob_io_ds_->actuators_.actuator_sets_.create(rob_ds->muscle_system_.name_);
+        *pact = rob_mset_.getData();
+        act_ = rob_mset_.getData();
+        act_->force_actuator_.setZero(rob_mset_.getNumberOfMuscles());
+
+        // Run the compute Jacobian function once (resizes the matrix etc.).
+        flag = rob_mset_.computeJacobian(rob_io_ds_->sensors_.q_, rob_muscle_J_);
+        if(false == flag) { throw(std::runtime_error("Could not use muscle actuator set to compute a Jacobian"));  }
+
+        // Set up an SVD to compute the inv to get muscle activation for gc control
+        rob_sing_val_.setZero(rob_ds->dof_, rob_mset_.getNumberOfMuscles()); //NOTE : Rectangular matrix
+
+        // Compute svd to set up matrix sizes etc.
+        rob_svd_.compute(rob_muscle_J_.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+        for(unsigned int i=0;i<rob_ds->dof_;++i)
+        {
+          if(rob_svd_.singularValues()(i)>SVD_THESHOLD)
+          { rob_sing_val_(i,i) = 1/rob_svd_.singularValues()(i);  }
+          else
+          { rob_sing_val_(i,i) = 0;  }
+        }
+
+        rob_muscle_Jpinv_.setZero(rob_muscle_J_.rows(), rob_muscle_J_.cols());
+        rob_muscle_Jpinv_ = rob_svd_.matrixV() * rob_sing_val_.transpose() * rob_svd_.matrixU().transpose();
+
+        // The muscle force vector
+        act_->force_actuator_.setZero(rob_ds->muscle_system_.muscles_.size());
 
         /******************************ChaiGlut Graphics************************************/
         if(!db_->s_gui_.glut_initialized_)
@@ -233,36 +299,13 @@ namespace scl_app
         if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_parsed_[0], &chai_gr_))
         { throw(std::runtime_error("Glut initialization error")); }
 
-        /******************************Shared I/O Data Structure************************************/
-        rob_io_ds_ = db_->s_io_.io_data_.at(robot_name_);
-        if(S_NULL == rob_io_ds_)
-        { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
-
-        /**********************Initialize Robot Dynamics and Controller*******************/
-        flag = robot_.initFromDb(robot_name_,tao_dyn_,tao_dyn_);//Note: The robot deletes these pointers.
-        if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
-
-        ctrl_name_ = argv[3];
-        flag = robot_.setControllerCurrent(ctrl_name_);
-        if(false == flag) { throw(std::runtime_error("Could not initialize robot's controller"));  }
-
         /**********************Initialize Single Control Task *******************/
+        // NOTE : This MUST come after chai is initialized
         flag = initMyController(argc,argv);
         if(false == flag)
         { throw(std::runtime_error("Could not initialize user's custom controller"));  }
 
-        /******************************Initialize Log File **********************/
-        std::string tmp_name = robot_name_ + std::string(".log");
-        log_file_.open(tmp_name.c_str(),std::fstream::out);
-        if(!log_file_.is_open())
-        { throw(std::runtime_error(std::string("Could not open log file: ") + tmp_name));  }
-
-        tmp_name = robot_name_ + std::string("_J.log");
-        log_file_J_.open(tmp_name.c_str(),std::fstream::out);
-        if(!log_file_J_.is_open())
-        { throw(std::runtime_error(std::string("Could not open log file for Jacobian: ") + tmp_name));  }
-
-
+        /**************************** Reset counters ***************************/
         ctrl_ctr_=0;//Controller computation counter
         gr_ctr_=0;//Controller computation counter
         traj_markers_added_so_far_=0;
@@ -321,15 +364,6 @@ namespace scl_app
           {//Paused and no step required. Sleep for a bit.
             const timespec ts = {0, 15000000};//Sleep for 15ms
             nanosleep(&ts,NULL);
-          }
-
-          if(scl::CDatabase::getData()->param_logging_on_)
-          {//Logs vectors of [q, dq, x, J]
-            log_file_<<rob_io_ds_->sensors_.q_.transpose()<<" "
-                  <<rob_io_ds_->sensors_.dq_.transpose()<<" "
-                  <<scl::CDatabase::getData()->s_gui_.ui_point_[0].transpose()
-                  <<std::endl;
-            log_file_J_<<tsk_ds->J_<<std::endl;
           }
         }
       }

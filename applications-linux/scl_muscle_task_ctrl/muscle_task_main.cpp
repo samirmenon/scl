@@ -44,14 +44,17 @@ namespace scl_app
       if(S_NULL == ctrl)
       { throw(std::runtime_error("Could not get current controller"));  }
 
+      ctrl->computeDynamics();//Set up all matrices and positions etc.
+
       //Initialize the first op point controller
       op_link_name = argv[4];
       op_link_set = true;
-      db_->s_gui_.ui_point_[0]<<0,0.1,0; //Ctrl tracks this control point.
+
       tsk = (scl::CTaskOpPos*)(ctrl->getTask(op_link_name));
       if(S_NULL == tsk)
       { throw(std::runtime_error("Could not get specified task"));  }
       tsk_ds = dynamic_cast<scl::STaskOpPos*>(tsk->getTaskData());
+      db_->s_gui_.ui_point_[0] = tsk_ds->rbd_->T_o_lnk_ * tsk_ds->pos_in_parent_; //Ctrl tracks this control point.
 
       /** Render a sphere at the op-point task's position */
       flag = chai_gr_.addSphereToRender(robot_name_,tsk_ds->link_ds_->name_,tsk_ds->pos_in_parent_);
@@ -62,11 +65,12 @@ namespace scl_app
       {
         op_link2_name = argv[5];
         op_link2_set = true;
-        db_->s_gui_.ui_point_[1]<<0,-0.1,0; //Ctrl2 tracks this control point.
+
         tsk2 = (scl::CTaskOpPos*)(ctrl->getTask(op_link2_name));
         if(S_NULL == tsk2)
         { throw(std::runtime_error("Could not get specified task"));  }
         tsk2_ds = dynamic_cast<scl::STaskOpPos*>(tsk2->getTaskData());
+        db_->s_gui_.ui_point_[1] = tsk_ds->rbd_->T_o_lnk_ * tsk_ds->pos_in_parent_; //Ctrl2 tracks this control point.
 
         /** Render a sphere at the op-point task's position */
         flag = chai_gr_.addSphereToRender(robot_name_,tsk2_ds->link_ds_->name_,tsk2_ds->pos_in_parent_);
@@ -101,8 +105,35 @@ namespace scl_app
     if(op_link2_set)//Use only if the second task was also initialized.
     { tsk2->setGoalPos(db_->s_gui_.ui_point_[1]); }
 
-    if(ctrl_ctr_%100 == 0)           //Update dynamics at a slower rate
-    { robot_.computeDynamics();  }
+    if(ctrl_ctr_%1 == 0)           //Update dynamics at a slower rate
+    {
+      robot_.computeDynamics();
+
+      rob_mset_.computeJacobian(rob_io_ds_->sensors_.q_, rob_muscle_J_);
+
+      // Compute svd to set up matrix sizes etc.
+      rob_svd_.compute(rob_muscle_J_.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+      for(unsigned int i=0;i<rob_ds->dof_;++i)
+      {
+        if(rob_svd_.singularValues()(i)>SVD_THESHOLD)
+        { rob_sing_val_(i,i) = 1/rob_svd_.singularValues()(i);  }
+        else
+        { rob_sing_val_(i,i) = 0;  }
+      }
+      rob_muscle_Jpinv_ = rob_svd_.matrixV() * rob_sing_val_.transpose() * rob_svd_.matrixU().transpose();
+
+      act_->force_actuator_ = rob_muscle_Jpinv_*rob_io_ds_->actuators_.force_gc_commanded_;
+
+      if(ctrl_ctr_%5000 == 0)
+      {
+        std::cout<<"\nJ':\n"<<rob_muscle_J_.transpose();
+        std::cout<<"\nFgc':"<<rob_io_ds_->actuators_.force_gc_commanded_.transpose();
+        std::cout<<"\nFm {";
+        for (int j=0; j<rob_mset_.getNumberOfMuscles(); j++)
+        { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
+        std::cout<<"} : "<<act_->force_actuator_.transpose();
+      }
+    }
     robot_.computeServo();           //Run the servo loop
     robot_.integrateDynamics();      //Integrate system
 
