@@ -53,7 +53,7 @@
       <joint_name>shoulder-rx</joint_name>
       <parent_link_name>upper_arm_ry</parent_link_name>
       <joint_limits>-3.14159 3.14159</joint_limits>
-      <default_joint_position>0</default_joint_position>
+      <default_joint_position>0.25</default_joint_position>
       <joint_type>rx</joint_type>
       <graphics>
         <sphere>
@@ -80,7 +80,7 @@
       <joint_name>shoulder2-rx</joint_name>
       <parent_link_name>upper_arm5</parent_link_name>
       <joint_limits>-3.14159 3.14159</joint_limits>
-      <default_joint_position>0</default_joint_position>
+      <default_joint_position>1.5</default_joint_position>
       <joint_type>rx</joint_type>
       <graphics>
         <sphere>
