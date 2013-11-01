@@ -74,7 +74,7 @@
 		<parent_link_name>link1</parent_link_name>
 		<joint_type>pz</joint_type>
 		<joint_limits>-0.75 0.0</joint_limits>
-		<default_joint_position>0.000000</default_joint_position>
+		<default_joint_position>-0.200000</default_joint_position>
 		<graphics>
 			<obj_file>
 				<name>Bot-RPP/graphics/RPPLink2.obj</name> <!-- obj file format is best. 3ds is possible -->
