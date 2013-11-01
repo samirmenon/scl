@@ -112,6 +112,7 @@ namespace scl
 
     // Compute the transformation matrix.
     flag = sclTransform(arg_link.T_lnk_, arg_link.link_ds_->pos_in_parent_,
+        arg_link.link_ds_->ori_parent_quat_,
         arg_q(arg_link.link_ds_->link_id_), arg_link.link_ds_->joint_type_);
 
     // If successful, update the gc for this transformation matrix update.
@@ -187,6 +188,13 @@ namespace scl
         To = rbd->T_lnk_ * To;
         rbd = rbd->parent_addr_;
       }
+
+#ifdef SCL_PRINT_INFO_MESSAGES
+      std::cout<<"\n\nLink:"<<it->name_
+          <<"\n\tTlnk:\n"<<it->T_lnk_.matrix()
+          <<"\n\tOriParent:\n"<<it->link_ds_->ori_parent_quat_.toRotationMatrix()
+          <<"\n\tTOlnk:\n"<<it->T_o_lnk_.matrix();
+#endif
     }
     return flag;
   }
