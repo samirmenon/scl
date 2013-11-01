@@ -44,14 +44,17 @@ namespace scl_app
       if(S_NULL == ctrl)
       { throw(std::runtime_error("Could not get current controller"));  }
 
+      ctrl->computeDynamics();//Set up all matrices and positions etc.
+
       //Initialize the first op point controller
       op_link_name = argv[4];
       op_link_set = true;
-      db_->s_gui_.ui_point_[0]<<0,0.1,0; //Ctrl tracks this control point.
+
       tsk = (scl::CTaskOpPos*)(ctrl->getTask(op_link_name));
       if(S_NULL == tsk)
       { throw(std::runtime_error("Could not get specified task"));  }
       tsk_ds = dynamic_cast<scl::STaskOpPos*>(tsk->getTaskData());
+      db_->s_gui_.ui_point_[0] = tsk_ds->rbd_->T_o_lnk_ * tsk_ds->pos_in_parent_; //Ctrl tracks this control point.
 
       /** Render a sphere at the op-point task's position */
       flag = chai_gr_.addSphereToRender(robot_name_,tsk_ds->link_ds_->name_,tsk_ds->pos_in_parent_);
@@ -62,11 +65,12 @@ namespace scl_app
       {
         op_link2_name = argv[5];
         op_link2_set = true;
-        db_->s_gui_.ui_point_[1]<<0,-0.1,0; //Ctrl2 tracks this control point.
+
         tsk2 = (scl::CTaskOpPos*)(ctrl->getTask(op_link2_name));
         if(S_NULL == tsk2)
         { throw(std::runtime_error("Could not get specified task"));  }
         tsk2_ds = dynamic_cast<scl::STaskOpPos*>(tsk2->getTaskData());
+        db_->s_gui_.ui_point_[1] = tsk_ds->rbd_->T_o_lnk_ * tsk_ds->pos_in_parent_; //Ctrl2 tracks this control point.
 
         /** Render a sphere at the op-point task's position */
         flag = chai_gr_.addSphereToRender(robot_name_,tsk2_ds->link_ds_->name_,tsk2_ds->pos_in_parent_);

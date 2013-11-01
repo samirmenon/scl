@@ -225,6 +225,19 @@ namespace scl_app
         flag = dyn_scl_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
         if(false == flag) { throw(std::runtime_error("Could not initialize dynamics algorithms"));  }
 
+        /******************************Shared I/O Data Structure************************************/
+        rob_io_ds_ = db_->s_io_.io_data_.at(robot_name_);
+        if(S_NULL == rob_io_ds_)
+        { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
+
+        /**********************Initialize Robot Dynamics and Controller*******************/
+        flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_tao_);//Note: The robot deletes these pointers.
+        if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
+
+        ctrl_name_ = argv[3];
+        flag = robot_.setControllerCurrent(ctrl_name_);
+        if(false == flag) { throw(std::runtime_error("Could not initialize robot's controller"));  }
+
         /******************************ChaiGlut Graphics************************************/
         if(!db_->s_gui_.glut_initialized_)
         {
@@ -240,19 +253,6 @@ namespace scl_app
 
         if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_parsed_[0], &chai_gr_))
         { throw(std::runtime_error("Glut initialization error")); }
-
-        /******************************Shared I/O Data Structure************************************/
-        rob_io_ds_ = db_->s_io_.io_data_.at(robot_name_);
-        if(S_NULL == rob_io_ds_)
-        { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
-
-        /**********************Initialize Robot Dynamics and Controller*******************/
-        flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_tao_);//Note: The robot deletes these pointers.
-        if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
-
-        ctrl_name_ = argv[3];
-        flag = robot_.setControllerCurrent(ctrl_name_);
-        if(false == flag) { throw(std::runtime_error("Could not initialize robot's controller"));  }
 
         /**********************Initialize Single Control Task *******************/
         flag = initMyController(argc,argv);
