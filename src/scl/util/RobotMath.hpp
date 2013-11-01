@@ -43,6 +43,7 @@ namespace scl
   /** Creates a transformation matrix from a given joint specification
    * and a generalized coordinate. */
   sBool sclTransform(Eigen::Affine3d &arg_T, const Eigen::Vector3d &arg_offset,
+      const Eigen::Quaterniond &arg_ori_in_parent,
       const sFloat arg_q, const sJointType arg_jtype)
   {
     bool flag = true;
@@ -52,31 +53,37 @@ namespace scl
     {
       case JOINT_TYPE_PRISMATIC_X:
         arg_T.setIdentity();
+        arg_T.rotate(arg_ori_in_parent);
         arg_T.translation() = arg_offset;
         arg_T.translation()(0) += arg_q;
         break;
       case JOINT_TYPE_PRISMATIC_Y:
         arg_T.setIdentity();
+        arg_T.rotate(arg_ori_in_parent);
         arg_T.translation() = arg_offset;
         arg_T.translation()(1) += arg_q;
         break;
       case JOINT_TYPE_PRISMATIC_Z:
         arg_T.setIdentity();
+        arg_T.rotate(arg_ori_in_parent);
         arg_T.translation() = arg_offset;
         arg_T.translation()(2) += arg_q;
         break;
       case JOINT_TYPE_REVOLUTE_X:
         arg_T.setIdentity();
+        arg_T.rotate(arg_ori_in_parent);
         arg_T.translation() = arg_offset;
         arg_T.rotate(Eigen::AngleAxisd(arg_q, Eigen::Vector3d::UnitX()));
         break;
       case JOINT_TYPE_REVOLUTE_Y:
         arg_T.setIdentity();
+        arg_T.rotate(arg_ori_in_parent);
         arg_T.translation() = arg_offset;
         arg_T.rotate(Eigen::AngleAxisd(arg_q, Eigen::Vector3d::UnitY()));
         break;
       case JOINT_TYPE_REVOLUTE_Z:
         arg_T.setIdentity();
+        arg_T.rotate(arg_ori_in_parent);
         arg_T.translation() = arg_offset;
         arg_T.rotate(Eigen::AngleAxisd(arg_q, Eigen::Vector3d::UnitZ()));
         break;
