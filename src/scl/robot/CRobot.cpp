@@ -275,6 +275,21 @@ namespace scl
       data_.io_data_ = arg_io_data;
       data_.controllers_.clear();
 
+      // Initialize at default joint position
+      data_.io_data_->sensors_.q_.setZero(data_.io_data_->dof_);//Set size
+      sutil::CMappedTree<std::string, scl::SRigidBody>::iterator itrb,itrbe;
+      for (itrb = data_.parsed_robot_data_->rb_tree_.begin(),
+          itrbe = data_.parsed_robot_data_->rb_tree_.end();
+          itrb!=itrbe; ++itrb)
+      {//Set values
+        if(itrb->link_id_<0){continue;}
+        else if(itrb->link_id_>=data_.io_data_->dof_)
+        { throw(std::runtime_error("Rigid body tree has a link with an id greater than the robot's dof."));  }
+        data_.io_data_->sensors_.q_(itrb->link_id_) = itrb->joint_default_pos_;
+      }
+      data_.io_data_->sensors_.dq_.setZero(data_.io_data_->dof_);
+      data_.io_data_->sensors_.ddq_.setZero(data_.io_data_->dof_);
+
       //Some defaults:
       //Damping = 1% energy loss per second
       data_.parsed_robot_data_->damping_.setConstant(data_.io_data_->dof_,db_->sim_dt_/100);
