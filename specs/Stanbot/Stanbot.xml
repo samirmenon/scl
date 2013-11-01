@@ -130,7 +130,7 @@
     <joint_name>right-elbow</joint_name>
     <parent_link_name>right-upper-arm</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>-0.600000 3.140000</joint_limits>
+    <joint_limits>-3.600000 3.140000</joint_limits>
     <default_joint_position>-1.800000</default_joint_position>
     <graphics>
       <obj_file>
@@ -227,7 +227,7 @@
     <joint_name>left-elbow</joint_name>
     <parent_link_name>left-upper-arm</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>-0.600000 3.140000</joint_limits>
+    <joint_limits>-3.600000 3.140000</joint_limits>
     <default_joint_position>-1.800000</default_joint_position>
     <graphics>
       <obj_file>
@@ -413,7 +413,7 @@
     <joint_name>right-knee</joint_name>
     <parent_link_name>right-lower-leg</parent_link_name>
     <joint_type>rx</joint_type>
-    <joint_limits>-0.600000 3.140000</joint_limits>
+    <joint_limits>-3.600000 3.140000</joint_limits>
     <default_joint_position>-1.000000</default_joint_position>
     <graphics>
       <obj_file>
