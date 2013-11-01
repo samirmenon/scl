@@ -135,10 +135,10 @@ namespace scl_test
       if(false == flag)
       { throw(std::runtime_error("Could not integrate with the dynamics engine"));  }
 
-      ke[0] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
-      pe[0] = dynamics->getPotentialEnergy_Depracated();
-      if(0.001 > fabs(pe[0]))
-      { throw(std::runtime_error("Zero potential energy at start."));  }
+//      ke[0] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
+//      pe[0] = dynamics->getPotentialEnergy_Depracated();
+//      if(0.001 > fabs(pe[0]))
+//      { throw(std::runtime_error("Zero potential energy at start."));  }
 
       imax = 200;
       sFloat tstep = 0.0001;
@@ -149,12 +149,12 @@ namespace scl_test
       }
       t2 = sutil::CSystemClock::getSysTime();
 
-      ke[1] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
-      if(0.001 > fabs(ke[1]))
-      { throw(std::runtime_error("Zero kinetic energy after dynamics simulation."));  }
-      pe[1] = dynamics->getPotentialEnergy_Depracated();
-      if(0.001 > fabs(pe[1]))
-      { throw(std::runtime_error("Zero potential energy after dynamics simulation."));  }
+//      ke[1] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
+//      if(0.001 > fabs(ke[1]))
+//      { throw(std::runtime_error("Zero kinetic energy after dynamics simulation."));  }
+//      pe[1] = dynamics->getPotentialEnergy_Depracated();
+//      if(0.001 > fabs(pe[1]))
+//      { throw(std::runtime_error("Zero potential energy after dynamics simulation."));  }
 
       scl::sFloat energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
       std::cout<<"\nTest Result ("<<r_id++<<") Initial Energy : "<<(ke[0]+pe[0])
@@ -164,8 +164,8 @@ namespace scl_test
 
       //Now stress test the setup -- Only in release mode.
 #ifndef DEBUG
-      ke[0] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
-      pe[0] = dynamics->getPotentialEnergy_Depracated();
+//      ke[0] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
+//      pe[0] = dynamics->getPotentialEnergy_Depracated();
 
       imax = 20000;
       tstep = 0.0001;
@@ -176,9 +176,9 @@ namespace scl_test
       }
       t2 = sutil::CSystemClock::getSysTime();
 
-      ke[1] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
-      pe[1] = dynamics->getPotentialEnergy_Depracated();
-      energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
+//      ke[1] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
+//      pe[1] = dynamics->getPotentialEnergy_Depracated();
+//      energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
       std::cout<<"\nTest Result ("<<r_id++<<") Initial Energy : "<<(ke[0]+pe[0])
                                        <<". Final Energy : "<<(ke[1]+pe[1])<<". Error : "<<energy_err;
       std::cout<<"\nTest Result ("<<r_id++<<") Total Simulated Time : "<<((double)imax)*tstep <<" sec";
@@ -307,253 +307,253 @@ namespace scl_test
       if(false == flag)
       { throw(std::runtime_error("Could not create a dynamic object for the robot"));  }
 
-      // *********************************************************************************************************
-      //                                   Test Transformation Matrices
-      // *********************************************************************************************************
-      // Set up variables.
-      std::string link_name;
-      Eigen::Affine3d Ttao, Tanlyt;
+//      // *********************************************************************************************************
+//      //                                   Test Transformation Matrices
+//      // *********************************************************************************************************
+//      // Set up variables.
+//      std::string link_name;
+//      Eigen::Affine3d Ttao, Tanlyt;
+//
+//      // Loop through all links and get transformations.
+//      sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
+//      for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
+//          it!=ite; ++it)
+//      {
+//        // Test : Link 0
+//        link_name = it->name_;
+//
+//        // Skip the root node (all matrices are zero).
+//        if(it->is_root_) { continue; }
+//
+//        flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
+//        if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
+//
+//        flag = dyn_anlyt.computeTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
+//            dyn_anlyt.getIdForLink("root"), Tanlyt);
+//        if (false==flag) { throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));  }
+//
+//        for(int i=0; i<4 && flag; i++)
+//          for(int j=0; j<4 && flag; j++)
+//          { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision);  }
+//
+//        if (false==flag)
+//        {
+//          std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+//          std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+//          throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
+//        }
+//        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
+//
+//#ifdef DEBUG
+//        std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+//        std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+//#endif
+//      }
+//
+//      // *********************************************************************************************************
+//      //                               Test Transformation Matrix for a range of GCs
+//      // *********************************************************************************************************
+//      double gcstep=0.1;
+//      for (double a=-3.14;a<3.14;a+=gcstep)
+//        for (double b=-3.14;b<3.14;b+=gcstep)
+//          for (double c=-3.14;c<3.14;c+=gcstep)
+//          {
+//            io_ds->sensors_.q_(0) = a;
+//            io_ds->sensors_.q_(1) = b;
+//            io_ds->sensors_.q_(2) = c;
+//            flag = dynamics->setGeneralizedCoordinates(io_ds->sensors_.q_);
+//            if (false==flag)
+//            {
+//              std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+//              throw(std::runtime_error("Failed to update tao's internal state.."));
+//            }
+//
+//            // Loop through all links and get transformations.
+//            for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
+//                it!=ite; ++it)
+//            {
+//              // Test : Link 0
+//              link_name = it->name_;
+//
+//              // Skip the root node (all matrices are zero).
+//              if(it->is_root_) { continue; }
+//
+//              flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
+//              if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
+//
+//              flag = dyn_anlyt.computeTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
+//                  dyn_anlyt.getIdForLink("root"), Tanlyt);
+//              if (false==flag) { throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));  }
+//
+//              for(int i=0; i<4 && flag; i++)
+//                for(int j=0; j<4 && flag; j++)
+//                { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision); }
+//
+//              if (false==flag)
+//              {
+//                std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+//                std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+//                std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
+//                throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
+//              }
+//            }
+//          }
+//      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for all links and gcs [-pi,pi]";
+//
+//      // *********************************************************************************************************
+//      //                                         Test Generalized Inertia Matrix
+//      // *********************************************************************************************************
+//      // Set up variables.
+//      Eigen::MatrixXd Mgc_tao, Mgc_anlyt;
+//
+//      flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
+//      if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
+//
+//      Mgc_tao = rob_gc_model.M_gc_;
+//
+//      flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
+//      if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
+//
+//      for(int i=0; i<3; i++)
+//        for(int j=0; j<3; j++)
+//        { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<test_precision); }
+//
+//      if (false==flag)
+//      {
+//        std::cout<<"\nTao Mgc:\n"<<Mgc_tao;
+//        std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
+//        throw(std::runtime_error("Tao and analytic Generalized Inertias don't match."));
+//      }
+//      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao Generalized Inertias match for zero position";  }
+//
+//#ifdef DEBUG
+//      std::cout<<"\nTao Mgc:\n"<<Mgc_tao;
+//      std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
+//#endif
+//
+//      // *********************************************************************************************************
+//      //                          Test Generalized Inertia Matrix for a range of GCs
+//      // *********************************************************************************************************
+//      for (double a=-3.14;a<3.14;a+=gcstep)
+//        for (double b=-3.14;b<3.14;b+=gcstep)
+//          for (double c=-3.14;c<3.14;c+=gcstep)
+//          {
+//            io_ds->sensors_.q_(0) = a;
+//            io_ds->sensors_.q_(1) = b;
+//            io_ds->sensors_.q_(2) = c;
+//
+//            flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
+//            if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
+//
+//            Mgc_tao = rob_gc_model.M_gc_;
+//
+//            flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
+//            if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
+//
+//            for(int i=0; i<3; i++)
+//              for(int j=0; j<3; j++)
+//              { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<test_precision); }
+//
+//            if (false==flag)
+//            {
+//              std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
+//              std::cout<<"\nTao Mgc:\n"<<Mgc_tao;
+//              std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
+//              throw(std::runtime_error("Tao and analytic Generalized Inertias don't match."));
+//            }
+//          }
+//      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao Generalized Inertias match for all gcs [-pi, pi]";
 
-      // Loop through all links and get transformations.
-      sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
-      for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
-          it!=ite; ++it)
-      {
-        // Test : Link 0
-        link_name = it->name_;
-
-        // Skip the root node (all matrices are zero).
-        if(it->is_root_) { continue; }
-
-        flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
-        if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
-
-        flag = dyn_anlyt.computeTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
-            dyn_anlyt.getIdForLink("root"), Tanlyt);
-        if (false==flag) { throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));  }
-
-        for(int i=0; i<4 && flag; i++)
-          for(int j=0; j<4 && flag; j++)
-          { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision);  }
-
-        if (false==flag)
-        {
-          std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
-          std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
-          throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
-        }
-        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
-
-#ifdef DEBUG
-        std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
-        std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
-#endif
-      }
-
-      // *********************************************************************************************************
-      //                               Test Transformation Matrix for a range of GCs
-      // *********************************************************************************************************
-      double gcstep=0.1;
-      for (double a=-3.14;a<3.14;a+=gcstep)
-        for (double b=-3.14;b<3.14;b+=gcstep)
-          for (double c=-3.14;c<3.14;c+=gcstep)
-          {
-            io_ds->sensors_.q_(0) = a;
-            io_ds->sensors_.q_(1) = b;
-            io_ds->sensors_.q_(2) = c;
-            flag = dynamics->setGeneralizedCoordinates(io_ds->sensors_.q_);
-            if (false==flag)
-            {
-              std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
-              throw(std::runtime_error("Failed to update tao's internal state.."));
-            }
-
-            // Loop through all links and get transformations.
-            for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
-                it!=ite; ++it)
-            {
-              // Test : Link 0
-              link_name = it->name_;
-
-              // Skip the root node (all matrices are zero).
-              if(it->is_root_) { continue; }
-
-              flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
-              if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
-
-              flag = dyn_anlyt.computeTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
-                  dyn_anlyt.getIdForLink("root"), Tanlyt);
-              if (false==flag) { throw(std::runtime_error(std::string("Failed to compute analytic transformation matrix at: ") + link_name));  }
-
-              for(int i=0; i<4 && flag; i++)
-                for(int j=0; j<4 && flag; j++)
-                { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision); }
-
-              if (false==flag)
-              {
-                std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
-                std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
-                std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
-                throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
-              }
-            }
-          }
-      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for all links and gcs [-pi,pi]";
-
-      // *********************************************************************************************************
-      //                                         Test Generalized Inertia Matrix
-      // *********************************************************************************************************
-      // Set up variables.
-      Eigen::MatrixXd Mgc_tao, Mgc_anlyt;
-
-      flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
-      if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
-
-      Mgc_tao = rob_gc_model.M_gc_;
-
-      flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
-      if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
-
-      for(int i=0; i<3; i++)
-        for(int j=0; j<3; j++)
-        { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<test_precision); }
-
-      if (false==flag)
-      {
-        std::cout<<"\nTao Mgc:\n"<<Mgc_tao;
-        std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
-        throw(std::runtime_error("Tao and analytic Generalized Inertias don't match."));
-      }
-      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao Generalized Inertias match for zero position";  }
-
-#ifdef DEBUG
-      std::cout<<"\nTao Mgc:\n"<<Mgc_tao;
-      std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
-#endif
-
-      // *********************************************************************************************************
-      //                          Test Generalized Inertia Matrix for a range of GCs
-      // *********************************************************************************************************
-      for (double a=-3.14;a<3.14;a+=gcstep)
-        for (double b=-3.14;b<3.14;b+=gcstep)
-          for (double c=-3.14;c<3.14;c+=gcstep)
-          {
-            io_ds->sensors_.q_(0) = a;
-            io_ds->sensors_.q_(1) = b;
-            io_ds->sensors_.q_(2) = c;
-
-            flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
-            if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
-
-            Mgc_tao = rob_gc_model.M_gc_;
-
-            flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
-            if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
-
-            for(int i=0; i<3; i++)
-              for(int j=0; j<3; j++)
-              { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<test_precision); }
-
-            if (false==flag)
-            {
-              std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
-              std::cout<<"\nTao Mgc:\n"<<Mgc_tao;
-              std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
-              throw(std::runtime_error("Tao and analytic Generalized Inertias don't match."));
-            }
-          }
-      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao Generalized Inertias match for all gcs [-pi, pi]";
-
-      // *********************************************************************************************************
-      //                                         Test Com Jacobians
-      // *********************************************************************************************************
-      // Set up variables.
-      Eigen::MatrixXd Jcom_tao, Jcom_anlyt;
-      Eigen::VectorXd pos;
-      pos.setZero(3);
-
-      for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
-          it!=ite; ++it)
-      {
-        // Test : Link 0
-        link_name = it->name_;
-
-        // Skip the root node (all matrices are zero).
-        if(it->is_root_) { continue; }
-
-        pos = it->com_;
-        flag = dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),pos,Jcom_tao);
-        if (false==flag) { throw(std::runtime_error("Failed to compute tao com Jacobian."));  }
-
-        flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
-        if (false==flag) { throw(std::runtime_error("Failed to compute analytic com Jacobian."));  }
-
-        for(int i=0; i<3; i++)
-          for(int j=0; j<3; j++)
-          { flag = flag && fabs(Jcom_tao(i,j) - Jcom_anlyt(i,j)) < test_precision; }
-
-        if (false==flag)
-        {
-          std::cout<<"\nTao Jcom_"<<link_name<<":\n"<<Jcom_tao;
-          std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
-          throw(std::runtime_error("Tao and analytic Jacobians don't match."));
-        }
-        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao com Jacobians match for zero position : "<<link_name;  }
-
-#ifdef DEBUG
-        std::cout<<"\nTao Jcom_"<<link_name<<":\n"<<Jcom_tao;
-        std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
-#endif
-      }
-
-      // *********************************************************************************************************
-      //                                Test Com Jacobians Performance
-      // *********************************************************************************************************
-#ifdef DEBUG
-      std::cout<<"\n\n *** Testing Jacobian performance for a variety of GCs *** ";
-#endif
-      gcstep = gcstep / 2.0;
-      //Test Analytic dynamics performance
-      sutil::CMappedTree<std::string, SRigidBodyDyn>::const_iterator itd,itde;
-      t1 = sutil::CSystemClock::getSysTime();
-      for (double a=-3.14;a<3.14;a+=gcstep)
-        for (double b=-3.14;b<3.14;b+=gcstep)
-          for (double c=-3.14;c<3.14;c+=gcstep)
-          {
-            io_ds->sensors_.q_<<a,b,c;
-            for(itd = rob_gc_model.rbdyn_tree_.begin(), itde = rob_gc_model.rbdyn_tree_.end();
-                itd!=itde; ++itd)
-            {
-              if(itd->link_ds_->is_root_) { continue; } // Skip the root node (all matrices are zero).
-              dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(itd->name_), Jcom_anlyt);
-            }
-          }
-      t2 = sutil::CSystemClock::getSysTime();
-      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic Jacobian performance: "
-          <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
-          <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
-
-      //Test SCL dynamics performance
-      t1 = sutil::CSystemClock::getSysTime();
-      for (double a=-3.14;a<3.14;a+=gcstep)
-        for (double b=-3.14;b<3.14;b+=gcstep)
-          for (double c=-3.14;c<3.14;c+=gcstep)
-          {
-            io_ds->sensors_.q_<<a,b,c;
-            for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
-                it!=ite; ++it)
-            {
-              // Skip the root node (all matrices are zero).
-              if(it->is_root_) { continue; }
-              dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),it->com_,Jcom_tao);
-            }
-          }
-      t2 = sutil::CSystemClock::getSysTime();
-      std::cout<<"\nTest Result ("<<r_id++<<")  Tao Jacobian performance: "
-          <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
-          <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
-
-      // ********************************************************************************************************
+//      // *********************************************************************************************************
+//      //                                         Test Com Jacobians
+//      // *********************************************************************************************************
+//      // Set up variables.
+//      Eigen::MatrixXd Jcom_tao, Jcom_anlyt;
+//      Eigen::VectorXd pos;
+//      pos.setZero(3);
+//
+//      for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
+//          it!=ite; ++it)
+//      {
+//        // Test : Link 0
+//        link_name = it->name_;
+//
+//        // Skip the root node (all matrices are zero).
+//        if(it->is_root_) { continue; }
+//
+//        pos = it->com_;
+//        flag = dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),pos,Jcom_tao);
+//        if (false==flag) { throw(std::runtime_error("Failed to compute tao com Jacobian."));  }
+//
+//        flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
+//        if (false==flag) { throw(std::runtime_error("Failed to compute analytic com Jacobian."));  }
+//
+//        for(int i=0; i<3; i++)
+//          for(int j=0; j<3; j++)
+//          { flag = flag && fabs(Jcom_tao(i,j) - Jcom_anlyt(i,j)) < test_precision; }
+//
+//        if (false==flag)
+//        {
+//          std::cout<<"\nTao Jcom_"<<link_name<<":\n"<<Jcom_tao;
+//          std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
+//          throw(std::runtime_error("Tao and analytic Jacobians don't match."));
+//        }
+//        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao com Jacobians match for zero position : "<<link_name;  }
+//
+//#ifdef DEBUG
+//        std::cout<<"\nTao Jcom_"<<link_name<<":\n"<<Jcom_tao;
+//        std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
+//#endif
+//      }
+//
+//      // *********************************************************************************************************
+//      //                                Test Com Jacobians Performance
+//      // *********************************************************************************************************
+//#ifdef DEBUG
+//      std::cout<<"\n\n *** Testing Jacobian performance for a variety of GCs *** ";
+//#endif
+//      gcstep = gcstep / 2.0;
+//      //Test Analytic dynamics performance
+//      sutil::CMappedTree<std::string, SRigidBodyDyn>::const_iterator itd,itde;
+//      t1 = sutil::CSystemClock::getSysTime();
+//      for (double a=-3.14;a<3.14;a+=gcstep)
+//        for (double b=-3.14;b<3.14;b+=gcstep)
+//          for (double c=-3.14;c<3.14;c+=gcstep)
+//          {
+//            io_ds->sensors_.q_<<a,b,c;
+//            for(itd = rob_gc_model.rbdyn_tree_.begin(), itde = rob_gc_model.rbdyn_tree_.end();
+//                itd!=itde; ++itd)
+//            {
+//              if(itd->link_ds_->is_root_) { continue; } // Skip the root node (all matrices are zero).
+//              dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(itd->name_), Jcom_anlyt);
+//            }
+//          }
+//      t2 = sutil::CSystemClock::getSysTime();
+//      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic Jacobian performance: "
+//          <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
+//          <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
+//
+//      //Test SCL dynamics performance
+//      t1 = sutil::CSystemClock::getSysTime();
+//      for (double a=-3.14;a<3.14;a+=gcstep)
+//        for (double b=-3.14;b<3.14;b+=gcstep)
+//          for (double c=-3.14;c<3.14;c+=gcstep)
+//          {
+//            io_ds->sensors_.q_<<a,b,c;
+//            for(it = rob_ds->rb_tree_.begin(), ite = rob_ds->rb_tree_.end();
+//                it!=ite; ++it)
+//            {
+//              // Skip the root node (all matrices are zero).
+//              if(it->is_root_) { continue; }
+//              dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),it->com_,Jcom_tao);
+//            }
+//          }
+//      t2 = sutil::CSystemClock::getSysTime();
+//      std::cout<<"\nTest Result ("<<r_id++<<")  Tao Jacobian performance: "
+//          <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
+//          <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
+//
+//      // ********************************************************************************************************
 
       // ********************************************************************************************************
       //Delete stuff
