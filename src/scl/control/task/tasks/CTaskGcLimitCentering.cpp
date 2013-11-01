@@ -146,7 +146,8 @@ namespace scl
       data_->force_task_ = data_->force_task_.array().min(data_->force_task_max_.array());//Min of self and max
       data_->force_task_ = data_->force_task_.array().max(data_->force_task_min_.array());//Max of self and min
 
-      data_->force_gc_ =  data_->gc_model_->M_gc_ * data_->force_task_ + data_->gc_model_->force_gc_grav_;
+      // NOTE : We subtract gravity (since we want to apply an equal and opposite force
+      data_->force_gc_ =  data_->gc_model_->M_gc_ * data_->force_task_ - data_->gc_model_->force_gc_grav_;
       return true;
     }
     else

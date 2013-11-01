@@ -182,9 +182,8 @@ bool CTaskOpPos::computeServo(const SRobotSensors* arg_sensors)
     //Step 1: Find position of the op_point
     data_->x_ = data_->rbd_->T_o_lnk_ * data_->pos_in_parent_;
 
-    Eigen::MatrixXd &tmp_J = data_->J_;
     //Global coordinates : dx = J . dq
-    data_->dx_ = tmp_J * arg_sensors->dq_;
+    data_->dx_ = data_->J_ * arg_sensors->dq_;
 
     //Compute the servo torques
     tmp1 = (data_->x_goal_ - data_->x_);
@@ -201,8 +200,9 @@ bool CTaskOpPos::computeServo(const SRobotSensors* arg_sensors)
     data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
     data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
+    // NOTE : We subtract gravity (since we want to apply an equal and opposite force
     if(flag_compute_gravity_)
-    { data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->force_task_grav_;  }
+    { data_->force_task_ = data_->M_task_ * data_->ddx_ - data_->force_task_grav_;  }
     else
     { data_->force_task_ = data_->M_task_ * data_->ddx_;  }
 
@@ -231,15 +231,33 @@ bool CTaskOpPos::computeModel(const SRobotSensors* arg_sensors)
     bool flag = true;
     const SGcModel* gcm = data_->gc_model_;
 
-    flag = flag && dynamics_->computeJacobian(data_->J_,*(data_->rbd_),
+    flag = flag && dynamics_->computeJacobian(data_->J_6_,*(data_->rbd_),
         arg_sensors->q_,data_->pos_in_parent_);
 
     //Use the position jacobian only. This is an op-point task.
-    data_->J_ = data_->J_.block(0,0,3,data_->robot_->dof_);
+    data_->J_ = data_->J_6_.block(0,0,3,data_->robot_->dof_);
 
     //Operational space mass/KE matrix:
     //Lambda = (J * Ainv * J')^-1
     data_->M_task_inv_ = data_->J_ * gcm->M_gc_inv_ * data_->J_.transpose();
+
+#ifdef SCL_PRINT_INFO_MESSAGES
+    std::cout<<"\n\tJx6:\n"<<data_->J_6_
+            <<"\n\tFgrav_gc:\n"<<data_->gc_model_->force_gc_grav_.transpose();
+
+    std::cout<<"\n\tMx_inv:\n"<<data_->M_task_inv_
+        <<"\n\tJx:\n"<<data_->J_
+        <<"\n\tJx6:\n"<<data_->J_6_
+        <<"\n\tMgcinv:\n"<<gcm->M_gc_inv_;
+
+    std::cout<<"\n\tTo_lnk: \n"<<data_->rbd_->T_o_lnk_.matrix()
+              <<"\n\tPosInPar: "<<data_->pos_in_parent_.transpose()
+              <<"\n\t       X: "<<data_->x_.transpose()
+              <<"\n\t   Xgoal: "<<data_->x_goal_.transpose()
+              <<"\n\t   Ftask: "<<data_->force_task_.transpose()
+              <<"\n\t Ftaskgc: "<<data_->force_gc_.transpose()
+              <<"\n\t  Fxgrav: "<<data_->force_task_grav_.transpose();
+#endif
 
     if(!lambda_inv_singular_)
     {

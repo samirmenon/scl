@@ -194,7 +194,8 @@ namespace scl
         if(data_->force_task_[i] < data_->force_task_min_[i])
         {data_->force_task_[i] = data_->force_task_min_[i]; }
 
-        data_->force_gc_[data_->q_sel_[i]] =  data_->force_task_[i] + data_->gc_model_->force_gc_grav_[data_->q_sel_[i]];
+        // NOTE : We subtract gravity (since we want to apply an equal and opposite force
+        data_->force_gc_[data_->q_sel_[i]] =  data_->force_task_[i] - data_->gc_model_->force_gc_grav_[data_->q_sel_[i]];
       }
 
       return true;

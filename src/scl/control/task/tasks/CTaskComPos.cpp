@@ -195,7 +195,8 @@ namespace scl
       data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
       data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
-      data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->force_task_grav_;
+      // NOTE : We subtract gravity (since we want to apply an equal and opposite force
+      data_->force_task_ = data_->M_task_ * data_->ddx_ - data_->force_task_grav_;
 
       // T = J' ( M x F* + p)
       // We do not use the centrifugal/coriolis forces. They can cause instabilities.

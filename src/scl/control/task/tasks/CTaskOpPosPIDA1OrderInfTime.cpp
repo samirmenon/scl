@@ -215,8 +215,9 @@ bool CTaskOpPosPIDA1OrderInfTime::computeServo(const SRobotSensors* arg_sensors)
     data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
     data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
+    // NOTE : We subtract gravity (since we want to apply an equal and opposite force
     if(flag_compute_gravity_)
-    { data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->force_task_grav_;  }
+    { data_->force_task_ = data_->M_task_ * data_->ddx_ - data_->force_task_grav_;  }
     else
     { data_->force_task_ = data_->M_task_ * data_->ddx_;  }
 
@@ -245,10 +246,10 @@ bool CTaskOpPosPIDA1OrderInfTime::computeModel(const SRobotSensors* arg_sensors)
     bool flag = true;
     const SGcModel* gcm = data_->gc_model_;
 
-    flag = flag && dynamics_->computeJacobian(data_->J_,*(data_->rbd_),arg_sensors->q_,data_->pos_in_parent_);
+    flag = flag && dynamics_->computeJacobian(data_->J_6_,*(data_->rbd_),arg_sensors->q_,data_->pos_in_parent_);
 
     //Use the position jacobian only. This is an op-point task.
-    data_->J_ = data_->J_.block(0,0,3,data_->robot_->dof_);
+    data_->J_ = data_->J_6_.block(0,0,3,data_->robot_->dof_);
 
     //Operational space mass/KE matrix:
     //Lambda = (J * Ainv * J')^-1
