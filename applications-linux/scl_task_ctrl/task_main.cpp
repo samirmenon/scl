@@ -101,7 +101,7 @@ namespace scl_app
     if(op_link2_set)//Use only if the second task was also initialized.
     { tsk2->setGoalPos(db_->s_gui_.ui_point_[1]); }
 
-    if(ctrl_ctr_%100 == 0)           //Update dynamics at a slower rate
+    if(ctrl_ctr_%20 == 0)           //Update dynamics at a slower rate
     { robot_.computeDynamics();  }
     robot_.computeServo();           //Run the servo loop
     robot_.integrateDynamics();      //Integrate system
