@@ -29,6 +29,8 @@
         <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
         <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
         <flag_logging_on>false</flag_logging_on>
+        <flag_wireframe_on>false</flag_wireframe_on>
+        <option_axis_frame_size>0.0</option_axis_frame_size> <!-- All options are optional -->
     </robot>
 
     <graphics name="PumaBotStdView">
