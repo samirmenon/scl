@@ -111,7 +111,7 @@
     <!-- A single muscle -->
     <muscle type="Hill">
       <name>m0a</name>
-      <max_isometric_force>20</max_isometric_force> <!-- at the contractile element -->
+      <max_isometric_force>150</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
       <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
@@ -138,7 +138,7 @@
     
     <muscle type="Hill">
       <name>m0b</name>
-      <max_isometric_force>20</max_isometric_force> <!-- at the contractile element -->
+      <max_isometric_force>150</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
       <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
@@ -165,7 +165,7 @@
     
     <muscle type="Hill">
       <name>m1a</name>
-      <max_isometric_force>20</max_isometric_force> <!-- at the contractile element -->
+      <max_isometric_force>150</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
       <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
@@ -200,7 +200,7 @@
     
     <muscle type="Hill">
       <name>m1b</name>
-      <max_isometric_force>20</max_isometric_force> <!-- at the contractile element -->
+      <max_isometric_force>150</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
       <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
@@ -235,7 +235,7 @@
     
     <muscle type="Hill">
       <name>m1c</name>
-      <max_isometric_force>20</max_isometric_force> <!-- at the contractile element -->
+      <max_isometric_force>150</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
       <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
@@ -270,7 +270,7 @@
     
     <muscle type="Hill">
       <name>m2</name>
-      <max_isometric_force>50</max_isometric_force> <!-- at the contractile element -->
+      <max_isometric_force>150</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
       <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
@@ -305,7 +305,7 @@
     
     <muscle type="Hill">
       <name>m2b</name>
-      <max_isometric_force>50</max_isometric_force> <!-- at the contractile element -->
+      <max_isometric_force>150</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
       <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
@@ -340,7 +340,7 @@
     
     <muscle type="Hill">
       <name>m2c</name>
-      <max_isometric_force>50</max_isometric_force> <!-- at the contractile element -->
+      <max_isometric_force>150</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
       <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
@@ -375,7 +375,7 @@
     
     <muscle type="Hill">
       <name>m3</name>
-      <max_isometric_force>50</max_isometric_force> <!-- at the contractile element -->
+      <max_isometric_force>150</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
       <tendon_stiffness>50</tendon_stiffness> <!-- of the tendon spring -->
