@@ -63,8 +63,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //User modified includes to suit your application
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 
-#define SCL_TASK_APP_MAX_MARKERS_TO_ADD 2000
-const double SVD_THESHOLD = 0.0001;
+#define SCL_TASK_APP_MAX_MARKERS_TO_ADD 500
+const double SVD_THESHOLD = 0.001;
 
 namespace scl_app
 {

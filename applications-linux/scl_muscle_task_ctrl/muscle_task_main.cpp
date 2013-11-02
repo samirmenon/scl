@@ -88,44 +88,65 @@ namespace scl_app
     sutil::CSystemClock::tick(db_->sim_dt_);//Tick the clock.
     tsk->setGoalPos(db_->s_gui_.ui_point_[0]); //Interact with the gui
 
+    /** ******************************** Add Graphical Traj Effects *************************************** */
     //Add some markers to display trajectory every 1000 ticks.
-    if(ctrl_ctr_%2500 == 0)
+    static bool traj_plot_on=false;
+    if(db_->s_gui_.ui_flag_[3])
     {
-      if(traj_markers_added_so_far_ < SCL_TASK_APP_MAX_MARKERS_TO_ADD)
+      if(ctrl_ctr_%2500 == 0 )
       {
-        /** Render a sphere at the op-point task's position */
-        Eigen::Vector3d tmp = db_->s_gui_.ui_point_[0];
-        bool flag = chai_gr_.addSphereToRender(tmp,traj_markers_[traj_markers_added_so_far_]);
-        if(false == flag)
-        { std::cout<<"\nERROR : Could not add marker. Time = "<<sutil::CSystemClock::getSysTime();  }
-        traj_markers_added_so_far_++;
+        if(false == traj_plot_on)
+        { std::cout<<"\n ************ Engaging Trajectory Plotting ************"<<std::flush; traj_plot_on = true; }
+
+        if(traj_markers_added_so_far_ < SCL_TASK_APP_MAX_MARKERS_TO_ADD)
+        {
+          /** Render a sphere at the op-point task's position */
+          Eigen::Vector3d tmp = db_->s_gui_.ui_point_[0];
+          bool flag = chai_gr_.addSphereToRender(tmp,traj_markers_[traj_markers_added_so_far_]);
+          if(false == flag)
+          { std::cout<<"\nERROR : Could not add marker. Time = "<<sutil::CSystemClock::getSysTime();  }
+          traj_markers_added_so_far_++;
+        }
       }
+    }
+    else
+    {
+      if(true == traj_plot_on)
+      { std::cout<<"\n ************ Disengaging Trajectory Plotting ************"<<std::flush; traj_plot_on = false; }
     }
 
     if(op_link2_set)//Use only if the second task was also initialized.
     { tsk2->setGoalPos(db_->s_gui_.ui_point_[1]); }
 
+    /** ******************************** Compute Dynamics Matrices and Control *************************************** */
     if(ctrl_ctr_%1 == 0)           //Update dynamics at a slower rate
+    { robot_.computeDynamics(); }
+    robot_.computeServo();           //Run the servo loop
+
+    /** Actuate with muscles */
+    rob_mset_.computeJacobian(rob_io_ds_->sensors_.q_, rob_muscle_J_);
+
+    // Compute svd to set up matrix sizes etc.
+    rob_svd_.compute(rob_muscle_J_.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
+    for(unsigned int i=0;i<rob_ds->dof_;++i)
     {
-      robot_.computeDynamics();
+      if(rob_svd_.singularValues()(i)>SVD_THESHOLD)
+      { rob_sing_val_(i,i) = 1/rob_svd_.singularValues()(i);  }
+      else
+      { rob_sing_val_(i,i) = 0;  }
+    }
+    rob_muscle_Jpinv_ = rob_svd_.matrixV() * rob_sing_val_.transpose() * rob_svd_.matrixU().transpose();
 
-      rob_mset_.computeJacobian(rob_io_ds_->sensors_.q_, rob_muscle_J_);
+    act_->force_actuator_ = rob_muscle_Jpinv_*rob_io_ds_->actuators_.force_gc_commanded_;
 
-      // Compute svd to set up matrix sizes etc.
-      rob_svd_.compute(rob_muscle_J_.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
-      for(unsigned int i=0;i<rob_ds->dof_;++i)
-      {
-        if(rob_svd_.singularValues()(i)>SVD_THESHOLD)
-        { rob_sing_val_(i,i) = 1/rob_svd_.singularValues()(i);  }
-        else
-        { rob_sing_val_(i,i) = 0;  }
-      }
-      rob_muscle_Jpinv_ = rob_svd_.matrixV() * rob_sing_val_.transpose() * rob_svd_.matrixU().transpose();
-
-      act_->force_actuator_ = rob_muscle_Jpinv_*rob_io_ds_->actuators_.force_gc_commanded_;
-
+    static bool print_data_on=false;
+    if(db_->s_gui_.ui_flag_[2])
+    {
       if(ctrl_ctr_%5000 == 0)
       {
+        if(false == print_data_on)
+        { std::cout<<"\n ************ Engaging Data Printing ************"<<std::flush; print_data_on = true; }
+
         std::cout<<"\nJ':\n"<<rob_muscle_J_.transpose();
         std::cout<<"\nFgc':"<<rob_io_ds_->actuators_.force_gc_commanded_.transpose();
         std::cout<<"\nFgc_m':"<<(rob_muscle_J_.transpose() * act_->force_actuator_).transpose();
@@ -136,7 +157,27 @@ namespace scl_app
         std::cout<<"} : "<<act_->force_actuator_.transpose();
       }
     }
-    robot_.computeServo();           //Run the servo loop
+    else
+    {
+      if(true == print_data_on)
+      { std::cout<<"\n ************ Disengaging Data Printing ************"<<std::flush; print_data_on = false; }
+    }
+
+
+    /** ******************************** Communicate with Physics *************************************** */
+    // Set Muscle Control force to be the gc command
+    static bool muscle_act_on=false;
+    if(true == db_->s_gui_.ui_flag_[1])
+    {
+      if(false == muscle_act_on)
+      { std::cout<<"\n ************ Engaging muscle actuators ************"<<std::flush; muscle_act_on = true; }
+      rob_io_ds_->actuators_.force_gc_commanded_ = rob_muscle_J_.transpose() * act_->force_actuator_;
+    }
+    else
+    {
+      if(true == muscle_act_on)
+      { std::cout<<"\n ************ Disengaging muscle actuators ************"<<std::flush; muscle_act_on = false; }
+    }
     robot_.integrateDynamics();      //Integrate system
 
     ctrl_ctr_++;//Increment the counter for dynamics computed.
