@@ -96,7 +96,7 @@ namespace scl_app
       if(ctrl_ctr_%2500 == 0 )
       {
         if(false == traj_plot_on)
-        { std::cout<<"\n ************ Engaging Trajectory Plotting ************"<<std::flush; traj_plot_on = true; }
+        { std::cout<<"\n ========== Engaging Trajectory Plotting =========="<<std::flush; traj_plot_on = true; }
 
         if(traj_markers_added_so_far_ < SCL_TASK_APP_MAX_MARKERS_TO_ADD)
         {
@@ -112,7 +112,7 @@ namespace scl_app
     else
     {
       if(true == traj_plot_on)
-      { std::cout<<"\n ************ Disengaging Trajectory Plotting ************"<<std::flush; traj_plot_on = false; }
+      { std::cout<<"\n ========== Disengaging Trajectory Plotting =========="<<std::flush; traj_plot_on = false; }
     }
 
     if(op_link2_set)//Use only if the second task was also initialized.
@@ -123,6 +123,7 @@ namespace scl_app
     { robot_.computeDynamics(); }
     robot_.computeServo();           //Run the servo loop
 
+    /** ******************************** Compute Muscle Commands *************************************** */
     /** Actuate with muscles */
     rob_mset_.computeJacobian(rob_io_ds_->sensors_.q_, rob_muscle_J_);
 
@@ -136,16 +137,96 @@ namespace scl_app
       { rob_sing_val_(i,i) = 0;  }
     }
     rob_muscle_Jpinv_ = rob_svd_.matrixV() * rob_sing_val_.transpose() * rob_svd_.matrixU().transpose();
+    fmuscle_in_range_ = rob_muscle_Jpinv_*rob_io_ds_->actuators_.force_gc_commanded_;
 
-    act_->force_actuator_ = rob_muscle_Jpinv_*rob_io_ds_->actuators_.force_gc_commanded_;
+    //Avoid negative muscle activation
+    // Fgc = J' * Fm
+    // Fgc = J' (Fm_range + Fm_null_stiff)
+    // Fgc = J' (Fm_range)                   || J' * Fm_null_stiff = 0 ==> Use this to correct neg muscle force
+    //                                          sans interfering with the Fgc + remain articulated body KE optimal.
+    // Rearranging:
+    // Fm_range = J'pinv * Fgc
+    // Fm = J'pinv * Fgc + Fm_null_stiff
+    // Fm_null_stiff = Fm - J'pinv * Fgc
+    // Fm_null_stiff = Fm - J'pinv * J' * Fm
+    // Fm_null_stiff = (I - J'pinv * J') Fm
+    rob_mnull_matrix_.setIdentity(rob_mset_.getNumberOfMuscles(),rob_mset_.getNumberOfMuscles());
+    rob_mnull_matrix_ -= rob_muscle_Jpinv_ * rob_muscle_J_.transpose();
 
+    // Now eliminate negative muscle activity.
+    fmuscle_in_null_.setZero(rob_mset_.getNumberOfMuscles());
+    for(int ii = 0; ii<rob_mset_.getNumberOfMuscles(); ++ii)
+    {
+      if(fmuscle_in_range_(ii)<0)
+      {
+        fmuscle_in_null_(ii) = -fmuscle_in_range_(ii);
+      }
+    }
+    double mult = 1;
+    Eigen::VectorXd tmp = rob_mnull_matrix_ * fmuscle_in_null_;
+    for(int ii = 0; ii<rob_mset_.getNumberOfMuscles(); ++ii)
+    {
+      if(tmp(ii) == 0){continue;}
+
+      if(mult < fmuscle_in_null_(ii) / tmp(ii))
+      { mult = fmuscle_in_null_(ii) / tmp(ii);  }
+    }
+
+    fmuscle_in_null_ *= mult * 4;
+
+    // Now the trick is to use the Eigenvectors of the null space to determine Fm_null_stiff that eliminates neg force.
+    // U * S * V' = svd( I - J'pinv * J' )
+    // NOTE, if Fm = col(V), then
+    // S * V' * Fm = Matrix with one diagonal element non-zero and all else zero. Since V's cols are orthogonal.
+    // Ie. Applied Fm_null_stiff = col(U) * S
+    //
+    // So in order to determine the actual force to be added, we use:
+    //rob_mnull_svd_.compute(rob_mnull_matrix_, Eigen::ComputeThinU | Eigen::ComputeThinV);
+
+    //Set the muscle actuator force
+    act_->force_actuator_ = fmuscle_in_range_ + rob_mnull_matrix_ * fmuscle_in_null_;
+
+//    std::cout<<"\n\n\n\tMNull U:\n"<<rob_mnull_svd_.matrixU()
+//        <<"\n\tMNull S:\n"<<rob_mnull_svd_.singularValues()
+//        <<"\n\tMNull V':\n"<<rob_mnull_svd_.matrixV().transpose()
+//        <<"\n\tFm_range:\n"<<fmuscle_in_range_.transpose()
+//        <<"\n\tFm_null:\n"<<fmuscle_in_null_.transpose()
+//        <<"\n\tFm_null_filt:\n"<<(rob_mnull_matrix_ * fmuscle_in_null_).transpose()
+//        <<"\n\tFm_act:\n"<<act_->force_actuator_.transpose();
+
+    std::cout<<"\n\nFm {";
+    for (int j=0; j<rob_mset_.getNumberOfMuscles(); j++)
+    { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
+    std::cout<<"} : "<<act_->force_actuator_.transpose();
+
+    /** ******************************** Communicate with Physics *************************************** */
+    // Set Muscle Control force to be the gc command
+    static bool muscle_act_on=false;
+    if(true == db_->s_gui_.ui_flag_[1])
+    {
+      if(false == muscle_act_on)
+      { std::cout<<"\n ========== Engaging muscle actuators =========="<<std::flush; muscle_act_on = true; }
+      //Set muscle command
+      rob_io_ds_->actuators_.force_gc_commanded_ = rob_muscle_J_.transpose() * act_->force_actuator_;
+    }
+    else
+    {
+      if(true == muscle_act_on)
+      { std::cout<<"\n ========== Disengaging muscle actuators =========="<<std::flush; muscle_act_on = false; }
+    }
+
+    robot_.integrateDynamics();      //Integrate system
+
+    ctrl_ctr_++;//Increment the counter for dynamics computed.
+
+    /** ******************************** Print Stuff if required *************************************** */
     static bool print_data_on=false;
     if(db_->s_gui_.ui_flag_[2])
     {
       if(ctrl_ctr_%5000 == 0)
       {
         if(false == print_data_on)
-        { std::cout<<"\n ************ Engaging Data Printing ************"<<std::flush; print_data_on = true; }
+        { std::cout<<"\n ========== Engaging Data Printing =========="<<std::flush; print_data_on = true; }
 
         std::cout<<"\nJ':\n"<<rob_muscle_J_.transpose();
         std::cout<<"\nFgc':"<<rob_io_ds_->actuators_.force_gc_commanded_.transpose();
@@ -160,27 +241,8 @@ namespace scl_app
     else
     {
       if(true == print_data_on)
-      { std::cout<<"\n ************ Disengaging Data Printing ************"<<std::flush; print_data_on = false; }
+      { std::cout<<"\n ========== Disengaging Data Printing =========="<<std::flush; print_data_on = false; }
     }
-
-
-    /** ******************************** Communicate with Physics *************************************** */
-    // Set Muscle Control force to be the gc command
-    static bool muscle_act_on=false;
-    if(true == db_->s_gui_.ui_flag_[1])
-    {
-      if(false == muscle_act_on)
-      { std::cout<<"\n ************ Engaging muscle actuators ************"<<std::flush; muscle_act_on = true; }
-      rob_io_ds_->actuators_.force_gc_commanded_ = rob_muscle_J_.transpose() * act_->force_actuator_;
-    }
-    else
-    {
-      if(true == muscle_act_on)
-      { std::cout<<"\n ************ Disengaging muscle actuators ************"<<std::flush; muscle_act_on = false; }
-    }
-    robot_.integrateDynamics();      //Integrate system
-
-    ctrl_ctr_++;//Increment the counter for dynamics computed.
   }
 }
 

@@ -158,9 +158,12 @@ namespace scl_app
     scl::CGraphicsChai chai_gr_;         //Generic chai graphics
 
     scl::CActuatorSetMuscle rob_mset_;   //Muscle actuator set
+    Eigen::VectorXd fmuscle_in_range_;   //The muscular force in the Jm range space.
+    Eigen::VectorXd fmuscle_in_null_;    //The muscular force in the Jm range space.
     Eigen::MatrixXd rob_muscle_J_, rob_muscle_Jpinv_; //Pseudoinv
-    Eigen::JacobiSVD<Eigen::MatrixXd > rob_svd_;     //SVD
-    Eigen::MatrixXd rob_sing_val_;        // Singular value matrix for J'
+    Eigen::MatrixXd rob_mnull_matrix_;   //For Muscle null space svd
+    Eigen::JacobiSVD<Eigen::MatrixXd > rob_svd_, rob_mnull_svd_;     //SVD
+    Eigen::MatrixXd rob_sing_val_;         // Singular value matrix for J'
     scl::SActuatorSetMuscle *act_;         //The muscle set
 
     scl::sLongLong ctrl_ctr_;            //Controller computation counter
@@ -259,6 +262,9 @@ namespace scl_app
         *pact = rob_mset_.getData();
         act_ = rob_mset_.getData();
         act_->force_actuator_.setZero(rob_mset_.getNumberOfMuscles());
+        // Set up muscle range space vector size
+        fmuscle_in_range_.setZero(rob_mset_.getNumberOfMuscles());
+        fmuscle_in_null_.setZero(rob_mset_.getNumberOfMuscles());
 
         // Run the compute Jacobian function once (resizes the matrix etc.).
         flag = rob_mset_.computeJacobian(rob_io_ds_->sensors_.q_, rob_muscle_J_);
@@ -276,6 +282,10 @@ namespace scl_app
           else
           { rob_sing_val_(i,i) = 0;  }
         }
+
+        rob_mnull_matrix_.setIdentity(rob_mset_.getNumberOfMuscles(),rob_mset_.getNumberOfMuscles());
+        // Just set the svd inner data structure sizes
+        rob_mnull_svd_.compute(rob_mnull_matrix_, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
         rob_muscle_Jpinv_.setZero(rob_muscle_J_.rows(), rob_muscle_J_.cols());
         rob_muscle_Jpinv_ = rob_svd_.matrixV() * rob_sing_val_.transpose() * rob_svd_.matrixU().transpose();
