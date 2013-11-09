@@ -34,6 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
+#include <scl/data_structs/SRigidBodyDyn.hpp>
 
 #include <Eigen/Dense>
 #include <string>
@@ -54,7 +55,7 @@ namespace scl
     std::string link_name_;
 
     /** A pointer to the dynamic engine's object for this link */
-    void* link_id_;
+    const SRigidBodyDyn *rbd_;
 
     /** The force vector */
     Eigen::Vector3d force_;
@@ -72,7 +73,7 @@ namespace scl
     Eigen::MatrixXd J_;
 
     //Constructor
-    SForce(): SObject("SForce"), link_id_(NULL){}
+    SForce(): SObject("SForce"), rbd_(NULL){}
   };
 }
 
