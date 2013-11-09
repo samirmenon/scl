@@ -283,7 +283,7 @@ namespace scl
           itrb!=itrbe; ++itrb)
       {//Set values
         if(itrb->link_id_<0){continue;}
-        else if(itrb->link_id_>=data_.io_data_->dof_)
+        else if(itrb->link_id_>=static_cast<int>(data_.io_data_->dof_))
         { throw(std::runtime_error("Rigid body tree has a link with an id greater than the robot's dof."));  }
         data_.io_data_->sensors_.q_(itrb->link_id_) = itrb->joint_default_pos_;
       }
