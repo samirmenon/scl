@@ -129,7 +129,7 @@ namespace scl_app
 
     // Compute svd to set up matrix sizes etc.
     rob_svd_.compute(rob_muscle_J_.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
-    for(unsigned int i=0;i<rob_ds->dof_;++i)
+    for(unsigned int i=0;i<rob_ds_->dof_;++i)
     {
       if(rob_svd_.singularValues()(i)>SVD_THESHOLD)
       { rob_sing_val_(i,i) = 1/rob_svd_.singularValues()(i);  }
@@ -196,7 +196,7 @@ namespace scl_app
 
     std::cout<<"\n\nFm {";
     for (int j=0; j<rob_mset_.getNumberOfMuscles(); j++)
-    { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
+    { std::cout<<rob_ds_->muscle_system_.muscle_id_to_name_[j]<<", "; }
     std::cout<<"} : "<<act_->force_actuator_.transpose();
 
     /** ******************************** Communicate with Physics *************************************** */
@@ -234,7 +234,7 @@ namespace scl_app
         std::cout<<"\nFgc_diff':"<<(rob_io_ds_->actuators_.force_gc_commanded_ - rob_muscle_J_.transpose() * act_->force_actuator_).transpose();
         std::cout<<"\nFm {";
         for (int j=0; j<rob_mset_.getNumberOfMuscles(); j++)
-        { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
+        { std::cout<<rob_ds_->muscle_system_.muscle_id_to_name_[j]<<", "; }
         std::cout<<"} : "<<act_->force_actuator_.transpose();
       }
     }

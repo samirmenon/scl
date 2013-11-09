@@ -98,6 +98,8 @@ namespace scl_app
     {
       db_ = S_NULL;
       rob_io_ds_ = S_NULL;
+      rob_ds_ = S_NULL;
+      gc_model_ = S_NULL;
       dyn_tao_ = S_NULL;
       dyn_scl_ = S_NULL;
 
@@ -107,6 +109,7 @@ namespace scl_app
       tsk = S_NULL; tsk2 = S_NULL;;
       tsk_ds = S_NULL; tsk2_ds = S_NULL;
       op_link_set = false; op_link2_set = false;
+      act_ = S_NULL;
 
       ctrl_ctr_ = 0;
       gr_ctr_ = 0;
@@ -150,7 +153,7 @@ namespace scl_app
 
     scl::CRobot robot_;                  //Generic robot
     scl::SRobotIO* rob_io_ds_;           //Access the robot's sensors and actuators
-    scl::SRobotParsed *rob_ds;           //The robot's parsed data structure
+    scl::SRobotParsed *rob_ds_;           //The robot's parsed data structure
     scl::SGcModel *gc_model_;            //The controller data struct
 
     scl::CTaoDynamics* dyn_tao_;          //Generic tao dynamics
@@ -224,8 +227,8 @@ namespace scl_app
         if(!scl_util::isStringInVector(robot_name_,robots_parsed_))
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
-        rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_);
-        if(NULL == rob_ds)
+        rob_ds_ = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_);
+        if(NULL == rob_ds_)
         { throw(std::runtime_error("Could not find robot in database after parsing"));  }
 
         /******************************TaoDynamics************************************/
@@ -253,12 +256,12 @@ namespace scl_app
 
         /**********************Initialize Muscle Actuator Model & Dynamics*******************/
         gc_model_ = &(robot_.getControllerDataStruct(ctrl_name_)->gc_model_);
-        flag = rob_mset_.init(rob_ds->muscle_system_.name_, /** parsed */ rob_ds, &(rob_ds->muscle_system_),
+        flag = rob_mset_.init(rob_ds_->muscle_system_.name_, /** parsed */ rob_ds_, &(rob_ds_->muscle_system_),
             /** rbd tree */ gc_model_->rbdyn_tree_, /** dynamics */ dyn_scl_);
         if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set"));  }
 
         // Create an actuator set in the database
-        scl::SActuatorSetBase **pact = rob_io_ds_->actuators_.actuator_sets_.create(rob_ds->muscle_system_.name_);
+        scl::SActuatorSetBase **pact = rob_io_ds_->actuators_.actuator_sets_.create(rob_ds_->muscle_system_.name_);
         *pact = rob_mset_.getData();
         act_ = rob_mset_.getData();
         act_->force_actuator_.setZero(rob_mset_.getNumberOfMuscles());
@@ -271,11 +274,11 @@ namespace scl_app
         if(false == flag) { throw(std::runtime_error("Could not use muscle actuator set to compute a Jacobian"));  }
 
         // Set up an SVD to compute the inv to get muscle activation for gc control
-        rob_sing_val_.setZero(rob_ds->dof_, rob_mset_.getNumberOfMuscles()); //NOTE : Rectangular matrix
+        rob_sing_val_.setZero(rob_ds_->dof_, rob_mset_.getNumberOfMuscles()); //NOTE : Rectangular matrix
 
         // Compute svd to set up matrix sizes etc.
         rob_svd_.compute(rob_muscle_J_.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
-        for(unsigned int i=0;i<rob_ds->dof_;++i)
+        for(unsigned int i=0;i<rob_ds_->dof_;++i)
         {
           if(rob_svd_.singularValues()(i)>SVD_THESHOLD)
           { rob_sing_val_(i,i) = 1/rob_svd_.singularValues()(i);  }
@@ -291,7 +294,7 @@ namespace scl_app
         rob_muscle_Jpinv_ = rob_svd_.matrixV() * rob_sing_val_.transpose() * rob_svd_.matrixU().transpose();
 
         // The muscle force vector
-        act_->force_actuator_.setZero(rob_ds->muscle_system_.muscles_.size());
+        act_->force_actuator_.setZero(rob_ds_->muscle_system_.muscles_.size());
 
         /******************************ChaiGlut Graphics************************************/
         if(!db_->s_gui_.glut_initialized_)
