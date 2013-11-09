@@ -69,7 +69,7 @@ public:
   virtual sBool computeGCModel(/** Current robot state. q, dq, ddq,
             sensed generalized forces and perceived external forces.*/
       const SRobotSensors * arg_sensor_data,
-      /** Individual link Jacobians, and composite intertial,
+      /** Individual link Jacobians, and composite inertial,
           centrifugal/coriolis gravity estimates. */
       SGcModel * arg_gc_model);
 
@@ -162,7 +162,7 @@ public:
    * dimensions)from that link.
    */
   virtual sBool computeJacobian(
-      /** The Jacobain will be saved here. */
+      /** The Jacobian will be saved here. */
       Eigen::MatrixXd& arg_J,
       /** The link at which the Jacobian is to be calculated */
       SRigidBodyDyn& arg_link,
