@@ -71,7 +71,8 @@ namespace scl
   CRobotApp::CRobotApp() :
       db_(NULL),
       rob_io_ds_(NULL),
-      tao_dyn_(NULL),
+      dyn_tao_(NULL),
+      dyn_scl_(NULL),
       ctrl_ctr_(0),
       t_start_(0.0),
       t_end_(0.0)
@@ -139,9 +140,14 @@ namespace scl
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
         /******************************TaoDynamics************************************/
-        tao_dyn_ = new scl::CTaoDynamics();
-        flag = tao_dyn_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
+        dyn_tao_ = new scl::CTaoDynamics();
+        flag = dyn_tao_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
         if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
+
+        /******************************Scl Dynamics************************************/
+        dyn_scl_ = new scl::CDynamicsScl();
+        flag = dyn_scl_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
+        if(false == flag) { throw(std::runtime_error("Could not initialize dynamics algorithms"));  }
 
         /******************************ChaiGlut Graphics************************************/
 #ifdef GRAPHICS_ON
@@ -170,7 +176,7 @@ namespace scl
         { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
         /**********************Initialize Robot Dynamics and Controller*******************/
-        flag = robot_.initFromDb(robot_name_,tao_dyn_,tao_dyn_);//Note: The robot deletes these pointers.
+        flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_tao_);//Note: The robot deletes these pointers.
         if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
 
         ctrl_name_ = argv[3];

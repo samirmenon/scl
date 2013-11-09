@@ -37,6 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/CTaskBase.hpp>
 #include <scl/robot/CRobot.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
+#include <scl/dynamics/scl/CDynamicsScl.hpp>
 
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/CGraphicsChai.hpp>
@@ -158,7 +159,8 @@ namespace scl
     scl::CRobot robot_;                  //Generic robot
     scl::SRobotIO* rob_io_ds_;       //Access the robot's sensors and actuators
 
-    scl::CTaoDynamics* tao_dyn_;         //Generic tao dynamics
+    scl::CTaoDynamics* dyn_tao_;         //Generic tao dynamics
+    scl::CDynamicsScl* dyn_scl_;         //Generic tao dynamics
 
     scl::sLongLong ctrl_ctr_;            //Controller computation counter
     scl::sFloat t_start_, t_end_;         //Start and end times
