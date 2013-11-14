@@ -41,6 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //scl lib
 #include <scl/DataTypes.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
+#include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
@@ -117,15 +118,23 @@ int main(int argc, char** argv)
       if(S_NULL == scl_registry::parseGraphics(tmp_infile, graphics_names[0], &tmp_lparser))
       { throw(std::runtime_error("Could not register graphics with the database"));  }
 
+      scl::SRobotParsed *rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
+      if(NULL == rob_ds)
+      { throw(std::runtime_error("Could not find registered robot data struct in the database"));  }
+
 #ifdef DEBUG
       std::cout<<"\nPrinting parsed robot "<<robot_name;
-      scl::SRobotParsed *rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
       scl_util::printRobotLinkTree(*(rob_ds->rb_tree_.getRootNode()),0);
 #endif
 
       /******************************TaoDynamics************************************/
-      scl::CTaoDynamics tao_dyn;
-      flag = tao_dyn.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
+      scl::CTaoDynamics dyn_tao;
+      flag = dyn_tao.init(*rob_ds);
+      if(false == flag) { throw(std::runtime_error("Could not initialize dynamic simulator"));  }
+
+      /******************************SclDynamics************************************/
+      scl::CDynamicsScl dyn_scl;
+      flag = dyn_scl.init(*rob_ds);
       if(false == flag) { throw(std::runtime_error("Could not initialize dynamic simulator"));  }
 
       /******************************ChaiGlut Graphics************************************/
@@ -147,15 +156,23 @@ int main(int argc, char** argv)
       if(S_NULL == rob_io_ds)
       { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
+      /******************************Dynamic data struct************************************/
+      scl::SGcModel rob_gc;
+      rob_gc.init(*rob_ds);
+      if(S_NULL == rob_io_ds)
+      { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
+
       /******************************Main Loop************************************/
       std::cout<<std::flush;
       //Initialize some useful statistics
       scl::sFloat ke[2], pe[2];
-      flag = tao_dyn.integrate((*rob_io_ds),scl::CDatabase::getData()->sim_dt_); //Need to integrate once to flush the state
+      flag = dyn_tao.integrate((*rob_io_ds),scl::CDatabase::getData()->sim_dt_); //Need to integrate once to flush the state
       if(false == flag)
       { throw(std::runtime_error("Could not integrate with the dynamics engine"));  }
-      ke[0] = tao_dyn.getKineticEnergy_Depracated(); //Now you can get the energies
-      pe[0] = tao_dyn.getPotentialEnergy_Depracated();
+
+      dyn_scl.computeGCModel(&(rob_io_ds->sensors_),&rob_gc);
+      ke[0] = dyn_scl.computeEnergyKinetic(rob_gc.rbdyn_tree_,rob_io_ds->sensors_.q_,rob_io_ds->sensors_.dq_);
+      pe[0] = dyn_scl.computeEnergyPotential(rob_gc.rbdyn_tree_,rob_io_ds->sensors_.q_);
 
       scl::sLongLong gr_ctr=0;//Graphics computation counter
 
@@ -173,7 +190,7 @@ int main(int argc, char** argv)
           while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
           {
             sutil::CSystemClock::tick(db->sim_dt_);
-            flag = tao_dyn.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+            flag = dyn_tao.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
             //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_/100000;
           }
         }
@@ -193,8 +210,9 @@ int main(int argc, char** argv)
       t_end = sutil::CSystemClock::getSysTime();
 
       /****************************Print Collected Statistics*****************************/
-      ke[1] = tao_dyn.getKineticEnergy_Depracated(); //Now you can get the energies
-      pe[1] = tao_dyn.getPotentialEnergy_Depracated();
+      //Now you can get the energies
+      ke[1] = dyn_scl.computeEnergyKinetic(rob_gc.rbdyn_tree_,rob_io_ds->sensors_.q_,rob_io_ds->sensors_.dq_);
+      pe[1] = dyn_scl.computeEnergyPotential(rob_gc.rbdyn_tree_,rob_io_ds->sensors_.q_);
       scl::sFloat energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
       std::cout<< "\n\nSimulation Statistics:\nInitial Energy: "<<(ke[0]+pe[0])
                <<". Final Energy : "<<(ke[1]+pe[1])<<". Error: "<<energy_err;
