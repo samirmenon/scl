@@ -159,7 +159,7 @@ namespace scl
     scl::CRobot robot_;                  //Generic robot
     scl::SRobotIO* rob_io_ds_;       //Access the robot's sensors and actuators
 
-    scl::CTaoDynamics* dyn_tao_;         //Generic tao dynamics
+    scl::CDynamicsTao* dyn_tao_;         //Generic tao dynamics
     scl::CDynamicsScl* dyn_scl_;         //Generic tao dynamics
 
     scl::sLongLong ctrl_ctr_;            //Controller computation counter

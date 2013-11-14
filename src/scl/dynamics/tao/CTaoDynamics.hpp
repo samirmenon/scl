@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CTAODYNAMICS_HPP_
-#define CTAODYNAMICS_HPP_
+#ifndef CDYNAMICSTAO_HPP_
+#define CDYNAMICSTAO_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
@@ -59,7 +59,7 @@ namespace scl
 
   /** Computes the dynamics of a robot model
    * using the TAO dynamics engine */
-  class CTaoDynamics : public CDynamicsBase
+  class CDynamicsTao : public CDynamicsBase
   {
   public:
     /* *******************************************************************
@@ -138,8 +138,8 @@ namespace scl
      *                      Initialization functions.
      * ******************************************************************* */
     /** Default constructor sets the initialization state to false */
-    CTaoDynamics();
-    virtual ~CTaoDynamics();
+    CDynamicsTao();
+    virtual ~CDynamicsTao();
 
     /** Initialize the CTaoDynamics with the TAO trees it needs in
      * order to update the kinematics and/or dynamics of a robot.
@@ -172,4 +172,4 @@ namespace scl
 
 }
 
-#endif /* CTAODYNAMICS_HPP_ */
+#endif /* CDYNAMICSTAO_HPP_ */

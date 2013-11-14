@@ -159,7 +159,7 @@ int main(int argc, char** argv)
 #endif
 
       /**************************Initialize Tao Dynamics for Integrator********************************/
-      scl::CTaoDynamics dyn_tao_int;
+      scl::CDynamicsTao dyn_tao_int;
       flag = dyn_tao_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 

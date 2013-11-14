@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 #endif
 
       /******************************TaoDynamics************************************/
-      scl::CTaoDynamics dyn_tao;
+      scl::CDynamicsTao dyn_tao;
       flag = dyn_tao.init(*rob_ds);
       if(false == flag) { throw(std::runtime_error("Could not initialize dynamic simulator"));  }
 

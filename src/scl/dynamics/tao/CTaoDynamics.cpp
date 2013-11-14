@@ -50,7 +50,7 @@ extern "C" {
 
 namespace scl
 {
-  CTaoDynamics::CTaoDynamics()
+  CDynamicsTao::CDynamicsTao()
   : robot_name_("(no robot yet)"),
     tao_tree_q_root_(NULL), tao_tree_q_dq_root_(NULL),
     model_(S_NULL),
@@ -58,7 +58,7 @@ namespace scl
   {
   }
 
-  CTaoDynamics::~CTaoDynamics()
+  CDynamicsTao::~CDynamicsTao()
   {
     if(S_NULL!=model_)
     { delete model_;  }
@@ -107,7 +107,7 @@ namespace scl
   }
 
 
-  bool CTaoDynamics::
+  bool CDynamicsTao::
   init(const SRobotParsed& arg_robot_data)
   {
     try
@@ -197,13 +197,13 @@ namespace scl
     return has_been_init_;
   }
 
-  taoDNode* CTaoDynamics::getTaoIdForLink(std::string arg_link_name)
+  taoDNode* CDynamicsTao::getTaoIdForLink(std::string arg_link_name)
   {
     taoDNode * tmp = model_->getNodeByName(arg_link_name);
     return tmp;
   }
 
-  sBool CTaoDynamics::integrate(SRobotIO& arg_inputs, const sFloat arg_time_interval)
+  sBool CDynamicsTao::integrate(SRobotIO& arg_inputs, const sFloat arg_time_interval)
   {
     //NOTE TODO : Implement this for applying external contact forces.
 
@@ -277,7 +277,7 @@ namespace scl
   /** TODO : This dynamics engine implementation should be stateless.
    * This present system is because the intermediate jspace implementation
    * has an extra data layer. Should be cleaned up in the future. */
-  sBool CTaoDynamics::setGeneralizedCoordinates(Eigen::VectorXd &arg_q)
+  sBool CDynamicsTao::setGeneralizedCoordinates(Eigen::VectorXd &arg_q)
   {
     if(false == has_been_init_){return false; }
 
@@ -319,7 +319,7 @@ namespace scl
   /** TODO : This dynamics engine implementation should be stateless.
    * This present system is because the intermediate jspace implementation
    * has an extra data layer. Should be cleaned up in the future. */
-  sBool CTaoDynamics::setGeneralizedVelocities(Eigen::VectorXd &arg_dq)
+  sBool CDynamicsTao::setGeneralizedVelocities(Eigen::VectorXd &arg_dq)
   {
     if(false == has_been_init_){return false; }
 
@@ -362,7 +362,7 @@ namespace scl
    * TODO : This dynamics engine implementation should be stateless.
    * This present system is because the intermediate jspace implementation
    * has an extra data layer. Should be cleaned up in the future. */
-  sBool CTaoDynamics::setGeneralizedForces(Eigen::VectorXd &arg_fgc)
+  sBool CDynamicsTao::setGeneralizedForces(Eigen::VectorXd &arg_fgc)
   {
     if(false == has_been_init_){return false; }
 

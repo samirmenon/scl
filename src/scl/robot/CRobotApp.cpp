@@ -140,7 +140,7 @@ namespace scl
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
         /******************************TaoDynamics************************************/
-        dyn_tao_ = new scl::CTaoDynamics();
+        dyn_tao_ = new scl::CDynamicsTao();
         flag = dyn_tao_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
         if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 

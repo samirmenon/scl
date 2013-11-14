@@ -270,7 +270,7 @@ namespace scl_test
    */
   void test_controller_dynamics(int id, const std::string &file_name)
   {
-    scl::CTaoDynamics * dynamics = S_NULL;
+    scl::CDynamicsTao * dynamics = S_NULL;
     scl::sUInt r_id=0;
     //    bool flag;
     try

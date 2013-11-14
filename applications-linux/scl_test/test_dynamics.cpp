@@ -67,7 +67,7 @@ namespace scl_test
    */
   void test_dynamics(int id, const std::string &file_name)
   {
-    scl::CTaoDynamics * dynamics = S_NULL;
+    scl::CDynamicsTao * dynamics = S_NULL;
     scl::sUInt r_id=0;
     bool flag;
 
@@ -117,7 +117,7 @@ namespace scl_test
 #endif
 
       //Initialize the dynamics computational object
-      dynamics = new scl::CTaoDynamics();
+      dynamics = new scl::CDynamicsTao();
       if (S_NULL==dynamics)
       { throw(std::runtime_error("Failed to allocate memory for tao dynamics."));  }
 
@@ -202,7 +202,7 @@ namespace scl_test
   /** Tests the performance of analytical dynamics implementations in scl. */
   void test_dynamics_tao_vs_analytic_rpp(int id)
   {
-    scl::CTaoDynamics * dynamics = S_NULL;
+    scl::CDynamicsTao * dynamics = S_NULL;
     scl::sUInt r_id=0;
     bool flag;
 
@@ -272,7 +272,7 @@ namespace scl_test
 #endif
 
       //*********** Create the dynamics computational object *************
-      dynamics = new scl::CTaoDynamics();
+      dynamics = new scl::CDynamicsTao();
       if (S_NULL==dynamics)
       { throw(std::runtime_error("Failed to allocate memory for tao dynamics."));  }
 

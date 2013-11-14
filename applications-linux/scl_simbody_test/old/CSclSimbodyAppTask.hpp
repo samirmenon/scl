@@ -134,7 +134,7 @@ namespace scl_app
     scl::CRobot robot;                  //Generic robot
     scl::SRobotIO* rob_io_ds;       //Access the robot's sensors and actuators
 
-    scl::CTaoDynamics* tao_dyn;          //Generic tao dynamics
+    scl::CDynamicsTao* tao_dyn;          //Generic tao dynamics
     scl::CSimbodyDynamics simbody_dyn;          //Generic tao dynamics
     scl::CGraphicsChai chai_gr;         //Generic chai graphics
 
@@ -197,7 +197,7 @@ namespace scl_app
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
         /******************************TaoDynamics************************************/
-        tao_dyn = new scl::CTaoDynamics();
+        tao_dyn = new scl::CDynamicsTao();
         flag = tao_dyn->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
         if(false == flag) { throw(std::runtime_error("Could not initialize object to compute dynamics matrices"));  }
 

@@ -152,7 +152,7 @@ int main(int argc, char** argv)
 #endif
 
       /******************************TaoDynamics************************************/
-      scl::CTaoDynamics tao_dyn_int;
+      scl::CDynamicsTao tao_dyn_int;
       flag = tao_dyn_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
@@ -201,7 +201,7 @@ int main(int argc, char** argv)
       { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
       /**********************Initialize Robot Dynamics and Controller*******************/
-      scl::CTaoDynamics tao_dyn; //Use for model updates.
+      scl::CDynamicsTao tao_dyn; //Use for model updates.
       flag = tao_dyn.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)); //Reads stuff from the database.
       if(false == flag) { throw(std::runtime_error("Could not initialize dynamics object"));  }
 
