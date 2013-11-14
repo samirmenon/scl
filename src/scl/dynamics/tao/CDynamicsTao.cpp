@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CTaoDynamics.cpp
+/* \file CDynamicsTao.cpp
  *
  *  Created on: Aug 23, 2010
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "CTaoDynamics.hpp"
+#include "CDynamicsTao.hpp"
 
 #include <scl/data_structs/SRobotIO.hpp>
 
@@ -114,12 +114,12 @@ namespace scl
     {
       has_been_init_ = false;
       if (model_) {
-        fprintf(stderr, "scl::CTaoDynamics::init(): already initialized\n");
+        fprintf(stderr, "scl::CDynamicsTao::init(): already initialized\n");
         return false;
       }
 
       if(false == arg_robot_data.has_been_init_){
-        fprintf(stderr, "scl::CTaoDynamics::init(): Passed an uninitialized robot\n");
+        fprintf(stderr, "scl::CDynamicsTao::init(): Passed an uninitialized robot\n");
         return false;
       }
 
@@ -130,13 +130,13 @@ namespace scl
       //Initialize the tao tree
       tao_tree_q_root_ = scl::CTaoRepCreator::taoRootRepCreator(arg_robot_data);
       if ( ! tao_tree_q_root_) {
-        std::cout << "scl::CTaoDynamics::init(`" << robot_name_
+        std::cout << "scl::CDynamicsTao::init(`" << robot_name_
             << "'): scl::CTaoRepCreator::taoRootRepCreator() failed [invalid robot name?]\n";
         return false;
       }
 
       if ( ! tao_consistency_check(tao_tree_q_root_)) {
-        std::cout << "scl::CTaoDynamics::init(`" << robot_name_
+        std::cout << "scl::CDynamicsTao::init(`" << robot_name_
             << "'): consistency check failed on TAO tree\n";
         return false;
       }
@@ -146,7 +146,7 @@ namespace scl
       // be cleaner to have TAO tree deep copy functionality somewhere.
       tao_tree_q_dq_root_ = scl::CTaoRepCreator::taoRootRepCreator(arg_robot_data);
       if ( ! tao_tree_q_dq_root_) {
-        std::cout << "scl::CTaoDynamics::init(`" << robot_name_
+        std::cout << "scl::CDynamicsTao::init(`" << robot_name_
             << "'): scl::CTaoRepCreator::taoRootRepCreator(cc) failed [invalid robot name?]\n";
         return false;
       }
@@ -192,7 +192,7 @@ namespace scl
       has_been_init_ = true;
     }
     catch(std::exception& e)
-    { std::cerr<<"\nCTaoDynamics::init() : Error : "<<e.what();  }
+    { std::cerr<<"\nCDynamicsTao::init() : Error : "<<e.what();  }
 
     return has_been_init_;
   }

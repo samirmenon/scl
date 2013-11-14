@@ -49,7 +49,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/util/DatabaseUtils.hpp>
 
 //Tao Dynamics
-#include <scl/dynamics/tao/CTaoDynamics.hpp>
+#include <scl/dynamics/tao/CDynamicsTao.hpp>
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>
 
 #include <iostream>
@@ -351,11 +351,11 @@ namespace scl_test
       { std::cout<<"\nTest Result ("<<r_id++<<")  Created controller's data struct" <<std::flush;  }
 
       //Initialize the dynamics computational object
-      dynamics = new scl::CTaoDynamics();
+      dynamics = new scl::CDynamicsTao();
       if (S_NULL==dynamics)
       { throw(std::runtime_error("Failed to allocate memory for tao dynamics."));  }
 
-      std::cout<<"\n"; //CTaoDynamics uses \n at the end convention.
+      std::cout<<"\n"; //CDynamicsTao uses \n at the end convention.
       flag = dynamics->init(robot_name);
       if (false==flag) { throw(std::runtime_error("Failed to initialize tao dynamics."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized tao dynamics for the robot.";  }

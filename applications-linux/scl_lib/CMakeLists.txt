@@ -98,7 +98,7 @@ SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDNode.cpp
             ${SCL_INC_DIR}/dynamics/tao/jspace/tao_util.cpp
             ${SCL_INC_DIR}/dynamics/tao/jspace/tao_dump.cpp
             ${SCL_INC_DIR}/dynamics/tao/jspace/strutil.cpp
-            ${SCL_INC_DIR}/dynamics/tao/CTaoDynamics.cpp
+            ${SCL_INC_DIR}/dynamics/tao/CDynamicsTao.cpp
             ${SCL_INC_DIR}/dynamics/tao/CTaoRepCreator.cpp
    )
 

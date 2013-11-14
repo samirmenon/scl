@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file CTaoDynamics.hpp
+/* \file CDynamicsTao.hpp
  *
  *  Created on: Aug 23, 2010
  *
@@ -141,7 +141,7 @@ namespace scl
     CDynamicsTao();
     virtual ~CDynamicsTao();
 
-    /** Initialize the CTaoDynamics with the TAO trees it needs in
+    /** Initialize the CDynamicsTao with the TAO trees it needs in
      * order to update the kinematics and/or dynamics of a robot.
      *
      * Accesses the database.

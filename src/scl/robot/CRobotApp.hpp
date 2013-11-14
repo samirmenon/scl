@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/control/task/CTaskBase.hpp>
 #include <scl/robot/CRobot.hpp>
-#include <scl/dynamics/tao/CTaoDynamics.hpp>
+#include <scl/dynamics/tao/CDynamicsTao.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
 
 #ifdef GRAPHICS_ON

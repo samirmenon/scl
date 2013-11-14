@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/util/DatabaseUtils.hpp>
 
 //Tao Dynamics
-#include <scl/dynamics/tao/CTaoDynamics.hpp>
+#include <scl/dynamics/tao/CDynamicsTao.hpp>
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>
 
 #include <scl/dynamics/analytic/CDynamicsAnalyticRPP.hpp>
