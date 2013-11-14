@@ -41,6 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/dynamics/tao/CTaoDynamics.hpp>
+#include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
@@ -146,7 +147,8 @@ namespace scl_app
     scl::CRobot robot[2];                  //Generic robot
     scl::SRobotIO* rob_io_ds[2];       //Access the robot's sensors and actuators
 
-    scl::CTaoDynamics* tao_dyn[2];          //Generic tao dynamics
+    scl::CTaoDynamics* dyn_tao_[2];          //Generic tao dynamics
+    scl::CDynamicsScl* dyn_scl_[2];          //Generic scl dynamics
     scl::CGraphicsChai chai_gr;         //Generic chai graphics
 
     scl::sLongLong ctrl_ctr;            //Controller computation counter
@@ -215,9 +217,14 @@ namespace scl_app
           { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
           /******************************TaoDynamics************************************/
-          tao_dyn[i] = new scl::CTaoDynamics();
-          flag = tao_dyn[i]->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name[i]));
+          dyn_tao_[i] = new scl::CTaoDynamics();
+          flag = dyn_tao_[i]->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name[i]));
           if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
+
+
+          dyn_scl_[i] = new scl::CDynamicsScl();
+          flag = dyn_scl_[i]->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name[i]));
+          if(false == flag) { throw(std::runtime_error("Could not initialize dynamics algorithms"));  }
 
           /******************************ChaiGlut Graphics************************************/
           if(!db->s_gui_.glut_initialized_)
@@ -251,7 +258,7 @@ namespace scl_app
           { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
           /**********************Initialize Robot Dynamics and Controller*******************/
-          flag = robot[i].initFromDb(robot_name[i],tao_dyn[i],tao_dyn[i]);//Note: The robot deletes these pointers.
+          flag = robot[i].initFromDb(robot_name[i],dyn_scl_[i],dyn_tao_[i]);//Note: The robot deletes these pointers.
           if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
 
           ctrl_name[i] = argv[i*5+3];

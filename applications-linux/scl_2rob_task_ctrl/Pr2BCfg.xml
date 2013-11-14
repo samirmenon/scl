@@ -54,6 +54,7 @@
             <task_dof>3</task_dof>
             <kp>100</kp>
             <kv>21</kv>
+            <ka>0</ka>
             <ki>0</ki>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
@@ -69,6 +70,7 @@
             <task_dof>3</task_dof>
             <kp>100</kp>
             <kv>21</kv>
+            <ka>0</ka>
             <ki>0</ki>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
@@ -80,6 +82,7 @@
             <task_dof>0</task_dof> 
             <kp>400</kp>
             <kv>40</kv>
+            <ka>0</ka>
             <ki>0</ki>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
@@ -92,6 +95,7 @@
             <task_dof>0</task_dof> 
             <kp>0</kp>
             <kv>30</kv>
+            <ka>0</ka>
             <ki>0</ki>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
