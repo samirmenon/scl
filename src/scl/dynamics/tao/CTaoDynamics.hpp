@@ -71,15 +71,15 @@ namespace scl
         SGcModel * arg_gc_model)
     { return false; }
 
-//    /** Gives an id for a link name.
-//     *
-//     * Enables using calculateJacobain without:
-//     * 1. Storing any dynamic-engine specific objects in
-//     *    the controller.
-//     * 2. Using inefficient repeated string based
-//     *    lookup (usually with maps)
-//     */
-//    virtual const void* getIdForLink(std::string arg_link_name);
+    /** Gives an id for a link name.
+     *
+     * Enables using calculateJacobain without:
+     * 1. Storing any dynamic-engine specific objects in
+     *    the controller.
+     * 2. Using inefficient repeated string based
+     *    lookup (usually with maps)
+     */
+    taoDNode * getTaoIdForLink(std::string arg_link_name);
 
 //    /** Calculates the Transformation Matrix for the robot to which
 //     * this dynamics object is assigned.

@@ -165,7 +165,7 @@ int main(int argc, char** argv)
       for(it = br.begin(), ite = br.end();
           it!=ite; ++it)
       {
-        taoDNode * tmp = (taoDNode *)tao_dyn_int.getIdForLink(it->name_);
+        taoDNode * tmp = tao_dyn_int.getTaoIdForLink(it->name_);
         if(S_NULL == tmp)
         {
           std::stringstream ss;

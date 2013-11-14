@@ -291,11 +291,11 @@ namespace scl
 //  }
 //
 //
-//  const void* CTaoDynamics::getIdForLink(std::string arg_link_name)
-//  {
-//    taoDNode * tmp = model_->getNodeByName(arg_link_name);
-//    return static_cast<const void*>(tmp);
-//  }
+  taoDNode* CTaoDynamics::getTaoIdForLink(std::string arg_link_name)
+  {
+    taoDNode * tmp = model_->getNodeByName(arg_link_name);
+    return tmp;
+  }
 //
 //  sBool CTaoDynamics::computeTransform_Depracated(
 //      const void* arg_link_id,
