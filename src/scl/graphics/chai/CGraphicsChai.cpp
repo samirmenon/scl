@@ -1364,7 +1364,9 @@ namespace scl {
             {//Negative activation will be set to green = Error.
               l->m_colorPointA.set(0.0, 1.0, 0.0);//-tmp_col, 1 + tmp_col);//pow(1 + tmp_col,8));
               l->m_colorPointB.set(0.0, 1.0, 0.0);//-tmp_col, 1 + tmp_col);//pow(1 + tmp_col,8));
+#ifdef DEBUG
               std::cerr<<"\nCGraphicsChai::updateGraphicsForMuscles() : Warning : Negative muscle activation at :"<<it->name_;
+#endif
             }
           }
         }
