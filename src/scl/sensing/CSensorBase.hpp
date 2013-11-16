@@ -43,7 +43,7 @@ namespace scl
    * NOTE : Please don't be confused. This is an actuator "model", and
    *        as these flags make sense for a simulated actuator. It is
    *        "NOT" meant as an interface to a real actuator. */
-  class SSensorBase : SObject
+  class SSensorBase : public SObject
   {
   public:
     /** This applies any temporal sampling limits to the sensor.
@@ -96,7 +96,7 @@ namespace scl
      */
     sBool flag_apply_noise_;            //true
 
-    SSensorBase() :
+    SSensorBase() : SObject("SSensorBase"),
       flag_apply_temporal_limits_(true),
       flag_apply_temporal_jitter_(true),
       flag_apply_temporal_delay_(true),
