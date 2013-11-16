@@ -33,10 +33,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CTRAJECTORYGENERATOR_HPP_
 
 #include <scl/DataTypes.hpp>
-#include <scl/util/sutil::CMappedList.hpp>
 #include <scl/util/FileFunctions.hpp>
 
-#include <scl/control/trajectory/OTG/TypeIOTG.h>
+#include <sutil/CMappedList.hpp>
 
 #include <Eigen/Core>
 #include <string>
