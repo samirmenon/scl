@@ -44,55 +44,7 @@ namespace scl
    * and a generalized coordinate. */
   sBool sclTransform(Eigen::Affine3d &arg_T, const Eigen::Vector3d &arg_offset,
       const Eigen::Quaterniond &arg_ori_in_parent,
-      const sFloat arg_q, const sJointType arg_jtype)
-  {
-    bool flag = true;
-
-    // Set up the transform depending on the joint type.
-    switch(arg_jtype)
-    {
-      case JOINT_TYPE_PRISMATIC_X:
-        arg_T.setIdentity();
-        arg_T.rotate(arg_ori_in_parent);
-        arg_T.translation() = arg_offset;
-        arg_T.translation()(0) += arg_q;
-        break;
-      case JOINT_TYPE_PRISMATIC_Y:
-        arg_T.setIdentity();
-        arg_T.rotate(arg_ori_in_parent);
-        arg_T.translation() = arg_offset;
-        arg_T.translation()(1) += arg_q;
-        break;
-      case JOINT_TYPE_PRISMATIC_Z:
-        arg_T.setIdentity();
-        arg_T.rotate(arg_ori_in_parent);
-        arg_T.translation() = arg_offset;
-        arg_T.translation()(2) += arg_q;
-        break;
-      case JOINT_TYPE_REVOLUTE_X:
-        arg_T.setIdentity();
-        arg_T.rotate(arg_ori_in_parent);
-        arg_T.translation() = arg_offset;
-        arg_T.rotate(Eigen::AngleAxisd(arg_q, Eigen::Vector3d::UnitX()));
-        break;
-      case JOINT_TYPE_REVOLUTE_Y:
-        arg_T.setIdentity();
-        arg_T.rotate(arg_ori_in_parent);
-        arg_T.translation() = arg_offset;
-        arg_T.rotate(Eigen::AngleAxisd(arg_q, Eigen::Vector3d::UnitY()));
-        break;
-      case JOINT_TYPE_REVOLUTE_Z:
-        arg_T.setIdentity();
-        arg_T.rotate(arg_ori_in_parent);
-        arg_T.translation() = arg_offset;
-        arg_T.rotate(Eigen::AngleAxisd(arg_q, Eigen::Vector3d::UnitZ()));
-        break;
-      default:
-        flag = false;
-        break;
-    }
-    return flag;
-  }
+      const sFloat arg_q, const sJointType arg_jtype);
 
   /**
    * Creates a transformation matrix given a set of dh parameters
@@ -104,18 +56,7 @@ namespace scl
    * theta    : Angle about prev z, from old x to new x.
    */
   void dh2TransformationMatrix(Eigen::Matrix4d &arg_mat, const sFloat &alpha,
-      const sFloat & a, const sFloat & d, const sFloat & theta)
-  {
-    sFloat st = sin(theta);
-    sFloat ct = cos(theta);
-    sFloat sa = sin(alpha);
-    sFloat ca = cos(alpha);
-
-    arg_mat<<ct,     -1*st,   0,      a,
-             st*ca,  ct*ca,  -1*sa,  -1*sa*d,
-             st*sa,  ct*sa,   ca,     ca*d,
-             0,      0,       0,      1;
-  }
+      const sFloat & a, const sFloat & d, const sFloat & theta);
 
   /**
    * Converts a quaternion into an axis-angle (x,y,z,theta)
@@ -133,31 +74,7 @@ namespace scl
    * conversions/quaternionToAngle/index.htm
    */
   sBool quat2axisangle(const Eigen::Quaternion<sFloat> & arg_q,
-      Eigen::Vector4d & arg_aa)
-  {
-    //Error if the quaternion isn't normalized
-    if( fabs(arg_q.norm() - 1) > SCL_MINIMUM_POSITION_CHANGE)
-    { return false; }
-
-    arg_aa[3] = 2 * acos(arg_q.w());
-
-    sFloat s = sqrt(1- (arg_q.w()*arg_q.w()));
-
-    if (s < 0.001)
-    {// If s close to zero then direction of axis not important
-      arg_aa[0] = arg_q.x();
-      arg_aa[1] = arg_q.y();
-      arg_aa[2] = arg_q.z();
-    }
-    else
-    {
-      arg_aa[0] = arg_q.x()/s;
-      arg_aa[1] = arg_q.y()/s;
-      arg_aa[2] = arg_q.z()/s;
-    }
-
-    return true;
- }
+      Eigen::Vector4d & arg_aa);
 }
 
 #endif /* ROBOTMATH_HPP_ */
