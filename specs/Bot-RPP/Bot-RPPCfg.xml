@@ -36,6 +36,7 @@
         <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
         <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
         <flag_logging_on>false</flag_logging_on>
+        <option_rigid_body_sort_order>link0 link1 link2</option_rigid_body_sort_order> <!-- All options are optional -->
     </robot>
 
     <graphics name="RPPStdView">
