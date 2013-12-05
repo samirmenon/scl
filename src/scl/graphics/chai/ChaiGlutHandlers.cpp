@@ -132,6 +132,7 @@ namespace scl_chai_glut_interface
       glutReshapeFunc(scl_chai_glut_interface::resizeWindow);
       glutMouseFunc(mouseClick);
       glutMotionFunc(mouseMove);
+      glutPassiveMotionFunc(mousePassiveMove);
       glutSetWindowTitle("SCL scl (v0.2)");
 
       // create a mouse menu (right button)
@@ -497,6 +498,13 @@ namespace scl_chai_glut_interface
 
     }
 
+    chai_glob_ds->GLOB_chaiDbptr->mouse_x_ = x;
+    chai_glob_ds->GLOB_chaiDbptr->mouse_y_ = y;
+  }
+
+  void mousePassiveMove(int x, int y)
+  {
+    SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     chai_glob_ds->GLOB_chaiDbptr->mouse_x_ = x;
     chai_glob_ds->GLOB_chaiDbptr->mouse_y_ = y;
   }

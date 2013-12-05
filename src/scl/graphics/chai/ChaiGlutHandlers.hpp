@@ -123,6 +123,9 @@ namespace scl_chai_glut_interface
   // callback to handle mouse motion
   void mouseMove(int x, int y);
 
+  // callback to handle mouse motion
+  void mousePassiveMove(int x, int y);
+
   // function to update the viewing screen
   void updateCameraPosition();
 }
