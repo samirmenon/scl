@@ -316,7 +316,9 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
         else
         { arg_robot.flag_wireframe_on_ = false;  }
       }
-
+      // *****************************************************************
+      //                        Now parse the (optional) options
+      // *****************************************************************
       xmlflags = _robot_handle.FirstChildElement( "option_axis_frame_size" ).Element();
       if ( xmlflags )
       {
@@ -412,6 +414,43 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
       }
 
       // *****************************************************************
+      //        Now get the option to sort all the links (if present)
+      // *****************************************************************
+      bool link_order_specified = false;
+      xmlflags = _robot_handle.FirstChildElement( "option_rigid_body_sort_order" ).Element();
+      if ( xmlflags )
+      {
+        std::stringstream ss(xmlflags->FirstChild()->Value());
+        std::string sstr;
+
+        //Clear the vector that will hold the robot link sort order
+        arg_robot.robot_tree_numeric_id_to_name_.clear();
+
+        //Should be able to contain all the links.
+        int rbt_sz = arg_robot.rb_tree_.size();
+        int n_rb_added=0;
+        arg_robot.robot_tree_numeric_id_to_name_.resize(rbt_sz);
+
+        while ( ss >> sstr ) //Terminates when the stringstream is empty.
+        {
+          if(NULL == arg_robot.rb_tree_.at_const(sstr))
+          { throw(std::runtime_error(std::string("\nError reading option_rigid_body_sort_order. Rbody not found:") + sstr)); }
+
+
+          if(scl_util::isStringInVector(sstr,arg_robot.robot_tree_numeric_id_to_name_))
+          { throw(std::runtime_error(std::string("\nError reading option_rigid_body_sort_order. Tried to add rbody twice to index:") + sstr)); }
+
+          if(n_rb_added >= rbt_sz)
+          { throw(std::runtime_error("\nError reading option_rigid_body_sort_order. Too many nodes. \n *** Note: Don't add root nodes. Those are automatically added as the last node in the tree")); }
+
+          arg_robot.robot_tree_numeric_id_to_name_[n_rb_added] = sstr;
+          n_rb_added++;
+        }
+
+        link_order_specified = true;
+      }
+
+      // *****************************************************************
       //           Now organize all the links in the data struct etc.
       // *****************************************************************
       arg_robot.dof_ = arg_robot.rb_tree_.size() - 1;//The root node is stationary
@@ -419,19 +458,22 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
       if(false == flag)
       { throw(std::runtime_error("Could not link robot's nodes.")); }
 
-      std::vector<std::string> tmp_sort_order;
-      tmp_sort_order.resize(arg_robot.rb_tree_.size());
+      if(false == link_order_specified)
+      {  arg_robot.robot_tree_numeric_id_to_name_.resize(arg_robot.rb_tree_.size());  }
       sutil::CMappedTree<std::string, SRigidBody>::iterator its,itse;//For sorting
       for(its = arg_robot.rb_tree_.begin(), itse = arg_robot.rb_tree_.end();
           its!=itse; ++its)
       {
-        if(0 <= its->link_id_) //Non-root node
-        { tmp_sort_order[its->link_id_] = its->name_; }
+        if( (false == link_order_specified) && (0 <= its->link_id_) ) //Non-root node
+        { arg_robot.robot_tree_numeric_id_to_name_[its->link_id_] = its->name_; }
         else if(-1 == its->link_id_) //Root node
-        { tmp_sort_order[arg_robot.rb_tree_.size()-1] = its->name_; }
+        {
+          arg_robot.robot_tree_numeric_id_to_name_[arg_robot.rb_tree_.size()-1] = its->name_;
+          if(link_order_specified){ break;  }//Other nodes are already sorted.
+        }
       }
 
-      flag = arg_robot.rb_tree_.sort(tmp_sort_order);
+      flag = arg_robot.rb_tree_.sort(arg_robot.robot_tree_numeric_id_to_name_);
       if(false == flag)
       {
         std::string err;
