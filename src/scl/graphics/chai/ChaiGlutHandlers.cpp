@@ -387,7 +387,7 @@ namespace scl_chai_glut_interface
 
         //Whether click-drag rotates the camera or adds a force.
       case SChaiGlobals::OPTION_TOGGLE_MOUSE_CAM_SELECT:
-        chai_glob_ds->GLOB_chaiDbptr->mouse_mode_cam_ = ~(chai_glob_ds->GLOB_chaiDbptr->mouse_mode_cam_);
+        chai_glob_ds->GLOB_chaiDbptr->mouse_mode_cam_ = !(chai_glob_ds->GLOB_chaiDbptr->mouse_mode_cam_);
         break;
     }
   }
