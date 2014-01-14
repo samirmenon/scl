@@ -488,12 +488,11 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
       { throw(std::runtime_error(std::string("Could not sort the robot's mapped tree (") + arg_robot.name_ + std::string(")")));  }
 
       // If the sort was successful, update the link ids.
+      // Now also reset the link_id_ to match the order.
       int i=0;
       for(its = arg_robot.rb_tree_.begin(), itse = arg_robot.rb_tree_.end()-1;/* ignore root node at end */
           its!=itse; ++its, ++i)
       { its->link_id_ = i;  }
-
-      // Now also reset the link_id_ to match the order.
 
       // Print sorted node order
 #ifdef DEBUG
@@ -503,7 +502,101 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
       { std::cout<<"\n\t"<<its->link_id_<<" : "<<its->name_;  }
 #endif
 
-      //Set up the remaining robot variables
+      // *****************************************************************
+      //        Now get the option to sort all the muscles (if present)
+      // *****************************************************************
+      if(arg_robot.muscle_system_.has_been_init_)
+      {
+        bool muscle_order_specified = false;
+        xmlflags = _robot_handle.FirstChildElement( "option_muscle_sort_order" ).Element();
+        if ( xmlflags )
+        {//If we need to sort muscles (option has been provided in the xml file).
+          //Read muscle spec name
+          if(NULL == xmlflags->Attribute("name")) //Unnamed robot
+          { throw(std::runtime_error("\nError reading <option_muscle_sort_order name=\"\">. No muscle spec name specified")); }
+
+          std::string mspec_name = xmlflags->Attribute("name");
+          if(arg_robot.muscle_system_.name_ != mspec_name)
+          { throw(std::runtime_error("\nError reading <option_muscle_sort_order name=\"\">. Does not match robot's muscle spec name.")); }
+
+          std::stringstream ss(xmlflags->FirstChild()->Value());
+          std::string sstr;
+
+          //Clear the vector that will hold the robot muscle sort order
+          arg_robot.muscle_system_.muscle_id_to_name_.clear();
+
+          //Should be able to contain all the muscles.
+          int mtree_sz = arg_robot.muscle_system_.muscles_.size();
+          int n_musc_added=0;
+          arg_robot.muscle_system_.muscle_id_to_name_.resize(mtree_sz);
+
+          //Read in all the specified muscles.
+          while ( ss >> sstr ) //Terminates when the stringstream is empty.
+          {
+            if(NULL == arg_robot.muscle_system_.muscles_.at_const(sstr))
+            { throw(std::runtime_error(std::string("\nError reading option_muscle_sort_order. Muscle not found:") + sstr)); }
+
+
+            if(scl_util::isStringInVector(sstr,arg_robot.muscle_system_.muscle_id_to_name_))
+            { throw(std::runtime_error(std::string("\nError reading option_muscle_sort_order. Tried to add muscle twice to index:") + sstr)); }
+
+            if(n_musc_added >= mtree_sz)
+            { throw(std::runtime_error("\nError reading option_muscle_sort_order. Too many muscles.")); }
+
+            arg_robot.muscle_system_.muscle_id_to_name_[n_musc_added] = sstr;
+            n_musc_added++;
+          }
+
+          //If "ALL" the muscles are specified, we have a valid sort order. Else not.
+          if(mtree_sz == n_musc_added)
+          { muscle_order_specified = true;  }
+          else
+          { throw(std::runtime_error("\nError reading option_muscle_sort_order. Some muscles are missing.")); }
+        }
+
+        // *****************************************************************
+        //           Now organize all the muscles in the data struct etc.
+        // *****************************************************************
+        sutil::CMappedList<std::string, SMuscleParsed>::iterator itm,itme;//For sorting
+
+        if(false == muscle_order_specified)
+        {//Specify the default order.
+          arg_robot.muscle_system_.muscle_id_to_name_.resize(arg_robot.muscle_system_.muscles_.size());
+          for(i=0, itm = arg_robot.muscle_system_.muscles_.begin(), itme = arg_robot.muscle_system_.muscles_.end();
+              itm!=itme; ++i, ++itm)
+          {// NOTE : This adds muscles to their default xml position given that there is no muscle order
+            arg_robot.muscle_system_.muscle_id_to_name_[i] = itm->name_;
+          }
+        }
+
+        // Now sort the muscles
+        flag = arg_robot.muscle_system_.muscles_.sort(arg_robot.muscle_system_.muscle_id_to_name_);
+        if(false == flag)
+        { throw(std::runtime_error(std::string("Could not sort the robot's muscles (") + arg_robot.name_ + std::string(")")
+        + std::string(". Msys: ")+ arg_robot.muscle_system_.name_));  }
+
+        // Initialize all the muscles ids in the new muscle objects
+        arg_robot.muscle_system_.muscle_id_to_name_.resize(arg_robot.muscle_system_.muscles_.size());
+        for (i=0, itm = arg_robot.muscle_system_.muscles_.begin(), itme = arg_robot.muscle_system_.muscles_.end();
+            itm != itme; ++itm, ++i)
+        {
+          sUInt* tmp = arg_robot.muscle_system_.muscle_name_to_id_.create(itm->name_);
+          *tmp = i;
+        }
+
+        // Print sorted node order
+#ifdef DEBUG
+        std::cout<<"\nreadRobotFromFile() : Sorted muscles for "<<arg_robot.name_<<". Msys: "<<arg_robot.muscle_system_.name_;
+        for(i=0, itm = arg_robot.muscle_system_.muscles_.begin(), itme = arg_robot.muscle_system_.muscles_.end();
+            itm!=itme; ++i, ++itm)
+        { std::cout<<"\n\t"<<i<<" : "<<itm->name_;  }
+#endif
+      }
+
+
+      // *****************************************************************
+      //                Set up the remaining robot variables
+      // *****************************************************************
       arg_robot.gc_pos_limit_max_.setZero(arg_robot.dof_);
       arg_robot.gc_pos_limit_min_.setZero(arg_robot.dof_);
       arg_robot.gc_pos_default_.setZero(arg_robot.dof_);
@@ -723,19 +816,6 @@ bool CParserScl::readMuscleSpecFromFile(const std::string& arg_spec_file,
         { throw(std::runtime_error(std::string("Couldn't allocate a muscle (id taken already?):") + tmp_musc_ds.name_)); }
 
         tmp_musc_ds2 = S_NULL;
-      }
-
-      // Initialize all the muscles ids in the new muscle objects
-      // NOTE TODO: This order should be specified in the config file.
-      int i=0;
-      arg_robot.muscle_system_.muscle_id_to_name_.resize(arg_robot.muscle_system_.muscles_.size());
-      sutil::CMappedList<std::string, SMuscleParsed>::const_iterator itm,itme;
-      for (i=0, itm = arg_robot.muscle_system_.muscles_.begin(), itme = arg_robot.muscle_system_.muscles_.end();
-          itm != itme; ++itm, ++i)
-      {
-        arg_robot.muscle_system_.muscle_id_to_name_[i] = itm->name_;
-        sUInt* tmp = arg_robot.muscle_system_.muscle_name_to_id_.create(itm->name_);
-        *tmp = i;
       }
     }//End of loop over robots in the xml file.
 
