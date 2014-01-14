@@ -172,7 +172,6 @@ namespace scl
         if(NULL == child || NULL == parent)
         { throw(std::runtime_error("Rigid body pointer for child or parent link is null in the rbd tree")); }
 
-        // NOTE TODO : Add support for multiple GCs per joint.
         while(parent != child)
         {// Indicate which gcs are going to be modified by the joint between the parent and child link.
           pt_set->scl_gc_id_.push_back(child->link_id_);

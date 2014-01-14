@@ -419,7 +419,7 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
       bool link_order_specified = false;
       xmlflags = _robot_handle.FirstChildElement( "option_rigid_body_sort_order" ).Element();
       if ( xmlflags )
-      {
+      {//If we need to sort links (option has been provided in the xml file).
         std::stringstream ss(xmlflags->FirstChild()->Value());
         std::string sstr;
 
@@ -431,6 +431,7 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
         int n_rb_added=0;
         arg_robot.robot_tree_numeric_id_to_name_.resize(rbt_sz);
 
+        //Read in all the specified links.
         while ( ss >> sstr ) //Terminates when the stringstream is empty.
         {
           if(NULL == arg_robot.rb_tree_.at_const(sstr))
@@ -447,23 +448,31 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
           n_rb_added++;
         }
 
-        link_order_specified = true;
+        //If "ALL" the links are specified, we have a valid sort order. Else not.
+        if(rbt_sz-1 == n_rb_added) //NOTE : Don't have to specify the root node in the sort order. So sz = n-1.
+        { link_order_specified = true;  }
+        else
+        { throw(std::runtime_error("\nError reading option_rigid_body_sort_order. Some rigid bodies are missing.")); }
       }
 
       // *****************************************************************
       //           Now organize all the links in the data struct etc.
       // *****************************************************************
       arg_robot.dof_ = arg_robot.rb_tree_.size() - 1;//The root node is stationary
+
+      //Connect children to parents in the rb tree.
       flag = arg_robot.rb_tree_.linkNodes();
       if(false == flag)
       { throw(std::runtime_error("Could not link robot's nodes.")); }
 
       if(false == link_order_specified)
       {  arg_robot.robot_tree_numeric_id_to_name_.resize(arg_robot.rb_tree_.size());  }
+
       sutil::CMappedTree<std::string, SRigidBody>::iterator its,itse;//For sorting
       for(its = arg_robot.rb_tree_.begin(), itse = arg_robot.rb_tree_.end();
           its!=itse; ++its)
-      {
+      {// NOTE : This adds links to their default xml position given that there is no link order
+        // It also adds the root node at the end (which doesn't need to be specified in the link order)
         if( (false == link_order_specified) && (0 <= its->link_id_) ) //Non-root node
         { arg_robot.robot_tree_numeric_id_to_name_[its->link_id_] = its->name_; }
         else if(-1 == its->link_id_) //Root node
@@ -473,13 +482,18 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
         }
       }
 
+      // Now sort the robot
       flag = arg_robot.rb_tree_.sort(arg_robot.robot_tree_numeric_id_to_name_);
       if(false == flag)
-      {
-        std::string err;
-        err ="Could not sort the robot's mapped tree (" + arg_robot.name_ +")";
-        throw(std::runtime_error(err));
-      }
+      { throw(std::runtime_error(std::string("Could not sort the robot's mapped tree (") + arg_robot.name_ + std::string(")")));  }
+
+      // If the sort was successful, update the link ids.
+      int i=0;
+      for(its = arg_robot.rb_tree_.begin(), itse = arg_robot.rb_tree_.end()-1;/* ignore root node at end */
+          its!=itse; ++its, ++i)
+      { its->link_id_ = i;  }
+
+      // Now also reset the link_id_ to match the order.
 
       // Print sorted node order
 #ifdef DEBUG
