@@ -267,32 +267,49 @@ namespace scl
       const int i = rbd->link_ds_->link_id_;
       switch(rbd->link_ds_->joint_type_)
       {
+        /** For linear joints:
+         * Jv => dq = The linear velocity vector simply needs to be rotated to the global frame
+         * Jω => Zero. There is no contribution to the angular velocity.
+         */
         case JOINT_TYPE_PRISMATIC_X:
+          //Jv
           arg_J.block(0,i,3,1) = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitX();
           break;
         case JOINT_TYPE_PRISMATIC_Y:
+          //Jv
           arg_J.block(0,i,3,1) = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitY();
           break;
         case JOINT_TYPE_PRISMATIC_Z:
+          //Jv
           arg_J.block(0,i,3,1) = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitZ();
           break;
+        /** For rotational joints:
+         * Jv => cross product of operational point and angular velocity at the given dof.
+         * Jω => The angular velocity vector simply needs to be rotated to the global frame.
+         */
         case JOINT_TYPE_REVOLUTE_X:
-          arg_J(3,i) = 1;
+          //Jv
           pos_wrt_joint_global_frame = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitX();
           arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint_global_frame);
+          //Jω
+          arg_J.block(3,i,3,1) = axis_global_frame;
           break;
         case JOINT_TYPE_REVOLUTE_Y:
-          arg_J(4,i) = 1;
+          //Jv
           pos_wrt_joint_global_frame = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitY();
           arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint_global_frame);
+          //Jω
+          arg_J.block(3,i,3,1) = axis_global_frame;
           break;
         case JOINT_TYPE_REVOLUTE_Z:
-          arg_J(5,i) = 1;
+          //Jv
           pos_wrt_joint_global_frame = rbd->T_o_lnk_.rotation()*T_to_joint * arg_pos_local;
           axis_global_frame = rbd->T_o_lnk_.rotation()*Eigen::Vector3d::UnitZ();
           arg_J.block(0,i,3,1) = axis_global_frame.cross(pos_wrt_joint_global_frame);
+          //Jω
+          arg_J.block(3,i,3,1) = axis_global_frame;
           break;
         default:
           if(rbd->link_ds_->is_root_)//Root node has no joint.
