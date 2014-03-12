@@ -402,6 +402,8 @@ namespace scl
     std::vector<std::string> last_command;
     last_command.clear();
 
+    char cmd_buf[1024];
+
     while(scl::CDatabase::getData()->running_)
     {
       while(scl::CDatabase::getData()->running_ &&
@@ -409,11 +411,12 @@ namespace scl
       {
         std::cout<<"\nscl>> ";
 
-        std::string input;
-        getline(cin,input);
+        char* ret = fgets(cmd_buf,1024,stdin);
+        if(ret!=cmd_buf)
+        { std::cout<<"\nError in shell: Could not read stdin";  }
 
         //Split the string into string tokens
-        std::istringstream iss(input);
+        std::istringstream iss(cmd_buf);
         std::vector<std::string> tokens;
         std::copy(std::istream_iterator<std::string>(iss),
             std::istream_iterator<std::string>(),
