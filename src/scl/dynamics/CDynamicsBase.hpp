@@ -251,7 +251,7 @@ public:
       /** The existing generalized coordinates, velocities and
        * accelerations + The generalized forces + task (euclidean)
        * forces and the list of contact points and links. */
-      SRobotIO& arg_inputs_,
+      SRobotIO& arg_inputs,
       /** The time across which the system should integrate the
        * dynamics. Could take fixed steps or dynamic ones in between.
        * Up to the integrator implementation. */
