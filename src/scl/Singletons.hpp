@@ -53,7 +53,7 @@ namespace scl
   /** Data structure wrapper which will contain all the data
    * that a user might query during run time. This data will
    * typically be accessed through callbacks. */
-  typedef sutil::CSingleton<sutil::CMappedList<std::string,SObject*> > CObjectMap;
+  typedef sutil::CSingleton<sutil::CMappedList<std::string,SObject*> > CDatabaseDynObj;
 }
 
 #endif /* SINGLETONS_HPP_ */
