@@ -6,6 +6,8 @@ project(scl)
 #Set Include directories
 SET(SCL_INC_DIR ../../src/scl)
 
+SET(SCLEXT_INC_DIR ../../src/scl_ext)
+
 #Set 3rd party dependencies
 #Eigen Includes
 SET(EIGEN_INC_DIR ../../3rdparty/eigen)
@@ -21,7 +23,8 @@ SET(TAO_INC_DIR ${SCL_INC_DIR}/dynamics/tao)
 #Set all include directories
 INCLUDE_DIRECTORIES(../../src/ ${SCL_INC_DIR}
                     ${EIGEN_INC_DIR} ${TAO_INC_DIR}		    						
-                    ${SUTIL_INC_DIR} ${TIXML_INC_DIR} )
+                    ${SUTIL_INC_DIR} ${TIXML_INC_DIR} 
+                    ${SCLEXT_INC_DIR})
 
 #Set all the sources required for the library
 SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIO.cpp
@@ -76,7 +79,7 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
 # This needs some work. Should add basic trajectory generation support.
 SET(CTR_TRAJ_SRC 
    )
-
+   
 SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDNode.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABDynamics.cpp
             ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABJoint.cpp
@@ -129,7 +132,8 @@ ADD_DEFINITIONS(-DTIXML_USE_STL)
 SET(ALLSRC ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} 
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
            ${TAO_SRC} ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
-					 ${SCL_PARSER_SRC} ${SAI_PARSER_SRC} ${OSIM_PARSER_SRC} ${TIXML_SRC})
+           ${SCL_PARSER_SRC} ${SAI_PARSER_SRC} ${OSIM_PARSER_SRC}
+           ${TIXML_SRC})
 
 #Set the build mode to debug by default
 #SET(CMAKE_BUILD_TYPE Debug)
