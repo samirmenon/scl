@@ -425,7 +425,7 @@ namespace std {
       os << "<NULL>";
       return os;
     }
-    scl::sJointType const jtype(joint.getType());
+    scl::EJointType const jtype(joint.getType());
     os<<" joint type = "<<static_cast<int>(jtype);
     os << "  " << joint.getDOF() << " DOF";
     std::vector<deFloat> foo(joint.getDOF());

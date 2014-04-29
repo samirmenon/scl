@@ -55,8 +55,8 @@ public:
 	virtual taoDVar* getDVar() { return _var; }
 	virtual taoDVar const * getDVar() const { return _var; }
 
-	void setType(scl::sJointType t) { _type = t; }
-	scl::sJointType getType() const { return _type; }
+	void setType(scl::EJointType t) { _type = t; }
+	scl::EJointType getType() const { return _type; }
 
 	virtual void setABJoint(taoABJoint* joint) = 0;
 	virtual taoABJoint* getABJoint() = 0;
@@ -123,7 +123,7 @@ public:
   virtual void getJgColumns(deVector6 * Jg_columns) const = 0;
   
 private:
-	scl::sJointType _type;
+	scl::EJointType _type;
 
 	deInt _clamp_dQ;
 	deFloat _max_dQ;

@@ -44,7 +44,7 @@ namespace scl
    * and a generalized coordinate. */
   sBool sclTransform(Eigen::Affine3d &arg_T, const Eigen::Vector3d &arg_offset,
       const Eigen::Quaterniond &arg_ori_in_parent,
-      const sFloat arg_q, const sJointType arg_jtype);
+      const sFloat arg_q, const EJointType arg_jtype);
 
   /**
    * Creates a transformation matrix given a set of dh parameters

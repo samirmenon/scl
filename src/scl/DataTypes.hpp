@@ -115,7 +115,7 @@ namespace scl
     JOINT_TYPE_SPHERICAL = 8,
     JOINT_TYPE_SPLINE = 9,
     JOINT_TYPE_NOTASSIGNED = -1
-  }sJointType;
+  }EJointType;
 
   typedef enum {
     RENDER_TYPE_SPHERE = 0,

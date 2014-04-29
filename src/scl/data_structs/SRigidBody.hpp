@@ -150,7 +150,7 @@ public:
   std::string parent_name_;
   sFloat joint_limit_lower_, joint_limit_upper_;
   sFloat joint_default_pos_;
-  sJointType joint_type_;
+  EJointType joint_type_;
   //**********************
   
   //***************
