@@ -37,6 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/data_structs/SMuscleSetParsed.hpp>
+#include <scl/data_structs/SUIParsed.hpp>
 
 #include <scl/control/gc/data_structs/SControllerGc.hpp>
 #include <scl/control/task/data_structs/SControllerMultiTask.hpp>
@@ -122,6 +123,19 @@ namespace scl_parser
         /** The robot's data will be filled into
          * this data structure */
         scl::SGraphicsParsed& arg_graphics)
+    { return false; }
+
+    /** Optional: If required, the subclass may support parsing user interface
+     * specifications. */
+    virtual bool listUISpecsInFile(const std::string& arg_file,
+              std::vector<std::string>& arg_ui_spec_names)
+    { return false; }
+
+    /** Optional: If required, the subclass may support parsing user interface
+     * specifications. */
+    virtual bool readUISpecFromFile(const std::string &arg_file,
+        const std::string &arg_ui_spec_name,
+        scl::SUIParsed& arg_ui_spec)
     { return false; }
 
     /** Optional: The subclass may support read out the controller

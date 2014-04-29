@@ -68,6 +68,13 @@ public:
       const std::string &arg_graphics_name,
       scl::SGraphicsParsed& arg_graphics);
 
+  virtual bool listUISpecsInFile(const std::string& arg_file,
+            std::vector<std::string>& arg_ui_spec_names);
+
+  virtual bool readUISpecFromFile(const std::string &arg_file,
+      const std::string &arg_ui_spec_name,
+      scl::SUIParsed& arg_ui_spec) {return false;}
+
   virtual bool listControllersInFile(const std::string &arg_file,
       std::vector<std::pair<std::string,std::string> > &arg_ctrl_name_and_type);
 
