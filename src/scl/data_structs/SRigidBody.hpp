@@ -125,7 +125,7 @@ public:
 	 */
 	Eigen::Vector3d pos_in_parent_;
 
-	sRotationType ori_type_parent_;
+	ERotationType ori_type_parent_;
 	/** In files, Quaternion is stored in the form << x, y, z, w/real >> */
   Eigen::Quaternion<sFloat> ori_parent_quat_;
 

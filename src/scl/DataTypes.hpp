@@ -124,9 +124,9 @@ namespace scl
   }ERenderType;
 
   typedef enum {
-    ROT_QUATERNION = 0, ROT_AXISANGLE = 1,
-    ROT_DH = 2
-  }sRotationType;
+    ROTATION_TYPE_QUATERNION = 0, ROTATION_TYPE_AXISANGLE = 1,
+    ROTATION_TYPE_DH = 2
+  }ERotationType;
 
   ///////////////////////////////////////////////////////////////
   ///////////////////////////THE END/////////////////////////////
