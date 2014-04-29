@@ -55,6 +55,9 @@ namespace scl
   class SUIParsed : public SObject
   {
   public:
+    // *****************************************************************************
+    // **************************** DATA CONTAINERS ********************************
+    // *****************************************************************************
     /** An enum to specify the keyboard set used */
     enum EKbdKeySpec {
       KBD_KEY_swdaeq=0, KBD_KEY_kiljou=1, KBD_KEY_gthfyr=2,
@@ -62,16 +65,35 @@ namespace scl
     };
 
     /** Recommend a task->keyboard pairing */
-    class SUIKeyboardControl { public: EKbdKeySpec idx; std::string name_, robot_name_, task_name_; };
+    class SUIKeyboardControl { public: EKbdKeySpec idx_; std::string name_, robot_name_, task_name_; };
 
     /** Recommend a task->keyboard pairing */
-    class SUIHapticControl { public: std::string name_, haptic_device_name_, robot_name_, task_name_; };
+    class SUIHapticControl { public: std::string name_, haptic_device_id_, robot_name_, task_name_; };
+
+    /** Recommend a task->keyboard pairing */
+    class SUIWindow {
+      public:
+      std::string name_, type_;
+      sUInt window_pos_[2], window_size_[2];
+    };
+    /** Recommend a task->keyboard pairing */
+    class SUIWindowGraphical : public SUIWindow { public: std::string graphics_world_, graphics_camera_; };
+
+    // *****************************************************************************
+    // **************************** ACTUAL DATA ************************************
+    // *****************************************************************************
 
     /** Holds the information about the keyboard ui points from the xml file */
-    sutil::CMappedList<std::string, SUIKeyboardControl> ui_kbd_points_;
+    sutil::CMappedList<std::string, SUIKeyboardControl> ui_keyboard_key_sets_;
 
     /** Holds the information about how to connect any attached haptic devices to a robot */
-    sutil::CMappedList<std::string, SUIHapticControl> ui_haptic_points_;
+    sutil::CMappedList<std::string, SUIHapticControl> ui_haptic_devices_;
+
+    /** Holds the information about any ui windows */
+    sutil::CMappedList<std::string, SUIWindow> ui_windows_;
+
+    /** Holds the information about any ui windows with graphics in them */
+    sutil::CMappedList<std::string, SUIWindowGraphical> ui_windows_graphical_;
 
     /** Constructor : Sets stuff to zero. */
     SUIParsed() : SObject(std::string("SUIParsedParsed")){}

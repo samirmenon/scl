@@ -1160,6 +1160,161 @@ bool CParserScl::readGraphicsFromFile(const std::string &arg_file,
   return false;
 }
 
+
+bool CParserScl::readUISpecFromFile(const std::string &arg_file,
+    const std::string &arg_ui_spec_name, scl::SUIParsed& arg_ui_spec)
+{
+  bool flag;
+  try
+  {
+    //Set up the parser.
+    TiXmlElement* tiElem_ui, *tiElem_sub;
+    TiXmlHandle tiHndl_glob_settings(NULL), tiHndl_file_handle(NULL), tiHndl_world(NULL);
+
+    TiXmlDocument tiDoc_file(arg_file.c_str());
+
+    //Check if file opened properly
+    flag = tiDoc_file.LoadFile(scl_tinyxml::TIXML_ENCODING_UNKNOWN);
+    if(false == flag)
+    { throw std::runtime_error("Could not open xml file to read ui definition."); }
+
+    //Get handles to the tinyxml loaded ds
+    tiHndl_file_handle = TiXmlHandle( &tiDoc_file );
+    tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
+
+    //2. Read in the links.
+    tiElem_ui = tiHndl_world.FirstChildElement( "user_interface" ).ToElement();
+    flag = false;
+    //Iterating with TiXmlElement is faster than TiXmlHandle
+    for(; tiElem_ui; tiElem_ui=tiElem_ui->NextSiblingElement("user_interface") )
+    {
+      std::string name = tiElem_ui->Attribute("name");
+      if(name!=arg_ui_spec_name)
+      {
+        arg_ui_spec.name_ = "NotInitialized";
+        continue;
+      }
+
+      arg_ui_spec.name_ = tiElem_ui->Attribute("name");
+
+      TiXmlHandle _ui_handle(tiElem_ui); //Back to handles
+
+      TiXmlElement* ui_data;
+
+      // ****************** Read keyboard key set ***********************************
+      tiElem_sub = _ui_handle.FirstChildElement( "keyboard_key_set" ).ToElement();
+
+      for(; tiElem_sub; tiElem_sub=tiElem_sub->NextSiblingElement("keyboard_key_set") )
+      {
+        std::string kbd_key_set_name = tiElem_sub->Attribute("name");
+
+        TiXmlHandle _handle(tiElem_sub); //Back to handles
+
+        scl::SUIParsed::SUIKeyboardControl* tmp_kbd = arg_ui_spec.ui_keyboard_key_sets_.create(kbd_key_set_name);
+        if(S_NULL == tmp_kbd)
+        { throw(std::runtime_error(std::string("Could not create keyboard key set:") + kbd_key_set_name));  }
+
+        //Set the name:
+        tmp_kbd->name_ = kbd_key_set_name;
+
+        // Set the parent robot
+        ui_data = _handle.FirstChildElement("robot").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_kbd->robot_name_;
+        }
+        else
+        { throw(std::runtime_error(std::string("No parent robot provided for key set:") + kbd_key_set_name));  }
+
+        // Set the parent robot's task
+        ui_data = _handle.FirstChildElement("task").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_kbd->task_name_;
+        }
+        else
+        { throw(std::runtime_error(std::string("No task name provided for key set:") + kbd_key_set_name));  }
+
+        // Set the keyboard key index
+        ui_data = _handle.FirstChildElement("index").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          sUInt tmp;
+          ss >> tmp;
+          tmp_kbd->idx_ = static_cast<SUIParsed::EKbdKeySpec>(tmp);
+        }
+        else
+        { throw(std::runtime_error(std::string("No index provided for key set:") + kbd_key_set_name));  }
+      }
+
+
+
+      // ****************** Read haptic device set ***********************************
+      tiElem_sub = _ui_handle.FirstChildElement( "haptic_device" ).ToElement();
+
+      for(; tiElem_sub; tiElem_sub=tiElem_sub->NextSiblingElement("haptic_device") )
+      {
+        std::string name = tiElem_sub->Attribute("name");
+
+        TiXmlHandle _handle(tiElem_sub); //Back to handles
+
+        scl::SUIParsed::SUIHapticControl* tmp_haptic = arg_ui_spec.ui_haptic_devices_.create(name);
+        if(S_NULL == tmp_haptic)
+        { throw(std::runtime_error(std::string("Could not create haptic:") + name));  }
+
+        //Set the name:
+        tmp_haptic->name_ = name;
+
+        // Set the parent robot
+        ui_data = _handle.FirstChildElement("robot").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_haptic->robot_name_;
+        }
+        else
+        { throw(std::runtime_error(std::string("No parent robot provided for haptic:") + name));  }
+
+        // Set the parent robot's task
+        ui_data = _handle.FirstChildElement("task").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_haptic->task_name_;
+        }
+        else
+        { throw(std::runtime_error(std::string("No task name provided for haptic:") + name));  }
+
+        // Set the haptic device type
+        ui_data = _handle.FirstChildElement("device_id").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_haptic->haptic_device_id_;
+        }
+        else
+        { throw(std::runtime_error(std::string("No device id provided for haptic:") + name));  }
+      }
+
+
+      flag = true;
+
+    }//End of loop over ui objects in the xml file.
+
+    if(false == flag)
+    { throw(std::runtime_error("Did not find specified ui specification in the file")); }
+
+    return true;
+  }
+  catch(std::exception& e)
+  { std::cerr<<"\nCParserScl::readUISpecFromFile(): "<<e.what();  }
+  return false;
+}
+
+
 bool CParserScl::listGraphicsInFile(const std::string& arg_file,
     std::vector<std::string>& arg_graphics_names)
 {

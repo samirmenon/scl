@@ -73,7 +73,7 @@ public:
 
   virtual bool readUISpecFromFile(const std::string &arg_file,
       const std::string &arg_ui_spec_name,
-      scl::SUIParsed& arg_ui_spec) {return false;}
+      scl::SUIParsed& arg_ui_spec);
 
   virtual bool listControllersInFile(const std::string &arg_file,
       std::vector<std::pair<std::string,std::string> > &arg_ctrl_name_and_type);
