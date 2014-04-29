@@ -221,8 +221,8 @@ namespace scl_chai_glut_interface
     }
 
     /** Control the gui 3D points. Can control 6 points total using the glut buttons */
-    const char arr[] = {'s', 'w', 'd', 'a', 'e', 'q', 'j', 'u', 'k', 'h', 'i', 'y', 'v', 'f', 'b', 'c', 't', 'r',
-        'S', 'W', 'D', 'A', 'E', 'Q', 'J', 'U', 'K', 'H', 'I', 'Y', 'V', 'T', 'G', 'F', 'Y', 'R'};
+    const char arr[] = {'s', 'w', 'd', 'a', 'e', 'q', 'k', 'i', 'l', 'j', 'o', 'u', 'g', 't', 'h', 'f', 'y', 'r',
+        'S', 'W', 'D', 'A', 'E', 'Q', 'K', 'I', 'L', 'J', 'O', 'U', 'G', 'T', 'H', 'F', 'Y', 'R'};
     //Can set this multiplier to modulate the motion of the operational points
     const scl::sFloat opt_mult=1;
     if(scl::CDatabase::getData()->s_gui_.ui_point_selector_ == 0)
@@ -331,7 +331,7 @@ namespace scl_chai_glut_interface
       }
 
       // Position keyboard shortcuts.
-      if (chai_glob_ds->keys_active[static_cast<int>('o')])
+      if (chai_glob_ds->keys_active[static_cast<int>(']')])
       {
         scl::SDatabase* db = scl::CDatabase::getData();
         scl::SRobotIO* io = db->s_io_.io_data_.at(0);
@@ -339,7 +339,7 @@ namespace scl_chai_glut_interface
         { link_idx = io->sensors_.q_.size()-1;  }
         io->sensors_.q_(link_idx) += 0.1;
       }
-      if (chai_glob_ds->keys_active[static_cast<int>('O')])
+      if (chai_glob_ds->keys_active[static_cast<int>('}')])
       {
         scl::SDatabase* db = scl::CDatabase::getData();
         scl::SRobotIO* io = db->s_io_.io_data_.at(0);
@@ -348,7 +348,7 @@ namespace scl_chai_glut_interface
         io->sensors_.q_(link_idx) += 0.3;
       }
 
-      if (chai_glob_ds->keys_active[static_cast<int>('l')])
+      if (chai_glob_ds->keys_active[static_cast<int>('[')])
       {
         scl::SDatabase* db = scl::CDatabase::getData();
         scl::SRobotIO* io = db->s_io_.io_data_.at(0);
@@ -356,7 +356,7 @@ namespace scl_chai_glut_interface
         { link_idx = io->sensors_.q_.size()-1;  }
         io->sensors_.q_(link_idx) -= 0.1;
       }
-      if (chai_glob_ds->keys_active[static_cast<int>('L')])
+      if (chai_glob_ds->keys_active[static_cast<int>('{')])
       {
         scl::SDatabase* db = scl::CDatabase::getData();
         scl::SRobotIO* io = db->s_io_.io_data_.at(0);
