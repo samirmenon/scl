@@ -255,7 +255,7 @@ namespace scl_parser {
 
         //Read all the obj_files
         SRigidBodyGraphics tgr;
-        tgr.class_ = SRigidBodyGraphics::CLASS_FILE_OBJ;
+        tgr.class_ = SRigidBodyGraphics::GRAPHIC_TYPE_FILE_OBJ;
         ss = link_data->FirstChildElement("name")->FirstChild()->Value();
         ss = scl::CDatabase::getData()->dir_specs_ + ss;
         tgr.file_name_ = ss;
@@ -345,7 +345,7 @@ namespace scl_parser {
 
         //Read all the obj_files
         SRigidBodyGraphics tgr;
-        tgr.class_ = SRigidBodyGraphics::CLASS_SPHERE;
+        tgr.class_ = SRigidBodyGraphics::GRAPHIC_TYPE_SPHERE;
 
         obj_data = link_data->FirstChildElement( "position_in_parent" );
         if ( obj_data )
@@ -420,7 +420,7 @@ namespace scl_parser {
 
         //Read all the obj_files
         SRigidBodyGraphics tgr;
-        tgr.class_ = SRigidBodyGraphics::CLASS_CUBOID;
+        tgr.class_ = SRigidBodyGraphics::GRAPHIC_TYPE_CUBOID;
 
         obj_data = link_data->FirstChildElement( "position_in_parent" );
         if ( obj_data )
@@ -527,7 +527,7 @@ std::cerr<< "\nCParserSclTiXml::readLink() : Warning : Color not found for cuboi
 
         //Read all the obj_files
         SRigidBodyGraphics tgr;
-        tgr.class_ = SRigidBodyGraphics::CLASS_CYLINDER;
+        tgr.class_ = SRigidBodyGraphics::GRAPHIC_TYPE_CYLINDER;
 
         obj_data = link_data->FirstChildElement( "position_in_parent" );
         if ( obj_data )

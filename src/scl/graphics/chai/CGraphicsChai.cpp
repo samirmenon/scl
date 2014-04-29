@@ -417,7 +417,7 @@ namespace scl {
             it!=ite; ++it)
         {
           const SRigidBodyGraphics& lnk_gr = (*it);
-          if(SRigidBodyGraphics::CLASS_FILE_OBJ == lnk_gr.class_)
+          if(SRigidBodyGraphics::GRAPHIC_TYPE_FILE_OBJ == lnk_gr.class_)
           {
             cMultiMesh* tmp = new cMultiMesh();
             if(false == cLoadFileOBJ(tmp,lnk_gr.file_name_))
@@ -457,7 +457,7 @@ namespace scl {
             tmp->invalidateDisplayList(true);
 #endif
           }
-          else if(SRigidBodyGraphics::CLASS_SPHERE == lnk_gr.class_)
+          else if(SRigidBodyGraphics::GRAPHIC_TYPE_SPHERE == lnk_gr.class_)
           {
             //Set the sphere's color
             // NOTE : Chai handles pointers... If you don't pass it a new obj, it segfaults
@@ -489,7 +489,7 @@ namespace scl {
             tmp->invalidateDisplayList(true);
 #endif
           }
-          else if(SRigidBodyGraphics::CLASS_CUBOID == lnk_gr.class_)
+          else if(SRigidBodyGraphics::GRAPHIC_TYPE_CUBOID == lnk_gr.class_)
           {
             //Set the cuboid's color
             // NOTE : Chai handles pointers... If you don't pass it a new obj, it segfaults
@@ -531,7 +531,7 @@ namespace scl {
             tmp->invalidateDisplayList(true);
 #endif
           }
-          else if(SRigidBodyGraphics::CLASS_CYLINDER == lnk_gr.class_)
+          else if(SRigidBodyGraphics::GRAPHIC_TYPE_CYLINDER == lnk_gr.class_)
           {
             //Set the cylinder's color
             // NOTE : Chai handles pointers... If you don't pass it a new obj, it segfaults
