@@ -1300,6 +1300,128 @@ bool CParserScl::readUISpecFromFile(const std::string &arg_file,
       }
 
 
+
+      // ****************** Read gui graphics set ***********************************
+      tiElem_sub = _ui_handle.FirstChildElement( "gui_graphics" ).ToElement();
+
+      for(; tiElem_sub; tiElem_sub=tiElem_sub->NextSiblingElement("gui_graphics") )
+      {
+        std::string name = tiElem_sub->Attribute("name");
+
+        TiXmlHandle _handle(tiElem_sub); //Back to handles
+
+        scl::SUIParsed::SUIWindowGraphical* tmp_ui_gr = arg_ui_spec.ui_windows_graphical_.create(name);
+        if(S_NULL == tmp_ui_gr)
+        { throw(std::runtime_error(std::string("Could not create graphics window:") + name));  }
+
+        //Set the name:
+        tmp_ui_gr->name_ = name;
+
+        // Set the window type (used by the app)
+        ui_data = _handle.FirstChildElement("type").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_ui_gr->type_;
+        }
+        else
+        { throw(std::runtime_error(std::string("No type provided for graphics window:") + name));  }
+
+        // Set the graphics world id (used by the app)
+        ui_data = _handle.FirstChildElement("graphics_world").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_ui_gr->graphics_world_;
+        }
+        else
+        { throw(std::runtime_error(std::string("No graphics world provided for graphics window:") + name));  }
+
+        // Set the camera id (used by the app)
+        ui_data = _handle.FirstChildElement("graphics_camera").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_ui_gr->graphics_camera_;
+        }
+        else
+        { throw(std::runtime_error(std::string("No graphics camera provided for graphics window:") + name));  }
+
+        // Set the window size
+        ui_data = _handle.FirstChildElement("window_size").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_ui_gr->window_size_[0];
+          ss >> tmp_ui_gr->window_size_[1];
+        }
+        else
+        { throw(std::runtime_error(std::string("No window size provided for graphics window:") + name));  }
+
+        // Set the window position
+        ui_data = _handle.FirstChildElement("window_position").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_ui_gr->window_pos_[0];
+          ss >> tmp_ui_gr->window_pos_[1];
+        }
+        else
+        { throw(std::runtime_error(std::string("No window position provided for graphics window:") + name));  }
+      }
+
+
+
+      // ****************** Read aux gui window set ***********************************
+      tiElem_sub = _ui_handle.FirstChildElement( "gui_options" ).ToElement();
+
+      for(; tiElem_sub; tiElem_sub=tiElem_sub->NextSiblingElement("gui_options") )
+      {
+        std::string name = tiElem_sub->Attribute("name");
+
+        TiXmlHandle _handle(tiElem_sub); //Back to handles
+
+        scl::SUIParsed::SUIWindow* tmp_ui_gr = arg_ui_spec.ui_windows_.create(name);
+        if(S_NULL == tmp_ui_gr)
+        { throw(std::runtime_error(std::string("Could not create aux ui window:") + name));  }
+
+        //Set the name:
+        tmp_ui_gr->name_ = name;
+
+        // Set the window type (used by the app)
+        ui_data = _handle.FirstChildElement("type").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_ui_gr->type_;
+        }
+        else
+        { throw(std::runtime_error(std::string("No type provided for aux ui window:") + name));  }
+
+        // Set the window size
+        ui_data = _handle.FirstChildElement("window_size").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_ui_gr->window_size_[0];
+          ss >> tmp_ui_gr->window_size_[1];
+        }
+        else
+        { throw(std::runtime_error(std::string("No window size provided for aux ui window:") + name));  }
+
+        // Set the window position
+        ui_data = _handle.FirstChildElement("window_position").Element();
+        if ( ui_data )
+        {
+          std::stringstream ss(ui_data->FirstChild()->Value());
+          ss >> tmp_ui_gr->window_pos_[0];
+          ss >> tmp_ui_gr->window_pos_[1];
+        }
+        else
+        { throw(std::runtime_error(std::string("No window position provided for aux ui window:") + name));  }
+      }
+
+
       flag = true;
 
     }//End of loop over ui objects in the xml file.
