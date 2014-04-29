@@ -157,7 +157,7 @@ public:
   //3. Graphics data
   std::vector<SRigidBodyGraphics> graphics_obj_vec_;
   sInt collision_type_;
-  sRenderType render_type_;
+  ERenderType render_type_;
   //***************
 
   //**********

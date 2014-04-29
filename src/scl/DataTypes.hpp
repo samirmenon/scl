@@ -121,7 +121,7 @@ namespace scl
     RENDER_TYPE_SPHERE = 0,
     RENDER_TYPE_CYLINDER = 1,
     RENDER_TYPE_ELLIPSOID = 2
-  }sRenderType;
+  }ERenderType;
 
   typedef enum {
     ROT_QUATERNION = 0, ROT_AXISANGLE = 1,
