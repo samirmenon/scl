@@ -43,6 +43,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SMuscleSetParsed.hpp>
+#include <scl/data_structs/SUIParsed.hpp>
 
 #include <scl/graphics/chai/data_structs/SGraphicsChai.hpp>
 
@@ -77,6 +78,9 @@ struct SParserData
    * just redefine the robot as something else and give it a new
    * muscle spec. */
   sutil::CMappedList<std::string,SMuscleSetParsed> muscle_systems_;
+
+  /** The parsed gui specification */
+  sutil::CMappedList<std::string,SUIParsed> user_interface_;
 
   /** The config file in which the robot and muscle system is specified.
    * This is typically set by a database registration function.
