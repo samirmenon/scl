@@ -121,7 +121,7 @@ namespace scl_registry
                    std::string & arg_graphics_name,
                    scl_parser::CParserBase *arg_parser);
 
-  enum controllerType{SCL_CONTROLLER_TYPE_GC=0, SCL_CONTROLLER_TYPE_TASK=1};
+  enum EControllerType{CONTROLLER_TYPE_GC=0, CONTROLLER_TYPE_TASK=1};
   /** Registers a generalized coordinate controller:
    *
    * 1. Creates a controller with the given name on
