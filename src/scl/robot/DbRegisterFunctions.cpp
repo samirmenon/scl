@@ -89,7 +89,8 @@ namespace scl_registry
   bool parseEverythingInFile(const std::string &arg_file,
       scl_parser::CParserBase *arg_parser,
       std::vector<std::string>* arg_robots_parsed,
-      std::vector<std::string>* arg_graphics_parsed)
+      std::vector<std::string>* arg_graphics_parsed,
+      std::vector<std::string>* arg_ui_parsed)
   {
     bool flag;
     try
@@ -129,7 +130,24 @@ namespace scl_registry
         }
       }
 
-      //4. List and parse controllers (Note this attaches controllers to the first robot that fits!!!)
+      //4. List and parse user interface specs
+      if(S_NULL!=arg_ui_parsed)
+      {
+        std::vector<std::string> ui_names;
+        flag = arg_parser->listUISpecsInFile(arg_file,ui_names);
+        if(false == flag) { throw(std::runtime_error("Could not list ui names from the file"));  }
+
+        std::vector<std::string>::iterator itg, itge;
+        for(itg = ui_names.begin(), itge = ui_names.end();itg!=itge;++itg)
+        {
+          if(S_NULL == scl_registry::parseUI(arg_file, *itg, arg_parser))
+          { throw(std::runtime_error("Could not register graphics with the database"));  }
+          if(S_NULL!=arg_ui_parsed)//To be returned to caller
+          { arg_ui_parsed->push_back(*itg); }
+        }
+      }
+
+      //5. List and parse controllers (Note this attaches controllers to the first robot that fits!!!)
       std::vector<std::pair<std::string,std::string> > ctrl_names;//<name,type>
       flag = arg_parser->listControllersInFile(arg_file,ctrl_names);
       if(false == flag) { throw(std::runtime_error("Could not list controllers in the file"));  }
@@ -230,7 +248,7 @@ namespace scl_registry
   }
 
   const scl::SGraphicsParsed* parseGraphics(const std::string &arg_file,
-      std::string & arg_graphics_name,
+      const std::string & arg_graphics_name,
       scl_parser::CParserBase *arg_parser)
   {
     bool flag;
@@ -263,6 +281,42 @@ namespace scl_registry
       return NULL;
     }
     return tmp_gr;
+  }
+
+  const scl::SUIParsed* parseUI(const std::string &arg_file,
+      const std::string & arg_ui_name,
+      scl_parser::CParserBase *arg_parser)
+  {
+    bool flag;
+    scl::SUIParsed * tmp_ui=NULL;
+    try
+    {
+      if(NULL == scl::CDatabase::getData())
+      {throw(std::runtime_error("Database not initialized."));  }
+
+      //Create a ds entry
+      tmp_ui = scl::CDatabase::getData()->s_parser_.user_interface_.create(arg_ui_name);
+      if(NULL==tmp_ui)
+      {throw (std::runtime_error(std::string("Couldn't create user interface data struct on the pile: ")+arg_ui_name));}
+
+      //Fill in the ds entry from the file
+      flag = arg_parser->readUISpecFromFile(arg_file,arg_ui_name,*tmp_ui);
+      if(false==flag)
+      {throw (std::runtime_error(std::string("Couldn't read user interface from file: ")+arg_ui_name));}
+
+      std::cout<<"\nscl_registry::parseUI() : Parsed : "<<arg_ui_name;
+    }
+    catch (std::exception & e)
+    {
+      std::cout<<"\nscl_registry::parseUI() : Failed "<<e.what();
+
+      //Deallocate the ds memory for the robot
+      if(NULL!=tmp_ui)
+      { scl::CDatabase::getData()->s_parser_.user_interface_.erase(tmp_ui); }
+
+      return NULL;
+    }
+    return tmp_ui;
   }
 
   scl::SControllerGc * parseGcController(const std::string &arg_file,

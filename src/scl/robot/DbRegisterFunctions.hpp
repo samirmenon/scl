@@ -78,7 +78,8 @@ namespace scl_registry
   bool parseEverythingInFile(const std::string &arg_file,
       scl_parser::CParserBase *arg_parser,
       std::vector<std::string>* arg_robots_parsed=S_NULL,
-      std::vector<std::string>* arg_graphics_parsed=S_NULL);
+      std::vector<std::string>* arg_graphics_parsed=S_NULL,
+      std::vector<std::string>* arg_ui_parsed=S_NULL);
 
   /** Loads a robot from a file and registers
    * it with the database.
@@ -118,8 +119,26 @@ namespace scl_registry
    *    failure : NULL */
   const scl::SGraphicsParsed*
   parseGraphics(const std::string &arg_file,
-                   std::string & arg_graphics_name,
-                   scl_parser::CParserBase *arg_parser);
+      const std::string & arg_graphics_name,
+      scl_parser::CParserBase *arg_parser);
+
+  /** Loads a user interface specification from a file and registers
+   * it with the database.
+   *
+   * Requires the parser implementation to include the function:
+   * bool readUISpecFromFile()
+   *
+   * @param arg_file : The file containing the xml configuration
+   * @param arg_graphics_name
+   * @param arg_parser : A parser implementation
+   *
+   * @return :
+   *    success : A const pointer to the database entry
+   *    failure : NULL */
+  const scl::SUIParsed*
+  parseUI(const std::string &arg_file,
+      const std::string & arg_ui_name,
+      scl_parser::CParserBase *arg_parser);
 
   enum EControllerType{CONTROLLER_TYPE_GC=0, CONTROLLER_TYPE_TASK=1};
   /** Registers a generalized coordinate controller:
