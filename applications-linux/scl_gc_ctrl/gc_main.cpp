@@ -296,10 +296,10 @@ int main(int argc, char** argv)
 
 #ifdef SCL_PRINT_INFO_MESSAGES
         rob_io_ds->printInfo();
-        std::cout<<"\n A :"<<gc_ctrl_ds->gc_model_.A_;
-        std::cout<<"\n b :"<<gc_ctrl_ds->gc_model_.b_.transpose();
-        std::cout<<"\n g :"<<gc_ctrl_ds->gc_model_.g_.transpose();
-        std::cout<<"\n com :"<<gc_ctrl_ds->gc_model_.pos_com_.transpose();
+        std::cout<<"\n A :"<<gc_ctrl_ds->gc_model_->A_;
+        std::cout<<"\n b :"<<gc_ctrl_ds->gc_model_->b_.transpose();
+        std::cout<<"\n g :"<<gc_ctrl_ds->gc_model_->g_.transpose();
+        std::cout<<"\n com :"<<gc_ctrl_ds->gc_model_->pos_com_.transpose();
 #endif
 
         //1. Simulation Dynamics

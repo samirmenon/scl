@@ -186,7 +186,7 @@ int main(int argc, char** argv)
       /**********************Initialize Muscle Actuator Model & Dynamics*******************/
       scl::CActuatorSetMuscle rob_mset;
       flag = rob_mset.init(rob_ds->muscle_system_.name_, /** parsed */ rob_ds, &(rob_ds->muscle_system_),
-          /** rbd tree */ gc_ctrl_ds->gc_model_.rbdyn_tree_, /** dynamics */ &dyn_scl);
+          /** rbd tree */ gc_ctrl_ds->gc_model_->rbdyn_tree_, /** dynamics */ &dyn_scl);
       if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set"));  }
 
       // Create an actuator set in the database

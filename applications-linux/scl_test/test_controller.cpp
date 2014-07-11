@@ -445,10 +445,10 @@ namespace scl_test
         ctrl.computeModel();
         if((0==i)||(i==imax))
         {
-          std::cout<<"\nA : \n" <<c_ds->gc_model_.A_;
-          std::cout<<"\nAinv : \n" <<c_ds->gc_model_.Ainv_;
-          std::cout<<"\nb : \n" <<c_ds->gc_model_.b_.transpose();
-          std::cout<<"\ng : \n" <<c_ds->gc_model_.g_.transpose();
+          std::cout<<"\nA : \n" <<c_ds->gc_model_->A_;
+          std::cout<<"\nAinv : \n" <<c_ds->gc_model_->Ainv_;
+          std::cout<<"\nb : \n" <<c_ds->gc_model_->b_.transpose();
+          std::cout<<"\ng : \n" <<c_ds->gc_model_->g_.transpose();
         }
 
         ctrl.computeTaskModels(0);
