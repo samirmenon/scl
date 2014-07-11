@@ -452,7 +452,7 @@ namespace scl_registry
         flag = tmp_task2add->init(tmp_task.name_, tmp_task.type_task_,
             tmp_task.priority_, tmp_task.dof_task_,
             db->s_parser_.robots_.at(arg_robot_name),
-            ret_ctrl->io_data_, &(ret_ctrl->gc_model_),
+            ret_ctrl->io_data_, ret_ctrl->gc_model_,
             tmp_task.kp_, tmp_task.kv_, tmp_task.ka_, tmp_task.ki_,
             tmp_task.force_task_max_, tmp_task.force_task_min_,
             tmp_task.task_nonstd_params_);

@@ -50,7 +50,7 @@ namespace scl
    *
    * Each controller data structure contains an object of
    * this type.   */
-  class SGcModel
+  class SGcModel : public SObject
   {
     /* *********************************************************************
      *                                 Data

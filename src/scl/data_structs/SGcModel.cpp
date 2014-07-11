@@ -36,7 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-  SGcModel::SGcModel() : mass_(-1)
+  SGcModel::SGcModel() : SObject("SGcModel"), mass_(-1)
   { }
 
   sBool SGcModel::init(const SRobotParsed& arg_robot_data)
@@ -106,6 +106,8 @@ namespace scl
       flag = rbdyn_tree_.sort(tmp_sort_order);
       if(false==flag)
       { throw(std::runtime_error( "Could not sort dynamic node tree" )); }
+
+      has_been_init_ = true;
     }
     catch(std::exception& e)
     {

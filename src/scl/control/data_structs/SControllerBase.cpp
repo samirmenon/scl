@@ -41,6 +41,7 @@ namespace scl
   {
     robot_ = S_NULL;
     io_data_ = S_NULL;
+    gc_model_ = S_NULL;
     robot_name_ = "";
   }
 
@@ -48,7 +49,8 @@ namespace scl
 
   sBool SControllerBase::init(const std::string & arg_controller_name,
       const SRobotParsed* arg_robot_ds,
-      SRobotIO* arg_io_data)
+      SRobotIO* arg_io_data,
+      SGcModel* arg_gc_model)
   {
     bool flag;
     try
@@ -73,22 +75,30 @@ namespace scl
       robot_ = arg_robot_ds;
       io_data_ = arg_io_data;
 
-      flag = gc_model_.init(*arg_robot_ds);
-      if(false == flag)
-      { throw(std::runtime_error("Could not initialize generalized coordinate dynamic matrices")); }
-    }
+      if(S_NULL == arg_gc_model)
+      { gc_model_ = new SGcModel(); }
+      else
+      { gc_model_ = arg_gc_model; }
 
+      if(false == gc_model_->hasBeenInit())
+      {
+        flag = gc_model_->init(*arg_robot_ds);
+        if(false == gc_model_->hasBeenInit())
+        { throw(std::runtime_error("Could not initialize generalized coordinate dynamic matrices")); }
+      }
+
+      //NOTE : We will not set has_been_init_ to true. The actual controller's data struct
+      //implementation should do that.
+    }
     catch(std::exception& e)
     {
       std::cerr<<"\nSControllerBase::init() : "<<e.what();
 
-      //Even if it was half-initialized, it might be in an invalid state now.
-      //So, we will keep the past values for error handling / debugging.
+      //The data was half-initialized; it might be in an invalid state now.
+      //So, we will keep the past values for error handling / debugging (instead of clearing them).
       return false;
     }
 
-    //NOTE : We will not set has_been_init_ to true. The actual controller's data struct
-    //implementation should do that.
     return true;
   }
 }

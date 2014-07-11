@@ -70,7 +70,7 @@ namespace scl
     tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-    data_->des_force_gc_ = data_->gc_model_.M_gc_ * tmp3 + data_->gc_model_.force_gc_grav_;
+    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 + data_->gc_model_->force_gc_grav_;
 
     return true;
   }
@@ -95,7 +95,7 @@ namespace scl
     tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-    data_->des_force_gc_ = data_->gc_model_.M_gc_ * tmp3 + data_->gc_model_.force_gc_grav_;
+    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 + data_->gc_model_->force_gc_grav_;
 
     return true;
   }
@@ -132,7 +132,7 @@ namespace scl
     tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-    data_->des_force_gc_ = data_->gc_model_.M_gc_ * tmp3 + data_->gc_model_.force_gc_grav_;
+    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 + data_->gc_model_->force_gc_grav_;
 
     return true;
   }
@@ -149,13 +149,13 @@ namespace scl
     tmp1 = tmp1.array().min(data_->force_gc_max_.array()); // Remain below the upper bound.
     tmp1 = tmp1.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
-    data_->des_force_gc_ = data_->gc_model_.M_gc_ * tmp1 + data_->gc_model_.force_gc_grav_;
+    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp1 + data_->gc_model_->force_gc_grav_;
 
 #ifdef DEBUG
-    Eigen::VectorXd tmp2 = data_->gc_model_.M_gc_ * tmp1;
+    Eigen::VectorXd tmp2 = data_->gc_model_->M_gc_ * tmp1;
     std::cout<<"\n******* F* *******\n"<<tmp1.transpose()
-        <<"\n******* A *******\n"<<data_->gc_model_.M_gc_
-        <<"\n******* g *******\n"<<data_->gc_model_.force_gc_grav_.transpose()
+        <<"\n******* A *******\n"<<data_->gc_model_->M_gc_
+        <<"\n******* g *******\n"<<data_->gc_model_->force_gc_grav_.transpose()
         <<"\n******* q *******\n"<<data_->io_data_->sensors_.q_.transpose()
         <<"\n******* dq *******\n"<<data_->io_data_->sensors_.dq_.transpose()
         <<"\n******* ddq *******\n"<<data_->io_data_->sensors_.ddq_.transpose()
@@ -168,7 +168,7 @@ namespace scl
 
   sBool CControllerGc::computeDynamics()
   {
-    bool flag = dynamics_->computeGCModel(&(data_->io_data_->sensors_),&(data_->gc_model_));
+    bool flag = dynamics_->computeGCModel(&(data_->io_data_->sensors_),data_->gc_model_);
     return flag;
   }
 
@@ -198,12 +198,12 @@ namespace scl
       dynamics_ = arg_dynamics;
 
       // Set up the center of mass properties of the robot
-      data_->gc_model_.mass_ = 0.0;
+      data_->gc_model_->mass_ = 0.0;
 
       sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator itcom,itcome;
       sutil::CMappedTree<std::string, SRigidBody>::const_iterator itr,itre;
       //Set the center of mass position for each link.
-      for(itcom = data_->gc_model_.rbdyn_tree_.begin(), itcome =data_->gc_model_.rbdyn_tree_.end(),
+      for(itcom = data_->gc_model_->rbdyn_tree_.begin(), itcome =data_->gc_model_->rbdyn_tree_.end(),
           itr = data_->robot_->rb_tree_.begin(),itre = data_->robot_->rb_tree_.end();
           itcom!=itcome; ++itcom,++itr)
       {
@@ -215,7 +215,7 @@ namespace scl
         {// gc and dynamics should have same dof.
           std::stringstream ss;
           ss<<"Inconsistent model. Gc model has more entries ["
-              <<data_->gc_model_.rbdyn_tree_.size()<<"] than the robot's mapped tree ["
+              <<data_->gc_model_->rbdyn_tree_.size()<<"] than the robot's mapped tree ["
               <<data_->robot_->rb_tree_.size()<<"]";
           throw(std::runtime_error(ss.str()));
         }
@@ -223,7 +223,7 @@ namespace scl
         itcom->name_ = itr->name_;
         itcom->link_ds_ = static_cast<const SRigidBody*>( &(*itr) );
 
-        data_->gc_model_.mass_ += itcom->link_ds_->mass_;
+        data_->gc_model_->mass_ += itcom->link_ds_->mass_;
       }
       if(itr != itre)
       {// Error check in case the root node is at the end.
@@ -232,7 +232,7 @@ namespace scl
         {
           std::stringstream ss;
           ss<<"Inconsistent model. Gc model has less entries ["
-              <<data_->gc_model_.rbdyn_tree_.size()<<"] than the robot's mapped tree ["
+              <<data_->gc_model_->rbdyn_tree_.size()<<"] than the robot's mapped tree ["
               <<data_->robot_->rb_tree_.size()-1<<"]"; //-1 in br_rep_.size to remove root.
           throw(std::runtime_error(ss.str()));
         }

@@ -61,7 +61,7 @@ namespace scl
     SRobotIO* io_data_;
 
     /** Pointer to the JSpace model DS. */
-    SGcModel gc_model_;
+    SGcModel* gc_model_;
 
     /** The constructor sets the initialization state to false */
     SControllerBase();
@@ -72,7 +72,8 @@ namespace scl
     /** Initializes the data structure */
     virtual sBool init(const std::string & arg_controller_name,
         const SRobotParsed* arg_robot_ds,
-        SRobotIO* arg_io_data);
+        SRobotIO* arg_io_data,
+        SGcModel* arg_gc_model=S_NULL);
   };
 
 }
