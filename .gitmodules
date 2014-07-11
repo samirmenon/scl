@@ -4,6 +4,3 @@
 [submodule "3rdparty/otgtypeii"]
 	path = 3rdparty/otgtypeii
 	url = https://bitbucket.org/samirmenon/otgtypeii.git
-[submodule "3rdparty/simbody"]
-	path = 3rdparty/simbody
-	url = https://github.com/simbody/simbody.git
