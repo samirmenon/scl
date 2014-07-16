@@ -146,8 +146,10 @@ public:
   //****************************************************************************************
   // Spatial joint information
   std::vector<std::string> sp_joint_name_;
+  std::vector<sBool> sp_joint_broken_in_spanning_tree_;
   Eigen::VectorXd sp_joint_limit_lower_, sp_joint_limit_upper_, sp_joint_default_pos_;
-  Eigen::MatrixXd sp_Sjoint_;
+  Eigen::MatrixXd sp_S_joint_;     ///< Column vectors correspond to spatial directions of motion
+  Eigen::MatrixXd sp_Sorth_joint_; ///< Column vectors correspond to spatial directions of constraint
 
   //****************************************************************************************
   // Graphics data

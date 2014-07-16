@@ -32,6 +32,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef DATA_TYPES_HPP_
 #define DATA_TYPES_HPP_
 
+#include <Eigen/Core>
+
 #include <string>
 
 // Check GCC
@@ -124,7 +126,22 @@ namespace scl
   }ERenderType;
 
   ///////////////////////////////////////////////////////////////
+  //////////////////////////VECTOR TYPES/////////////////////////
+  ///////////////////////////////////////////////////////////////
+  typedef Eigen::Matrix<sFloat, 6, 1> sSpatialVector; ///< Typedef (possibly clearer to read).
+  typedef Eigen::Matrix<sFloat, 6, 6> sSpatialXForm;  ///< Typedef since we use this pretty commonly.
+
+  ///////////////////////////////////////////////////////////////
   ///////////////////////////THE END/////////////////////////////
+}
+
+///////////////////////////////////////////////////////////////
+////////////////////////EIGEN EXTENSIONS///////////////////////
+///////////////////////////////////////////////////////////////
+namespace Eigen
+{
+  typedef Matrix<scl::sFloat, 6, 1> Vector6d;  ///< Typedef since we use this pretty commonly.
+  typedef Matrix<scl::sFloat, 6, 6> Matrix6d;  ///< Typedef since we use this pretty commonly.
 }
 
 #endif /* DATA_TYPES_HPP_ */

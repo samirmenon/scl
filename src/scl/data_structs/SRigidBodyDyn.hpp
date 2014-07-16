@@ -32,6 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef SRIGIDBODYDYN_HPP_
 #define SRIGIDBODYDYN_HPP_
 
+#include <scl/DataTypes.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 
 #include <Eigen/Core>
@@ -52,18 +53,25 @@ namespace scl
    * b) std::string parent_name_;
    * c) SRigidBodyDyn* parent_addr_;
    * d) std::vector<SRigidBodyDyn*> child_addrs_;*/
-  class SRigidBodyDyn
+  class SRigidBodyDyn : public SObject
   {
   public:
     // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.
     // See http://eigen.tuxfamily.org/dox/StructHavingEigenMembers.html
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
+    /** The data structure pointing to the static link information */
+    const SRigidBody* link_ds_;
+
     /** The Jacobian relating center of mass velocities in
      * the origin frame to the generalized velocities.
      *     dx_o_ = J_com_ * dq_
      */
     Eigen::MatrixXd J_com_;
+
+    //****************************************************************************************
+    // For using normal vectors
+    // NOTE : This will soon be obsolete!!!
 
     /** The transformation matrix from the rigid body's frame
      * to the origin frame:
@@ -80,22 +88,38 @@ namespace scl
      * NOTE : Only supported by scl dynamics as of now. */
     sFloat q_T_;
 
-    /** The data structure pointing to the static link information */
-    const SRigidBody* link_ds_;
+    //****************************************************************************************
+    // For using spatial vectors (and multi-dof joints)
+    /** The generalized coordinate values are now a vector (multi-dof or quaternion joints) */
+    Eigen::VectorXd sp_q_T_, sp_dq_T_;
 
-    /** Requirements to create a mapped tree of objects */
-    /** The link's name and its parent. For the tree structure. */
-    std::string name_, parent_name_;
-    /** This is automatically created by the map */
+    /** The transformation matrix from the rigid body's frame
+     * to the origin frame:
+     *     x_o_com_ = X_o_lnk_ * x_com_; */
+    sSpatialXForm sp_X_o_lnk_;
+
+    /** The transformation matrix from the rigid body's frame
+     * to the parent frame:
+     *     x_parent_frame_com_ = T_lnk_ * x_com_; */
+    sutil::CMappedList<std::string,sSpatialXForm> sp_X_joint_;
+
+    //****************************************************************************************
+    //Robot Branching Structure data:
+    // (Spanning) Tree structure information: (Enables manual tree parsing)
+    std::string parent_name_;
     SRigidBodyDyn* parent_addr_;
-    /** This is automatically created by the map */
     std::vector<SRigidBodyDyn*> child_addrs_;
 
+    // Graph structure information: (Enables manual graph parsing)
+    std::vector<SRigidBodyDyn*> gr_parent_names_;
+    std::vector<SRigidBodyDyn*> gr_parent_addrs_;
+    std::vector<SRigidBodyDyn*> gr_child_addrs_;
+
+    //****************************************************************************************
     /** Constructor : Sets stuff to NaN/NULL */
-    SRigidBodyDyn() :
+    SRigidBodyDyn() : SObject("SRigidBodyDyn"),
         q_T_(std::numeric_limits<sFloat>::quiet_NaN()),
-        link_ds_(S_NULL),
-        name_(""), parent_name_(""),
+        link_ds_(S_NULL),parent_name_(""),
         parent_addr_(S_NULL) {}
   };
 
