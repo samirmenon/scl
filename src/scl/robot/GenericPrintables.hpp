@@ -119,7 +119,6 @@ namespace sutil
     ostr<<"\n Jlim   : ["<<arg_data.joint_limit_lower_<<", "<<arg_data.joint_limit_upper_<<"]";
     ostr<<"\n Com    : "<<arg_data.com_.transpose();
     ostr<<"\n Inertia: "<<arg_data.inertia_;
-    ostr<<"\n RotAxis: "<<arg_data.rot_axis_.transpose();
     ostr<<"\n PosPar : "<<arg_data.pos_in_parent_.transpose();
     ostr<<"\n OriPar : [w xyz] ["<<arg_data.ori_parent_quat_.w()
         <<", "<<arg_data.ori_parent_quat_.x()

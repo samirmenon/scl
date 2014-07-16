@@ -123,11 +123,6 @@ namespace scl
     RENDER_TYPE_ELLIPSOID = 2
   }ERenderType;
 
-  typedef enum {
-    ROTATION_TYPE_QUATERNION = 0, ROTATION_TYPE_AXISANGLE = 1,
-    ROTATION_TYPE_DH = 2
-  }ERotationType;
-
   ///////////////////////////////////////////////////////////////
   ///////////////////////////THE END/////////////////////////////
 }

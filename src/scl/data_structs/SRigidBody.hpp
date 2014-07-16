@@ -100,7 +100,7 @@ public:
 
 	//Constructor@End of the class:
 	
-	//**********************
+	//****************************************************************************************
   //Robot Branching data:
   
   //1. Identifiers
@@ -113,36 +113,32 @@ public:
   SRigidBody* parent_addr_;
   std::vector<SRigidBody*> child_addrs_;
 
-  //**********************
+  //3. Graph structure information: (Enables manual graph parsing)
+  /** The parent indices in the graph */
+  std::vector<SRigidBody*> gr_parent_names_;
+  /** The parent node address pointers in the graph */
+  std::vector<SRigidBody*> gr_parent_addrs_;
+  /** The child node address pointers in the graph */
+  std::vector<SRigidBody*> gr_child_addrs_;
   
-  //**********************
-  //2. Link Properties
+  //****************************************************************************************
+  //2. Static Link Properties (wrt. parent at the zero position)
   sBool is_root_;
 
-	/**
-	 * Position and orientation in the parent frame.
+	/** Position and orientation in the parent frame.
 	 * And the transformation matrix from the parent
-	 * frame to this frame
-	 */
+	 * frame to this frame */
 	Eigen::Vector3d pos_in_parent_;
 
-	ERotationType ori_type_parent_;
 	/** In files, Quaternion is stored in the form << x, y, z, w/real >> */
   Eigen::Quaternion<sFloat> ori_parent_quat_;
 
-  Eigen::Matrix4d t_from_parent_;
+  /** Mass and inertia properties */
+  Eigen::Vector3d com_;     ///< Center of mass
+  sFloat mass_;             ///< Mass
+  Eigen::Matrix3d inertia_; ///< Inertia at the center of mass
 
-  /**
-   * Mass and inertia properties
-   */
-  Eigen::Vector3d com_; //Center of mass
-  sFloat mass_;
-  Eigen::Matrix3d inertia_;
-
-  Eigen::Vector3d rot_axis_;
-  sFloat rot_angle_;
-
-  sInt link_is_fixed_;
+  sInt link_is_fixed_;      ///< Fixed links are simply merged into upper links.
 
   /***************************
    * 3. Joint information
