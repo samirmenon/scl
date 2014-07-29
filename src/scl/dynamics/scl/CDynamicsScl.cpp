@@ -366,7 +366,7 @@ namespace scl
                   * (it->J_com_.block(3,0,3,dof)*arg_dq);
     }
 
-    return ret_ke;
+    return (0.5*ret_ke); // KE = 1/2 dq' M dq
   }
 
   /** Gets the robot's potential energy */
