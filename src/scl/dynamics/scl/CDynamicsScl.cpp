@@ -101,13 +101,17 @@ namespace scl
       { return true;  }
     }
     else{
-#ifdef DEBUG
-      //The root link never changes after it has been set. And it should have been set
-      //at the time the rigid body dyn setup was initialized.
-      if(true == std::isnan(arg_link.q_T_))
-      { return false;  }
-#endif
-      return true;
+      //The root link never changes after it has been set. Since it starts at a nan,
+      //the transform will be computed once..
+      if(false == std::isnan(arg_link.q_T_))
+      { return true;  }
+      else
+      { // Compute the transformation matrix for the first time.
+        flag = sclTransform(arg_link.T_lnk_, arg_link.link_ds_->pos_in_parent_,
+            arg_link.link_ds_->ori_parent_quat_,0, JOINT_TYPE_PRISMATIC_X); //q=0; joint=irrelevant
+        arg_link.q_T_ = 0.0;//Now the root has been initialized.
+        return true;
+      }
     }
 
     // Compute the transformation matrix.
