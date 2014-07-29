@@ -119,7 +119,7 @@ taoNodeRoot* CTaoRepCreator::taoRootRepCreator(const SRobotParsed& arg_robot)
   }
   catch(std::exception& e)
   {
-    std::cout<<"\nCTaoRepCreator::taoRootRepCreator() : "<<e.what();
+    std::cout<<"\nCTaoRepCreator::taoRootRepCreator() : "<<e.what()<<std::flush;
     delete ret_tao_root;
     return S_NULL;
   }
