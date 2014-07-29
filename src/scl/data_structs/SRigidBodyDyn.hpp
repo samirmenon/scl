@@ -118,9 +118,8 @@ namespace scl
     //****************************************************************************************
     /** Constructor : Sets stuff to NaN/NULL */
     SRigidBodyDyn() : SObject("SRigidBodyDyn"),
-        q_T_(std::numeric_limits<sFloat>::quiet_NaN()),
-        link_ds_(S_NULL),parent_name_(""),
-        parent_addr_(S_NULL) {}
+        link_ds_(S_NULL), q_T_(std::numeric_limits<sFloat>::quiet_NaN()),
+        parent_name_(""), parent_addr_(S_NULL) {}
   };
 
 } /* namespace scl */
