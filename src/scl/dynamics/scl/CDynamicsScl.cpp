@@ -409,9 +409,10 @@ namespace scl
   {
     try
     {
+      has_been_init_ = false;
       robot_parsed_data_ = & arg_robot_data;
-      if(NULL == robot_parsed_data_)
-      { throw(std::runtime_error("Got null pointer while referring to object. Should never happen."));  }
+      if(false == robot_parsed_data_->has_been_init_)
+      { throw(std::runtime_error("Passed uninitialized robot static data structure."));  }
       has_been_init_ = true;
     }
     catch(std::exception& e)
