@@ -63,7 +63,7 @@ namespace scl_util
               <<", Depth: "<<depth
               <<", Com: "<<(link.com_).transpose()
               <<", Mass: "<<link.mass_
-              <<", \nInertia: "<<link.inertia_
+              <<", Inertia: \n"<<link.inertia_
               <<std::flush;
 
     std::vector<SRigidBody*>::const_iterator clink, clinke;
@@ -73,7 +73,7 @@ namespace scl_util
     { printRobotLinkTree( (**clink),depth+1); }
 
     if(link.child_addrs_.begin() == link.child_addrs_.end())
-    { std::cout<<". LEAF NODE."<<std::flush; }
+    { std::cout<<"\nLEAF NODE."<<std::flush; }
   }
 
   /** Initializes a dynamic tree given a static tree for a robot. */
@@ -84,6 +84,7 @@ namespace scl_util
     try
     {
       const int ndof = arg_rb_tree.size()-1;
+      arg_rbd_tree.clear();
 
       sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
       for(it = arg_rb_tree.begin(), ite = arg_rb_tree.end();
