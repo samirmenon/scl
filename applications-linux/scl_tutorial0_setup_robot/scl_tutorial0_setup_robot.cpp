@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
  */
-/* \file scl_benchmarks_main.cpp
+/* \file scl_tutorial0_setup_robot.cpp
  *
  *  Created on: Jul 22, 2014
  *
