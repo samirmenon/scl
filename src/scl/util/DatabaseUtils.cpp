@@ -51,19 +51,18 @@ namespace scl_util
 
   void printRobotLinkTree(const SRigidBody &link, int depth)
   {
+    std::cout<<"\n Link: "<<link.name_<<" Robot: <"<<link.robot_name_<<">";
     if(S_NULL==link.parent_addr_)
-    { std::cout<<"\nParent: <None>"<<" Robot: <"<<link.robot_name_<<">";  }
+    { std::cout<<" Parent: <None>";  }
     else
-    {
-      std::cout<<"\nParent: <"<<link.parent_addr_->name_<<">"
-               <<" Robot: <"<<link.robot_name_<<">";
-    }
-    std::cout<<" Link: "<<link.name_
-              <<", Id: "<<link.link_id_
+    { std::cout<<" Parent: <"<<link.parent_addr_->name_<<">"; }
+    std::cout<<", Id: "<<link.link_id_
               <<", Depth: "<<depth
               <<", Com: "<<(link.com_).transpose()
               <<", Mass: "<<link.mass_
               <<", Inertia: \n"<<link.inertia_
+              <<",\nPos in par: "<<link.pos_in_parent_.transpose()
+              <<",\nOri in par: \n"<<link.ori_parent_quat_.toRotationMatrix()
               <<std::flush;
 
     std::vector<SRigidBody*>::const_iterator clink, clinke;
