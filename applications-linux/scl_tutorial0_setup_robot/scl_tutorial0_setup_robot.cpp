@@ -33,19 +33,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SGcModel.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
 #include <scl/util/DatabaseUtils.hpp>
-
-#include <sutil/CSystemClock.hpp>
-#include <sutil/CMappedTree.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
 
 //Standard includes
-#include <sstream>
 #include <iostream>
-#include <stdexcept>
 
 /** A sample application to demonstrate specifying a robot in scl.
  *
@@ -57,14 +51,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  * SCL Modules used:
  * 1. data_structs
- * 2. dynamics (integrator)
- * 3. dynamics (kinematics, inertia etc. computations)
+ * 2. dynamics (kinematics, energy etc. computations)
  * */
 int main(int argc, char** argv)
 {
-  std::cout<<"\n**********************************\n";
+  std::cout<<"\n***************************************\n";
   std::cout<<"Standard Control Library Tutorial #1";
-  std::cout<<"\n**********************************\n\n";
+  std::cout<<"\n***************************************\n\n";
   // Create a robot. This requires static (general info) and dynamic (dynamics info) trees
   // The trees are additionally indexed by some number (or string)
   const std::string rname("MyRobot");
@@ -143,7 +136,7 @@ int main(int argc, char** argv)
   /******************************SclDynamics************************************/
   scl::CDynamicsScl dyn_scl;
   flag = dyn_scl.init(rds);
-  if(false == flag) { throw(std::runtime_error("Could not initialize control & dynamics engine"));  }
+  if(false == flag) { std::cout<<"\nERROR : Could not initialize control & dynamics engine\n\n"; return 1;  }
   else  { std::cout<<"\n\n **** Progress : Initialized control & dynamics engine."; }
 
   //Now let's compute some quantities of interest.
@@ -163,7 +156,7 @@ int main(int argc, char** argv)
   for(it = rbd_tree.begin(), ite = rbd_tree.end(); it!=ite; ++it)
   { std::cout<<"\n\nLink:"<<it->name_<<"\npar_T_link\n"<<(it->T_lnk_.matrix())<<"\nJcom\n"<<(it->J_com_);  }
 
-  std::cout<<"\n\n **** Progress : Computed robot physics and kinematic quantities.";
+  std::cout<<"\n\n **** Progress : Computed robot energy and kinematic quantities.";
 
   std::cout<<"\n\nExecuted Successfully";
   std::cout<<"\n**********************************\n"<<std::flush;
