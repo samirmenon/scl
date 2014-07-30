@@ -624,6 +624,7 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
     if(robot_ctr<1)
     { throw(std::runtime_error("Didn't find any robots with the given name.")); }
 
+    arg_robot.has_been_init_ = true;
     return true;
   }
   catch(std::exception& e)

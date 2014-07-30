@@ -557,6 +557,7 @@ namespace scl {
         }
       }
 
+      arg_robot.has_been_init_ = true;
       return true;
     }
     catch(std::exception& e)

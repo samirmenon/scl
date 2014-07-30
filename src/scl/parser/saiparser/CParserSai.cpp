@@ -84,6 +84,8 @@ bool CParserSai::readRobotFromFile(const std::string& arg_file,
     flag = arg_robot.rb_tree_.linkNodes();
     if(false == flag)
     { throw(std::runtime_error("Could not link robot's branching representation nodes.")); }
+
+    arg_robot.has_been_init_ = true;
   }
   catch(std::exception& e)
   {

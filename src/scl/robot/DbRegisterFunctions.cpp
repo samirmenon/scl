@@ -227,8 +227,6 @@ namespace scl_registry
 
       rob_io->setGcPosition(rob->gc_pos_default_);
 
-      rob->has_been_init_ = true;
-
       std::cout<<"\nscl_registry::parseRobot() : Parsed : "<<arg_robot_name;
     }
     catch (std::exception& e)
