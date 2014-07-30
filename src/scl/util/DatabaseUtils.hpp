@@ -32,17 +32,21 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef DATABASEUTILS_HPP_
 #define DATABASEUTILS_HPP_
 
-#include <string>
-
 #include <scl/DataTypes.hpp>
-
 #include <scl/data_structs/SRigidBody.hpp>
+#include <scl/data_structs/SGcModel.hpp>
+
+#include <string>
 
 namespace scl_util
 {
 
   /** Prints a robot link tree with a passed link as its root. */
   void printRobotLinkTree(const scl::SRigidBody &link, scl::sInt depth);
+
+  /** Initializes a dynamic tree given a static tree for a robot. */
+  bool initDynRobotFromParsedRobot(sutil::CMappedTree<std::string, scl::SRigidBodyDyn>& arg_rbd_tree,
+      const sutil::CMappedTree<std::string, scl::SRigidBody>& arg_rb_tree);
 
   /** Checks if a muscle system is compatible with a given robot. Looks for
    * both in the database */

@@ -31,6 +31,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <scl/data_structs/SGcModel.hpp>
+#include <scl/util/DatabaseUtils.hpp>
+
 #include <stdexcept>
 #include <iostream>
 
@@ -41,6 +43,7 @@ namespace scl
 
   sBool SGcModel::init(const SRobotParsed& arg_robot_data)
   {
+    bool flag;
     try
     {
       if(false == arg_robot_data.has_been_init_)
@@ -58,43 +61,9 @@ namespace scl
       dq_.setZero(ndof);
       pos_com_.setZero(3);
 
-      sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
-      for(it = arg_robot_data.rb_tree_.begin(), ite = arg_robot_data.rb_tree_.end();
-          it!=ite; ++it)
-      {
-        const SRigidBody& rb = *it;
-        SRigidBodyDyn *rbd = rbdyn_tree_.create(rb.name_,rb.is_root_);
-        if(NULL == rbd)
-        { throw(std::runtime_error( std::string("Could not create dyn node: ")+ rb.name_+std::string("for robot: ")+rb.robot_name_ )); }
-
-        rbd->name_ = rb.name_;
-        rbd->parent_name_ = rb.parent_name_;
-        rbd->link_ds_ = &rb;
-
-        rbd->J_com_.setZero(6, ndof);
-
-        if(rb.is_root_)
-        {//The root node doesn't move, so we can already compute the translations.
-          rbd->T_o_lnk_.setIdentity();
-          rbd->T_o_lnk_.translate(rbd->link_ds_->pos_in_parent_);
-          rbd->T_o_lnk_.rotate(rbd->link_ds_->ori_parent_quat_);
-          rbd->T_lnk_ = rbd->T_o_lnk_;
-
-          //Default is NaN, which indicates that these values weren't initialized.
-          //Set to zero to indicate that they are now initialized. (actual value has no
-          //meaning since the root node never moves).
-          rbd->q_T_ = 0.0;
-        }
-        else
-        {
-          rbd->T_o_lnk_.setIdentity();
-          rbd->T_lnk_.setIdentity();
-        }
-      }
-
-      bool flag = rbdyn_tree_.linkNodes();
-      if(false == flag)
-      { throw(std::runtime_error( "Could not link the dynamic nodes into a tree" )); }
+      flag = scl_util::initDynRobotFromParsedRobot(rbdyn_tree_,arg_robot_data.rb_tree_);
+      if(false==flag)
+      { throw(std::runtime_error("Could not initialize dynamic tree from the static tree for a robot.")); }
 
       // Sort the underlying list for the new tree
       std::vector<std::string> tmp_sort_order;

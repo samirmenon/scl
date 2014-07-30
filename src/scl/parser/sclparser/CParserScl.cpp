@@ -213,7 +213,12 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
         ss>>arg_robot.gravity_(2);
       }
       else
-      {throw(std::runtime_error("Error reading joint gravity"));}
+      {
+#ifdef DEBUG
+        std::cout<<"\nPARSER WARNING : Could not read robot's gravity. Setting to 0,0,-9.81";
+#endif
+        arg_robot.gravity_<<0,0,-9.81;
+      }
 
       // *****************************************************************
       //                        Now parse the optional flags
@@ -656,8 +661,6 @@ bool CParserScl::readRobotSpecFromFile(const std::string& arg_spec_file,
 
     //Read in the links.
     tiElem_robot = tiHndl_world.FirstChildElement( "robot" ).ToElement();
-    if(NULL == tiElem_robot) //Unnamed robot
-    { throw std::runtime_error("No robot specs found in spec file"); }
 
     sUInt robot_ctr=0;
 
@@ -670,7 +673,9 @@ bool CParserScl::readRobotSpecFromFile(const std::string& arg_spec_file,
       if(NULL == tiElem_robot->Attribute("spec_name")) //Unnamed robot
       {
 #ifdef DEBUG
-        std::cout<<"Warning : Found unnamed spec.";
+        std::cout<<"Warning : Found robot tag without a spec."
+            <<"\n\t Are you specifying robots and specs in the same xml file?"
+            <<"\n\tConsider moving specs to a different file (makes things more compact).";
 #endif
         continue;
       }

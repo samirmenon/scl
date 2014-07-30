@@ -30,6 +30,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <scl/util/DatabaseUtils.hpp>
+#include <scl/Singletons.hpp>
+#include <scl/data_structs/SRobotParsed.hpp>
 
 #include <vector>
 #include <fstream>
@@ -41,9 +43,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Asserts appear in debug mode when the ifdef is true
 #include <cassert>
 #endif
-
-#include <scl/Singletons.hpp>
-#include <scl/data_structs/SRobotParsed.hpp>
 
 using namespace scl;
 
@@ -77,6 +76,61 @@ namespace scl_util
     { std::cout<<". LEAF NODE."<<std::flush; }
   }
 
+  /** Initializes a dynamic tree given a static tree for a robot. */
+  bool initDynRobotFromParsedRobot(sutil::CMappedTree<std::string, scl::SRigidBodyDyn>& arg_rbd_tree,
+      const sutil::CMappedTree<std::string, scl::SRigidBody>& arg_rb_tree)
+  {
+    bool flag;
+    try
+    {
+      const int ndof = arg_rb_tree.size()-1;
+
+      sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
+      for(it = arg_rb_tree.begin(), ite = arg_rb_tree.end();
+          it!=ite; ++it)
+      {
+        const SRigidBody& rb = *it;
+        SRigidBodyDyn *rbd = arg_rbd_tree.create(rb.name_,rb.is_root_);
+        if(NULL == rbd)
+        { throw(std::runtime_error( std::string("Could not create dyn node: ")+ rb.name_+std::string("for robot: ")+rb.robot_name_ )); }
+
+        rbd->name_ = rb.name_;
+        rbd->parent_name_ = rb.parent_name_;
+        rbd->link_ds_ = &rb;
+
+        rbd->J_com_.setZero(6, ndof);
+
+        if(rb.is_root_)
+        {//The root node doesn't move, so we can already compute the translations.
+          rbd->T_o_lnk_.setIdentity();
+          rbd->T_o_lnk_.translate(rbd->link_ds_->pos_in_parent_);
+          rbd->T_o_lnk_.rotate(rbd->link_ds_->ori_parent_quat_);
+          rbd->T_lnk_ = rbd->T_o_lnk_;
+
+          //Default is NaN, which indicates that these values weren't initialized.
+          //Set to zero to indicate that they are now initialized. (actual value has no
+          //meaning since the root node never moves).
+          rbd->q_T_ = 0.0;
+        }
+        else
+        {
+          rbd->T_o_lnk_.setIdentity();
+          rbd->T_lnk_.setIdentity();
+        }
+      }
+
+      flag = arg_rbd_tree.linkNodes();
+      if(false == flag)
+      { throw(std::runtime_error( "Could not link the dynamic nodes into a tree" )); }
+    }
+    catch(std::exception& ee)
+    {
+      std::cerr<<"\nDatabaseUtils::initDynRobotFromParsedRobot() : "<<ee.what();
+      return false;
+    }
+    return true;
+  }
+
   /** Checks if a muscle system is compatible with a given robot. Looks for
      * both in the database */
     sBool isMuscleCompatWithRobot(const std::string& arg_msys,
@@ -97,7 +151,7 @@ namespace scl_util
       }
       catch(std::exception& ee)
       {
-        std::cerr<<"\nCGraphicsChai::addMeshToRender() : "<<ee.what();
+        std::cerr<<"\nDatabaseUtils::isMuscleCompatWithRobot() : "<<ee.what();
         return false;
       }
       return true;
