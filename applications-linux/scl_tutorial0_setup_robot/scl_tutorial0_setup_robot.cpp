@@ -35,7 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 
-//Eigen 3rd party lib
+//Eigen 3rd party lib for math computations
 #include <Eigen/Dense>
 
 //Standard includes
@@ -158,7 +158,9 @@ int main(int argc, char** argv)
 
   std::cout<<"\n\n **** Progress : Computed robot energy and kinematic quantities.";
 
+  /******************************Exit Gracefully************************************/
   std::cout<<"\n\nExecuted Successfully";
   std::cout<<"\n**********************************\n"<<std::flush;
+
   return 0;
 }
