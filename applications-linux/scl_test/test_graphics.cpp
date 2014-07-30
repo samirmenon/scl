@@ -81,7 +81,7 @@ namespace scl_test
       //1. Create robot from a file specification (And register it with the db)
       std::vector<std::string> robot_names;
       scl::SRobotParsed* rob_ds;
-      scl_parser::CParserScl tmp_lparser;
+      scl::CParserScl tmp_lparser;
       flag = tmp_lparser.listRobotsInFile(file_name,robot_names);
       if(false == flag)
       { throw(std::runtime_error("Could not read robot names from the file"));  }

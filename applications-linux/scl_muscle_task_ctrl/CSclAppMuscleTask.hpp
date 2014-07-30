@@ -216,7 +216,7 @@ namespace scl_app
         std::cout<<"Running scl task controller for input file: "<<tmp_infile;
 
         /******************************File Parsing************************************/
-        scl_parser::CParserScl tmp_lparser;//Use the scl tinyxml parser
+        scl::CParserScl tmp_lparser;//Use the scl tinyxml parser
         flag = scl_registry::parseEverythingInFile(tmp_infile,
             &tmp_lparser,&robots_parsed_,&graphics_parsed_);
         if((false == flag) || (robots_parsed_.size()<=0)

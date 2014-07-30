@@ -89,7 +89,7 @@ namespace scl_test
         tmp_infile = db->dir_specs_ + "Bot-RPP/Bot-RPPCfg.xml";
         std::cout<<"\nTest Result ("<<r_id++<<")  Opening file : "<<tmp_infile;
 
-        scl_parser::CParserScl tmp_lparser;
+        scl::CParserScl tmp_lparser;
 
         //1 Create robot from the file specification (And register it with the db)
         std::string robot_name = "rppbot";

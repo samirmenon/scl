@@ -96,7 +96,7 @@ int main(int argc, char** argv)
         std::cout<<"\nWARNING : SAI support is only for reading ONE robot per file. Will convert the first robot to scl xml.";
         std::cout<<"\nWARNING : SAI support does NOT permit using commas in the xml (,). ONLY use spaces.";
         std::cout<<"\nWARNING : SAI support REQUIRES unique link and joint names for all links.";
-        scl_parser::CParserSai tmp_sai_parser;
+        scl::CParserSai tmp_sai_parser;
         flag = tmp_sai_parser.readRobotFromFile(tmp_infile, "I_Am_Superfluous", tmp_robot);
         if(false == flag) { throw(std::runtime_error("Could not read SAI xml file."));  }
       }
@@ -106,12 +106,12 @@ int main(int argc, char** argv)
         std::cout<<"\nWARNING : OSIM presently loads muscles and rigid bodies. It does not add inter-joint constraints.";
         std::cout<<"\nWARNING : OSIM support REQUIRES unique link and joint names for all links.";
         std::cout<<"\nWARNING : OSIM support REQUIRES a root link named --ground--.";
-        scl_parser::CParserOsim tmp_osim_parser;
+        scl::CParserOsim tmp_osim_parser;
         flag = tmp_osim_parser.readOsimBiomechFromFile(tmp_infile, tmp_robot, tmp_msys);
         if(false == flag)
         {
           std::cout<<"\nCould not read OSIM xml file. Trying parser for older file types.";
-          scl_parser::CParserOsimForOldFiles tmp_osim_parser_old;
+          scl::CParserOsimForOldFiles tmp_osim_parser_old;
           //Clear out stuff that has already been read in.
           tmp_robot.rb_tree_.clear();
           tmp_msys.muscles_.clear();
@@ -127,7 +127,7 @@ int main(int argc, char** argv)
       { throw(std::runtime_error("Unrecognized input file type."));  }
 
       //4. Write the file into a scl output file
-      scl_parser::CParserScl tmp_scl_parser;
+      scl::CParserScl tmp_scl_parser;
       flag = tmp_scl_parser.saveRobotToFile(tmp_robot,tmp_outfile);
       if(false == flag) { throw(std::runtime_error("Could not write to Scl xml file."));  }
 

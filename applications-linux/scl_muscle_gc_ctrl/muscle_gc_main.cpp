@@ -102,7 +102,7 @@ int main(int argc, char** argv)
       std::cout<<"Running scl benchmarks for input file: "<<tmp_infile;
 
       /******************************File Parsing************************************/
-      scl_parser::CParserScl tmp_lparser;//Use the scl tinyxml parser
+      scl::CParserScl tmp_lparser;//Use the scl tinyxml parser
 
       std::string robot_name;
       if(argc<3)

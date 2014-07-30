@@ -185,7 +185,7 @@ namespace scl_app
         std::cout<<"Running scl task controller for input file: "<<tmp_infile;
 
         /******************************File Parsing************************************/
-        scl_parser::CLotusParser tmp_lparser;//Use the lotus tinyxml parser
+        scl::CLotusParser tmp_lparser;//Use the lotus tinyxml parser
         flag = scl_registry::parseEverythingInFile(tmp_infile,
             &tmp_lparser,&robots_parsed,&graphics_parsed);
         if((false == flag) || (robots_parsed.size()<=0)

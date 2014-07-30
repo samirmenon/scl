@@ -56,7 +56,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 int main(int argc, char** argv)
 {
   std::cout<<"\n***************************************\n";
-  std::cout<<"Standard Control Library Tutorial #1";
+  std::cout<<"Standard Control Library Tutorial #0";
   std::cout<<"\n***************************************\n\n";
   // Create a robot. This requires static (general info) and dynamic (dynamics info) trees
   // The trees are additionally indexed by some number (or string)

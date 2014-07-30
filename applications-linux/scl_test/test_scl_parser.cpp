@@ -62,7 +62,7 @@ void test_scl_parser(int id)
   try
   {
     //0. Create a parser and objects to be filled in from a file.
-    scl_parser::CParserScl tmp_parser;
+    scl::CParserScl tmp_parser;
 
     scl::SRobotParsed tmp_robot;
     scl::SGraphicsParsed tmp_graphics;
