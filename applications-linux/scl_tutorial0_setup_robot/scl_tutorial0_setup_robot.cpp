@@ -49,9 +49,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  * However, it lacks a GUI, rigorous error checks, and has too many
  * hard-coded quantities. Future tutorials will cover those issues.
  *
+ * NOTE : This application requires MUCH more code than is necessary.
+ *        Proceed to tutorial 1 to see how compact this can be in scl.
+ *
  * SCL Modules used:
  * 1. data_structs
- * 2. dynamics (kinematics, energy etc. computations)
+ * 2. dynamics (kinematics etc. computations)
  * */
 int main(int argc, char** argv)
 {
@@ -60,13 +63,15 @@ int main(int argc, char** argv)
   std::cout<<"\n***************************************\n\n";
   // Create a robot. This requires static (general info) and dynamic (dynamics info) trees
   // The trees are additionally indexed by some number (or string)
-  const std::string rname("MyRobot");
+  const std::string rname("rrrbot"); //Revolute-revolute-revolute robot...
   bool flag;
 
   // First we need to specify all the robot's properties. We will do this in a robot data structure.
   scl::SRobotParsed rds; //Robot data structure....
 
   /******************************Static Tree************************************/
+  // First we need some place to store generalized coordinates and velocities (sensor data)
+  Eigen::VectorXd q, dq; q.setZero(3); dq.setZero(3);
   scl::SRigidBody rb;    //Tmp node. Inits rds. Many entries; but we won't set them all for now.
 
   //Root link
@@ -82,25 +87,39 @@ int main(int argc, char** argv)
   rb.robot_name_ = rname;  rb.parent_name_ = "root";
   rb.joint_name_ = "joint_0"; rb.joint_type_ = scl::JOINT_TYPE_REVOLUTE_Y;
   rb.com_<<0,0,-0.1; rb.pos_in_parent_<<0,0,0;
+  rb.mass_ = 1.0;rb.inertia_<<1,0,0,0,1,0,0,0,1;
   rds.rb_tree_.create(rb.name_,rb,false);
+  q(0) = 1;
 
   // 2st link
   rb.init(); rb.link_id_ = 1; rb.name_ = "link_1";
   rb.robot_name_ = rname;  rb.parent_name_ = "link_0";
   rb.joint_name_ = "joint_1"; rb.joint_type_ = scl::JOINT_TYPE_REVOLUTE_Y;
-  rb.com_<<0,0,-0.05; rb.pos_in_parent_<<0,0,-0.2; rb.ori_parent_quat_ = Eigen::AngleAxisd(1.57,Eigen::Vector3d::UnitY());
+  rb.com_<<0,0,-0.05; rb.pos_in_parent_<<0,0,-0.2;
+  rb.mass_ = 1.0;rb.inertia_<<1,0,0,0,1,0,0,0,1;
   rds.rb_tree_.create(rb.name_,rb,false);
+  q(1) = 0.0;
 
   // 3rd link
   rb.init(); rb.link_id_ = 2; rb.name_ = "link_2";
   rb.robot_name_ = rname;  rb.parent_name_ = "link_1";
   rb.joint_name_ = "joint_2"; rb.joint_type_ = scl::JOINT_TYPE_REVOLUTE_X;
-  rb.com_<<0,0,-0.1; rb.pos_in_parent_<<0,0,-0.2;
-  rb.ori_parent_quat_ = Eigen::AngleAxisd(1.57,Eigen::Vector3d::UnitX());//Rotated pi/2 along x
+  rb.com_<<0,0,-0.1; rb.pos_in_parent_<<0,0,-0.1;
+  rb.mass_ = 1.0;rb.inertia_<<1,0,0,0,1,0,0,0,1;
   rds.rb_tree_.create(rb.name_,rb,false);
+  q(2) = -1.57;
 
   if(false == rds.rb_tree_.linkNodes())
   { std::cout<<"\nError. Could not initialize robot tree.\n"; return 1; }
+
+  //Now set up the initial state and sort node ordering so indexing works properly
+  std::cout<<"\nRobot initial node order: 0,"<<rds.rb_tree_.at(0)->name_
+      <<"; 1,"<<rds.rb_tree_.at(1)->name_<<"; 2,"<<rds.rb_tree_.at(2)->name_;
+  std::vector<std::string> ss;
+  ss.push_back("link_0");ss.push_back("link_1");ss.push_back("link_2");ss.push_back("root");
+  rds.rb_tree_.sort(ss);
+  std::cout<<"\nRobot sorted node order: 0,"<<rds.rb_tree_.at(0)->name_<<"; 1,"
+      <<rds.rb_tree_.at(1)->name_<<"; 2,"<<rds.rb_tree_.at(2)->name_<<"\n\n";
 
   //We now consider the robot data structure to be initialized.
   rds.has_been_init_ = true;
@@ -115,14 +134,24 @@ int main(int argc, char** argv)
   scl::SRigidBodyDyn rbd;
 
   // Following our earlier (static tree example). Also need to connect the static tree.
-  // NOTE : The rood node requires specifying an additional q_T_
-  rbd.name_ = "root"; rbd.parent_name_ = "none"; rbd.link_ds_ = rds.rb_tree_.at(rbd.name_); rbd_tree.create(rbd.name_,rbd,true);
-  rbd.name_ = "link_0"; rbd.parent_name_ = "root"; rbd.link_ds_ = rds.rb_tree_.at(rbd.name_); rbd_tree.create(rbd.name_,rbd,false);
-  rbd.name_ = "link_1"; rbd.parent_name_ = "link_0"; rbd.link_ds_ = rds.rb_tree_.at(rbd.name_); rbd_tree.create(rbd.name_,rbd,false);
-  rbd.name_ = "link_2"; rbd.parent_name_ = "link_1"; rbd.link_ds_ = rds.rb_tree_.at(rbd.name_); rbd_tree.create(rbd.name_,rbd,false);
+  rbd.name_ = "root"; rbd.link_ds_ = rds.rb_tree_.at(rbd.name_);
+  rbd.parent_name_ = rbd.link_ds_->parent_name_; rbd_tree.create(rbd.name_,rbd,true);
+
+  rbd.name_ = "link_0"; rbd.link_ds_ = rds.rb_tree_.at(rbd.name_);
+  rbd.parent_name_ = rbd.link_ds_->parent_name_; rbd_tree.create(rbd.name_,rbd,false);
+
+  rbd.name_ = "link_1"; rbd.link_ds_ = rds.rb_tree_.at(rbd.name_);
+  rbd.parent_name_ = rbd.link_ds_->parent_name_; rbd_tree.create(rbd.name_,rbd,false);
+
+  rbd.name_ = "link_2"; rbd.link_ds_ = rds.rb_tree_.at(rbd.name_);
+  rbd.parent_name_ = rbd.link_ds_->parent_name_; rbd_tree.create(rbd.name_,rbd,false);
 
   if(false == rbd_tree.linkNodes())
   { std::cout<<"\nError. Could not initialize dynamic robot tree.\n"; return 1; }
+
+  rbd_tree.sort(ss);
+  std::cout<<"\nRobot dyn sorted node order: 0,"<<rbd_tree.at(0)->name_<<"; 1,"
+        <<rbd_tree.at(1)->name_<<"; 2,"<<rbd_tree.at(2)->name_;
 
   std::cout<<"\n\n **** Progress : Initialized robot dynamics tree for future dynamics computations.";
 
@@ -139,15 +168,7 @@ int main(int argc, char** argv)
   if(false == flag) { std::cout<<"\nERROR : Could not initialize control & dynamics engine\n\n"; return 1;  }
   else  { std::cout<<"\n\n **** Progress : Initialized control & dynamics engine."; }
 
-  //Now let's compute some quantities of interest.
-  // First we need some place to store generalized coordinates and velocities (sensor data)
-  Eigen::VectorXd q, dq; q.setZero(3); dq.setZero(3);
-
-  // And now we're ready to compute some physical quantities.
-  std::cout<<"\n\nRobot's KE = "<<dyn_scl.computeEnergyKinetic(rbd_tree,q,dq);
-  std::cout<<"\nRobot's PE = "<<dyn_scl.computeEnergyPotential(rbd_tree,q); //Don't need dq here. Why?
-
-  // Let's also compute some kinematic quantities (depend on q,dq only, not on inertia etc.)
+  // Let's compute some kinematic quantities with the dynamics object (depend on q,dq only, not on inertia etc.)
   dyn_scl.computeTransformsForAllLinks(rbd_tree, q);
   dyn_scl.computeJacobianComForAllLinks(rbd_tree, q);
 
@@ -156,7 +177,7 @@ int main(int argc, char** argv)
   for(it = rbd_tree.begin(), ite = rbd_tree.end(); it!=ite; ++it)
   { std::cout<<"\n\nLink:"<<it->name_<<"\npar_T_link\n"<<(it->T_lnk_.matrix())<<"\nJcom\n"<<(it->J_com_);  }
 
-  std::cout<<"\n\n **** Progress : Computed robot energy and kinematic quantities.";
+  std::cout<<"\n\n **** Progress : Computed robot kinematics.";
 
   /******************************Exit Gracefully************************************/
   std::cout<<"\n\nExecuted Successfully";
