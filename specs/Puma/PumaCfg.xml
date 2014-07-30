@@ -88,13 +88,13 @@
             <kp>0</kp>
             <kv>40</kv>
             <ka>0</ka>
-            <force_max>100</force_max>
-            <force_min>-100</force_min>
+            <force_max>300</force_max>
+            <force_min>-300</force_min>
         </task>
 
         <!-- This task removes some range space
              from the lower pri tasks
-             Note: Task dofs should match the gc set's size
+             Note: Task dofs should match the gc set's size -->
         <task name="JointAngleSetTask">
             <type>TaskGcSet</type>
             <priority>0</priority>
@@ -106,7 +106,7 @@
             <force_min>-100</force_min>
             <gc_set_names>end-effector wrist-finger</gc_set_names>
             <gc_set_pos_des>0.0 0.0</gc_set_pos_des>
-        </task> -->
+        </task>
     </controller>
 
     <controller name="opcpida"> <!-- Integral gains -->
