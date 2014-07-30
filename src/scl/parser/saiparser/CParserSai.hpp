@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //The tinyxml parser implementation for sai xml files
 #include <scl_tinyxml/scl_tinyxml.h>
 
-namespace scl_parser {
+namespace scl {
 
 /**
  * This class implements a limited subset of the CParserBase API

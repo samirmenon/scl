@@ -87,7 +87,7 @@ namespace scl_registry
 {
 
   bool parseEverythingInFile(const std::string &arg_file,
-      scl_parser::CParserBase *arg_parser,
+      scl::CParserBase *arg_parser,
       std::vector<std::string>* arg_robots_parsed,
       std::vector<std::string>* arg_graphics_parsed,
       std::vector<std::string>* arg_ui_parsed)
@@ -191,7 +191,7 @@ namespace scl_registry
 
   const scl::SRobotParsed* parseRobot(const std::string &arg_file,
                 const std::string &arg_robot_name,
-                scl_parser::CParserBase *arg_parser)
+                scl::CParserBase *arg_parser)
   {
     bool flag;
     scl::SRobotParsed * rob=NULL;
@@ -249,7 +249,7 @@ namespace scl_registry
 
   const scl::SGraphicsParsed* parseGraphics(const std::string &arg_file,
       const std::string & arg_graphics_name,
-      scl_parser::CParserBase *arg_parser)
+      scl::CParserBase *arg_parser)
   {
     bool flag;
     scl::SGraphicsParsed * tmp_gr=NULL;
@@ -285,7 +285,7 @@ namespace scl_registry
 
   const scl::SUIParsed* parseUI(const std::string &arg_file,
       const std::string & arg_ui_name,
-      scl_parser::CParserBase *arg_parser)
+      scl::CParserBase *arg_parser)
   {
     bool flag;
     scl::SUIParsed * tmp_ui=NULL;
@@ -322,7 +322,7 @@ namespace scl_registry
   scl::SControllerGc * parseGcController(const std::string &arg_file,
       const std::string &arg_robot_name,
       const std::string &arg_ctrl_name,
-      scl_parser::CParserBase *arg_parser)
+      scl::CParserBase *arg_parser)
   {
     //Will fill in information from a file into this. It will never be
     //completely initialized.
@@ -390,7 +390,7 @@ namespace scl_registry
   scl::SControllerMultiTask * parseTaskController(const std::string &arg_file,
         const std::string &arg_robot_name,
         const std::string &arg_ctrl_name,
-        scl_parser::CParserBase *arg_parser)
+        scl::CParserBase *arg_parser)
   {
     //Will fill in information from a file into this. It will never be
     //completely initialized.

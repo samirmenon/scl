@@ -120,7 +120,7 @@ namespace scl
         std::cout<<"Running scl task controller for input file: "<<tmp_infile;
 
         /******************************File Parsing************************************/
-        scl_parser::CParserScl tmp_lparser;//Use the scl tinyxml parser
+        scl::CParserScl tmp_lparser;//Use the scl tinyxml parser
         flag = scl_registry::parseEverythingInFile(tmp_infile,
             &tmp_lparser,&robots_parsed_,
 #ifdef GRAPHICS_ON

@@ -45,7 +45,7 @@ using namespace scl;
 #include <iostream>
 #include <iomanip>
 
-namespace scl_parser {
+namespace scl {
   bool CParserOsim::readOsimBiomechFromFile(const std::string& arg_file,
       scl::SRobotParsed& arg_biomech,
       scl::SMuscleSetParsed& arg_msys)
@@ -629,7 +629,7 @@ namespace scl_parser {
       else if("CustomJoint" == arg_joint_type)
       {//Parse custom joints using the transform axes.
         sutil::CMappedList<std::basic_string<char>,
-        scl_parser::CParserOsim::SOsimJoint::SOsimTransformAxis>::iterator it, ite;
+        scl::CParserOsim::SOsimJoint::SOsimTransformAxis>::iterator it, ite;
 
         for(it = j.trf_axes_.begin(), ite = j.trf_axes_.end(); it!=ite; ++it)
         {
@@ -654,7 +654,7 @@ namespace scl_parser {
 
           std::string lnk_name;
           sutil::CMappedList<std::basic_string<char>,
-          scl_parser::CParserOsim::SOsimJoint::SOsimTransformAxis>::iterator it2(it);
+          scl::CParserOsim::SOsimJoint::SOsimTransformAxis>::iterator it2(it);
           ++it2;
           if(ite == it2)
           {//If this is the last link, name it to the actual body

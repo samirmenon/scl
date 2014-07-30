@@ -45,7 +45,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <string>
 
-namespace scl_parser {
+namespace scl {
 
 /**
  * Provides a set of helper functions to parse a scl

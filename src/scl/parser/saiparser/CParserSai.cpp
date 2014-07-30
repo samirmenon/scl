@@ -43,7 +43,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 using namespace scl;
 using namespace scl_tinyxml; //Tinyxml parser implementation is in a separate namespace
 
-namespace scl_parser {
+namespace scl {
 
 bool CParserSai::readRobotFromFile(const std::string& arg_file,
     const std::string& arg_robot_name,

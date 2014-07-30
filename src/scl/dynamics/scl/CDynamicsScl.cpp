@@ -392,7 +392,7 @@ namespace scl
     for(it = arg_tree.begin(), ite = arg_tree.end(); it!=ite; ++it)
     {
       if(it->link_ds_->is_root_){ continue;  }//Root doesn't experience gravity
-      ret_pe += it->link_ds_->mass_ * static_cast<double>((it->T_o_lnk_ * it->link_ds_->com_).transpose()
+      ret_pe -= it->link_ds_->mass_ * static_cast<double>((it->T_o_lnk_ * it->link_ds_->com_).transpose()
           * robot_parsed_data_->gravity_);
     }
 

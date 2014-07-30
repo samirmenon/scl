@@ -84,7 +84,7 @@ namespace scl{
   };
 }
 
-namespace scl_parser {
+namespace scl {
 
 bool CParserScl::listRobotsInFile(const std::string& arg_file,
     std::vector<std::string>& arg_robot_names)

@@ -47,7 +47,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <Eigen/Eigen>
 #include <scl/DataTypes.hpp>
 
-namespace scl_parser
+namespace scl
 {
   /** This class is a base for reading a robot definition into an SRobotParsed
 	 * data structure.

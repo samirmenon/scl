@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsed.hpp>
 
-namespace scl_parser {
+namespace scl {
 
 /**
  * This class implements the entire CParserBase API.

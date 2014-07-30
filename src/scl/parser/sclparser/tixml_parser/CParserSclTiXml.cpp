@@ -42,7 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 using namespace scl;
 using namespace scl_tinyxml;
 
-namespace scl_parser {
+namespace scl {
 
   bool CParserSclTiXml::readLink(
       const TiXmlHandle & arg_link_txml,
