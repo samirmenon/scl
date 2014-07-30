@@ -81,21 +81,21 @@ int main(int argc, char** argv)
   rb.init(); rb.link_id_ = 0; rb.name_ = "link_0";
   rb.robot_name_ = rname;  rb.parent_name_ = "root";
   rb.joint_name_ = "joint_0"; rb.joint_type_ = scl::JOINT_TYPE_REVOLUTE_Y;
-  rb.com_<<0,0,0.1; rb.pos_in_parent_<<0,0,0;
+  rb.com_<<0,0,-0.1; rb.pos_in_parent_<<0,0,0;
   rds.rb_tree_.create(rb.name_,rb,false);
 
   // 2st link
   rb.init(); rb.link_id_ = 1; rb.name_ = "link_1";
   rb.robot_name_ = rname;  rb.parent_name_ = "link_0";
   rb.joint_name_ = "joint_1"; rb.joint_type_ = scl::JOINT_TYPE_REVOLUTE_Y;
-  rb.com_<<0,0,0.1; rb.pos_in_parent_<<0,0,0.2; rb.ori_parent_quat_ = Eigen::AngleAxisd(1.57,Eigen::Vector3d::UnitY());
+  rb.com_<<0,0,-0.05; rb.pos_in_parent_<<0,0,-0.2; rb.ori_parent_quat_ = Eigen::AngleAxisd(1.57,Eigen::Vector3d::UnitY());
   rds.rb_tree_.create(rb.name_,rb,false);
 
   // 3rd link
   rb.init(); rb.link_id_ = 2; rb.name_ = "link_2";
   rb.robot_name_ = rname;  rb.parent_name_ = "link_1";
   rb.joint_name_ = "joint_2"; rb.joint_type_ = scl::JOINT_TYPE_REVOLUTE_X;
-  rb.com_<<0,0,0.1; rb.pos_in_parent_<<0,0,0.2;
+  rb.com_<<0,0,-0.1; rb.pos_in_parent_<<0,0,-0.2;
   rb.ori_parent_quat_ = Eigen::AngleAxisd(1.57,Eigen::Vector3d::UnitX());//Rotated pi/2 along x
   rds.rb_tree_.create(rb.name_,rb,false);
 
