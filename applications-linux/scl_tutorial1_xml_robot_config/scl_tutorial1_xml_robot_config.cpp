@@ -67,7 +67,7 @@ int main(int argc, char** argv)
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_scl.init(rds);         //Set up dynamics object
   flag = flag && rio.init(rds.name_,rds.dof_);
-  for(int i=0;i<rds.dof_;++i) rio.sensors_.q_(i) = rds.rb_tree_.at(i)->joint_default_pos_;
+  for(int i=0;i<rds.dof_;++i){ rio.sensors_.q_(i) = rds.rb_tree_.at(i)->joint_default_pos_; }
 
   if(false == flag){ return 1; }            //Error check.
   std::cout<<"\nRobot generalized coordinates (q) = "<<rio.sensors_.q_.transpose();
@@ -77,7 +77,7 @@ int main(int argc, char** argv)
   // Compute dynamics.
   dyn_scl.computeGCModel(&rio.sensors_,&rgcm);
 
-  // Structured way to compute energies...
+  // Structured way to compute kinematic and dynamic quantities...
   std::cout<<"\n\nRobot's KE = "<<dyn_scl.computeEnergyKinetic(rgcm.rbdyn_tree_,rio.sensors_.q_,rio.sensors_.dq_);
   std::cout<<"\nRobot's PE = "<<dyn_scl.computeEnergyPotential(rgcm.rbdyn_tree_,rio.sensors_.q_);
 
@@ -85,7 +85,16 @@ int main(int argc, char** argv)
   for(it = rgcm.rbdyn_tree_.begin(), ite = rgcm.rbdyn_tree_.end(); it!=ite; ++it)
   { std::cout<<"\n\nLink:"<<it->name_<<"\npar_T_link\n"<<(it->T_lnk_.matrix())<<"\nJcom\n"<<(it->J_com_);  }
 
-  std::cout<<"\n\n **** Progress : Computed robot energy and kinematic quantities.";
+  std::cout<<"\n\nInertia Matrix:\n"<<rgcm.M_gc_;
+  std::cout<<"\n\nInv Inertia Matrix:\n"<<rgcm.M_gc_inv_;
+  std::cout<<"\n\nGeneralized Gravity Force: "<<rgcm.force_gc_grav_.transpose();
+
+  // Since we're at it, let's also compute a Jacobian
+  Eigen::MatrixXd Jhand; Jhand.setZero(6,3); Eigen::Vector3d hpos(0,0,-0.2);
+  dyn_scl.computeJacobian(Jhand,*rgcm.rbdyn_tree_.at("link_2"),rio.sensors_.q_,hpos);
+  std::cout<<"\n\nHand Jacobian:\n"<<Jhand;
+
+  std::cout<<"\n\n **** Progress : Computed robot's energy, kinematics, and dynamics.";
 
   /******************************Exit Gracefully************************************/
   std::cout<<"\n\nExecuted Successfully";
