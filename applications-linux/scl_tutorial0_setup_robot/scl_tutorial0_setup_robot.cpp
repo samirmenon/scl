@@ -51,6 +51,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  * NOTE : This application requires MUCH more code than is necessary.
  *        Proceed to tutorial 1 to see how compact this can be in scl.
+ *        (The code will shrink from ~120 lines to about ~40 lines).
  *
  * SCL Modules used:
  * 1. data_structs
