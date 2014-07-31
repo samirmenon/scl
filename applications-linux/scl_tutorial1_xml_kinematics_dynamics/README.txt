@@ -7,8 +7,8 @@ $ make
 $ make release
 
 2. Run
-$ ./scl_tutorial1_xml_robot_config
+$ ./scl_tutorial1_xml_kinematics_dynamics
 
 (or run with output saved to a log file)
-$ ./scl_tutorial1_xml_robot_config > log.txt
+$ ./scl_tutorial1_xml_kinematics_dynamics > log.txt
 

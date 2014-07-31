@@ -30,16 +30,16 @@ FINALFLAGS = -Wall -O3 $(INCLUDEDIRS) -fPIC $(SCL_FIN_LIB_DIR) $(SCL_LIBS) $(SCL
 
 ############################ BUILD SPECIFICATIONS ############################
 # The final application ot be built
-TARGET = scl_tutorial1_xml_robot_config
+TARGET = scl_tutorial1_xml_kinematics_dynamics
 
 #Build all simulations
 .PHONY: all
 all: 
-	g++ scl_tutorial1_xml_robot_config.cpp -o $(TARGET) $(DBGFLAGS)
+	g++ scl_tutorial1_xml_kinematics_dynamics.cpp -o $(TARGET) $(DBGFLAGS)
 
 .PHONY: release 
 release: 
-	g++ scl_tutorial1_xml_robot_config.cpp -o $(TARGET) $(FINALFLAGS) 
+	g++ scl_tutorial1_xml_kinematics_dynamics.cpp -o $(TARGET) $(FINALFLAGS) 
 
 #Clean up options
 .PHONY : clean
