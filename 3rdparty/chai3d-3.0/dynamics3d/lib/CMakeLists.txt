@@ -23,7 +23,7 @@ SET(EIGEN_INC_DIR ../../../eigen3.1.2)
 
 INCLUDE_DIRECTORIES(${CHAI_INC_DIR} ${DHD_INC_DIR} ${GEL_INC_DIR}
                     ${GIF_INC_DIR} ${3DS_INC_DIR} ${JPEG_INC_DIR} 
-                    ${PNG_INC_DIR} ${EIGEN_INC_DIR} ${DYN3D_INC_DIR})
+                    ${PNG_INC_DIR} ${EIGEN_INC_DIR} ${DYN3D_INC_DIR} /usr/include/qhull)
 
 #Set all the sources required for the library
 SET(DYN3D_SRC ${DYN3D_INC_DIR}/dynamics/CDynABJoint.cpp
