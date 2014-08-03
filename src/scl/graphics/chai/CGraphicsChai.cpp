@@ -71,6 +71,7 @@ namespace scl {
       //Create a new world : Don't worry about deallocating it.
       data_->chai_world_ = new cWorld();
       if(S_NULL == data_->chai_world_) { throw(std::runtime_error("Couldn't initialize chai world"));  }
+      data_->chai_world_->m_userName = "scl_id_chai_world";
 
       //Set the background color (R,G,B)
       data_->chai_world_->setBackgroundColor(data_parsed_->background_color_[0],data_parsed_->background_color_[1], data_parsed_->background_color_[2]);
@@ -78,6 +79,7 @@ namespace scl {
       //Create a camera
       data_->chai_cam_ = new cCamera(data_->chai_world_);
       if(S_NULL == data_->chai_cam_) { throw(std::runtime_error("Couldn't create a chai camera")); }
+      data_->chai_cam_->m_userName = "scl_id_chai_cam";
 
       //Insert the camera into the scenegraph world
       data_->chai_world_->addChild(data_->chai_cam_);
@@ -112,6 +114,7 @@ namespace scl {
         cDirectionalLight* light = new cDirectionalLight(data_->chai_world_);
         if(S_NULL==light)
         { throw(std::runtime_error("Couldn't add a light to the world")); }
+        light->m_userName = std::string("scl_id_light_in_world");
 
         data_->chai_cam_->addChild(light);                   // attach light to camera
         light->setEnabled(true);                   // enable light source
@@ -143,8 +146,6 @@ namespace scl {
   {
     if(S_NULL!=data_) // Data is created.
     {
-      if(S_NULL!= data_->chai_cam_)
-      { delete data_->chai_cam_; data_->chai_cam_ = S_NULL; }
       if(S_NULL!= data_->chai_world_)
       { delete data_->chai_world_; data_->chai_world_ = S_NULL; }
       if(data_is_mine_)
@@ -325,6 +326,7 @@ namespace scl {
         arg_link->graphics_obj_ = new cMesh();
         if(S_NULL == arg_link->graphics_obj_)
         { throw(std::runtime_error("Could not allocate a graphics object"));  }
+        arg_link->graphics_obj_->m_userName = std::string("scl_id_link_base_")+arg_link->robot_link_->name_;
         arg_link->graphics_obj_->setUseCulling(false,false);
 
 
@@ -345,6 +347,7 @@ namespace scl {
                 err_str = "Couldn't load obj/3ds robot link file: "+ lnk_gr.file_name_;
                 throw(std::runtime_error(err_str.c_str()));
               }
+            tmp->m_userName = std::string("scl_id_link_mesh_")+lnk_gr.file_name_;
             arg_link->graphics_obj_->addChild(tmp);
 
             // Set the object's position and orientation in its parent (fixed)
@@ -393,6 +396,7 @@ namespace scl {
               err_str = "Couldn't allocate memory for a sphere graphic object. At robot link : "+ arg_link->name_;
               throw(std::runtime_error(err_str.c_str()));
             }
+            tmp->m_userName = std::string("scl_id_gr_sphere_")+arg_link->robot_link_->name_;
             arg_link->graphics_obj_->addChild(tmp);
 
             // Set the object's position and orientation in its parent (fixed)
@@ -425,6 +429,7 @@ namespace scl {
               err_str = "Couldn't allocate memory for a cuboid graphic object. At robot link : "+ arg_link->name_;
               throw(std::runtime_error(err_str.c_str()));
             }
+            tmp->m_userName = std::string("scl_id_gr_box_")+arg_link->robot_link_->name_;
             arg_link->graphics_obj_->addChild(tmp);
 
             // Set the object's position and orientation in its parent (fixed)
@@ -467,6 +472,7 @@ namespace scl {
               err_str = "Couldn't allocate memory for a cylinder graphic object. At robot link : "+ arg_link->name_;
               throw(std::runtime_error(err_str.c_str()));
             }
+            tmp->m_userName = std::string("scl_id_gr_cyl_")+arg_link->robot_link_->name_;
             arg_link->graphics_obj_->addChild(tmp);
 
             // Set the object's position and orientation in its parent (fixed)
@@ -499,6 +505,7 @@ namespace scl {
         //1.b) Since we have no meshes for this link, we will initialize a sphere (default)
         //     to represent this link in chai's scenegraph
         arg_link->graphics_obj_ = new cShapeSphere(CHAI_SPHERE_RENDER_RADIUS);
+        arg_link->graphics_obj_->m_userName = std::string("scl_id_gr_sphere_")+arg_link->robot_link_->name_;
       }
 
       //2. Now that the chai object's meshes (or lack thereof) have been parsed,
@@ -588,6 +595,7 @@ namespace scl {
       tmp_chai_mesh = new cMultiMesh();
       if(S_NULL == tmp_chai_mesh)
       { throw(std::runtime_error("Could not create a chai mesh."));  }
+      tmp_chai_mesh->m_userName = std::string("scl_id_floating_mesh_")+arg_mesh_name;
 
       //2. Load the mesh's graphics from a file.
       if(false == cLoadFileOBJ(tmp_chai_mesh,arg_mesh_file))
@@ -641,6 +649,7 @@ namespace scl {
       tmp_chai_mesh = new cMultiMesh();
       if(S_NULL == tmp_chai_mesh)
       { throw(std::runtime_error("Could not create a chai mesh."));  }
+      tmp_chai_mesh->m_userName = std::string("scl_id_floating_mesh_")+arg_mesh_name;
 
       //2. Load the mesh's graphics from a file.
       if(false == cLoadFileOBJ(tmp_chai_mesh,arg_mesh_file))
@@ -834,6 +843,7 @@ namespace scl {
             //Set up a line : The initial coordinates don't matter and will be immediately
             //updated with global coordinates of the skeletonwhile rendering.
             cShapeLine *tmp_l = new cShapeLine(*(gr_mpt.pos_),*(gr_mpt.pos_next_));
+            tmp_l->m_userName = std::string("scl_id_gr_line_") + musc_name;
 
             //Set the color
             cColorf muscleColor(1,0,0,0.5);        //R,G,B,Alpha
@@ -857,6 +867,7 @@ namespace scl {
             {
               gr_mpt.graphics_via_point_ = new cShapeSphere(arg_mset.render_muscle_via_pt_sz_);
               gr_mpt.graphics_via_point_->setLocalPos(*(gr_mpt.pos_));
+              gr_mpt.graphics_via_point_->m_userName = std::string("scl_id_gr_line_") + musc_name;
 
               gr_mpt.graphics_parent_->graphics_obj_->addChild(gr_mpt.graphics_via_point_);
             }
@@ -917,6 +928,7 @@ namespace scl {
       new_op_gr = new cShapeSphere(arg_size);
       if(S_NULL == op_gr)
       { throw(std::runtime_error("Could not allocate new rendering object"));  }
+      new_op_gr->m_userName = std::string("scl_id_gr_sphere_on_link_") + arg_link;
 
       //Set its position in the parent frame
       new_op_gr->setLocalPos(arg_pos(0),arg_pos(1),arg_pos(2));
@@ -948,6 +960,7 @@ namespace scl {
       cGenericObject *new_op_gr = new cShapeSphere(arg_size);
       if(S_NULL == new_op_gr)
       { throw(std::runtime_error("Could not allocate new rendering object"));  }
+      new_op_gr->m_userName = std::string("scl_id_gr_sphere_floating");
 
       //Set its position in the parent frame
       new_op_gr->setLocalPos(arg_pos(0),arg_pos(1),arg_pos(2));
