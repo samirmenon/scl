@@ -43,7 +43,7 @@ SET(DYN3D_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/dynamics3d/src/)
 
 ################Initialize the executable#################
 #Set the include directories
-INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR} ${DYN3D_INC_DIR} ${DYN3D_DIR}) 
+INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR} ${DYN3D_INC_DIR} ${DYN3D_DIR} /usr/include/qhull) 
 
 #Set the compilation flags
 SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp")
@@ -105,4 +105,4 @@ SET( DYN_LIBRARY debug     ${DYN_LIBRARY_DEBUG}
 target_link_libraries(scl_dynamics_dyn3d ${DYN_LIBRARY})
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_dynamics_dyn3d gomp GL GLU GLEW glut ncurses rt dl)
+target_link_libraries(scl_dynamics_dyn3d gomp GL GLU GLEW glut ncurses rt dl qhull)
