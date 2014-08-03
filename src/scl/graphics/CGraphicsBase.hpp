@@ -59,13 +59,14 @@ public:
     *   etc..
     *********************************************************/
    /** Initializes a graphics world using the camera information
-    * in the database.
+    * in the passed data structure.
     *
     * Returns,
     * true  : Successfully created a world
-    * false : Failed (or the database's world was invalid). */
+    * false : Failed (or the data structure was invalid). */
    virtual sBool initGraphics(
-       const std::string & arg_graphics_name)=0;
+       /** The graphics data structure loaded from the xml file. Specifies camera etc. information. */
+       const SGraphicsParsed* arg_gr_ds)=0;
 
    /** Initialization state */
    virtual sBool hasBeenInit() {  return has_been_init_;  }
@@ -79,7 +80,10 @@ public:
     * 1. Anything whose dynamics are integrated by the physics simulator
     * 2. Any real world entity subject to the laws of physics */
    virtual sBool addRobotToRender(
-       const std::string& arg_robot)=0;
+       /** The static robot specification */
+       const SRobotParsed *arg_rob_parsed,
+       /** The generalized coordinates etc. */
+       const SRobotIO* arg_rob_io)=0;
 
    /** Removes a robot's meshes from the graphics rendering environment.
     *
@@ -111,8 +115,10 @@ public:
     * 1. A set of line segments, with connection points on a robot links certain links.
     * 2. A parent robot to whose links the muscles attach. */
    virtual sBool addMusclesToRender(
+       /** The robot to which the muscles will be attached */
        const std::string& arg_robot,
-       const std::string& arg_msys,
+       /** The set of muscles to be attached */
+       const SMuscleSetParsed& arg_mset,
        const sBool add_musc_via_points)=0;
 
    /** Removes a muscle system from the graphics rendering environment
@@ -122,7 +128,7 @@ public:
     * 2. A parent robot to whose links the muscles attach. */
    virtual sBool removeMusclesFromRender(
        const std::string& arg_robot,
-       const std::string& arg_msys)=0;
+       const std::string& arg_mset)=0;
 
 
    /********************************************************

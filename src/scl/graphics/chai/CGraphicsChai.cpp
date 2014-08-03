@@ -30,14 +30,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "CGraphicsChai.hpp"
-
-#include <scl/Singletons.hpp>
+#include "chai3d.h"
 
 #include <string>
 #include <vector>
 #include <stdexcept>
-
-#include "chai3d.h"
 
 #include <GL/freeglut.h>
 
@@ -50,154 +47,92 @@ namespace scl {
   const sFloat CHAI_MUSC_THICKNESS = 10; //pixels
 
   sBool CGraphicsChai::initGraphics(
-      const std::string & arg_graphics_name)
+      const SGraphicsParsed* arg_gr_ds,
+      SGraphicsChai* arg_chai_ds)
   {
-    SDatabase* db=S_NULL;
     try
     {
-      //Get a handle to the database
-      db = CDatabase::getData();
-      if(S_NULL == db)
-      { throw(std::runtime_error("Database not initialized"));  }
+      destroyGraphics(); // The moment init is called, the previous state is considered flushed.
 
-      //Create a graphics instance (might have multiple graphics instances
-      //for rendering different scenegraphs)
-      if(S_NULL!=db->s_gui_.chai_data_.at(arg_graphics_name))
-      {
-        std::string err;
-        err = "A graphics instance already exists with name="+arg_graphics_name;
-        throw(std::runtime_error(err));
-      }
+      if(S_NULL == arg_chai_ds || S_NULL == arg_gr_ds)
+      { throw(std::runtime_error("Passed NULL object for the chai data structure or the parsed graphics spec.")); }
 
-      //Allocate a new dynamic graphics data structure on the pile.
-      data_ = db->s_gui_.chai_data_.create(arg_graphics_name);
-      if(S_NULL==data_)
-      { throw(std::runtime_error("Couldn't create chai graphics data structure on the pile")); }
+      // NOTE : Consider relaxing this error to a warning in the future. Could just erase object and start from scratch.
+      if(S_NULL != arg_chai_ds->chai_cam_ || S_NULL != arg_chai_ds->chai_world_ || true == arg_chai_ds->has_been_init_)
+      { throw(std::runtime_error("Passed a pre-initialized chai data structure. Create a new one and pass it.")); }
+
+      //Allocate a new dynamic graphics data structure.
+      data_ = arg_chai_ds;
+      data_parsed_ = arg_gr_ds;
 
       //Name it
-      data_->name_ = arg_graphics_name;
+      data_->name_ = arg_gr_ds->name_;
 
       //Create a new world : Don't worry about deallocating it.
       data_->chai_world_ = new cWorld();
-      if(S_NULL == data_->chai_world_)
-      { throw(std::runtime_error("Couldn't initialize chai world"));  }
+      if(S_NULL == data_->chai_world_) { throw(std::runtime_error("Couldn't initialize chai world"));  }
+
+      //Set the background color (R,G,B)
+      data_->chai_world_->setBackgroundColor(data_parsed_->background_color_[0],data_parsed_->background_color_[1], data_parsed_->background_color_[2]);
 
       //Create a camera
       data_->chai_cam_ = new cCamera(data_->chai_world_);
-      if(S_NULL == data_->chai_cam_)
-      { throw(std::runtime_error("Couldn't create a chai camera")); }
+      if(S_NULL == data_->chai_cam_) { throw(std::runtime_error("Couldn't create a chai camera")); }
 
       //Insert the camera into the scenegraph world
       data_->chai_world_->addChild(data_->chai_cam_);
 
-      //Get the configuration data for the graphics from the database
-      data_parsed_ = db->s_parser_.graphics_worlds_.at(arg_graphics_name);
-      if(S_NULL==data_parsed_)
+      cVector3d tmp1(data_parsed_->cam_pos_[0], data_parsed_->cam_pos_[1], data_parsed_->cam_pos_[2]);
+      cVector3d tmp2(data_parsed_->cam_lookat_[0], data_parsed_->cam_lookat_[1], data_parsed_->cam_lookat_[2]);
+      cVector3d tmp3(data_parsed_->cam_up_[0], data_parsed_->cam_up_[1], data_parsed_->cam_up_[2]);
+
+      // Set up the camera
+      data_->chai_cam_->set(/** position (eye) */tmp1, /** lookat position (target)*/ tmp2,
+          /** "up" direction */ tmp3);
+
+#ifdef DEBUG
+      std::cout<<"\nCam Pos    :"<<data_parsed_->cam_pos_[0]
+          <<" "<<data_parsed_->cam_pos_[1]<<" "<<data_parsed_->cam_pos_[2];
+      std::cout<<"\nCam Lookat :"<<data_parsed_->cam_lookat_[0]
+          <<" "<<data_parsed_->cam_lookat_[1]<<" "<< data_parsed_->cam_lookat_[2];
+      std::cout<<"\nCam Up     :"<<data_parsed_->cam_up_[0]
+          <<" "<<data_parsed_->cam_up_[1]<<" "<< data_parsed_->cam_up_[2];
+      std::cout<<"\nBack color : "<<data_parsed_->background_color_[0]<<", "
+          <<data_parsed_->background_color_[1]<<", "<<data_parsed_->background_color_[2]<<std::endl;
+#endif
+
+      //Set the near and far clipping planes of the camera
+      //Anything in front/behind these clipping planes will not be rendered
+      data_->chai_cam_->setClippingPlanes(data_parsed_->cam_clipping_dist_[0], data_parsed_->cam_clipping_dist_[1]);
+
+      // create a light source and attach it to the camera
+      std::vector<SGraphicsParsed::SLight>::const_iterator it,ite;
+      for(it = data_parsed_->lights_.begin(), ite = data_parsed_->lights_.end(); it!=ite; ++it)
       {
-        std::cout<<"\nCGraphicsChai::initGraphics() : Warning. Couldn't find the graphics' settings in the database. Setting to defaults.";
-
-        //Set the background color (R,G,B) to black.
-        data_->chai_world_->setBackgroundColor(0.0, 0.0, 0.0);
-
-        data_->chai_cam_->set(cVector3d (5.0, 1.0, 1.0),    // camera position (eye)
-            cVector3d (0.0, 0.0, 0.0),    // lookat position (target)
-            cVector3d (0.0, 0.0, 1.0));   // direction of the "up" vector
-
-        //Set the near and far clipping planes of the camera
-        //Anything in front/behind these clipping planes will not be rendered
-        data_->chai_cam_->setClippingPlanes(0.01, 10);
-
-        // create a light source and attach it to the camera
         cDirectionalLight* light = new cDirectionalLight(data_->chai_world_);
         if(S_NULL==light)
         { throw(std::runtime_error("Couldn't add a light to the world")); }
 
         data_->chai_cam_->addChild(light);                   // attach light to camera
         light->setEnabled(true);                   // enable light source
-        light->setDir(cVector3d(-2.0, 0.5, 1.0));  // define the direction of the light beam
-      }
-      else
-      {
-        //Set the background color (R,G,B)
-        data_->chai_world_->setBackgroundColor(data_parsed_->background_color_[0],data_parsed_->background_color_[1], data_parsed_->background_color_[2]);
 
-        cVector3d tmp1(data_parsed_->cam_pos_[0], data_parsed_->cam_pos_[1], data_parsed_->cam_pos_[2]);
-        cVector3d tmp2(data_parsed_->cam_lookat_[0], data_parsed_->cam_lookat_[1], data_parsed_->cam_lookat_[2]);
-        cVector3d tmp3(data_parsed_->cam_up_[0], data_parsed_->cam_up_[1], data_parsed_->cam_up_[2]);
+        cVector3d pos( it->pos_[0], it->pos_[1], it->pos_[2]);
+        cVector3d lookat( it->lookat_[0], it->lookat_[1], it->lookat_[2]);
+
+        light->setLocalPos(pos);  // position the light source
+        light->setDir(lookat-pos);  // define the direction of the light beam
 
 #ifdef DEBUG
-        std::cout<<"\nCam Pos:"<<data_parsed_->cam_pos_[0]
-          <<" "<<data_parsed_->cam_pos_[1]<<" "<<data_parsed_->cam_pos_[2];
-        std::cout<<"\nCam Lookat:"<<data_parsed_->cam_lookat_[0]
-          <<" "<<data_parsed_->cam_lookat_[1]<<" "<< data_parsed_->cam_lookat_[2];
-        std::cout<<"\nCam Up:"<<data_parsed_->cam_up_[0]
-          <<" "<<data_parsed_->cam_up_[1]<<" "<< data_parsed_->cam_up_[2];
-        std::cout<<"\nRead background color for graphics: "<<data_parsed_->background_color_[0]<<", "
-                    <<data_parsed_->background_color_[1]<<", "
-                    <<data_parsed_->background_color_[2];
-        std::cout<<std::endl;
-        std::cout.flush();
+        std::cout<<"\nLight Pos    :"<<pos(0)<<" "<<pos(1)<<" "<<pos(2);
+        std::cout<<"\nLight Lookat :"<<lookat(0)<<" "<<lookat(1)<<" "<<lookat(2);
+        std::cout<<"\nLight Dir    :"<<lookat(0)-pos(0)<<" "<<lookat(1)-pos(1)<<" "<<lookat(2)-pos(2)<<std::endl;
 #endif
-
-        data_->chai_cam_->set(tmp1,    // camera position (eye)
-            tmp2,    // lookat position (target)
-            tmp3);   // direction of the "up" vector
-
-        //Set the near and far clipping planes of the camera
-        //Anything in front/behind these clipping planes will not be rendered
-        data_->chai_cam_->setClippingPlanes(
-            data_parsed_->cam_clipping_dist_[0], data_parsed_->cam_clipping_dist_[1]);
-
-        // create a light source and attach it to the camera
-        std::vector<SGraphicsParsed::SLight>::iterator it,ite;
-        ite = data_parsed_->lights_.end();
-        for(it = data_parsed_->lights_.begin();
-            it!=ite; ++it)
-        {
-          cDirectionalLight* light = new cDirectionalLight(data_->chai_world_);
-          if(S_NULL==light)
-          { throw(std::runtime_error("Couldn't add a light to the world")); }
-
-          data_->chai_cam_->addChild(light);                   // attach light to camera
-          light->setEnabled(true);                   // enable light source
-
-          cVector3d pos( it->pos_[0], it->pos_[1], it->pos_[2]);
-          cVector3d lookat( it->lookat_[0], it->lookat_[1], it->lookat_[2]);
-          cVector3d dir = lookat-pos;
-
-#ifdef DEBUG
-          std::cout<<"\nLight Pos:"<<pos(0)<<" "<<pos(1)<<" "<<pos(2);
-          std::cout<<"\nLight Lookat:"<<lookat(0)<<" "<<lookat(1)<<" "<<lookat(2);
-          std::cout<<"\nLight Dir:"<<dir(0)<<" "<<dir(1)<<" "<<dir(2)<<std::flush;
-          std::cout<<std::endl;
-#endif
-
-          light->setLocalPos(pos);  // position the light source
-          light->setDir(dir);  // define the direction of the light beam
-        }
       }
     }
     catch(std::exception& ee)
     {
       std::cerr<<"\nCGraphicsChai::initGraphics() : "<<ee.what();
-      if(S_NULL!= data_->chai_cam_)
-      {
-        delete data_->chai_cam_;
-        data_->chai_cam_ = S_NULL;
-      }
-      if(S_NULL!= data_->chai_world_)
-      {
-        delete data_->chai_world_;
-        data_->chai_world_ = S_NULL;
-      }
-      if(S_NULL!=data_)
-      {
-        if(S_NULL!=db)
-        {
-          db->s_gui_.chai_data_.erase(data_);
-          data_ = S_NULL;
-        }
-      }
+      destroyGraphics(); //Destroy graphics if not successful.
       return false;
     }
     has_been_init_ = true;
@@ -206,37 +141,23 @@ namespace scl {
 
   sBool CGraphicsChai::destroyGraphics()
   {
-    try
+    if(S_NULL!=data_) // Data is created.
     {
-      //Get a handle to the database
-      SDatabase* db = CDatabase::getData();
-      if(S_NULL == db)
-      { throw(std::runtime_error("Database not initialized"));  }
-
-      if(S_NULL!=data_) // Data is created on the pile.
-      {
-        if(S_NULL!= data_->chai_world_)
-        {
-          delete data_->chai_world_;
-          data_->chai_world_ = S_NULL;
-        }
-        else
-        { throw(std::runtime_error("Invalid graphics state. Graphics data allocated but chai pointer is null."));  }
-
-        db->s_gui_.chai_data_.erase(data_);
-        data_ = S_NULL;
-      }
-      has_been_init_ = false;
+      if(S_NULL!= data_->chai_cam_)
+      { delete data_->chai_cam_; data_->chai_cam_ = S_NULL; }
+      if(S_NULL!= data_->chai_world_)
+      { delete data_->chai_world_; data_->chai_world_ = S_NULL; }
+      if(data_is_mine_)
+      { delete data_; data_is_mine_ = false; }
+      data_ = S_NULL;
     }
-    catch(std::exception& ee)
-    {
-      std::cerr<<"\nCGraphicsChai::destroyGraphics() : "<<ee.what();
-      return false;
-    }
+    data_parsed_ = S_NULL; //We didn't allocate anything so we won't dealloc it.
+    has_been_init_ = false;
     return true;
   }
 
-  sBool CGraphicsChai::addRobotToRender(const std::string& arg_robot)
+  sBool CGraphicsChai::addRobotToRender(const SRobotParsed *arg_rob_parsed,
+      const SRobotIO* arg_rob_io)
   {
     const SRigidBody * tmp_root_link = S_NULL;
     SGraphicsChaiRigidBody* robot_brrep_root = S_NULL;
@@ -246,33 +167,31 @@ namespace scl {
       if(!has_been_init_) { return false; }
 
       //1. Get the robot
-      SDatabase* db = CDatabase::getData();
-      if(S_NULL == db)
-      { throw(std::runtime_error("Database not initialized"));  }
+      if(S_NULL == arg_rob_parsed || NULL == arg_rob_io)
+      {  throw(std::runtime_error("Passed NULL robot data structure."));  }
 
-      SRobotParsed * robdef; //A pointer to the robot's static config.
-      robdef = db->s_parser_.robots_.at(arg_robot);
-
-      if(arg_robot != robdef->name_)
-      {
-        throw(std::runtime_error(
-            "The database is inconsistent. An entry's stored robot name doesn't match its (string) index name on the pile."
-        ));
-      }
+      if(false == arg_rob_parsed->hasBeenInit() || false == arg_rob_io->hasBeenInit())
+      {  throw(std::runtime_error("Passed uninitialized robot data structure."));  }
 
       //2. Now obtain the robot root link's static (parser) data.
-      tmp_root_link = robdef->rb_tree_.getRootNode();
-      if(S_NULL == tmp_root_link)
-      { throw(std::runtime_error("Found a robot without any links"));  }
-      if(tmp_root_link->robot_name_ != arg_robot)
-      { throw(std::runtime_error("Inconsistency detected : Root link of the robot says that it belongs to a different robot."));  }
+      tmp_root_link = arg_rob_parsed->rb_tree_.getRootNodeConst();
+      if(S_NULL == tmp_root_link) { throw(std::runtime_error("Found a robot without any links"));  }
 
-      //3. Create a new robot tree on the graphics robot pile
+      //3. Create a new robot tree for the graphics robot
       //(Ie. Create a (physics+graphics) branching-representation)
+      SRobotRenderObj* rob_gr;
+      rob_gr = data_->robots_rendered_.create(arg_rob_parsed->name_);
+      if(S_NULL==rob_gr)
+      { throw(std::runtime_error("Couldn't create a graphics data container for the robot"));  }
+
+      // Set the io data structure.
+      rob_gr->io_ = arg_rob_io;
+
+      // Now set up the tree.
       sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr_brrep;
-      rob_gr_brrep = data_->robots_rendered_.create(arg_robot);
+      rob_gr_brrep = &(rob_gr->gr_tree_);
       if(S_NULL==rob_gr_brrep)
-      { throw(std::runtime_error("Couldn't create a (physics+graphics) representation for the robot on the pile"));  }
+      { throw(std::runtime_error("Couldn't create a (physics+graphics) representation for the robot"));  }
 
       //4. Create a new root node on the graphics robot pile
       robot_brrep_root = rob_gr_brrep->create(tmp_root_link->name_,true); //Special case : create root node
@@ -289,16 +208,16 @@ namespace scl {
       { throw(std::runtime_error("Failed to add child robot-link"));  }
 
       //7. Set random rendering options (Defaults. Override later if you want.)
-      if(0.0<robdef->option_axis_frame_size_)
+      if(0.0<arg_rob_parsed->option_axis_frame_size_)
       {
-        robot_brrep_root->graphics_obj_->setFrameSize(robdef->option_axis_frame_size_,true);
+        robot_brrep_root->graphics_obj_->setFrameSize(arg_rob_parsed->option_axis_frame_size_,true);
         robot_brrep_root->graphics_obj_->setShowFrame(true,true);
       }
       else
       { robot_brrep_root->graphics_obj_->setShowFrame(false,false); }
 
       //8. Set wireframe if required
-      if(true == robdef->flag_wireframe_on_)
+      if(true == arg_rob_parsed->flag_wireframe_on_)
       { robot_brrep_root->graphics_obj_->setWireMode(true,true); }
 
       //7. Check for errors.
@@ -308,12 +227,12 @@ namespace scl {
       //8. Add the constructed robot tree to the graphics (chai) world
       data_->chai_world_->addChild(robot_brrep_root->graphics_obj_);
 
-      if(true == robdef->muscle_system_.has_been_init_)
+      if(true == arg_rob_parsed->muscle_system_.has_been_init_)
       {
-        if(robdef->option_muscle_via_pt_sz_>0.0)
-        { flag = addMusclesToRender(arg_robot,robdef->muscle_system_,true); }
+        if(arg_rob_parsed->option_muscle_via_pt_sz_>0.0)
+        { flag = addMusclesToRender(arg_rob_parsed->name_,arg_rob_parsed->muscle_system_,true); }
         else
-        { flag = addMusclesToRender(arg_robot,robdef->muscle_system_,false); }
+        { flag = addMusclesToRender(arg_rob_parsed->name_,arg_rob_parsed->muscle_system_,false); }
 
         if(false == flag)
         { throw(std::runtime_error("Failed to add a muscle system for robot"));  }
@@ -321,8 +240,7 @@ namespace scl {
 
 #ifdef DEBUG
       // Print some info
-      printf("\nAdded a robot <%s> to graphics specification <%s>",
-          robdef->name_.c_str(), data_->name_.c_str());
+      printf("\nAdded a robot <%s> to graphics specification <%s>", arg_rob_parsed->name_.c_str(), data_->name_.c_str());
 #endif
     }
     catch(std::exception& ee)
@@ -353,7 +271,7 @@ namespace scl {
 
       //1. Get the robot tree on the graphics robot pile
       sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr_brrep;
-      rob_gr_brrep = data_->robots_rendered_.at(arg_robot);
+      rob_gr_brrep = &(data_->robots_rendered_.at(arg_robot)->gr_tree_);
       if(S_NULL==rob_gr_brrep)
       { throw(std::runtime_error("Couldn't find a graphics representation for the robot"));  }
 
@@ -605,7 +523,7 @@ namespace scl {
 
       //3. Now initialize nodes on the graphics branching structure for the children
       sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr_brrep;
-      rob_gr_brrep = data_->robots_rendered_.at(arg_link->robot_link_->robot_name_);
+      rob_gr_brrep = &(data_->robots_rendered_.at(arg_link->robot_link_->robot_name_)->gr_tree_);
 
       //4. Create the children (recurse)
       std::vector<SRigidBody*>::const_iterator it,ite;
@@ -692,10 +610,10 @@ namespace scl {
       //4. Add the mesh to the world.
       data_->chai_world_->addChild(tmp_chai_mesh);
 
-      //5. Create a new mesh data structure on the pile pointing to this chai object
+      //5. Create a new mesh data structure pointing to this chai object
       tmp_mesh_ds = data_->meshes_rendered_.create(arg_mesh_name);
       if(S_NULL == tmp_mesh_ds)
-      { throw(std::runtime_error("Could not create a mesh data structure on the pile."));  }
+      { throw(std::runtime_error("Could not create a mesh data structure."));  }
       tmp_mesh_ds->graphics_obj_ = tmp_chai_mesh;
       tmp_mesh_ds->rotation_ = arg_rot;
       tmp_mesh_ds->translation_ = arg_pos;
@@ -751,10 +669,10 @@ namespace scl {
       cGenericObject* tmp_parent_chai_mesh = tmp_parent_mesh_ds->graphics_obj_;
       tmp_parent_chai_mesh->addChild(tmp_chai_mesh);
 
-      //5. Create a new mesh data structure on the pile pointing to this chai object
+      //5. Create a new mesh data structure pointing to this chai object
       tmp_mesh_ds = data_->meshes_rendered_.create(arg_mesh_name);
       if(S_NULL == tmp_mesh_ds)
-      { throw(std::runtime_error("Could not create a mesh data structure on the pile."));  }
+      { throw(std::runtime_error("Could not create a mesh data structure."));  }
       tmp_mesh_ds->graphics_obj_ = tmp_chai_mesh;
       tmp_mesh_ds->rotation_ = arg_rot;
       tmp_mesh_ds->translation_ = arg_pos;
@@ -833,83 +751,40 @@ namespace scl {
 
   sBool CGraphicsChai::addMusclesToRender(
       const std::string& arg_robot,
-      const std::string& arg_msys,
-      const sBool add_musc_via_points)
-  {
-    std::string musc_name("");
-    bool flag;
-    try
-    {
-      if(!has_been_init_) { return false; }
-
-      //1. Get the robot
-      SDatabase* db = CDatabase::getData();
-      if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
-
-      sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr;
-      rob_gr = data_->robots_rendered_.at(arg_robot);
-      if(S_NULL==rob_gr)//Require an existing robot to render muscles.
-      { throw(std::runtime_error("Couldn't find a (physics+graphics) representation for the robot on the pile"));  }
-
-      SMuscleSetParsed *msys_db = db->s_parser_.muscle_systems_.at(arg_msys);
-      if(S_NULL == msys_db) { throw(std::runtime_error("Could not find muscle system in the database. Did you pass the right name?"));  }
-
-      flag = addMusclesToRender(arg_robot,*msys_db,add_musc_via_points);
-      if(false == flag)
-      { throw(std::runtime_error("Couldn't add a muscle system for the robot"));  }
-    }
-    catch(std::exception& ee)
-    {
-      std::cerr<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys<<") : "<<musc_name<<" : "<<ee.what();
-      return false;
-    }
-    return true;
-  }
-
-
-
-  sBool CGraphicsChai::addMusclesToRender(
-      const std::string& arg_robot,
-      const SMuscleSetParsed& arg_msys,
+      const SMuscleSetParsed& arg_mset,
       const sBool add_musc_via_points)
   {
     std::string musc_name("");
     SGraphicsChaiMuscleSet *msys_gr = NULL;
     try
     {
-      if(!has_been_init_) { return false; }
+      if(!has_been_init_)
+      { throw(std::runtime_error("Can't add muscles to the rendering system of a chai object that has not been initialized"));  }
 
-      //1. Get the robot
-      SDatabase* db = CDatabase::getData();
-      if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
+      if(false==arg_mset.has_been_init_)
+      { throw(std::runtime_error("Passed muscle actuator set has not been initialized"));  }
 
+      if(0==arg_mset.muscles_.size() )
+      { throw(std::runtime_error("Passed muscle actuator set has no muscles (incorrectly initialized)"));  }
+
+      // Set up data structures
       sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>* rob_gr;
-      rob_gr = data_->robots_rendered_.at(arg_robot);
+      rob_gr = &(data_->robots_rendered_.at(arg_robot)->gr_tree_);
       if(S_NULL==rob_gr)//Require an existing robot to render muscles.
-      { throw(std::runtime_error("Couldn't find a (physics+graphics) representation for the robot on the pile"));  }
+      { throw(std::runtime_error("Couldn't find a (physics+graphics) representation for the robot"));  }
 
-      msys_gr = data_->muscles_rendered_.create(arg_msys.name_);
-      if(S_NULL == db) { throw(std::runtime_error("Could not create muscle rendering data struct on the pile"));  }
+      msys_gr = data_->muscles_rendered_.create(arg_mset.name_);
+      if(S_NULL == msys_gr) { throw(std::runtime_error("Could not create muscle rendering data struct"));  }
 
-      SRobotIO *rob_io_ds = db->s_io_.io_data_.at(arg_robot);
-      if(NULL == rob_io_ds)
-      { throw(std::runtime_error(std::string("Couldn't find an io data structure for the robot on the pile: ") + arg_robot));  }
-
-      // Weird const to make sure it carries over across the pointers.
-      const SActuatorSetBase * const *  mptr = rob_io_ds->actuators_.actuator_sets_.at(arg_msys.name_);
-      if(NULL == mptr)
-      { throw(std::runtime_error(std::string("Robot's actuator set doesn't contain muscle actuator set: ") + arg_msys.name_));  }
-
-      msys_gr->muscle_actuator_set_parsed_ = dynamic_cast<const SActuatorSetMuscle *>(*mptr);
-      if(NULL == msys_gr->muscle_actuator_set_parsed_)
-      { throw(std::runtime_error(std::string("Robot's io data structure doesn't contain muscle actuator set: ") + arg_msys.name_));  }
+      // Keep track of parsed data.
+      msys_gr->muscle_set_parsed_ = &arg_mset;
 
       // Make sure the graphics object's name matches the muscle spec.
-      msys_gr->name_ = arg_msys.name_;
+      msys_gr->name_ = arg_mset.name_;
 
       // Now add all the muscles to the graphics muscle object
       sutil::CMappedList<std::basic_string<char>, scl::SMuscleParsed>::const_iterator it,ite;
-      for(it = arg_msys.muscles_.begin(), ite = arg_msys.muscles_.end();
+      for(it = arg_mset.muscles_.begin(), ite = arg_mset.muscles_.end();
           it!=ite; ++it)
       {
         const SMuscleParsed &mus = *it;
@@ -929,7 +804,7 @@ namespace scl {
           SGraphicsChaiRigidBody* gr_lnk = rob_gr->at((*it).parent_link_);
           if(S_NULL == gr_lnk)
           {
-            std::cout<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle: "
+            std::cout<<"\nCGraphicsChai::addMusclesToRender("<<arg_mset.name_<<") WARNING: Orphan muscle: "
                 <<musc_name<<". Missing parent link: "<<(*it).parent_link_;
             continue;
           }
@@ -947,7 +822,7 @@ namespace scl {
             SGraphicsChaiRigidBody* gr_lnk2 = rob_gr->at((*it2).parent_link_);
             if(S_NULL == gr_lnk2)
             {
-              std::cout<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys.name_<<") WARNING: Orphan muscle upcoming : "
+              std::cout<<"\nCGraphicsChai::addMusclesToRender("<<arg_mset.name_<<") WARNING: Orphan muscle upcoming : "
                   <<musc_name<<". Missing parent link: "<<(*it2).parent_link_;
               continue;
             }
@@ -978,9 +853,9 @@ namespace scl {
 
           if(add_musc_via_points)//Add via point rendering if required
           {
-            if(arg_msys.render_muscle_via_pt_sz_ > 0.0)
+            if(arg_mset.render_muscle_via_pt_sz_ > 0.0)
             {
-              gr_mpt.graphics_via_point_ = new cShapeSphere(arg_msys.render_muscle_via_pt_sz_);
+              gr_mpt.graphics_via_point_ = new cShapeSphere(arg_mset.render_muscle_via_pt_sz_);
               gr_mpt.graphics_via_point_->setLocalPos(*(gr_mpt.pos_));
 
               gr_mpt.graphics_parent_->graphics_obj_->addChild(gr_mpt.graphics_via_point_);
@@ -1004,9 +879,9 @@ namespace scl {
     }
     catch(std::exception& ee)
     {
-      std::cerr<<"\nCGraphicsChai::addMusclesToRender("<<arg_msys.name_<<") : "<<musc_name<<" : "<<ee.what();
+      std::cerr<<"\nCGraphicsChai::addMusclesToRender("<<arg_mset.name_<<") : "<<musc_name<<" : "<<ee.what();
       if(NULL != msys_gr)
-      { data_->muscles_rendered_.erase(arg_msys.name_); }
+      { data_->muscles_rendered_.erase(arg_mset.name_); }
       return false;
     }
     return true;
@@ -1026,7 +901,7 @@ namespace scl {
 
       /** Render a sphere at the link's position */
       sutil::CMappedTree<std::string, scl::SGraphicsChaiRigidBody> * rob_br = S_NULL;
-      rob_br = data_->robots_rendered_.at(arg_robot);//Shortcut
+      rob_br = &(data_->robots_rendered_.at(arg_robot)->gr_tree_);//Shortcut
       if(S_NULL == rob_br)
       { throw(std::runtime_error("Could not find robot"));  }
 
@@ -1162,25 +1037,17 @@ namespace scl {
   {
     try
     {
-      //0. Get a copy of the database
-      SDatabase* db = CDatabase::getData();
-#ifdef DEBUG
-      if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
-#endif
-
       //1. Loop over all the robots and update their graphics:
-      sutil::CMappedList<std::string, sutil::CMappedTree<std::string, scl::SGraphicsChaiRigidBody>
-      >::iterator it,ite;
+      sutil::CMappedList<std::string, SRobotRenderObj>::iterator it,ite;
       for(it = data_->robots_rendered_.begin(), ite = data_->robots_rendered_.end();
           it!=ite; ++it)
       {
         //1.a. Get the robot's branching representation and its io buffer
-        sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>& rob_brrep = *it;
+        sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>& rob_brrep = it->gr_tree_;
 
         //NOTE TODO : This is a bit inefficient. Find a better way to do this.
-        const SRobotIO* rob_io;
+        const SRobotIO* rob_io = it->io_;
         std::string tmp_rob_name = !it;
-        rob_io = db->s_io_.io_data_.at_const(tmp_rob_name);
 #ifdef DEBUG
         if(S_NULL == rob_io) { throw(std::runtime_error("Robot's I/O database entry is not initialized"));  }
 #endif
@@ -1303,11 +1170,6 @@ namespace scl {
   {
     try
     {
-      SDatabase* db = CDatabase::getData();
-      #ifdef DEBUG
-      if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
-      #endif
-
       // Recompute global positions : Required for the muscle points
       data_->chai_world_->computeGlobalPositions(true);
 
@@ -1318,6 +1180,21 @@ namespace scl {
       {
         //Get a muscle system
         SGraphicsChaiMuscleSet& msys = *it;
+        // Note the wacky double const pointer....
+        // NOTE TODO: This is inefficient. Fix this. Ideally should store the pointer somewhere
+        // But was giving a weird compiler error on Aug 1 2014.
+        const SRobotRenderObj* rob_ds = data_->robots_rendered_.at(it->muscle_set_parsed_->must_use_robot_);
+        if(S_NULL == rob_ds)
+        { std::cerr<<"\nCGraphicsChai::updateGraphicsForMuscles() : Error : Could not find robot ("<<it->muscle_set_parsed_->must_use_robot_
+          <<")for actuator set : "<<msys.name_; return false;  }
+
+        const SActuatorSetBase * const *act_set = rob_ds->io_->actuators_.actuator_sets_.at_const(msys.name_);
+        if(S_NULL == act_set)
+        { std::cerr<<"\nCGraphicsChai::updateGraphicsForMuscles() : Error : Could not find actuator set : "<<msys.name_; return false;  }
+
+        const SActuatorSetMuscle *act_musc = dynamic_cast<const SActuatorSetMuscle *>(*act_set);
+        if(S_NULL == act_set)
+        { std::cerr<<"\nCGraphicsChai::updateGraphicsForMuscles() : Error : Actuator set is not a set of muscles: "<<msys.name_; return false;  }
 
         std::vector<SGraphicsChaiMuscleSet::SGraphicsChaiMuscle>::iterator itm,itme;
         int i=0;
@@ -1354,7 +1231,7 @@ namespace scl {
             l->m_pointB = par2->getGlobalPos() + rotvec2; //Translate the rotated position vector from the frame's position.
 
             // Set the line's color. Scale to max force generation ability.
-            double tmp_col = msys.muscle_actuator_set_parsed_->force_actuator_(i)/itm->muscle_parsed_->max_isometric_force_;
+            double tmp_col = act_musc->force_actuator_(i)/itm->muscle_parsed_->max_isometric_force_;
             if(tmp_col > 0.0)
             {
               l->m_colorPointA.set(tmp_col, 0.0, 1 - tmp_col);//pow(1 - tmp_col,8));

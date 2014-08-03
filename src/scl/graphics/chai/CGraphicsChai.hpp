@@ -53,14 +53,34 @@ public:
    *   etc..
    *********************************************************/
   /** Initializes a graphics world using the camera information
-   * in the database.
+   * in the passed data structure.
    *
-   * Returns true  : Successfully created a world
-   * Returns false : Failed (or the database's world was invalid). */
+   * Returns,
+   * true  : Successfully created a world
+   * false : Failed (or the data structure was invalid). */
   virtual sBool initGraphics(
-      /**The name of a graphics instance initialized in the
-       * database (parser data)*/
-      const std::string & arg_graphics_name);
+      /** The graphics data structure loaded from the xml file. Specifies camera etc. information. */
+      const SGraphicsParsed* arg_gr_ds)
+  {
+    SGraphicsChai *tmp = new SGraphicsChai();
+    bool flag = initGraphics(arg_gr_ds,tmp);
+    if(flag){ data_is_mine_ = true; }
+    else{ delete tmp; }
+    return flag;
+  }
+
+  /** Initializes a graphics world using the camera information
+   * in the passed data structures.
+   *
+   * Returns,
+   * true  : Successfully created a world
+   * false : Failed (or the data structure was invalid). */
+  virtual sBool initGraphics(
+      /** The graphics data structure loaded from the xml file. Specifies camera etc. information. */
+      const SGraphicsParsed* arg_gr_ds,
+      /** The graphics object to be used for computations. This allows someone else
+       * to (dynamically) allocate this object. */
+      SGraphicsChai* arg_chai_ds);
 
   /** Adds a robot's meshes to the graphics rendering environment.
    *
@@ -85,7 +105,11 @@ public:
    * sutil::CMappedList< string, sutil::CMappedTree<string, SGraphicsPhysicalLink> >
    * where the SGraphicsPhysicalLink object allows accessing links in all the different
    * trees at one place.   */
-  virtual sBool addRobotToRender(const std::string& arg_robot);
+  virtual sBool addRobotToRender(
+      /** The static robot specification */
+      const SRobotParsed *arg_rob_parsed,
+      /** The generalized coordinates etc. */
+      const SRobotIO* arg_rob_io);
 
   /** Removes a robot's meshes from the graphics rendering environment.
    *
@@ -138,18 +162,10 @@ public:
    * 1. A set of muscles, each with a set of connection points to certain links.
    * 2. A parent robot to whose links the muscles attach. */
   virtual sBool addMusclesToRender(
+      /** The robot to which the muscles will be attached */
       const std::string& arg_robot,
-      const std::string& arg_msys,
-      const sBool add_musc_via_points);
-
-  /** Adds a muscle system to the graphics rendering environment
-   *
-   * A muscle system contains:
-   * 1. A set of muscles, each with a set of connection points to certain links.
-   * 2. A parent robot to whose links the muscles attach. */
-  virtual sBool addMusclesToRender(
-      const std::string& arg_robot,
-      const SMuscleSetParsed& arg_msys,
+      /** The set of muscles to be attached */
+      const SMuscleSetParsed& arg_mset,
       const sBool add_musc_via_points);
 
   /** Removes a muscle system from the graphics rendering environment
@@ -161,7 +177,7 @@ public:
    * NOTE TODO: Implement this.*/
   virtual sBool removeMusclesFromRender(
       const std::string& arg_robot,
-      const std::string& arg_msys)
+      const std::string& arg_mset)
   { return false; }
 
   /** Adds a sphere to a link on a robot in the rendering environment */
@@ -219,8 +235,8 @@ public:
   virtual sBool updateGraphicsForMuscles();
 
   /** Default constructor. Sets stuff to NULL. */
-  CGraphicsChai() : CGraphicsBase()
-  { data_ = S_NULL; data_parsed_ = S_NULL; }
+  CGraphicsChai() : CGraphicsBase(),data_(NULL),
+      data_is_mine_(false), data_parsed_(S_NULL){}
 
   /** Default destructor. Does nothing */
   virtual ~CGraphicsChai(){}
@@ -228,12 +244,13 @@ public:
   SGraphicsChai* getChaiData()
   { return data_; }
 
-  SGraphicsParsed* getParsedData()
+  const SGraphicsParsed* getParsedData()
   { return data_parsed_;  }
 
 protected:
   SGraphicsChai* data_;
-  SGraphicsParsed* data_parsed_;
+  bool data_is_mine_;
+  const SGraphicsParsed* data_parsed_;
 };
 
 }

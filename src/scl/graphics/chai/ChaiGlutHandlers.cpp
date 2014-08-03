@@ -400,6 +400,11 @@ namespace scl_chai_glut_interface
   //---------------------------------------------------------------------------
   void updateGraphics(void)
   {
+    scl::SDatabase * db = scl::CDatabase::getData();
+#ifdef DEBUG
+    if(NULL == db) {std::cerr<<"\nupdateGraphics() : Database not initialized"; }
+#endif
+
     SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     //Update the IO
     keyHandler();

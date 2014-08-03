@@ -55,6 +55,16 @@ struct cVector3d;
 
 namespace scl
 {
+
+/** Simple container object for associating static and dynamic graphics data
+ * NOTE TODO: Consider moving this inside SGraphicsChai */
+struct SRobotRenderObj
+{
+public:
+  sutil::CMappedTree<std::string, SGraphicsChaiRigidBody> gr_tree_;
+  const SRobotIO *io_;
+};
+
 /** Enables passing data between a chai rendering instance and the scl control framework.
  *
  * Chai basically uses a set of <rotation matrix,translation vector> objects and
@@ -74,9 +84,7 @@ public:
   chai3d::cCamera* chai_cam_;
 
   /** Container for all the robots to be rendered. */
-  sutil::CMappedList<std::string,
-        sutil::CMappedTree<std::string, SGraphicsChaiRigidBody>
-        > robots_rendered_;
+  sutil::CMappedList<std::string, SRobotRenderObj> robots_rendered_;
 
   /** Container for all the mesh objects to be rendered */
   sutil::CMappedList<std::string, SGraphicsChaiMesh> meshes_rendered_;

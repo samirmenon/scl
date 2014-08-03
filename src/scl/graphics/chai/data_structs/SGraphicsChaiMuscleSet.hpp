@@ -33,6 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
+#include <scl/graphics/chai/data_structs/SGraphicsChai.hpp>
 #include <scl/actuation/muscles/data_structs/SActuatorSetMuscle.hpp>
 
 /**
@@ -56,13 +57,16 @@ namespace scl
     /** A set of muscles to be rendered */
     std::vector<SGraphicsChaiMuscle> muscle_graphics_set_;
 
-    /** A link to the muscle system's actuator set. For rendering
-     * muscle activation for different motions */
-    const SActuatorSetMuscle * muscle_actuator_set_parsed_;
+    /** A link to the muscle system's parsed data */
+    const SMuscleSetParsed * muscle_set_parsed_;
+
+//    const SGraphicsChai *robot_render_ds_;
 
     /** Constructor specifies type */
     SGraphicsChaiMuscleSet() : SObject("SGraphicsMsys"),
-        muscle_actuator_set_parsed_(NULL){}
+        muscle_set_parsed_(NULL)/**,
+        robot_render_ds_(NULL)*/
+    {}
   };
 
   /** The graphics representation for one muscle */
