@@ -50,6 +50,7 @@ namespace scl_chai_glut_interface
     for(int i=0; i<256; ++i)
       keys_active[i] = false;
     GLOB_chaiDbptr = S_NULL;
+    GLOB_gr_parsed_ds = S_NULL;
     GLOB_windowPosX = 0;
     GLOB_windowPosY = 0;
     cam_sph_x_=3.0;
@@ -63,16 +64,31 @@ namespace scl_chai_glut_interface
   }
 
   /**
-   * Picks the passed chai definition (by string name) on the pile
+   * Picks the passed chai definition (by string name) in the database
    */
   bool initializeGlutForChai(const std::string & arg_graphics_name,
       scl::CGraphicsChai *arg_chai_glut)
   {
+    scl::SDatabase *db = scl::CDatabase::getData();
+    if(S_NULL == db) { std::cout<<"\ninitializeGlutForChai() : Database not initialized"; return false; }
+
+    scl::SGraphicsParsed* gr_parsed_ds = db->s_parser_.graphics_worlds_.at(arg_graphics_name);
+    return initializeGlutForChai(gr_parsed_ds,arg_chai_glut);
+  }
+
+  /** Sets up the glut window GL stuff for a given graphics parsed spec */
+  bool initializeGlutForChai(scl::SGraphicsParsed* arg_gr_parsed_ds,
+      scl::CGraphicsChai *arg_chai_glut)
+  {
     try
     {
+      if(NULL == arg_gr_parsed_ds)
+      { throw(std::runtime_error("Could not find parsed graphics data structure in the database.")); }
+
+      std::string graphics_name = arg_gr_parsed_ds->name_;
+
       scl::SDatabase *db = scl::CDatabase::getData();
-      if(S_NULL == db)
-      { throw(std::runtime_error("Database not intialized")); }
+      if(S_NULL == db) { throw(std::runtime_error("Database not initialized")); }
 
       //Set all the UI points to zero.
       for(int i=0;i<SCL_NUM_UI_POINTS;++i)
@@ -83,26 +99,22 @@ namespace scl_chai_glut_interface
       }
 
       SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
-      if(S_NULL == db)
-      { throw(std::runtime_error("Chai shared data singleton not intialized")); }
+      if(S_NULL == db) { throw(std::runtime_error("Chai shared data singleton not initialized")); }
 
       if(S_NULL == arg_chai_glut)
       { throw(std::runtime_error("Passed invalid chai object")); }
       chai_glob_ds->chai_glut = arg_chai_glut;
 
-      chai_glob_ds->GLOB_chaiDbptr = db->s_gui_.chai_data_.at(arg_graphics_name);
-
-      scl::SGraphicsParsed* gr_parsed_ds = db->s_parser_.graphics_worlds_.at(arg_graphics_name);
-      if(NULL == gr_parsed_ds)
-      { throw(std::runtime_error("Could not find parsed graphics data structre in the database.")); }
-      chai_glob_ds->cam_lookat_x_ = gr_parsed_ds->cam_lookat_(0);
-      chai_glob_ds->cam_lookat_y_ = gr_parsed_ds->cam_lookat_(1);
-      chai_glob_ds->cam_lookat_z_ = gr_parsed_ds->cam_lookat_(2);
+      chai_glob_ds->GLOB_chaiDbptr = arg_chai_glut->getChaiData();
+      chai_glob_ds->GLOB_gr_parsed_ds = arg_gr_parsed_ds;
+      chai_glob_ds->cam_lookat_x_ = arg_gr_parsed_ds->cam_lookat_(0);
+      chai_glob_ds->cam_lookat_y_ = arg_gr_parsed_ds->cam_lookat_(1);
+      chai_glob_ds->cam_lookat_z_ = arg_gr_parsed_ds->cam_lookat_(2);
 
       //set the initial camera position:
-      chai_glob_ds->cam_sph_x_=(gr_parsed_ds->cam_pos_ - gr_parsed_ds->cam_lookat_).norm();
-      chai_glob_ds->cam_sph_v_= 180/M_PI*(std::asin(gr_parsed_ds->cam_pos_[2]/chai_glob_ds->cam_sph_x_));
-      chai_glob_ds->cam_sph_h_= 180/M_PI*(std::asin(gr_parsed_ds->cam_pos_[1]/
+      chai_glob_ds->cam_sph_x_=(arg_gr_parsed_ds->cam_pos_ - arg_gr_parsed_ds->cam_lookat_).norm();
+      chai_glob_ds->cam_sph_v_= 180/M_PI*(std::asin(arg_gr_parsed_ds->cam_pos_[2]/chai_glob_ds->cam_sph_x_));
+      chai_glob_ds->cam_sph_h_= 180/M_PI*(std::asin(arg_gr_parsed_ds->cam_pos_[1]/
           (chai_glob_ds->cam_sph_x_*cCosDeg(chai_glob_ds->cam_sph_v_))));
 
       if(S_NULL == chai_glob_ds->GLOB_chaiDbptr)
@@ -515,7 +527,7 @@ namespace scl_chai_glut_interface
   {
     SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
     // check values
-    static scl::SGraphicsParsed* gr_ds = scl::CDatabase::getData()->s_parser_.graphics_worlds_.at(chai_glob_ds->GLOB_chaiDbptr->name_);
+    static scl::SGraphicsParsed* gr_ds = chai_glob_ds->GLOB_gr_parsed_ds;
 
     if (chai_glob_ds->cam_sph_x_ < 0.1) { chai_glob_ds->cam_sph_x_ = 0.1; }
     if (chai_glob_ds->cam_sph_v_ > 89) { chai_glob_ds->cam_sph_v_ = 89; }

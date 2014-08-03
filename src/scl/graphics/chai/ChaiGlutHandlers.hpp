@@ -63,7 +63,8 @@ namespace scl_chai_glut_interface
     static const scl::sUInt OPTION_WINDOWDISPLAY=1;
     static const scl::sUInt OPTION_TOGGLE_MOUSE_CAM_SELECT=2;
 
-    scl::SGraphicsChai* GLOB_chaiDbptr;
+    scl::SGraphicsChai* GLOB_chaiDbptr; //GLOB == Global var.
+    scl::SGraphicsParsed* GLOB_gr_parsed_ds;
 
     //Window information (and thus not stored in the
     //graphics--unlike the GL width and height)
@@ -94,6 +95,10 @@ namespace scl_chai_glut_interface
   // DECLARED FUNCTIONS
   //---------------------------------------------------------------------------
   bool initializeGlutForChai(const std::string & arg_graphics_name,
+      scl::CGraphicsChai *arg_chai_glut);
+
+  // Initializes glut from a data structure instead of the databse
+  bool initializeGlutForChai(scl::SGraphicsParsed* arg_gr_parsed_ds,
       scl::CGraphicsChai *arg_chai_glut);
 
   // callback when the window display is resized
