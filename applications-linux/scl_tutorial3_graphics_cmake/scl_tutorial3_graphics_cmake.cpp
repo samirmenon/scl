@@ -57,6 +57,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  * the robot's dynamics as it swings around under the effect of
  * gravity.
  *
+ * This simulation will also show you how to use a simplistic multi-threaded
+ * setup for doing the graphics and physics. From this point on, the
+ * actual code might start becoming computationally expensive. So we
+ * will typically use multi-threading.
+ *
  * SCL Modules used:
  * 1. data_structs
  * 2. dynamics (physics)
