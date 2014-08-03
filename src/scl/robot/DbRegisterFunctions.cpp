@@ -266,6 +266,10 @@ namespace scl_registry
       if(false==flag)
       {throw (std::runtime_error("Couldn't read graphics from file"));}
 
+      //Create
+      scl::SGraphicsChai *chai_ds = scl::CDatabase::getData()->s_gui_.chai_data_.create(arg_graphics_name);
+      if(NULL==chai_ds) {throw (std::runtime_error("Couldn't create graphics data struct on the pile"));}
+
       std::cout<<"\nscl_registry::parseGraphics() : Parsed : "<<arg_graphics_name;
     }
     catch (std::exception & e)

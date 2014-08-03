@@ -70,6 +70,7 @@ namespace scl
 
   CRobotApp::CRobotApp() :
       db_(NULL),
+      rob_ds_(NULL),
       rob_io_ds_(NULL),
       dyn_tao_(NULL),
       dyn_scl_(NULL),
@@ -139,6 +140,10 @@ namespace scl
         if(!scl_util::isStringInVector(robot_name_,robots_parsed_))
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
+        rob_ds_ = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_);
+        if(NULL == rob_ds_)
+        { throw(std::runtime_error("Could not find registered robot data struct in the database"));  }
+
         /******************************TaoDynamics************************************/
         dyn_tao_ = new scl::CDynamicsTao();
         flag = dyn_tao_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
@@ -149,12 +154,19 @@ namespace scl
         flag = dyn_scl_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
         if(false == flag) { throw(std::runtime_error("Could not initialize dynamics algorithms"));  }
 
+        /******************************Shared I/O Data Structure************************************/
+        rob_io_ds_ = db_->s_io_.io_data_.at(robot_name_);
+        if(S_NULL == rob_io_ds_)
+        { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
+
         /******************************ChaiGlut Graphics************************************/
 #ifdef GRAPHICS_ON
-        flag = chai_gr_.initGraphics(graphics_parsed_[0]);
+        scl::SGraphicsParsed *gr_parsed = db_->s_parser_.graphics_worlds_.at(graphics_parsed_[0]);
+        scl::SGraphicsChai *chai_ds = db_->s_gui_.chai_data_.at(graphics_parsed_[0]);
+        flag = chai_gr_.initGraphics(gr_parsed,chai_ds);
         if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
 
-        flag = chai_gr_.addRobotToRender(robot_name_);
+        flag = chai_gr_.addRobotToRender(rob_ds_,rob_io_ds_);
         if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
 
         if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_parsed_[0], &chai_gr_))
@@ -169,11 +181,6 @@ namespace scl
         gr_frm_skip_ = 500;
         gr_frm_ctr_ = 0;
 #endif
-
-        /******************************Shared I/O Data Structure************************************/
-        rob_io_ds_ = db_->s_io_.io_data_.at(robot_name_);
-        if(S_NULL == rob_io_ds_)
-        { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
         /**********************Initialize Robot Dynamics and Controller*******************/
         flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_tao_);//Note: The robot deletes these pointers.
