@@ -123,6 +123,10 @@ int main(int argc, char** argv)
       if(S_NULL == scl_registry::parseGraphics(tmp_infile, graphics_names[0], &tmp_lparser))
       { throw(std::runtime_error("Could not register graphics with the database"));  }
 
+      scl::SRobotParsed *rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
+      if(NULL == rob_ds)
+      { throw(std::runtime_error("Could not find registered robot data struct in the database"));  }
+
       std::string ctrl_name; //Parse all the gc controllers for this robot!
       if(argc<4)
       {//Find the robot controller in the file if one isn't specified by the user.
@@ -181,24 +185,28 @@ int main(int argc, char** argv)
       }
 #endif
 
-      /******************************ChaiGlut Graphics************************************/
-      glutInit(&argc, argv);
 
-      scl::CGraphicsChai chai_gr;
-      flag = chai_gr.initGraphics(graphics_names[0]);
-      if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
-
-      flag = chai_gr.addRobotToRender(robot_name);
-      if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
-
-      if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_names[0], &chai_gr))
-      { throw(std::runtime_error("Glut initialization error")); }
 
       /******************************Shared I/O Data Structure************************************/
       scl::SRobotIO* rob_io_ds;
       rob_io_ds = db->s_io_.io_data_.at(robot_name);
       if(S_NULL == rob_io_ds)
       { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
+
+      /******************************ChaiGlut Graphics************************************/
+      glutInit(&argc, argv);
+
+      scl::CGraphicsChai chai_gr;
+      scl::SGraphicsParsed *gr_parsed = db->s_parser_.graphics_worlds_.at(graphics_names[0]);
+      scl::SGraphicsChai *chai_ds = db->s_gui_.chai_data_.at(graphics_names[0]);
+      flag = chai_gr.initGraphics(gr_parsed,chai_ds);
+      if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
+
+      flag = chai_gr.addRobotToRender(rob_ds,rob_io_ds);
+      if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
+
+      if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_names[0], &chai_gr))
+      { throw(std::runtime_error("Glut initialization error")); }
 
       /**********************Initialize Robot Dynamics and Controller*******************/
       scl::CDynamicsTao tao_dyn; //Use for model updates.

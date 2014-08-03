@@ -226,10 +226,12 @@ int main(int argc, char** argv)
       glutInit(&argc, argv);
 
       scl::CGraphicsChai chai_gr;
-      flag = chai_gr.initGraphics(graphics_names[0]);
+      scl::SGraphicsParsed *gr_parsed = db->s_parser_.graphics_worlds_.at(graphics_names[0]);
+      scl::SGraphicsChai *chai_ds = db->s_gui_.chai_data_.at(graphics_names[0]);
+      flag = chai_gr.initGraphics(gr_parsed,chai_ds);
       if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
 
-      flag = chai_gr.addRobotToRender(robot_name);
+      flag = chai_gr.addRobotToRender(rob_ds,rob_io_ds);
       if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
 
       if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_names[0], &chai_gr))

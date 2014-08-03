@@ -136,7 +136,7 @@ namespace scl_app
     void runMainLoop();
 
     //Data types. Feel free to use them.
-    scl::SDatabase* db;                 //Generic database (for sharing data)
+    scl::SDatabase* db;                    //Generic database (for sharing data)
 
     std::vector<std::string> robots_parsed;   //Parsed robots
     std::vector<std::string> graphics_parsed; //Parsed graphics views
@@ -144,16 +144,17 @@ namespace scl_app
     std::string robot_name[2];             //Currently selected robot
     std::string ctrl_name[2];              //Currently selected controller
 
-    scl::CRobot robot[2];                  //Generic robot
-    scl::SRobotIO* rob_io_ds[2];       //Access the robot's sensors and actuators
+    scl::CRobot robot[2];                  // Generic robot
+    scl::SRobotParsed *rob_ds[2];          // Parsed robot data.
+    scl::SRobotIO* rob_io_ds[2];           //Access the robot's sensors and actuators
 
-    scl::CDynamicsTao* dyn_tao_[2];          //Generic tao dynamics
-    scl::CDynamicsScl* dyn_scl_[2];          //Generic scl dynamics
-    scl::CGraphicsChai chai_gr;         //Generic chai graphics
+    scl::CDynamicsTao* dyn_tao_[2];        //Generic tao dynamics
+    scl::CDynamicsScl* dyn_scl_[2];        //Generic scl dynamics
+    scl::CGraphicsChai chai_gr;            //Generic chai graphics
 
-    scl::sLongLong ctrl_ctr;            //Controller computation counter
-    scl::sLongLong gr_ctr;              //Controller computation counter
-    scl::sFloat t_start, t_end;         //Start and end times
+    scl::sLongLong ctrl_ctr;               //Controller computation counter
+    scl::sLongLong gr_ctr;                 //Controller computation counter
+    scl::sFloat t_start, t_end;            //Start and end times
 
     std::fstream log_file_[2];             //Logs vectors of [q, dq, x]
     std::fstream log_file_J_[2];           //Logs J
@@ -216,15 +217,21 @@ namespace scl_app
           if(!scl_util::isStringInVector(robot_name[i],robots_parsed))
           { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
+          rob_ds[i] = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name[i]);
+
           /******************************TaoDynamics************************************/
           dyn_tao_[i] = new scl::CDynamicsTao();
-          flag = dyn_tao_[i]->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name[i]));
+          flag = dyn_tao_[i]->init(* (rob_ds[i]) );
           if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
-
           dyn_scl_[i] = new scl::CDynamicsScl();
-          flag = dyn_scl_[i]->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name[i]));
+          flag = dyn_scl_[i]->init(* (rob_ds[i]) );
           if(false == flag) { throw(std::runtime_error("Could not initialize dynamics algorithms"));  }
+
+          /******************************Shared I/O Data Structure************************************/
+          rob_io_ds[i] = db->s_io_.io_data_.at(robot_name[i]);
+          if(S_NULL == rob_io_ds[i])
+          { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
           /******************************ChaiGlut Graphics************************************/
           if(!db->s_gui_.glut_initialized_)
@@ -237,11 +244,13 @@ namespace scl_app
           //Fix later...
           if(i==0)
           {
-            flag = chai_gr.initGraphics(graphics_parsed[0]);
+            scl::SGraphicsParsed *gr_parsed = db->s_parser_.graphics_worlds_.at(graphics_parsed[0]);
+            scl::SGraphicsChai *chai_ds = db->s_gui_.chai_data_.at(graphics_parsed[0]);
+            flag = chai_gr.initGraphics(gr_parsed,chai_ds);
             if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
           }
 
-          flag = chai_gr.addRobotToRender(robot_name[i]);
+          flag = chai_gr.addRobotToRender(rob_ds[i],rob_io_ds[i]);
           if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
 
           //Bit of a hack, ignore the second robot's graphics spec
@@ -251,11 +260,6 @@ namespace scl_app
             if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_parsed[0], &chai_gr))
             { throw(std::runtime_error("Glut initialization error")); }
           }
-
-          /******************************Shared I/O Data Structure************************************/
-          rob_io_ds[i] = db->s_io_.io_data_.at(robot_name[i]);
-          if(S_NULL == rob_io_ds[i])
-          { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
           /**********************Initialize Robot Dynamics and Controller*******************/
           flag = robot[i].initFromDb(robot_name[i],dyn_scl_[i],dyn_tao_[i]);//Note: The robot deletes these pointers.
@@ -342,11 +346,13 @@ namespace scl_app
             nanosleep(&ts,NULL);
           }
 
-          if(scl::CDatabase::getData()->param_logging_on_)
+          if(!scl::CDatabase::getData()->pause_ctrl_dyn_ &&
+              scl::CDatabase::getData()->param_logging_on_)
           {//Logs vectors of [q, dq, x, J]
             for(int i=0; i<2; ++i)
             {
-              log_file_[i]<<rob_io_ds[i]->sensors_.q_.transpose()<<" "
+              log_file_[i]<<sutil::CSystemClock::getSimTime()<<" "
+                  <<rob_io_ds[i]->sensors_.q_.transpose()<<" "
                   <<rob_io_ds[i]->sensors_.dq_.transpose()<<" "
                   <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i].transpose()
                   <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i+1].transpose()

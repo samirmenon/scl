@@ -87,7 +87,7 @@ namespace scl_test
       { throw(std::runtime_error("Could not read robot names from the file"));  }
       else
       {std::cout<<"\nTest Result ("<<r_id++<<")  Creating a robot specification for "
-        <<robot_names[0]<<" on the pile"<<std::flush;}
+        <<robot_names[0]<<" in the database"<<std::flush;}
 
 
       flag = scl_registry::parseRobot(file_name,
@@ -98,7 +98,7 @@ namespace scl_test
       else
       {
         std::cout<<"\nTest Result ("<<r_id++<<")  Created a robot "
-            <<robot_names[0]<<" on the pile"<<std::flush;
+            <<robot_names[0]<<" in the database"<<std::flush;
       }
 
 #ifdef DEBUG
@@ -114,7 +114,17 @@ namespace scl_test
       else
       {
         std::cout<<"\nTest Result ("<<r_id++<<")  Found robot "
-            <<robot_names[0]<<" on the pile"<<std::flush;
+            <<robot_names[0]<<" in the database"<<std::flush;
+      }
+
+      scl::SRobotIO* rob_io_ds;
+      rob_io_ds = db->s_io_.io_data_.at(robot_names[0]);
+      if(S_NULL == rob_io_ds)
+      { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
+      else
+      {
+        std::cout<<"\nTest Result ("<<r_id++<<")  Found robot I/O data structure "
+            <<robot_names[0]<<" in the database"<<std::flush;
       }
 
       //Ok. Now we have a robot's specification specification parsed into
@@ -127,7 +137,7 @@ namespace scl_test
       { throw(std::runtime_error("Could not read graphics names from the file"));  }
       else
       {std::cout<<"\nTest Result ("<<r_id++<<")  Creating a graphics specification for "
-        <<graphics_names[0]<<" on the pile"<<std::flush;}
+        <<graphics_names[0]<<" in the database"<<std::flush;}
 
       flag = scl_registry::parseGraphics(file_name,
           graphics_names[0], &tmp_lparser);
@@ -137,7 +147,7 @@ namespace scl_test
       else
       {
         std::cout<<"\nTest Result ("<<r_id++<<")  Created a graphics "
-            <<graphics_names[0]<<" on the pile"<<std::flush;
+            <<graphics_names[0]<<" in the database"<<std::flush;
       }
 
       //2.b. Pull out the graphics's ds from the db
@@ -145,25 +155,38 @@ namespace scl_test
       if(S_NULL==gr_ds)
       {
         throw(std::runtime_error(
-            "Could not find any graphics specification in the database. (Did you parse it from a file yet?)"));
+            "Could not find any graphics specification in the database. Should have been parsed by now."));
       }
       else
       {
         std::cout<<"\nTest Result ("<<r_id++<<")  Found graphics specification "
-            <<gr_ds->name_<<" on the pile"<<std::flush;
+            <<gr_ds->name_<<" in the database"<<std::flush;
       }
+
+      scl::SGraphicsChai *chai_ds = db->s_gui_.chai_data_.at(graphics_names[0]);
+      if(S_NULL==chai_ds)
+      {
+        throw(std::runtime_error(
+            "Could not find any chai object in the database. Should have been parsed by now."));
+      }
+      else
+      {
+        std::cout<<"\nTest Result ("<<r_id++<<")  Found chai object "
+            <<chai_ds->name_<<" in the database"<<std::flush;
+      }
+
 
       /******************************Chai Initialization************************************/
       //3. Initialize a chai graphics object
       CGraphicsChai chai_gr;
-      flag = chai_gr.initGraphics(gr_ds->name_);
+      flag = chai_gr.initGraphics(gr_ds,chai_ds);
       if(false==flag)
       { throw(std::runtime_error("Couldn't initialize chai graphics")); }
       else
       { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized chai graphics"<<std::flush;  }
 
       //5. Add a robot to render
-      flag = chai_gr.addRobotToRender(robot_names[0]);
+      flag = chai_gr.addRobotToRender(rob_ds,rob_io_ds);
       if(false==flag)
       { throw(std::runtime_error("Couldn't find robot to render")); }
       else

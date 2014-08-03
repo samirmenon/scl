@@ -150,6 +150,7 @@ namespace scl_test
     std::string ctrl_name;              //Currently selected controller
 
     scl::CRobot robot;                  //Generic robot
+    scl::SRobotParsed *rob_ds;          //Generic robot data structure
     scl::SRobotIO* rob_io_ds;       //Access the robot's sensors and actuators
 
     scl::CDynamicsTao* tao_dyn;          //Generic tao dynamics
@@ -205,10 +206,19 @@ namespace scl_test
       if(!scl_util::isStringInVector(robot_name,robots_parsed))
       { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
+      rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
+      if(NULL == rob_ds)
+      { throw(std::runtime_error("Could not find registered robot data struct in the database"));  }
+
       /******************************TaoDynamics************************************/
       tao_dyn = new scl::CDynamicsTao();
       flag = tao_dyn->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
+
+      /******************************Shared I/O Data Structure************************************/
+      rob_io_ds = db->s_io_.io_data_.at(robot_name);
+      if(S_NULL == rob_io_ds)
+      { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
       /******************************ChaiGlut Graphics************************************/
       //Check if glut has already been initialized.
@@ -218,19 +228,16 @@ namespace scl_test
         db->s_gui_.glut_initialized_ = true;
       }
 
-      flag = chai_gr.initGraphics(graphics_parsed[0]);
+      scl::SGraphicsParsed *gr_parsed = db->s_parser_.graphics_worlds_.at(graphics_parsed[0]);
+      scl::SGraphicsChai *chai_ds = db->s_gui_.chai_data_.at(graphics_parsed[0]);
+      flag = chai_gr.initGraphics(gr_parsed,chai_ds);
       if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
 
-      flag = chai_gr.addRobotToRender(robot_name);
+      flag = chai_gr.addRobotToRender(rob_ds,rob_io_ds);
       if(false==flag) { throw(std::runtime_error("Couldn't add robot to the chai rendering object")); }
 
       if(false == scl_chai_glut_interface::initializeGlutForChai(graphics_parsed[0], &chai_gr))
       { throw(std::runtime_error("Glut initialization error")); }
-
-      /******************************Shared I/O Data Structure************************************/
-      rob_io_ds = db->s_io_.io_data_.at(robot_name);
-      if(S_NULL == rob_io_ds)
-      { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
       /**********************Initialize Robot Dynamics and Controller*******************/
       flag = robot.initFromDb(robot_name,tao_dyn,tao_dyn);//Note: The robot deletes these pointers.
