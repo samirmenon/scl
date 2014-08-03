@@ -93,8 +93,12 @@ namespace scl_ext
       //Step 2b: Create the corresponding root 3d node
       //Root node's home frame translation and orientation
       chai3d::cWorld *cw = new chai3d::cWorld();
-      cDynamicWorld *cdw = new cDynamicWorld(cw);
+      cdw = new cDynamicWorld(cw);
+
       cw->addChild(cdw);
+
+      cdw->setGravity(arg_robot.gravity_(0),arg_robot.gravity_(1),arg_robot.gravity_(2));
+
       Eigen::Quaternion<sFloat> tmp_quat(tmp_root->ori_parent_quat_.w(), tmp_root->ori_parent_quat_.x(), tmp_root->ori_parent_quat_.y(), tmp_root->ori_parent_quat_.z());
       Eigen::Matrix3d tmp_rot_mat = tmp_quat.toRotationMatrix();
       chai3d::cMatrix3d rot;
@@ -121,18 +125,22 @@ namespace scl_ext
       ret_3d_root->scl_id=tmp_root->link_id_; //NOTE TODO What about the multiple robot case? Will all have rootId = -1
       ret_3d_root->name_ = tmp_root->name_;
 
+      std::cout << "ROOT NODE NAME: " << ret_3d_root->name_ << std::endl;
+
       // add the graphics file
       cDynamicMaterial * mat = new cDynamicMaterial();
       // mat->setEpsilon(.05);
-      mat->setStaticFriction(0.0);
-      mat->setDynamicFriction(0.0);
+      mat->setStaticFriction(0.1);
+      mat->setDynamicFriction(0.1);
 
       cDynamicLink *tmp_link = ret_3d_baseRobot->newLink(mat);
       ret_3d_baseRobot->linkChild(tmp_link,chai3d::cVector3d(0,0,0), chai3d::cIdentity3d());
 
+      ret_3d_baseRobot->setShowContactNormalForces(true);
+
       cDynamicLink *ret_3d_link = ret_3d_base->newLink(mat);
-      double error = 0.0001;   // tolerance error for contact detection
-      double radius = 0.0001;  // radius zone for contact detection
+      double error = 1e-6;   // tolerance error for contact detection
+      double radius = 1e-4;  // radius zone for contact detection
       chai3d::cMultiMesh* objectModel = new chai3d::cMultiMesh();
       ret_3d_link->addChild(objectModel);
 
@@ -162,7 +170,7 @@ namespace scl_ext
       }
       ret_3d_link->setCollisionModel(objectModel);
       ret_3d_link->setImageModel(objectModel);
-      ret_3d_link->buildCollisionTriangles(radius, error);
+      ret_3d_link->buildCollisionHull(radius, error);
       ret_3d_base->linkChild(ret_3d_link,chai3d::cVector3d(0,0,0), chai3d::cIdentity3d());
 
       //Step 2c: Create child nodes
@@ -262,9 +270,11 @@ namespace scl_ext
       //mat->setEpsilon(.95);
 
       //SET FRICTION HERE!
-      mat->setStaticFriction(0.0);
-      mat->setDynamicFriction(0.0);
+      mat->setStaticFriction(0.1);
+      mat->setDynamicFriction(0.1);
       ret_3d_link = base_obj->newLink(mat);
+
+      base_obj->setShowContactNormalForces(true);
 
       ret_3d_node = ret_3d_link->m_dynObject;
       ret_3d_node->name_ = arg_link->name_;
@@ -324,21 +334,21 @@ namespace scl_ext
       chai3d::cMultiMesh* objectModel = new chai3d::cMultiMesh();
       for(std::vector<SRigidBodyGraphics>::const_iterator it = arg_link->graphics_obj_vec_.begin();
           it != arg_link->graphics_obj_vec_.end(); ++it) {
-        ;
         if((*it).collision_type_){
-          if((*it).class_ == (*it).CLASS_CUBOID){
+
+          if((*it).class_ == (*it).GRAPHIC_TYPE_CUBOID){
             chai3d::cMesh* meshObject = objectModel->newMesh();
             cCreateBox(meshObject, (double)(*it).scaling_[0], (double)(*it).scaling_[1], (double)(*it).scaling_[2]);
 
-          }else if((*it).class_ == (*it).CLASS_CYLINDER){
+          }else if((*it).class_ == (*it).GRAPHIC_TYPE_CYLINDER){
             chai3d::cMesh* meshObject = objectModel->newMesh();
             cCreateCylinder(meshObject, (double)(*it).scaling_[0], (double)(*it).scaling_[1]);
 
-          }else if ((*it).class_ == (*it).CLASS_SPHERE){
+          }else if ((*it).class_ == (*it).GRAPHIC_TYPE_SPHERE){
             chai3d::cMesh* meshObject = objectModel->newMesh();
             cCreateSphere(meshObject, (double)(*it).scaling_[0]);
 
-          }else if ((*it).class_ == (*it).CLASS_FILE_OBJ){
+          }else if ((*it).class_ == (*it).GRAPHIC_TYPE_FILE_OBJ){
             //   if(false == cLoadFileOBJ(objectModel, (*it).file_name_))
             //	   cLoadFile3DS(objectModel, (*it).file_name_);
             objectModel->loadFromFile((*it).file_name_);
@@ -356,11 +366,11 @@ namespace scl_ext
             objectModel->setLocalRot(tmp_mat);
             objectModel->scale((double)(*it).scaling_(0), true);;
           }
+          ret_3d_link->setCollisionModel(objectModel);
+          ret_3d_link->setImageModel(objectModel);
+          ret_3d_link->buildCollisionHull(radius, error);
         }
       }
-      ret_3d_link->setCollisionModel(objectModel);
-      ret_3d_link->setImageModel(objectModel);
-      ret_3d_link->buildCollisionHull(radius, error);
 
       //NOTE : 3d : Home frame = Local frame wrt parent.
       // Home frame translation and orientation

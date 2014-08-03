@@ -39,6 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 class cDynamicBase;
 class cDynamicLink;
+class cDynamicWorld;
 
 namespace scl_ext {
 
@@ -50,6 +51,9 @@ namespace scl_ext {
   class CRepCreator3d
   {
   public:
+      /** Constructor : Does nothing. Use static function above. */
+      CRepCreator3d(){}
+      CRepCreator3d(const CRepCreator3d& arg){}
     /** Destructor : Does nothing */
     ~CRepCreator3d(){}
 
@@ -65,23 +69,23 @@ namespace scl_ext {
      *
      * NOTE : Remember to dereference the vectors in TODORoot
      */
-    static cDynamicBase* c3dRootRepCreator(const scl::SRobotParsed& arg_robot);
+    cDynamicBase* c3dRootRepCreator(const scl::SRobotParsed& arg_robot);
+
+    cDynamicWorld * cdw;
 
 
   private:
-    /** Constructor : Does nothing. Use static function above. */
-    CRepCreator3d(){}
-    CRepCreator3d(const CRepCreator3d& arg){}
+
 
     /** Creates a child 3d node given a robot link with all
      * the required information to initialize the node. */
-    static bool createChild3dNodes(const scl::SRigidBody* arg_link,
+    bool createChild3dNodes(const scl::SRigidBody* arg_link,
         cDynamicLink* arg_parent_node,
         cDynamicBase* arg_base);
 
     /**Creates a 3d node for a non-root link given an initialized home frame
      * The node is added to the SRigidBody* structure. */
-    static cDynamicLink* create3dNonRootNode(const scl::SRigidBody* arg_link,
+    cDynamicLink* create3dNonRootNode(const scl::SRigidBody* arg_link,
         cDynamicLink* arg_parent_node,
         cDynamicBase *base_obj);
 

@@ -118,7 +118,8 @@ namespace scl_ext
     gravity_ = arg_robot_data.gravity_;
 
     // Initialize the 3d
-    cDynamicBase * c3d_base(CRepCreator3d::c3dRootRepCreator(arg_robot_data));
+    CRepCreator3d * repcreator = new CRepCreator3d();
+    cDynamicBase * c3d_base(repcreator->c3dRootRepCreator(arg_robot_data));
     if (!c3d_base) {
       std::cout << "scl::CDynamics3d::init(`" << robot_name_
           << "'): scl::CRepCreator3d::chai3dRootRepCreator() failed [invalid robot name?]\n";
@@ -137,7 +138,7 @@ namespace scl_ext
           << "'): consistency check failed on c3d root \n";
       return false;
     }
-    c3d_base->m_dynamicWorld->setGravity((double)gravity_(0), (double)gravity_(1), (double)gravity_(2));
+    repcreator->cdw->setGravity((double)gravity_(0), (double)gravity_(1), (double)gravity_(2));
 
     //NOTE TODO Perhaps this was what TRY_TO_CONVERT_NAMES achieved
     sutil::CMappedTree<std::basic_string<char>, scl::SRigidBody>::const_iterator itbr, itbre;
@@ -223,11 +224,6 @@ namespace scl_ext
     sFloat tstep = arg_time_interval;
     c_base->m_dynamicWorld->computeGlobalPositions(true);
     c_base->m_dynamicWorld->updateDynamics(tstep);
-    /*cDynamicContactList* cl = c_base->m_dynamicContacts;
-	for(size_t i(0); i<cl->getNumContacts(); ++i){
-		std::cout<<cl->getContact(i)->m_dynamicLink->name_ <<std::endl;
-	}
-	std::cout<<"\n"<<std::endl;*/
 
     // pulls the information back into SCL
     for (size_t ii(0); ii < c_base->m_dynamicJoints.size(); ++ii)
@@ -258,9 +254,6 @@ namespace scl_ext
       arg_inputs.sensors_.force_gc_measured_(io_ds_idx) = cj->torque();
       //	}
     }
-
-
-
     return true;
   }
 
@@ -283,5 +276,49 @@ namespace scl_ext
     cDynObject *root = c_base->m_dynBaseObject;
     cDynVector3 gravity = cDynVector3(gravity_[0], gravity_[1], gravity_[2]);
     return cDynamicsPotentialEnergy(root, &gravity);
+  }
+
+  Eigen::Vector3d CDynamics3d::computeForce(std::string name){
+  	Eigen::Vector3d f(0,0,0);
+  	for (size_t i=0; i< c_base->m_dynamicContacts->getNumContacts(); i++){
+  		cDynamicContact* contact =c_base->m_dynamicContacts->getContact(i);
+  		if(contact->m_dynamicLink->name_ == name){
+  			f += Eigen::Vector3d(contact->m_globalNormalForce(0),contact->m_globalNormalForce(1),contact->m_globalNormalForce(2));
+  		}
+  	}
+  	return -f;
+  }
+
+  Eigen::Vector3d CDynamics3d::computeTorque(std::string name, Eigen::Vector3d pos){
+  	Eigen::Vector3d t(0,0,0);
+
+  	for (size_t i=0; i< c_base->m_dynamicContacts->getNumContacts(); i++){
+  		cDynamicContact* contact = c_base->m_dynamicContacts->getContact(i);
+  		if(contact->m_dynamicLink->name_ == name){
+  			Eigen::Vector3d f = Eigen::Vector3d(contact->m_globalNormalForce(0),contact->m_globalNormalForce(1),contact->m_globalNormalForce(2));
+  			Eigen::Vector3d r = Eigen::Vector3d(contact->m_globalPos(0)-pos(0),contact->m_globalPos(1)-pos(1),contact->m_globalPos(2)-pos(2));
+  			t += r.cross(-f);
+  		}
+  	}
+  	return t;
+  }
+
+  scl::sBool CDynamics3d::hasContacted(std::string name){
+  	for (size_t i=0; i< c_base->m_dynamicContacts->getNumContacts(); i++){
+  		cDynamicContact* contact =c_base->m_dynamicContacts->getContact(i);
+  		if(contact->m_dynamicLink->name_ == name){
+  			return true;
+  		}
+  	}
+  	return false;
+  }
+
+  scl::sInt CDynamics3d::getNumContacts(std::string name){
+  	scl::sInt count = 0;
+  	for (size_t i=0; i< c_base->m_dynamicContacts->getNumContacts(); i++){
+  		cDynamicContact* contact =c_base->m_dynamicContacts->getContact(i);
+  		if(contact->m_dynamicLink->name_ == name) count++;
+  	}
+  	return count;
   }
 }

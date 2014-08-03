@@ -47,6 +47,7 @@ namespace scl
 
 //Dynamics3d forward declaration
 class cDynamicBase;
+class cDynamicWorld;
 
 namespace scl_ext
 {
@@ -119,6 +120,14 @@ namespace scl_ext
         /** The current generalized coordinates. */
         const Eigen::VectorXd& arg_q);
 
+    /* given the name of an object, computes the forces and torques around that object
+     * does not work with friction.
+     */
+    Eigen::Vector3d computeForce(std::string name);
+    Eigen::Vector3d computeTorque(std::string name, Eigen::Vector3d pos);
+    scl::sBool hasContacted(std::string name);
+    scl::sInt getNumContacts(std::string name);
+
     /* *******************************************************************
      *                      Computational functions.
      * ******************************************************************* */
@@ -162,6 +171,8 @@ namespace scl_ext
      * it returns false
      */
     virtual bool init(const scl::SRobotParsed& arg_robot_data);
+    /* Dynamics3d's base node */
+    cDynamicBase *c_base;
 
   private:
     /** The robot's name */
@@ -173,8 +184,6 @@ namespace scl_ext
     /** The gravity acting on the robot */
     Eigen::Vector3d gravity_;
 
-    /* Dynamics3d's base node */
-    cDynamicBase *c_base;
   };
 
 }
