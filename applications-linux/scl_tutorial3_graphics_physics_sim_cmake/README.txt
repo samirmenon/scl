@@ -12,7 +12,7 @@ $ mkdir -p build_dbg
 $ cd build_dbg
 $ cmake .. -DCMAKE_BUILD_TYPE=Debug
 $ make -j
-$ cp -rf scl_tutorial3_graphics_cmake ..
+$ cp -rf scl_tutorial3_graphics_physics_sim_cmake ..
 or simply run a script that does all that
 $ sh make_dbg.sh
 
@@ -21,7 +21,7 @@ $ mkdir -p build_rel
 $ cd build_rel
 $ cmake .. -DCMAKE_BUILD_TYPE=Release
 $ make -j
-$ cp -rf scl_tutorial3_graphics_cmake ..
+$ cp -rf scl_tutorial3_graphics_physics_sim_cmake ..
 or simply run a script that does all that
 $ sh make_rel.sh
 
