@@ -6,8 +6,9 @@
 SCL_INC_DIR = ../../src/scl/
 SCL_TAO_INC_DIR = ../../src/scl/dynamics/tao/
 
-SCL_DBG_LIB_DIR = -L../scl_lib/debug/ -Wl,--rpath=../scl_lib/debug/
-SCL_FIN_LIB_DIR = -L../scl_lib/release/ -Wl,--rpath=../scl_lib/release/
+SCL_LIB_DIR = ../../applications-linux/scl_lib
+SCL_DBG_LIB_DIR = -L$(SCL_LIB_DIR)/debug/ -Wl,--rpath=$(SCL_LIB_DIR)/debug/
+SCL_FIN_LIB_DIR = -L$(SCL_LIB_DIR)/release/ -Wl,--rpath=$(SCL_LIB_DIR)/release/
 
 SCL_LIBS = -lscl -fopenmp -lgomp 
 

@@ -6,8 +6,9 @@
 SCL_INC_DIR = ../../src/scl/
 SCL_TAO_INC_DIR = ../../src/scl/dynamics/tao/
 
-SCL_DBG_LIB_DIR = -L../scl_lib/debug/ -Wl,--rpath=../scl_lib/debug/
-SCL_FIN_LIB_DIR = -L../scl_lib/release/ -Wl,--rpath=../scl_lib/release/
+SCL_LIB_DIR = ../../applications-linux/scl_lib
+SCL_DBG_LIB_DIR = -L$(SCL_LIB_DIR)/debug/ -Wl,--rpath=$(SCL_LIB_DIR)/debug/
+SCL_FIN_LIB_DIR = -L$(SCL_LIB_DIR)/release/ -Wl,--rpath=$(SCL_LIB_DIR)/release/
 
 SCL_LIBS = -lscl -fopenmp -lgomp 
 
@@ -30,16 +31,16 @@ FINALFLAGS = -Wall -O3 $(INCLUDEDIRS) -fPIC $(SCL_FIN_LIB_DIR) $(SCL_LIBS) $(SCL
 
 ############################ BUILD SPECIFICATIONS ############################
 # The final application ot be built
-TARGET = scl_tutorial2_physics_integration
+TARGET = scl_tutorial1_xml_kinematics_dynamics
 
 #Build all simulations
 .PHONY: all
 all: 
-	g++ scl_tutorial2_physics_integration.cpp -o $(TARGET) $(DBGFLAGS)
+	g++ scl_tutorial1_xml_kinematics_dynamics.cpp -o $(TARGET) $(DBGFLAGS)
 
 .PHONY: release 
 release: 
-	g++ scl_tutorial2_physics_integration.cpp -o $(TARGET) $(FINALFLAGS) 
+	g++ scl_tutorial1_xml_kinematics_dynamics.cpp -o $(TARGET) $(FINALFLAGS) 
 
 #Clean up options
 .PHONY : clean

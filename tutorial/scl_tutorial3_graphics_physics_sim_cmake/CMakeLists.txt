@@ -45,7 +45,7 @@ SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -O0 -pg -std=c++0x -DGRAPHICS_ON -DASSERT=asser
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
 
 #Set all the sources required for the library
-SET(TUTE3_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_tutorial3_graphics_physics_sim_cmake/)
+SET(TUTE3_BASE_DIR ${SCL_BASE_DIR}/tutorial/scl_tutorial3_graphics_physics_sim_cmake/)
 
 #These are the source files that will be compiled.
 SET(ALL_SRC ${TUTE3_BASE_DIR}/scl_tutorial3_graphics_physics_sim_cmake.cpp
