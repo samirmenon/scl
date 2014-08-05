@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
  */
-/* \file scl_tutorial2_physics_integration.cpp
+/* \file scl_tutorial3_graphics_physics_cmake.cpp
  *
  *  Created on: Jul 30, 2014
  *
