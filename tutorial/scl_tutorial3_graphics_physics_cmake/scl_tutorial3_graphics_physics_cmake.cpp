@@ -78,7 +78,7 @@ int main(int argc, char** argv)
   scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
   scl::SRobotIO rio;         //I/O data structure
   scl::CGraphicsChai rchai;  //Chai interface (updates graphics rendering tree etc.)
-  scl::CDynamicsTao dyn_tao; //Robot kinematics and dynamics computation object...
+  scl::CDynamicsTao dyn_tao; //Robot physics integrator...
   scl::CParserScl p;         //This time, we'll parse the tree from a file...
 
   /******************************Load Robot Specification************************************/
@@ -93,11 +93,11 @@ int main(int argc, char** argv)
   /******************************ChaiGlut Graphics************************************/
   glutInit(&argc, argv); // We will use glut for the window pane (not the graphics).
 
-  flag = p.readGraphicsFromFile("./RRRRCfg.xml","rrrrGraphics",rgr);
+  flag = p.readGraphicsFromFile("./RRRRCfg.xml","rrrrgraphics",rgr);
   flag = flag && rchai.initGraphics(&rgr);
   flag = flag && rchai.addRobotToRender(&rds,&rio);
   flag = flag && scl_chai_glut_interface::initializeGlutForChai(&rgr, &rchai);
-  if(false==flag) { throw(std::runtime_error("Couldn't initialize chai graphics")); }
+  if(false==flag) { std::cout<<"\nCouldn't initialize chai graphics\n"; return 1; }
 
   /******************************Simulation************************************/
   // Now let us integrate the model for a variety of timesteps and see energy stability
