@@ -243,6 +243,7 @@ namespace scl_ext
     {
       scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
       if(-1 == value) { continue; } //Do nothing for the root node.
+
       std::string name = arg_gc_model->rbdyn_tree_.at(processing_order[i])->name_;
       force_i = IC[value] * arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_;
       H(value,value) = (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force_i)(0,0);
@@ -260,9 +261,11 @@ namespace scl_ext
 
     //calculate joint torque
     if(H.determinant()!=0)
+    {
       ret_ddq = (H.inverse()*( arg_io_data->actuators_.force_gc_commanded_ -C)); //joint acceleration
+    }
     else
-      ret_ddq = Eigen::VectorXd::Zero(processing_order.size());
+    { ret_ddq = Eigen::VectorXd::Zero(processing_order.size()); }
 
     return true;
   }
@@ -361,10 +364,7 @@ namespace scl_ext
     Eigen::VectorXd copy_0_q = arg_io_data.sensors_.q_ , copy_0_dq = arg_io_data.sensors_.dq_ ,
         copy_0_ddq = arg_io_data.sensors_.ddq_;
 
-    Eigen::VectorXd ret_fgc(arg_io_data.sensors_.ddq_.size()) ,
-        ret_q(arg_io_data.sensors_.ddq_.size()),
-        ret_dq(arg_io_data.sensors_.ddq_.size()),
-        ret_ddq(arg_io_data.sensors_.ddq_.size());
+    Eigen::VectorXd ret_ddq(arg_io_data.sensors_.ddq_.size());
 
     // This was the original integrator (simple forward euler)
     //NOTE TODO : Remove temp vars to make things more efficient
