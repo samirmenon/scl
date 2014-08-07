@@ -32,13 +32,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CDYNAMICSBASE_HPP_
 #define CDYNAMICSBASE_HPP_
 
-#include <string>
-#include <Eigen/Dense>
-
 #include <scl/DataTypes.hpp>
-
 #include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SGcModel.hpp>
+
+#include <Eigen/Dense>
+#include <string>
 
 namespace scl {
 
@@ -297,6 +296,8 @@ public:
    * false : If it can't find the robot or if the information
    * is inconsistent with what the implementation requires,
    * it returns false
+   *
+   * NOTE TODO : Should strive for a stateless dynamics implementation...
    */
   virtual sBool init(const SRobotParsed& arg_robot_data)=0;
 
