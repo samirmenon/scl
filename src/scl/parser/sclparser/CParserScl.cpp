@@ -1824,8 +1824,8 @@ bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
       std::string &arg_must_use_robot,
       scl::SControllerMultiTask& arg_ctrl,
-      std::vector<STaskBase*> &arg_taskvec,
-      std::vector<SNonControlTaskBase*> &arg_task_non_ctrl_vec)
+      std::vector<STaskBase*> &ret_taskvec,
+      std::vector<SNonControlTaskBase*> &ret_task_non_ctrl_vec)
 {
   bool flag;
   try
@@ -2120,7 +2120,7 @@ bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
          *  **********************************************/
 
         //Add the parsed task to the controller' task vector
-        arg_taskvec.push_back(tmp_task);
+        ret_taskvec.push_back(tmp_task);
 
 #ifdef DEBUG
           std::cout<<"\nCParserScl::readTaskControllerFromFile() : Parsed task: "<<tmp_task->name_<<". Type: "<<tmp_task->type_task_;
@@ -2199,7 +2199,7 @@ bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
           tmp_task->task_nonstd_params_.push_back(nonstd_param);
         }
         //Add the parsed task to the controller' task vector
-        arg_task_non_ctrl_vec.push_back(tmp_task);
+        ret_task_non_ctrl_vec.push_back(tmp_task);
 
 #ifdef DEBUG
         std::cout<<"\nCParserScl::readTaskControllerFromFile() : Parsed non-control task: "<<tmp_task->name_<<". Type: "<<tmp_task->type_task_;
