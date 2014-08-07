@@ -359,31 +359,24 @@ namespace scl_ext
         /** step dt time */
         const scl::sFloat arg_time_interval)
   {
-    /** Updated code : Merge above */
-    // NOTE TODO : Cache these instead of dynamically allocating them each time to improve performance.
-    Eigen::VectorXd copy_0_q = arg_io_data.sensors_.q_ , copy_0_dq = arg_io_data.sensors_.dq_ ,
-        copy_0_ddq = arg_io_data.sensors_.ddq_;
+    // Cache the current state.
+    arg_gc_model->vec_scratch_[0] = arg_io_data.sensors_.q_;
+    arg_gc_model->vec_scratch_[1] = arg_io_data.sensors_.dq_;
+    arg_gc_model->vec_scratch_[2] = arg_io_data.sensors_.ddq_;
 
-    Eigen::VectorXd ret_ddq(arg_io_data.sensors_.ddq_.size());
-
-    // This was the original integrator (simple forward euler)
-    //NOTE TODO : Remove temp vars to make things more efficient
-    Eigen::VectorXd q(arg_io_data.sensors_.q_.size()),dq(arg_io_data.sensors_.q_.size());
-    dq = arg_io_data.sensors_.dq_ + arg_io_data.sensors_.ddq_ * arg_time_interval;
-    q = arg_io_data.sensors_.q_ + arg_io_data.sensors_.dq_  * arg_time_interval;
-
-    arg_io_data.sensors_.q_ = q;
-    arg_io_data.sensors_.dq_ = dq;
+    // Original integrator: Simple forward euler
+    arg_io_data.sensors_.dq_ += arg_io_data.sensors_.ddq_ * arg_time_interval;
+    arg_io_data.sensors_.q_ += arg_io_data.sensors_.dq_  * arg_time_interval;
 
     // We use the forward euler integrator results here to compute the forward dynamics.
-    forwardDynamicsCRBA(&arg_io_data, arg_gc_model ,ret_ddq);
-    arg_io_data.sensors_.ddq_ = ret_ddq;
+    forwardDynamicsCRBA(&arg_io_data, arg_gc_model ,arg_io_data.sensors_.ddq_);
 
-    arg_io_data.sensors_.dq_ = copy_0_dq + arg_time_interval*0.5*(copy_0_ddq+ret_ddq);
-    arg_io_data.sensors_.q_ = copy_0_q + arg_time_interval*0.5*(copy_0_dq + arg_io_data.sensors_.dq_);
+    // Now use Heun's method to correct for hot.
+    arg_io_data.sensors_.dq_ = arg_gc_model->vec_scratch_[1] + arg_time_interval*0.5*(arg_gc_model->vec_scratch_[2]+arg_io_data.sensors_.ddq_);
+    arg_io_data.sensors_.q_ = arg_gc_model->vec_scratch_[0] + arg_time_interval*0.5*(arg_gc_model->vec_scratch_[1] + arg_io_data.sensors_.dq_);
 
-    forwardDynamicsCRBA(&arg_io_data, arg_gc_model,ret_ddq);
-    arg_io_data.sensors_.ddq_ = ret_ddq;
+    // Finally recompute the accelerations.
+    forwardDynamicsCRBA(&arg_io_data, arg_gc_model,arg_io_data.sensors_.ddq_);
 
     return true;
   }
