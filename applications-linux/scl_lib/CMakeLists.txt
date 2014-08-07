@@ -110,6 +110,8 @@ SET(DYN_ANALYTIC_SRC ${SCL_INC_DIR}/dynamics/analytic/CDynamicsAnalyticRPP.cpp
    )
    
 SET(DYN_SCL_SRC ${SCL_INC_DIR}/dynamics/scl/CDynamicsScl.cpp
+                ${SCLEXT_INC_DIR}/dynamics/scl_spatial/CDynamicsSclSpatial.cpp
+                ${SCLEXT_INC_DIR}/dynamics/scl_spatial/CDynamicsSclSpatialMath.cpp
    )
    
 SET(SCL_PARSER_SRC ${SCL_INC_DIR}/parser/sclparser/CParserScl.cpp
