@@ -57,7 +57,7 @@ namespace scl_ext
 
     // first iteration :Calculate joint velocity and acceleration
 
-    for(i = 0 ; i < processing_order.size()  ; ++i )
+    for(i = 0 ; i < static_cast<int>(processing_order.size())  ; ++i )
     {
       int value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
       Eigen::MatrixXd XJ(6,6);
@@ -73,7 +73,7 @@ namespace scl_ext
 
       Eigen::MatrixXd Vcross(6,6);
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->name_ ==std::string("ground"))
+      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         Vi = Vj;
         Ci = Eigen::MatrixXd::Zero(6,1);
@@ -95,7 +95,7 @@ namespace scl_ext
 
     // Second Iteration : update articulated inertia and Bias force
 
-    for( i = processing_order.size()  - 1 ; i >= 0 ; i-- )
+    for( i = static_cast<int>(processing_order.size())  - 1 ; i >= 0 ; i-- )
     {
       int value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
       U[value]=articulated_inertia_[value] * arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_;
@@ -104,7 +104,7 @@ namespace scl_ext
       ui(0,0) = ( arg_io_data->actuators_.force_gc_commanded_(value,0)-(arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose()*biasforce[value])(0,0));
       u[value] = ui;
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->name_ !=std::string("ground"))
+      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         articulated_inertia_[arg_gc_model->rbdyn_tree_.at(value)->parent_addr_->link_ds_->link_id_] += (Xup[value].transpose()*(articulated_inertia_[value] - U[value]*D[value].inverse()*U[value].transpose())*Xup[value]);
         biasforce[arg_gc_model->rbdyn_tree_.at(value)->parent_addr_->link_ds_->link_id_] += (Xup[value].transpose()*(biasforce[value] + (articulated_inertia_[value] - U[value]*D[value].inverse()*U[value].transpose())*C[value] + U[value]*u[value]*D[value].inverse()));
@@ -114,11 +114,11 @@ namespace scl_ext
     //Third Iteration : Calculate joint acceleration
 
     Eigen::MatrixXd ddq( processing_order.size(),1);
-    for( i = 0; i <  processing_order.size() ; i++ )
+    for( i = 0; i <  static_cast<int>(processing_order.size()) ; i++ )
     {
       int value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->name_ ==std::string("ground"))
+      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         acceleration_i = Xup[value]*(gravity) + C[value];
       }
@@ -165,11 +165,12 @@ namespace scl_ext
     scl::sFloat q;
 
     //First iteration : Calculate joint velocity and Acceleration
-    for(i = 0 ; i < processing_order.size() ; ++i )
+    for(i = 0 ; i < static_cast<int>(processing_order.size()) ; ++i )
     {
       scl::sInt  value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
       Eigen::MatrixXd XJ(6,6);
-      q = arg_io_data->sensors_.q_.array()[value];
+      if(-1 == value) { continue; } //Do nothing for the root node.
+      q = arg_io_data->sensors_.q_(value);
       calculateTransformationAndSubspace(XJ, subspace, arg_gc_model->rbdyn_tree_.at(value)->link_ds_->joint_type_ , q); //calclate Xj ,S
 
       arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_ = subspace;
@@ -180,7 +181,7 @@ namespace scl_ext
 
       Eigen::MatrixXd Vcross(6,6);
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->name_ ==std::string("ground"))
+      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         Vi = Vj;
         acceleration_i= Xupi * gravity ;
@@ -200,11 +201,12 @@ namespace scl_ext
 
     //Second iteration : Calculate joint force
 
-    for(i = processing_order.size() - 1 ; i >= 0 ; i-- )
+    for(i = static_cast<int>(processing_order.size()) - 1 ; i >= 0 ; i-- )
     {
       scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
+      if(-1 == value) { continue; } //Do nothing for the root node.
       C(value,0) =  (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force[value])(0,0); //calculate C matrix
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->name_ !=std::string("ground"))
+      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         force[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] += ( Xup[value ].transpose() * force[value] );  //update joint force for parent i
       }
@@ -225,10 +227,11 @@ namespace scl_ext
     H=Eigen::MatrixXd::Zero(processing_order.size(),processing_order.size());
 
     //calculate composite inertia of each body
-    for( i = processing_order.size()-1 ; i>=0; i-- )
+    for( i = static_cast<int>(processing_order.size())-1 ; i>=0; i-- )
     {
       scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->name_ !=std::string("ground"))
+      if(-1 == value) { continue; } //Do nothing for the root node.
+      if( false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         IC[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] += (Xup[value].transpose()*IC[value]*Xup[value]);
       }
@@ -236,9 +239,10 @@ namespace scl_ext
 
     //Fourth iteration : Calculate joint space inertia matrix
 
-    for( i = 0 ; i < processing_order.size() ; i++ )
+    for( i = 0 ; i < static_cast<int>(processing_order.size()) ; i++ )
     {
       scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
+      if(-1 == value) { continue; } //Do nothing for the root node.
       std::string name = arg_gc_model->rbdyn_tree_.at(processing_order[i])->name_;
       force_i = IC[value] * arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_;
       H(value,value) = (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force_i)(0,0);
@@ -289,7 +293,7 @@ namespace scl_ext
     scl::sFloat q;
 
     //First iteration : Calculate Joint Force and Acceleration
-    for(i = 0 ; i < processing_order.size() ; ++i )
+    for(i = 0 ; i < static_cast<int>(processing_order.size()) ; ++i )
     {
       Eigen::MatrixXd XJ(6,6);
       scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
@@ -305,7 +309,7 @@ namespace scl_ext
 
       Eigen::MatrixXd Vcross(6,6);
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->name_ ==std::string("ground"))
+      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         Vi = Vj;
         acceleration_i = Xupi *( gravity )+ subspace * arg_io_data->sensors_.ddq_[value];
@@ -327,12 +331,12 @@ namespace scl_ext
 
     //Second iteration : Calculate Joint Torque
 
-    for(i = processing_order.size() - 1 ; i >= 0 ; i-- )
+    for(i = static_cast<int>(processing_order.size()) - 1 ; i >= 0 ; i-- )
     {
       scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
 
       Tau(value,0) = (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force[value])(0,0);    //calculate torque at each link
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->name_ !=std::string("ground"))
+      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         force[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_ ] += ( Xup[value].transpose() * force[value] );   //update force at parent link
       }
@@ -343,22 +347,49 @@ namespace scl_ext
     return true;
   }
 
-  bool CDynamicsSclSpatial::integrator(const scl::SRobotIO *arg_io_data , scl::SGcModel *arg_gc_model, const scl::sFloat arg_time_interval , Eigen::VectorXd &ret_q, Eigen::VectorXd &ret_dq )
+  bool CDynamicsSclSpatial::integrator(/** Current robot state. q, dq, ddq,
+            sensed generalized forces and perceived external forces.*/
+        scl::SRobotIO &arg_io_data,
+        /** Individual link Jacobians, and composite inertial,
+            centrifugal/coriolis gravity estimates. */
+        scl::SGcModel *arg_gc_model,
+        /** step dt time */
+        const scl::sFloat arg_time_interval)
   {
-    Eigen::VectorXd q(arg_io_data->sensors_.q_.size()),dq(arg_io_data->sensors_.q_.size());
-    for(int i = 0 ; i < arg_io_data->sensors_.q_.size() ; i++ )
-    {
-      dq(i) = arg_io_data->sensors_.dq_(i) + arg_io_data->sensors_.ddq_(i) * arg_time_interval;
-      q(i) = arg_io_data->sensors_.q_(i) + arg_io_data->sensors_.dq_(i)  * arg_time_interval  ;
-    }
+    /** Updated code : Merge above */
+    // NOTE TODO : Cache these instead of dynamically allocating them each time to improve performance.
+    Eigen::VectorXd copy_0_q = arg_io_data.sensors_.q_ , copy_0_dq = arg_io_data.sensors_.dq_ ,
+        copy_0_ddq = arg_io_data.sensors_.ddq_;
 
-    ret_q = q;
-    ret_dq = dq;
+    Eigen::VectorXd ret_fgc(arg_io_data.sensors_.ddq_.size()) ,
+        ret_q(arg_io_data.sensors_.ddq_.size()),
+        ret_dq(arg_io_data.sensors_.ddq_.size()),
+        ret_ddq(arg_io_data.sensors_.ddq_.size());
+
+    // This was the original integrator (simple forward euler)
+    //NOTE TODO : Remove temp vars to make things more efficient
+    Eigen::VectorXd q(arg_io_data.sensors_.q_.size()),dq(arg_io_data.sensors_.q_.size());
+    dq = arg_io_data.sensors_.dq_ + arg_io_data.sensors_.ddq_ * arg_time_interval;
+    q = arg_io_data.sensors_.q_ + arg_io_data.sensors_.dq_  * arg_time_interval;
+
+    arg_io_data.sensors_.q_ = q;
+    arg_io_data.sensors_.dq_ = dq;
+
+    // We use the forward euler integrator results here to compute the forward dynamics.
+    forwardDynamicsCRBA(&arg_io_data, arg_gc_model ,ret_ddq);
+    arg_io_data.sensors_.ddq_ = ret_ddq;
+
+    arg_io_data.sensors_.dq_ = copy_0_dq + arg_time_interval*0.5*(copy_0_ddq+ret_ddq);
+    arg_io_data.sensors_.q_ = copy_0_q + arg_time_interval*0.5*(copy_0_dq + arg_io_data.sensors_.dq_);
+
+    forwardDynamicsCRBA(&arg_io_data, arg_gc_model,ret_ddq);
+    arg_io_data.sensors_.ddq_ = ret_ddq;
 
     return true;
   }
 
-  bool CDynamicsSclSpatial::calculateKineticEnergy(const scl::SRobotIO *arg_io_data, scl::SGcModel *arg_gc_model, scl::sFloat &ret_kinetic_energy)
+  bool CDynamicsSclSpatial::calculateKineticEnergy(const scl::SRobotIO *arg_io_data, scl::SGcModel *arg_gc_model,
+      scl::sFloat &ret_kinetic_energy)
   {
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
@@ -383,7 +414,7 @@ namespace scl_ext
     scl::sFloat q;
 
     //First iteration : Calculate joint velocity and Acceleration
-    for(i = 0 ; i < processing_order.size() ; ++i )
+    for(i = 0 ; i < static_cast<int>(processing_order.size()) ; ++i )
     {
       scl::sInt  value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
       Eigen::MatrixXd XJ(6,6);
@@ -398,7 +429,7 @@ namespace scl_ext
 
       Eigen::MatrixXd Vcross(6,6);
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->name_ ==std::string("ground"))
+      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         Vi = Vj;
         acceleration_i= Xupi * gravity ;
@@ -418,11 +449,11 @@ namespace scl_ext
 
     //Second iteration : Calculate joint force
 
-    for(i = processing_order.size() - 1 ; i >= 0 ; i-- )
+    for(i = static_cast<int>(processing_order.size()) - 1 ; i >= 0 ; i-- )
     {
       scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
       C(value,0) =  (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force[value])(0,0); //calculate C matrix
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->name_ !=std::string("ground"))
+      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         force[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] += ( Xup[value ].transpose() * force[value] );  //update joint force for parent i
       }
@@ -443,10 +474,10 @@ namespace scl_ext
     H=Eigen::MatrixXd::Zero(processing_order.size(),processing_order.size());
 
     //calculate composite inertia of each body
-    for( i = processing_order.size()-1 ; i>=0; i-- )
+    for( i = static_cast<int>(processing_order.size())-1 ; i>=0; i-- )
     {
       scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->name_ !=std::string("ground"))
+      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
       {
         IC[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] += (Xup[value].transpose()*IC[value]*Xup[value]);
       }
@@ -454,7 +485,7 @@ namespace scl_ext
 
     //Fourth iteration : Calculate joint space inertia matrix
 
-    for( i = 0 ; i < processing_order.size() ; i++ )
+    for( i = 0 ; i < static_cast<int>(processing_order.size()) ; i++ )
     {
       scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
       std::string name = arg_gc_model->rbdyn_tree_.at(processing_order[i])->name_;

@@ -68,19 +68,38 @@ namespace scl_ext
     /* *******************************************************************
      *                      Integrator functions.
      * ******************************************************************* */
+    /** Integrates the robot's state.
+     * Uses the given applied forces, torques, positions and velocities
+     * and its internal dynamic model to compute new positions and velocities.
+     * Operates on the SRobotIO data structure.
+     *
+     * Reads from, and updates:
+     *    arg_inputs_.sensors_.q_, dq_, ddq_
+     *
+     * Reads from:
+     *    arg_inputs_.sensors_.forces_external_
+     *    arg_inputs_.actuators_.force_gc_commanded_
+     */
+    virtual scl::sBool integrate(
+        /** The existing generalized coordinates, velocities and
+         * accelerations + The generalized forces + task (euclidean)
+         * forces and the list of contact points and links. */
+        scl::SRobotIO& arg_inputs,
+        /** The time across which the system should integrate the
+         * dynamics. Could take fixed steps or dynamic ones in between.
+         * Up to the integrator implementation. */
+        const scl::sFloat arg_time_interval)
+    { return false; }
+
     /** Calculate joint position and velocity using Newton numerical integrator */
     bool integrator(/** Current robot state. q, dq, ddq,
             sensed generalized forces and perceived external forces.*/
-        const scl::SRobotIO *arg_io_data,
+        scl::SRobotIO &arg_io_data,
         /** Individual link Jacobians, and composite inertial,
             centrifugal/coriolis gravity estimates. */
         scl::SGcModel *arg_gc_model,
         /** step dt time */
-        const scl::sFloat arg_time_interval,
-        /** The returned joint position */
-        Eigen::VectorXd &ret_q,
-        /** The returned joint velocity */
-        Eigen::VectorXd &ret_dq);
+        const scl::sFloat arg_time_interval);
 
     /* *******************************************************************
        *                      Dynamics State functions.
