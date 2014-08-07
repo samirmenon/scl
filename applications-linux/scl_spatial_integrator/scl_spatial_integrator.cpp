@@ -102,7 +102,7 @@ int main(int argc, char** argv)
     if(thread_id==1) //Simulate physics and update the rio data structure..
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
-        dyn_sp_scl.integrator(&rio,&rgcm,dt,rio.sensors_.q_,rio.sensors_.dq_);
+        dyn_sp_scl.integrator(rio,&rgcm,dt);
         iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL);
       }
     else  //Read the rio data structure and updated rendererd robot..
