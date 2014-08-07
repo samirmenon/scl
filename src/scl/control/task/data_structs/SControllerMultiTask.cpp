@@ -54,12 +54,13 @@ namespace scl
   /** Initializes the data structure */
   sBool SControllerMultiTask::init(const std::string & arg_ctrl_name,
       const SRobotParsed* arg_robot_ds,
-      SRobotIO* arg_io_data)
+      SRobotIO* arg_io_data,
+      SGcModel* arg_gc_model)
   {
     bool flag;
     try
     {
-      flag = SControllerBase::init(arg_ctrl_name,arg_robot_ds,arg_io_data);
+      flag = SControllerBase::init(arg_ctrl_name,arg_robot_ds,arg_io_data,arg_gc_model);
       if(false == flag)
       {throw (std::runtime_error("Couldn't initialize the task controller"));}
 
