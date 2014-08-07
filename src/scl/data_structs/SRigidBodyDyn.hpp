@@ -93,6 +93,12 @@ namespace scl
     /** The generalized coordinate values are now a vector (multi-dof or quaternion joints) */
     Eigen::VectorXd sp_q_T_, sp_dq_T_;
 
+    /** Spatial inertia of joint */
+    sSpatialXForm sp_inertia_;
+
+    /** The transformation matrix within the link */
+    sSpatialXForm sp_X_within_link_;
+
     /** The transformation matrix from the rigid body's frame
      * to the origin frame:
      *     x_o_com_ = X_o_lnk_ * x_com_; */
@@ -102,6 +108,9 @@ namespace scl
      * to the parent frame:
      *     x_parent_frame_com_ = T_lnk_ * x_com_; */
     sutil::CMappedList<std::string,sSpatialXForm> sp_X_joint_;
+
+    Eigen::MatrixXd sp_S_joint_;     ///< Column vectors correspond to spatial directions of motion
+    Eigen::MatrixXd sp_Sorth_joint_; ///< Column vectors correspond to spatial directions of constraint
 
     //****************************************************************************************
     //Robot Branching Structure data:
