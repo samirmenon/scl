@@ -94,6 +94,9 @@ namespace scl
      * articulated body */
     sutil::CMappedTree<std::string, SRigidBodyDyn> rbdyn_tree_;
 
+    /** A set of vectors to be used as temp vectors during dynamics operations */
+    Eigen::VectorXd vec_scratch_[5];
+
     /* *********************************************************************
      *                      Initialization functions
      * ********************************************************************* */
