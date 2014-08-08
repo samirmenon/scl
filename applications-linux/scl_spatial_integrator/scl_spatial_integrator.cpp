@@ -37,6 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 
+#include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 
 //Eigen 3rd party lib
@@ -44,6 +45,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //Standard includes (for printing and multi-threading)
 #include <iostream>
+#include <iomanip>
 #include <omp.h>
 
 //Freeglut windowing environment
@@ -68,6 +70,7 @@ int main(int argc, char** argv)
   scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
   scl::SRobotIO rio;         //I/O data structure
   scl::CGraphicsChai rchai;  //Chai interface (updates graphics rendering tree etc.)
+  scl::CDynamicsScl dyn_scl; //Robot physics integrator...
   scl_ext::CDynamicsSclSpatial dyn_sp_scl; //Robot physics integrator...
   scl::CParserScl p;         //This time, we'll parse the tree from a file...
 
@@ -76,6 +79,7 @@ int main(int argc, char** argv)
   bool flag = p.readRobotFromFile("./RRRRCfg.xml","rrrrbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_sp_scl.init(rds);         //Set up integrator object
+  flag = flag && dyn_scl.init(rds);         //Set up dynamics computation object
   flag = flag && rio.init(rds.name_,rds.dof_);
   for(unsigned int i=0;i<rds.dof_;++i){ rio.sensors_.q_(i) = rds.rb_tree_.at(i)->joint_default_pos_; }
   if(false == flag){ return 1; }            //Error check.
@@ -94,6 +98,8 @@ int main(int argc, char** argv)
   std::cout<<"\nIntegrating the rrrbot's physics. Press (x) to exit.";
   long iter = 0, n_iters=100000; double dt=0.0001;
 
+  double ke,pe;
+
   omp_set_num_threads(2);
   int thread_id;
 #pragma omp parallel private(thread_id)
@@ -103,7 +109,13 @@ int main(int argc, char** argv)
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
         dyn_sp_scl.integrator(rio,&rgcm,dt);
-        iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL);
+        iter++; const timespec ts = {0, 500};/*.005ms*/ nanosleep(&ts,NULL);
+
+        pe = dyn_scl.computeEnergyPotential(rgcm.rbdyn_tree_,rio.sensors_.q_);
+        dyn_sp_scl.calculateKineticEnergy(&rio,&rgcm,ke);
+
+        if(iter % 1000 == 0)
+        { std::cout<<"\n Time ("<<iter*dt<<" of 10s total). Energy : "<<std::setw(10)<<pe<<" + "<<std::setw(10)<<ke<<" = "<<std::setw(10)<<pe+ke;}
       }
     else  //Read the rio data structure and updated rendererd robot..
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
