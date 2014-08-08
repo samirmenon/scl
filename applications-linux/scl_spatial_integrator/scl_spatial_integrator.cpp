@@ -96,7 +96,7 @@ int main(int argc, char** argv)
   /******************************Simulation************************************/
   // Now let us integrate the model for a variety of timesteps and see energy stability
   std::cout<<"\nIntegrating the rrrbot's physics. Press (x) to exit.";
-  long iter = 0, n_iters=100000; double dt=0.0001;
+  long iter = 0, n_iters=50000; double dt=0.001;
 
   double ke,pe;
 
@@ -108,19 +108,26 @@ int main(int argc, char** argv)
     if(thread_id==1) //Simulate physics and update the rio data structure..
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
-        dyn_sp_scl.integrator(rio,&rgcm,dt);
-        iter++; const timespec ts = {0, 500};/*.005ms*/ nanosleep(&ts,NULL);
+        dyn_sp_scl.integrator(rio,&rgcm,dt); iter++;
 
-        pe = dyn_scl.computeEnergyPotential(rgcm.rbdyn_tree_,rio.sensors_.q_);
-        dyn_sp_scl.calculateKineticEnergy(&rio,&rgcm,ke);
-
+        // Compute energy. Energy should be conserved.
         if(iter % 1000 == 0)
-        { std::cout<<"\n Time ("<<iter*dt<<" of 10s total). Energy : "<<std::setw(10)<<pe<<" + "<<std::setw(10)<<ke<<" = "<<std::setw(10)<<pe+ke;}
+        {
+          pe = dyn_scl.computeEnergyPotential(rgcm.rbdyn_tree_,rio.sensors_.q_);
+          ke = dyn_scl.computeEnergyKinetic(rgcm.rbdyn_tree_,rio.sensors_.q_,rio.sensors_.dq_);
+          // Alt : compute energy with scl_spatial
+          //dyn_sp_scl.calculateKineticEnergy(&rio,&rgcm,ke);
+
+          std::cout<<"\n Time ("<<iter*dt<<" of "<<n_iters*dt<<"s total). Energy : "<<std::setw(10)<<pe<<" + "
+          <<std::setw(10)<<ke<<" = "<<std::setw(10)<<pe+ke;
+        }
       }
     else  //Read the rio data structure and updated rendererd robot..
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       { glutMainLoopEvent(); const timespec ts = {0, 15000000};/*15ms*/ nanosleep(&ts,NULL); }
   }
+
+  std::cout<<"\n\nNOTE : The simulation runs much faster than real time. Manually slow it down to observe the pendulum swinging";
 
   /******************************Exit Gracefully************************************/
   std::cout<<"\n\nExecuted Successfully";
