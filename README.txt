@@ -26,7 +26,17 @@ Compile the scl library and related 3rdparty libraries (Chai-graphics, yaml) all
 $ cd scl-manips-group.git/applications-linux/scl_lib
 $ sh make_everything.sh
 
-=== 4. Explore the applications. ===
+=== 4. Explore the tutorials. ===
+There are numerous tutorials designed to give you an idea of how scl works.
+Please feel free to go through them. They should be self explanatory.
+
+$ cd scl_tutorial3_graphics_physics_cmake
+$ sh make_rel.sh
+$ ./scl_tutorial3_graphics_physics_cmake
+
+PS : Please go through tutorials 0--2 first.
+
+=== 5. Explore the applications. ===
 This will open the Pr2 robot with operational space control:
 
 $ cd ../scl_example_ctrl
