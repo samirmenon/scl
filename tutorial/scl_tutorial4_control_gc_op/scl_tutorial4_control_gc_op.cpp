@@ -84,6 +84,7 @@ int main(int argc, char** argv)
   bool flag = p.readRobotFromFile("./R6Cfg.xml","r6bot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_tao.init(rds);         //Set up integrator object
+  flag = flag && dyn_scl.init(rds);         //Set up kinematics and dynamics object
   flag = flag && rio.init(rds.name_,rds.dof_);
   for(unsigned int i=0;i<rds.dof_;++i){ rio.sensors_.q_(i) = rds.rb_tree_.at(i)->joint_default_pos_; }
   if(false == flag){ return 1; }            //Error check.
@@ -108,18 +109,23 @@ int main(int argc, char** argv)
   Eigen::MatrixXd Jx;
   Eigen::Vector3d x, x_des, x_init, dx;
   scl::SRigidBodyDyn *rhand = rgcm.rbdyn_tree_.at("hand");
+
 #pragma omp parallel private(thread_id)
   {
     thread_id = omp_get_thread_num();
     if(thread_id==1) //Simulate physics and update the rio data structure..
     {
       // Controller 1 : gc controller
-      std::cout<<"\nStarting joint space (generalized coordinate) controller...";
+      std::cout<<"\n\n***************************************************************"
+          <<"\n Starting joint space (generalized coordinate) controller..."
+          <<"\n This will move the joints in a sine wave"
+          <<"\n***************************************************************";
       tstart = sutil::CSystemClock::getSysTime();
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
         tcurr = sutil::CSystemClock::getSysTime();
         // Controller : fgc = kp * (sin(t) - q) + kv(0 - dq)
+        // Set the desired positions so that the joints move in a sine wave
         rio.actuators_.force_gc_commanded_ = 100 * (sin(tcurr-tstart) - rio.sensors_.q_.array()) - 20 * rio.sensors_.dq_.array();
         dyn_tao.integrate(rio,dt); iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL);
 
@@ -128,21 +134,29 @@ int main(int argc, char** argv)
       sleep(1);
 
       // Controller 2 : Operational space controller
-      std::cout<<"\nStarting op space (task coordinate) controller...";
+      std::cout<<"\n\n***************************************************************"
+          <<"\n Starting op space (task coordinate) controller..."
+          <<"\n This will move the hand in a circle. x =sin(t), y=cos(t)."
+          <<"\n***************************************************************";
       tstart = sutil::CSystemClock::getSysTime(); iter = 0;
       while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
         tcurr = sutil::CSystemClock::getSysTime();
 
+        // Compute kinematic quantities
         dyn_scl.computeTransformsForAllLinks(rgcm.rbdyn_tree_,rio.sensors_.q_);
         dyn_scl.computeJacobianWithTransforms(Jx,*rhand,rio.sensors_.q_,hpos);
         if(false == flag) { x_init = rhand->T_o_lnk_ * hpos; flag = true; }
         x = rhand->T_o_lnk_ * hpos; //We'll make the hand draw a sine trajectory
-        dx = Jx * rio.sensors_.dq_;
+        dx = Jx.block(0,0,3,rio.dof_) * rio.sensors_.dq_;
 
         // Controller : fgc = Jx' (kp * (sin(t)*.1 - (x-xinit)) + kv(0 - dx)) - kqv * dq
-        x_des(0) = x_init(0)+sin(tcurr-tstart)*0.08; x_des(1) = x_init(1)+cos(tcurr-tstart)*0.08; x_des(2) = 0;
-        rio.actuators_.force_gc_commanded_ = Jx.transpose() * (100*(x_des-x) - 20 * dx);
+        // Set the desired positions so that the hand draws a circle
+        double sin_ampl = 0.15;
+        x_des(0) = x_init(0)+sin(tcurr-tstart)*sin_ampl; x_des(1) = x_init(1)+cos(tcurr-tstart)*sin_ampl; x_des(2) = 0;
+        rio.actuators_.force_gc_commanded_ = Jx.block(0,0,3,rio.dof_).transpose() * (100*(x_des-x) - 20 * dx) - 20*rio.sensors_.dq_;
+
+        // Integrate the dynamics
         dyn_tao.integrate(rio,dt); iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL);
 
         if(iter >= n_iters/10){iter = 0; std::cout<<"\nTracking error: "<<(x_des-x).transpose()<<". Norm: "<<(x_des-x).norm(); }
