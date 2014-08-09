@@ -83,7 +83,7 @@ int main(int argc, char** argv)
   rb.pos_in_parent_<<0,0,0;  rb.is_root_ = true;
   rds.rb_tree_.create(rb.name_,rb,true);
 
-  // 1st link
+  // 1st link (now we reset the temp rigid body node, init it to a new link and add it to the tree).
   rb.init(); rb.link_id_ = 0; rb.name_ = "link_0";
   rb.robot_name_ = rname;  rb.parent_name_ = "root";
   rb.joint_name_ = "joint_0"; rb.joint_type_ = scl::JOINT_TYPE_REVOLUTE_Y;
