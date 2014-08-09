@@ -30,11 +30,17 @@ $ sh make_everything.sh
 There are numerous tutorials designed to give you an idea of how scl works.
 Please feel free to go through them. They should be self explanatory.
 
+$ cd scl_tutorial0_setup_robot
+$ make release
+$ ./scl_tutorial0_setup_robot
+
+(or, for the more advanced tutorials)
+
 $ cd scl_tutorial3_graphics_physics_cmake
 $ sh make_rel.sh
 $ ./scl_tutorial3_graphics_physics_cmake
 
-PS : Please go through tutorials 0--2 first.
+PS : Please go through tutorials in order.
 
 === 5. Explore the applications. ===
 This will open the Pr2 robot with operational space control:
