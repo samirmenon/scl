@@ -82,12 +82,12 @@ int main(int argc, char** argv)
   scl::CDynamicsTao dyn_tao; //Robot physics integrator
   scl::CParserScl p;         //This time, we'll parse the tree from a file...
 
-  scl::SControllerMultiTask rctr_ds; //A mutli-task controller data structure
-  scl::CControllerMultiTask rctr;    //A mutli-task controller
+  scl::SControllerMultiTask rctr_ds; //A multi-task controller data structure
+  scl::CControllerMultiTask rctr;    //A multi-task controller
   std::vector<scl::STaskBase*> rtasks;              //A set of executable tasks
   std::vector<scl::SNonControlTaskBase*> rtasks_nc; //A set of non-control tasks
   std::string must_use_robot;        //Used later for file error checks.
-  scl::STaskOpPos* rtask_hand;        //Will need to set hand desired positions etc.
+  scl::STaskOpPos* rtask_hand;       //Will need to set hand desired positions etc.
 
   sutil::CSystemClock::start(); //Start the clock
 
