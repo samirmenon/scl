@@ -107,8 +107,7 @@ namespace scl_util
         scl::STaskBase* tmp_task2add = reinterpret_cast<scl::STaskBase*>(get_task_type);
 
         flag = tmp_task2add->init(tmp_task.name_, tmp_task.type_task_,
-            tmp_task.priority_, tmp_task.dof_task_,
-            ret_ctrl.robot_, ret_ctrl.gc_model_,
+            tmp_task.priority_, tmp_task.dof_task_, ret_ctrl.robot_, ret_ctrl.gc_model_,
             tmp_task.kp_, tmp_task.kv_, tmp_task.ka_, tmp_task.ki_,
             tmp_task.force_task_max_, tmp_task.force_task_min_,
             tmp_task.task_nonstd_params_);
