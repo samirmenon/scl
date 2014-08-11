@@ -80,13 +80,12 @@ public:
 
   virtual bool readGcControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
-      std::string &arg_must_use_robot,
+      std::string &ret_must_use_robot,
       scl::SControllerGc& arg_ctrl);
 
   virtual bool readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
-      std::string &arg_must_use_robot,
-      scl::SControllerMultiTask& arg_ctrl,
+      std::string &ret_must_use_robot,
       /** Returns a vector of tasks that this task controller can execute.
        * Typically, the task controller will execute all of them simultaneously
        * with a priority order.*/

@@ -1615,7 +1615,7 @@ bool CParserScl::listControllersInFile(const std::string &arg_file,
 
 bool CParserScl::readGcControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
-      std::string &arg_must_use_robot,
+      std::string &ret_must_use_robot,
       scl::SControllerGc& arg_ctrl)
 {
   bool flag;
@@ -1670,10 +1670,10 @@ bool CParserScl::readGcControllerFromFile(const std::string &arg_file,
       if ( cr_data )
       {
         std::string tmp(cr_data->FirstChild()->Value());
-        arg_must_use_robot = tmp;
+        ret_must_use_robot = tmp;
       }
       else
-      { arg_must_use_robot=""; }
+      { ret_must_use_robot=""; }
 
       cr_data = _cr_handle.FirstChildElement("kp").Element();
       if ( cr_data )
@@ -1822,10 +1822,9 @@ bool CParserScl::readGcControllerFromFile(const std::string &arg_file,
 
 bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
-      std::string &arg_must_use_robot,
-      scl::SControllerMultiTask& arg_ctrl,
-      std::vector<STaskBase*> &ret_taskvec,
-      std::vector<SNonControlTaskBase*> &ret_task_non_ctrl_vec)
+      std::string &ret_must_use_robot,
+      std::vector<scl::STaskBase*> &ret_taskvec,
+      std::vector<scl::SNonControlTaskBase*> &ret_task_non_ctrl_vec)
 {
   bool flag;
   try
@@ -1855,15 +1854,10 @@ bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
     {
       std::string name = tiElem_tctrl_ctrl->Attribute("name");
       if(name!=arg_ctrl_name)
-      {
-        arg_ctrl.name_ = "NotInitialized";
-        continue;
-      }
+      { continue; }
 
       if(true == flag)
       { throw(std::runtime_error("Already parsed a controller with this name. Two controllers can't have the same name.")); }
-
-      arg_ctrl.name_ = tiElem_tctrl_ctrl->Attribute("name");
 
       TiXmlHandle _cr_handle(tiElem_tctrl_ctrl); //Back to handles
 
@@ -1872,10 +1866,7 @@ bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
       {
         std::string type(cr_data->FirstChild()->Value());
         if(type!="task")
-        {
-          arg_ctrl.name_ = "NotInitialized";
-          continue;
-        }
+        { continue; }
       }
       else
       { throw(std::runtime_error("No controller type."));  }
@@ -1884,10 +1875,10 @@ bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
       if ( cr_data )
       {
         std::string type(cr_data->FirstChild()->Value());
-        arg_must_use_robot = type;
+        ret_must_use_robot = type;
       }
       else
-      { arg_must_use_robot=""; }
+      { ret_must_use_robot=""; }
 
       /** ***********************************************
        *    PARSE ALL THE CONTROL TASKS HERE
@@ -2213,7 +2204,7 @@ bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
 
 
 #ifdef DEBUG
-          std::cout<<"\nCParserScl::readTaskControllerFromFile() : Parsed controller: "<<arg_ctrl_name<<". Type: "<<arg_ctrl.type_ctrl_ds_;
+          std::cout<<"\nCParserScl::readTaskControllerFromFile() : Parsed controller: "<<arg_ctrl_name<<". Type: task";
 #endif
 
       //Successfully parsed atleast one controller from the file

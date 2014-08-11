@@ -396,7 +396,6 @@ namespace scl_registry
   {
     //Will fill in information from a file into this. It will never be
     //completely initialized.
-    scl::SControllerMultiTask tmp_ctrl;
     std::vector<scl::STaskBase*> taskvec;
     std::vector<scl::SNonControlTaskBase*> taskvec_non_ctrl;
 
@@ -415,13 +414,11 @@ namespace scl_registry
       //Read in the generic controller information from the file
       std::string must_use_robot, use_dynamics;
       flag = arg_parser->readTaskControllerFromFile(arg_file,arg_ctrl_name,
-          must_use_robot,tmp_ctrl,taskvec, taskvec_non_ctrl);
+          must_use_robot,taskvec, taskvec_non_ctrl);
       if(false == flag) { throw (std::runtime_error("Could not read the controller."));  }
 
       if(arg_robot_name != must_use_robot)
-      {
-        throw (std::runtime_error(std::string("Invalid robot specified. Controller must use: ")+must_use_robot));
-      }
+      { throw (std::runtime_error(std::string("Invalid robot specified. Controller must use: ")+must_use_robot)); }
 
       //Create the controller
       ret_ctrl = new scl::SControllerMultiTask();
