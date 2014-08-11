@@ -51,9 +51,6 @@ namespace scl
     /** Name of the robot */
     std::string robot_name_;
 
-    /** Controller type */
-    std::string type_ctrl_ds_;
-
     /** Pointer to the static robot data (parsed from a file) */
     const SRobotParsed* robot_;
 

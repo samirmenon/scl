@@ -56,8 +56,7 @@ namespace scl
       const sUInt arg_priority,
       /** 0  task dof means a gc task. Ie. full dofs */
       const scl::sUInt arg_task_dof,
-      SRobotParsed* arg_robot_ds,
-      SRobotIO* arg_io_data,
+      const SRobotParsed* arg_robot_ds,
       /* The remaining variables initialize model_ and servo_ */
       const SGcModel* arg_gc_model,
       const Eigen::VectorXd & arg_kp,
@@ -91,9 +90,6 @@ namespace scl
 
       if(false == arg_robot_ds->has_been_init_)
       { throw(std::runtime_error("Passed uninitialized parent-robot's data structure")); }
-
-      if(S_NULL==arg_io_data)
-      { throw(std::runtime_error("Passed a NULL parent-robot I/O data structure")); }
 
       if(S_NULL==arg_gc_model)
       { throw(std::runtime_error("Passed a NULL generalized coordinate model")); }

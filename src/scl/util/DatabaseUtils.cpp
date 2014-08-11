@@ -32,6 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/util/DatabaseUtils.hpp>
 #include <scl/Singletons.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
+#include <sutil/CRegisteredDynamicTypes.hpp>
 
 #include <vector>
 #include <fstream>
@@ -73,6 +74,153 @@ namespace scl_util
 
     if(link.child_addrs_.begin() == link.child_addrs_.end())
     { std::cout<<"\nLEAF NODE."<<std::flush; }
+  }
+
+  /** Checks whether dynamic type information is available. If so, it parses
+   * tasks into the control data structure */
+  int initMultiTaskCtrlDsFromParsedTasks(
+      const std::vector<scl::STaskBase*> &arg_taskvec,
+      const std::vector<scl::SNonControlTaskBase*> &arg_taskvec_nc,
+      scl::SControllerMultiTask& ret_ctrl)
+  {
+    bool flag;
+    scl::sUInt tasks_parsed=0, nc_tasks_parsed;
+    try
+    {
+      if(false == ret_ctrl.hasBeenInit())
+      { throw(std::runtime_error("Controller data structure not intialized"));  }
+
+      //Now add the tasks to the controller sutil::CMappedMultiLevelList
+      for(std::vector<scl::STaskBase*>::const_iterator it = arg_taskvec.begin(),
+          ite = arg_taskvec.end(); it!=ite; ++it)
+      {
+        const scl::STaskBase& tmp_task = **it;
+
+        //Use dynamic typing to get the correct task type.
+        void *get_task_type=S_NULL;
+        flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(std::string("S")+tmp_task.type_task_,get_task_type);
+        if(false == flag)
+        { throw (std::runtime_error(std::string("S")+tmp_task.type_task_+
+            std::string(" -- Unrecognized task type requested.\n * Did you register the task type with the database?\n * If not, see applications-linux/scl_skeleton_code/*.cpp to find out how.")));  }
+
+        //Convert the pointer into a STaskBase*
+        scl::STaskBase* tmp_task2add = reinterpret_cast<scl::STaskBase*>(get_task_type);
+
+        flag = tmp_task2add->init(tmp_task.name_, tmp_task.type_task_,
+            tmp_task.priority_, tmp_task.dof_task_,
+            ret_ctrl.robot_, ret_ctrl.gc_model_,
+            tmp_task.kp_, tmp_task.kv_, tmp_task.ka_, tmp_task.ki_,
+            tmp_task.force_task_max_, tmp_task.force_task_min_,
+            tmp_task.task_nonstd_params_);
+        if(false == flag)
+        {
+          if(S_NULL!=tmp_task2add) { delete tmp_task2add;  }
+          throw (std::runtime_error(std::string("Could not initialize task : ")+ tmp_task.type_task_+ std::string(" : ") + tmp_task.name_));
+        }
+
+        //THE JUICE : Add all the tasks into the multi level mapped list!!
+        if(S_NULL!=tmp_task2add)
+        {
+          //NOTE : We have to store a double pointer for tasks because the mapped list
+          //creates its own memory.
+          scl::STaskBase** tmp = ret_ctrl.tasks_.create(tmp_task2add->name_,
+              tmp_task2add,tmp_task2add->priority_);
+
+          //Detailed error reporting.
+          if(S_NULL == tmp)
+          {
+            std::string serr = "Could not create task data structure for : ";
+            if(S_NULL!=tmp_task2add)
+            { serr = serr + tmp_task2add->name_; delete tmp_task2add; }
+            else
+            { serr = serr + "NULL task pointer (should not be NULL)"; }
+            throw (std::runtime_error(serr.c_str()));
+          }
+
+          //Now set the task to point to it's parent.
+          if(S_NULL != (*tmp)->parent_controller_)
+          { throw(std::runtime_error(std::string("Task already has a parent controller : ") + tmp_task2add->name_));  }
+          (*tmp)->setParentController(&ret_ctrl);
+        }
+        tasks_parsed++;
+      }
+
+      if(0==tasks_parsed)
+      {  throw (std::runtime_error("Found zero tasks in a task controller."));  }
+
+      //Now parse the non-control tasks
+      //Now add the tasks to the controller sutil::CMappedList
+      nc_tasks_parsed=0;
+      for(std::vector<scl::SNonControlTaskBase*>::const_iterator it = arg_taskvec_nc.begin(),
+          ite = arg_taskvec_nc.end(); it!=ite; ++it)
+      {
+        const scl::SNonControlTaskBase& tmp_task = **it;
+
+        //Use dynamic typing to get the correct task type.
+        void *get_task_type=S_NULL;
+        flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(std::string("S")+tmp_task.type_task_,get_task_type);
+        if(false == flag)
+        { throw (std::runtime_error(std::string("S")+tmp_task.type_task_+
+            std::string(" -- Unrecognized task type requested.\n * Did you register the task type with the database?\n * If not, see applications-linux/scl_skeleton_code/*.cpp to find out how.")));  }
+
+        //Convert the pointer into a STaskBase*
+        scl::SNonControlTaskBase* tmp_task2add = reinterpret_cast<scl::SNonControlTaskBase*>(get_task_type);
+
+        flag = tmp_task2add->init(tmp_task.name_, tmp_task.type_task_,
+            tmp_task.task_nonstd_params_);
+        if(false == flag)
+        {
+          std::string serr;
+          serr = "Could not initialize non-control task : ";
+          serr = serr + tmp_task.type_task_+ std::string(" : ") + tmp_task.name_;
+          if(S_NULL!=tmp_task2add)
+          { delete tmp_task2add;  }
+          throw (std::runtime_error(serr.c_str()));
+        }
+
+
+        //THE JUICE : Add all the tasks into the mapped list!!
+        if(S_NULL!=tmp_task2add)
+        {
+          //NOTE : We have to store a double pointer for tasks because the mapped list
+          //creates its own memory.
+          scl::SNonControlTaskBase** tmp = ret_ctrl.tasks_non_ctrl_.create(tmp_task2add->name_, tmp_task2add);
+
+          //Detailed error reporting.
+          if(S_NULL == tmp)
+          {
+            std::string serr;
+            serr = "Could not create task data structure for : ";
+            if(S_NULL!=tmp_task2add)
+            {
+              serr = serr + tmp_task2add->name_;
+              delete tmp_task2add;
+            }
+            else
+            {
+              serr = serr + "NULL task pointer (should not be NULL)";
+            }
+            throw (std::runtime_error(serr.c_str()));
+          }
+
+          //Now set the task to point to it's parent.
+          if(S_NULL != (*tmp)->parent_controller_)
+          { throw(std::runtime_error(std::string("Non control task already has a parent controller : ") + tmp_task2add->name_));  }
+          (*tmp)->setParentController(&ret_ctrl);
+        }
+        nc_tasks_parsed++;
+      }
+#ifdef DEBUG
+      if(0==nc_tasks_parsed)
+      { std::cout<<"\nDatabaseUtils::initMultiTaskCtrlDsFromParsedTasks() : WARNING : Did not find any non-control tasks";}
+#endif
+    }
+    catch(std::exception& ee)
+    {
+      std::cerr<<"\nDatabaseUtils::initMultiTaskCtrlDsFromParsedTasks() : "<<ee.what();
+      return 0;
+    }
+    return tasks_parsed;
   }
 
   /** Initializes a dynamic tree given a static tree for a robot. */

@@ -392,14 +392,14 @@ namespace scl
       }
 
       //Allocate an appropriate controller based on the passed data structure's type. NOTE TODO : Update with dynamic typing
-      if(arg_ctrl_ds->type_ctrl_ds_ == "SControllerGc")
+      if("SControllerGc" == arg_ctrl_ds->getType())
       { tmp_ctrl = new CControllerGc();  }
-      else if(arg_ctrl_ds->type_ctrl_ds_ == "SControllerMultiTask")
+      else if("SControllerMultiTask" == arg_ctrl_ds->getType())
       { tmp_ctrl = new CControllerMultiTask(); }
       else
       {
         std::string s("Unrecognized controller type : ");
-        s = s + arg_ctrl_ds->type_ctrl_ds_;
+        s = s + arg_ctrl_ds->getType();
         throw(std::runtime_error(s.c_str()));
       }
 

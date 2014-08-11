@@ -35,6 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SGcModel.hpp>
+#include <scl/control/task/data_structs/SControllerMultiTask.hpp>
 
 #include <string>
 
@@ -43,6 +44,13 @@ namespace scl_util
 
   /** Prints a robot link tree with a passed link as its root. */
   void printRobotLinkTree(const scl::SRigidBody &link, scl::sInt depth);
+
+  /** Checks whether dynamic type information is available. If so, it parses
+   * tasks into the control data structure */
+  int initMultiTaskCtrlDsFromParsedTasks(
+      const std::vector<scl::STaskBase*> &arg_taskvec,
+      const std::vector<scl::SNonControlTaskBase*> &arg_taskvec_nc,
+      scl::SControllerMultiTask& arg_ctrl);
 
   /** Initializes a dynamic tree given a static tree for a robot. */
   bool initDynRobotFromParsedRobot(sutil::CMappedTree<std::string, scl::SRigidBodyDyn>& arg_rbd_tree,

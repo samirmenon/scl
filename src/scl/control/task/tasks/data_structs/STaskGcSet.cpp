@@ -77,7 +77,7 @@ namespace scl
             ss>>s;
             q_sel_names_.push_back(s);
 
-            SRigidBody* tlnk = robot_->rb_tree_.at(s);
+            const SRigidBody* tlnk = robot_->rb_tree_.at_const(s);
             if(S_NULL == tlnk)
             { throw(std::runtime_error(s + std::string(" -- Passed a link that doesn't exist.")));  }
 

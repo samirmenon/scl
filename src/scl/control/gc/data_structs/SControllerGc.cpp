@@ -44,7 +44,7 @@ namespace scl
 
   SControllerGc::SControllerGc() : SControllerBase(),
       integral_gain_time_pre_(-1), integral_gain_time_curr_(-1)
-  {}
+  { type_ = "SControllerGc";  }
 
   bool SControllerGc::init(const std::string & arg_controller_name,
       SRobotParsed* arg_robot_ds,
@@ -123,8 +123,6 @@ namespace scl
       des_q_.setZero(dof);
       des_dq_.setZero(dof);
       des_ddq_.setZero(dof);
-
-      type_ = "SControllerGc";
 
       has_been_init_ = true;
     }

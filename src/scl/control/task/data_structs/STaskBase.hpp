@@ -99,7 +99,7 @@ namespace scl
 
     /** Robot model. Not a const because it could use the
      * branching representation's iterator */
-    SRobotParsed* robot_;
+    const SRobotParsed* robot_;
 
     /** Robot generalized coordinate model */
     const SGcModel* gc_model_;
@@ -196,8 +196,7 @@ namespace scl
         const sUInt arg_priority,
         /** 0  task dof means a gc task. Ie. full dofs */
         const scl::sUInt arg_task_dof,
-        SRobotParsed* arg_robot_ds,
-        SRobotIO* arg_io_data,
+        const SRobotParsed* arg_robot_ds,
         /* The remaining variables initialize model_ and servo_ */
         const SGcModel* arg_gc_model,
         const Eigen::VectorXd & arg_kp,

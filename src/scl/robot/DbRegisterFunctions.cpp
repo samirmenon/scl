@@ -71,6 +71,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskComPos.hpp>
 #include <scl/control/task/tasks/data_structs/STaskComPos.hpp>
 
+#include <scl/util/DatabaseUtils.hpp>
+
 #include <sutil/CRegisteredDynamicTypes.hpp>
 
 #include <iostream>
@@ -363,9 +365,6 @@ namespace scl_registry
       if(false == flag)
       { throw (std::runtime_error("Could not initialize the controller's data structure."));  }
 
-      //Now register the data structure with the database
-      ret_ctrl->type_ctrl_ds_ = "SControllerGc";
-
       scl::SControllerBase** ret = db->s_controller_.controllers_.create(ret_ctrl->name_,ret_ctrl);
       if(NULL == ret)
       {
@@ -411,7 +410,9 @@ namespace scl_registry
       db = scl::CDatabase::getData();
       if(NULL == db) { throw (std::runtime_error("Database not initialized."));  }
 
+      //********************************************************
       //Read in the generic controller information from the file
+      //********************************************************
       std::string must_use_robot, use_dynamics;
       flag = arg_parser->readTaskControllerFromFile(arg_file,arg_ctrl_name,
           must_use_robot,taskvec, taskvec_non_ctrl);
@@ -431,198 +432,60 @@ namespace scl_registry
       if(false == flag)
       { throw (std::runtime_error("Could not initialize the controller's data structure."));  }
 
-      //Now add the tasks to the controller sutil::CMappedMultiLevelList
-      scl::sUInt tasks_parsed=0;
-      for(std::vector<scl::STaskBase*>::iterator it = taskvec.begin(),
-          ite = taskvec.end(); it!=ite; ++it)
-      {
-        scl::STaskBase& tmp_task = **it;
-
-        //Use dynamic typing to get the correct task type.
-        void *get_task_type=S_NULL;
-        flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(std::string("S")+tmp_task.type_task_,get_task_type);
-        if(false == flag)
-        { throw (std::runtime_error(std::string("S")+tmp_task.type_task_+
-            std::string(" -- Unrecognized task type requested.\n * Did you register the task type with the database?\n * If not, see applications-linux/scl_skeleton_code/*.cpp to find out how.")));  }
-
-        //Convert the pointer into a STaskBase*
-        scl::STaskBase* tmp_task2add = reinterpret_cast<scl::STaskBase*>(get_task_type);
-
-        flag = tmp_task2add->init(tmp_task.name_, tmp_task.type_task_,
-            tmp_task.priority_, tmp_task.dof_task_,
-            db->s_parser_.robots_.at(arg_robot_name),
-            ret_ctrl->io_data_, ret_ctrl->gc_model_,
-            tmp_task.kp_, tmp_task.kv_, tmp_task.ka_, tmp_task.ki_,
-            tmp_task.force_task_max_, tmp_task.force_task_min_,
-            tmp_task.task_nonstd_params_);
-        if(false == flag)
-        {
-          std::string serr;
-          serr = "Could not initialize task : ";
-          serr = serr + tmp_task.type_task_+ std::string(" : ") + tmp_task.name_;
-          if(S_NULL!=tmp_task2add)
-          { delete tmp_task2add;  }
-          throw (std::runtime_error(serr.c_str()));
-        }
-
-        //THE JUICE : Add all the tasks into the multi level pilemap!!
-        if(S_NULL!=tmp_task2add)
-        {
-          //NOTE : We have to store a double pointer for tasks because the pilemap
-          //creates its own memory.
-          scl::STaskBase** tmp = ret_ctrl->tasks_.create(tmp_task2add->name_,
-              tmp_task2add,tmp_task2add->priority_);
-
-          //Detailed error reporting.
-          if(S_NULL == tmp)
-          {
-            std::string serr;
-            serr = "Could not create task data structure for : ";
-            if(S_NULL!=tmp_task2add)
-            {
-              serr = serr + tmp_task2add->name_;
-              delete tmp_task2add;
-            }
-            else
-            {
-              serr = serr + "NULL task pointer (should not be NULL)";
-            }
-            throw (std::runtime_error(serr.c_str()));
-          }
-
-          //Now set the task to point to it's parent.
-          if(S_NULL != (*tmp)->parent_controller_)
-          { throw(std::runtime_error(std::string("Task already has a parent controller : ") + tmp_task2add->name_));  }
-          (*tmp)->setParentController(ret_ctrl);
-        }
-
-        //THE JUICE V2 : Add all the tasks into the mapped list in the database!!
-        if(S_NULL!=tmp_task2add)
-        {
-          //NOTE : We have to store a double pointer for tasks because the pilemap
-          //creates its own memory for a pointer.
-          //NOTE 2 : The databse will delete this object later. Remember the object
-          //originally came from a dynamic type factory (look further up in the code).
-          scl::STaskBase** tmp = db->s_controller_.tasks_.create(tmp_task2add->name_, tmp_task2add);
-
-          //Detailed error reporting.
-          if(S_NULL == tmp)
-          {
-            std::string serr;
-            serr = "Could not create database task data structure for : ";
-            if(S_NULL!=tmp_task2add)
-            { serr = serr + tmp_task2add->name_;  }
-            else
-            { serr = serr + "NULL task pointer (should not be NULL)"; }
-            throw (std::runtime_error(serr.c_str()));
-          }
-        }
-
-        tasks_parsed++;
-      }
+      unsigned int tasks_parsed = scl_util::initMultiTaskCtrlDsFromParsedTasks(taskvec, taskvec_non_ctrl,*ret_ctrl);
 
       if(0==tasks_parsed)
-      {  throw (std::runtime_error("Found zero tasks in a task controller."));  }
-
-      //Now parse the non-control tasks
-      //Now add the tasks to the controller sutil::CMappedList
-      tasks_parsed=0;
-      for(std::vector<scl::SNonControlTaskBase*>::iterator it = taskvec_non_ctrl.begin(),
-          ite = taskvec_non_ctrl.end(); it!=ite; ++it)
-      {
-        scl::SNonControlTaskBase& tmp_task = **it;
-
-        //Use dynamic typing to get the correct task type.
-        void *get_task_type=S_NULL;
-        flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(std::string("S")+tmp_task.type_task_,get_task_type);
-        if(false == flag)
-        { throw (std::runtime_error(std::string("S")+tmp_task.type_task_+
-            std::string(" -- Unrecognized task type requested.\n * Did you register the task type with the database?\n * If not, see applications-linux/scl_skeleton_code/*.cpp to find out how.")));  }
-
-        //Convert the pointer into a STaskBase*
-        scl::SNonControlTaskBase* tmp_task2add = reinterpret_cast<scl::SNonControlTaskBase*>(get_task_type);
-
-        flag = tmp_task2add->init(tmp_task.name_, tmp_task.type_task_,
-            tmp_task.task_nonstd_params_);
-        if(false == flag)
-        {
-          std::string serr;
-          serr = "Could not initialize non-control task : ";
-          serr = serr + tmp_task.type_task_+ std::string(" : ") + tmp_task.name_;
-          if(S_NULL!=tmp_task2add)
-          { delete tmp_task2add;  }
-          throw (std::runtime_error(serr.c_str()));
-        }
+      {  throw(std::runtime_error("Found no control tasks in a task controller."));  }
 
 
-        //THE JUICE : Add all the tasks into the mapped list!!
-        if(S_NULL!=tmp_task2add)
-        {
-          //NOTE : We have to store a double pointer for tasks because the pilemap
-          //creates its own memory.
-          scl::SNonControlTaskBase** tmp = ret_ctrl->tasks_non_ctrl_.create(tmp_task2add->name_, tmp_task2add);
-
-          //Detailed error reporting.
-          if(S_NULL == tmp)
-          {
-            std::string serr;
-            serr = "Could not create task data structure for : ";
-            if(S_NULL!=tmp_task2add)
-            {
-              serr = serr + tmp_task2add->name_;
-              delete tmp_task2add;
-            }
-            else
-            {
-              serr = serr + "NULL task pointer (should not be NULL)";
-            }
-            throw (std::runtime_error(serr.c_str()));
-          }
-
-          //Now set the task to point to it's parent.
-          if(S_NULL != (*tmp)->parent_controller_)
-          { throw(std::runtime_error(std::string("Non control task already has a parent controller : ") + tmp_task2add->name_));  }
-          (*tmp)->setParentController(ret_ctrl);
-        }
-
-        //THE JUICE V2 : Add all the tasks into the mapped list in the database!!
-        if(S_NULL!=tmp_task2add)
-        {
-          //NOTE : We have to store a double pointer for tasks because the pilemap
-          //creates its own memory for a pointer.
-          //NOTE 2 : The databse will delete this object later. Remember the object
-          //originally came from a dynamic type factory (look further up in the code).
-          scl::SNonControlTaskBase** tmp = db->s_controller_.tasks_non_ctrl_.create(tmp_task2add->name_, tmp_task2add);
-
-          //Detailed error reporting.
-          if(S_NULL == tmp)
-          {
-            std::string serr;
-            serr = "Could not create database non control task data structure for : ";
-            if(S_NULL!=tmp_task2add)
-            { serr = serr + tmp_task2add->name_;  }
-            else
-            { serr = serr + "NULL task pointer (should not be NULL)"; }
-            throw (std::runtime_error(serr.c_str()));
-          }
-        }
-
-        tasks_parsed++;
-      }
-
-#ifdef DEBUG
-      if(0==tasks_parsed)
-      {  std::cout<<"\nparseTaskController() WARNING : Found zero non-control tasks in a task controller.";  }
-#endif
-
-      //Now register the data structure with the database
-      ret_ctrl->type_ctrl_ds_ = "SControllerMultiTask";
-
+      //**********************************************************
+      //Now that everything is parsed, add an entry to the database
       scl::SControllerBase** ret = db->s_controller_.controllers_.create(ret_ctrl->name_,ret_ctrl);
       if(NULL == ret)
+      { throw (std::runtime_error("Could not create controller data structure pointer on the database pile.")); }
+
+      sutil::CMappedMultiLevelList<std::string, scl::STaskBase*>::iterator itt,itte;
+      for(itt = ret_ctrl->tasks_.begin(), itte = ret_ctrl->tasks_.end(); itt!=itte;++itt)
       {
-        throw (std::runtime_error(
-            "Could not create controller data structure pointer on the database pile."));
+        scl::STaskBase * tmp_task2add = *itt;
+        //NOTE : We have to store a double pointer for tasks because the mapped list creates its own memory for a pointer.
+        // The databse will delete this object later. Remember the object originally came from a dynamic type factory
+        // (look further up in the code).
+        scl::STaskBase** tmp = db->s_controller_.tasks_.create(tmp_task2add->name_, tmp_task2add);
+
+        //Detailed error reporting.
+        if(S_NULL == tmp)
+        {
+          std::string serr;
+          serr = "Could not create database task data structure for : ";
+          if(S_NULL!=tmp_task2add)
+          { serr = serr + tmp_task2add->name_;  }
+          else
+          { serr = serr + "NULL task pointer (should not be NULL)"; }
+          throw (std::runtime_error(serr.c_str()));
+        }
+      }
+
+      sutil::CMappedList<std::string, scl::SNonControlTaskBase*>::iterator ittnc,ittnce;
+      for(ittnc = ret_ctrl->tasks_non_ctrl_.begin(), ittnce = ret_ctrl->tasks_non_ctrl_.end(); ittnc!=ittnce;++ittnc)
+      {
+        scl::SNonControlTaskBase * tmp_task2add = *ittnc;
+        //NOTE : We have to store a double pointer for tasks because the mapped list creates its own memory for a pointer.
+        // The databse will delete this object later. Remember the object originally came from a dynamic type factory
+        // (look further up in the code).
+        scl::SNonControlTaskBase** tmp = db->s_controller_.tasks_non_ctrl_.create(tmp_task2add->name_, tmp_task2add);
+
+        //Detailed error reporting.
+        if(S_NULL == tmp)
+        {
+          std::string serr;
+          serr = "Could not create database task data structure for non-ctrl task: ";
+          if(S_NULL!=tmp_task2add)
+          { serr = serr + tmp_task2add->name_;  }
+          else
+          { serr = serr + "NULL task pointer (should not be NULL)"; }
+          throw (std::runtime_error(serr.c_str()));
+        }
       }
     }
     catch (std::exception& e)
