@@ -262,6 +262,24 @@ public:
       const Eigen::VectorXd& arg_q);
 
   /* *******************************************************************
+   *                      Contact Resolution functions.
+   * ******************************************************************* */
+  /** Computes an instantaneous impulse force and the duration for which
+   * it should be applied */
+  virtual sBool computeImpulseForce(/** Current robot state. q, dq, ddq,
+            sensed generalized forces and perceived external forces.*/
+      const SRobotSensors &arg_sensor_data,
+      /** Individual link Jacobians, and composite inertial,
+          centrifugal/coriolis gravity estimates. */
+      const SGcModel &arg_gc_model,
+      /** Coefficient of restitution */
+      sFloat arg_coeff_rest,
+      /** Time of collision */
+      sFloat arg_collision_time,
+      /** A contact points at which the contact force will be applied. */
+      scl::SForceContact &ret_force_);
+
+  /* *******************************************************************
    *                      Initialization functions.
    * ******************************************************************* */
   /** Default constructor sets the initialization state to false */

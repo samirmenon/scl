@@ -399,6 +399,21 @@ namespace scl
     return ret_pe;
   }
 
+  /** Computes an instantaneous impulse force and the duration for which
+   * it should be applied */
+  sBool CDynamicsScl::computeImpulseForce(/** Current robot state. q, dq, ddq,
+              sensed generalized forces and perceived external forces.*/
+      const SRobotSensors &arg_sensor_data,
+      /** Individual link Jacobians, and composite inertial,
+            centrifugal/coriolis gravity estimates. */
+      const SGcModel &arg_gc_model,
+      /** Coefficient of restitution */
+      sFloat arg_coeff_rest,
+      /** Time of collision */
+      sFloat arg_collision_time,
+      /** A contact points at which the contact force will be applied. */
+      scl::SForceContact &ret_force_)
+  { return false; }
 
   /** Initializes the dynamics to be computed for a specific robot.
    *  Returns:
