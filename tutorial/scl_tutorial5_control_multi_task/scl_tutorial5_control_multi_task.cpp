@@ -58,8 +58,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 /** A sample application to demonstrate a physics simulation in scl.
  *
- * Moving forward from tutorial 3, we will now control the 4 DOF
- * demo robot (rrrrbot) with the physics engine running.
+ * Moving forward from tutorial 4, we will now control the 6 DOF
+ * demo robot (r6bot) with the physics engine running.
  *
  * SCL Modules used:
  * 1. data_structs
