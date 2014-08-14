@@ -126,7 +126,7 @@ int main(int argc, char** argv)
 
   /******************************Simulation************************************/
   // Now let us integrate the model for a variety of timesteps and see energy stability
-  std::cout<<"\nIntegrating the rrrbot's physics. \nWill test two different controllers.\n Press (x) to exit at anytime.";
+  std::cout<<"\nIntegrating the r6bot's physics. \nWill test two different controllers.\n Press (x) to exit at anytime.";
   long long iter = 0; double dt=0.0001;
 
   omp_set_num_threads(2);

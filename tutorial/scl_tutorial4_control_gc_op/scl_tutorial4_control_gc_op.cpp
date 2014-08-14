@@ -54,8 +54,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 /** A sample application to demonstrate a physics simulation in scl.
  *
- * Moving forward from tutorial 3, we will now control the 4 DOF
- * demo robot (rrrrbot) with the physics engine running.
+ * Moving forward from tutorial 3, we will now control the 6 DOF
+ * demo robot (r6bot) with the physics engine running.
  *
  * SCL Modules used:
  * 1. data_structs
@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 
   /******************************Simulation************************************/
   // Now let us integrate the model for a variety of timesteps and see energy stability
-  std::cout<<"\nIntegrating the rrrbot's physics. \nWill test two different controllers.\n Press (x) to exit at anytime.";
+  std::cout<<"\nIntegrating the r6bot's physics. \nWill test two different controllers.\n Press (x) to exit at anytime.";
   long iter = 0, n_iters=100000; double dt=0.0001;
 
   omp_set_num_threads(2);
