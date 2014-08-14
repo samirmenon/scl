@@ -2,5 +2,5 @@ mkdir -p build_dbg &&
 cd build_dbg &&
 cmake .. -DCMAKE_BUILD_TYPE=Debug &&
 make -j8 &&
-cp -rf scl_tutorial6_humanoid_ctrl ../ &&
+cp -rf scl_tutorial6_control_humanoid ../ &&
 cd ..

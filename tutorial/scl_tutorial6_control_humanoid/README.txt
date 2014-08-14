@@ -10,7 +10,7 @@ $ mkdir -p build_dbg
 $ cd build_dbg
 $ cmake .. -DCMAKE_BUILD_TYPE=Debug
 $ make -j
-$ cp -rf scl_tutorial6_humanoid_ctrl ..
+$ cp -rf scl_tutorial6_control_humanoid ..
 or simply run a script that does all that
 $ sh make_dbg.sh
 
@@ -19,12 +19,12 @@ $ mkdir -p build_rel
 $ cd build_rel
 $ cmake .. -DCMAKE_BUILD_TYPE=Release
 $ make -j
-$ cp -rf scl_tutorial6_humanoid_ctrl ..
+$ cp -rf scl_tutorial6_control_humanoid ..
 or simply run a script that does all that
 $ sh make_rel.sh
 
 2. Run
-$ ./scl_tutorial6_humanoid_ctrl
+$ ./scl_tutorial6_control_humanoid
 
 Use the mouse to move the camere around:
 rotate camera : l-click + drag
