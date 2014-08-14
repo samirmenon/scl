@@ -70,7 +70,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 int main(int argc, char** argv)
 {
   std::cout<<"\n***************************************\n";
-  std::cout<<"Standard Control Library Tutorial #4";
+  std::cout<<"Standard Control Library Tutorial #5";
   std::cout<<"\n***************************************\n";
 
   scl::SRobotParsed rds;     //Robot data structure....
