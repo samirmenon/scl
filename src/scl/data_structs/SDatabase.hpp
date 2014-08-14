@@ -202,7 +202,10 @@ struct SGuiData
 
   sBool glut_initialized_;
 
-  SGuiData() : glut_initialized_(false) {ui_point_selector_=0;}
+  SGuiData() : glut_initialized_(false) {
+    ui_point_selector_=0;
+    for(int i=0;i<SCL_NUM_UI_FLAGS;++i)ui_flag_[i] = false;
+  }
 };
 
 /** Contains all the dynamically updated input output data.
