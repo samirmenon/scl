@@ -92,11 +92,11 @@ namespace scl
 
     /** Access the data structure */
     SActuatorSetMuscle* getData()
-    { return &data_; }
+    { return data_; }
 
     /** Access the data structure for reads only */
     const SActuatorSetMuscle* getData() const
-    { return &data_; }
+    { return static_cast<const SActuatorSetMuscle*>(data_); }
 
     /* *****************************************************************
      *                        Initialization
@@ -106,8 +106,8 @@ namespace scl
      */
     virtual sBool init(const std::string& arg_name,
         const SRobotParsed *arg_robot,
-        const SMuscleSetParsed *arg_msys,
         const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
+        SActuatorSetMuscle *arg_mset,
         CDynamicsBase *arg_dynamics);
 
     /** Has this actuator been initialized */
@@ -125,7 +125,7 @@ namespace scl
 
   protected:
     /** The muscle set data */
-    SActuatorSetMuscle data_;
+    SActuatorSetMuscle *data_;
 
     /** The muscles in this set */
     sutil::CMappedList<std::string,CActuatorMuscle> muscles_;

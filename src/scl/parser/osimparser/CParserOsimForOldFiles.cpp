@@ -48,7 +48,7 @@ using namespace scl;
 namespace scl {
   bool CParserOsimForOldFiles::readOsimBiomechFromFile(const std::string& arg_file,
       scl::SRobotParsed& arg_biomech,
-      scl::SMuscleSetParsed& arg_msys)
+      scl::SActuatorSetMuscleParsed& arg_msys)
   {
     sBool flag;
     try
@@ -71,7 +71,7 @@ namespace scl {
   bool CParserOsimForOldFiles::readMuscleSysFromFile(
       const std::string& arg_file,
       const std::string& arg_msys_name,
-      scl::SMuscleSetParsed& arg_msys)
+      scl::SActuatorSetMuscleParsed& arg_msys)
   {
     sBool flag;
     try
@@ -105,7 +105,6 @@ namespace scl {
 
       //1. Read muscle system(s)
       arg_msys.name_ = model_name;
-      arg_msys.must_use_robot_ = model_name;
 
       //Read in the muscles : Regardless of type.
       tiElem_muscle = tiHndl_model.FirstChild( "ActuatorSet" ).

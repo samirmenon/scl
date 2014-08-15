@@ -98,10 +98,14 @@ private:
       const std::string& arg_robot_spec_name,
       scl::SRobotParsed& arg_robot);
 
-  /** Reads a robot's muscle specification from a file */
-  bool readMuscleSpecFromFile(const std::string& arg_spec_file,
-      const std::string& arg_muscle_spec_name,
-      scl::SRobotParsed& arg_robot);
+  /** Reads a robot's actuator set specification from a file.
+   * NOTE : This function is private because it does not seem reasonable
+   * to want to parse a muscle set without actually attaching it to a robot.
+   * As such actuator sets (in general) will be parsed with the readRobot.
+   * They are considered an intrinsic part of the robot's structure.*/
+  virtual bool readActuatorSetMuscleFromFile(const std::string& arg_spec_file,
+      const std::string& arg_muscle_set_name,
+      scl::SActuatorSetMuscleParsed& ret_mset);
 };
 
 }

@@ -331,19 +331,11 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
         ss>>arg_robot.option_axis_frame_size_;
       }
 
-      xmlflags = _robot_handle.FirstChildElement( "option_muscle_via_pt_sz" ).Element();
-      if ( xmlflags )
-      {
-        std::stringstream ss(xmlflags->FirstChild()->Value());
-        ss>>arg_robot.option_muscle_via_pt_sz_;
-        arg_robot.muscle_system_.render_muscle_via_pt_sz_ = arg_robot.option_muscle_via_pt_sz_;
-      }
-
       // *****************************************************************
       //                        Now parse the links
       // *****************************************************************
       TiXmlElement* link_data;
-      std::string spec(""), spec_muscle(""), spec_file("");
+      std::string spec(""), actuator_set_muscle(""), spec_file("");
 
       //Spec name
       link_data = _robot_handle.FirstChildElement( "spec" ).Element();
@@ -356,11 +348,11 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
       { throw(std::runtime_error("\nError reading robot spec name")); }
 
       //Muscle spec name
-      link_data = _robot_handle.FirstChildElement( "option_muscle_spec" ).Element();
+      link_data = _robot_handle.FirstChildElement( "option_actuator_set_muscle" ).Element();
       if ( link_data )
       {
         std::stringstream ss(link_data->FirstChild()->Value());
-        ss>>spec_muscle;
+        ss>>actuator_set_muscle;
       }
 
       //File name
@@ -402,20 +394,6 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
         std::string err;
         err ="Could not read the robot's spec (" + spec +") from its file : "+ spec_file;
         throw(std::runtime_error(err));
-      }
-
-      // *****************************************************************
-      //                 Now parse the muscle spec if it exists
-      // *****************************************************************
-      if("" != spec_muscle)
-      {
-        flag = readMuscleSpecFromFile(spec_file, spec_muscle, /*ret val */arg_robot);
-        if(false == flag)
-        {
-          std::string err;
-          err ="Could not read the robot's muscle spec (" + spec_muscle +") from its file : "+ spec_file;
-          throw(std::runtime_error(err));
-        }
       }
 
       // *****************************************************************
@@ -508,94 +486,129 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
 #endif
 
       // *****************************************************************
-      //        Now get the option to sort all the muscles (if present)
+      //                 Now parse the muscle spec if it exists
       // *****************************************************************
-      if(arg_robot.muscle_system_.has_been_init_)
-      {
-        bool muscle_order_specified = false;
-        xmlflags = _robot_handle.FirstChildElement( "option_muscle_sort_order" ).Element();
-        if ( xmlflags )
-        {//If we need to sort muscles (option has been provided in the xml file).
-          //Read muscle spec name
-          if(NULL == xmlflags->Attribute("name")) //Unnamed robot
-          { throw(std::runtime_error("\nError reading <option_muscle_sort_order name=\"\">. No muscle spec name specified")); }
+      if("" != actuator_set_muscle)
+      {//Initialize memory
+        SActuatorSetParsed **actset = arg_robot.actuator_sets_.create(actuator_set_muscle);
+        if(NULL == actset)
+        { throw(std::runtime_error(std::string("Muscle set already exists in the robot parsed data struct (") + actuator_set_muscle +
+            std::string(") from its file : ")+ spec_file +std::string("\n Did you parse the robot twice?") )); }
 
-          std::string mspec_name = xmlflags->Attribute("name");
-          if(arg_robot.muscle_system_.name_ != mspec_name)
-          { throw(std::runtime_error("\nError reading <option_muscle_sort_order name=\"\">. Does not match robot's muscle spec name.")); }
+        SActuatorSetMuscleParsed *tmp_actset_musc = new SActuatorSetMuscleParsed();
+        if(NULL == tmp_actset_musc)
+        { throw(std::runtime_error(std::string("Could not allocate memory for muscle actuator set (") + actuator_set_muscle +
+            std::string(") in file : ")+ spec_file )); }
 
-          std::stringstream ss(xmlflags->FirstChild()->Value());
-          std::string sstr;
-
-          //Clear the vector that will hold the robot muscle sort order
-          arg_robot.muscle_system_.muscle_id_to_name_.clear();
-
-          //Should be able to contain all the muscles.
-          int mtree_sz = arg_robot.muscle_system_.muscles_.size();
-          int n_musc_added=0;
-          arg_robot.muscle_system_.muscle_id_to_name_.resize(mtree_sz);
-
-          //Read in all the specified muscles.
-          while ( ss >> sstr ) //Terminates when the stringstream is empty.
-          {
-            if(NULL == arg_robot.muscle_system_.muscles_.at_const(sstr))
-            { throw(std::runtime_error(std::string("\nError reading option_muscle_sort_order. Muscle not found:") + sstr)); }
-
-
-            if(scl_util::isStringInVector(sstr,arg_robot.muscle_system_.muscle_id_to_name_))
-            { throw(std::runtime_error(std::string("\nError reading option_muscle_sort_order. Tried to add muscle twice to index:") + sstr)); }
-
-            if(n_musc_added >= mtree_sz)
-            { throw(std::runtime_error("\nError reading option_muscle_sort_order. Too many muscles.")); }
-
-            arg_robot.muscle_system_.muscle_id_to_name_[n_musc_added] = sstr;
-            n_musc_added++;
-          }
-
-          //If "ALL" the muscles are specified, we have a valid sort order. Else not.
-          if(mtree_sz == n_musc_added)
-          { muscle_order_specified = true;  }
-          else
-          { throw(std::runtime_error("\nError reading option_muscle_sort_order. Some muscles are missing.")); }
-        }
-
-        // *****************************************************************
-        //           Now organize all the muscles in the data struct etc.
-        // *****************************************************************
-        sutil::CMappedList<std::string, SMuscleParsed>::iterator itm,itme;//For sorting
-
-        if(false == muscle_order_specified)
-        {//Specify the default order.
-          arg_robot.muscle_system_.muscle_id_to_name_.resize(arg_robot.muscle_system_.muscles_.size());
-          for(i=0, itm = arg_robot.muscle_system_.muscles_.begin(), itme = arg_robot.muscle_system_.muscles_.end();
-              itm!=itme; ++i, ++itm)
-          {// NOTE : This adds muscles to their default xml position given that there is no muscle order
-            arg_robot.muscle_system_.muscle_id_to_name_[i] = itm->name_;
-          }
-        }
-
-        // Now sort the muscles
-        flag = arg_robot.muscle_system_.muscles_.sort(arg_robot.muscle_system_.muscle_id_to_name_);
+        *actset = tmp_actset_musc;
+        flag = readActuatorSetMuscleFromFile(spec_file, actuator_set_muscle, /*ret val */*tmp_actset_musc);
         if(false == flag)
-        { throw(std::runtime_error(std::string("Could not sort the robot's muscles (") + arg_robot.name_ + std::string(")")
-        + std::string(". Msys: ")+ arg_robot.muscle_system_.name_));  }
+        { throw(std::runtime_error(std::string("Could not read the robot's muscle spec (") + actuator_set_muscle +
+            std::string(") from its file : ")+ spec_file)); }
 
-        // Initialize all the muscles ids in the new muscle objects
-        arg_robot.muscle_system_.muscle_id_to_name_.resize(arg_robot.muscle_system_.muscles_.size());
-        for (i=0, itm = arg_robot.muscle_system_.muscles_.begin(), itme = arg_robot.muscle_system_.muscles_.end();
-            itm != itme; ++itm, ++i)
+        // Attach this muscle set to the robot being parsed...
+        tmp_actset_musc->robot_ = &arg_robot;
+
+        // *****************************************************************
+        //                 Parse any muscle spec related xml options
+        // *****************************************************************
+        xmlflags = _robot_handle.FirstChildElement( "option_muscle_via_pt_sz" ).Element();
+        if ( xmlflags )
         {
-          sUInt* tmp = arg_robot.muscle_system_.muscle_name_to_id_.create(itm->name_);
-          *tmp = i;
+          std::stringstream ss(xmlflags->FirstChild()->Value());
+          ss>>arg_robot.option_muscle_via_pt_sz_;
+          tmp_actset_musc->render_muscle_via_pt_sz_ = arg_robot.option_muscle_via_pt_sz_;
         }
 
-        // Print sorted node order
+        // *****************************************************************
+        //        Now get the option to sort all the muscles (if present)
+        // *****************************************************************
+        if(tmp_actset_musc->has_been_init_)
+        {
+          bool muscle_order_specified = false;
+          xmlflags = _robot_handle.FirstChildElement( "option_muscle_sort_order" ).Element();
+          if ( xmlflags )
+          {//If we need to sort muscles (option has been provided in the xml file).
+            //Read muscle spec name
+            if(NULL == xmlflags->Attribute("name")) //Unnamed robot
+            { throw(std::runtime_error("\nError reading <option_muscle_sort_order name=\"\">. No muscle spec name specified")); }
+
+            std::string mspec_name = xmlflags->Attribute("name");
+            if(tmp_actset_musc->name_ != mspec_name)
+            { throw(std::runtime_error("\nError reading <option_muscle_sort_order name=\"\">. Does not match robot's muscle spec name.")); }
+
+            std::stringstream ss(xmlflags->FirstChild()->Value());
+            std::string sstr;
+
+            //Should be able to contain all the muscles.
+            int mtree_sz = tmp_actset_musc->muscles_.size();
+            int n_musc_added=0;
+            tmp_actset_musc->muscle_id_to_name_.resize(mtree_sz);
+
+            //Read in all the specified muscles.
+            while ( ss >> sstr ) //Terminates when the stringstream is empty.
+            {
+              if(NULL == tmp_actset_musc->muscles_.at_const(sstr))
+              { throw(std::runtime_error(std::string("\nError reading option_muscle_sort_order. Muscle not found:") + sstr)); }
+
+
+              if(scl_util::isStringInVector(sstr,tmp_actset_musc->muscle_id_to_name_))
+              { throw(std::runtime_error(std::string("\nError reading option_muscle_sort_order. Tried to add muscle twice to index:") + sstr)); }
+
+              if(n_musc_added >= mtree_sz)
+              { throw(std::runtime_error("\nError reading option_muscle_sort_order. Too many muscles.")); }
+
+              tmp_actset_musc->muscle_id_to_name_[n_musc_added] = sstr;
+              n_musc_added++;
+            }
+
+            //If "ALL" the muscles are specified, we have a valid sort order. Else not.
+            if(mtree_sz == n_musc_added)
+            { muscle_order_specified = true;  }
+            else
+            { throw(std::runtime_error("\nError reading option_muscle_sort_order. Some muscles are missing.")); }
+          }
+
+          // *****************************************************************
+          //           Now organize all the muscles in the data struct etc.
+          // *****************************************************************
+          sutil::CMappedList<std::string, SMuscleParsed>::iterator itm,itme;//For sorting
+
+          if(false == muscle_order_specified)
+          {//Specify the default order.
+            tmp_actset_musc->muscle_id_to_name_.resize(tmp_actset_musc->muscles_.size());
+            for(i=0, itm = tmp_actset_musc->muscles_.begin(), itme = tmp_actset_musc->muscles_.end();
+                itm!=itme; ++i, ++itm)
+            {// NOTE : This adds muscles to their default xml position given that there is no muscle order
+              tmp_actset_musc->muscle_id_to_name_[i] = itm->name_;
+            }
+          }
+
+          // Now sort the muscles
+          flag = tmp_actset_musc->muscles_.sort(tmp_actset_musc->muscle_id_to_name_);
+          if(false == flag)
+          { throw(std::runtime_error(std::string("Could not sort the robot's muscles (") + arg_robot.name_ + std::string(")")
+          + std::string(". Msys: ")+ tmp_actset_musc->name_));  }
+
+          // Initialize all the muscles ids in the new muscle objects
+          tmp_actset_musc->muscle_id_to_name_.resize(tmp_actset_musc->muscles_.size());
+          for (i=0, itm = tmp_actset_musc->muscles_.begin(), itme = tmp_actset_musc->muscles_.end();
+              itm != itme; ++itm, ++i)
+          {
+            sUInt* tmp = tmp_actset_musc->muscle_name_to_id_.create(itm->name_);
+            *tmp = i;
+          }
+
+          // Print sorted node order
 #ifdef DEBUG
-        std::cout<<"\nreadRobotFromFile() : Sorted muscles for "<<arg_robot.name_<<". Msys: "<<arg_robot.muscle_system_.name_;
-        for(i=0, itm = arg_robot.muscle_system_.muscles_.begin(), itme = arg_robot.muscle_system_.muscles_.end();
-            itm!=itme; ++i, ++itm)
-        { std::cout<<"\n\t"<<i<<" : "<<itm->name_;  }
+          std::cout<<"\nreadRobotFromFile() : Sorted muscles for "<<arg_robot.name_<<". Msys: "<<tmp_actset_musc->name_;
+          for(i=0, itm = tmp_actset_musc->muscles_.begin(), itme = tmp_actset_musc->muscles_.end();
+              itm!=itme; ++i, ++itm)
+          { std::cout<<"\n\t"<<i<<" : "<<itm->name_;  }
 #endif
+        }
+
+        tmp_actset_musc->has_been_init_ = true;
       }
 
 
@@ -739,9 +752,10 @@ bool CParserScl::readRobotSpecFromFile(const std::string& arg_spec_file,
   return false;
 }
 
-bool CParserScl::readMuscleSpecFromFile(const std::string& arg_spec_file,
-    const std::string& arg_muscle_spec_name,
-    scl::SRobotParsed& arg_robot)
+bool CParserScl::readActuatorSetMuscleFromFile(
+    const std::string& arg_spec_file,
+    const std::string& arg_muscle_set_name,
+    scl::SActuatorSetMuscleParsed& ret_mset)
 {
   bool flag;
   try
@@ -762,19 +776,26 @@ bool CParserScl::readMuscleSpecFromFile(const std::string& arg_spec_file,
     tiHndl_world = tiHndl_file_handle.FirstChildElement( "scl" );
 
     //Read in the links.
-    tiElem_muscle = tiHndl_world.FirstChildElement( "muscle_system" ).ToElement();
+    tiElem_muscle = tiHndl_world.FirstChildElement( "actuator_set" ).ToElement();
     if(NULL == tiElem_muscle) //Unnamed muscle
     { throw std::runtime_error("No muscle system specs found in spec file"); }
 
-    sUInt muscle_spec=0;
+    sUInt num_muscle_asets=0;
 
     //Iterating with TiXmlElement is faster than TiXmlHandle
-    for(; tiElem_muscle; tiElem_muscle=tiElem_muscle->NextSiblingElement("muscle_system") )
+    for(; tiElem_muscle; tiElem_muscle=tiElem_muscle->NextSiblingElement("actuator_set") )
     {
       TiXmlHandle _muscle_handle(tiElem_muscle); //Back to handles
 
       //Read muscle name
-      if(NULL == tiElem_muscle->Attribute("spec_name")) //Unnamed muscle
+      if(NULL == tiElem_muscle->Attribute("type"))
+      { throw std::runtime_error(std::string("Actuator set in file (")+ arg_spec_file +std::string(") does not have a type")); }
+
+      if(std::string("muscle") != std::string(tiElem_muscle->Attribute("type"))) //Unnamed muscle
+      { continue; }
+
+      //Read muscle name
+      if(NULL == tiElem_muscle->Attribute("name")) //Unnamed muscle
       {
 #ifdef DEBUG
         std::cout<<"Warning : Found unnamed spec.";
@@ -782,28 +803,28 @@ bool CParserScl::readMuscleSpecFromFile(const std::string& arg_spec_file,
         continue;
       }
 
-      if(arg_muscle_spec_name != tiElem_muscle->Attribute("spec_name")) //Names don't match
+      if(arg_muscle_set_name != tiElem_muscle->Attribute("name")) //Names don't match
       {
 #ifdef DEBUG
-        std::cout<<"Warning : Wanted spec: "<<arg_muscle_spec_name<<". Got: "<<tiElem_muscle->Attribute("spec_name");
+        std::cout<<"Warning : Wanted muscle set: "<<arg_muscle_set_name<<". Got: "<<tiElem_muscle->Attribute("name");
 #endif
         continue;
       }
 
       //Set the muscle name
-      arg_robot.muscle_system_.name_ = arg_muscle_spec_name;
+      ret_mset.name_ = arg_muscle_set_name;
 
-      muscle_spec++; //Found a candidate
-      if(muscle_spec>1) //There should only be one muscle with this name.
+      num_muscle_asets++; //Found a candidate
+      if(num_muscle_asets>1) //There should only be one muscle with this name.
       {
 #ifdef DEBUG
         //Stronger error checking in debug mode. Break if muscle names aren't unique.
-        throw(std::runtime_error("Multiple muscle_system specs have the same name"));
+        throw(std::runtime_error("Multiple muscle actuator sets specs have the same name"));
 #endif
-        break; //In release mode, we ignore the extra muscle_system specs. Move on.
+        break; //In release mode, we ignore the extra muscle actuator sets specs. Move on.
       }
 
-      //Now actually read in the muscle_system by parsing all the muscles
+      //Now actually read in the muscle actuator sets by parsing all the muscles
       TiXmlElement* _child_link_element = _muscle_handle.FirstChildElement( "muscle" ).ToElement();
       for(; _child_link_element; _child_link_element=_child_link_element->NextSiblingElement("muscle") )
       {
@@ -817,7 +838,7 @@ bool CParserScl::readMuscleSpecFromFile(const std::string& arg_spec_file,
         { throw(std::runtime_error("Couldn't parse a muscle:")); }
 
         //Add the root node to the robdef
-        SMuscleParsed *tmp_musc_ds2 = arg_robot.muscle_system_.muscles_.create(tmp_musc_ds.name_,tmp_musc_ds);
+        SMuscleParsed *tmp_musc_ds2 = ret_mset.muscles_.create(tmp_musc_ds.name_,tmp_musc_ds);
         if(S_NULL == tmp_musc_ds2)
         { throw(std::runtime_error(std::string("Couldn't allocate a muscle (id taken already?):") + tmp_musc_ds.name_)); }
 
@@ -825,14 +846,14 @@ bool CParserScl::readMuscleSpecFromFile(const std::string& arg_spec_file,
       }
     }//End of loop over robots in the xml file.
 
-    if(muscle_spec<1)
-    { throw(std::runtime_error(std::string("Didn't find any muscle spec called: ")+arg_muscle_spec_name)); }
+    if(num_muscle_asets<1)
+    { throw(std::runtime_error(std::string("Didn't find any muscle spec called: ")+arg_muscle_set_name)); }
 
-    arg_robot.muscle_system_.has_been_init_ = true;
+    ret_mset.has_been_init_ = true;
     return true;
   }
   catch(std::exception& e)
-  { std::cerr<<"\nCParserScl::readMuscleSpecFromFile("<<arg_spec_file<<"): "<<e.what(); }
+  { std::cerr<<"\nCParserScl::readActuatorSetMuscleFromFile("<<arg_spec_file<<"): "<<e.what(); }
   return false;
 }
 

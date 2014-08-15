@@ -42,7 +42,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SGraphicsParsed.hpp>
 #include <scl/data_structs/SRobotIO.hpp>
-#include <scl/data_structs/SMuscleSetParsed.hpp>
+#include <scl/data_structs/SActuatorSetMuscleParsed.hpp>
 #include <scl/data_structs/SUIParsed.hpp>
 
 #include <scl/graphics/chai/data_structs/SGraphicsChai.hpp>
@@ -74,10 +74,10 @@ struct SParserData
    * NOTE TODO : Muscle systems should be attached to parsed robot
    * specifications. They can't do anything independent of the
    * actual robot spec anyway. The original idea was to allow multiple
-   * muscle specs for a robot, but that's overkill. More modular to
+   * muscle sets for a robot, but that's overkill. More modular to
    * just redefine the robot as something else and give it a new
-   * muscle spec. */
-  sutil::CMappedList<std::string,SMuscleSetParsed> muscle_systems_;
+   * muscle set. */
+  sutil::CMappedList<std::string,SActuatorSetMuscleParsed> muscle_sets_;
 
   /** The parsed gui specification */
   sutil::CMappedList<std::string,SUIParsed> user_interface_;

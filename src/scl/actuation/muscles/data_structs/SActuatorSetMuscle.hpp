@@ -36,6 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //Needs to access parent robot kinematics
 #include <scl/data_structs/SRobotParsed.hpp>
+#include <scl/data_structs/SActuatorSetMuscleParsed.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
 
 namespace scl
@@ -46,18 +47,24 @@ namespace scl
     /* ******************************************************
      *                        Data
      * ****************************************************** */
-    /** The parent robot to which this actuator is attached */
-    const SRobotParsed *robot_;
-
     /** The parsed muscle specification */
-    const SMuscleSetParsed *msys_;
+    const SActuatorSetMuscleParsed *mset_;
 
     /* ******************************************************
      *                        Initialization
      * ****************************************************** */
+    bool init(const SActuatorSetMuscleParsed * arg_mset_parsed)
+    {
+      if(NULL == arg_mset_parsed){ return false; }
+      if(false == arg_mset_parsed->hasBeenInit()){ return false; }
+      mset_ = arg_mset_parsed;
+      has_been_init_ = true;
+      return true;
+    }
+
     /** Default constructor. Sets stuff to NULL. */
     SActuatorSetMuscle() : SActuatorSetBase("SActuatorSetMuscle"),
-        robot_(NULL), msys_(NULL){}
+        mset_(NULL){}
 
     /** Default destructor. Does nothing. */
     virtual ~SActuatorSetMuscle(){}

@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SMuscleSetParsed.hpp
+/* \file SActuatorSetMuscleParsed.hpp
  *
  *  Created on: May 9, 2011
  *
@@ -29,11 +29,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef SMUSCLESETPARSED_HPP_
-#define SMUSCLESETPARSED_HPP_
+#ifndef SACTUATORSETMUSCLEPARSED_HPP_
+#define SACTUATORSETMUSCLEPARSED_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SObject.hpp>
+#include <scl/data_structs/SActuatorSetParsed.hpp>
 #include <sutil/CMappedList.hpp>
 
 #include <Eigen/Dense>
@@ -120,7 +121,7 @@ namespace scl
 
   /** All the data required to attach muscle actuators
    * to any robot.*/
-  class SMuscleSetParsed : public SObject
+  class SActuatorSetMuscleParsed : public SActuatorSetParsed
   {
   public:
     /** ******************** DATA *********************** */
@@ -133,21 +134,17 @@ namespace scl
     /** The muscle name to numeric id map */
     sutil::CMappedList<std::string, sUInt> muscle_name_to_id_;
 
-    /** This muscle system might not work on all
-     * robots. */
-    std::string must_use_robot_;
-
     /** Graphics properties */
     int render_muscle_thickness_;//pixels
     double render_muscle_via_pt_sz_;//size of sphere
 
     /** ******************** FUNCTIONS *********************** */
     /** Default constructor. Sets the type. */
-    SMuscleSetParsed();
+    SActuatorSetMuscleParsed();
     /** Default destructor. Does nothing */
-    virtual ~SMuscleSetParsed();
+    virtual ~SActuatorSetMuscleParsed();
   };
 
 }
 
-#endif /* SMUSCLESYSTEMPARSED_HPP_ */
+#endif /* SACTUATORSETMUSCLEPARSED_HPP_ */

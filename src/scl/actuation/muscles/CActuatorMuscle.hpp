@@ -38,6 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Needs to access parent robot kinematics
 #include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
+#include <scl/data_structs/SActuatorSetMuscleParsed.hpp>
 #include <scl/dynamics/CDynamicsBase.hpp>
 
 #include <scl/actuation/muscles/data_structs/SActuatorMuscle.hpp>
@@ -134,7 +135,7 @@ namespace scl
      */
     virtual sBool init(const std::string& arg_name,
         const SRobotParsed *arg_robot,
-        const SMuscleSetParsed *arg_msys,
+        const SActuatorSetMuscleParsed *arg_msys,
         const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
         CDynamicsBase *arg_dynamics);
 
@@ -158,7 +159,7 @@ namespace scl
     const SRobotParsed *robot_;
 
     /** The parsed muscle specification */
-    const SMuscleSetParsed *msys_;
+    const SActuatorSetMuscleParsed *msys_;
 
     /** The muscle in the system */
     const SMuscleParsed *muscle_;

@@ -58,7 +58,7 @@ namespace scl
     std::vector<SGraphicsChaiMuscle> muscle_graphics_set_;
 
     /** A link to the muscle system's parsed data */
-    const SMuscleSetParsed * muscle_set_parsed_;
+    const SActuatorSetMuscleParsed * muscle_set_parsed_;
 
 //    const SGraphicsChai *robot_render_ds_;
 

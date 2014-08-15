@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SActuatorSetBase.hpp
+/* \file SActuatorSetParsed.hpp
  *
  *  Created on: Aug 19, 2013
  *
@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef SACTUATORSETBASE_HPP_
-#define SACTUATORSETBASE_HPP_
+#ifndef SACTUATORSETPARSED_HPP_
+#define SACTUATORSETPARSED_HPP_
 
 #include <scl/data_structs/SObject.hpp>
 
@@ -38,36 +38,33 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
+  class SRobotParsed;
+
   /** A base class for different actuator sets */
-  class SActuatorSetBase : public SObject
+  class SActuatorSetParsed : public SObject
   {
   public:
     /* ******************************************************
-     *                        Data
+     *                        Initialization
      * ****************************************************** */
-    /** The actuator set forces in the actuator coordinates */
-    Eigen::VectorXd force_actuator_;
-
-    /** The Jacobian that maps actuator forces into gc forces
-     *  => force_gc_ = J_ * force_actuator_;
-     */
-    Eigen::MatrixXd J_;
+    /** The robot to which this actuator set is attached */
+    const SRobotParsed *robot_;
 
     /* ******************************************************
      *                        Initialization
      * ****************************************************** */
-    explicit SActuatorSetBase(const std::string& subclass_type_name) :
-      SObject(subclass_type_name){}
+    explicit SActuatorSetParsed(const std::string& subclass_type_name) :
+      SObject(subclass_type_name), robot_(NULL){}
 
-    explicit SActuatorSetBase(const char* subclass_type_name) :
-      SObject(subclass_type_name){}
+    explicit SActuatorSetParsed(const char* subclass_type_name) :
+      SObject(subclass_type_name), robot_(NULL){}
 
-    virtual ~SActuatorSetBase(){}
+    virtual ~SActuatorSetParsed(){}
 
   private:
     /** This is private to force subclasses to expose their type */
-    SActuatorSetBase();
+    SActuatorSetParsed();
   };
 
 } /* namespace scl */
-#endif /* SACTUATORSETBASE_HPP_ */
+#endif /* SACTUATORSETPARSED_HPP_ */

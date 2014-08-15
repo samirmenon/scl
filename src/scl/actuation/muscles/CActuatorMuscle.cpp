@@ -48,7 +48,7 @@ namespace scl
    */
   sBool CActuatorMuscle::init(const std::string& arg_name,
       const SRobotParsed *arg_robot,
-      const SMuscleSetParsed *arg_msys,
+      const SActuatorSetMuscleParsed *arg_msys,
       const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
       CDynamicsBase *arg_dynamics)
   {
@@ -60,7 +60,7 @@ namespace scl
       { throw(std::runtime_error("Passed NULL robot parsed data struct")); }
       if(NULL==arg_msys)
       { throw(std::runtime_error("Passed NULL muscle spec data struct")); }
-      if(false==arg_msys->has_been_init_)
+      if(false==arg_msys->hasBeenInit())
       { throw(std::runtime_error("Passed unintialized muscle spec data struct")); }
       if(NULL==arg_dynamics)
       { throw(std::runtime_error("Passed NULL robot dynamics object")); }

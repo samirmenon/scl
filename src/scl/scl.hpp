@@ -102,7 +102,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/data_structs/SGraphicsParsed.hpp>
-#include <scl/data_structs/SMuscleSetParsed.hpp>
+#include <scl/data_structs/SActuatorSetMuscleParsed.hpp>
 #include <scl/data_structs/SDatabase.hpp>
 #include <scl/data_structs/SRobotIO.hpp>
 #include <scl/data_structs/SObject.hpp>

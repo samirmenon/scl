@@ -165,7 +165,7 @@ public:
       /** The robot to which the muscles will be attached */
       const std::string& arg_robot,
       /** The set of muscles to be attached */
-      const SMuscleSetParsed& arg_mset,
+      const SActuatorSetMuscleParsed& arg_mset,
       const sBool add_musc_via_points);
 
   /** Removes a muscle system from the graphics rendering environment

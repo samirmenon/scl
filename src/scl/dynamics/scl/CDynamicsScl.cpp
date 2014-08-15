@@ -86,7 +86,7 @@ namespace scl
   sBool CDynamicsScl::computeTransform(
       /** The link at which the transformation matrix is to be calculated */
       SRigidBodyDyn& arg_link,
-      /** The transformation matrix will be saved here. */
+      /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q)
   {
     bool flag;

@@ -39,6 +39,7 @@ namespace scl
   /** Default constructor. Sets stuff to NULL. */
   CActuatorSetMuscle::CActuatorSetMuscle() :
       CActuatorSetBase("CActuatorSetMuscle"),
+      data_(NULL),
       dynamics_(NULL)
   {}
 
@@ -47,8 +48,8 @@ namespace scl
    */
   sBool CActuatorSetMuscle::init(const std::string& arg_name,
       const SRobotParsed *arg_robot,
-      const SMuscleSetParsed *arg_msys,
       const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
+      SActuatorSetMuscle *arg_mset,
       CDynamicsBase *arg_dynamics)
   {
     bool flag;
@@ -57,10 +58,12 @@ namespace scl
       //Check pointers.
       if(NULL==arg_robot)
       { throw(std::runtime_error("Passed NULL robot parsed data struct")); }
-      if(NULL==arg_msys)
-      { throw(std::runtime_error("Passed NULL muscle spec data struct")); }
-      if(false==arg_msys->has_been_init_)
-      { throw(std::runtime_error("Passed unintialized muscle spec data struct")); }
+      if(NULL==arg_mset)
+      { throw(std::runtime_error("Passed NULL muscle actuator set data struct")); }
+      if(false==arg_mset->hasBeenInit())
+      { throw(std::runtime_error("Passed unintialized muscle actuator set data struct")); }
+      if(false==arg_mset->mset_->hasBeenInit())
+      { throw(std::runtime_error("Passed unintialized muscle actuator set parsed data struct")); }
       if(NULL==arg_dynamics)
       { throw(std::runtime_error("Passed NULL robot dynamics object")); }
 
@@ -68,13 +71,12 @@ namespace scl
       name_ = arg_name;
 
       //Save pointers
-      data_.robot_ = arg_robot;
-      data_.msys_ = arg_msys;
+      data_ = arg_mset;
       dynamics_ = arg_dynamics;
 
       // Initialize all the muscles in the muscle spec
       sutil::CMappedList<std::string, SMuscleParsed>::const_iterator it,ite;
-      for (it = arg_msys->muscles_.begin(), ite = arg_msys->muscles_.end();
+      for (it = data_->mset_->muscles_.begin(), ite = data_->mset_->muscles_.end();
           it != ite; ++it)
       {
         // Create a muscle computational object
@@ -82,10 +84,14 @@ namespace scl
         if(NULL == musc)
         { throw(std::runtime_error(std::string("Could not create muscle: ")+it->name_)); }
 
-        flag = musc->init(it->name_,arg_robot, arg_msys, arg_rbdtree, arg_dynamics);
+        flag = musc->init(it->name_,arg_robot, data_->mset_, arg_rbdtree, arg_dynamics);
         if(false == flag)
         { throw(std::runtime_error(std::string("Could not initialize muscle: ")+it->name_)); }
       }
+
+      flag = muscles_.sort(data_->mset_->muscle_id_to_name_);
+      if(false == flag)
+      { throw(std::runtime_error("Could not sort parsed muscle set's computational objects")); }
 
       has_been_init_ = true;
     }
@@ -101,9 +107,9 @@ namespace scl
   sBool CActuatorSetMuscle::hasBeenInit()
   {
 #ifdef DEBUG
-    if(NULL == data_.robot_) {  has_been_init_ = false; return false; }
-    if(NULL == data_.msys_) {  has_been_init_ = false; return false; }
-    if(false == data_.msys_->has_been_init_) {  has_been_init_ = false; return false; }
+    if(NULL == data_->mset_->robot_) {  has_been_init_ = false; return false; }
+    if(NULL == data_->mset_) {  has_been_init_ = false; return false; }
+    if(false == data_->mset_->has_been_init_) {  has_been_init_ = false; return false; }
     if(NULL == dynamics_) {  has_been_init_ = false; return false; }
 #endif
     return has_been_init_;
@@ -123,9 +129,9 @@ namespace scl
     bool flag = true;
 
     // del-L_m = J del-q
-    ret_J.resize(muscles_.size(),data_.robot_->dof_);
+    ret_J.resize(muscles_.size(),data_->mset_->robot_->dof_);
 
-    row_J_.resize(data_.robot_->dof_);
+    row_J_.resize(data_->mset_->robot_->dof_);
 
     // Compute a row vector for each muscle to get the full muscle Jacobian
     int i=0;

@@ -228,15 +228,35 @@ namespace scl {
       //8. Add the constructed robot tree to the graphics (chai) world
       data_->chai_world_->addChild(robot_brrep_root->graphics_obj_);
 
-      if(true == arg_rob_parsed->muscle_system_.has_been_init_)
+      // Finds muscle sets in the actuator sets and adds them to the rendering system.
+      const SActuatorSetMuscleParsed* tmp_mset =NULL;
+      sutil::CMappedPointerList<std::string, SActuatorSetParsed, true>::const_iterator it,ite;
+      for (it = arg_rob_parsed->actuator_sets_.begin(), ite = arg_rob_parsed->actuator_sets_.end(); it!=ite;++it)
       {
-        if(arg_rob_parsed->option_muscle_via_pt_sz_>0.0)
-        { flag = addMusclesToRender(arg_rob_parsed->name_,arg_rob_parsed->muscle_system_,true); }
-        else
-        { flag = addMusclesToRender(arg_rob_parsed->name_,arg_rob_parsed->muscle_system_,false); }
+        SActuatorSetParsed* tmp_aset = *it;
+        if("SActuatorSetMuscleParsed" == tmp_aset->getType())
+        {
+          if(NULL == tmp_mset)
+          { tmp_mset = dynamic_cast<const SActuatorSetMuscleParsed*>(tmp_aset); }
+          else
+          { std::cout<<"\n WARNING : Found multiple muscle actuator sets for robot: "<<arg_rob_parsed->name_
+            <<"\n\tExtra muscle set: "<<tmp_aset->name_
+            <<"\n\tUnfortunately, the graphics system only supports one set because muscles \n\tare directly added into the robot graphics tree."
+            <<"\n\tAs such scl will only render the first muscle set : "<<tmp_mset->name_;  }
+        }
+      }
+      if(NULL != tmp_mset)
+      {//Found a muscle actuator set...
+        if(true == tmp_mset->hasBeenInit())
+        {
+          if(arg_rob_parsed->option_muscle_via_pt_sz_>0.0)
+          { flag = addMusclesToRender(arg_rob_parsed->name_,*tmp_mset,true); }
+          else
+          { flag = addMusclesToRender(arg_rob_parsed->name_,*tmp_mset,false); }
 
-        if(false == flag)
-        { throw(std::runtime_error("Failed to add a muscle system for robot"));  }
+          if(false == flag)
+          { throw(std::runtime_error("Failed to add a muscle system for robot"));  }
+        }
       }
 
 #ifdef DEBUG
@@ -759,8 +779,10 @@ namespace scl {
   }
 
   sBool CGraphicsChai::addMusclesToRender(
+      /** The robot to which the muscles will be attached */
       const std::string& arg_robot,
-      const SMuscleSetParsed& arg_mset,
+      /** The set of muscles to be attached */
+      const SActuatorSetMuscleParsed& arg_mset,
       const sBool add_musc_via_points)
   {
     std::string musc_name("");
@@ -1196,10 +1218,10 @@ namespace scl {
         // Note the wacky double const pointer....
         // NOTE TODO: This is inefficient. Fix this. Ideally should store the pointer somewhere
         // But was giving a weird compiler error on Aug 1 2014.
-        const SRobotRenderObj* rob_ds = data_->robots_rendered_.at(it->muscle_set_parsed_->must_use_robot_);
+        const SRobotRenderObj* rob_ds = data_->robots_rendered_.at(msys.muscle_set_parsed_->robot_->name_);
         if(S_NULL == rob_ds)
-        { std::cerr<<"\nCGraphicsChai::updateGraphicsForMuscles() : Error : Could not find robot ("<<it->muscle_set_parsed_->must_use_robot_
-          <<")for actuator set : "<<msys.name_; return false;  }
+        { std::cerr<<"\nCGraphicsChai::updateGraphicsForMuscles() : Error : Could not find robot ("<<msys.muscle_set_parsed_->robot_->name_
+          <<") for actuator set : "<<msys.name_; return false;  }
 
         const SActuatorSetBase * const *act_set = rob_ds->io_->actuators_.actuator_sets_.at_const(msys.name_);
         if(S_NULL == act_set)

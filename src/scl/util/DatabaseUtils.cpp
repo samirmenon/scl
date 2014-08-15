@@ -288,7 +288,7 @@ namespace scl_util
         SDatabase * db = CDatabase::getData();
         if(S_NULL == db) { throw(std::runtime_error("Database not initialized"));  }
 
-        SMuscleSetParsed *msys = db->s_parser_.muscle_systems_.at(arg_msys);
+        SActuatorSetMuscleParsed *msys = db->s_parser_.muscle_sets_.at(arg_msys);
         if(S_NULL == msys) { throw(std::runtime_error("Could not find muscle system"));  }
 
         SRobotParsed *rob = db->s_parser_.robots_.at(arg_robot);

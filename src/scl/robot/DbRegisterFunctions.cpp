@@ -71,6 +71,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskComPos.hpp>
 #include <scl/control/task/tasks/data_structs/STaskComPos.hpp>
 
+#include <scl/data_structs/SActuatorSetMuscleParsed.hpp>
+#include <scl/actuation/muscles/data_structs/SActuatorSetMuscle.hpp>
+#include <scl/actuation/muscles/CActuatorSetMuscle.hpp>
+
 #include <scl/util/DatabaseUtils.hpp>
 
 #include <sutil/CRegisteredDynamicTypes.hpp>
@@ -507,6 +511,9 @@ namespace scl_registry
     bool flag;
     try
     {
+      /** *****************************************************************************************************
+       *                                        Controllers
+       * ***************************************************************************************************** */
       sutil::CDynamicType<std::string,scl::CControllerGc> typeCGc(std::string("CControllerGc"));
       flag = typeCGc.registerType();
       if(false == flag) {throw(std::runtime_error("CControllerGc"));}
@@ -515,6 +522,9 @@ namespace scl_registry
       flag = typeCTask.registerType();
       if(false == flag) {throw(std::runtime_error("CControllerMultiTask"));}
 
+      /** *****************************************************************************************************
+       *                                        Control Tasks
+       * ***************************************************************************************************** */
       sutil::CDynamicType<std::string,scl::CTaskOpPos> typeCTaskOpPos(std::string("CTaskOpPos"));
       flag = typeCTaskOpPos.registerType();
       if(false == flag) {throw(std::runtime_error("CTaskOpPos"));}
@@ -578,6 +588,21 @@ namespace scl_registry
       sutil::CDynamicType<std::string,scl::STaskComPos> typeSTaskComPos(std::string("STaskComPos"));
       flag = typeSTaskComPos.registerType();
       if(false == flag) {throw(std::runtime_error("STaskComPos"));}
+
+      /** *****************************************************************************************************
+       *                                        Actuator Sets
+       * ***************************************************************************************************** */
+      sutil::CDynamicType<std::string,scl::SActuatorSetMuscleParsed> typeSActuatorSetMuscleParsed(std::string("SActuatorSetMuscleParsed"));
+      flag = typeSActuatorSetMuscleParsed.registerType();
+      if(false == flag) {throw(std::runtime_error("SActuatorSetMuscleParsed"));}
+
+      sutil::CDynamicType<std::string,scl::SActuatorSetMuscle> typeSActuatorSetMuscle(std::string("SActuatorSetMuscle"));
+      flag = typeSActuatorSetMuscle.registerType();
+      if(false == flag) {throw(std::runtime_error("SActuatorSetMuscle"));}
+
+      sutil::CDynamicType<std::string,scl::CActuatorSetMuscle> typeCActuatorSetMuscle(std::string("CActuatorSetMuscle"));
+      flag = typeCActuatorSetMuscle.registerType();
+      if(false == flag) {throw(std::runtime_error("CActuatorSetMuscle"));}
     }
     catch (std::exception& e)
     {

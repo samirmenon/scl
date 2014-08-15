@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
 */
-/* \file SMuscleSetParsed.cpp
+/* \file SActuatorSetMuscleParsed.cpp
  *
  *  Created on: May 9, 2011
  *
@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include "SMuscleSetParsed.hpp"
+#include "SActuatorSetMuscleParsed.hpp"
 
 namespace scl
 {
@@ -67,14 +67,13 @@ namespace scl
   SMuscleParsed::~SMuscleParsed()
   {}
 
-  SMuscleSetParsed::SMuscleSetParsed() : SObject(std::string("SMuscleSystem"))
+  SActuatorSetMuscleParsed::SActuatorSetMuscleParsed() : SActuatorSetParsed(std::string("SActuatorSetMuscleParsed"))
   {
     muscles_.clear();
-    must_use_robot_ = "";
     render_muscle_thickness_ = 3;
     render_muscle_via_pt_sz_ = 0.0;
   }
 
-  SMuscleSetParsed::~SMuscleSetParsed()
+  SActuatorSetMuscleParsed::~SActuatorSetMuscleParsed()
   { }
 }

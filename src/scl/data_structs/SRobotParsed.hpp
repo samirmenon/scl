@@ -32,15 +32,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef SROBOTPARSED_HPP_
 #define SROBOTPARSED_HPP_
 
-#include <string>
-
 #include <scl/DataTypes.hpp>
+#include <scl/data_structs/SObject.hpp>
+#include <scl/data_structs/SRigidBody.hpp>
+#include <scl/data_structs/SActuatorSetParsed.hpp>
 
 #include <sutil/CMappedTree.hpp>
-#include <scl/data_structs/SRigidBody.hpp>
-#include <scl/data_structs/SMuscleSetParsed.hpp>
-
-#include <scl/data_structs/SObject.hpp>
+#include <string>
 
 namespace scl
 {
@@ -60,9 +58,8 @@ public:
   /** The indices of the different links in the mapped tree */
   std::vector<std::string> robot_tree_numeric_id_to_name_;
 
-  /** The muscle specification contains a list of all muscle actuators
-   * that are attached to this robot. */
-  SMuscleSetParsed muscle_system_;
+  /** A set of actuators that move this robot */
+  sutil::CMappedPointerList<std::string, SActuatorSetParsed, true> actuator_sets_;
 
   /** The joint values don't go outside this range */
   Eigen::VectorXd gc_pos_limit_max_, gc_pos_limit_min_;
