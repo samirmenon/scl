@@ -30,7 +30,7 @@ INCLUDE_DIRECTORIES(../../src/ ${SCL_INC_DIR}
 SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIO.cpp
            ${SCL_INC_DIR}/data_structs/SRigidBody.cpp
            ${SCL_INC_DIR}/data_structs/SGcModel.cpp
-           ${SCL_INC_DIR}/data_structs/SMuscleSetParsed.cpp
+           ${SCL_INC_DIR}/data_structs/SActuatorSetMuscleParsed.cpp
    )
 
 SET(ACT_SRC ${SCL_INC_DIR}/actuation/muscles/CActuatorMuscle.cpp
