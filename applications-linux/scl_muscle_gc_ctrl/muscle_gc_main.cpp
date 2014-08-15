@@ -185,16 +185,42 @@ int main(int argc, char** argv)
 
       /**********************Initialize Muscle Actuator Model & Dynamics*******************/
       scl::CActuatorSetMuscle rob_mset;
-      flag = rob_mset.init(rob_ds->muscle_system_.name_, /** parsed */ rob_ds, &(rob_ds->muscle_system_),
-          /** rbd tree */ gc_ctrl_ds->gc_model_->rbdyn_tree_, /** dynamics */ &dyn_scl);
+      scl::SActuatorSetMuscleParsed *rob_mset_ds = NULL;
+      scl::SActuatorSetMuscle *rob_mset_ds_dyn = NULL;
+
+      //Find the first muscle set inside the parsed data.
+      sutil::CMappedPointerList<std::string, scl::SActuatorSetParsed, true>::iterator it,ite;
+      for (it = rob_ds->actuator_sets_.begin(), ite = rob_ds->actuator_sets_.end(); it!=ite;++it)
+      {
+        scl::SActuatorSetParsed* tmp_aset = *it;
+        if("SActuatorSetMuscleParsed" == tmp_aset->getType())
+        { rob_mset_ds = dynamic_cast<scl::SActuatorSetMuscleParsed*>(tmp_aset); break; }
+      }
+
+      if(NULL == rob_mset_ds)
+      { throw(std::runtime_error("Did not find muscle actuator set for robot. Check xml spec file."));  }
+
+      //Now get the dynamic muscle set spec...
+      scl::SActuatorSetBase ** rob_mset_ds_dynp;
+      rob_mset_ds_dynp = rob_io_ds->actuators_.actuator_sets_.create(rob_mset_ds->name_);
+      if(NULL == rob_mset_ds_dynp)
+      { throw(std::runtime_error("Could not create muscle actuator set in io data structure."));  }
+
+      rob_mset_ds_dyn = new scl::SActuatorSetMuscle();
+      if(NULL == rob_mset_ds_dyn)
+      { throw(std::runtime_error("Could not allocate muscle actuator set on heap."));  }
+      flag = rob_mset_ds_dyn->init(rob_mset_ds);
+      if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set dyn data struct"));  }
+
+      *rob_mset_ds_dynp = dynamic_cast<scl::SActuatorSetBase*>(rob_mset_ds_dyn);
+
+      flag = rob_mset.init(rob_mset_ds->name_, rob_ds, gc_ctrl_ds->gc_model_->rbdyn_tree_, rob_mset_ds_dyn, &dyn_scl);
       if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set"));  }
 
-      // Create an actuator set in the database
-      scl::SActuatorSetBase **pact = rob_io_ds->actuators_.actuator_sets_.create(rob_ds->muscle_system_.name_);
-      *pact = rob_mset.getData();
-      scl::SActuatorSetBase *act = *pact;
-      act->force_actuator_.setZero(rob_mset.getNumberOfMuscles());
+      //Zero the forces..
+      rob_mset_ds_dyn->force_actuator_.setZero(rob_mset.getNumberOfMuscles());
 
+      /**********************Initialize Muscle Jacobian Etc.*******************/
       // Run the compute Jacobian function once (resizes the matrix etc.).
       Eigen::MatrixXd rob_muscle_J, rob_muscle_Jpinv;
       flag = rob_mset.computeJacobian(rob_io_ds->sensors_.q_, rob_muscle_J);
@@ -220,7 +246,7 @@ int main(int argc, char** argv)
       rob_muscle_Jpinv = rob_svd.matrixV() * rob_sing_val.transpose() * rob_svd.matrixU().transpose();
 
       // The muscle force vector
-      act->force_actuator_.setZero(rob_ds->muscle_system_.muscles_.size());
+      rob_mset_ds_dyn->force_actuator_.setZero(rob_mset_ds->muscles_.size());
 
       /******************************ChaiGlut Graphics************************************/
       glutInit(&argc, argv);
@@ -287,7 +313,7 @@ int main(int argc, char** argv)
               }
               rob_muscle_Jpinv = rob_svd.matrixV() * rob_sing_val.transpose() * rob_svd.matrixU().transpose();
 
-              act->force_actuator_ = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
+              rob_mset_ds_dyn->force_actuator_ = rob_muscle_Jpinv*rob_io_ds->actuators_.force_gc_commanded_;
 
               if(ctrl_ctr%5000 == 0)
               {
@@ -295,8 +321,8 @@ int main(int argc, char** argv)
                 std::cout<<"\nFgc':"<<rob_io_ds->actuators_.force_gc_commanded_.transpose();
                 std::cout<<"\nFm {";
                 for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
-                { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
-                std::cout<<"} : "<<act->force_actuator_.transpose();
+                { std::cout<<rob_mset_ds->muscle_id_to_name_[j]<<", "; }
+                std::cout<<"} : "<<rob_mset_ds_dyn->force_actuator_.transpose();
               }
             }
             robot_gc_ctrl.computeControlForces();
@@ -351,7 +377,7 @@ int main(int argc, char** argv)
           }
           rob_muscle_Jpinv = rob_svd.matrixV() * rob_sing_val.transpose() * rob_svd.matrixU().transpose();
 
-          act->force_actuator_ = rob_muscle_Jpinv * rob_io_ds->actuators_.force_gc_commanded_;
+          rob_mset_ds_dyn->force_actuator_ = rob_muscle_Jpinv * rob_io_ds->actuators_.force_gc_commanded_;
 
           if(ctrl_ctr%5000 == 0)
           {
@@ -361,8 +387,8 @@ int main(int argc, char** argv)
             std::cout<<"\nJ':\n"<<rob_muscle_J.transpose();
             std::cout<<"\nFm {";
             for (int j=0; j<rob_mset.getNumberOfMuscles(); j++)
-            { std::cout<<rob_ds->muscle_system_.muscle_id_to_name_[j]<<", "; }
-            std::cout<<"} : "<<act->force_actuator_.transpose();
+            { std::cout<<rob_mset_ds->muscle_id_to_name_[j]<<", "; }
+            std::cout<<"} : "<<rob_mset_ds_dyn->force_actuator_.transpose();
           }
         }
         robot_gc_ctrl.computeControlForces();
