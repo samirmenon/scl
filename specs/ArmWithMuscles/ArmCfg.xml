@@ -92,22 +92,22 @@
     <type>gc</type>
     <must_use_robot>Arm2Bot</must_use_robot>
     <kp>100</kp>
-    <kv>10</kv>
+    <kv>20</kv>
     <ka>0</ka>
     <ki>0</ki>
-    <force_max>10</force_max>
-    <force_min>-10</force_min>
+    <force_max>50</force_max>
+    <force_min>-50</force_min>
   </controller>
   
   <controller name="5gc">
     <type>gc</type>
     <must_use_robot>Arm5Bot</must_use_robot>
     <kp>100</kp>
-    <kv>10</kv>
+    <kv>20</kv>
     <ka>0</ka>
     <ki>0</ki>
-    <force_max>10</force_max>
-    <force_min>-10</force_min>
+    <force_max>100</force_max>
+    <force_min>-100</force_min>
   </controller>
   
   <controller name="2opc">
