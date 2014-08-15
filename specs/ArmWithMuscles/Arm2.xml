@@ -65,7 +65,8 @@
 
 
   <!-- Muscle system -->
-  <muscle_system spec_name="Arm2Msys">
+  <actuator_set type="muscle" name="Arm2Msys">
+    <must_use_with_spec>Arm2</must_use_with_spec>
     <!-- A single muscle -->
     <muscle type="Hill">
       <name>m0</name>
@@ -198,7 +199,7 @@
         </point>
       </muscle_points>
     </muscle>
-  </muscle_system>    <!-- End of muscle system -->
+  </actuator_set>    <!-- End of muscle system -->
 
 </scl>
 

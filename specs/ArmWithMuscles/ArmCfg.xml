@@ -6,7 +6,7 @@
   <!-- A muscle actuated arm model to test scl's muscle actuation -->
   <robot name="Arm2Bot"> 
     <spec>Arm2</spec>
-    <option_muscle_spec>Arm2Msys</option_muscle_spec> <!-- All options are optional -->
+    <option_actuator_set_muscle>Arm2Msys</option_actuator_set_muscle> <!-- All options are optional -->
     <file>../../specs/ArmWithMuscles/Arm2.xml</file>
     <gravity>0.000   0.000   -9.81</gravity> 
     <root_link>
@@ -38,7 +38,7 @@
   <!-- A muscle actuated arm model to test scl's muscle actuation -->
   <robot name="Arm5Bot"> 
     <spec>Arm5</spec>
-    <option_muscle_spec>Arm5Msys</option_muscle_spec> <!-- All options are optional -->
+    <option_actuator_set_muscle>Arm5Msys</option_actuator_set_muscle> <!-- All options are optional -->
     <file>../../specs/ArmWithMuscles/Arm5.xml</file>
     <gravity>0.000   0.000   -9.81</gravity> 
     <root_link>
@@ -65,6 +65,8 @@
     <flag_wireframe_on>false</flag_wireframe_on>
     <option_axis_frame_size>0.0</option_axis_frame_size> <!-- All options are optional -->
     <option_muscle_via_pt_sz>0.013</option_muscle_via_pt_sz>
+    <option_rigid_body_sort_order>arm5-upper_arm5 arm5-upper_arm_ry arm5-upper_arm_rz arm5-lower_arm5 arm5-hand</option_rigid_body_sort_order> <!-- All options are optional -->
+    <option_muscle_sort_order name ="Arm5Msys">m0a m0b m0'a m0'b m0'c m1 m1b m1c m2' m2'b m2'c</option_muscle_sort_order>
   </robot>
 
   <graphics name="ArmStdView">
@@ -108,26 +110,42 @@
     <force_min>-10</force_min>
   </controller>
   
+  <controller name="2opc">
+      <type>task</type>
+      <must_use_robot>Arm2Bot</must_use_robot>
+
+      <task name="hand2">
+          <type>TaskOpPos</type>
+          <parent_link>lower_arm</parent_link>
+          <pos_in_parent>0  0.0  -0.8</pos_in_parent>
+          <priority>0</priority>
+          <task_dof>3</task_dof>
+          <kp>10</kp>
+          <kv>5</kv>
+          <ka>0</ka>
+          <ki>0.0</ki>
+          <force_max>5</force_max>
+          <force_min>-5</force_min>
+      </task>
+  </controller>
+  
   <controller name="5opc">
       <type>task</type>
       <must_use_robot>Arm5Bot</must_use_robot>
-
-      <task name="hand">
+      <task name="hand5">
           <type>TaskOpPos</type>
           <parent_link>arm5-hand</parent_link>
           <pos_in_parent>0  0.0  -0.2</pos_in_parent>
           <priority>0</priority>
           <task_dof>3</task_dof>
-          <kp>100</kp>
-          <kv>15</kv>
+          <kp>500</kp>
+          <kv>25</kv>
           <ka>0</ka>
           <ki>0.0</ki>
           <force_max>50</force_max>
           <force_min>-50</force_min>
       </task>
-
-      <!--0 task_dof means a gc task, ie full dofs -->
-      <task name="NullSpaceDampingTask">
+      <task name="NullSpaceDampingTask5">
           <type>TaskNullSpaceDamping</type>
           <priority>1</priority>
           <task_dof>0</task_dof> 

@@ -140,7 +140,8 @@
 
 
   <!-- Muscle system -->
-  <muscle_system spec_name="Arm5Msys">
+  <actuator_set type="muscle" name="Arm5Msys">
+    <must_use_with_spec>Arm5</must_use_with_spec>
     <!-- A single muscle -->
     <muscle type="Hill">
       <name>m0a</name>
@@ -197,7 +198,7 @@
     </muscle>
     
     <muscle type="Hill">
-      <name>m1a</name>
+      <name>m0'a</name>
       <max_isometric_force>500</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
@@ -232,7 +233,7 @@
     </muscle>
     
     <muscle type="Hill">
-      <name>m1b</name>
+      <name>m0'b</name>
       <max_isometric_force>500</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
@@ -267,7 +268,7 @@
     </muscle>
     
     <muscle type="Hill">
-      <name>m1c</name>
+      <name>m0'c</name>
       <max_isometric_force>500</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
@@ -302,7 +303,7 @@
     </muscle>
     
     <muscle type="Hill">
-      <name>m2</name>
+      <name>m1</name>
       <max_isometric_force>500</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
@@ -319,7 +320,7 @@
         </point>
         <point order="2">
           <parent_link_name>arm5-upper_arm5</parent_link_name>
-          <position_in_parent>0.0 -0.07 -0.72</position_in_parent>
+          <position_in_parent>0.0 -0.07 -0.85</position_in_parent>
         </point>
         <point order="3">
           <parent_link_name>arm5-lower_arm5</parent_link_name>
@@ -337,7 +338,7 @@
     </muscle>
     
     <muscle type="Hill">
-      <name>m2b</name>
+      <name>m1b</name>
       <max_isometric_force>500</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
@@ -354,7 +355,7 @@
         </point>
         <point order="2">
           <parent_link_name>arm5-upper_arm5</parent_link_name>
-          <position_in_parent>0.035 -0.07 -0.72</position_in_parent>
+          <position_in_parent>0.035 -0.07 -0.85</position_in_parent>
         </point>
         <point order="3">
           <parent_link_name>arm5-lower_arm5</parent_link_name>
@@ -372,7 +373,7 @@
     </muscle>
     
     <muscle type="Hill">
-      <name>m2c</name>
+      <name>m1c</name>
       <max_isometric_force>500</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
@@ -389,7 +390,7 @@
         </point>
         <point order="2">
           <parent_link_name>arm5-upper_arm5</parent_link_name>
-          <position_in_parent>-0.035 -0.07 -0.72</position_in_parent>
+          <position_in_parent>-0.035 -0.07 -0.85</position_in_parent>
         </point>
         <point order="3">
           <parent_link_name>arm5-lower_arm5</parent_link_name>
@@ -407,7 +408,7 @@
     </muscle>
     
     <muscle type="Hill">
-      <name>m3</name>
+      <name>m2'</name>
       <max_isometric_force>500</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
@@ -438,7 +439,7 @@
     </muscle>
     
     <muscle type="Hill">
-      <name>m3b</name>
+      <name>m2'b</name>
       <max_isometric_force>500</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
@@ -469,7 +470,7 @@
     </muscle>
     
     <muscle type="Hill">
-      <name>m3c</name>
+      <name>m2'c</name>
       <max_isometric_force>500</max_isometric_force> <!-- at the contractile element -->
       <stiffness>10</stiffness> <!-- of the parallel spring damper -->
       <damping>4</damping> <!-- of the parallel spring damper -->
@@ -498,5 +499,5 @@
         </point>
       </muscle_points>
     </muscle>
-  </muscle_system>    <!-- End of muscle system -->
+  </actuator_set>    <!-- End of muscle system -->
 </scl>
