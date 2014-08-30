@@ -132,6 +132,8 @@ void test_dynamics_sclspatial(int id)
 		  std::cout<<"\n\tSub-Test ("<<i<<") Calculated Joint Acceleration using Articulated Rigid Body Algorithm...";
 		  std::cout<<"\n ddq :\n"<<ret_ddq.transpose()<<"\n";
 
+		  io_data.sensors_.ddq_ = ret_ddq;
+
 		  //Test 3
 		  if (false == test.inverseDynamicsNER(&io_data, &model , ret_fgc))
 		  { throw(std::runtime_error("Failed to calculate joint Torque using Newton Euler Recursive Algorithm "));  }
