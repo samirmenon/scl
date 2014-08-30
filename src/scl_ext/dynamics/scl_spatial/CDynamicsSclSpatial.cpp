@@ -28,7 +28,9 @@ namespace scl_ext
     // TODO Auto-generated destructor stub
   }
 
-  bool CDynamicsSclSpatial::forwardDynamicsABA( const scl::SRobotIO *arg_io_data , scl::SGcModel *arg_gc_model , Eigen::VectorXd &ret_ddq)
+  bool CDynamicsSclSpatial::forwardDynamicsABA( const scl::SRobotIO *arg_io_data ,
+      scl::SGcModel *arg_gc_model ,
+      Eigen::VectorXd &ret_ddq)
   {
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
@@ -51,7 +53,8 @@ namespace scl_ext
     }
 
     scl::sInt body , link_id , total_link = arg_gc_model->processing_order.size();
-    std::vector<Eigen::MatrixXd>   C(total_link)  , Xup(total_link)  , biasforce(total_link)  , H(total_link) , D(total_link) , temp(total_link)  ;
+    std::vector<Eigen::MatrixXd>   C(total_link)  , Xup(total_link)  , biasforce(total_link)  , H(total_link) ,
+        D(total_link) , temp(total_link);
     Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Vcross(6,6) , XJ(6,6), gravity(6,1);
     gravity << 0,0,0,0,0,9.81;
 
@@ -124,13 +127,18 @@ namespace scl_ext
       D[link_id] =  link->sp_S_joint_.transpose() * (articulated_inertia[link_id] * link->sp_S_joint_);
 
       temp[link_id].setZero(1,1);
-      temp[link_id](0,0) = ( arg_io_data->actuators_.force_gc_commanded_(link_id,0)-(link->sp_S_joint_.transpose()*biasforce[link_id])(0,0));
+      temp[link_id](0,0) = ( arg_io_data->actuators_.force_gc_commanded_(link_id,0) -
+          (link->sp_S_joint_.transpose()*biasforce[link_id])(0,0));
 
       //updated articuklated inertia and bias for all links except root node
       if(false == link->parent_addr_->link_ds_->is_root_)
       {
-        articulated_inertia[link->parent_addr_->link_ds_->link_id_] += (Xup[link_id].transpose()*(articulated_inertia[link_id] - H[link_id]*D[link_id].inverse()*H[link_id].transpose())*Xup[link_id]);
-        biasforce[link->parent_addr_->link_ds_->link_id_] += (Xup[link_id].transpose()*(biasforce[link_id] + (articulated_inertia[link_id] - H[link_id]*D[link_id].inverse()*H[link_id].transpose())*C[link_id] + H[link_id]*temp[link_id]*D[link_id].inverse()));
+        articulated_inertia[link->parent_addr_->link_ds_->link_id_] += (Xup[link_id].transpose() *
+            (articulated_inertia[link_id] - H[link_id] * D[link_id].inverse() * H[link_id].transpose()) * Xup[link_id]);
+        //NOTE TODO : Clean up, comment this, and split it into a few lines to make it easy to read.
+        biasforce[link->parent_addr_->link_ds_->link_id_] += (Xup[link_id].transpose()*(biasforce[link_id] +
+            (articulated_inertia[link_id] - H[link_id]*D[link_id].inverse()*H[link_id].transpose())*C[link_id] +
+            H[link_id]*temp[link_id]*D[link_id].inverse()));
       }
     }
 
@@ -167,7 +175,9 @@ namespace scl_ext
   }
 
 
-  bool CDynamicsSclSpatial::forwardDynamicsCRBA(const scl::SRobotIO *arg_io_data, scl::SGcModel *arg_gc_model, Eigen::VectorXd &ret_ddq)
+  bool CDynamicsSclSpatial::forwardDynamicsCRBA(const scl::SRobotIO *arg_io_data,
+      scl::SGcModel *arg_gc_model,
+      Eigen::VectorXd &ret_ddq)
   {
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
@@ -236,7 +246,8 @@ namespace scl_ext
       computeCrossForVelocity(Vcross,link->spatial_velocity_);
 
       //calculate rigid body force at each link
-      link->spatial_force_ =  link->sp_inertia_*link->spatial_acceleration_ + (-Vcross.transpose())* link->sp_inertia_*link->spatial_velocity_; //calculate joint force
+      link->spatial_force_ =  link->sp_inertia_*link->spatial_acceleration_ +
+          (-Vcross.transpose())* link->sp_inertia_*link->spatial_velocity_; //calculate joint force
     }
 
     //Second iteration : Calculate joint force
@@ -384,7 +395,8 @@ namespace scl_ext
       {
         Vi = Xup[link_id] * link->parent_addr_->spatial_velocity_ + Vj;
         computeCrossForVelocity(Vcross,Vi);
-        link->spatial_acceleration_= Xup[link_id] * link->parent_addr_->spatial_acceleration_ + link->sp_S_joint_ * arg_io_data->sensors_.ddq_[link_id] + Vcross * Vj;
+        link->spatial_acceleration_= Xup[link_id] * link->parent_addr_->spatial_acceleration_ +
+            link->sp_S_joint_ * arg_io_data->sensors_.ddq_[link_id] + Vcross * Vj;
       }
 
 
@@ -392,7 +404,8 @@ namespace scl_ext
       computeCrossForVelocity(Vcross,link->spatial_velocity_);
 
       //calculate rigid body force at each link
-      link->spatial_force_ = link->sp_inertia_*link->spatial_acceleration_  + (-Vcross.transpose())* link->sp_inertia_*link->spatial_velocity_;  //calculate force at each link
+      link->spatial_force_ = link->sp_inertia_*link->spatial_acceleration_  +
+          (-Vcross.transpose())* link->sp_inertia_*link->spatial_velocity_;  //calculate force at each link
     }
 
     //Second iteration : Calculate Joint Torque
@@ -442,8 +455,10 @@ namespace scl_ext
     forwardDynamicsCRBA(&arg_io_data, arg_gc_model ,arg_io_data.sensors_.ddq_);
 
     // Now use Heun's method to correct for hot.
-    arg_io_data.sensors_.dq_ = arg_gc_model->vec_scratch_[1] + arg_time_interval*0.5*(arg_gc_model->vec_scratch_[2]+arg_io_data.sensors_.ddq_);
-    arg_io_data.sensors_.q_ = arg_gc_model->vec_scratch_[0] + arg_time_interval*0.5*(arg_gc_model->vec_scratch_[1] + arg_io_data.sensors_.dq_);
+    arg_io_data.sensors_.dq_ = arg_gc_model->vec_scratch_[1] +
+        arg_time_interval*0.5*(arg_gc_model->vec_scratch_[2]+arg_io_data.sensors_.ddq_);
+    arg_io_data.sensors_.q_ = arg_gc_model->vec_scratch_[0] +
+        arg_time_interval*0.5*(arg_gc_model->vec_scratch_[1] + arg_io_data.sensors_.dq_);
 
     // Finally recompute the accelerations.
     forwardDynamicsCRBA(&arg_io_data, arg_gc_model,arg_io_data.sensors_.ddq_);
@@ -489,7 +504,8 @@ namespace scl_ext
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
       //calculate joint transformation and motion subspace.
-      calculateTransformationAndSubspace(transformation, link->sp_S_joint_ , link->link_ds_->joint_type_ , arg_io_data->sensors_.q_.array()[link_id]);
+      calculateTransformationAndSubspace(transformation, link->sp_S_joint_ , link->link_ds_->joint_type_ ,
+          arg_io_data->sensors_.q_.array()[link_id]);
 
       //calculate link velocity
       link->spatial_velocity_= link->sp_S_joint_*arg_io_data->sensors_.dq_[link_id];
@@ -508,7 +524,9 @@ namespace scl_ext
     return true;
   }
 
-  bool CDynamicsSclSpatial::calculatePotentialEnergy( const scl::SRobotIO *arg_io_data, scl::SGcModel *arg_gc_model, scl::sFloat &ret_potential_energy)
+  bool CDynamicsSclSpatial::calculatePotentialEnergy( const scl::SRobotIO *arg_io_data,
+      scl::SGcModel *arg_gc_model,
+      scl::sFloat &ret_potential_energy)
   {
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
@@ -546,7 +564,8 @@ namespace scl_ext
       link->sp_S_joint_ .setZero(6,1);
 
       //calculate joint transformation and motion subspace.
-      calculateTransformationAndSubspace(XJ, link->sp_S_joint_ , link->link_ds_->joint_type_ , arg_io_data->sensors_.q_.array()[link_id]);
+      calculateTransformationAndSubspace(XJ, link->sp_S_joint_ , link->link_ds_->joint_type_ ,
+          arg_io_data->sensors_.q_.array()[link_id]);
 
       //calculate transformation from one link frame to another consecutive link frame
       Xup[link_id] = XJ * link->sp_X_within_link_;
@@ -564,7 +583,8 @@ namespace scl_ext
 
       if( -1  != link->parent_addr_->link_ds_->link_id_)
       {
-        articulated_inertia[link->parent_addr_->link_ds_->link_id_] += Xup[link_id].transpose() * articulated_inertia[link_id] * Xup[link_id];
+        articulated_inertia[link->parent_addr_->link_ds_->link_id_] +=
+            Xup[link_id].transpose() * articulated_inertia[link_id] * Xup[link_id];
       }
       else
       {
