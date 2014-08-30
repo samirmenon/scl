@@ -151,7 +151,7 @@ int main(int argc, char** argv)
       std::cout<<"\n\nTest #"<<id<<". Scl Spatial Dynamics Math [Sys time, Sim time :"
           <<sutil::CSystemClock::getSysTime()<<" "
           <<sutil::CSystemClock::getSimTime()<<"]";
-      scl_test::test_dynamics_sclspatial_math();
+      scl_test::test_dynamics_sclspatial_math(id);
     }
     ++id;
 
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
       std::cout<<"\n\nTest #"<<id<<". Scl Spatial Dynamics [Sys time, Sim time :"
           <<sutil::CSystemClock::getSysTime()<<" "
           <<sutil::CSystemClock::getSimTime()<<"]";
-      scl_test::test_dynamics_sclspatial();
+      scl_test::test_dynamics_sclspatial(id);
     }
     ++id;
 
@@ -169,7 +169,7 @@ int main(int argc, char** argv)
       std::cout<<"\n\nTest #"<<id<<". Scl vs Scl Spatial Dynamics [Sys time, Sim time :"
           <<sutil::CSystemClock::getSysTime()<<" "
           <<sutil::CSystemClock::getSimTime()<<"]";
-      scl_test::test_dynamics_scl_vs_spatial();
+      scl_test::test_dynamics_scl_vs_spatial(id);
     }
     ++id;
 

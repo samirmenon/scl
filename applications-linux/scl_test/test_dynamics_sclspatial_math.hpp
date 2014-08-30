@@ -22,7 +22,7 @@
 
 namespace scl_test
 {
-  void test_dynamics_sclspatial_math();
+  void test_dynamics_sclspatial_math(int id);
 }
 
 #endif /* TEST_DYNAMICS_SCLSPATIAL_MATH_HPP_ */

@@ -59,7 +59,7 @@ namespace scl_test
     return true;
   }
 
-  void test_dynamics_sclspatial_math()
+  void test_dynamics_sclspatial_math(int id)
   {
     scl::sUInt test_id = 1;
     try
@@ -358,6 +358,7 @@ namespace scl_test
         }
       }
 
+      std::cout<<"\nTest #"<<id<<" : Succeeded.";
 
     }
     catch (std::exception& ee)

@@ -22,7 +22,7 @@
 namespace scl_test
 {
   /** Test the performance of all the dynamics functions in CDynamicsNarm */
-  void test_dynamics_sclspatial();
+  void test_dynamics_sclspatial(int id);
 }
 
 #endif /* TEST_DYNAMICS_SCLSPATIAL_HPP_ */

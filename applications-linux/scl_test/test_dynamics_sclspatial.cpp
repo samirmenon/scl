@@ -41,7 +41,7 @@ namespace scl_test
  *       l2
  */
 
-void test_dynamics_sclspatial()
+void test_dynamics_sclspatial(int id)
 {
 	scl::sUInt test_id = 1;
 	try
@@ -95,38 +95,53 @@ void test_dynamics_sclspatial()
 		//initialize sensors data
 		scl::SRobotSensors sensors;
 		scl::SRobotIO io_data;
-		Eigen::VectorXd value = Eigen::VectorXd::Zero(4);
-		io_data.sensors_.q_ =  value;
-		io_data.sensors_.dq_ =  value;
-		io_data.sensors_.ddq_ =  value;
-		io_data.sensors_.force_gc_measured_ =  value;
-		io_data.actuators_.force_gc_commanded_ = value;
-		model.force_gc_cc_ = value;
-		model.M_gc_ = Eigen::MatrixXd::Zero(4,4);
+		Eigen::VectorXd value;
+		io_data.sensors_.ddq_.setZero(4);
 
-		Eigen::VectorXd ret_fgc;
-		CDynamicsSclSpatial test;
+		std::cout<<"\n\n***** Testing CRBA, ABA and RNEA for random inputs... *****";
+		for(int i=0; i<20; ++i)
+		{
+		  value = Eigen::VectorXd::Random(4);
+		  io_data.sensors_.q_ =  value;
 
-		//Test 1
-		Eigen::VectorXd ret_ddq;
-		if (false == test.forwardDynamicsCRBA(&io_data, &model , ret_ddq))
-		{ throw(std::runtime_error("Failed to calculate Joint Acceleration using Composite Rigid Body Algorithm "));  }
-		{ std::cout<<"\nTest Result ("<<test_id++<<") Calculated Joint Acceleration using Composite Rigid Body Algorithm \n\n";
-		std::cout<<"actual :\n"<<io_data.sensors_.ddq_<<"\ncalculated :\n"<<ret_ddq<<"\n";
+      value = Eigen::VectorXd::Random(4);
+		  io_data.sensors_.dq_ =  value;
+
+      value = Eigen::VectorXd::Random(4);
+		  io_data.sensors_.force_gc_measured_ =  value;
+
+      value = Eigen::VectorXd::Random(4);
+		  io_data.actuators_.force_gc_commanded_ = value;
+
+		  model.force_gc_cc_ = Eigen::VectorXd::Zero(4);
+		  model.M_gc_ = Eigen::MatrixXd::Zero(4,4);
+
+		  Eigen::VectorXd ret_fgc;
+		  CDynamicsSclSpatial test;
+
+		  //Test 1
+		  Eigen::VectorXd ret_ddq;
+		  if (false == test.forwardDynamicsCRBA(&io_data, &model , ret_ddq))
+		  { throw(std::runtime_error("Failed to calculate Joint Acceleration using Composite Rigid Body Algorithm "));  }
+		  std::cout<<"\n\tSub-Test ("<<i<<") Calculated Joint Acceleration using Composite Rigid Body Algorithm...";
+		  std::cout<<"\n ddq :\n"<<ret_ddq.transpose()<<"\n";
+
+		  //Test 2
+		  if (false == test.forwardDynamicsABA(&io_data, &model , ret_ddq))
+		  { throw(std::runtime_error("Failed to calculate Joint Acceleration using Articulated Body Algorithm "));  }
+		  std::cout<<"\n\tSub-Test ("<<i<<") Calculated Joint Acceleration using Articulated Rigid Body Algorithm...";
+		  std::cout<<"\n ddq :\n"<<ret_ddq.transpose()<<"\n";
+
+		  //Test 3
+		  if (false == test.inverseDynamicsNER(&io_data, &model , ret_fgc))
+		  { throw(std::runtime_error("Failed to calculate joint Torque using Newton Euler Recursive Algorithm "));  }
+		  std::cout<<"\n\tSub-Test ("<<i<<") Calculated Joint Torque using Newton Euler Recursive Algorithm...";
+		  std::cout<<"\n Fgc commanded (using ABA to get ddq):\n"<<io_data.actuators_.force_gc_commanded_.transpose()<<"\n";
+		  std::cout<<"\n Fgc estimated (using NER(ddq) to get Fgc):\n"<<ret_fgc.transpose()<<"\n";
 		}
 
-		//Test 2
-		if (false == test.forwardDynamicsABA(&io_data, &model , ret_ddq))
-		{ throw(std::runtime_error("Failed to calculate Joint Acceleration using Articulated Body Algorithm "));  }
-		{ std::cout<<"\nTest Result ("<<test_id++<<") Calculated jJoint Acceleration using Articulated Rigid Body Algorithm \n\n";
-		std::cout<<"actual value :\n"<<io_data.sensors_.ddq_<<"\ncalculated value :\n"<<ret_ddq<<"\n";
-		}
-
-		//Test 3
-		if (false == test.inverseDynamicsNER(&io_data, &model , ret_fgc))
-		{ throw(std::runtime_error("Failed to calculate joint Torque using Newton Euler Recursive Algorithm "));  }
-		{ std::cout<<"\nTest Result ("<<test_id++<<") Calculated joint Torque using Newton Euler Recursive Algorithm \n\n";
-		std::cout<<"actual :\n"<<io_data.sensors_.force_gc_measured_<<"\ncalculated :\n"<<ret_fgc<<"\n"; }
+		std::cout<<"\nTest Result ("<<test_id++<<") Tested CRBA, ABA and RNEA for random inputs...";
+    std::cout<<"\nTest #"<<id<<" : Succeeded.";
 	}
 	catch (std::exception& ee)
 	{
