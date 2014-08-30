@@ -135,13 +135,15 @@ namespace scl_ext
       if(it++!=arg_gc_model->rbdyn_tree_.end())      //To avoid one extra value
       {
         it--;
+        // Do not consider root nodes here... NOTE TODO : Explain WHY with some comments???
+        if(false == it->link_ds_->is_root_)
+        {
+          if(parent_count[it->name_] == 0 )
+            parent_count[it->name_]=0;
 
-        if(parent_count[it->name_] == 0 )
-          parent_count[it->name_]=0;
-
-        if(false == it->parent_addr_->link_ds_->is_root_) //name_!=std::string("ground"))
-          parent_count[it->parent_name_]++;
-
+          if(false == it->parent_addr_->link_ds_->is_root_) //This link's parent is a root link. So skip it
+          { parent_count[it->parent_name_]++; }
+        }
       }
     }
 
@@ -161,10 +163,13 @@ namespace scl_ext
         if( parent_count[it1->first] == 0 )// && it1->second!=std::string("ground"))        //if parent counter becomes 0
         {
           tree_order.push( it1->first );               //push to stack
-          if(false == (arg_gc_model->rbdyn_tree_.at(it1->first))->parent_addr_->link_ds_->is_root_)
-          {
-            parent_count[(arg_gc_model->rbdyn_tree_.at(it1->first))->parent_name_]--; //decrease the counter of its parent by 1
-          }
+
+          if(NULL != arg_gc_model->rbdyn_tree_.at(it1->first))
+            if(NULL != arg_gc_model->rbdyn_tree_.at(it1->first)->parent_addr_)
+                if(false == arg_gc_model->rbdyn_tree_.at(it1->first)->parent_addr_->link_ds_->is_root_) //This link's parent is a root link. So skip it
+                {
+                  parent_count[(arg_gc_model->rbdyn_tree_.at(it1->first))->parent_name_]--; //decrease the counter of its parent by 1
+                }
           parent_count[it1->first]--;         //decrease the child counter by 1
           i++;
         }
