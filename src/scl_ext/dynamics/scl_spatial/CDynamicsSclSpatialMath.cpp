@@ -152,7 +152,7 @@ namespace scl_ext
     std::map<std::string,scl::sInt> ::iterator it1;
     std::stack<std::string> tree_order;
 
-    while(i < arg_gc_model->rbdyn_tree_.size()-1)
+    while(static_cast<std::size_t>(i) < arg_gc_model->rbdyn_tree_.size()-1)
     {
       std::map<std::string,scl::sInt> ::iterator it1;
       int count=0;
@@ -185,7 +185,6 @@ namespace scl_ext
 #ifdef DEBUG
     assert(ret_transform.rows()==6);
     assert(ret_transform.cols()==6);
-    return false;
 #endif
     Eigen::Matrix3d rotx;
     rotx << 1 ,       0,     0 ,
