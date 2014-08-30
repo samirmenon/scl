@@ -40,6 +40,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include "test_dynamics.hpp"
 //Test scl dynamics engine
 #include "test_dynamics_scl.hpp"
+//Test scl spatial dynamics engine
+#include "test_dynamics_sclspatial_math.hpp"
 //Test chai graphic rendering
 #include "test_graphics.hpp"
 
@@ -137,6 +139,15 @@ int main(int argc, char** argv)
           <<sutil::CSystemClock::getSimTime()<<"]";
       scl_test::test_dynamics(id,"../../specs/Puma/PumaCfg.xml");
       scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Scl Spatial Dynamics
+      std::cout<<"\n\nTest #"<<id<<". Scl Spatial Dynamics [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_dynamics_sclspatial_math();
     }
     ++id;
 
