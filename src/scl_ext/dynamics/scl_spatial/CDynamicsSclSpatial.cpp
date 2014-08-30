@@ -130,7 +130,7 @@ namespace scl_ext
       temp[link_id](0,0) = ( arg_io_data->actuators_.force_gc_commanded_(link_id,0) -
           (link->sp_S_joint_.transpose()*biasforce[link_id])(0,0));
 
-      //updated articuklated inertia and bias for all links except root node
+      //updated articulated inertia and bias for all links except root node
       if(false == link->parent_addr_->link_ds_->is_root_)
       {
         articulated_inertia[link->parent_addr_->link_ds_->link_id_] += (Xup[link_id].transpose() *
@@ -152,14 +152,10 @@ namespace scl_ext
 
       //calculate generalized acceleration for root node
       if( link->parent_addr_->link_ds_->is_root_)
-      {
-        link->spatial_acceleration_ = Xup[link_id]*(gravity) + C[link_id];
-      }
+      { link->spatial_acceleration_ = Xup[link_id]*(gravity) + C[link_id];  }
       //calculate generalized acceleration for each link except root node
       else
-      {
-        link->spatial_acceleration_  = Xup[link_id] * link->parent_addr_->spatial_acceleration_ + C[link_id];
-      }
+      { link->spatial_acceleration_  = Xup[link_id] * link->parent_addr_->spatial_acceleration_ + C[link_id]; }
 
       if(D[link_id].determinant()!=0)
         //calculate joint acceleration
