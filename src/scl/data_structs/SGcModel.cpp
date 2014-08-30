@@ -61,7 +61,7 @@ namespace scl
       dq_.setZero(ndof);
       pos_com_.setZero(3);
 
-      spatial_transformation_and_inertia = false;
+      computed_spatial_transformation_and_inertia_ = false;
 
       flag = scl_util::initDynRobotFromParsedRobot(rbdyn_tree_,arg_robot_data.rb_tree_);
       if(false==flag)

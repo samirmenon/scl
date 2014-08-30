@@ -91,11 +91,11 @@ namespace scl
     sFloat mass_;
 
     /** A vector of the processing order of all the rigid bodies in the articulated body */
-    std::vector<std::string> processing_order;
+    std::vector<std::string> processing_order_;
 
     /** bool specifying whther spatial transformation 
      * and inertia is calculated or not */
-    bool spatial_transformation_and_inertia; 
+    bool computed_spatial_transformation_and_inertia_; 
 
     /** A vector of the dynamics information for all the rigid bodies in the
      * articulated body */

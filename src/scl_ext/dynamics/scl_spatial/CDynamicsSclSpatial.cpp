@@ -38,21 +38,21 @@ namespace scl_ext
 #endif
 
     //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->spatial_transformation_and_inertia )
+    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
     {
       calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->spatial_transformation_and_inertia = true;
+      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
     }
 
     //calculate tree processing order
-    if(arg_gc_model->processing_order.size() == 0)
+    if(arg_gc_model->processing_order_.size() == 0)
     {
       std::vector<std::string>processing_order;
       calculateOrderOfProcessing(arg_gc_model , processing_order);
-      arg_gc_model->processing_order = processing_order;
+      arg_gc_model->processing_order_ = processing_order;
     }
 
-    scl::sInt body , link_id , total_link = arg_gc_model->processing_order.size();
+    scl::sInt body , link_id , total_link = arg_gc_model->processing_order_.size();
     std::vector<Eigen::MatrixXd>   C(total_link)  , Xup(total_link)  , biasforce(total_link)  , H(total_link) ,
         D(total_link) , temp(total_link);
     Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Vcross(6,6) , XJ(6,6), gravity(6,1);
@@ -72,9 +72,9 @@ namespace scl_ext
     // first iteration :Calculate joint velocity and bias force
     for(body = 0 ; body < static_cast<int>(total_link)  ; ++body )
     {
-      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
@@ -119,9 +119,9 @@ namespace scl_ext
     // Second Iteration : update articulated inertia and Bias force
     for( body = static_cast<int>(total_link)  - 1 ; body >= 0 ; body-- )
     {
-      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       H[link_id] = articulated_inertia[link_id] * link->sp_S_joint_;
       D[link_id] =  link->sp_S_joint_.transpose() * (articulated_inertia[link_id] * link->sp_S_joint_);
@@ -146,9 +146,9 @@ namespace scl_ext
     Eigen::MatrixXd ddq( total_link,1);
     for( body = 0; body <  static_cast<int>(total_link) ; body++ )
     {
-      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[link_id];
+      link_name = arg_gc_model->processing_order_[link_id];
 
       //calculate generalized acceleration for root node
       if( link->parent_addr_->link_ds_->is_root_)
@@ -182,21 +182,21 @@ namespace scl_ext
 
 
     //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->spatial_transformation_and_inertia )
+    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
     {
       calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->spatial_transformation_and_inertia = true;
+      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
     }
 
     //calculate tree processing order
-    if(arg_gc_model->processing_order.size() == 0)
+    if(arg_gc_model->processing_order_.size() == 0)
     {
       std::vector<std::string>processing_order;
       calculateOrderOfProcessing(arg_gc_model , processing_order);
-      arg_gc_model->processing_order = processing_order;
+      arg_gc_model->processing_order_ = processing_order;
     }
 
-    scl::sInt body , link_id , total_link = arg_gc_model->processing_order.size();
+    scl::sInt body , link_id , total_link = arg_gc_model->processing_order_.size();
 
     std::vector<Eigen::MatrixXd>  Xup(total_link);
     Eigen::MatrixXd  Vi(6,1) , Vj(6,1), temp_force(6,1), Vcross(6,6),  XJ(6,6) , gravity(6,1);
@@ -208,9 +208,9 @@ namespace scl_ext
     //First iteration : Calculate joint velocity and Acceleration
     for(body = 0 ; body < static_cast<int>(total_link) ; ++body )
     {
-      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
@@ -249,9 +249,9 @@ namespace scl_ext
     //Second iteration : Calculate joint force
     for(body= static_cast<int>(total_link) - 1 ; body >= 0 ; body-- )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
@@ -280,9 +280,9 @@ namespace scl_ext
     //calculate composite inertia of each body
     for( body = static_cast<int>(total_link)-1 ; body>=0; body-- )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       if(-1 == link_id) { continue; } //Do nothing for the root node.
       if( link->parent_addr_->link_ds_->link_id_ != -1)
@@ -294,13 +294,13 @@ namespace scl_ext
     //Fourth iteration : Calculate joint space inertia matrix
     for( body = 0 ; body < static_cast<int>(total_link) ; body++ )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
-      std::string name = arg_gc_model->processing_order[body];
+      std::string name = arg_gc_model->processing_order_[body];
       //calculate force at each link
       temp_force = composite_inertia[link_id] * link->sp_S_joint_;
       arg_gc_model->M_gc_(link_id,link_id) = (link->sp_S_joint_.transpose() * temp_force)(0,0);
@@ -338,19 +338,19 @@ namespace scl_ext
 #endif
 
     //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->spatial_transformation_and_inertia )
+    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
     {
       calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->spatial_transformation_and_inertia = true;
+      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
     }
     //calculate tree processing order
-    if(arg_gc_model->processing_order.size() == 0)
+    if(arg_gc_model->processing_order_.size() == 0)
     {
       std::vector<std::string>processing_order;
       calculateOrderOfProcessing(arg_gc_model , processing_order);
-      arg_gc_model->processing_order = processing_order;
+      arg_gc_model->processing_order_ = processing_order;
     }
-    scl::sInt body , link_id , total_link = arg_gc_model->processing_order.size();
+    scl::sInt body , link_id , total_link = arg_gc_model->processing_order_.size();
 
     std::vector<Eigen::MatrixXd> Xup(total_link) ;
     Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Tau(total_link,1) , XJ(6,6) , Vcross(6,6) , gravity(6,1);
@@ -360,9 +360,9 @@ namespace scl_ext
     //First iteration : Calculate Joint Force and Acceleration
     for(body = 0 ; body < static_cast<int>(total_link) ; ++body )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
@@ -408,9 +408,9 @@ namespace scl_ext
 
     for(body = static_cast<int>(total_link) - 1 ; body >= 0 ; body-- )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
@@ -470,18 +470,18 @@ namespace scl_ext
     assert(arg_io_data!=NULL);
 #endif
     //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->spatial_transformation_and_inertia )
+    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
     {
       calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->spatial_transformation_and_inertia = true;
+      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
     }
 
     //calculate tree processing order
-    if(arg_gc_model->processing_order.size() == 0)
+    if(arg_gc_model->processing_order_.size() == 0)
     {
       std::vector<std::string>processing_order;
       calculateOrderOfProcessing(arg_gc_model , processing_order);
-      arg_gc_model->processing_order = processing_order;
+      arg_gc_model->processing_order_ = processing_order;
     }
 
     scl::sInt body , link_id;
@@ -489,11 +489,11 @@ namespace scl_ext
     std::string link_name;
 
     // Calculate joint velocity and kinetic energy
-    for(body = 0 ; body < static_cast<int>(arg_gc_model->processing_order.size()) ; ++body )
+    for(body = 0 ; body < static_cast<int>(arg_gc_model->processing_order_.size()) ; ++body )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       link->sp_S_joint_ = Eigen::MatrixXd::Zero(6,1);
 
@@ -529,19 +529,19 @@ namespace scl_ext
     assert(arg_io_data!=NULL);
 #endif
     //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->spatial_transformation_and_inertia )
+    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
     {
       calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->spatial_transformation_and_inertia = true;
+      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
     }
     //calculate tree processing order
-    if(arg_gc_model->processing_order.size() == 0)
+    if(arg_gc_model->processing_order_.size() == 0)
     {
       std::vector<std::string>processing_order;
       calculateOrderOfProcessing(arg_gc_model , processing_order);
-      arg_gc_model->processing_order = processing_order;
+      arg_gc_model->processing_order_ = processing_order;
     }
-    scl::sInt body , link_id , total_link = arg_gc_model->processing_order.size();
+    scl::sInt body , link_id , total_link = arg_gc_model->processing_order_.size();
 
     std::vector<Eigen::MatrixXd> Xup(total_link) ;
     Eigen::MatrixXd  XJ(6,6) ;
@@ -551,9 +551,9 @@ namespace scl_ext
     //First iteration : Calculate transformation matrix from parent's frame to body frame
     for(body = 0 ; body < static_cast<int>(total_link) ; ++body )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
@@ -573,9 +573,9 @@ namespace scl_ext
     Eigen::MatrixXd total_inertia = Eigen::MatrixXd::Zero(6,6);
     for(body = static_cast<int>(total_link) - 1 ; body >= 0 ; --body )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order[body];
+      link_name = arg_gc_model->processing_order_[body];
 
       if( -1  != link->parent_addr_->link_ds_->link_id_)
       {
