@@ -102,34 +102,45 @@ namespace scl_ext
         const scl::sFloat arg_time_interval);
 
     /* *******************************************************************
-       *                      Dynamics State functions.
-       * ******************************************************************* */
-      /** Gets the robot's kinetic energy */
-      virtual scl::sFloat computeEnergyKinetic(
-          /** The tree for which the transformation matrices are to be updated */
-          sutil::CMappedTree<std::string, scl::SRigidBodyDyn> &arg_tree,
-          /** The current generalized coordinates. */
-          const Eigen::VectorXd& arg_q,
-          /** The current generalized velocities. */
-          const Eigen::VectorXd& arg_dq)
-      { return false; }
+     *                      Dynamics State functions.
+     * ******************************************************************* */
+    /** Gets the robot's kinetic energy */
+    virtual scl::sFloat computeEnergyKinetic(
+        /** The tree for which the transformation matrices are to be updated */
+        sutil::CMappedTree<std::string, scl::SRigidBodyDyn> &arg_tree,
+        /** The current generalized coordinates. */
+        const Eigen::VectorXd& arg_q,
+        /** The current generalized velocities. */
+        const Eigen::VectorXd& arg_dq)
+    { return false; }
 
-      /** Gets the robot's potential energy */
-      virtual scl::sFloat computeEnergyPotential(
-          /** The tree for which the transformation matrices are to be updated */
-          sutil::CMappedTree<std::string, scl::SRigidBodyDyn> &arg_tree,
-          /** The current generalized coordinates. */
-          const Eigen::VectorXd& arg_q)
-      { return false; }
+    /** Gets the robot's potential energy */
+    virtual scl::sFloat computeEnergyPotential(
+        /** The tree for which the transformation matrices are to be updated */
+        sutil::CMappedTree<std::string, scl::SRigidBodyDyn> &arg_tree,
+        /** The current generalized coordinates. */
+        const Eigen::VectorXd& arg_q)
+    { return false; }
 
+    /** Gets the robot's kinetic energy using spatial algorithm*/
     bool calculateKineticEnergy(/** Current robot state. q, dq, ddq,
             sensed generalized forces and perceived external forces.*/
         const scl::SRobotIO *arg_io_data,
         /** Individual link Jacobians, and composite inertial,
     		          centrifugal/coriolis gravity estimates. */
         scl::SGcModel *arg_gc_model,
-        /** the returned kinetic enrgy */
+        /** the returned kinetic energy */
         scl::sFloat &ret_kinetic_energy);
+
+    /** Gets the robot's potential energy using spatial algorithm*/
+    bool calculatePotentialEnergy(/** Current robot state. q, dq, ddq,
+            sensed generalized forces and perceived external forces.*/
+        const scl::SRobotIO *arg_io_data,
+        /** Individual link Jacobians, and composite inertial,
+    		          centrifugal/coriolis gravity estimates. */
+        scl::SGcModel *arg_gc_model,
+        /** the returned potential energy */
+        scl::sFloat &ret_potential_energy);
 
     /* *******************************************************************
      *                      Computational functions.

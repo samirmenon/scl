@@ -61,6 +61,8 @@ namespace scl
       dq_.setZero(ndof);
       pos_com_.setZero(3);
 
+      spatial_transformation_and_inertia = false;
+
       flag = scl_util::initDynRobotFromParsedRobot(rbdyn_tree_,arg_robot_data.rb_tree_);
       if(false==flag)
       { throw(std::runtime_error("Could not initialize dynamic tree from the static tree for a robot.")); }

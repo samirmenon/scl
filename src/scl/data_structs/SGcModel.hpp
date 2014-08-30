@@ -90,6 +90,13 @@ namespace scl
     /** mass_ : Mass of the robot in Euclidean coords */
     sFloat mass_;
 
+    /** A vector of the processing order of all the rigid bodies in the articulated body */
+    std::vector<std::string> processing_order;
+
+    /** bool specifying whther spatial transformation 
+     * and inertia is calculated or not */
+    bool spatial_transformation_and_inertia; 
+
     /** A vector of the dynamics information for all the rigid bodies in the
      * articulated body */
     sutil::CMappedTree<std::string, SRigidBodyDyn> rbdyn_tree_;

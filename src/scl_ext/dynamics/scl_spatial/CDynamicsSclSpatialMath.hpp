@@ -28,11 +28,15 @@
 
 namespace scl_ext
 {
- /**Calculate force subspace matrix */
- bool calculateForceSubspace(/** motion subspace matrix */
-	Eigen::MatrixXd &arg_subspace,
-	/** return force subspace_matrix */
-	Eigen::MatrixXd &ret_force_subspace);
+  // ****************************************************
+  //           Compute subspace motion and force constraint
+  // ****************************************************
+
+  /**Calculate force subspace matrix */
+  bool calculateForceSubspace(/** motion subspace matrix */
+      Eigen::MatrixXd &arg_subspace,
+      /** return force subspace_matrix */
+      Eigen::MatrixXd &ret_force_subspace);
 
   /** Calculate transformation matrix and motion subspace matrix */
   bool calculateTransformationAndSubspace( /** return Individual transformation matrix from one link to another*/
@@ -98,23 +102,13 @@ namespace scl_ext
 
   /** Individual spatial inertia */
   bool calculateSpatialInertia(/** the returned spatial inertia */
-	  scl::sSpatialXForm &spatial_inertia ,
+      scl::sSpatialXForm &spatial_inertia ,
       /** body's rotational inertia about its center of mass */
       Eigen::Matrix3d arg_inertia,
       /** vector locating the body's center of mass */
       Eigen::Vector3d arg_com,
       /** mass of the body */
       scl::sFloat arg_mass);
-
-  /** Calculate Jacobian for each link */
-  bool calculateJacobian ( /** Individual link Jacobians, and composite inertial,
-      centrifugal/coriolis gravity estimates. */
-      scl::SGcModel *arg_gc_model,
-      /** Current robot state. q, dq, ddq,
-      sensed generalized forces and perceived external forces.*/
-      const scl::SRobotSensors *arg_sensor_data,
-      /** return jacobian matrix */
-      Eigen::MatrixXd &ret_jacobian );
 }
 
 #endif /* CDYNAMICSSCLSPATIALMATH_HPP_ */

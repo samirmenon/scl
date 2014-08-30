@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 
 namespace scl_ext
 {
@@ -33,109 +34,135 @@ namespace scl_ext
     assert(arg_gc_model!=NULL);
     assert(arg_io_data!=NULL);
 #endif
-    std::vector<std::string>processing_order;
 
     //calculate spatial inertia and transformation matrix
-    calculateTransformationAndInertia(arg_gc_model);
-    //calculate processing order
-    calculateOrderOfProcessing(arg_gc_model , processing_order);
-
-    scl::sInt i;
-    std::vector<Eigen::MatrixXd>   velocity(processing_order.size())  , C(processing_order.size())  , Xup(processing_order.size())  , biasforce(processing_order.size())  , U(processing_order.size()) , D(processing_order.size()) , u(processing_order.size()) , acceleration(processing_order.size()) ;
-    Eigen::MatrixXd subspace_i(6,1) , Vi(6,1) , Vj(6,1) , Ci(6,1) , gravity(6,1) , ui(1,1) ,acceleration_i(6,1);
-
-    gravity << 0 , 0 , 0 , 0 , 0 , 9.81;
-    scl::sFloat q;
-    std::vector<Eigen::MatrixXd>articulated_inertia_;
-    sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::iterator it;
-
-    //initializing articulated inertia with spatial inertia
-    for(it = arg_gc_model->rbdyn_tree_.begin();it != arg_gc_model->rbdyn_tree_.end(); ++it)
+    if(false == arg_gc_model->spatial_transformation_and_inertia )
     {
-      articulated_inertia_.push_back(it->sp_inertia_);
+      calculateTransformationAndInertia(arg_gc_model);
+      arg_gc_model->spatial_transformation_and_inertia = true;
     }
 
-    // first iteration :Calculate joint velocity and acceleration
-
-    for(i = 0 ; i < static_cast<int>(processing_order.size())  ; ++i )
+    //calculate tree processing order
+    if(arg_gc_model->processing_order.size() == 0)
     {
-      int value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      Eigen::MatrixXd XJ(6,6);
-      q = arg_io_data->sensors_.q_.array()[value];
+      std::vector<std::string>processing_order;
+      calculateOrderOfProcessing(arg_gc_model , processing_order);
+      arg_gc_model->processing_order = processing_order;
+    }
 
-      calculateTransformationAndSubspace(XJ, subspace_i ,arg_gc_model->rbdyn_tree_.at(value)->link_ds_->joint_type_, q); //calclate Xj ,S
+    scl::sInt body , link_id , total_link = arg_gc_model->processing_order.size();
+    std::vector<Eigen::MatrixXd>   C(total_link)  , Xup(total_link)  , biasforce(total_link)  , H(total_link) , D(total_link) , temp(total_link)  ;
+    Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Vcross(6,6) , XJ(6,6), gravity(6,1);
+    gravity << 0,0,0,0,0,9.81;
 
-      arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_ = (subspace_i);
-      Vj = subspace_i * arg_io_data->sensors_.dq_[value];
+    std::string link_name;
 
-      Xup[value] = (XJ * arg_gc_model->rbdyn_tree_.at(value)->sp_X_within_link_);
-      arg_gc_model->rbdyn_tree_.at(value)->sp_X_joint_.create(arg_gc_model->rbdyn_tree_.at(value)->parent_name_,Xup[value]);
+    std::vector<Eigen::MatrixXd>articulated_inertia;
+    sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::iterator it;
 
-      Eigen::MatrixXd Vcross(6,6);
+    //Initializing articulated inertia with spatial inertia
+    for(it = arg_gc_model->rbdyn_tree_.begin();it != arg_gc_model->rbdyn_tree_.end(); ++it)
+    {
+      articulated_inertia.push_back(it->sp_inertia_);
+    }
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
+    // first iteration :Calculate joint velocity and bias force
+    for(body = 0 ; body < static_cast<int>(total_link)  ; ++body )
+    {
+      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
+
+      if(-1 == link_id) { continue; } //Do nothing for the root node.
+
+      link->sp_S_joint_ .setZero(6,1);
+      link->spatial_acceleration_.setZero(6,1);
+      link->spatial_velocity_.setZero(6,1);
+      link->spatial_force_.setZero(6,1);
+
+
+      //calculate joint transformation and motion subspace.
+      calculateTransformationAndSubspace(XJ, link->sp_S_joint_ , link->link_ds_->joint_type_, arg_io_data->sensors_.q_.array()[link_id]);
+
+      Vj = link->sp_S_joint_  * arg_io_data->sensors_.dq_[link_id];
+
+      //calculate transformation from one link frame to another consecutive link frame
+      Xup[link_id] = (XJ * link->sp_X_within_link_);
+      link->sp_X_joint_.create(link->parent_name_,Xup[link_id]);
+
+      //calculate velocity for root node
+      if( link->parent_addr_->link_ds_->is_root_)
       {
         Vi = Vj;
-        Ci = Eigen::MatrixXd::Zero(6,1);
+        // C = dS * dq
+        C[link_id].setZero(6,1);
       }
+      //calculate velocity for all other nodes
       else
       {
-        Vi = Xup[value]  * velocity[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] + Vj;
+        Vi = Xup[link_id]  * link->parent_addr_->spatial_velocity_ + Vj;
         computeCrossForVelocity(Vcross,Vi);
-        Ci = Vcross * Vj;
+        // C = dS * dq
+        C[link_id] = Vcross * Vj;
       }
 
-      velocity[value] = (Vi);
-      C[value] = (Ci);
+      link->spatial_velocity_ = Vi;
 
       computeCrossForVelocity(Vcross,Vi);
-      biasforce[value] =  (-Vcross.transpose())* arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_inertia_*Vi; //calulate pa matrix
-
+      //calculate bias force for each link
+      biasforce[link_id] =  (-Vcross.transpose())* link->sp_inertia_*Vi;
     }
 
     // Second Iteration : update articulated inertia and Bias force
-
-    for( i = static_cast<int>(processing_order.size())  - 1 ; i >= 0 ; i-- )
+    for( body = static_cast<int>(total_link)  - 1 ; body >= 0 ; body-- )
     {
-      int value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      U[value]=articulated_inertia_[value] * arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_;
-      D[value] =  arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * (articulated_inertia_[value] * arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_);
+      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
 
-      ui(0,0) = ( arg_io_data->actuators_.force_gc_commanded_(value,0)-(arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose()*biasforce[value])(0,0));
-      u[value] = ui;
+      H[link_id] = articulated_inertia[link_id] * link->sp_S_joint_;
+      D[link_id] =  link->sp_S_joint_.transpose() * (articulated_inertia[link_id] * link->sp_S_joint_);
 
-      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
+      temp[link_id].setZero(1,1);
+      temp[link_id](0,0) = ( arg_io_data->actuators_.force_gc_commanded_(link_id,0)-(link->sp_S_joint_.transpose()*biasforce[link_id])(0,0));
+
+      //updated articuklated inertia and bias for all links except root node
+      if(false == link->parent_addr_->link_ds_->is_root_)
       {
-        articulated_inertia_[arg_gc_model->rbdyn_tree_.at(value)->parent_addr_->link_ds_->link_id_] += (Xup[value].transpose()*(articulated_inertia_[value] - U[value]*D[value].inverse()*U[value].transpose())*Xup[value]);
-        biasforce[arg_gc_model->rbdyn_tree_.at(value)->parent_addr_->link_ds_->link_id_] += (Xup[value].transpose()*(biasforce[value] + (articulated_inertia_[value] - U[value]*D[value].inverse()*U[value].transpose())*C[value] + U[value]*u[value]*D[value].inverse()));
+        articulated_inertia[link->parent_addr_->link_ds_->link_id_] += (Xup[link_id].transpose()*(articulated_inertia[link_id] - H[link_id]*D[link_id].inverse()*H[link_id].transpose())*Xup[link_id]);
+        biasforce[link->parent_addr_->link_ds_->link_id_] += (Xup[link_id].transpose()*(biasforce[link_id] + (articulated_inertia[link_id] - H[link_id]*D[link_id].inverse()*H[link_id].transpose())*C[link_id] + H[link_id]*temp[link_id]*D[link_id].inverse()));
       }
     }
 
     //Third Iteration : Calculate joint acceleration
-
-    Eigen::MatrixXd ddq( processing_order.size(),1);
-    for( i = 0; i <  static_cast<int>(processing_order.size()) ; i++ )
+    Eigen::MatrixXd ddq( total_link,1);
+    for( body = 0; body <  static_cast<int>(total_link) ; body++ )
     {
-      int value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
+      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[link_id];
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
+      //calculate generalized acceleration for root node
+      if( link->parent_addr_->link_ds_->is_root_)
       {
-        acceleration_i = Xup[value]*(gravity) + C[value];
+        link->spatial_acceleration_ = Xup[link_id]*(gravity) + C[link_id];
       }
+      //calculate generalized acceleration for each link except root node
       else
       {
-        acceleration_i = Xup[value]*acceleration[arg_gc_model->rbdyn_tree_.at(value)->parent_addr_->link_ds_->link_id_] + C[value];
+        link->spatial_acceleration_  = Xup[link_id] * link->parent_addr_->spatial_acceleration_ + C[link_id];
       }
 
-      if(D[value].determinant()!=0)
-        ddq(value,0) = ((u[value] - U[value].transpose()*acceleration_i)*D[value].inverse())(0,0);  //calculate joint acceleration
+      if(D[link_id].determinant()!=0)
+        //calculate joint acceleration
+        ddq(link_id,0) = ((temp[link_id] - H[link_id].transpose()*link->spatial_acceleration_ )*D[link_id].inverse())(0,0);
       else
-        ddq(value,0) = 0;
-      acceleration_i += (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_*ddq(value,0));
-      acceleration[value] = (acceleration_i);
+        ddq(link_id,0) = 0;
+      link->spatial_acceleration_  += (link->sp_S_joint_*ddq(link_id,0));
     }
 
-    ret_ddq =  ddq;   //return joint acceleration
+    //return joint acceleration
+    ret_ddq =  ddq;
     return true;
   }
 
@@ -146,126 +173,151 @@ namespace scl_ext
     assert(arg_gc_model!=NULL);
     assert(arg_io_data!=NULL);
 #endif
-    Eigen::MatrixXd xtree(6,6);
 
-    std::vector<std::string>processing_order;
 
     //calculate spatial inertia and transformation matrix
-    calculateTransformationAndInertia(arg_gc_model);
-    //calculate processing order
-    calculateOrderOfProcessing(arg_gc_model , processing_order);
+    if(false == arg_gc_model->spatial_transformation_and_inertia )
+    {
+      calculateTransformationAndInertia(arg_gc_model);
+      arg_gc_model->spatial_transformation_and_inertia = true;
+    }
 
-    std::vector<Eigen::MatrixXd>  velocity(processing_order.size()) , acceleration(processing_order.size()) , Xup(processing_order.size()) , force(processing_order.size()), force_subspace(processing_order.size());
-    Eigen::MatrixXd subspace(6,1) , Vi(6,1) , Vj(6,1) , acceleration_i(6,1) , gravity(6,1) , Xupi , force_i(6,1);
-    Eigen::MatrixXd C(processing_order.size(),1);
+    //calculate tree processing order
+    if(arg_gc_model->processing_order.size() == 0)
+    {
+      std::vector<std::string>processing_order;
+      calculateOrderOfProcessing(arg_gc_model , processing_order);
+      arg_gc_model->processing_order = processing_order;
+    }
 
-    scl::sInt i;
+    scl::sInt body , link_id , total_link = arg_gc_model->processing_order.size();
 
-    gravity << 0 , 0 , 0 , 0 , 0 , 9.81;
-    scl::sFloat q;
+    std::vector<Eigen::MatrixXd>  Xup(total_link);
+    Eigen::MatrixXd  Vi(6,1) , Vj(6,1), temp_force(6,1), Vcross(6,6),  XJ(6,6) , gravity(6,1);
+
+    std::string link_name;
+
+    gravity<< 0 , 0 , 0 , 0 , 0 , 9.81;
 
     //First iteration : Calculate joint velocity and Acceleration
-    for(i = 0 ; i < static_cast<int>(processing_order.size()) ; ++i )
+    for(body = 0 ; body < static_cast<int>(total_link) ; ++body )
     {
-      scl::sInt  value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      Eigen::MatrixXd XJ(6,6);
-      if(-1 == value) { continue; } //Do nothing for the root node.
-      q = arg_io_data->sensors_.q_(value);
-      calculateTransformationAndSubspace(XJ, subspace, arg_gc_model->rbdyn_tree_.at(value)->link_ds_->joint_type_ , q); //calclate Xj ,S
+      scl::SRigidBodyDyn *link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
 
-      arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_ = subspace;
+      if(-1 == link_id) { continue; } //Do nothing for the root node.
 
-      Vj = subspace*arg_io_data->sensors_.dq_[value];
-      Xupi = XJ*arg_gc_model->rbdyn_tree_.at(value)->sp_X_within_link_;
-      Xup[value] = (Xupi);
+      link->sp_S_joint_ = Eigen::MatrixXd::Zero(6,1);
 
-      Eigen::MatrixXd Vcross(6,6);
+      //calculate joint transformation and motion subspace.
+      calculateTransformationAndSubspace(XJ, link->sp_S_joint_, link->link_ds_->joint_type_ , arg_io_data->sensors_.q_(link_id));
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
+      Vj = link->sp_S_joint_*arg_io_data->sensors_.dq_[link_id];
+
+      //calculate transformation from one link frame to another consecutive link frame
+      Xup[link_id]  = XJ*link->sp_X_within_link_;
+
+      //calculate velocity and acceleration for root node
+      if( link->parent_addr_->link_ds_->is_root_ && link->parent_addr_->link_ds_->link_id_ ==-1)
       {
         Vi = Vj;
-        acceleration_i= Xupi * gravity ;
+        link->spatial_acceleration_ = Xup[link_id] * gravity;
       }
+      //calculate velocity and acceleration for all other nodes
       else
       {
-        Vi = Xupi * velocity[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] + Vj;
+        Vi = Xup[link_id] * link->parent_addr_->spatial_velocity_ + Vj;
         computeCrossForVelocity(Vcross,Vi);
-        acceleration_i = Xupi * acceleration[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] + Vcross * Vj;
+        link->spatial_acceleration_ = Xup[link_id] * link->parent_addr_->spatial_acceleration_+ Vcross * Vj;
       }
-      velocity[value] = (Vi);
-      acceleration[value] = (acceleration_i);
 
-      computeCrossForVelocity(Vcross,Vi);
-      force[value] =  arg_gc_model->rbdyn_tree_.at(value)->sp_inertia_*acceleration_i + (-Vcross.transpose())* arg_gc_model->rbdyn_tree_.at(value)->sp_inertia_*Vi; //calculate joint force
+      link->spatial_velocity_ = Vi;
+      computeCrossForVelocity(Vcross,link->spatial_velocity_);
+
+      //calculate rigid body force at each link
+      link->spatial_force_ =  link->sp_inertia_*link->spatial_acceleration_ + (-Vcross.transpose())* link->sp_inertia_*link->spatial_velocity_; //calculate joint force
     }
 
     //Second iteration : Calculate joint force
-
-    for(i = static_cast<int>(processing_order.size()) - 1 ; i >= 0 ; i-- )
+    for(body= static_cast<int>(total_link) - 1 ; body >= 0 ; body-- )
     {
-      scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      if(-1 == value) { continue; } //Do nothing for the root node.
-      C(value,0) =  (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force[value])(0,0); //calculate C matrix
-      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
+
+      if(-1 == link_id) { continue; } //Do nothing for the root node.
+
+      //calculate coriolis+centrifugal force
+      arg_gc_model->force_gc_cc_[link_id] =  (link->sp_S_joint_.transpose() * link->spatial_force_)(0,0);
+
+      //calculate rigid body force
+      if(false == link->parent_addr_->link_ds_->is_root_ &&  link->parent_addr_->link_ds_->link_id_ !=-1)
       {
-        force[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] += ( Xup[value ].transpose() * force[value] );  //update joint force for parent i
+        link->parent_addr_->spatial_force_ += ( Xup[link_id ].transpose() * link->spatial_force_ );  //update joint force for parent i
       }
     }
 
     //Third iteration : Calculate Composite Body Inertia
-
-    std::vector<Eigen::MatrixXd> IC;
+    std::vector<Eigen::MatrixXd> composite_inertia;
     sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::iterator it;
 
     //initializing composite  inertia with spatial inertia
     for(it = arg_gc_model->rbdyn_tree_.begin();it != arg_gc_model->rbdyn_tree_.end(); ++it)
     {
-      IC.push_back(it->sp_inertia_);
+      composite_inertia.push_back(it->sp_inertia_);
     }
 
-    Eigen::MatrixXd H(processing_order.size(),processing_order.size());
-    H=Eigen::MatrixXd::Zero(processing_order.size(),processing_order.size());
+    arg_gc_model->M_gc_.setZero(total_link,total_link);
 
     //calculate composite inertia of each body
-    for( i = static_cast<int>(processing_order.size())-1 ; i>=0; i-- )
+    for( body = static_cast<int>(total_link)-1 ; body>=0; body-- )
     {
-      scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      if(-1 == value) { continue; } //Do nothing for the root node.
-      if( false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
+
+      if(-1 == link_id) { continue; } //Do nothing for the root node.
+      if( link->parent_addr_->link_ds_->link_id_ != -1)
       {
-        IC[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] += (Xup[value].transpose()*IC[value]*Xup[value]);
+        composite_inertia[link->parent_addr_->link_ds_->link_id_] += (Xup[link_id].transpose()*composite_inertia[link_id]*Xup[link_id]);
       }
     }
 
     //Fourth iteration : Calculate joint space inertia matrix
-
-    for( i = 0 ; i < static_cast<int>(processing_order.size()) ; i++ )
+    for( body = 0 ; body < static_cast<int>(total_link) ; body++ )
     {
-      scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      if(-1 == value) { continue; } //Do nothing for the root node.
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
 
-      std::string name = arg_gc_model->rbdyn_tree_.at(processing_order[i])->name_;
-      force_i = IC[value] * arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_;
-      H(value,value) = (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force_i)(0,0);
-      scl::sInt j =value;
+      if(-1 == link_id) { continue; } //Do nothing for the root node.
+
+      std::string name = arg_gc_model->processing_order[body];
+      //calculate force at each link
+      temp_force = composite_inertia[link_id] * link->sp_S_joint_;
+      arg_gc_model->M_gc_(link_id,link_id) = (link->sp_S_joint_.transpose() * temp_force)(0,0);
+      scl::sInt j =link_id;
 
       while(arg_gc_model->rbdyn_tree_.at(name)->parent_addr_->link_ds_->link_id_ > -1)
       {
-        force_i = Xup[j].transpose() * force_i;
+        temp_force = Xup[j].transpose() * temp_force;
         name = arg_gc_model->rbdyn_tree_.at(name)->parent_addr_->name_;
         j = arg_gc_model->rbdyn_tree_.at(j)->parent_addr_->link_ds_->link_id_;
-        H(value,j) = (arg_gc_model->rbdyn_tree_.at(name)->sp_S_joint_.transpose() * force_i)(0,0);   //calculate H matrix
-        H(j,value) = H(value,j);
+
+        //calculate joint space inertia
+        arg_gc_model->M_gc_(link_id,j) = (arg_gc_model->rbdyn_tree_.at(name)->sp_S_joint_.transpose() * temp_force)(0,0);
+        arg_gc_model->M_gc_(j,link_id) = arg_gc_model->M_gc_(link_id,j);
       }
     }
 
-    //calculate joint torque
-    if(H.determinant()!=0)
+    //calculate joint acceleration
+    if(arg_gc_model->M_gc_.determinant()!=0)
     {
-      ret_ddq = (H.inverse()*( arg_io_data->actuators_.force_gc_commanded_ -C)); //joint acceleration
+      ret_ddq = (arg_gc_model->M_gc_.inverse()*( arg_io_data->actuators_.force_gc_commanded_ -arg_gc_model->force_gc_cc_ ));
     }
     else
-    { ret_ddq = Eigen::VectorXd::Zero(processing_order.size()); }
+    { ret_ddq = Eigen::VectorXd::Zero(total_link); }
 
     return true;
   }
@@ -277,71 +329,89 @@ namespace scl_ext
     assert(arg_gc_model!=NULL);
     assert(arg_io_data!=NULL);
 #endif
-    sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::iterator it;
-    Eigen::MatrixXd xtree_(6,6);
-
-    std::vector<std::string>processing_order;
-
 
     //calculate spatial inertia and transformation matrix
-    calculateTransformationAndInertia(arg_gc_model);
-    //calculate processing order
-    calculateOrderOfProcessing(arg_gc_model , processing_order);
+    if(false == arg_gc_model->spatial_transformation_and_inertia )
+    {
+      calculateTransformationAndInertia(arg_gc_model);
+      arg_gc_model->spatial_transformation_and_inertia = true;
+    }
+    //calculate tree processing order
+    if(arg_gc_model->processing_order.size() == 0)
+    {
+      std::vector<std::string>processing_order;
+      calculateOrderOfProcessing(arg_gc_model , processing_order);
+      arg_gc_model->processing_order = processing_order;
+    }
+    scl::sInt body , link_id , total_link = arg_gc_model->processing_order.size();
 
-    scl::sInt i;
-    std::vector<Eigen::MatrixXd> velocity(processing_order.size()) , acceleration(processing_order.size()) , Xup(processing_order.size()) , force(processing_order.size());
-    Eigen::MatrixXd subspace(6,1) , Vi(6,1) , Vj(6,1) , acceleration_i(6,1) , gravity(6,1) , Xupi;
-    Eigen::MatrixXd Tau(processing_order.size(),1);
+    std::vector<Eigen::MatrixXd> Xup(total_link) ;
+    Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Tau(total_link,1) , XJ(6,6) , Vcross(6,6) , gravity(6,1);
     gravity << 0 , 0 , 0 , 0 , 0 , 9.81;
-    scl::sFloat q;
+    std::string link_name;
 
     //First iteration : Calculate Joint Force and Acceleration
-    for(i = 0 ; i < static_cast<int>(processing_order.size()) ; ++i )
+    for(body = 0 ; body < static_cast<int>(total_link) ; ++body )
     {
-      Eigen::MatrixXd XJ(6,6);
-      scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      q = arg_io_data->sensors_.q_.array()[value];
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
 
-      calculateTransformationAndSubspace(XJ, subspace ,arg_gc_model->rbdyn_tree_.at(value)->link_ds_->joint_type_ , q);
+      if(-1 == link_id) { continue; } //Do nothing for the root node.
 
-      arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_= subspace;
-      Vj = subspace * arg_io_data->sensors_.dq_[value];
+      link->sp_S_joint_ .setZero(6,1);
+      link->spatial_acceleration_.setZero(6,1);
+      link->spatial_velocity_.setZero(6,1);
+      link->spatial_force_.setZero(6,1);
 
-      Xupi = XJ * arg_gc_model->rbdyn_tree_.at(value)->sp_X_within_link_;  //transformation matrix from one link to another
-      Xup[value] = (Xupi);
+      //calculate joint transformation and motion subspace.
+      calculateTransformationAndSubspace(XJ, link->sp_S_joint_ , link->link_ds_->joint_type_ , arg_io_data->sensors_.q_.array()[link_id]);
 
-      Eigen::MatrixXd Vcross(6,6);
+      //calculate velocity for each link
+      Vj = link->sp_S_joint_ * arg_io_data->sensors_.dq_[link_id];
 
-      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
+      //calculate transformation from one link frame to another consecutive link frame
+      Xup[link_id] = XJ * link->sp_X_within_link_;
+
+      //calculate velocity and acceleration for root node
+      if(false == link->parent_addr_->link_ds_->is_root_)
       {
         Vi = Vj;
-        acceleration_i = Xupi *( gravity )+ subspace * arg_io_data->sensors_.ddq_[value];
+        link->spatial_acceleration_= Xup[link_id] *( gravity )+ link->sp_S_joint_ * arg_io_data->sensors_.ddq_[link_id];
       }
+      //calculate velocity and acceleration for all other nodes
       else
       {
-        Vi = Xupi * velocity[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] + Vj;
+        Vi = Xup[link_id] * link->parent_addr_->spatial_velocity_ + Vj;
         computeCrossForVelocity(Vcross,Vi);
-        acceleration_i = Xupi * acceleration[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] + subspace * arg_io_data->sensors_.ddq_[value] + Vcross * Vj;
+        link->spatial_acceleration_= Xup[link_id] * link->parent_addr_->spatial_acceleration_ + link->sp_S_joint_ * arg_io_data->sensors_.ddq_[link_id] + Vcross * Vj;
       }
 
-      velocity[value] = (Vi);
-      acceleration[value] = (acceleration_i);
 
-      computeCrossForVelocity(Vcross,Vi);
+      link->spatial_velocity_ = Vi;
+      computeCrossForVelocity(Vcross,link->spatial_velocity_);
 
-      force[value] = arg_gc_model->rbdyn_tree_.at(value)->sp_inertia_*acceleration_i + (-Vcross.transpose())* arg_gc_model->rbdyn_tree_.at(value)->sp_inertia_*Vi;  //calculate force at each link
+      //calculate rigid body force at each link
+      link->spatial_force_ = link->sp_inertia_*link->spatial_acceleration_  + (-Vcross.transpose())* link->sp_inertia_*link->spatial_velocity_;  //calculate force at each link
     }
 
     //Second iteration : Calculate Joint Torque
 
-    for(i = static_cast<int>(processing_order.size()) - 1 ; i >= 0 ; i-- )
+    for(body = static_cast<int>(total_link) - 1 ; body >= 0 ; body-- )
     {
-      scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
 
-      Tau(value,0) = (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force[value])(0,0);    //calculate torque at each link
-      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
+      if(-1 == link_id) { continue; } //Do nothing for the root node.
+
+      // Calculate torque at each link
+      Tau(link_id,0) = (link->sp_S_joint_.transpose() * link->spatial_force_)(0,0);
+
+      //calculate rigid body force
+      if(false == link->parent_addr_->link_ds_->is_root_)
       {
-        force[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_ ] += ( Xup[value].transpose() * force[value] );   //update force at parent link
+        link->parent_addr_->spatial_force_+= ( Xup[link_id].transpose() * link->spatial_force_ );
       }
     }
 
@@ -352,12 +422,12 @@ namespace scl_ext
 
   bool CDynamicsSclSpatial::integrator(/** Current robot state. q, dq, ddq,
             sensed generalized forces and perceived external forces.*/
-        scl::SRobotIO &arg_io_data,
-        /** Individual link Jacobians, and composite inertial,
+      scl::SRobotIO &arg_io_data,
+      /** Individual link Jacobians, and composite inertial,
             centrifugal/coriolis gravity estimates. */
-        scl::SGcModel *arg_gc_model,
-        /** step dt time */
-        const scl::sFloat arg_time_interval)
+      scl::SGcModel *arg_gc_model,
+      /** step dt time */
+      const scl::sFloat arg_time_interval)
   {
     // Cache the current state.
     arg_gc_model->vec_scratch_[0] = arg_io_data.sensors_.q_;
@@ -388,115 +458,132 @@ namespace scl_ext
     assert(arg_gc_model!=NULL);
     assert(arg_io_data!=NULL);
 #endif
-    Eigen::MatrixXd xtree(6,6);
-
-    std::vector<std::string>processing_order;
-
     //calculate spatial inertia and transformation matrix
-    calculateTransformationAndInertia(arg_gc_model);
-    //calculate processing order
-    calculateOrderOfProcessing(arg_gc_model , processing_order);
-
-    std::vector<Eigen::MatrixXd>  velocity(processing_order.size()) , acceleration(processing_order.size()) , Xup(processing_order.size()) , force(processing_order.size()), force_subspace(processing_order.size());
-    Eigen::MatrixXd subspace(6,1) , Vi(6,1) , Vj(6,1) , acceleration_i(6,1) , gravity(6,1) , Xupi , force_i(6,1);
-    Eigen::MatrixXd C(processing_order.size(),1);
-
-    scl::sInt i;
-
-    gravity << 0 , 0 , 0 , 0 , 0 , 9.81;
-    scl::sFloat q;
-
-    //First iteration : Calculate joint velocity and Acceleration
-    for(i = 0 ; i < static_cast<int>(processing_order.size()) ; ++i )
+    if(false == arg_gc_model->spatial_transformation_and_inertia )
     {
-      scl::sInt  value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      Eigen::MatrixXd XJ(6,6);
-      q = arg_io_data->sensors_.q_.array()[value];
-      calculateTransformationAndSubspace(XJ, subspace, arg_gc_model->rbdyn_tree_.at(value)->link_ds_->joint_type_ , q); //calclate Xj ,S
+      calculateTransformationAndInertia(arg_gc_model);
+      arg_gc_model->spatial_transformation_and_inertia = true;
+    }
 
-      arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_ = subspace;
+    //calculate tree processing order
+    if(arg_gc_model->processing_order.size() == 0)
+    {
+      std::vector<std::string>processing_order;
+      calculateOrderOfProcessing(arg_gc_model , processing_order);
+      arg_gc_model->processing_order = processing_order;
+    }
 
-      Vj = subspace*arg_io_data->sensors_.dq_[value];
-      Xupi = XJ*arg_gc_model->rbdyn_tree_.at(value)->sp_X_within_link_;
-      Xup[value] = (Xupi);
+    scl::sInt body , link_id;
+    Eigen::MatrixXd transformation(6,6);
+    std::string link_name;
 
-      Eigen::MatrixXd Vcross(6,6);
+    // Calculate joint velocity and kinetic energy
+    for(body = 0 ; body < static_cast<int>(arg_gc_model->processing_order.size()) ; ++body )
+    {
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
 
-      if( arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
+      link->sp_S_joint_ = Eigen::MatrixXd::Zero(6,1);
+
+      if(-1 == link_id) { continue; } //Do nothing for the root node.
+
+      //calculate joint transformation and motion subspace.
+      calculateTransformationAndSubspace(transformation, link->sp_S_joint_ , link->link_ds_->joint_type_ , arg_io_data->sensors_.q_.array()[link_id]);
+
+      //calculate link velocity
+      link->spatial_velocity_= link->sp_S_joint_*arg_io_data->sensors_.dq_[link_id];
+
+      //calculate transformation from one link frame to another consecutive link frame
+      transformation = transformation*link->sp_X_within_link_;
+
+      //calculate velocity for all other link except root
+      if( false  == link->parent_addr_->link_ds_->is_root_)
       {
-        Vi = Vj;
-        acceleration_i= Xupi * gravity ;
+        link->spatial_velocity_ = transformation * link->parent_addr_->spatial_velocity_ + link->spatial_velocity_;
+      }
+
+      ret_kinetic_energy += 0.5* (link->spatial_velocity_.transpose()*link->sp_inertia_*link->spatial_velocity_)(0,0);
+    }
+    return true;
+  }
+
+  bool CDynamicsSclSpatial::calculatePotentialEnergy( const scl::SRobotIO *arg_io_data, scl::SGcModel *arg_gc_model, scl::sFloat &ret_potential_energy)
+  {
+#ifdef DEBUG
+    assert(arg_gc_model!=NULL);
+    assert(arg_io_data!=NULL);
+#endif
+    //calculate spatial inertia and transformation matrix
+    if(false == arg_gc_model->spatial_transformation_and_inertia )
+    {
+      calculateTransformationAndInertia(arg_gc_model);
+      arg_gc_model->spatial_transformation_and_inertia = true;
+    }
+    //calculate tree processing order
+    if(arg_gc_model->processing_order.size() == 0)
+    {
+      std::vector<std::string>processing_order;
+      calculateOrderOfProcessing(arg_gc_model , processing_order);
+      arg_gc_model->processing_order = processing_order;
+    }
+    scl::sInt body , link_id , total_link = arg_gc_model->processing_order.size();
+
+    std::vector<Eigen::MatrixXd> Xup(total_link) ;
+    Eigen::MatrixXd  XJ(6,6) ;
+    std::string link_name;
+    std::vector<Eigen::MatrixXd>articulated_inertia(total_link);
+
+    //First iteration : Calculate transformation matrix from parent's frame to body frame
+    for(body = 0 ; body < static_cast<int>(total_link) ; ++body )
+    {
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
+
+      if(-1 == link_id) { continue; } //Do nothing for the root node.
+
+      link->sp_S_joint_ .setZero(6,1);
+
+      //calculate joint transformation and motion subspace.
+      calculateTransformationAndSubspace(XJ, link->sp_S_joint_ , link->link_ds_->joint_type_ , arg_io_data->sensors_.q_.array()[link_id]);
+
+      //calculate transformation from one link frame to another consecutive link frame
+      Xup[link_id] = XJ * link->sp_X_within_link_;
+
+      articulated_inertia[link_id] = link->sp_inertia_;
+    }
+
+    //calculate composite inertia
+    Eigen::MatrixXd total_inertia = Eigen::MatrixXd::Zero(6,6);
+    for(body = static_cast<int>(total_link) - 1 ; body >= 0 ; --body )
+    {
+      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order[body]);
+      link_id = link->link_ds_->link_id_;
+      link_name = arg_gc_model->processing_order[body];
+
+      if( -1  != link->parent_addr_->link_ds_->link_id_)
+      {
+        articulated_inertia[link->parent_addr_->link_ds_->link_id_] += Xup[link_id].transpose() * articulated_inertia[link_id] * Xup[link_id];
       }
       else
       {
-        Vi = Xupi * velocity[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] + Vj;
-        computeCrossForVelocity(Vcross,Vi);
-        acceleration_i = Xupi * acceleration[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] + Vcross * Vj;
-      }
-      velocity[value] = (Vi);
-      acceleration[value] = (acceleration_i);
-
-      computeCrossForVelocity(Vcross,Vi);
-      force[value] =  arg_gc_model->rbdyn_tree_.at(value)->sp_inertia_*acceleration_i + (-Vcross.transpose())* arg_gc_model->rbdyn_tree_.at(value)->sp_inertia_*Vi; //calculate joint force
-    }
-
-    //Second iteration : Calculate joint force
-
-    for(i = static_cast<int>(processing_order.size()) - 1 ; i >= 0 ; i-- )
-    {
-      scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      C(value,0) =  (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force[value])(0,0); //calculate C matrix
-      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
-      {
-        force[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] += ( Xup[value ].transpose() * force[value] );  //update joint force for parent i
+        total_inertia += Xup[link_id].transpose() * articulated_inertia[link_id] * Xup[link_id];
       }
     }
 
-    //Third iteration : Calculate Composite Body Inertia
+    //calculate final center of mass position
+    // I = [ Ic - m cx cx , m cx , -mcx , m1 ]
+    // so I(4,4) = I(5,5) = I(6,6) = mass
+    Eigen::Vector3d com;
+    com(0) = total_inertia(2,4)/total_inertia(5,5);
+    com(1) = total_inertia(0,5)/total_inertia(5,5);
+    com(2) = total_inertia(1,3)/total_inertia(5,5);
+    std::cout<<com<<"\n";
+    //calculate potential energy
+    scl::sFloat total_mass = total_inertia(5,5);
+    ret_potential_energy = total_mass*com.transpose()*this->robot_parsed_data_->gravity_;
 
-    std::vector<Eigen::MatrixXd> IC;
-    sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::iterator it;
-
-    //initializing composite  inertia with spatial inertia
-    for(it = arg_gc_model->rbdyn_tree_.begin();it != arg_gc_model->rbdyn_tree_.end(); ++it)
-    {
-      IC.push_back(it->sp_inertia_);
-    }
-
-    Eigen::MatrixXd H(processing_order.size(),processing_order.size());
-    H=Eigen::MatrixXd::Zero(processing_order.size(),processing_order.size());
-
-    //calculate composite inertia of each body
-    for( i = static_cast<int>(processing_order.size())-1 ; i>=0; i-- )
-    {
-      scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      if(false == arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->is_root_)
-      {
-        IC[arg_gc_model->rbdyn_tree_.at(processing_order[i])->parent_addr_->link_ds_->link_id_] += (Xup[value].transpose()*IC[value]*Xup[value]);
-      }
-    }
-
-    //Fourth iteration : Calculate joint space inertia matrix
-
-    for( i = 0 ; i < static_cast<int>(processing_order.size()) ; i++ )
-    {
-      scl::sInt value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
-      std::string name = arg_gc_model->rbdyn_tree_.at(processing_order[i])->name_;
-      force_i = IC[value] * arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_;
-      H(value,value) = (arg_gc_model->rbdyn_tree_.at(processing_order[i])->sp_S_joint_.transpose() * force_i)(0,0);
-      scl::sInt j =value;
-
-      while(arg_gc_model->rbdyn_tree_.at(name)->parent_addr_->link_ds_->link_id_ > -1)
-      {
-        force_i = Xup[j].transpose() * force_i;
-        name = arg_gc_model->rbdyn_tree_.at(name)->parent_addr_->name_;
-        j = arg_gc_model->rbdyn_tree_.at(j)->parent_addr_->link_ds_->link_id_;
-        H(value,j) = (arg_gc_model->rbdyn_tree_.at(name)->sp_S_joint_.transpose() * force_i)(0,0);   //calculate H matrix
-        H(j,value) = H(value,j);
-      }
-    }
-
-    ret_kinetic_energy  = 0.5*(arg_io_data->sensors_.dq_.transpose()*H*arg_io_data->sensors_.dq_ )(0,0);
     return true;
   }
 } /* namespace scl_app */

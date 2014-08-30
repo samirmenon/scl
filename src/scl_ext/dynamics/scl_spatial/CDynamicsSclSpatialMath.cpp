@@ -320,14 +320,14 @@ namespace scl_ext
     assert(arg_gc_model!=NULL);
 #endif
 
-    std::vector<std::string>processing_order;
+    std::vector<std::string> processing_order;
 
     calculateTransformationAndInertia(arg_gc_model);
     calculateOrderOfProcessing(arg_gc_model , processing_order);
     std::vector<Eigen::MatrixXd> Xa(processing_order.size());
     std::vector<Eigen::MatrixXd > J(processing_order.size());
 
-    for (int i = 0; i < processing_order.size() ; i++ )
+    for (unsigned int i = 0; i < processing_order.size() ; i++ )
     {
       scl::sInt  value = arg_gc_model->rbdyn_tree_.at(processing_order[i])->link_ds_->link_id_;
       Eigen::VectorXd e = Eigen::VectorXd::Zero(processing_order.size());
@@ -338,7 +338,7 @@ namespace scl_ext
       }
 
       Eigen::MatrixXd j = Eigen::MatrixXd::Zero(6,processing_order.size());
-      for(int j = 0; j < processing_order.size(); j++)
+      for(unsigned int j = 0; j < processing_order.size(); j++)
       {
         value = arg_gc_model->rbdyn_tree_.at(processing_order[j])->link_ds_->link_id_;
         if(e(value) == 1)
