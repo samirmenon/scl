@@ -40,10 +40,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include "test_dynamics.hpp"
 //Test scl dynamics engine
 #include "test_dynamics_scl.hpp"
-//Test scl spatial dynamics engine
+//Test scl spatial dynamics engine math helper functions
 #include "test_dynamics_sclspatial_math.hpp"
 //Test scl spatial dynamics engine
 #include "test_dynamics_sclspatial.hpp"
+//Test scl vs scl spatial dynamics engine
+#include "test_dynamics_scl_vs_spatial.hpp"
 //Test chai graphic rendering
 #include "test_graphics.hpp"
 
@@ -159,6 +161,15 @@ int main(int argc, char** argv)
           <<sutil::CSystemClock::getSysTime()<<" "
           <<sutil::CSystemClock::getSimTime()<<"]";
       scl_test::test_dynamics_sclspatial();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Compare Scl vs Scl Spatial Dynamics functions
+      std::cout<<"\n\nTest #"<<id<<". Scl vs Scl Spatial Dynamics [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_dynamics_scl_vs_spatial();
     }
     ++id;
 
