@@ -374,7 +374,7 @@ namespace scl_ext
       Xup[link_id] = XJ * link->sp_X_within_link_;
 
       //calculate velocity and acceleration for root node
-      if(false == link->parent_addr_->link_ds_->is_root_)
+      if(true == link->parent_addr_->link_ds_->is_root_)
       {
         Vi = Vj;
         link->spatial_acceleration_= Xup[link_id] *( gravity )+ link->sp_S_joint_ * arg_io_data->sensors_.ddq_[link_id];
