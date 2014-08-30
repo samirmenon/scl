@@ -1,4 +1,19 @@
-
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/*
+ * test_dynamics_scl_spatial_math.cpp
+ *
+ *  Created on: Jun 12, 2014
+ *
+ *  Copyright (C) 2014
+ *
+ *  Author : Nayan Singhal <singhalnayan91@gmail.com>
+ *              Brains in Silicon Lab,
+ *              Stanford University.
+ *
+ *  Edited by: Samir Menon <smenon@stanford.edu>
+ */
 #include "test_dynamics_sclspatial_math.hpp"
 
 #include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatialMath.hpp>
