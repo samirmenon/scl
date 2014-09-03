@@ -110,10 +110,7 @@ namespace scl_test
     }
 
     ~CSclAppTestTask()
-    {
-      if(NULL != tao_dyn) {delete tao_dyn; }
-      if(NULL != scl_dyn) {delete scl_dyn; }
-    }
+    { }
 
     /************************************************************************/
     /****************NOTE : You should NOT need to modify this **************/
@@ -220,11 +217,13 @@ namespace scl_test
       { throw(std::runtime_error("Could not find registered robot data struct in the database"));  }
 
       /******************************TaoDynamics************************************/
+      // NOTE : We do NOT delete this.. When passed to the controller, the controller takes care of it.
       tao_dyn = new scl::CDynamicsTao();
       flag = tao_dyn->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
       /******************************SclDynamics************************************/
+      // NOTE : We do NOT delete this.. When passed to the controller, the controller takes care of it.
       scl_dyn = new scl::CDynamicsScl();
       flag = scl_dyn->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize dynamics object"));  }
