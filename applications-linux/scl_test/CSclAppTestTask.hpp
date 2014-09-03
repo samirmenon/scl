@@ -41,6 +41,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/dynamics/tao/CDynamicsTao.hpp>
+#include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
@@ -105,6 +106,13 @@ namespace scl_test
       tsk = S_NULL; tsk2 = S_NULL;;
       tsk_ds = S_NULL; tsk2_ds = S_NULL;
       op_link_set = false; op_link2_set = false;
+      tao_dyn = NULL; scl_dyn = NULL;
+    }
+
+    ~CSclAppTestTask()
+    {
+      if(NULL != tao_dyn) {delete tao_dyn; }
+      if(NULL != scl_dyn) {delete scl_dyn; }
     }
 
     /************************************************************************/
@@ -154,6 +162,7 @@ namespace scl_test
     scl::SRobotIO* rob_io_ds;       //Access the robot's sensors and actuators
 
     scl::CDynamicsTao* tao_dyn;          //Generic tao dynamics
+    scl::CDynamicsScl* scl_dyn;          //Generic tao dynamics
     scl::CGraphicsChai chai_gr;         //Generic chai graphics
 
     scl::sLongLong ctrl_ctr;            //Controller computation counter
@@ -215,6 +224,11 @@ namespace scl_test
       flag = tao_dyn->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
+      /******************************SclDynamics************************************/
+      scl_dyn = new scl::CDynamicsScl();
+      flag = scl_dyn->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
+      if(false == flag) { throw(std::runtime_error("Could not initialize dynamics object"));  }
+
       /******************************Shared I/O Data Structure************************************/
       rob_io_ds = db->s_io_.io_data_.at(robot_name);
       if(S_NULL == rob_io_ds)
@@ -240,7 +254,7 @@ namespace scl_test
       { throw(std::runtime_error("Glut initialization error")); }
 
       /**********************Initialize Robot Dynamics and Controller*******************/
-      flag = robot.initFromDb(robot_name,tao_dyn,tao_dyn);//Note: The robot deletes these pointers.
+      flag = robot.initFromDb(robot_name,scl_dyn,tao_dyn);//Note: The robot deletes these pointers.
       if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
 
       ctrl_name = arg_controller_name;
