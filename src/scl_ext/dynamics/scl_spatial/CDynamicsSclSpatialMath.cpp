@@ -25,9 +25,9 @@ namespace scl_ext
     //Finding the invertible matrix
     while(temp.determinant() == 0)
     {
-    	for(int  i=0;i<6;i++)
-    		for(int j=arg_subspace.cols();j<6;j++)
-    			temp(i,j) = rand()%10;
+      for(int  i=0;i<6;i++)
+        for(int j=arg_subspace.cols();j<6;j++)
+          temp(i,j) = rand()%10;
     }
 
     temp = temp.inverse();
@@ -35,11 +35,11 @@ namespace scl_ext
     //6-ni bottom rows of matrix contains transpose of force subspace matrix
     Eigen::MatrixXd force_subspace_t = Eigen::MatrixXd::Zero(6-arg_subspace.cols(),6);
     for(int i=1;i<6;i++)
-    	for(int j=0;j<6;j++)
-    		force_subspace_t(i-1,j) =temp(i,j);
+      for(int j=0;j<6;j++)
+        force_subspace_t(i-1,j) =temp(i,j);
 
     ret_force_subspace = force_subspace_t.transpose();
-	return true;
+    return true;
   }
 
   bool calculateTransformationAndSubspace( Eigen::MatrixXd & ret_Xlink , Eigen::MatrixXd & ret_subspace , scl::sInt arg_joint_type, scl::sFloat arg_q)
@@ -104,17 +104,12 @@ namespace scl_ext
 
     for(it = arg_gc_model->rbdyn_tree_.begin();it != arg_gc_model->rbdyn_tree_.end(); ++it) //return spec data
     {
-      if(it++!=arg_gc_model->rbdyn_tree_.end())      //To avoid one extra value
-      {
-        it--;
-        calculateSpatialInertia(it->sp_inertia_ , it->link_ds_->inertia_ , it->link_ds_->com_ , it->link_ds_->mass_);
-        Eigen::MatrixXd xtree(6,6);
-        Eigen::MatrixXd rotfromquaternion(6,6);
-        computeTranslation(xtree,it->link_ds_->pos_in_parent_);
-        computeRotFromQuaternion(rotfromquaternion,it->link_ds_->ori_parent_quat_);
-        it->sp_X_within_link_ = rotfromquaternion*xtree;
-      }
-
+      calculateSpatialInertia(it->sp_inertia_ , it->link_ds_->inertia_ , it->link_ds_->com_ , it->link_ds_->mass_);
+      Eigen::MatrixXd xtree(6,6);
+      Eigen::MatrixXd rotfromquaternion(6,6);
+      computeTranslation(xtree,it->link_ds_->pos_in_parent_);
+      computeRotFromQuaternion(rotfromquaternion,it->link_ds_->ori_parent_quat_);
+      it->sp_X_within_link_ = rotfromquaternion*xtree;
     }
     return true;
   }
@@ -166,10 +161,10 @@ namespace scl_ext
 
           if(NULL != arg_gc_model->rbdyn_tree_.at(it1->first))
             if(NULL != arg_gc_model->rbdyn_tree_.at(it1->first)->parent_addr_)
-                if(false == arg_gc_model->rbdyn_tree_.at(it1->first)->parent_addr_->link_ds_->is_root_) //This link's parent is a root link. So skip it
-                {
-                  parent_count[(arg_gc_model->rbdyn_tree_.at(it1->first))->parent_name_]--; //decrease the counter of its parent by 1
-                }
+              if(false == arg_gc_model->rbdyn_tree_.at(it1->first)->parent_addr_->link_ds_->is_root_) //This link's parent is a root link. So skip it
+              {
+                parent_count[(arg_gc_model->rbdyn_tree_.at(it1->first))->parent_name_]--; //decrease the counter of its parent by 1
+              }
           parent_count[it1->first]--;         //decrease the child counter by 1
           i++;
         }

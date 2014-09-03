@@ -166,7 +166,14 @@ namespace scl_ext
      * This implementation is stateless. Ideally all implementations should
      * be stateless... */
     virtual bool init(const scl::SRobotParsed& arg_robot_data)
-    { has_been_init_ = true; return true;  }
+    {
+      if(arg_robot_data.has_been_init_){
+        robot_parsed_data_ = & arg_robot_data;
+        has_been_init_ = true;
+        return true;
+      }
+      return false;
+    }
 
     /** Constructor */
     CDynamicsSclSpatial();

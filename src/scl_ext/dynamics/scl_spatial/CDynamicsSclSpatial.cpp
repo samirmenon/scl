@@ -35,7 +35,10 @@ namespace scl_ext
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
     assert(arg_io_data!=NULL);
+    assert(has_been_init_);
 #endif
+
+    if(false == has_been_init_){return false;}
 
     //calculate spatial inertia and transformation matrix
     if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
@@ -55,8 +58,8 @@ namespace scl_ext
     scl::sInt body , link_id , total_link = arg_gc_model->processing_order_.size();
     std::vector<Eigen::MatrixXd>   C(total_link)  , Xup(total_link)  , biasforce(total_link)  , H(total_link) ,
         D(total_link) , temp(total_link);
-    Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Vcross(6,6) , XJ(6,6), gravity(6,1);
-    gravity << 0,0,0,0,0,9.81;
+    Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Vcross(6,6) , XJ(6,6), sp_gravity(6,1);
+    sp_gravity << 0,0,0,robot_parsed_data_->gravity_(0),robot_parsed_data_->gravity_(1),robot_parsed_data_->gravity_(2);
 
     std::string link_name;
 
@@ -152,7 +155,7 @@ namespace scl_ext
 
       //calculate generalized acceleration for root node
       if( link->parent_addr_->link_ds_->is_root_)
-      { link->spatial_acceleration_ = Xup[link_id]*(gravity) + C[link_id];  }
+      { link->spatial_acceleration_ = Xup[link_id]*(sp_gravity) + C[link_id];  }
       //calculate generalized acceleration for each link except root node
       else
       { link->spatial_acceleration_  = Xup[link_id] * link->parent_addr_->spatial_acceleration_ + C[link_id]; }
@@ -178,7 +181,10 @@ namespace scl_ext
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
     assert(arg_io_data!=NULL);
+    assert(has_been_init_);
 #endif
+
+    if(false == has_been_init_){return false;}
 
 
     //calculate spatial inertia and transformation matrix
@@ -199,11 +205,11 @@ namespace scl_ext
     scl::sInt body , link_id , total_link = arg_gc_model->processing_order_.size();
 
     std::vector<Eigen::MatrixXd>  Xup(total_link);
-    Eigen::MatrixXd  Vi(6,1) , Vj(6,1), temp_force(6,1), Vcross(6,6),  XJ(6,6) , gravity(6,1);
+    Eigen::MatrixXd  Vi(6,1) , Vj(6,1), temp_force(6,1), Vcross(6,6),  XJ(6,6) , sp_gravity(6,1);
 
     std::string link_name;
 
-    gravity<< 0 , 0 , 0 , 0 , 0 , 9.81;
+    sp_gravity << 0,0,0,robot_parsed_data_->gravity_(0),robot_parsed_data_->gravity_(1),robot_parsed_data_->gravity_(2);
 
     //First iteration : Calculate joint velocity and Acceleration
     for(body = 0 ; body < static_cast<int>(total_link) ; ++body )
@@ -225,10 +231,12 @@ namespace scl_ext
       Xup[link_id]  = XJ*link->sp_X_within_link_;
 
       //calculate velocity and acceleration for root node
+      // NOTE TODO : This is extra ( link->parent_addr_->link_ds_->link_id_ ==-1 ).. Root node ids are not always -1.. This might
+      // not work for multiple robots etc.
       if( link->parent_addr_->link_ds_->is_root_ && link->parent_addr_->link_ds_->link_id_ ==-1)
       {
         Vi = Vj;
-        link->spatial_acceleration_ = Xup[link_id] * gravity;
+        link->spatial_acceleration_ = Xup[link_id] * sp_gravity;
       }
       //calculate velocity and acceleration for all other nodes
       else
@@ -335,7 +343,10 @@ namespace scl_ext
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
     assert(arg_io_data!=NULL);
+    assert(has_been_init_);
 #endif
+
+    if(false == has_been_init_){return false;}
 
     //calculate spatial inertia and transformation matrix
     if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
@@ -350,11 +361,14 @@ namespace scl_ext
       calculateOrderOfProcessing(arg_gc_model , processing_order);
       arg_gc_model->processing_order_ = processing_order;
     }
+
     scl::sInt body , link_id , total_link = arg_gc_model->processing_order_.size();
 
+    //NOTE TODO : This is horrendously slow....
     std::vector<Eigen::MatrixXd> Xup(total_link) ;
-    Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Tau(total_link,1) , XJ(6,6) , Vcross(6,6) , gravity(6,1);
-    gravity << 0 , 0 , 0 , 0 , 0 , 9.81;
+
+    Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Tau(total_link,1) , XJ(6,6) , Vcross(6,6) , sp_gravity(6,1);
+    sp_gravity << 0,0,0,robot_parsed_data_->gravity_(0),robot_parsed_data_->gravity_(1),robot_parsed_data_->gravity_(2);
     std::string link_name;
 
     //First iteration : Calculate Joint Force and Acceleration
@@ -367,9 +381,6 @@ namespace scl_ext
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
       link->sp_S_joint_ .setZero(6,1);
-      link->spatial_acceleration_.setZero(6,1);
-      link->spatial_velocity_.setZero(6,1);
-      link->spatial_force_.setZero(6,1);
 
       //calculate joint transformation and motion subspace.
       calculateTransformationAndSubspace(XJ, link->sp_S_joint_ , link->link_ds_->joint_type_ , arg_io_data->sensors_.q_.array()[link_id]);
@@ -381,10 +392,10 @@ namespace scl_ext
       Xup[link_id] = XJ * link->sp_X_within_link_;
 
       //calculate velocity and acceleration for root node
-      if(true == link->parent_addr_->link_ds_->is_root_)
+      if( link->parent_addr_->link_ds_->is_root_ && link->parent_addr_->link_ds_->link_id_ ==-1)
       {
         Vi = Vj;
-        link->spatial_acceleration_= Xup[link_id] *( gravity )+ link->sp_S_joint_ * arg_io_data->sensors_.ddq_[link_id];
+        link->spatial_acceleration_= Xup[link_id] *( sp_gravity )+ link->sp_S_joint_ * arg_io_data->sensors_.ddq_[link_id];
       }
       //calculate velocity and acceleration for all other nodes
       else
@@ -412,13 +423,16 @@ namespace scl_ext
       link_id = link->link_ds_->link_id_;
       link_name = arg_gc_model->processing_order_[body];
 
+
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
       // Calculate torque at each link
+      //NOTE TODO : S was intended to be a matrix to support multi-dof joints. Instead right now
+      // it has been hacked to pick the value corresponding to the first mobility direction (or joint axis).
       Tau(link_id,0) = (link->sp_S_joint_.transpose() * link->spatial_force_)(0,0);
 
       //calculate rigid body force
-      if(false == link->parent_addr_->link_ds_->is_root_)
+      if( false == link->parent_addr_->link_ds_->is_root_ && link->parent_addr_->link_ds_->link_id_ !=-1)
       {
         link->parent_addr_->spatial_force_+= ( Xup[link_id].transpose() * link->spatial_force_ );
       }
@@ -468,7 +482,11 @@ namespace scl_ext
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
     assert(arg_io_data!=NULL);
+    assert(has_been_init_);
 #endif
+
+    if(false == has_been_init_){return false;}
+
     //calculate spatial inertia and transformation matrix
     if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
     {
@@ -527,7 +545,11 @@ namespace scl_ext
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
     assert(arg_io_data!=NULL);
+    assert(has_been_init_);
 #endif
+
+    if(false == has_been_init_){return false;}
+
     //calculate spatial inertia and transformation matrix
     if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
     {
@@ -595,10 +617,9 @@ namespace scl_ext
     com(0) = total_inertia(2,4)/total_inertia(5,5);
     com(1) = total_inertia(0,5)/total_inertia(5,5);
     com(2) = total_inertia(1,3)/total_inertia(5,5);
-    std::cout<<com<<"\n";
     //calculate potential energy
     scl::sFloat total_mass = total_inertia(5,5);
-    ret_potential_energy = total_mass*com.transpose()*this->robot_parsed_data_->gravity_;
+    ret_potential_energy = total_mass*com.transpose()*robot_parsed_data_->gravity_;
 
     return true;
   }
