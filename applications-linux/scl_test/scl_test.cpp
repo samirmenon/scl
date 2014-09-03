@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /* \file main.cpp
  *
  *  Copyright (C) 2010
@@ -56,13 +56,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdexcept>
 #include <iostream>
-#include <stdlib.h>
 
 using namespace std;
 using namespace scl_test;
 
 int main(int argc, char** argv)
 {
+  srand(time(0));
   int tid, id = 1;
   if(argc != 2)
   {
