@@ -13,8 +13,11 @@
    height="1052.3622047"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47 r22583"
-   sodipodi:docname="Controller_Design.svg">
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="controller.pdf"
+   inkscape:export-filename="/home/samir/Code/control/scl.git/doc/scf/figs/controller.png"
+   inkscape:export-xdpi="300.16693"
+   inkscape:export-ydpi="300.16693">
   <defs
      id="defs4">
     <inkscape:perspective
@@ -431,16 +434,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="368.39324"
-     inkscape:cy="530.13888"
+     inkscape:zoom="2.2207572"
+     inkscape:cx="323.98837"
+     inkscape:cy="477.93767"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="2560"
-     inkscape:window-height="1539"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:window-width="3200"
+     inkscape:window-height="1761"
+     inkscape:window-x="0"
+     inkscape:window-y="39"
      inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true">
@@ -457,7 +460,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1169,25 +1172,25 @@
         <text
            xml:space="preserve"
            style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-           x="370.91199"
+           x="368.91199"
            y="954.04767"
            id="text2818-7-4"><tspan
              style="font-size:15px;font-style:normal;font-weight:bold;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
              sodipodi:role="line"
-             x="370.91199"
+             x="368.91199"
              y="954.04767"
              id="tspan2824-0-9">CJSpaceModel</tspan><tspan
              id="tspan3577"
              style="font-size:15px;font-style:normal;font-weight:bold;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
              sodipodi:role="line"
-             x="370.91199"
-             y="972.79767">A(q), b(q, q̇), g(q)</tspan><tspan
+             x="368.91199"
+             y="972.79767">A(q), b(q, q'), g(q)</tspan><tspan
              sodipodi:role="line"
-             x="370.91199"
+             x="368.91199"
              y="991.54767"
              id="tspan2838-2-8" /><tspan
              sodipodi:role="line"
-             x="370.91199"
+             x="368.91199"
              y="1010.2977"
              id="tspan2830-5-8" /></text>
       </g>
@@ -1209,30 +1212,30 @@
             <text
                xml:space="preserve"
                style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-               x="371.41504"
+               x="367.41504"
                y="883.03229"
                id="text2818-7-4-4"><tspan
                  style="font-size:15px;font-style:normal;font-weight:bold;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
                  sodipodi:role="line"
-                 x="371.41504"
+                 x="367.41504"
                  y="883.03229"
                  id="tspan2824-0-9-0">CTaskModel(i)</tspan><tspan
                  id="tspan3633"
                  style="font-size:15px;font-style:normal;font-weight:bold;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
                  sodipodi:role="line"
-                 x="371.41504"
+                 x="367.41504"
                  y="901.78229">    (q,x),    , Λ(q,x), </tspan><tspan
                  id="tspan3639"
                  style="font-size:15px;font-style:normal;font-weight:bold;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
                  sodipodi:role="line"
-                 x="371.41504"
-                 y="920.53229">μ(q, q̇, x, ẋ), p(q, x)</tspan><tspan
+                 x="367.41504"
+                 y="920.53229">μ(q, q', x, x'), p(q, x)</tspan><tspan
                  sodipodi:role="line"
-                 x="371.41504"
+                 x="367.41504"
                  y="939.28229"
                  id="tspan2838-2-8-4" /><tspan
                  sodipodi:role="line"
-                 x="371.41504"
+                 x="367.41504"
                  y="958.03229"
                  id="tspan2830-5-8-8" /></text>
             <path
@@ -1255,8 +1258,8 @@
     <rect
        style="fill:none;stroke:#000000;stroke-width:1.44900489;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        id="rect2816-1-7-1"
-       width="260.66959"
-       height="22.466852"
+       width="273.27789"
+       height="22.466858"
        x="206.05807"
        y="938.27167" />
     <text
@@ -1269,8 +1272,8 @@
          sodipodi:role="line"
          x="211.86334"
          y="954.35284"
-         id="tspan2824-0-9-4">Robot Sensors : Read (q, q̇, x, ẋ,F<tspan
-   style="font-size:11"
+         id="tspan2824-0-9-4">Robot Sensors : Read (q, q', x, x',F<tspan
+   style="font-size:11px"
    id="tspan3575">contact</tspan>)</tspan><tspan
          sodipodi:role="line"
          x="211.86334"
@@ -1363,7 +1366,7 @@
    id="tspan3397"
    style="font-size:11px">1   <tspan
    style="font-size:15px"
-   id="tspan3539">=   (q) [A(q) F*(q,q̇) + b(q, q̇) + g(q)]</tspan></tspan></tspan></text>
+   id="tspan3539">=   (q) [A(q) F*(q,q') + b(q, q') + g(q)]</tspan></tspan></tspan></text>
     <text
        id="text2818-4-33-7"
        y="906.5423"
@@ -1509,13 +1512,15 @@
                d="M 52.678571,859.1479 55,856.6479"
                id="path3606-6"
                transform="translate(206.07143,-1.7857145)"
-               inkscape:connector-type="polyline" />
+               inkscape:connector-type="polyline"
+               inkscape:connector-curvature="0" />
             <path
                style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
                d="m 52.544643,859.23718 2.790179,2.23214"
                id="path3610-1"
                transform="translate(206.07143,-1.7857145)"
-               inkscape:connector-type="polyline" />
+               inkscape:connector-type="polyline"
+               inkscape:connector-curvature="0" />
           </g>
           <path
              id="path3522"
@@ -1546,13 +1551,15 @@
            d="M 52.678571,859.1479 55,856.6479"
            id="path3606"
            transform="translate(206.07143,-1.7857145)"
-           inkscape:connector-type="polyline" />
+           inkscape:connector-type="polyline"
+           inkscape:connector-curvature="0" />
         <path
            style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            d="m 52.544643,859.23718 2.790179,2.23214"
            id="path3610"
            transform="translate(206.07143,-1.7857145)"
-           inkscape:connector-type="polyline" />
+           inkscape:connector-type="polyline"
+           inkscape:connector-curvature="0" />
       </g>
       <path
          id="path3522-5"
@@ -1571,15 +1578,13 @@
          x="199.4931"
          sodipodi:role="line">Γ<tspan
    id="tspan3397-8"
-   style="font-size:11px">2   <tspan
-   style="font-size:15px"
-   id="tspan3539-2">=   (q,x) [ Λ(q,x) F*(x,ẋ) + μ(q, q̇, x, ẋ) </tspan></tspan></tspan><tspan
+   style="font-size:11px">2   </tspan>=   (q,x) [ Λ(q,x) F*(x,x') + </tspan><tspan
          style="font-size:15px;font-style:normal;font-weight:bold;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
          y="861.71576"
          x="199.4931"
          sodipodi:role="line"
-         id="tspan3572">         + p(q, x) + F<tspan
-   style="font-size:11"
+         id="tspan3572">           μ(q, q', x, x') + p(q, x) + F<tspan
+   style="font-size:11px"
    id="tspan3573">contact</tspan> ]</tspan></text>
     <g
        transform="translate(68.95633,83.867134)"
@@ -1643,13 +1648,15 @@
              transform="translate(206.07143,-1.7857145)"
              id="path3606-2"
              d="M 52.678571,859.1479 55,856.6479"
-             style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline" />
+             style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+             inkscape:connector-curvature="0" />
           <path
              inkscape:connector-type="polyline"
              transform="translate(206.07143,-1.7857145)"
              id="path3610-2"
              d="m 52.544643,859.23718 2.790179,2.23214"
-             style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+             style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             inkscape:connector-curvature="0" />
         </g>
         <path
            style="fill:none;stroke:#000000;stroke-width:1.50884557px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
@@ -1682,11 +1689,7 @@
    style="font-size:8px"
    id="tspan3806">j=1:i-1</tspan> (   <tspan
    style="font-size:13px"
-   id="tspan3910">(q,x)</tspan> +     <tspan
-   style="font-size:13px"
-   id="tspan3912">(q,x)<tspan
-   style="font-size:15px"
-   id="tspan3914">)</tspan></tspan></tspan></tspan></tspan></text>
+   id="tspan3910">(q,x) *     (q,x)</tspan>)</tspan></tspan></tspan></text>
     <g
        id="g3848"
        transform="translate(148.2028,17.298081)">
