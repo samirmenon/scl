@@ -4,7 +4,7 @@ A control and interactive simulation library
 
 Author: Samir Menon <smenon@stanford.edu>
 
-Wiki: https://bitbucket.org/samirmenon/scl-manips-group/wiki
+Wiki: https://bitbucket.org/samirmenon/scl-manips-v2/wiki
 
 ==================================================================================================
 == Getting started ==
@@ -18,12 +18,12 @@ $ sudo apt-get install build-essential cmake libusb-dev libpci-dev freeglut3-dev
 I will assume you will get this on to your documents folder. Again, on the terminal:
 
 $ cd ~/Documents
-$ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-manips-group.git scl-manips-group.git
+$ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-manips-v2.git scl-manips-v2.git
 
 === 3. Compile all the libraries.  ===
 Compile the scl library and related 3rdparty libraries (Chai-graphics, yaml) all in one step
 
-$ cd scl-manips-group.git/applications-linux/scl_lib
+$ cd scl-manips-v2.git/applications-linux/scl_lib
 $ sh make_everything.sh
 
 === 4. Explore the tutorials. ===
@@ -52,18 +52,18 @@ $ ./scl_eg_ctrl ../../specs/Pr2/Pr2Cfg.xml Pr2Bot opc -ui hand2 -ui hand
 You can move the robot's hands around using the 'w s a d q e' and 'u j h k y i' keys on the keyboard
 
 Detailed installation instructions - see Getting started in our wiki:
-https://bitbucket.org/samirmenon/scl-manips-group/wiki/install/getting_started
+https://bitbucket.org/samirmenon/scl-manips-v2/wiki/install/getting_started
 
 ==========================================================================================
 
 Additional notes:
 
 * For documentation:
-$ cd ~/scl-manips-group.git/doc
+$ cd ~/scl-manips-v2.git/doc
 $ evince StandardControlFramework-overview.pdf &
 
 * For additional models:
-$ cd ~/scl-manips-group.git/specs
+$ cd ~/scl-manips-v2.git/specs
 - You can run different models by specifying the config file ../../specs/*/*Cfg.xml
 
 * For additional controllers:
