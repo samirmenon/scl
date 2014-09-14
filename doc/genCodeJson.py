@@ -71,6 +71,7 @@ def dir2jsonstr(dirbase, dirname, incl_files):
 
 # Runs through the source folders and exports the json
 mypath = "../src"
+sutilpath = "../3rdparty/sUtil/src"
 
 if not path.exists("./json"):
     makedirs("./json")
@@ -89,10 +90,11 @@ f = open('./json/scl_ext.json','w')
 f.write(ss)
 f.close()
 
-print("\n\n"+"JSON for scl and scl_ext:")
+print("\n\n"+"JSON for scl and scl_ext and sutil:")
 ss = "{\"name\": \"\",\"children\":["
 ss = ss + dir2jsonstr(mypath, 'scl', 1) + ","
-ss = ss + dir2jsonstr(mypath, 'scl_ext', 1)
+ss = ss + dir2jsonstr(mypath, 'scl_ext', 1) + ","
+ss = ss + dir2jsonstr(sutilpath, 'sutil', 1)
 ss = ss + "]}"
 print(ss)
 f = open('./json/src.json','w')
