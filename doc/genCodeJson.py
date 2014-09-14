@@ -1,7 +1,24 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+# genCodeJson.py
+#
+#  Created on: Sep 13, 2014
+#      Author: Samir Menon <smenon@stanford.edu>
+#
+# The script runs through the src directory and reads in files and sub-directories
+# into a json string that can be parsed and rendered in html webpages..
+#
+# This will export a set of json files to scl.git/doc/json/*.json
+
 #!/bin/python
 from os import walk
+from os import path
+from os import makedirs
 import json
 
+# Creates the json script for a list of files
 def files2jsonstr(flist):
   ss = ""
   # Do nothing for an empty list
@@ -13,6 +30,7 @@ def files2jsonstr(flist):
   # Return the formatted string.
   return ss
 
+# Creates the json script for a directory (called recursively)
 def dir2jsonstr(dirbase, dirname, incl_files):
   f = []
   ss = ""
@@ -51,18 +69,23 @@ def dir2jsonstr(dirbase, dirname, incl_files):
   ss = ss +" }"
   return ss
 
+# Runs through the source folders and exports the json
 mypath = "../src"
+
+if not path.exists("./json"):
+    makedirs("./json")
+
 print("JSON for scl:")
 ss = dir2jsonstr(mypath, 'scl', 1)
 print(ss)
-f = open('scl.json','w')
+f = open('./json/scl.json','w')
 f.write(ss)
 f.close()
 
 print("\n\n"+"JSON for scl_ext:")
 ss = dir2jsonstr(mypath, 'scl_ext', 1)
 print(ss)
-f = open('scl_ext.json','w')
+f = open('./json/scl_ext.json','w')
 f.write(ss)
 f.close()
 
@@ -72,7 +95,7 @@ ss = ss + dir2jsonstr(mypath, 'scl', 1) + ","
 ss = ss + dir2jsonstr(mypath, 'scl_ext', 1)
 ss = ss + "]}"
 print(ss)
-f = open('src.json','w')
+f = open('./json/src.json','w')
 f.write(ss)
 f.close()
 
@@ -83,7 +106,7 @@ ss = ss + dir2jsonstr(mypath, 'scl', 0) + ","
 ss = ss + dir2jsonstr(mypath, 'scl_ext', 0)
 ss = ss + "]}"
 print(ss)
-f = open('src_only_dirs.json','w')
+f = open('./json/src_only_dirs.json','w')
 f.write(ss)
 f.close()
 
