@@ -56,7 +56,7 @@ namespace scl_app
   CTaskOpExample::CTaskOpExample() :
           CTaskBase(),
           data_(S_NULL),
-          lambda_inv_singular_(false),
+          use_svd_for_lambda_inv_(false),
           flag_compute_gravity_(true)
   { }
 
@@ -204,7 +204,7 @@ namespace scl_app
       data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
       if(flag_compute_gravity_)
-      { data_->force_task_ = data_->M_task_ * data_->ddx_ + data_->force_task_grav_;  }
+      { data_->force_task_ = data_->M_task_ * data_->ddx_ - data_->force_task_grav_;  }
       else
       { data_->force_task_ = data_->M_task_ * data_->ddx_;  }
 
@@ -234,7 +234,7 @@ namespace scl_app
       const SGcModel* gcm = data_->gc_model_;
 
       flag = flag && dynamics_->computeJacobian(data_->J_,*(data_->rbd_),
-              arg_sensors->q_,data_->pos_in_parent_);
+          arg_sensors->q_,data_->pos_in_parent_);
 
       //Use the position jacobian only. This is an op-point task.
       data_->J_ = data_->J_.block(0,0,3,data_->robot_->dof_);
@@ -243,7 +243,7 @@ namespace scl_app
       //Lambda = (J * Ainv * J')^-1
       data_->M_task_inv_ = data_->J_ * gcm->M_gc_inv_ * data_->J_.transpose();
 
-      if(!lambda_inv_singular_)
+      if(!use_svd_for_lambda_inv_)
       {
         //The general inverse function works very well for op-point controllers.
         //3x3 matrix inversion behaves quite well. Even near singularities where
@@ -253,13 +253,10 @@ namespace scl_app
         if(qr_.isInvertible())
         { data_->M_task_ = qr_.inverse();  }
         else
-        {
-          std::cout<<"\nCTaskOpExample::computeModel() : Warning. Lambda_inv is rank deficient. Using svd. Rank = "<<qr_.rank();
-          lambda_inv_singular_ = true;
-        }
+        { use_svd_for_lambda_inv_ = true; }
       }
 
-      if(lambda_inv_singular_)
+      if(use_svd_for_lambda_inv_)
       {
         //Use a Jacobi svd. No preconditioner is required coz lambda inv is square.
         //NOTE : This is slower and generally performs worse than the simple inversion
@@ -270,6 +267,7 @@ namespace scl_app
 #ifdef DEBUG
         std::cout<<"\n Singular values : "<<svd_.singularValues().transpose();
 #endif
+        int rank_loss=0;
 
         //NOTE : A threshold of .005 works quite well for most robots.
         //Experimentally determined: Take the robot to a singularity
@@ -282,21 +280,24 @@ namespace scl_app
         //motions.
         if(svd_.singularValues()(0) > 0.005)
         { singular_values_(0,0) = 1.0/svd_.singularValues()(0);  }
-        else { singular_values_(0,0) = 0.0; }
+        else { singular_values_(0,0) = 0.0; rank_loss++; }
         if(svd_.singularValues()(1) > 0.005)
         { singular_values_(1,1) = 1.0/svd_.singularValues()(1);  }
-        else { singular_values_(1,1) = 0.0; }
+        else { singular_values_(1,1) = 0.0; rank_loss++; }
         if(svd_.singularValues()(2) > 0.005)
         { singular_values_(2,2) = 1.0/svd_.singularValues()(2);  }
-        else { singular_values_(2,2) = 0.0; }
+        else { singular_values_(2,2) = 0.0; rank_loss++; }
+
+        if(0 < rank_loss)
+        { std::cout<<"\nCTaskOpPos::computeModel() : Warning. Lambda_inv is ill conditioned. SVD rank loss (@.005) = "<<rank_loss; }
 
         data_->M_task_ = svd_.matrixV() * singular_values_ * svd_.matrixU().transpose();
 
-        //Turn off the svd after 20 iterations
+        //Turn off the svd after 50 iterations
         //Don't worry, the qr will pop back to svd if it is still singular
         static sInt svd_ctr = 0; svd_ctr++;
-        if(20>=svd_ctr)
-        { svd_ctr = 0; lambda_inv_singular_ = false;  }
+        if(50>=svd_ctr)
+        { svd_ctr = 0; use_svd_for_lambda_inv_ = false;  }
       }
 
       //Compute the Jacobian dynamically consistent generalized inverse :
