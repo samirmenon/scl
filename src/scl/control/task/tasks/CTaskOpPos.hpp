@@ -149,7 +149,7 @@ protected:
   Eigen::ColPivHouseholderQR<Eigen::Matrix3d> qr_;
 
   /** True when the lambda_inv matrix turns singular. */
-  sBool lambda_inv_singular_;
+  sBool use_svd_for_lambda_inv_;
 
   /** For inverting the operational space inertia matrix
    * near singularities. 3x3 for operational point tasks. */
