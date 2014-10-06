@@ -216,7 +216,7 @@ namespace scl_registry
       { throw(std::runtime_error("Could not create a robot data structure on the pile..")); }
 
       //Fill in the ds entry from the file
-      flag = arg_parser->readRobotFromFile(arg_file,arg_robot_name,*rob);
+      flag = arg_parser->readRobotFromFile(arg_file,scl::CDatabase::getData()->dir_specs_,arg_robot_name,*rob);
       if(false==flag)
       { throw(std::runtime_error("Could not parse the robot from the file.")); }
 

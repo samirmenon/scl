@@ -33,11 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <sstream>
 #include <iostream>
-
 #include <stdexcept>
-
-#include <scl/Singletons.hpp>
-
 
 using namespace scl;
 using namespace scl_tinyxml;
@@ -47,7 +43,8 @@ namespace scl {
   bool CParserSclTiXml::readLink(
       const TiXmlHandle & arg_link_txml,
       scl::SRigidBody& arg_link_ds,
-      bool arg_is_root)
+      bool arg_is_root,
+      const std::string& arg_specs_dir)
   {
     try
     {
@@ -246,18 +243,17 @@ namespace scl {
         std::string ss;
 
         //Obj file paths are always relative to the specs directory.
-        if("" == scl::CDatabase::getData()->dir_specs_)
+        if("" == arg_specs_dir)
         {
           std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : At link ["<<arg_link_ds.name_
-                  <<"]. Specs directory not set in the database. Can't read link's obj file.";
-          continue;
+                  <<"]. Specs directory is './'. Double check the xml file paths in case graphics don't show.";
         }
 
         //Read all the obj_files
         SRigidBodyGraphics tgr;
         tgr.class_ = SRigidBodyGraphics::GRAPHIC_TYPE_FILE_OBJ;
         ss = link_data->FirstChildElement("name")->FirstChild()->Value();
-        ss = scl::CDatabase::getData()->dir_specs_ + ss;
+        ss = arg_specs_dir + ss;
         tgr.file_name_ = ss;
 
         obj_data = link_data->FirstChildElement( "position_in_parent" );

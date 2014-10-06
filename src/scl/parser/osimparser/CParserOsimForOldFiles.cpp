@@ -57,7 +57,7 @@ namespace scl {
       if(false == flag)
       { std::cout<<"\nWARNING : Could not read osim muscle definitions. Will try rigid bodies."; }
 
-      flag = readRobotFromFile(arg_file,"I_AM_SUPERFLUOUS",arg_biomech);
+      flag = readRobotFromFile(arg_file,"I_AM_SUPERFLUOUS","I_AM_SUPERFLUOUS",arg_biomech);
       if(false == flag)
       { throw(std::runtime_error("Couldn't read osim rigid body definitions.")); }
 
@@ -256,6 +256,7 @@ namespace scl {
    * argument is not used. */
   bool CParserOsimForOldFiles::readRobotFromFile(
       const std::string& arg_file,
+      const std::string& arg_robot_spec_base_dir,
       const std::string& arg_robot_name,
       scl::SRobotParsed& arg_robot)
   {

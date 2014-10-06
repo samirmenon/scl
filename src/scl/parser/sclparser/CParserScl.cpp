@@ -33,7 +33,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //The required data structures
 #include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 #include <scl/util/HelperFunctions.hpp>
@@ -138,6 +137,7 @@ bool CParserScl::listRobotsInFile(const std::string& arg_file,
 }
 
 bool CParserScl::readRobotFromFile(const std::string& arg_file,
+    const std::string& arg_robot_spec_base_dir,
     const std::string& arg_robot_name,
     scl::SRobotParsed& arg_robot)
 {
@@ -375,7 +375,7 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
       { throw(std::runtime_error("Couldn't find a root link with the robot specification"));  }
 
       TiXmlHandle root_link_handle(tmp_ele); //Back to handles
-      flag = CParserSclTiXml::readLink(root_link_handle, *tmp_link_ds, true);
+      flag = CParserSclTiXml::readLink(root_link_handle, *tmp_link_ds, true, arg_robot_spec_base_dir);
 
       SRigidBody* tmp_root = arg_robot.rb_tree_.create(tmp_link_ds->name_,*tmp_link_ds,true); //Add the root link
       if(S_NULL == tmp_root)
@@ -388,7 +388,7 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
       // *****************************************************************
       //                    Now parse the remaining robot spec
       // *****************************************************************
-      flag = readRobotSpecFromFile(spec_file, spec, arg_robot);
+      flag = readRobotSpecFromFile(spec_file, arg_robot_spec_base_dir, spec, arg_robot);
       if(false == flag)
       {
         std::string err;
@@ -651,6 +651,7 @@ bool CParserScl::readRobotFromFile(const std::string& arg_file,
 
 
 bool CParserScl::readRobotSpecFromFile(const std::string& arg_spec_file,
+    const std::string& arg_robot_spec_base_dir,
     const std::string& arg_robot_spec_name,
     scl::SRobotParsed& arg_robot)
 {
@@ -724,7 +725,7 @@ bool CParserScl::readRobotSpecFromFile(const std::string& arg_spec_file,
         if(S_NULL == tmp_link_ds) { throw(std::runtime_error("Couldn't allocate a root link")); }
         tmp_link_ds->init();
         tmp_link_ds->link_id_ = id; id++;
-        flag = CParserSclTiXml::readLink(_child_link_handle, *tmp_link_ds, false);
+        flag = CParserSclTiXml::readLink(_child_link_handle, *tmp_link_ds, false, arg_robot_spec_base_dir);
         if(false == flag)
         { throw(std::runtime_error("Couldn't read a link")); }
         //Add the root node to the robdef

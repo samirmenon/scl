@@ -55,6 +55,7 @@ public:
       std::vector<std::string>& arg_robot_names);
 
   virtual bool readRobotFromFile(const std::string& arg_file,
+      const std::string& arg_robot_spec_base_dir,
       const std::string& arg_robot_name,
       scl::SRobotParsed& arg_robot_object);
 
@@ -95,6 +96,7 @@ public:
 private:
   /** Reads a robot specification from a file */
   bool readRobotSpecFromFile(const std::string& arg_spec_file,
+      const std::string& arg_robot_spec_base_dir,
       const std::string& arg_robot_spec_name,
       scl::SRobotParsed& arg_robot);
 

@@ -63,7 +63,8 @@ public:
 
   /** Reads single links */
   static bool readLink(const scl_tinyxml::TiXmlHandle& arg_link_txml,
-      scl::SRigidBody& arg_link_ds, bool arg_is_root);
+      scl::SRigidBody& arg_link_ds, bool arg_is_root,
+      const std::string& arg_specs_dir="");
 
   /** Reads single links */
   static bool readMuscle(const scl_tinyxml::TiXmlHandle& arg_musc_txml,

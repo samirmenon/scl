@@ -88,7 +88,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/CTaskBase.hpp>
 #include <scl/control/data_structs/SControllerBase.hpp>
 
-#include <scl/parser/saiparser/CParserSai.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/parser/osimparser/CParserOsim.hpp>
 #include <scl/parser/osimparser/CParserOsimForOldFiles.hpp>

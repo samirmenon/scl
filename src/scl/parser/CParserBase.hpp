@@ -83,6 +83,8 @@ namespace scl
      * Eg. The Scl parser implements the full API
 		 */
     virtual bool readRobotFromFile(const std::string& arg_file,
+        /** The base directory with respect to which the xml file paths will be parsed. */
+        const std::string& arg_robot_spec_base_dir,
         /** The spec which will be instantiated in the object */
         const std::string& arg_robot_name,
         /** The robot's data will be filled into

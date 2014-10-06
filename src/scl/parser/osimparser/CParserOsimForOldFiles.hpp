@@ -95,6 +95,7 @@ namespace scl
      * argument is not used. */
     virtual bool readRobotFromFile(
         const std::string& arg_file,
+        const std::string& arg_robot_spec_base_dir,
         const std::string& arg_robot_name,
         scl::SRobotParsed& arg_robot);
 
