@@ -70,7 +70,7 @@ namespace scl
     tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 + data_->gc_model_->force_gc_grav_;
+    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 - data_->gc_model_->force_gc_grav_;
 
     return true;
   }
@@ -95,7 +95,7 @@ namespace scl
     tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 + data_->gc_model_->force_gc_grav_;
+    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 - data_->gc_model_->force_gc_grav_;
 
     return true;
   }
@@ -132,7 +132,7 @@ namespace scl
     tmp3 = tmp3.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 + data_->gc_model_->force_gc_grav_;
+    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 - data_->gc_model_->force_gc_grav_;
 
     return true;
   }
@@ -149,7 +149,7 @@ namespace scl
     tmp1 = tmp1.array().min(data_->force_gc_max_.array()); // Remain below the upper bound.
     tmp1 = tmp1.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
-    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp1 + data_->gc_model_->force_gc_grav_;
+    data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp1 - data_->gc_model_->force_gc_grav_;
 
 #ifdef DEBUG
     Eigen::VectorXd tmp2 = data_->gc_model_->M_gc_ * tmp1;
