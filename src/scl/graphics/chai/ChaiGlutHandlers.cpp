@@ -145,7 +145,7 @@ namespace scl_chai_glut_interface
       glutMouseFunc(mouseClick);
       glutMotionFunc(mouseMove);
       glutPassiveMotionFunc(mousePassiveMove);
-      glutSetWindowTitle("SCL scl (v0.99)");
+      glutSetWindowTitle("SCL : Standard Control Library v0.99");
 
       // create a mouse menu (right button)
       glutCreateMenu(scl_chai_glut_interface::menuSelect);
