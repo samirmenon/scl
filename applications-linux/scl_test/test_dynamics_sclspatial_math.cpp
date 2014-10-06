@@ -84,7 +84,7 @@ namespace scl_test
       else
       {
         if ( true == checkMatrix(transform , check_computeRotXAxis ))
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix around x axis\n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix around x axis";
         else
         {
           throw(std::runtime_error("Failed to calculate transformation matrix around x axis"));
@@ -107,7 +107,7 @@ namespace scl_test
       else
       {
         if ( true  == checkMatrix(transform , check_computeRotYAxis))
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix around y axis\n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix around y axis";
         else
         {
           throw(std::runtime_error("Failed to calculate transformation matrix around y axis"));
@@ -129,7 +129,7 @@ namespace scl_test
       else
       {
         if ( true  == checkMatrix(transform , check_computeRotZAxis))
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix around z axis\n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix around z axis";
         else
         {
           throw(std::runtime_error("Failed to calculate transformation matrix around z axis"));
@@ -155,7 +155,7 @@ namespace scl_test
       else
       {
         if ( true  == checkMatrix(transform , check_computeTranslation))
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix from one link to another\n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix from one link to another";
         else
         {
           throw(std::runtime_error("Failed to calculate transformation matrix afrom one link to another"));
@@ -179,7 +179,7 @@ namespace scl_test
       else
       {
         if ( true  == checkMatrix(transform , check_computeRotFromQuaternion))
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix from quaternion\n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix from quaternion";
         else
         {
           throw(std::runtime_error("Failed to calculate transformation matrix from quaternion"));
@@ -204,7 +204,7 @@ namespace scl_test
       else
       {
         if ( true  == checkMatrix(transform , check_computeCrossForVelocity))
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated cross product of spatial velocity matrix\n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated cross product of spatial velocity matrix";
         else
         {
           throw(std::runtime_error("Failed to calculate cross product of spatial velocity matrix"));
@@ -232,7 +232,7 @@ namespace scl_test
       { throw(std::runtime_error("Failed to calculate individual spatial inertia"));  }
       else
       {
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated individual spatial inertia\n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated individual spatial inertia";
       }
 
       //Test 8
@@ -256,7 +256,7 @@ namespace scl_test
       else
       {
         if ( true  == checkMatrix(Xlink , check_Xlink) && true == checkMatrix(subspace , check_subspace) )
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix and motion subspace matrix\n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated transformation matrix and motion subspace matrix";
         else
         {
           throw(std::runtime_error("Failed to calculate transformation matrix and motion subspace matrix"));
@@ -324,7 +324,7 @@ namespace scl_test
       { throw(std::runtime_error("Failed to calculate tree processing order"));  }
       {
         if( ret_processing_order[0] == std::string("l0") && ret_processing_order[1] == std::string("l1") && ret_processing_order[2] == std::string("l3") && ret_processing_order[3] == std::string("l2"))
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated tree processing order\n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated tree processing order";
         else
         {
           throw(std::runtime_error("Failed to calculate tree processing order"));
@@ -351,7 +351,7 @@ namespace scl_test
         }
 
         if(true == flag)
-          std::cout<<"\nTest Result ("<<test_id++<<") Calculated Spatial Inertia & Individual Transformation Matrix within joint \n\n";
+          std::cout<<"\nTest Result ("<<test_id++<<") Calculated Spatial Inertia & Individual Transformation Matrix within joint ";
         else
         {
           throw(std::runtime_error("Failed to calculate spatial Inertia & Individual Transformation Matrix within joint "));

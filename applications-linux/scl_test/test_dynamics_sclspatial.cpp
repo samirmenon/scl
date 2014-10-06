@@ -113,8 +113,8 @@ void test_dynamics_sclspatial(int id)
 		if(false == flag)
 		{ throw(std::runtime_error("Failed to initialize the scl spatial object"));  }
 
-		std::cout<<"\n\n***** Testing CRBA, ABA and RNEA for random inputs... *****";
-		for(int i=0; i<2; ++i)
+		std::cout<<"\n\n***** Testing CRBA, ABA and NER for random inputs... *****";
+		for(int i=0; i<10; ++i)
 		{
 		  rds.gravity_<<0,0,0.0;
 		  value = Eigen::VectorXd::Random(4);
@@ -137,39 +137,39 @@ void test_dynamics_sclspatial(int id)
 		  //Test 1
 		  Eigen::VectorXd ret_ddq;
 		  if (false == test.forwardDynamicsCRBA(&io_data, &model , ret_ddq))
-		  { throw(std::runtime_error("Failed to calculate Joint Acceleration using Composite Rigid Body Algorithm "));  }
-		  std::cout<<"\n\tSub-Test ("<<i<<") Calculated Joint Acceleration using Composite Rigid Body Algorithm...";
-		  std::cout<<"\n ddq :\n"<<ret_ddq.transpose()<<"\n";
+		  { throw(std::runtime_error("Failed to calculate ddq using CRBA "));  }
+		  std::cout<<"\n Rnd-Test ("<<i<<") Calculated ddq using CRBA: ";
+		  std::cout<<"ddq : "<<ret_ddq.transpose();
 
 		  //Test 2
 		  if (false == test.forwardDynamicsABA(&io_data, &model , ret_ddq))
-		  { throw(std::runtime_error("Failed to calculate Joint Acceleration using Articulated Body Algorithm "));  }
-		  std::cout<<"\n\tSub-Test ("<<i<<") Calculated Joint Acceleration using Articulated Rigid Body Algorithm...";
-		  std::cout<<"\n ddq :\n"<<ret_ddq.transpose()<<"\n";
+		  { throw(std::runtime_error("Failed to calculate ddq using Articulated Body Algorithm "));  }
+		  std::cout<<"\n Rnd-Test ("<<i<<") Calculated ddq using ABA: ";
+		  std::cout<<"ddq : "<<ret_ddq.transpose();
 
 		  io_data.sensors_.ddq_ = ret_ddq;
 
 		  //Test 3 (without grav)
 		  if (false == test.inverseDynamicsNER(&io_data, &model , ret_fgc))
-		  { throw(std::runtime_error("Failed to calculate joint Torque using Newton Euler Recursive Algorithm "));  }
-		  std::cout<<"\n\tSub-Test ("<<i<<") Calculated Joint Torque using Newton Euler Recursive Algorithm...";
-		  std::cout<<"\n Fgc commanded (using ABA to get ddq):\n"<<io_data.actuators_.force_gc_commanded_.transpose()<<"\n";
-		  std::cout<<"\n Fgc estimated (using NER(ddq) to get Fgc):\n"<<ret_fgc.transpose()<<"\n";
+		  { throw(std::runtime_error("Failed to calculate joint Torque using NER "));  }
+		  std::cout<<"\n Rnd-Test ("<<i<<") Calculated Fgc using NER ";
+		  std::cout<<"\n \tFgc commanded (using ABA to get ddq): "<<io_data.actuators_.force_gc_commanded_.transpose();
+		  std::cout<<"\n \tFgc estimated (using NER(ddq) to get Fgc)"<<ret_fgc.transpose();
 
 		  //Test 3 (with grav)
 		  rds.gravity_<<0,0,9.81;
 		  if (false == test.inverseDynamicsNER(&io_data, &model , ret_fgc))
 		  { throw(std::runtime_error("Random crap error"));  }
-		  std::cout<<"\n Fgc estimated (with grav):\n"<<ret_fgc.transpose()<<"\n";
+		  std::cout<<"\n \tFgc estimated (with grav)"<<ret_fgc.transpose();
 
 		  //Test 3 (with grav)
 		  rds.gravity_<<10,10,9.81;
 		  if (false == test.inverseDynamicsNER(&io_data, &model , ret_fgc))
 		  { throw(std::runtime_error("Random crap error"));  }
-		  std::cout<<"\n Fgc estimated (with more grav):\n"<<ret_fgc.transpose()<<"\n";
+		  std::cout<<"\n \tFgc estimated (with more grav)"<<ret_fgc.transpose()<<"\n";
 		}
 
-		std::cout<<"\nTest Result ("<<test_id++<<") Tested CRBA, ABA and RNEA for random inputs...";
+		std::cout<<"\nTest Result ("<<test_id++<<") Tested CRBA, ABA and NER for random inputs...";
     std::cout<<"\nTest #"<<id<<" : Succeeded.";
 	}
 	catch (std::exception& ee)
