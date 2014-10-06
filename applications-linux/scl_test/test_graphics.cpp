@@ -76,6 +76,7 @@ namespace scl_test
       else
       { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized database"<<std::flush;  }
 
+      scl::CDatabase::getData()->dir_specs_ = "../../specs/";
       /******************************Parsing************************************/
 
       //1. Create robot from a file specification (And register it with the db)
