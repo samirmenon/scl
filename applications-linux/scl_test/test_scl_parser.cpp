@@ -80,7 +80,7 @@ void test_scl_parser(int id)
     { throw(std::runtime_error("Could not read robot names from the file"));  }
     else  { std::cout<<"\nTest Result ("<<r_id++<<") Read robot names from file"; }
 
-    flag = tmp_parser.readRobotFromFile(tmp_infile, robot_names[0],tmp_robot);
+    flag = tmp_parser.readRobotFromFile(tmp_infile, scl::CDatabase::getData()->dir_specs_, robot_names[0],tmp_robot);
     if(false==flag) {
       std::string err; err = "Read robot ("+robot_names[0]+") from file : Failed";
       throw(std::runtime_error(err.c_str()));  }

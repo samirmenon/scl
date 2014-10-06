@@ -29,28 +29,15 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Created on: Nov 22, 2010
  *      Author: Samir Menon (smenon@stanford.edu)
  */
-
-#include <sstream>
+//scl lib
+#include <scl/DataTypes.hpp>
+#include <scl/parser/sclparser/CParserScl.hpp>
+#include <scl/parser/osimparser/CParserOsim.hpp>
+#include <scl/parser/osimparser/CParserOsimForOldFiles.hpp>
 
 //Standard includes
 #include <iostream>
 #include <stdexcept>
-
-//Eigen 3rd party lib
-#include <Eigen/Dense>
-
-//scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/parser/saiparser/CParserSai.hpp>
-#include <scl/parser/osimparser/CParserOsim.hpp>
-#include <scl/parser/osimparser/CParserOsimForOldFiles.hpp>
-
-#include <scl/util/DatabaseUtils.hpp>
-
 
 /**
  * A sample application to convert supported files into a scl file format.
@@ -60,7 +47,7 @@ int main(int argc, char** argv)
   bool flag;
   if(argc != 3)
   {
-    std::cout<<"\nThis is a sample application to convert supported files (sai.xml, .osim) into a scl file format.";
+    std::cout<<"\nThis is a sample application to convert supported files (.osim) into a scl file format.";
     std::cout<<"\nThe command line input is: ./<executable> <input_file_name> <output_file_name>\n";
     std::cout<<"\nNOTE : \n1. Link names must be unique!\n2. Numbers in xml tags must be separated by spaces (not commas!)"
         <<"\n3. A zero rotation in quaternions is {0 0 0 1} NOT {0 0 0 0}"
@@ -91,16 +78,7 @@ int main(int argc, char** argv)
       scl::SActuatorSetMuscleParsed tmp_msys;
       tmp_msys.muscles_.clear();
 
-      if(ftype == ".xml") //SAI Xml format
-      {
-        std::cout<<"\nWARNING : SAI support is only for reading ONE robot per file. Will convert the first robot to scl xml.";
-        std::cout<<"\nWARNING : SAI support does NOT permit using commas in the xml (,). ONLY use spaces.";
-        std::cout<<"\nWARNING : SAI support REQUIRES unique link and joint names for all links.";
-        scl::CParserSai tmp_sai_parser;
-        flag = tmp_sai_parser.readRobotFromFile(tmp_infile, "I_Am_Superfluous", tmp_robot);
-        if(false == flag) { throw(std::runtime_error("Could not read SAI xml file."));  }
-      }
-      else if(ftype == ".osim")
+      if(ftype == ".osim")
       {
         std::cout<<"\nWARNING : OSIM support is only for reading ONE humanoid per file. Will convert the first humanoid model.";
         std::cout<<"\nWARNING : OSIM presently loads muscles and rigid bodies. It does not add inter-joint constraints.";
