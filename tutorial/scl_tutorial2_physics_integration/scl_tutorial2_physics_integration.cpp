@@ -72,7 +72,7 @@ int main(int argc, char** argv)
   scl::CParserScl p;         //This time, we'll parse the tree from a file...
 
   //We will reuse the xml spec file from the first tutorial
-  bool flag = p.readRobotFromFile("./RRRCfg.xml","rrrbot",rds);
+  bool flag = p.readRobotFromFile("./RRRCfg.xml","./","rrrbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_scl.init(rds);         //Set up dynamics object
   flag = flag && dyn_tao.init(rds);         //Set up integrator object

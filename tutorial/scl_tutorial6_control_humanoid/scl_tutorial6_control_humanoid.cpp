@@ -104,7 +104,7 @@ int main(int argc, char** argv)
   /******************************Load Robot Specification************************************/
   //We will use a slightly more complex xml spec than the first few tutorials
   const std::string fname("../../specs/Stanbot/StanbotCfg.xml");
-  bool flag = p.readRobotFromFile(fname,"Stanbot",rds);
+  bool flag = p.readRobotFromFile(fname,"../../specs/","Stanbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_tao.init(rds);         //Set up integrator object
   flag = flag && dyn_scl.init(rds);         //Set up kinematics and dynamics object

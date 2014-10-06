@@ -93,7 +93,7 @@ int main(int argc, char** argv)
 
   /******************************Load Robot Specification************************************/
   //We will use a slightly more complex xml spec than the first few tutorials
-  bool flag = p.readRobotFromFile("./R6Cfg.xml","r6bot",rds);
+  bool flag = p.readRobotFromFile("./R6Cfg.xml","./","r6bot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_tao.init(rds);         //Set up integrator object
   flag = flag && dyn_scl.init(rds);         //Set up kinematics and dynamics object
