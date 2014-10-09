@@ -26,8 +26,8 @@
 
     <graphics name="StanbotStdView">
         <camera>
-            <pos>3.0   0.0   -0.7</pos>
-            <lookat>0.0   0.0   -0.2</lookat>
+            <pos>2   0.0   0.3</pos>
+            <lookat>0.0   0.0   -0.3</lookat>
             <up>0   0   1</up>
             <clip>0 10</clip>
             <background>0 0 0</background>
@@ -40,7 +40,7 @@
             <pos>-2.0   0.0   0.0</pos>
             <lookat>0.0   0.0   0.0</lookat>
         </light>
-        <background_color>0.0 0.0 0.0</background_color>
+        <background_color>1.0 1.0 1.0</background_color>
     </graphics>
 
     <controller name="opc">
@@ -72,17 +72,6 @@
             <force_min>-1000</force_min>
         </task>
 
-       <!-- <task name="com">
-            <type>TaskComPos</type>
-            <priority>1</priority>
-            <task_dof>3</task_dof>
-            <kp>100</kp>
-            <kv>20</kv>
-            <ka>0</ka>
-            <force_max>10000</force_max>
-            <force_min>-10000</force_min>
-        </task> -->
-
         <task name="GcTask">
             <type>TaskGc</type>
             <priority>1</priority>
@@ -93,17 +82,5 @@
             <force_max>10000</force_max>
             <force_min>-10000</force_min>
         </task>
-
-        <!-- 0 task_dof means a gc task, ie full dofs 
-        <task name="NullSpaceDampingTask">
-            <type>TaskNullSpaceDamping</type>
-            <priority>2</priority>
-            <task_dof>0</task_dof> 
-            <kp>0</kp>
-            <kv>20</kv>
-            <ka>0</ka>
-            <force_max>10000</force_max>
-            <force_min>-10000</force_min>
-        </task>-->
     </controller>
 </scl>
