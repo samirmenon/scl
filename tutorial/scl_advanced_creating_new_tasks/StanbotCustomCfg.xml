@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "scl.dtd">
+
+<!-- Units are in Std International System -->
+<scl>
+    <robot name="Stanbot"> 
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <spec>Stanbot</spec>
+        <file>../../specs/Stanbot/Stanbot.xml</file>
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>-0.500   0.200   -0.50</position_in_parent> 
+            <orientation_in_parent>0.0 0.0 0.7071 0.7071</orientation_in_parent>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+        <flag_wireframe_on>false</flag_wireframe_on>
+        <option_axis_frame_size>0.0</option_axis_frame_size> <!-- All options are optional -->
+    </robot>
+
+    <graphics name="StanbotStdView">
+        <camera>
+            <pos>3.0   0.0   -0.7</pos>
+            <lookat>0.0   0.0   -0.2</lookat>
+            <up>0   0   1</up>
+            <clip>0 10</clip>
+            <background>0 0 0</background>
+        </camera>
+        <light>
+            <pos>2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.5</lookat>
+        </light>
+        <light>
+            <pos>-2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.0</lookat>
+        </light>
+        <background_color>0.0 0.0 0.0</background_color>
+    </graphics>
+
+    <controller name="opc">
+        <type>task</type>
+        <must_use_robot>Stanbot</must_use_robot>
+        <task name="hand">
+            <type>TaskOpPos</type>
+            <parent_link>right-hand</parent_link>
+            <pos_in_parent>0.01 0.01 0.01</pos_in_parent>
+            <priority>0</priority>
+            <task_dof>3</task_dof>
+            <kp>100</kp>
+            <kv>20</kv>
+            <ka>0</ka>
+            <force_max>1000</force_max>
+            <force_min>-1000</force_min>
+        </task>
+
+        <task name="hand2">
+            <type>TaskCustom</type>
+            <parent_link>left-hand</parent_link>
+            <pos_in_parent>0.01 0.01 0.01</pos_in_parent>
+            <priority>0</priority>
+            <task_dof>3</task_dof>
+            <kp>100</kp>
+            <kv>20</kv>
+            <ka>0</ka>
+            <force_max>1000</force_max>
+            <force_min>-1000</force_min>
+        </task>
+
+       <!-- <task name="com">
+            <type>TaskComPos</type>
+            <priority>1</priority>
+            <task_dof>3</task_dof>
+            <kp>100</kp>
+            <kv>20</kv>
+            <ka>0</ka>
+            <force_max>10000</force_max>
+            <force_min>-10000</force_min>
+        </task> -->
+
+        <task name="GcTask">
+            <type>TaskGc</type>
+            <priority>1</priority>
+            <task_dof>0</task_dof> 
+            <kp>100</kp>
+            <kv>20</kv>
+            <ka>0</ka>
+            <force_max>10000</force_max>
+            <force_min>-10000</force_min>
+        </task>
+
+        <!-- 0 task_dof means a gc task, ie full dofs 
+        <task name="NullSpaceDampingTask">
+            <type>TaskNullSpaceDamping</type>
+            <priority>2</priority>
+            <task_dof>0</task_dof> 
+            <kp>0</kp>
+            <kv>20</kv>
+            <ka>0</ka>
+            <force_max>10000</force_max>
+            <force_min>-10000</force_min>
+        </task>-->
+    </controller>
+</scl>
