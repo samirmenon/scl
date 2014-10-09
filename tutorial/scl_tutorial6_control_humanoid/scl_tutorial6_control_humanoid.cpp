@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
  */
-/* \file scl_tutorial6_point_contact.cpp
+/* \file scl_tutorial6_control_humanoid.cpp
  *
  *  Created on: Aug 11, 2014
  *
@@ -184,6 +184,19 @@ int main(int argc, char** argv)
 
         // Integrate the dynamics
         dyn_tao.integrate(rio,dt); iter++;
+
+        /** Slow down sim to real time */
+        sutil::CSystemClock::tick(dt);
+        double tcurr = sutil::CSystemClock::getSysTime();
+        double tdiff = sutil::CSystemClock::getSimTime() - tcurr;
+        timespec ts = {0, 0};
+        if(tdiff > 0)
+        {
+          ts.tv_sec = static_cast<int>(tdiff);
+          tdiff -= static_cast<int>(tdiff);
+          ts.tv_nsec = tdiff*1e9;
+          nanosleep(&ts,NULL);
+        }
       }
       //Then terminate
       scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running = false;
