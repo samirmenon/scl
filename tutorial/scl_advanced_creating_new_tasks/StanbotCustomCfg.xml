@@ -26,8 +26,8 @@
 
     <graphics name="StanbotStdView">
         <camera>
-            <pos>2   0.0   0.3</pos>
-            <lookat>0.0   0.0   -0.3</lookat>
+            <pos>2   0.25   0.3</pos>
+            <lookat>0.0   0.25   -0.3</lookat>
             <up>0   0   1</up>
             <clip>0 10</clip>
             <background>0 0 0</background>
