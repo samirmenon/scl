@@ -19,7 +19,8 @@
 		<joint_type>rz</joint_type> <!-- The type of joint. (p)rismatic/(r)evolute + x/y/z (axis) -->
 		<joint_limits>-3.141590 3.141590</joint_limits> <!-- Minimum and maximum joint coordinate values -->
 		<force_gc_limits>-97.6 97.6</force_gc_limits>
-		<force_gc_stiction>-6.3 6.3</force_gc_stiction>
+		<stiction_force_gc>-6.3 6.3</stiction_force_gc>
+		<stiction_velocity_limits>-0.01 0.01</stiction_velocity_limits>
 		<default_joint_position>0.000000</default_joint_position> <!-- Initial configuration -->
 		<graphics> <!-- Can contain more than one obj file -->
    		<!-- obj file format is best. 3ds is possible -->  
@@ -45,7 +46,8 @@
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
 		<force_gc_limits>-186.4 186.4</force_gc_limits>
-		<force_gc_stiction>-5.5 5.5</force_gc_stiction>
+		<stiction_force_gc>-5.5 5.5</stiction_force_gc>
+		<stiction_velocity_limits>-0.01 0.01</stiction_velocity_limits>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
@@ -69,7 +71,8 @@
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
 		<force_gc_limits>-89.4 89.4</force_gc_limits>
-		<force_gc_stiction>-2.6 2.6</force_gc_stiction>
+		<stiction_force_gc>-2.6 2.6</stiction_force_gc>
+		<stiction_velocity_limits>-0.01 0.01</stiction_velocity_limits>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
@@ -93,7 +96,8 @@
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
 		<force_gc_limits>-24.2 24.2</force_gc_limits>
-		<force_gc_stiction>-1.3 1.3</force_gc_stiction>
+		<stiction_force_gc>-1.3 1.3</stiction_force_gc>
+		<stiction_velocity_limits>-0.01 0.01</stiction_velocity_limits>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
@@ -117,7 +121,8 @@
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
 		<force_gc_limits>-20.1 20.1</force_gc_limits>
-		<force_gc_stiction>-1.0 1.0</force_gc_stiction>
+		<stiction_force_gc>-1.0 1.0</stiction_force_gc>
+		<stiction_velocity_limits>-0.01 0.01</stiction_velocity_limits>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
@@ -141,7 +146,8 @@
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
 		<force_gc_limits>-21.3 21.3</force_gc_limits>
-		<force_gc_stiction>-1.2 1.2</force_gc_stiction>
+		<stiction_force_gc>-1.2 1.2</stiction_force_gc>
+		<stiction_velocity_limits>-0.01 0.01</stiction_velocity_limits>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
