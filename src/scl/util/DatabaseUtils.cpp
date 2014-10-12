@@ -77,7 +77,10 @@ namespace scl_util
   }
 
   /** Checks whether dynamic type information is available. If so, it parses
-   * tasks into the control data structure */
+   * tasks into the control data structure
+   *
+   * NOTE : This would have been part of the core data structure except for the
+   * need for dynamic typing, which is useful for parsing user specified tasks. */
   int initMultiTaskCtrlDsFromParsedTasks(
       const std::vector<scl::STaskBase*> &arg_taskvec,
       const std::vector<scl::SNonControlTaskBase*> &arg_taskvec_nc,

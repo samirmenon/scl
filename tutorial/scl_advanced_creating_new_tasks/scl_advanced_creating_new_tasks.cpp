@@ -84,7 +84,7 @@ int main(int argc, char** argv)
   scl::CControllerMultiTask rctr;    //A multi-task controller
   std::vector<scl::STaskBase*> rtasks;              //A set of executable tasks
   std::vector<scl::SNonControlTaskBase*> rtasks_nc; //A set of non-control tasks
-  std::string must_use_robot;  //Used later for file error checks.
+  std::vector<scl::sString2> ctrl_params;        //Used to parse extra xml tags
   scl::STaskOpPos* rtask_hand; //Will need to set hand desired positions etc.
 
   sutil::CSystemClock::start(); //Start the clock
@@ -116,8 +116,7 @@ int main(int argc, char** argv)
 
   /******************************Set up Controller Specification************************************/
   // Read xml file info into task specifications.
-  flag = p.readTaskControllerFromFile(fname,"opc",must_use_robot,rtasks,rtasks_nc);
-  if(must_use_robot != "Stanbot") {flag = false;} //Error check for file consistency
+  flag = p.readTaskControllerFromFile(fname,"opc",rtasks,rtasks_nc,ctrl_params);
   flag = flag && rctr_ds.init("opc",&rds,&rio,&rgcm); //Set up the control data structure..
   // Tasks are initialized after find their type with dynamic typing.
   flag = flag && scl_registry::registerNativeDynamicTypes();

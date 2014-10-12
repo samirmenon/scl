@@ -86,12 +86,17 @@ public:
 
   virtual bool readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
-      std::string &ret_must_use_robot,
       /** Returns a vector of tasks that this task controller can execute.
        * Typically, the task controller will execute all of them simultaneously
        * with a priority order.*/
       std::vector<scl::STaskBase*> &ret_taskvec,
-      std::vector<scl::SNonControlTaskBase*> &ret_task_non_ctrl_vec);
+      /** Any non-control tasks (like cleaning up state, sync with a remote server
+       * etc.) */
+      std::vector<scl::SNonControlTaskBase*> &ret_task_non_ctrl_vec,
+      /** This is provided to allow the parser to read in unsupported
+       * tags, which may be optionally parsed later by applications.
+       * Format : <tag>, <data-string> */
+      std::vector<scl::sString2> ret_nonstd_params);
 
 private:
   /** Reads a robot specification from a file */

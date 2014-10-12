@@ -69,6 +69,11 @@ namespace scl
      * Tasks can be accessed either by name (map access) or pointer (iterator_) */
     sutil::CMappedList<std::string, SNonControlTaskBase*> tasks_non_ctrl_;
 
+    /** The servo to model update rate.
+     * NOTE : This is a recommended value since the servo rate and model rate are decided
+     * by the application that calls the controller */
+    sUInt servo_to_model_rate_;
+
     /** Inherited stuff:
     std::string robot_name_;
     const SRobotParsed* robot_;
@@ -88,7 +93,11 @@ namespace scl
     virtual sBool init(const std::string & arg_ctrl_name,
         const SRobotParsed* arg_robot_ds,
         SRobotIO* arg_io_data,
-        SGcModel* arg_gc_model=S_NULL);
+        SGcModel* arg_gc_model=S_NULL,
+        const std::string &arg_must_use_robot="",
+        /** The ratio of (recommended) servo updates to model updates */
+        const sUInt arg_servo_to_model_rate=1
+        );
   };
 }
 

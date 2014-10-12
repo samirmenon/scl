@@ -66,7 +66,9 @@
     <controller name="opc">
         <type>task</type>
         <must_use_robot>PumaBot</must_use_robot>
-
+        <!-- How often to recompute the model wrt. servo ticks. Default = 1 -->
+        <option_servo_to_model_rate>5</option_servo_to_model_rate>
+        
         <task name="hand">
             <type>TaskOpPos</type>
             <parent_link>end-effector</parent_link>

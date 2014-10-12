@@ -1844,9 +1844,9 @@ bool CParserScl::readGcControllerFromFile(const std::string &arg_file,
 
 bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
       const std::string &arg_ctrl_name,
-      std::string &ret_must_use_robot,
       std::vector<scl::STaskBase*> &ret_taskvec,
-      std::vector<scl::SNonControlTaskBase*> &ret_task_non_ctrl_vec)
+      std::vector<scl::SNonControlTaskBase*> &ret_task_non_ctrl_vec,
+      std::vector<scl::sString2> ret_nonstd_params)
 {
   bool flag;
   try
@@ -1878,8 +1878,12 @@ bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
       if(name!=arg_ctrl_name)
       { continue; }
 
+      // The flag is set to true at the end of the loop. So this should not repeat.
       if(true == flag)
-      { throw(std::runtime_error("Already parsed a controller with this name. Two controllers can't have the same name.")); }
+      {
+        throw(std::runtime_error( std::string("Already parsed a controller called (")
+          +name + std::string(". Two controllers can't have the same name.") ));
+      }
 
       TiXmlHandle _cr_handle(tiElem_tctrl_ctrl); //Back to handles
 
@@ -1893,14 +1897,45 @@ bool CParserScl::readTaskControllerFromFile(const std::string &arg_file,
       else
       { throw(std::runtime_error("No controller type."));  }
 
-      cr_data = _cr_handle.FirstChildElement("must_use_robot").Element();
-      if ( cr_data )
+      /** *************************************************************************
+       *  PARSE ALL THE NON STANDARD CONTROLLER OPTIONS
+       *
+       *  These are not contained in the STaskBase data structure. Each controller
+       *  should know what to do with them (in its init function).
+       *  ************************************************************************* */
+
+      //Each controller has some non-standard arguments Save these into the vector of strings and then
+      //insert them into the passed task's vector at the end of the for loop
+      cr_data = _cr_handle.FirstChildElement().ToElement();
+
+      //Iterating with TiXmlElement is faster than TiXmlHandle (But handles are "pointer safe" so we
+      //use them anyway. Thank you TiXml..)
+      for(; cr_data; cr_data=cr_data->NextSiblingElement() )
       {
-        std::string type(cr_data->FirstChild()->Value());
-        ret_must_use_robot = type;
+        //Ignore the standard options.
+        if(strcmp(cr_data->Value(),"type")==0 ||
+            strcmp(cr_data->Value(),"task")==0 ||
+            strcmp(cr_data->Value(),"task_non_ctrl")==0 )
+        { continue; }
+
+        scl::sString2 nonstd_param;//The name of the param and its value
+
+        if(S_NULL == cr_data->FirstChild())
+        { throw(std::runtime_error(std::string(cr_data->Value()) +
+            std::string(" -- A non-standard controller parameter's value is not specified."))); }
+
+        nonstd_param.data_[0] = cr_data->Value();
+        nonstd_param.data_[1] = cr_data->FirstChild()->Value();
+
+#ifdef DEBUG
+        std::cout<<"\nCParserScl::readTaskControllerFromFile() : Read a non standard param: "
+            <<nonstd_param.data_[0]<<" "<<nonstd_param.data_[1];
+#endif
+
+        //Store the nonstandard param
+        ret_nonstd_params.push_back(nonstd_param);
       }
-      else
-      { ret_must_use_robot=""; }
+
 
       /** ***********************************************
        *    PARSE ALL THE CONTROL TASKS HERE

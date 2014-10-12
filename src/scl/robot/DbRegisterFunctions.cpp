@@ -417,13 +417,10 @@ namespace scl_registry
       //********************************************************
       //Read in the generic controller information from the file
       //********************************************************
-      std::string must_use_robot, use_dynamics;
+      std::vector<scl::sString2> ctrl_nonstd_params;
       flag = arg_parser->readTaskControllerFromFile(arg_file,arg_ctrl_name,
-          must_use_robot,taskvec, taskvec_non_ctrl);
+          taskvec, taskvec_non_ctrl, ctrl_nonstd_params);
       if(false == flag) { throw (std::runtime_error("Could not read the controller."));  }
-
-      if(arg_robot_name != must_use_robot)
-      { throw (std::runtime_error(std::string("Invalid robot specified. Controller must use: ")+must_use_robot)); }
 
       //Create the controller
       ret_ctrl = new scl::SControllerMultiTask();
@@ -436,7 +433,8 @@ namespace scl_registry
       if(false == flag)
       { throw (std::runtime_error("Could not initialize the controller's data structure."));  }
 
-      unsigned int tasks_parsed = scl_util::initMultiTaskCtrlDsFromParsedTasks(taskvec, taskvec_non_ctrl,*ret_ctrl);
+      unsigned int tasks_parsed = scl_util::initMultiTaskCtrlDsFromParsedTasks(
+          taskvec, taskvec_non_ctrl,*ret_ctrl);
 
       if(0==tasks_parsed)
       {  throw(std::runtime_error("Found no control tasks in a task controller."));  }

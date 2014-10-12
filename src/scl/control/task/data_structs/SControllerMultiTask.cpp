@@ -43,7 +43,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-  SControllerMultiTask::SControllerMultiTask() : SControllerBase()
+  SControllerMultiTask::SControllerMultiTask() : SControllerBase(),
+      servo_to_model_rate_(1)
   {
     type_ = "SControllerMultiTask";
   }
@@ -55,20 +56,32 @@ namespace scl
   sBool SControllerMultiTask::init(const std::string & arg_ctrl_name,
       const SRobotParsed* arg_robot_ds,
       SRobotIO* arg_io_data,
-      SGcModel* arg_gc_model)
+      SGcModel* arg_gc_model,
+      const std::string &arg_must_use_robot,
+      const sUInt arg_servo_to_model_rate)
   {
     bool flag;
     try
     {
+      if(arg_must_use_robot!="")
+        if(arg_robot_ds->name_ != arg_must_use_robot)
+        {
+          throw (std::runtime_error(std::string("Must use robot: ") + arg_must_use_robot +
+            std::string(". Passed robot ds for: ") + arg_robot_ds->name_));
+        }
+
       flag = SControllerBase::init(arg_ctrl_name,arg_robot_ds,arg_io_data,arg_gc_model);
       if(false == flag)
-      {throw (std::runtime_error("Couldn't initialize the task controller"));}
+      {throw (std::runtime_error("Couldn't initialize the controller base data structure"));}
 
       flag = servo_.init(arg_robot_ds, & tasks_);
       if(false == flag)
       {throw (std::runtime_error("Couldn't initialize the servo"));}
 
+      servo_to_model_rate_ = arg_servo_to_model_rate;
+
       tasks_.clear();
+      tasks_non_ctrl_.clear();
 
       has_been_init_ = true;
     }
