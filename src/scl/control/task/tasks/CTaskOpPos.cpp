@@ -196,6 +196,11 @@ bool CTaskOpPos::computeServo(const SRobotSensors* arg_sensors)
     data_->ddx_ = data_->ka_.array() * (data_->ddx_goal_ - data_->ddx_).array();
     data_->ddx_ += tmp2 + tmp1;
 
+    // NOTE : We apply the force limits in "task space". This is the whole point of
+    // using operational space control. Since the control point is effectively a unit
+    // inertia object floating in space, it is very easy to specify force limits. Moreover,
+    // one can usually specify isotropic limits instead of hand-tuning different limits
+    // for different directions.
     data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
     data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
