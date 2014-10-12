@@ -76,6 +76,53 @@ namespace scl_util
     { std::cout<<"\nLEAF NODE."<<std::flush; }
   }
 
+  /** In addition to the default initMultiTaskCtrlDsFromParsedTasks(), this function
+   * also parses some extra options if they exist.
+   *
+   * It also helps split the code for the task parsing from the param parsing (potentially
+   * easier to read for some).
+   *
+   * Sometimes parameters may be provided as strings and might require dynamic type
+   * resolution. As such, we will parse them here... */
+  int initMultiTaskCtrlDsFromParsedTasks(
+        const std::vector<scl::STaskBase*> &arg_taskvec,
+        const std::vector<scl::SNonControlTaskBase*> &arg_taskvec_nc,
+        const std::vector<scl::sString2> &arg_ctrl_params,
+        scl::SControllerMultiTask& ret_ctrl)
+  {
+    bool flag;
+
+    // First parse the tasks..
+    // We don't throw here because the overloaded function has the same name and
+    // it already prints the associated error..
+    flag = initMultiTaskCtrlDsFromParsedTasks(arg_taskvec,arg_taskvec_nc,ret_ctrl);
+    if(false == flag){ return false;  }
+
+    // Now parse the text options
+    try{
+      std::vector<scl::sString2>::const_iterator it,ite;
+      for(it = arg_ctrl_params.begin(), ite = arg_ctrl_params.end(); it!=ite; ++it)
+      {
+        if(it->data_[0] == "must_use_robot")
+          if(it->data_[1] != ret_ctrl.robot_->name_)
+          {
+            throw(std::runtime_error(std::string("Params require robot: ")+it->data_[1]+
+              std::string(". Controller init used: ") + ret_ctrl.robot_->name_));
+          }
+        if(it->data_[0] == "option_servo_to_model_rate")
+        {
+          std::stringstream ss;
+          ss<<it->data_[1];
+          ss>>ret_ctrl.servo_to_model_rate_;
+        }
+      }
+      return true;
+    }
+    catch (std::exception & e)
+    { std::cout<<"\ninitMultiTaskCtrlDsFromParsedTasks() : Failed "<<e.what(); }
+    return false;
+  }
+
   /** Checks whether dynamic type information is available. If so, it parses
    * tasks into the control data structure
    *
