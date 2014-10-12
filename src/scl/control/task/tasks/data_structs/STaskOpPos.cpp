@@ -45,7 +45,10 @@ namespace scl
       link_name_(""),
       link_ds_(S_NULL),
       spatial_resolution_(SCL_COPPTTASK_SPATIAL_RESOLUTION),
-      rbd_(S_NULL)
+      rbd_(S_NULL),
+      flag_compute_op_gravity_(true),
+      flag_compute_op_cc_forces_(false),
+      flag_compute_op_inertia_(true)
   { }
 
   STaskOpPos::~STaskOpPos()
@@ -58,6 +61,11 @@ namespace scl
     {
       if(3!=dof_task_)//This is a position based op point task
       { throw(std::runtime_error("Operational point tasks MUST have 3 dofs (xyz translation at a point)."));  }
+
+      // Set defaults
+      flag_compute_op_gravity_ = true;
+      flag_compute_op_cc_forces_ = false;
+      flag_compute_op_inertia_ = true;
 
       /** Extract the extra params */
       std::string parent_link_name;
@@ -83,6 +91,30 @@ namespace scl
           ss>> pos_in_parent[2];
 
           contains_posinp = true;
+        }
+        else if(param.data_[0] == std::string("flag_compute_op_gravity"))
+        {//Flags are optional, so we don't need to check them with contains_
+          std::stringstream ss(param.data_[1]);
+          int tmp;
+          ss>>tmp;
+          if(tmp == 0)  { flag_compute_op_gravity_ = false; }
+          else  { flag_compute_op_gravity_ = true; }
+        }
+        else if(param.data_[0] == std::string("flag_compute_op_cc_forces"))
+        {//Flags are optional, so we don't need to check them with contains_
+          std::stringstream ss(param.data_[1]);
+          int tmp;
+          ss>>tmp;
+          if(tmp == 0)  { flag_compute_op_cc_forces_ = false; }
+          else  { flag_compute_op_cc_forces_ = true; }
+        }
+        else if(param.data_[0] == std::string("flag_compute_op_inertia"))
+        {//Flags are optional, so we don't need to check them with contains_
+          std::stringstream ss(param.data_[1]);
+          int tmp;
+          ss>>tmp;
+          if(tmp == 0)  { flag_compute_op_inertia_ = false; }
+          else  { flag_compute_op_inertia_ = true; }
         }
       }
 

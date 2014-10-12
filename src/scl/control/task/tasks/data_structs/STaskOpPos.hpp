@@ -60,6 +60,10 @@ namespace scl
 
     const SRigidBodyDyn *rbd_;   //For quickly obtaining a task Jacobian
 
+    sBool flag_compute_op_gravity_;  ///< Use operational point gravity? Default = true
+    sBool flag_compute_op_cc_forces_;///< Use operational centrifugal/coriolis forces? Default = false
+    sBool flag_compute_op_inertia_;  ///< Use operational inertia? If true, set to identity. Default = true
+
     /** Default constructor sets stuff to S_NULL */
     STaskOpPos();
 
