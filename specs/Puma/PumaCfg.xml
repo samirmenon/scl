@@ -80,6 +80,9 @@
             <ka>0</ka>
             <force_max>100</force_max>
             <force_min>-100</force_min>
+            <flag_compute_op_gravity>1</flag_compute_op_gravity>
+            <flag_compute_op_cc_forces>0</flag_compute_op_cc_forces>
+            <flag_compute_op_inertia>1</flag_compute_op_inertia>
         </task>
 
         <!-- This task removes some range space
