@@ -102,6 +102,9 @@ namespace scl_app
       robot_.setGeneralizedCoordinatesToZero();
       robot_.setGeneralizedVelocitiesToZero();
       robot_.setGeneralizedAccelerationsToZero();
+      robot_.computeDynamics();
+      robot_.computeNonControlOperations();
+      robot_.computeServo();
 
       //Update the operational point tasks (if any)
       std::vector<SUiCtrlPointData>::iterator it,ite;
@@ -169,6 +172,19 @@ namespace scl_app
     }
     robot_.computeServo();           //Run the servo loop
     robot_.integrateDynamics();      //Integrate system
+
+    /** Slow down sim to real time */
+    sutil::CSystemClock::tick(scl::CDatabase::getData()->sim_dt_);
+    double tcurr = sutil::CSystemClock::getSysTime();
+    double tdiff = sutil::CSystemClock::getSimTime() - tcurr;
+    timespec ts = {0, 0};
+    if(tdiff > 0)
+    {
+      ts.tv_sec = static_cast<int>(tdiff);
+      tdiff -= static_cast<int>(tdiff);
+      ts.tv_nsec = tdiff*1e9;
+      nanosleep(&ts,NULL);
+    }
 
     ctrl_ctr_++;//Increment the counter for dynamics computed.
   }
