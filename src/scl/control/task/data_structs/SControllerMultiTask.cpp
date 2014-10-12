@@ -87,7 +87,7 @@ namespace scl
     }
     catch (std::exception & e)
     {
-      std::cout<<"\nparseGraphics() : Failed "<<e.what();
+      std::cout<<"\nSControllerMultiTask::init() : Failed "<<e.what();
       has_been_init_ = false;
     }
 

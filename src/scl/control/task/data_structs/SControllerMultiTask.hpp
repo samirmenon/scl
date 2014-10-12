@@ -89,7 +89,8 @@ namespace scl
      * NOTE : Someone else should delete the tasks. */
     virtual ~SControllerMultiTask();
 
-    /** Initializes the data structure */
+    /** Initializes the data structure. Note that this functions specifies default
+     * values for all the options. */
     virtual sBool init(const std::string & arg_ctrl_name,
         const SRobotParsed* arg_robot_ds,
         SRobotIO* arg_io_data,
