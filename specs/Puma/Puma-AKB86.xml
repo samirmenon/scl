@@ -11,7 +11,7 @@
 		<orientation_in_parent>0 0 0 1</orientation_in_parent> <!-- xyz w quaternion in parent frame -->
 		<mass>34.400000</mass> <!-- Of the link, in kgs. -->
 		<inertia>0.180000 0.180000 0.350000</inertia> <!-- Ixx Iyy Izz at the center of mass -->
-		<joint_inertia>1.14</joint_inertia> <!-- +-.27 E.g., Motor/actuator inertia at the joint -->
+		<inertia_gc>1.14</inertia_gc> <!-- +-.27 E.g., Motor/actuator inertia at the joint -->
 		<!-- NOTE : COM doesn't matter for this link (rot only) and wasn't estimated in the paper-->
 		<center_of_mass>0.000000 0.000000 0.000000</center_of_mass> <!-- xyz -->
 		<joint_name>shoulder-yaw</joint_name> <!-- unique joint name. -->
@@ -38,7 +38,7 @@
 		<orientation_in_parent>-0.7071 -0 -0 0.7071</orientation_in_parent>
 		<mass>17.400000</mass>
 		<inertia>0.130000 0.524000 0.539000</inertia>
-		<joint_inertia>4.71</joint_inertia> <!-- +-.54 -->
+		<inertia_gc>4.71</inertia_gc> <!-- +-.54 -->
 		<center_of_mass>0.068000 0.006000 -0.016000</center_of_mass>
 		<joint_name>shoulder-pitch</joint_name>
 		<parent_link_name>base</parent_link_name>
@@ -62,7 +62,7 @@
 		<orientation_in_parent>0 0 0 1</orientation_in_parent>
 		<mass>6.040000</mass> <!-- Link 3 with complete wrist (from the paper; wrist=2.24kg) -->
 		<inertia>0.066 0.0125 0.086</inertia>
-		<joint_inertia>0.83</joint_inertia> <!-- +-.09 -->
+		<inertia_gc>0.83</inertia_gc> <!-- +-.09 -->
 		<center_of_mass>0.000000 -0.143000 0.014000</center_of_mass> <!-- with wrist -->
 		<joint_name>elbow</joint_name>
 		<parent_link_name>upper_arm</parent_link_name>
@@ -86,7 +86,7 @@
 		<orientation_in_parent>0.7071 0 0 0.7071</orientation_in_parent>
 		<mass>0.820000</mass>
 		<inertia>0.001800 0.001800 0.001300</inertia>
-		<joint_inertia>0.2</joint_inertia> <!-- +-.016 -->
+		<inertia_gc>0.2</inertia_gc> <!-- +-.016 -->
 		<center_of_mass>0.000000 0.000000 -0.019000</center_of_mass>
 		<joint_name>wrist-roll1</joint_name>
 		<parent_link_name>lower_arm</parent_link_name>
@@ -110,7 +110,7 @@
 		<orientation_in_parent>0.7071 0 -0.7071 0</orientation_in_parent>
 		<mass>0.340000</mass>
 		<inertia>0.0003 0.0003 0.0004</inertia>
-		<joint_inertia>0.179</joint_inertia> <!-- +-.014 -->
+		<inertia_gc>0.179</inertia_gc> <!-- +-.014 -->
 		<center_of_mass>0.000000 0.000000 0.000000</center_of_mass>
 		<joint_name>wrist-pitch</joint_name>
 		<parent_link_name>wrist-hand</parent_link_name>
@@ -134,7 +134,7 @@
 		<orientation_in_parent>0.7071 0 0 0.7071</orientation_in_parent>
 		<mass>0.090000</mass>
 		<inertia>0.000150 0.000150 0.000040</inertia>
-		<joint_inertia>0.193</joint_inertia> <!-- +-.015 -->
+		<inertia_gc>0.193</inertia_gc> <!-- +-.015 -->
 		<center_of_mass>0.000000 0.000000 0.032000</center_of_mass>
 		<joint_name>wrist-roll2</joint_name>
 		<parent_link_name>wrist-finger</parent_link_name>
