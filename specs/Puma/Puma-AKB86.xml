@@ -18,8 +18,8 @@
 		<parent_link_name>ground</parent_link_name> <!-- The parent link. Ground is fixed. -->
 		<joint_type>rz</joint_type> <!-- The type of joint. (p)rismatic/(r)evolute + x/y/z (axis) -->
 		<joint_limits>-3.141590 3.141590</joint_limits> <!-- Minimum and maximum joint coordinate values -->
-		<joint_force_limits>-97.6 97.6</joint_force_limits>
-		<joint_stiction_force>-6.3 6.3</joint_stiction_force>
+		<force_gc_limits>-97.6 97.6</force_gc_limits>
+		<force_gc_stiction>-6.3 6.3</force_gc_stiction>
 		<default_joint_position>0.000000</default_joint_position> <!-- Initial configuration -->
 		<graphics> <!-- Can contain more than one obj file -->
    		<!-- obj file format is best. 3ds is possible -->  
@@ -44,8 +44,8 @@
 		<parent_link_name>base</parent_link_name>
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
-		<joint_force_limits>-186.4 186.4</joint_force_limits>
-		<joint_stiction_force>-5.5 5.5</joint_stiction_force>
+		<force_gc_limits>-186.4 186.4</force_gc_limits>
+		<force_gc_stiction>-5.5 5.5</force_gc_stiction>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
@@ -68,8 +68,8 @@
 		<parent_link_name>upper_arm</parent_link_name>
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
-		<joint_force_limits>-89.4 89.4</joint_force_limits>
-		<joint_stiction_force>-2.6 2.6</joint_stiction_force>
+		<force_gc_limits>-89.4 89.4</force_gc_limits>
+		<force_gc_stiction>-2.6 2.6</force_gc_stiction>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
@@ -92,8 +92,8 @@
 		<parent_link_name>lower_arm</parent_link_name>
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
-		<joint_force_limits>-24.2 24.2</joint_force_limits>
-		<joint_stiction_force>-1.3 1.3</joint_stiction_force>
+		<force_gc_limits>-24.2 24.2</force_gc_limits>
+		<force_gc_stiction>-1.3 1.3</force_gc_stiction>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
@@ -116,8 +116,8 @@
 		<parent_link_name>wrist-hand</parent_link_name>
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
-		<joint_force_limits>-20.1 20.1</joint_force_limits>
-		<joint_stiction_force>-1.0 1.0</joint_stiction_force>
+		<force_gc_limits>-20.1 20.1</force_gc_limits>
+		<force_gc_stiction>-1.0 1.0</force_gc_stiction>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
@@ -140,8 +140,8 @@
 		<parent_link_name>wrist-finger</parent_link_name>
 		<joint_type>rz</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
-		<joint_force_limits>-21.3 21.3</joint_force_limits>
-		<joint_stiction_force>-1.2 1.2</joint_stiction_force>
+		<force_gc_limits>-21.3 21.3</force_gc_limits>
+		<force_gc_stiction>-1.2 1.2</force_gc_stiction>
 		<default_joint_position>0.000000</default_joint_position>
 		<graphics>
 			<obj_file>
