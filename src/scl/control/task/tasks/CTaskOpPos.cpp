@@ -53,8 +53,7 @@ namespace scl
   CTaskOpPos::CTaskOpPos() :
       CTaskBase(),
       data_(S_NULL),
-      use_svd_for_lambda_inv_(false),
-      flag_compute_gravity_(true)
+      use_svd_for_lambda_inv_(false)
   { }
 
   //************************
@@ -200,11 +199,18 @@ bool CTaskOpPos::computeServo(const SRobotSensors* arg_sensors)
     data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
     data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
-    // NOTE : We subtract gravity (since we want to apply an equal and opposite force
-    if(flag_compute_gravity_)
-    { data_->force_task_ = data_->M_task_ * data_->ddx_ - data_->force_task_grav_;  }
-    else
+    if(data_->flag_compute_op_inertia_)
     { data_->force_task_ = data_->M_task_ * data_->ddx_;  }
+    else
+    { data_->force_task_ = data_->ddx_;  }
+
+    if(data_->flag_compute_op_cc_forces_)
+    { data_->force_task_ += data_->force_task_cc_;  }
+
+    // NOTE : We subtract gravity (since we want to apply an equal and opposite force
+    if(data_->flag_compute_op_gravity_)
+    { data_->force_task_ -= data_->force_task_grav_;  }
+
 
     // T = J' ( M x F* + p)
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
@@ -238,6 +244,12 @@ bool CTaskOpPos::computeModel(const SRobotSensors* arg_sensors)
     data_->J_ = data_->J_6_.block(0,0,3,data_->robot_->dof_);
 
     //Operational space mass/KE matrix:
+//    // NOTE TODO : Decide a good scheme for disabling operational space inertia
+//    if(data_->flag_compute_op_inertia_)
+//    {   }
+//    else
+//    { data_->M_task_inv_ = Eigen::Matrix3d::Identity();  }
+
     //Lambda = (J * Ainv * J')^-1
     data_->M_task_inv_ = data_->J_ * gcm->M_gc_inv_ * data_->J_.transpose();
 
@@ -326,10 +338,15 @@ bool CTaskOpPos::computeModel(const SRobotSensors* arg_sensors)
         data_->J_.transpose() * data_->J_dyn_inv_.transpose();
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
+    // NOTE TODO : Fix this...
+//    if(data_->flag_compute_op_gravity_)
+//    { /** I need some code */ }
+//    else
+//    { data_->force_task_cc_.setZero(data_->dof_task_,1);  }
     data_->force_task_cc_.setZero(data_->dof_task_,1);
 
     // J' * J_dyn_inv' * g(q)
-    if(flag_compute_gravity_)
+    if(data_->flag_compute_op_gravity_)
     { data_->force_task_grav_ =  data_->J_dyn_inv_.transpose() * gcm->force_gc_grav_;  }
 
     return flag;

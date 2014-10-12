@@ -117,8 +117,14 @@ public:
   /** Whether the task has achieved its goal position. */
   sBool achievedGoalPos();
 
-  void setFlagComputeOpPosGravity(sBool arg_compute_grav)
-  { flag_compute_gravity_ = arg_compute_grav; }
+  void setFlagComputeOpGravity(sBool arg_compute_grav)
+  { data_->flag_compute_op_gravity_ = !arg_compute_grav; }
+
+  void setFlagComputeOpCCForces(sBool arg_compute_cc_forces)
+  { data_->flag_compute_op_cc_forces_ = !arg_compute_cc_forces; }
+
+  void setFlagComputeOpInertia(sBool arg_compute_inertia)
+  { data_->flag_compute_op_inertia_ = !arg_compute_inertia; }
 
   /* *******************************
    * Initialization specific functions
@@ -155,8 +161,6 @@ protected:
    * near singularities. 3x3 for operational point tasks. */
   Eigen::JacobiSVD<Eigen::Matrix3d > svd_;
   Eigen::Matrix3d singular_values_;
-
-  sBool flag_compute_gravity_;
 };
 
 }

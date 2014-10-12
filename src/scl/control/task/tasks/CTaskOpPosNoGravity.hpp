@@ -94,7 +94,7 @@ public:
    *********************************/
   /** Default constructor : Does nothing   */
   CTaskOpPosNoGravity() : CTaskOpPos()
-  { flag_compute_gravity_= false; }
+  { data_->flag_compute_op_gravity_ = false; }
 
   /** Default destructor : Does nothing.   */
   virtual ~CTaskOpPosNoGravity(){}
