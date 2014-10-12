@@ -5,7 +5,9 @@
 <scl>
     <robot name="PumaBot"> 
         <spec>Puma</spec>
-        <file>../../specs/Puma/Puma.xml</file>
+        <!-- Derived from: "The explicit dynamic model and inertial parameters of the PUMA 560 arm",
+                           Armstrong, Khatib and Burdick, ICRA '86 -->
+        <file>../../specs/Puma/Puma-AKB86.xml</file>
         <gravity>0.000   0.000   -9.81</gravity> 
         <root_link>
             <link_name>ground</link_name>
