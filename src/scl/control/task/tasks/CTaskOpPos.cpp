@@ -216,7 +216,6 @@ bool CTaskOpPos::computeServo(const SRobotSensors* arg_sensors)
     if(data_->flag_compute_op_gravity_)
     { data_->force_task_ -= data_->force_task_grav_;  }
 
-
     // T = J' ( M x F* + p)
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
     data_->force_gc_ = data_->J_.transpose() * data_->force_task_;
