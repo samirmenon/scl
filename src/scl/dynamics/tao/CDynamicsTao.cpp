@@ -123,24 +123,6 @@ namespace scl
         return false;
       }
 
-      sutil::CMappedTree<std::string, scl::SRigidBody>::const_iterator it,ite;
-      // Include motor inerta in the generalized inertia matrix
-      for(it = arg_robot_data.rb_tree_.begin(), ite = arg_robot_data.rb_tree_.end();it!=ite;++it)
-      {
-        if(it->is_root_){ continue; }
-        //NOTE TODO : Remove this IF/AFTER the Tao implementation supports gc inertias
-        if(fabs(it->inertia_gc_) > 0.0001)
-        {
-          std::cout<<"\n\n\t *************************** ERROR ***************************"
-              <<"\n\t The Tao implementation doesn't support gc inertias"
-              <<"\n\t Use the SCL Spatial Integrator + CRBA implementation "
-              <<"\n\t for fwd dynamics instead"
-              <<"\n\t Alternatively re-specify robot inertias so inertia_gc "
-              <<"\n\t fields are zero";
-          throw(std::runtime_error("Could not initialize Tao dynamics"));
-        }
-      }
-
       //Set all the robot parameters
       robot_name_ = arg_robot_data.name_;
       gravity_ = arg_robot_data.gravity_;

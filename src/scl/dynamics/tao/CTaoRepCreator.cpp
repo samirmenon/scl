@@ -284,7 +284,6 @@ createTaoNonRootNode(const SRigidBody* arg_link,
     default: break; //JOINT_TYPE_NOTASSIGNED
     }
 
-
     if(S_NULL == tmp_joint)
     { throw(std::runtime_error("Couldn't initialize tao joint (Maybe an unrecognized joint type specification)."));  }
 
@@ -292,7 +291,7 @@ createTaoNonRootNode(const SRigidBody* arg_link,
 
     tmp_joint->reset(); //Reset the joint before it is added to the link
     tmp_joint->setDamping(0.0);
-    //tmp_joint->setInertia(0.0);//NOTE TODO : WHY??? This seems wrong.
+    tmp_joint->setInertia(arg_link->inertia_gc_);
 
     ret_tao_node->addJoint(tmp_joint);// Add joint to new_child_node
 
