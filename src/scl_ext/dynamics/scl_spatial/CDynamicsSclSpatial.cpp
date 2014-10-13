@@ -40,12 +40,24 @@ namespace scl_ext
 
     if(false == has_been_init_){return false;}
 
-    //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
+    sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::const_iterator it,ite;
+    // Include motor inerta in the generalized inertia matrix
+    for(it = arg_gc_model->rbdyn_tree_.begin(), ite = arg_gc_model->rbdyn_tree_.end();it!=ite;++it)
     {
-      calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
+      if(it->link_ds_->is_root_){ continue; }
+      //NOTE TODO : Remove this AFTER the ABA implementation supports inertias
+      if(fabs(it->link_ds_->inertia_gc_) > 0.0001)
+      {
+        std::cout<<"\n\n\t\t **************** ERROR ****************"
+            <<"\n\t The ABA implementation doesn't support gc inertia"
+            <<"\n\t Use the CRBA implementation for fwd dynamics instead"
+            <<"\n\t Or re-specify robot inertias";
+        return false;
+      }
     }
+
+    //calculate spatial inertia and transformation matrix
+    calculateTransformationAndInertia(arg_gc_model);
 
     //calculate tree processing order
     if(arg_gc_model->processing_order_.size() == 0)
@@ -64,11 +76,11 @@ namespace scl_ext
     std::string link_name;
 
     std::vector<Eigen::MatrixXd>articulated_inertia;
-    sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::iterator it;
 
     //Initializing articulated inertia with spatial inertia
-    for(it = arg_gc_model->rbdyn_tree_.begin();it != arg_gc_model->rbdyn_tree_.end(); ++it)
+    for(it = arg_gc_model->rbdyn_tree_.begin(),ite = arg_gc_model->rbdyn_tree_.end(); it!=ite; ++it)
     {
+      if(it->link_ds_->is_root_){ continue; }
       articulated_inertia.push_back(it->sp_inertia_);
     }
 
@@ -188,11 +200,7 @@ namespace scl_ext
 
 
     //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
-    {
-      calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
-    }
+    calculateTransformationAndInertia(arg_gc_model);
 
     //calculate tree processing order
     if(arg_gc_model->processing_order_.size() == 0)
@@ -275,11 +283,12 @@ namespace scl_ext
 
     //Third iteration : Calculate Composite Body Inertia
     std::vector<Eigen::MatrixXd> composite_inertia;
-    sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::iterator it;
+    sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::const_iterator it,ite;
 
     //initializing composite  inertia with spatial inertia
-    for(it = arg_gc_model->rbdyn_tree_.begin();it != arg_gc_model->rbdyn_tree_.end(); ++it)
+    for(it = arg_gc_model->rbdyn_tree_.begin(),ite = arg_gc_model->rbdyn_tree_.end(); it!=ite; ++it)
     {
+      if(it->link_ds_->is_root_){ continue; }
       composite_inertia.push_back(it->sp_inertia_);
     }
 
@@ -326,6 +335,13 @@ namespace scl_ext
       }
     }
 
+    // Include motor inerta in the generalized inertia matrix
+    for(it = arg_gc_model->rbdyn_tree_.begin(), ite = arg_gc_model->rbdyn_tree_.end();it!=ite;++it)
+    {
+      if(it->link_ds_->is_root_){ continue; }
+      arg_gc_model->M_gc_(it->link_ds_->link_id_, it->link_ds_->link_id_) += it->link_ds_->inertia_gc_;
+    }
+
     //calculate joint acceleration
     if(arg_gc_model->M_gc_.determinant()!=0)
     {
@@ -349,11 +365,8 @@ namespace scl_ext
     if(false == has_been_init_){return false;}
 
     //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
-    {
-      calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
-    }
+    calculateTransformationAndInertia(arg_gc_model);
+
     //calculate tree processing order
     if(arg_gc_model->processing_order_.size() == 0)
     {
@@ -487,12 +500,11 @@ namespace scl_ext
 
     if(false == has_been_init_){return false;}
 
+    // Set energy to zero.
+    ret_kinetic_energy = 0.0;
+
     //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
-    {
-      calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
-    }
+    calculateTransformationAndInertia(arg_gc_model);
 
     //calculate tree processing order
     if(arg_gc_model->processing_order_.size() == 0)
@@ -551,11 +563,8 @@ namespace scl_ext
     if(false == has_been_init_){return false;}
 
     //calculate spatial inertia and transformation matrix
-    if(false == arg_gc_model->computed_spatial_transformation_and_inertia_ )
-    {
-      calculateTransformationAndInertia(arg_gc_model);
-      arg_gc_model->computed_spatial_transformation_and_inertia_ = true;
-    }
+    calculateTransformationAndInertia(arg_gc_model);
+
     //calculate tree processing order
     if(arg_gc_model->processing_order_.size() == 0)
     {
