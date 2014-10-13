@@ -128,7 +128,7 @@ int main(int argc, char** argv)
         }
 
         // Compute energy. Energy should be conserved.
-        if(iter % 1000 == 0)
+        if(iter % 100 == 0)
         {
           dyn_sp_scl.calculateKineticEnergy(&rio, &rgcm,ke);
           dyn_sp_scl.calculatePotentialEnergy(&rio,&rgcm,pe);
