@@ -71,7 +71,7 @@ namespace scl_ext
     std::vector<Eigen::MatrixXd>   C(total_link)  , Xup(total_link)  , biasforce(total_link)  , H(total_link) ,
         D(total_link) , temp(total_link);
     Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Vcross(6,6) , XJ(6,6), sp_gravity(6,1);
-    sp_gravity << 0,0,0,robot_parsed_data_->gravity_(0),robot_parsed_data_->gravity_(1),robot_parsed_data_->gravity_(2);
+    sp_gravity << 0,0,0, - robot_parsed_data_->gravity_(0), - robot_parsed_data_->gravity_(1), - robot_parsed_data_->gravity_(2);
 
     std::string link_name;
 
@@ -217,7 +217,7 @@ namespace scl_ext
 
     std::string link_name;
 
-    sp_gravity << 0,0,0,robot_parsed_data_->gravity_(0),robot_parsed_data_->gravity_(1),robot_parsed_data_->gravity_(2);
+    sp_gravity << 0,0,0, - robot_parsed_data_->gravity_(0), - robot_parsed_data_->gravity_(1), - robot_parsed_data_->gravity_(2);
 
     //First iteration : Calculate joint velocity and Acceleration
     for(body = 0 ; body < static_cast<int>(total_link) ; ++body )
@@ -381,7 +381,7 @@ namespace scl_ext
     std::vector<Eigen::MatrixXd> Xup(total_link) ;
 
     Eigen::MatrixXd Vi(6,1) , Vj(6,1) , Tau(total_link,1) , XJ(6,6) , Vcross(6,6) , sp_gravity(6,1);
-    sp_gravity << 0,0,0,robot_parsed_data_->gravity_(0),robot_parsed_data_->gravity_(1),robot_parsed_data_->gravity_(2);
+    sp_gravity << 0,0,0, - robot_parsed_data_->gravity_(0), - robot_parsed_data_->gravity_(1), - robot_parsed_data_->gravity_(2);
     std::string link_name;
 
     //First iteration : Calculate Joint Force and Acceleration
@@ -642,7 +642,9 @@ namespace scl_ext
     com(2) = total_inertia(1,3)/total_inertia(5,5);
     //calculate potential energy
     scl::sFloat total_mass = total_inertia(5,5);
-    ret_potential_energy = total_mass*com.transpose()*robot_parsed_data_->gravity_;
+    // NOTE : We assume zero potential energy at the origin plane normal to the gravity vector.
+    // So going below the origin will lead to negative energy.
+    ret_potential_energy = -1*total_mass*com.transpose()*robot_parsed_data_->gravity_;
 
     return true;
   }
