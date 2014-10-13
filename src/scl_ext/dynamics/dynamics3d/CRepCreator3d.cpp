@@ -328,6 +328,7 @@ namespace scl_ext
 
       tmp_joint->name_ = arg_link->joint_name_;
       tmp_joint->setDamping(0.0);
+      tmp_joint->m_dynJoint->inertia(arg_link->inertia_gc_);
 
       double error = 0.0001;   // tolerance error for contact detection
       double radius = 0.0001;  // radius zone for contact detection
