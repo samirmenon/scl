@@ -547,6 +547,20 @@ namespace scl_ext
 
       ret_kinetic_energy += 0.5* (link->spatial_velocity_.transpose()*link->sp_inertia_*link->spatial_velocity_)(0,0);
     }
+
+    //Add the kinetic energy due to the motor inertias
+
+    sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::const_iterator it,ite;
+
+    //initializing composite  inertia with spatial inertia
+    for(it = arg_gc_model->rbdyn_tree_.begin(),ite = arg_gc_model->rbdyn_tree_.end(); it!=ite; ++it)
+    {
+      if(it->link_ds_->is_root_){ continue; }
+      int idx = it->link_ds_->link_id_;
+      ret_kinetic_energy += 0.5* arg_io_data->sensors_.dq_(idx) * arg_io_data->sensors_.dq_(idx) *
+          it->link_ds_->inertia_gc_;
+    }
+
     return true;
   }
 
