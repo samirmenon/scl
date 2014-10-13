@@ -104,6 +104,7 @@ namespace scl_ext
 
     for(it = arg_gc_model->rbdyn_tree_.begin();it != arg_gc_model->rbdyn_tree_.end(); ++it) //return spec data
     {
+      // Continue to compute the spatial inertias for each link...
       calculateSpatialInertia(it->sp_inertia_ , it->link_ds_->inertia_ , it->link_ds_->com_ , it->link_ds_->mass_);
       Eigen::MatrixXd xtree(6,6);
       Eigen::MatrixXd rotfromquaternion(6,6);
@@ -292,7 +293,10 @@ namespace scl_ext
     return true;
   }
 
-  bool calculateSpatialInertia(scl::sSpatialXForm &ret_spatial_inertia, Eigen::Matrix3d arg_inertia, Eigen::Vector3d arg_com, scl::sFloat arg_mass)
+  bool calculateSpatialInertia(scl::sSpatialXForm &ret_spatial_inertia,
+      Eigen::Matrix3d arg_inertia,
+      Eigen::Vector3d arg_com,
+      scl::sFloat arg_mass)
   {
     Eigen::Matrix3d temp;
 
