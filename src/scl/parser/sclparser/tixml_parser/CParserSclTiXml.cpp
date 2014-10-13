@@ -150,13 +150,15 @@ namespace scl {
         link_data = arg_link_txml.FirstChildElement( "inertia_gc" ).Element();
         if ( link_data )
         {//These are sometimes not computable or necessary so we will print warnings only in DEBUG
-#ifdef DEBUG
           std::stringstream ss(link_data->FirstChild()->Value());
           ss>>arg_link_ds.inertia_gc_;
-#endif
         }
         else
-        {throw(std::runtime_error("Error reading inertia_gc"));}
+        {
+#ifdef DEBUG
+          throw(std::runtime_error("Error reading inertia_gc"));
+#endif
+        }
 
         //Com
         link_data = arg_link_txml.FirstChildElement( "center_of_mass" ).Element();

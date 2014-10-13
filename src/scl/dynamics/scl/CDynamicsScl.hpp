@@ -216,6 +216,10 @@ public:
       if(it->link_ds_->is_root_){ continue;  }//Root doesn't move
       ret_Mgc += it->link_ds_->mass_ * (it->J_com_.block(0,0,3,dof).transpose() * it->J_com_.block(0,0,3,dof));
       ret_Mgc += it->J_com_.block(3,0,3,dof).transpose() * it->link_ds_->inertia_ * it->J_com_.block(3,0,3,dof);
+
+      // Add the actuator gc inertia
+      if(it->link_ds_->link_id_ >= 0)
+      { ret_Mgc(it->link_ds_->link_id_, it->link_ds_->link_id_) += it->link_ds_->inertia_gc_; }
     }
     return flag;
   }
