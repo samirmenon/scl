@@ -6,7 +6,7 @@
     <!-- Contains all the links in a flat file (ie no link nesting). The robot is constructed by
          the parser by finding each link's parent and attaching the link as a child. -->
     <robot name="rrrrbot"> 
-        <gravity>0.000   0.000   -9.81</gravity> 
+        <gravity>0.000   0.000   9.81</gravity> 
         <spec>RRRR</spec>
         <file>./RRRRCfg.xml</file>
         <root_link>
@@ -42,7 +42,8 @@
 		      <position_in_parent>0 0 0</position_in_parent> <!--xyz in parent frame -->
 		      <orientation_in_parent>0 0 0 1</orientation_in_parent> <!-- xyz w quaternion in parent frame -->
 		      <mass>1.0</mass> <!-- Of the link, in kgs. -->
-		      <inertia>1 1 1</inertia> <!-- Ixx Iyy Izz at the center of mass -->
+		      <inertia>0.1 0.1 0.01</inertia> <!-- Ixx Iyy Izz at the center of mass -->
+		      <inertia_gc>0.5</inertia_gc> <!-- The motor inertia -->
 		      <center_of_mass>0 0 -0.1</center_of_mass> <!-- xyz -->
 		      <joint_name>q0-rot-y</joint_name> <!-- unique joint name. -->
 		      <parent_link_name>root</parent_link_name> <!-- The parent link. Ground is fixed. -->
@@ -67,7 +68,8 @@
 		      <position_in_parent>0.0 0.0 -0.2</position_in_parent>
 		      <orientation_in_parent>0 0 0 1</orientation_in_parent>
 		      <mass>1.0</mass>
-		      <inertia>1.0 1.0 1.0</inertia>
+		      <inertia>0.1 0.1 0.01</inertia>
+		      <inertia_gc>0.5</inertia_gc>
 		      <center_of_mass>0.0 0.0 -0.05</center_of_mass>
 		      <joint_name>q1-rot-y</joint_name>
 		      <parent_link_name>link_0</parent_link_name>
@@ -92,7 +94,8 @@
 		      <position_in_parent>0.0 0.0 -0.1</position_in_parent>
 		      <orientation_in_parent>0 0 0 1</orientation_in_parent>
 		      <mass>1.0</mass>
-		      <inertia>1.0 1.0 1.0</inertia>
+		      <inertia>0.1 0.1 0.01</inertia>
+		      <inertia_gc>0.5</inertia_gc>
 		      <center_of_mass>0.0 0.0 -0.1</center_of_mass>
 		      <joint_name>q2-rot-x</joint_name>
 		      <parent_link_name>link_1</parent_link_name>
@@ -117,7 +120,8 @@
 		      <position_in_parent>0.0 0.0 -0.2</position_in_parent>
 		      <orientation_in_parent>0 0 0 1</orientation_in_parent>
 		      <mass>1.0</mass>
-		      <inertia>1.0 1.0 1.0</inertia>
+		      <inertia>0.1 0.1 0.01</inertia>
+		      <inertia_gc>0.5</inertia_gc>
 		      <center_of_mass>0.0 0.0 -0.2</center_of_mass>
 		      <joint_name>q3-rot-y</joint_name>
 		      <parent_link_name>link_2</parent_link_name>
