@@ -40,6 +40,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 
+#include <sutil/CSystemClock.hpp>
+
 //Eigen 3rd party lib
 #include <Eigen/Dense>
 
@@ -65,6 +67,8 @@ int main(int argc, char** argv)
   std::cout<<  " Standard Control Library Spatial Math Integrator Test";
   std::cout<<"\n*******************************************************\n";
 
+  sutil::CSystemClock::start();
+
   scl::SRobotParsed rds;     //Robot data structure....
   scl::SGraphicsParsed rgr;  //Robot graphics data structure...
   scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
@@ -76,7 +80,7 @@ int main(int argc, char** argv)
 
   /******************************Load Robot Specification************************************/
   //We will use a slightly more complex xml spec than the first few tutorials
-  bool flag = p.readRobotFromFile("./RRRRCfg.xml","rrrrbot",rds);
+  bool flag = p.readRobotFromFile("./RRRRCfg.xml","../../specs","rrrrbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_sp_scl.init(rds);         //Set up integrator object
   flag = flag && dyn_scl.init(rds);         //Set up dynamics computation object
@@ -110,15 +114,25 @@ int main(int argc, char** argv)
       {
         dyn_sp_scl.integrator(rio,&rgcm,dt); iter++;
 
+        /** Slow down sim to real time */
+        sutil::CSystemClock::tick(dt);
+        double tcurr = sutil::CSystemClock::getSysTime();
+        double tdiff = sutil::CSystemClock::getSimTime() - tcurr;
+        timespec ts = {0, 0};
+        if(tdiff > 0)
+        {
+          ts.tv_sec = static_cast<int>(tdiff);
+          tdiff -= static_cast<int>(tdiff);
+          ts.tv_nsec = tdiff*1e9;
+          nanosleep(&ts,NULL);
+        }
+
         // Compute energy. Energy should be conserved.
         if(iter % 1000 == 0)
         {
-          pe = dyn_scl.computeEnergyPotential(rgcm.rbdyn_tree_,rio.sensors_.q_);
-          ke = dyn_scl.computeEnergyKinetic(rgcm.rbdyn_tree_,rio.sensors_.q_,rio.sensors_.dq_);
-          // Alt : compute energy with scl_spatial
-          //dyn_sp_scl.calculateKineticEnergy(&rio,&rgcm,ke);
-
-          std::cout<<"\n Time ("<<iter*dt<<" of "<<n_iters*dt<<"s total). Energy : "<<std::setw(10)<<pe<<" + "
+          dyn_sp_scl.calculateKineticEnergy(&rio, &rgcm,ke);
+          dyn_sp_scl.calculatePotentialEnergy(&rio,&rgcm,pe);
+          std::cout<<"\n Time ("<<iter*dt<<" of "<<n_iters*dt<<"s total). SpEnergy : "<<std::setw(10)<<pe<<" + "
           <<std::setw(10)<<ke<<" = "<<std::setw(10)<<pe+ke;
         }
       }
@@ -127,7 +141,9 @@ int main(int argc, char** argv)
       { glutMainLoopEvent(); const timespec ts = {0, 15000000};/*15ms*/ nanosleep(&ts,NULL); }
   }
 
-  std::cout<<"\n\nNOTE : The simulation runs much faster than real time. Manually slow it down to observe the pendulum swinging";
+  std::cout<<"\n\nEnd of simulation. ";
+  std::cout<<"\nTotal real-world time : "<<sutil::CSystemClock::getSysTime();
+  std::cout<<"\nTotal simulated time  : "<<sutil::CSystemClock::getSimTime();
 
   /******************************Exit Gracefully************************************/
   std::cout<<"\n\nExecuted Successfully";
