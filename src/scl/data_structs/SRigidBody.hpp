@@ -133,6 +133,7 @@ public:
   Eigen::Vector3d com_;     ///< Center of mass position (in own frame)
   sFloat mass_;             ///< Mass
   Eigen::Matrix3d inertia_; ///< Inertia at the center of mass
+  sFloat inertia_gc_;       ///< Inertia at the generalized coordinate (joint). Default = 0
 
   sInt link_is_fixed_;      ///< (No joints) Fixed links are simply merged into upper links.
 
@@ -143,6 +144,16 @@ public:
   sFloat joint_default_pos_;
   EJointType joint_type_;
   
+  //****************************************************************************************
+  // Friction model constants (these may be used in different ways by different physics engines)
+  sFloat stiction_gc_force_lower_, stiction_gc_force_upper_; ///< Force/torque stiction while at zero vel
+  sFloat stiction_gc_vel_lower_, stiction_gc_vel_upper_;     ///< Stiction will apply up to these velocities
+  sFloat friction_gc_kv_;                                    ///< Friction force = - kv * velocity
+
+  //****************************************************************************************
+  // Actuator information
+  sFloat force_gc_lim_lower_, force_gc_lim_upper_; ///< Force/torque limits at the gc (joint)
+
   //****************************************************************************************
   // Spatial joint information
   std::vector<std::string> sp_joint_name_;

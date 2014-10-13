@@ -145,6 +145,19 @@ namespace scl {
         }
         else
         {throw(std::runtime_error("Error reading inertia"));}
+
+        //Com
+        link_data = arg_link_txml.FirstChildElement( "inertia_gc" ).Element();
+        if ( link_data )
+        {//These are sometimes not computable or necessary so we will print warnings only in DEBUG
+#ifdef DEBUG
+          std::stringstream ss(link_data->FirstChild()->Value());
+          ss>>arg_link_ds.inertia_gc_;
+#endif
+        }
+        else
+        {throw(std::runtime_error("Error reading inertia_gc"));}
+
         //Com
         link_data = arg_link_txml.FirstChildElement( "center_of_mass" ).Element();
         if ( link_data )
@@ -194,6 +207,65 @@ namespace scl {
         else  {
           std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
                   <<"]. Error reading joint limits";
+        }
+
+        //Force gc Limits
+        link_data = arg_link_txml.FirstChildElement( "force_gc_limits" ).Element();
+        if ( link_data )
+        {
+          std::stringstream ss(link_data->FirstChild()->Value());
+          ss>>arg_link_ds.force_gc_lim_lower_;
+          ss>>arg_link_ds.force_gc_lim_upper_;
+        }
+        else  {//These are sometimes not computable or necessary so we will print warnings only in DEBUG
+#ifdef DEBUG
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Error reading force gc limits";
+#endif
+        }
+
+        //Stiction gc force
+        link_data = arg_link_txml.FirstChildElement( "stiction_gc_force" ).Element();
+        if ( link_data )
+        {
+          std::stringstream ss(link_data->FirstChild()->Value());
+          ss>>arg_link_ds.stiction_gc_force_lower_;
+          ss>>arg_link_ds.stiction_gc_force_upper_;
+        }
+        else  {//These are sometimes not computable or necessary so we will print warnings only in DEBUG
+#ifdef DEBUG
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Error reading stiction gc force";
+#endif
+        }
+
+        //Stiction gc velocity limits
+        link_data = arg_link_txml.FirstChildElement( "stiction_gc_velocity_limits" ).Element();
+        if ( link_data )
+        {
+          std::stringstream ss(link_data->FirstChild()->Value());
+          ss>>arg_link_ds.stiction_gc_vel_lower_;
+          ss>>arg_link_ds.stiction_gc_vel_upper_;
+        }
+        else  {//These are sometimes not computable or necessary so we will print warnings only in DEBUG
+#ifdef DEBUG
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Error reading stiction gc velocity limits";
+#endif
+        }
+
+        //Friction gc gain
+        link_data = arg_link_txml.FirstChildElement( "friction_gc_kv" ).Element();
+        if ( link_data )
+        {
+          std::stringstream ss(link_data->FirstChild()->Value());
+          ss>>arg_link_ds.friction_gc_kv_;
+        }
+        else  {//These are sometimes not computable or necessary so we will print warnings only in DEBUG
+#ifdef DEBUG
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. Error reading friction gc kv (gain)";
+#endif
         }
 
         //Default Joint Pos

@@ -55,6 +55,15 @@ namespace scl
     joint_limit_upper_ = 3.14;
     joint_default_pos_ = 0.0;
 
+    stiction_gc_force_lower_=0.0;
+    stiction_gc_force_upper_=0.0;
+    stiction_gc_vel_lower_=0.0;
+    stiction_gc_vel_upper_=0.0;
+    friction_gc_kv_=0.0;
+
+    force_gc_lim_lower_=0.0;
+    force_gc_lim_upper_=0.0;
+
     //Tree structure information:
     parent_addr_ = NULL;
     child_addrs_.clear();
@@ -62,6 +71,7 @@ namespace scl
     //Link's Physical Properties
     com_<<0, 0, 0;
     inertia_ = Eigen::Matrix3d::Identity();
+    inertia_gc_ = 0.0;
 
     mass_ = 1.0;
     link_is_fixed_ = 0;
