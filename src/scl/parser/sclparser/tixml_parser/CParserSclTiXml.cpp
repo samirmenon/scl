@@ -156,7 +156,8 @@ namespace scl {
         else
         {
 #ifdef DEBUG
-          throw(std::runtime_error("Error reading inertia_gc"));
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
+          <<"]. Error reading inertia_gc";
 #endif
         }
 

@@ -299,8 +299,21 @@ namespace scl
       CTaskBase ** ret;
       ret = tasks_.at(arg_name);
       if(S_NULL == ret)
-      { throw(std::runtime_error("Task not found in the pile"));  }
+      {
+        sutil::CMappedMultiLevelList<std::string, CTaskBase*>::const_iterator it,ite;
 
+        // Just for convenience, print all the tasks found so far.
+        std::cout<<"\n List of tasks attached to this controller : ";
+        for(it=tasks_.begin(), ite = tasks_.end();it!=ite;++it)
+        {
+          if(NULL == *it) { throw(std::runtime_error("NULL task found in the pile"));  }
+
+          std::cout<<(*it)->getTaskData()->name_<<" ";
+        }
+        throw(std::runtime_error(std::string("Task (") + arg_name + std::string(") not found in the pile") ));
+      }
+
+      // Else would segfault
       if(S_NULL == *ret)
       { throw(std::runtime_error("NULL task found in the pile"));  }
 
