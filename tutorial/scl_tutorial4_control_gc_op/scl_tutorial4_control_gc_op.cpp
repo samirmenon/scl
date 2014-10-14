@@ -160,7 +160,7 @@ int main(int argc, char** argv)
         dyn_tao.integrate(rio,dt); iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL);
 
         if(iter % static_cast<long>(n_iters/10) == 0)
-        {iter = 0; std::cout<<"\nTracking error: "<<(x_des-x).transpose()<<". Norm: "<<(x_des-x).norm(); }
+        { std::cout<<"\nTracking error: "<<(x_des-x).transpose()<<". Norm: "<<(x_des-x).norm(); }
       }
       //Then terminate
       scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running = false;
