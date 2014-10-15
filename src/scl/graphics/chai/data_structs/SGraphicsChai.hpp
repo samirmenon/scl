@@ -94,6 +94,7 @@ public:
 
   /** Gui properties */
   bool mouse_mode_cam_; //manipulate the camera or forces
+  bool mouse_mode_move_scene_; ///< Translate the camera or forces
 
   sFloat gl_width_, gl_height_;
   bool mouse_button_pressed_;
@@ -112,6 +113,9 @@ public:
     chai_cam_ = S_NULL;
     chai_world_ = S_NULL;
     has_been_init_ = false;
+    mouse_mode_cam_ = true;
+    mouse_mode_move_scene_=false;
+
     //DEFAULTS
     gl_width_ = 1080;
     gl_height_ = 800;
