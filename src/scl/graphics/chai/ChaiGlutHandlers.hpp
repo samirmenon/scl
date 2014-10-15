@@ -62,6 +62,7 @@ namespace scl_chai_glut_interface
     static const scl::sUInt OPTION_FULLSCREEN=0;
     static const scl::sUInt OPTION_WINDOWDISPLAY=1;
     static const scl::sUInt OPTION_TOGGLE_MOUSE_CAM_SELECT=2;
+    static const scl::sUInt OPTION_TOGGLE_MOUSE_MOVE_SCENE=3;
 
     scl::SGraphicsChai* GLOB_chaiDbptr; //GLOB == Global var.
     scl::SGraphicsParsed* GLOB_gr_parsed_ds;

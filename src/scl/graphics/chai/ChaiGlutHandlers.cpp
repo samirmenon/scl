@@ -155,6 +155,8 @@ namespace scl_chai_glut_interface
           scl_chai_glut_interface::SChaiGlobals::OPTION_WINDOWDISPLAY);
       glutAddMenuEntry("toggle mouse cam",
           scl_chai_glut_interface::SChaiGlobals::OPTION_TOGGLE_MOUSE_CAM_SELECT);
+      glutAddMenuEntry("toggle mouse move scene",
+          scl_chai_glut_interface::SChaiGlobals::OPTION_TOGGLE_MOUSE_MOVE_SCENE);
       glutAttachMenu(GLUT_MIDDLE_BUTTON);
     }
     catch(std::exception & e)
@@ -401,6 +403,11 @@ namespace scl_chai_glut_interface
       case SChaiGlobals::OPTION_TOGGLE_MOUSE_CAM_SELECT:
         chai_glob_ds->GLOB_chaiDbptr->mouse_mode_cam_ = !(chai_glob_ds->GLOB_chaiDbptr->mouse_mode_cam_);
         break;
+
+        //Whether click-drag rotates the camera or adds a force.
+      case SChaiGlobals::OPTION_TOGGLE_MOUSE_MOVE_SCENE:
+        chai_glob_ds->GLOB_chaiDbptr->mouse_mode_move_scene_ = !(chai_glob_ds->GLOB_chaiDbptr->mouse_mode_move_scene_);
+        break;
     }
   }
 
@@ -484,12 +491,12 @@ namespace scl_chai_glut_interface
       if(chai_glob_ds->GLOB_chaiDbptr->mouse_button_pressed_)
       {
         int mod = glutGetModifiers();
-        if ((mod == GLUT_ACTIVE_CTRL) && (chai_glob_ds->GLOB_chaiDbptr->mouse_button_ == GLUT_LEFT_BUTTON))
+        if (chai_glob_ds->GLOB_chaiDbptr->mouse_mode_move_scene_ && (chai_glob_ds->GLOB_chaiDbptr->mouse_button_ == GLUT_LEFT_BUTTON))
         {//Adjust camera lookat euclidean position x and y
           chai_glob_ds->cam_lookat_y_ = chai_glob_ds->cam_lookat_y_ - 0.01 * (x - chai_glob_ds->GLOB_chaiDbptr->mouse_x_);
           chai_glob_ds->cam_lookat_z_ = chai_glob_ds->cam_lookat_z_ + 0.01 * (y - chai_glob_ds->GLOB_chaiDbptr->mouse_y_);
         }
-        else if ((mod == GLUT_ACTIVE_CTRL) && (chai_glob_ds->GLOB_chaiDbptr->mouse_button_ == GLUT_RIGHT_BUTTON))
+        else if (chai_glob_ds->GLOB_chaiDbptr->mouse_mode_move_scene_ && (chai_glob_ds->GLOB_chaiDbptr->mouse_button_ == GLUT_RIGHT_BUTTON))
         {//Adjust camera lookat euclidean position z
           chai_glob_ds->cam_lookat_x_ = chai_glob_ds->cam_lookat_x_ + 0.01 * (x - chai_glob_ds->GLOB_chaiDbptr->mouse_x_);
         }
@@ -529,9 +536,10 @@ namespace scl_chai_glut_interface
     // check values
     static scl::SGraphicsParsed* gr_ds = chai_glob_ds->GLOB_gr_parsed_ds;
 
-    if (chai_glob_ds->cam_sph_x_ < 0.1) { chai_glob_ds->cam_sph_x_ = 0.1; }
-    if (chai_glob_ds->cam_sph_v_ > 89) { chai_glob_ds->cam_sph_v_ = 89; }
-    if (chai_glob_ds->cam_sph_v_ < -89) { chai_glob_ds->cam_sph_v_ = -89; }
+    const int sph_max = 120, sph_xmax = 0.001;
+    if (chai_glob_ds->cam_sph_x_ < sph_xmax) { chai_glob_ds->cam_sph_x_ = sph_xmax; }
+    if (chai_glob_ds->cam_sph_v_ > sph_max) { chai_glob_ds->cam_sph_v_ = sph_max; }
+    if (chai_glob_ds->cam_sph_v_ < -sph_max) { chai_glob_ds->cam_sph_v_ = -sph_max; }
 
     //Update the position the camera looks at
     gr_ds->cam_lookat_(0) = chai_glob_ds->cam_lookat_x_;
