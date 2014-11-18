@@ -168,6 +168,8 @@ public:
 
 /** The number of UI points (3-d vectors) whose key-handlers are supported. Use these in your app. */
 #define SCL_NUM_UI_POINTS 12
+/** The number of UI ints (integers) whose key-handlers are supported. Use these in your app. */
+#define SCL_NUM_UI_INTS 6
 /** The number of UI flags (bool) whose key-handlers are supported. Use these in your app. */
 #define SCL_NUM_UI_FLAGS 9
 
@@ -193,7 +195,11 @@ struct SGuiData
 
   /** Users may use these ui points in their controller for keyboard based control */
   Eigen::Vector3d ui_point_[SCL_NUM_UI_POINTS];
-
+  /** Select a ui integer value */
+  sInt ui_int_[SCL_NUM_UI_INTS];
+  /** The ui integer index value */
+  sUInt ui_int_selector_;
+  /** Boolean ui flags */
   sBool ui_flag_[SCL_NUM_UI_FLAGS];
 
   /** 0 = All points by themselves.
@@ -203,6 +209,7 @@ struct SGuiData
   sBool glut_initialized_;
 
   SGuiData() : glut_initialized_(false) {
+    ui_int_selector_=0;
     ui_point_selector_=0;
     for(int i=0;i<SCL_NUM_UI_FLAGS;++i)ui_flag_[i] = false;
   }

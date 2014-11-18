@@ -281,6 +281,30 @@ namespace scl_chai_glut_interface
       }
     }
 
+    /** Control the ui_ints. / keeps incrementing and cycles around.. */
+    const char ui_int_arr[] = {',',  '.', '>'};
+    if (chai_glob_ds->keys_active[static_cast<int>( ui_int_arr[0] )])
+    {//Decrement the UI int
+      scl::CDatabase::getData()->s_gui_.ui_int_[scl::CDatabase::getData()->s_gui_.ui_int_selector_]--;
+      chai_glob_ds->keys_active[static_cast<int>(numarr[0])] = false;
+      const timespec ts = {0, 90000000};/*50ms : Need time to pull finger off kbd*/ nanosleep(&ts,NULL);
+    }
+    if (chai_glob_ds->keys_active[static_cast<int>( ui_int_arr[1] )])
+    {//Decrement the UI int
+      scl::CDatabase::getData()->s_gui_.ui_int_[scl::CDatabase::getData()->s_gui_.ui_int_selector_]++;
+      chai_glob_ds->keys_active[static_cast<int>(numarr[1])] = false;
+      const timespec ts = {0, 90000000};/*50ms : Need time to pull finger off kbd*/ nanosleep(&ts,NULL);
+    }
+    if (chai_glob_ds->keys_active[static_cast<int>( ui_int_arr[2] )])
+    {//Increment and toggle the UI int
+      scl::CDatabase::getData()->s_gui_.ui_int_selector_ = (scl::CDatabase::getData()->s_gui_.ui_int_selector_+1)%SCL_NUM_UI_INTS;
+      chai_glob_ds->keys_active[static_cast<int>(numarr[2])] = false;
+      std::cout<<"\n UI INT SELECTED : "<<scl::CDatabase::getData()->s_gui_.ui_int_selector_
+          <<" : "<<scl::CDatabase::getData()->s_gui_.ui_int_[scl::CDatabase::getData()->s_gui_.ui_int_selector_]
+          <<std::flush;
+      const timespec ts = {0, 60000000};/*50ms : Need time to pull finger off kbd*/ nanosleep(&ts,NULL);
+    }
+
     //Pause the controller
     if (chai_glob_ds->keys_active[static_cast<int>('p')])
     {
