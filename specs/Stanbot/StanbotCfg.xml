@@ -60,7 +60,7 @@
         <task name="hand">
             <type>TaskOpPos</type>
             <parent_link>right-hand</parent_link>
-            <pos_in_parent>0.01 0.01 0.01</pos_in_parent>
+            <pos_in_parent>0.01 0.01 -0.11</pos_in_parent>
             <priority>0</priority>
             <task_dof>3</task_dof>
             <kp>100</kp>
@@ -73,7 +73,7 @@
         <task name="hand2">
             <type>TaskOpPos</type>
             <parent_link>left-hand</parent_link>
-            <pos_in_parent>0.01 0.01 0.01</pos_in_parent>
+            <pos_in_parent>0.01 0.01 -0.11</pos_in_parent>
             <priority>0</priority>
             <task_dof>3</task_dof>
             <kp>100</kp>
