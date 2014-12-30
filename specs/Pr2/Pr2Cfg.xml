@@ -70,11 +70,11 @@
             <pos_in_parent>0.1 0.0 0.0</pos_in_parent>
             <priority>0</priority>
             <task_dof>3</task_dof>
-            <kp>100</kp>
-            <kv>25</kv>
+            <kp>500</kp>
+            <kv>45</kv>
             <ka>0</ka>
-            <force_max>3000</force_max>
-            <force_min>-3000</force_min>
+            <force_max>300</force_max>
+            <force_min>-300</force_min>
             <flag_compute_op_gravity>1</flag_compute_op_gravity>
             <flag_compute_op_cc_forces>0</flag_compute_op_cc_forces>
             <flag_compute_op_inertia>1</flag_compute_op_inertia>
@@ -88,19 +88,19 @@
             <pos_in_parent>0.1 0.0 0.0</pos_in_parent>
             <priority>0</priority>
             <task_dof>3</task_dof>
-            <kp>100</kp>
-            <kv>25</kv>
+            <kp>500</kp>
+            <kv>45</kv>
             <ka>0</ka>
-            <force_max>3000</force_max>
-            <force_min>-3000</force_min>
+            <force_max>300</force_max>
+            <force_min>-300</force_min>
         </task>
         
         <task name="GcTask">
             <type>TaskGc</type>
             <priority>1</priority>
             <task_dof>0</task_dof> 
-            <kp>30</kp>
-            <kv>6</kv>
+            <kp>100</kp>
+            <kv>30</kv>
             <ka>0</ka>
             <force_max>3000</force_max>
             <force_min>-3000</force_min>
