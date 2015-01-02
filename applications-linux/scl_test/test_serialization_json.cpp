@@ -54,7 +54,23 @@ namespace scl_test
       rb.inertia_ <<1.1,2.22443,3,4,5,6,7,8,9;
       std::cout<<"\nTest Result ("<<r_id++<<")  : Set up data structure"<<std::endl;
 
-      //1. Parse to JSON value
+      sutil::CMappedList<std::string, scl::SRigidBody> rb_list;
+      rb.name_ = "node0";
+      rb_list.create("node0",rb,true);
+      rb.name_ = "node1";
+      rb_list.create("node1",rb,true);
+      rb.name_ = "node2";
+      rb_list.create("node2",rb,true); //Insert in wrong order (sorting should fix this)..
+
+      std::vector<std::string> sort_order;
+      sort_order.push_back("node0");
+      sort_order.push_back("node1");
+      sort_order.push_back("node2");
+      rb_list.sort(sort_order);
+
+      rb.name_ = "floating_node";
+
+      //1. Parse object to JSON value
       Json::Value json_val;
       flag = scl::serializeToJSON(rb,json_val);
       if(!flag)
@@ -62,12 +78,29 @@ namespace scl_test
       std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRigidBody object to JSON value : "<<std::endl;
       std::cout<<json_val<<std::endl;
 
-      //2. Parse to JSON string
+      //2. Parse object to JSON string (compact)
       std::string str;
       flag = scl::serializeToJSONString(rb,str,true);
       if(!flag)
       { throw(std::runtime_error("Could not serialize SRigidBody to JSON string")); }
       std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRigidBody object to JSON string : "<<std::endl;
+      std::cout<<str<<std::endl;
+
+      //3. Parse object to JSON string (readable)
+      flag = scl::serializeToJSONString(rb,str,false);
+      if(!flag)
+      { throw(std::runtime_error("Could not serialize SRigidBody to human-readable JSON string")); }
+      std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRigidBody object to human-readable JSON string : "<<std::endl;
+      std::cout<<str<<std::endl;
+
+      //4. Parse mapped list of objects to JSON string (readable)
+      flag = scl::serializeToJSONString(rb_list,str,false);
+      std::cout<<"\n\n*****************************************\n";
+      std::cout<<str<<std::endl;
+      std::cout<<"\n*****************************************\n\n";
+      if(!flag)
+      { throw(std::runtime_error("Could not serialize CMappedList<string,SRigidBody> to human-readable JSON string")); }
+      std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized CMappedList<string,SRigidBody> object to human-readable JSON string : "<<std::endl;
       std::cout<<str<<std::endl;
 
 
