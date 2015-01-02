@@ -46,7 +46,7 @@ namespace scl
 {
   /** Contains generic robot sensor information. These
    * are read from the sensors and/or simulation. */
-  struct SRobotSensors
+  class SRobotSensors
   {
   public:
     /** The sensed generalized coordinates (Eg. joint angles) */
@@ -80,7 +80,7 @@ namespace scl
 
   /** Contains the controller generated data. These are sent
    * to the actuators. */
-  struct SRobotActuators
+  class SRobotActuators
   {
   public:
     /**
@@ -104,8 +104,9 @@ namespace scl
    *
    * NOTE : Objects of this struct have the same name as their
    *        parent robot. */
-  struct SRobotIO : public SObject
+  class SRobotIO : public SObject
   {
+  public:
     /** The degrees of freedom of the robot that these sensors monitor */
     sUInt dof_;
 

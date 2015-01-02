@@ -48,7 +48,7 @@ namespace scl
  * a robot. Each robot is completely defined by a tree of such
  * links.
  */
-struct SRobotParsed : public SObject
+class SRobotParsed : public SObject
 {
 public:
   /** The branching representation will store a tree of SRigidBody nodes

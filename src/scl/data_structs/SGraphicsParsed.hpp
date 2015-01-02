@@ -45,11 +45,13 @@ namespace scl
    *
    * Set cameras, lights etc. here.
    */
-  struct SGraphicsParsed : public SObject
+  class SGraphicsParsed : public SObject
   {
+  public:
     /** To position and orient a light */
-    struct SLight
+    class SLight
     {
+    public:
       sFloat pos_[3];//The light's position.
       sFloat lookat_[3];//Point the light in a direction.
     };

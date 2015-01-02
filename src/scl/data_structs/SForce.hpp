@@ -49,8 +49,9 @@ namespace scl
    *
    * There are specific force sub-types derived from this basic force.
    * Contact force; collision force etc. */
-  struct SForce : public SObject
+  class SForce : public SObject
   {
+  public:
     // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.
     // See http://eigen.tuxfamily.org/dox/StructHavingEigenMembers.html
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -111,8 +112,9 @@ namespace scl
    *                        must use some form of propulsion to stabilize its base.
    *                        The propulsion mechanism must then conserve momentum.
    */
-  struct SForceContact : public SForce
+  class SForceContact : public SForce
   {
+  public:
     // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.
     // See http://eigen.tuxfamily.org/dox/StructHavingEigenMembers.html
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

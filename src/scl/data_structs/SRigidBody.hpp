@@ -91,7 +91,7 @@ public:
  * a robot link. Each robot is completely defined by a tree of such 
  * links.
  */
-struct SRigidBody : SObject
+class SRigidBody : public SObject
 {
 public:    
   // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.

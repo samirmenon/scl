@@ -61,8 +61,9 @@ namespace scl {
  * simulation.
  *
  * Supports name based robot data lookup. */
-struct SParserData
+class SParserData
 {
+public:
   /** Contains all the parsed graphics views. */
   sutil::CMappedList<std::string,SGraphicsParsed> graphics_worlds_;
 
@@ -178,8 +179,9 @@ public:
  * NOTE : The chai graphics are NOT compiled into scl's dynamic lib.
  * To enable chai graphics while building an "application/executable",
  * be sure to link with the chai library. */
-struct SGuiData
+class SGuiData
 {
+public:
   // Eigen requires redefining the new operator for classes that contain fixed size Eigen member-data.
   // See http://eigen.tuxfamily.org/dox/StructHavingEigenMembers.html
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -224,8 +226,9 @@ struct SGuiData
  * Input Data : Sensor data from a robot. Simulation logs.
  * Output Data : Actuator command torques. Simulation forces.
  */
-struct SIOData
+class SIOData
 {
+public:
   /** A pile of io data objects containing robot sensor + actuator data.
    * String ID = Robot name
    * Each robot thus has a unique IO data structure. */
