@@ -122,7 +122,8 @@ namespace scl
   typedef enum {
     RENDER_TYPE_SPHERE = 0,
     RENDER_TYPE_CYLINDER = 1,
-    RENDER_TYPE_ELLIPSOID = 2
+    RENDER_TYPE_ELLIPSOID = 2,
+    RENDER_TYPE_NOTASSIGNED = -1
   }ERenderType;
 
   ///////////////////////////////////////////////////////////////
