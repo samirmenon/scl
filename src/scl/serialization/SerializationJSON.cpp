@@ -114,4 +114,83 @@ namespace scl
 
   template<> bool serializeToJSON<SUIParsed>(const SUIParsed &arg_obj, Json::Value &ret_json_val)
   {  return false;  }
+
+  /** *****************************************************************************
+   *                        Deserialize data to an object
+   * **************************************************************************** */
+  template<> bool deserializeFromJSON<SActuatorSetMuscleParsed>(SActuatorSetMuscleParsed &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SActuatorSetParsed>(SActuatorSetParsed &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SDatabase>(SDatabase &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SForce>(SForce &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SGcModel>(SGcModel &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SGraphicsParsed>(SGraphicsParsed &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val)
+  {
+    ret_obj.has_been_init_ = arg_json_val.get("has_been_init",false).asBool();
+    ret_obj.name_ = arg_json_val.get("name","").asString();
+    // Type is hard-wired by the associated subclass..
+    return true;
+  }
+
+  template<> bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val)
+  {
+    bool flag = deserializeFromJSON(*dynamic_cast<const SObject*>(&ret_obj), arg_json_val);
+    if(!flag) { return false; }
+
+//    arg_json_val["collision_type"] = ret_obj.collision_type_;
+//    scl_util::eigentoStringArrayJSON(ret_obj.com_, str);
+//    json_reader.parse(str, arg_json_val["com"]);
+//    arg_json_val["force_gc_lim_lower"] = ret_obj.force_gc_lim_lower_;
+//    arg_json_val["force_gc_lim_upper"] = ret_obj.force_gc_lim_upper_;
+//    arg_json_val["friction_gc_kv"] = ret_obj.friction_gc_kv_;
+//    scl_util::eigentoStringArrayJSON(ret_obj.inertia_, str);
+//    json_reader.parse(str, arg_json_val["inertia"]);
+//    arg_json_val["inertia_gc"] = ret_obj.inertia_gc_;
+//    arg_json_val["is_root"] = ret_obj.is_root_;
+//    arg_json_val["joint_default_pos"] = ret_obj.joint_default_pos_;
+//    arg_json_val["joint_limit_lower"] = ret_obj.joint_limit_lower_;
+//    arg_json_val["joint_limit_upper"] = ret_obj.joint_limit_upper_;
+//    arg_json_val["joint_name"] = ret_obj.joint_name_;
+//    arg_json_val["joint_type"] = ret_obj.joint_type_;
+//    arg_json_val["link_id"] = ret_obj.link_id_;
+//    arg_json_val["link_is_fixed"] = ret_obj.link_is_fixed_;
+//    arg_json_val["mass"] = ret_obj.mass_;
+//    scl_util::eigentoStringArrayJSON(ret_obj.ori_parent_quat_, str);
+//    json_reader.parse(str, arg_json_val["ori_parent_quat"]);
+//    arg_json_val["parent_name"] = ret_obj.parent_name_;
+//    scl_util::eigentoStringArrayJSON(ret_obj.pos_in_parent_, str);
+//    json_reader.parse(str, arg_json_val["pos_in_parent"]);
+//    arg_json_val["render_type"] = ret_obj.render_type_;
+//    arg_json_val["robot_name"] = ret_obj.robot_name_;
+//    arg_json_val["stiction_gc_force_lower"] = ret_obj.stiction_gc_force_lower_;
+//    arg_json_val["stiction_gc_force_upper"] = ret_obj.stiction_gc_force_upper_;
+//    arg_json_val["stiction_gc_vel_lower"] = ret_obj.stiction_gc_vel_lower_;
+//    arg_json_val["stiction_gc_vel_upper"] = ret_obj.stiction_gc_vel_upper_;
+
+    return flag;
+  }
+
+  template<> bool deserializeFromJSON<SRigidBodyDyn>(SRigidBodyDyn &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SRobotIO>(SRobotIO &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SRobotParsed>(SRobotParsed &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SUIParsed>(SUIParsed &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
 }

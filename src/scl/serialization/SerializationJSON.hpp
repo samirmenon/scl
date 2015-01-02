@@ -88,27 +88,39 @@ namespace scl
    * If efficiency is your thing (i.e., you are calling this object on a regular
    * basis) then use the actual JSON value. */
   template <typename T>
-  bool serializeToJSONString(const T &arg_obj, std::string &ret_str, bool style_fast=true)
-  {
-    Json::Value json_val;
-    if( serializeToJSON(arg_obj, json_val) )
-    {
-      if(style_fast)
-      {
-        Json::FastWriter json_writer;
-        ret_str = json_writer.write(json_val);
-      }
-      else
-      {
-        Json::StyledWriter json_writer;
-        ret_str = json_writer.write(json_val);
-      }
-      return true;
-    }
-    ret_str = "";
-    return false;
-  }
+  bool serializeToJSONString(const T &arg_obj, std::string &ret_str, bool style_fast=true);
 
+  /** *****************************************************************************
+   *                        Deserialize data to an object
+   * **************************************************************************** */
+  /** Deserialize object from JSON value.
+   *  Also see comment for the serialize function to understand design decisions.. */
+  template <typename T>
+  bool deserializeFromJSON(T &ret_obj, const Json::Value &arg_json_val)
+  { return false; }
+
+  /** Overload the function to handle mapped lists.
+   *  Also see comment for the serialize function to understand design decisions..
+   *  (Implemented in the same file further below).. */
+  template <typename T>
+  bool deserializeFromJSON(sutil::CMappedList<std::string,T> &ret_mlist, const Json::Value &arg_json_val);
+
+  /** Deserialize object from JSON string. Note strings are also YAML compatible.
+   * This is merely a convenience wrapper around the actual JSON value object.
+   * If efficiency is your thing (i.e., you are calling this object on a regular
+   * basis) then use the actual JSON value. */
+  template <typename T>
+  bool deserializeFromJSONString(T &ret_obj, const std::string &arg_str);
+
+
+  /** *****************************************************************************
+   * *****************************************************************************
+   *                          *******************************
+   *                           Random implementation details:
+   *                                     Serializer
+   *                          *******************************
+   * *****************************************************************************
+   * ***************************************************************************** */
   // This looks complicated, but helps speed up compilation. Not setting this flag marks the template
   // specialization functions as extern for client apps, which means that they won't be compiled.
   // Only the scl_lib will set this flag, and will compile all the specialized functions (from the cpp file).
@@ -126,13 +138,14 @@ namespace scl
   extern template bool serializeToJSON<SRobotIO>(const SRobotIO &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SRobotParsed>(const SRobotParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SUIParsed>(const SUIParsed &arg_obj, Json::Value &ret_json_val);
-  //extern template bool serializeToJSON<SVirtualLinkage>(const SVirtualLinkage &arg_obj, Json::Value &ret_json_val);
 #endif
 
   template <typename T> bool serializeToJSON(const sutil::CMappedList<std::string,T> &arg_mlist, Json::Value &ret_json_val)
   {
     //Set the returned value to an empty array
     ret_json_val["data"] = Json::Value(Json::arrayValue);
+
+    //Add the index and object values for each entry
     auto it = arg_mlist.begin(), ite = arg_mlist.end();
     for(int i=0;it!=ite;++it,++i)
     {
@@ -163,6 +176,69 @@ namespace scl
     }
 
     return true;
+  }
+
+  template <typename T>
+  bool serializeToJSONString(const T &arg_obj, std::string &ret_str, bool style_fast)
+  {
+    Json::Value json_val;
+    if( serializeToJSON(arg_obj, json_val) )
+    {
+      if(style_fast)
+      {
+        Json::FastWriter json_writer;
+        ret_str = json_writer.write(json_val);
+      }
+      else
+      {
+        Json::StyledWriter json_writer;
+        ret_str = json_writer.write(json_val);
+      }
+      return true;
+    }
+    ret_str = "";
+    return false;
+  }
+
+  /** *****************************************************************************
+   *                          *******************************
+   *                           Random implementation details:
+   *                                     Serializer
+   *                          *******************************
+   * **************************************************************************** */
+  // This looks complicated, but helps speed up compilation. Not setting this flag marks the template
+  // specialization functions as extern for client apps, which means that they won't be compiled.
+  // Only the scl_lib will set this flag, and will compile all the specialized functions (from the cpp file).
+#ifndef SCL_LIBRARY_COMPILE_FLAG
+  extern template bool deserializeFromJSON<SActuatorSetMuscleParsed>(SActuatorSetMuscleParsed &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SActuatorSetParsed>(SActuatorSetParsed &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SDatabase>(SDatabase &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SForce>(SForce &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SGcModel>(SGcModel &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SGraphicsParsed>(SGraphicsParsed &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SRigidBodyDyn>(SRigidBodyDyn &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SRobotIO>(SRobotIO &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SRobotParsed>(SRobotParsed &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SUIParsed>(SUIParsed &ret_obj, const Json::Value &arg_json_val);
+#endif
+
+  template <typename T> bool deserializeFromJSON(sutil::CMappedList<std::string,T> &ret_mlist, const Json::Value &arg_json_val)
+  { return false; }
+
+  template <typename T>
+  bool deserializeFromJSONString(T &ret_obj, const std::string &arg_str)
+  {
+    Json::Value json_val;
+    Json::Reader json_reader;
+
+    if(!json_reader.parse(arg_str,json_val))
+    { return false; }
+
+    bool flag = deserializeFromJSON(ret_obj, json_val);
+    return flag;
   }
 
 }
