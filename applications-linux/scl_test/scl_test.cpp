@@ -31,6 +31,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include "test_random_stuff.hpp"
 //Robot parser base tests
 #include "test_scl_parser.hpp"
+//Serialization tests
+#include "test_serialization_json.hpp"
 //Matrix and lin-alg test
 #include "test_math.hpp"
 //Controller tests
@@ -92,6 +94,16 @@ int main(int argc, char** argv)
           <<sutil::CSystemClock::getSysTime()<<" "
           <<sutil::CSystemClock::getSimTime()<<"]";
       scl_test::test_scl_parser(id);
+      scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Scl JSON Serialization/deserialization
+      std::cout<<"\n\nTest #"<<id<<". Scl JSON Serialization [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime()<<" "
+          <<sutil::CSystemClock::getSimTime()<<"]";
+      scl_test::test_serialization_json(id);
       scl::CDatabase::resetData(); sutil::CRegisteredDynamicTypes<std::string>::resetDynamicTypes();
     }
     ++id;
