@@ -67,9 +67,9 @@ namespace scl
     bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
     if(!flag) { return false; }
 
-    std::stringstream ss;
     Json::Reader json_reader;
     std::string str;
+
     ret_json_val["collision_type"] = arg_obj.collision_type_;
     scl_util::eigentoStringArrayJSON(arg_obj.com_, str);
     json_reader.parse(str, ret_json_val["com"]);
@@ -88,9 +88,6 @@ namespace scl
     ret_json_val["link_id"] = arg_obj.link_id_;
     ret_json_val["link_is_fixed"] = arg_obj.link_is_fixed_;
     ret_json_val["mass"] = arg_obj.mass_;
-    ss << arg_obj.ori_parent_quat_.x()<<" "<<arg_obj.ori_parent_quat_.y()<<" "
-        <<arg_obj.ori_parent_quat_.z()<<" "<<arg_obj.ori_parent_quat_.w();
-    ret_json_val["ori_parent_quat"] = ss.str(); ss.str(std::string());
     scl_util::eigentoStringArrayJSON(arg_obj.ori_parent_quat_, str);
     json_reader.parse(str, ret_json_val["ori_parent_quat"]);
     ret_json_val["parent_name"] = arg_obj.parent_name_;

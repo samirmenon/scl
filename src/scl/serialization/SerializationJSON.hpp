@@ -64,6 +64,20 @@ namespace scl
   bool serializeToJSON(const T &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
+  /** Overload the function to handle mapped lists.
+   *
+   * Note: This isn't a nice (read straightforward) process. Ideally this would
+   * involve a partial specialization of the template function above. However,
+   * C++ doesn't allow partial specialization for functions. So we have to instead
+   * overload the function to get the desired results.
+   * Notably, some people caution against this sort of stuff (Herb Sutter).
+   * NOTE TODO : Find a better solution to this if possible.
+   *
+   * (Implemented in the same file further below)..
+   */
+  template <typename T>
+  bool serializeToJSON(const sutil::CMappedList<std::string,T> &arg_mlist, Json::Value &ret_json_val);
+
   /** Serialize object into JSON string. Note strings are also YAML compatible.
    *
    * This is merely a convenience wrapper around the actual JSON value object.
@@ -114,6 +128,43 @@ namespace scl
   extern template bool serializeToJSON<SUIParsed>(const SUIParsed &arg_obj, Json::Value &ret_json_val);
   //extern template bool serializeToJSON<SVirtualLinkage>(const SVirtualLinkage &arg_obj, Json::Value &ret_json_val);
 #endif
+
+  template <typename T> bool serializeToJSON(const sutil::CMappedList<std::string,T> &arg_mlist, Json::Value &ret_json_val)
+  {
+    //Set the returned value to an empty array
+    ret_json_val["data"] = Json::Value(Json::arrayValue);
+    auto it = arg_mlist.begin(), ite = arg_mlist.end();
+    for(int i=0;it!=ite;++it,++i)
+    {
+      // Temps for code clarity
+      const T& data = *it;
+      const std::string& index = !it;
+      Json::Value &val = ret_json_val["data"][i];
+
+      if(false == serializeToJSON(*it, val["obj"]))
+      { ret_json_val = Json::Value(Json::arrayValue); return false; }
+
+      val["idx"] = index;
+    }
+
+    //Add sorting information if present.
+    if(arg_mlist.isSorted())
+    {
+      ret_json_val["is_sorted"] = arg_mlist.isSorted();
+      std::vector<std::string> sort_order;
+      if(false == arg_mlist.sort_get_order(sort_order))
+      { return false; }
+
+      ret_json_val["sort_order"] = Json::Value(Json::arrayValue);
+      // C++11 auto iterator (compact!)
+      for (auto&& element: sort_order) {
+        ret_json_val["sort_order"].append(element);
+      }
+    }
+
+    return true;
+  }
+
 }
 
 
