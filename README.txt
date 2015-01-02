@@ -20,6 +20,14 @@ I will assume you will get this on to your documents folder. Again, on the termi
 $ cd ~/Documents
 $ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-manips-v2.git scl-manips-v2.git
 
+=== Optional : Check out a stable version of the code ===
+$ git tag -l
+
+Then pick whatever tag (stable point) you want. Preferably pick the most recent one.
+$ git checkout -b tag-v0.9 tags/v0.9
+
+Unless you have some experience coding, you should consider using a stable version of the code.
+
 === 3. Compile all the libraries.  ===
 Compile the scl library and related 3rdparty libraries (Chai-graphics, yaml) all in one step
 
