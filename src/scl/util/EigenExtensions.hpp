@@ -279,8 +279,7 @@ namespace scl_util
    *
    * Input JSON: [x,y,z,w]
    *
-   * Output : Eigen quaternion
-   */
+   * Output : Eigen quaternion */
   template<typename Derived>
   bool eigenFromJSON(Eigen::QuaternionBase<Derived>& q, const Json::Value &jval)
   {
