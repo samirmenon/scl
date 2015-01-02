@@ -40,6 +40,13 @@ namespace scl_util
    *
    * Format [ row ; second-row; third-row ]
    *
+   * Input matrix:
+   *     1 2 3
+   *     4 5 6
+   *     7 8 9
+   *
+   * Output (always row-major) : [1, 2, 3; 4, 5, 6; 7, 8, 9]
+   *
    * Useful for serialization and deserialization. */
   template<typename Derived>
   void eigentoStringMatlab(const Eigen::MatrixBase<Derived>& x, std::string& arg_str)
@@ -61,6 +68,14 @@ namespace scl_util
   /** Convert an Eigen Matrix into a linear array of numbers.
    *
    * Useful for serialization and deserialization.
+   *
+   * Input matrix:
+   *     1 2 3
+   *     4 5 6
+   *     7 8 9
+   *
+   * Output Row-major : 1 2 3 4 5 6 7 8 9
+   * Output Col-major : 1 4 7 2 5 8 3 6 9
    *
    * NOTE : This leads to a loss of information regarding the size of the matrix!!!
    *        Use with care.. */
@@ -93,6 +108,58 @@ namespace scl_util
           ss.str(std::string());
         }
       }
+    }
+  }
+
+  /** Convert an Eigen Matrix into an array of arrays
+   *
+   * Input matrix:
+   *     1 2 3
+   *     4 5 6
+   *     7 8 9
+   *
+   * Output Row-major : [[1, 2, 3],[4, 5, 6],[7, 8, 9]]
+   * Output Col-major : [[1, 4, 7],[2, 5, 8],[3, 6, 9]]
+   *
+   * Useful for serialization and deserialization.
+   *
+   * NOTE : This leads to a loss of information regarding the size of the matrix!!!
+   *        Use with care.. */
+  template<typename Derived>
+  void eigentoStringArrayOfArrays(const Eigen::MatrixBase<Derived>& x, std::string& arg_str, bool row_major=true)
+  {
+    std::stringstream ss;
+    bool flag = false;
+    arg_str = "[";
+    if(row_major)
+    {// [1 2 3; 4 5 6] == [ [1, 2, 3], [4, 5, 6] ]
+      for(int i=0;i<x.rows();++i){
+        if(i>0) arg_str.append(",[");
+        else arg_str.append("[");
+        for(int j=0;j<x.cols();++j){
+          ss<<x(i,j);
+          if(j>0) arg_str.append(", ");
+          arg_str.append(ss.str());
+          ss.str(std::string());
+        }
+        arg_str.append("]");
+      }
+      arg_str.append("]");
+    }
+    else
+    {// [1 2 3; 4 5 6] == 1 4 2 5 3 6
+      for(int j=0;j<x.cols();++j){
+        if(j>0) arg_str.append(",[");
+        else arg_str.append("[");
+        for(int i=0;i<x.rows();++i){
+          ss<<x(i,j);
+          if(i>0) arg_str.append(", ");
+          arg_str.append(ss.str());
+          ss.str(std::string());
+        }
+        arg_str.append("]");
+      }
+      arg_str.append("]");
     }
   }
 
