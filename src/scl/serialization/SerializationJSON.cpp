@@ -81,8 +81,8 @@ namespace scl
 
   template<> bool serializeToJSON<SObject>(const SObject &arg_obj, Json::Value &ret_json_val)
   {
-    ret_json_val["has_been_init_"] = arg_obj.hasBeenInit();
-    ret_json_val["name_"] = arg_obj.getName();
+    MACRO_SER_ARGOBJ_RETJSONVAL(has_been_init_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_)
     ret_json_val["type_"] = arg_obj.getType();
     return true;
   }
@@ -96,33 +96,33 @@ namespace scl
     std::string str;
 
     //Read in the standard types (supported by json)
-    MACRO_SER_ARGOBJ_RETJSONVAL(collision_type_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(force_gc_lim_lower_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(force_gc_lim_upper_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(friction_gc_kv_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(inertia_gc_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(is_root_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(joint_default_pos_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(joint_limit_lower_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(joint_limit_upper_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(joint_name_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(joint_type_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(link_id_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(link_is_fixed_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(mass_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(parent_name_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(render_type_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(robot_name_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_force_lower_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_force_upper_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_vel_lower_);
-    MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_vel_upper_);
+    MACRO_SER_ARGOBJ_RETJSONVAL(collision_type_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(force_gc_lim_lower_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(force_gc_lim_upper_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(friction_gc_kv_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(inertia_gc_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(is_root_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(joint_default_pos_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(joint_limit_lower_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(joint_limit_upper_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(joint_name_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(joint_type_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(link_id_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(link_is_fixed_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(mass_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(parent_name_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(render_type_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(robot_name_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_force_lower_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_force_upper_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_vel_lower_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_vel_upper_)
 
     //Read in the Eigen matrix types..
-    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(com_);
-    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(inertia_);
-    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ori_parent_quat_);
-    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(pos_in_parent_);
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(com_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(inertia_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ori_parent_quat_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(pos_in_parent_)
 
     return flag;
   }
@@ -162,8 +162,8 @@ namespace scl
 
   template<> bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val)
   {
-    MACRO_DESER_RETOBJ_ARGJSONVAL(has_been_init_,asBool);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(name_,asString);
+    MACRO_DESER_RETOBJ_ARGJSONVAL(has_been_init_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(name_,asString)
     return true;
   }
 
@@ -173,25 +173,25 @@ namespace scl
     if(!flag){ return false; }
 
     //Read in the standard types (supported by json)
-    MACRO_DESER_RETOBJ_ARGJSONVAL(collision_type_,asInt);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(force_gc_lim_lower_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(force_gc_lim_upper_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(friction_gc_kv_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(inertia_gc_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(is_root_,asBool);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(joint_default_pos_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(joint_limit_lower_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(joint_limit_upper_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(joint_name_,asString);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(link_id_,asInt);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(link_is_fixed_,asBool);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(mass_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(parent_name_,asString);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(robot_name_,asString);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(stiction_gc_force_lower_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(stiction_gc_force_upper_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(stiction_gc_vel_lower_,asDouble);
-    MACRO_DESER_RETOBJ_ARGJSONVAL(stiction_gc_vel_upper_,asDouble);
+    MACRO_DESER_RETOBJ_ARGJSONVAL(collision_type_,asInt)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(force_gc_lim_lower_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(force_gc_lim_upper_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(friction_gc_kv_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(inertia_gc_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(is_root_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(joint_default_pos_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(joint_limit_lower_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(joint_limit_upper_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(joint_name_,asString)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(link_id_,asInt)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(link_is_fixed_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(mass_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(parent_name_,asString)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(robot_name_,asString)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(stiction_gc_force_lower_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(stiction_gc_force_upper_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(stiction_gc_vel_lower_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(stiction_gc_vel_upper_,asDouble)
 
     //Special cases. Too much work to make a macro..
     if(!arg_json_val.isMember("joint_type_")) return false;
