@@ -41,9 +41,9 @@ SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
 INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR})
 
 #Set the compilation flags
-SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp")
-SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -O0 -pg -std=c++0x -DGRAPHICS_ON -DASSERT=assert -DDEBUG=1")
-SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
+SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp -std=c++11")
+SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -O0 -pg -DGRAPHICS_ON -DASSERT=assert -DDEBUG=1")
+SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
 
 #Set all the sources required for the library
 SET(TEST_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_test/)
