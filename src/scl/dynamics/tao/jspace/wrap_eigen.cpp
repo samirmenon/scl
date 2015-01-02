@@ -21,10 +21,12 @@
 /**
    \file jspace/wrap_eigen.cpp
    \author Roland Philippsen
+   \edited (Jan 2015) Samir Menon <smenon@stanford.edu>
 */
 
 #include "wrap_eigen.hpp"
 #include <stdio.h>
+#include <cmath>
 
 using namespace std;
 
@@ -104,13 +106,13 @@ namespace jspace {
     static char buf[buflen];
     memset(buf, 0, sizeof(buf));
 #ifndef WIN32
-    if (isinf(vv)) {
+    if (std::isinf(vv)) {
       snprintf(buf, buflen-1, " inf    ");
     }
-    else if (isnan(vv)) {
+    else if (std::isnan(vv)) {
       snprintf(buf, buflen-1, " nan    ");
     }
-    else if (fabs(fmod(vv, 1)) < 1e-6) {
+    else if (std::fabs(fmod(vv, 1)) < 1e-6) {
       snprintf(buf, buflen-1, "%- 7d  ", static_cast<int>(rint(vv)));
     }
     else {
