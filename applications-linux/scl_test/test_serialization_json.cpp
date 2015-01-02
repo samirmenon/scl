@@ -104,7 +104,7 @@ namespace scl_test
       std::cout<<"\nTest Result ("<<r_id++<<")  : Deserialized SRigidBody object from JSON value : "<<std::endl;
       std::cout<<"  My name should be bobo. Name : "<<rb.name_<<std::endl;
 
-      //5. Deserialize object from JSON string (we will re-use the str from above)
+      //6. Deserialize object from JSON string (we will re-use the str from above)
       rb.name_ = "Bobo Nomo";
       scl::serializeToJSONString(rb,str); //This just worked. So won't check again.
       Json::Reader json_reader;
@@ -114,6 +114,41 @@ namespace scl_test
       if(!flag) { throw(std::runtime_error("Could not deserialize SRigidBody from JSON value")); }
       std::cout<<"\nTest Result ("<<r_id++<<")  : Deserialized SRigidBody object from JSON value obtained from a JSON string : "<<std::endl;
       std::cout<<"  I am bobo no mo. Name : "<<rb.name_<<std::endl;
+
+      //7. Serialize a complex object that includes mapped lists etc. to a JSON string
+      scl::SMusclePointParsed muscle_pt;
+      muscle_pt.parent_link_ = "bobo";
+      muscle_pt.pos_in_parent_<<1, 1, 1;
+      muscle_pt.position_on_muscle_ = 0;
+
+      scl::SMuscleParsed muscle;
+      muscle.points_.push_back(muscle_pt);
+      muscle_pt.position_on_muscle_ = 1;
+      muscle.points_.push_back(muscle_pt);
+      muscle_pt.position_on_muscle_ = 2;
+      muscle.points_.push_back(muscle_pt);
+
+
+      scl::SActuatorSetMuscleParsed actsetm;
+      muscle.name_ = "m0";
+      actsetm.muscles_.create(muscle.name_,muscle);
+      muscle.name_ = "m1";
+      actsetm.muscles_.create(muscle.name_,muscle);
+      muscle.name_ = "m2";
+      actsetm.muscles_.create(muscle.name_,muscle);
+
+      actsetm.muscle_id_to_name_.push_back("m0");
+      actsetm.muscle_id_to_name_.push_back("m1");
+      actsetm.muscle_id_to_name_.push_back("m2");
+
+      actsetm.muscle_name_to_id_.create("m0",0,false);
+      actsetm.muscle_name_to_id_.create("m1",1,false);
+      actsetm.muscle_name_to_id_.create("m2",2,false);
+
+      flag = scl::serializeToJSONString(actsetm,str,false);
+      if(!flag) { throw(std::runtime_error("Could not serialize SActuatorSetMuscleParsed to human-readable JSON string")); }
+      std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SActuatorSetMuscleParsed object to human-readable JSON string : "<<std::endl;
+      std::cout<<str<<std::endl;
 
       std::cout<<"\nTest #"<<id<<" : Succeeded.";
     }
