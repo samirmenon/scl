@@ -35,6 +35,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl_util
 {
   /** Convert an Eigen Matrix into a matlab style string.
+   * Uses row-major, with commas to separate row-values and
+   * semi-colons to separate col values.
+   *
+   * Format [ row ; second-row; third-row ]
    *
    * Useful for serialization and deserialization. */
   template<typename Derived>
@@ -67,7 +71,7 @@ namespace scl_util
     bool flag = false;
     arg_str = "";
     if(row_major)
-    {
+    {// [1 2 3; 4 5 6] == 1 2 3 4 5 6
       for(int i=0;i<x.rows();++i){
         for(int j=0;j<x.cols();++j){
           ss<<x(i,j);
@@ -79,7 +83,7 @@ namespace scl_util
       }
     }
     else
-    {
+    {// [1 2 3; 4 5 6] == 1 4 2 5 3 6
       for(int j=0;j<x.cols();++j){
         for(int i=0;i<x.rows();++i){
           ss<<x(i,j);
