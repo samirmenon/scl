@@ -125,6 +125,9 @@ namespace scl
   // specialization functions as extern for client apps, which means that they won't be compiled.
   // Only the scl_lib will set this flag, and will compile all the specialized functions (from the cpp file).
 #ifndef SCL_LIBRARY_COMPILE_FLAG
+  extern template bool serializeToJSON<sUInt>(const sUInt &arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SMusclePointParsed>(const SMusclePointParsed &arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SMuscleParsed>(const SMuscleParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SActuatorSetMuscleParsed>(const SActuatorSetMuscleParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SActuatorSetParsed>(const SActuatorSetParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SDatabase>(const SDatabase &arg_obj, Json::Value &ret_json_val);
@@ -143,7 +146,7 @@ namespace scl
   template <typename T> bool serializeToJSON(const sutil::CMappedList<std::string,T> &arg_mlist, Json::Value &ret_json_val)
   {
     //Set the returned value to an empty array
-    ret_json_val["data"] = Json::Value(Json::arrayValue);
+    ret_json_val["mappedlist"] = Json::Value(Json::arrayValue);
 
     //Add the index and object values for each entry
     auto it = arg_mlist.begin(), ite = arg_mlist.end();
@@ -152,7 +155,7 @@ namespace scl
       // Temps for code clarity
       const T& data = *it;
       const std::string& index = !it;
-      Json::Value &val = ret_json_val["data"][i];
+      Json::Value &val = ret_json_val["mappedlist"][i];
 
       if(false == serializeToJSON(*it, val["obj"]))
       { ret_json_val = Json::Value(Json::arrayValue); return false; }
@@ -210,6 +213,8 @@ namespace scl
   // specialization functions as extern for client apps, which means that they won't be compiled.
   // Only the scl_lib will set this flag, and will compile all the specialized functions (from the cpp file).
 #ifndef SCL_LIBRARY_COMPILE_FLAG
+  extern template bool deserializeFromJSON<SMusclePointParsed>(SMusclePointParsed &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SMuscleParsed>(SMuscleParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SActuatorSetMuscleParsed>(SActuatorSetMuscleParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SActuatorSetParsed>(SActuatorSetParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SDatabase>(SDatabase &ret_obj, const Json::Value &arg_json_val);

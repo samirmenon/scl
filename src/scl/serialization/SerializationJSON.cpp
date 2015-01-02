@@ -44,6 +44,12 @@ namespace scl
 
 #define MACRO_SER_ARGOBJ_RETJSONVAL(AAA) ret_json_val[#AAA] = arg_obj.AAA;
 
+#define MACRO_SER_ARGOBJ_RETJSONVAL_MList(AAA) \
+    if(!serializeToJSON(arg_obj.AAA, ret_json_val[#AAA])) { \
+      std::cout<<"\n serializeToJSON() Error : Could not serialize : "<<#AAA<<std::flush; \
+      return false; \
+    }
+
 #define MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(AAA) \
   scl_util::eigentoStringArrayJSON(arg_obj.AAA, str); \
   json_reader.parse(str, ret_json_val[#AAA]);
@@ -71,8 +77,69 @@ namespace scl
   /** *****************************************************************************
    *                          Serialize data to a string
    * **************************************************************************** */
+  template<> bool serializeToJSON<sUInt>(const sUInt &arg_obj, Json::Value &ret_json_val)
+  { ret_json_val = arg_obj; return true; }
+
+  template<> bool serializeToJSON<SMusclePointParsed>(const SMusclePointParsed &arg_obj, Json::Value &ret_json_val)
+  {
+    std::string str;
+    Json::Reader json_reader;
+
+    MACRO_SER_ARGOBJ_RETJSONVAL(parent_link_);
+    MACRO_SER_ARGOBJ_RETJSONVAL(position_on_muscle_);
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(pos_in_parent_);
+
+    return true;
+  }
+
+  template<> bool serializeToJSON<SMuscleParsed>(const SMuscleParsed &arg_obj, Json::Value &ret_json_val)
+  {
+    //Typical data
+    MACRO_SER_ARGOBJ_RETJSONVAL(optimal_fiber_length_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(tendon_slack_length_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(pennation_angle_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(activation_time_constt_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(max_contraction_vel_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(deactivation_time_constt_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(max_contraction_vel_low_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(max_contraction_vel_high_ )
+    MACRO_SER_ARGOBJ_RETJSONVAL(max_tendon_strain_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(max_muscle_strain_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(stiffness_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(damping_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(stiffness_tendon_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(muscle_type_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_)
+
+    // Std vector of strings (iterable)
+    ret_json_val["points_"] = Json::Value(Json::arrayValue);
+    // C++11 auto iterator (compact!)
+    for (auto&& element: arg_obj.points_) {
+      Json::Value tmp;
+      serializeToJSON(element,tmp);
+      ret_json_val["points_"].append(tmp);
+    }
+
+    return true;
+  }
+
   template<> bool serializeToJSON<SActuatorSetMuscleParsed>(const SActuatorSetMuscleParsed &arg_obj, Json::Value &ret_json_val)
-  {  return false;  }
+  {
+    //Typical data
+    MACRO_SER_ARGOBJ_RETJSONVAL(render_muscle_thickness_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(render_muscle_via_pt_sz_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MList(muscles_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MList(muscle_name_to_id_)
+
+    // Std vector of strings (iterable)
+    ret_json_val["muscle_id_to_name_"] = Json::Value(Json::arrayValue);
+    // C++11 auto iterator (compact!)
+    for (auto&& element: arg_obj.muscle_id_to_name_) {
+      ret_json_val["muscle_id_to_name_"].append(element);
+    }
+
+    return true;
+  }
 
   template<> bool serializeToJSON<SActuatorSetParsed>(const SActuatorSetParsed &arg_obj, Json::Value &ret_json_val)
   {  return false;  }
@@ -152,6 +219,12 @@ namespace scl
   /** *****************************************************************************
    *                        Deserialize data to an object
    * **************************************************************************** */
+  template<> bool deserializeFromJSON<SMusclePointParsed>(SMusclePointParsed &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SMuscleParsed>(SMuscleParsed &ret_obj, const Json::Value &arg_json_val)
+  {  return false;  }
+
   template<> bool deserializeFromJSON<SActuatorSetMuscleParsed>(SActuatorSetMuscleParsed &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
