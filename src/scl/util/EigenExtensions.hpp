@@ -111,56 +111,121 @@ namespace scl_util
     }
   }
 
-  /** Convert an Eigen Matrix into an array of arrays
+  /** Convert an Eigen Matrix into a JSON array or array of arrays
+   *
+   * While this format is more expressive than Matlab, we will
+   * assume the same convention of always using row-major.
+   *
+   * As an exception, since Eigen stores Vectors as Matrices, we
+   * will always store vectors in an array. By default a vector is
+   * always assumed to be in a column; matches Eigen's formatting.
    *
    * Input matrix:
    *     1 2 3
    *     4 5 6
    *     7 8 9
    *
-   * Output Row-major : [[1, 2, 3],[4, 5, 6],[7, 8, 9]]
-   * Output Col-major : [[1, 4, 7],[2, 5, 8],[3, 6, 9]]
+   * Output (Row-major) : [[1,2,3],[4,5,6],[7,8,9]]
    *
-   * Useful for serialization and deserialization.
+   * Input matrix: vector.transpose()
+   *     1 2 3
    *
-   * NOTE : This leads to a loss of information regarding the size of the matrix!!!
-   *        Use with care.. */
+   * Output (Row-major) : [1,2,3]
+   *
+   * Input matrix: vector
+   *     1
+   *     2
+   *     3
+   *
+   * Output (Col-major) : [1,2,3]
+   *
+   * Useful for serialization and deserialization. */
   template<typename Derived>
-  void eigentoStringArrayOfArrays(const Eigen::MatrixBase<Derived>& x, std::string& arg_str, bool row_major=true)
+  void eigentoStringArrayJSON(const Eigen::MatrixBase<Derived>& x, std::string& arg_str)
   {
     std::stringstream ss;
-    bool flag = false;
+    bool row_major = true;
+    if(x.cols() == 1) row_major = false; //This is a Vector!
     arg_str = "[";
     if(row_major)
     {// [1 2 3; 4 5 6] == [ [1, 2, 3], [4, 5, 6] ]
       for(int i=0;i<x.rows();++i){
-        if(i>0) arg_str.append(",[");
-        else arg_str.append("[");
+        if(x.rows() > 1){
+          // If it is only one row, don't need the second one
+          if(i>0) arg_str.append(",[");
+          else arg_str.append("[");
+        }
+        else if(i>0) arg_str.append(",");
         for(int j=0;j<x.cols();++j){
           ss<<x(i,j);
-          if(j>0) arg_str.append(", ");
+          if(j>0) arg_str.append(",");
           arg_str.append(ss.str());
           ss.str(std::string());
         }
-        arg_str.append("]");
+        if(x.rows() > 1){
+          // If it is only one row, don't need the second one
+          arg_str.append("]");
+        }
       }
       arg_str.append("]");
     }
     else
     {// [1 2 3; 4 5 6] == 1 4 2 5 3 6
       for(int j=0;j<x.cols();++j){
-        if(j>0) arg_str.append(",[");
-        else arg_str.append("[");
+        if(x.cols() > 1){
+          // If it is only one row, don't need the second one
+          if(j>0) arg_str.append(",[");
+          else arg_str.append("[");
+        }
+        else if(j>0) arg_str.append(",");
         for(int i=0;i<x.rows();++i){
           ss<<x(i,j);
-          if(i>0) arg_str.append(", ");
+          if(i>0) arg_str.append(",");
           arg_str.append(ss.str());
           ss.str(std::string());
         }
-        arg_str.append("]");
+        if(x.cols() > 1){
+          // If it is only one row, don't need the second one
+          arg_str.append("]");
+        }
       }
       arg_str.append("]");
     }
+  }
+
+  /** Convert an Eigen Quaternion into a JSON array
+   *
+   * Input matrix: quaternion
+   *
+   * Output (Row-major) : [x,y,z,w]
+   *
+   * Useful for serialization and deserialization. */
+  template<typename Derived>
+  void eigentoStringArrayJSON(const Eigen::QuaternionBase<Derived>& q, std::string& arg_str)
+  {
+    std::stringstream ss;
+    arg_str = "[";
+
+    ss<<q.x();
+    arg_str.append(ss.str());
+    ss.str(std::string());
+
+    ss<<q.y();
+    arg_str.append(",");
+    arg_str.append(ss.str());
+    ss.str(std::string());
+
+    ss<<q.z();
+    arg_str.append(",");
+    arg_str.append(ss.str());
+    ss.str(std::string());
+
+    ss<<q.w();
+    arg_str.append(",");
+    arg_str.append(ss.str());
+    ss.str(std::string());
+
+    arg_str.append("]");
   }
 
 }
