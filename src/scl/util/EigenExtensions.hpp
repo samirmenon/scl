@@ -32,6 +32,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef EIGENEXTENSIONS_HPP_
 #define EIGENEXTENSIONS_HPP_
 
+#include <Eigen/Core>
+#include <jsoncpp/json/json.h>
+
+#include <string>
+#include <sstream>
+
 namespace scl_util
 {
   /** Convert an Eigen Matrix into a matlab style string.
@@ -226,6 +232,67 @@ namespace scl_util
     ss.str(std::string());
 
     arg_str.append("]");
+  }
+
+  /** Initialize an Eigen Matrix from a JSON array or array of arrays
+   *
+   * Input (JSON) : [[1,2,3],[4,5,6],[7,8,9]]
+   * Eigen matrix:
+   *     1 2 3
+   *     4 5 6
+   *     7 8 9
+   *
+   * Input (JSON) : [1,2,3]
+   *
+   * Eigen vector:
+   *     1
+   *     2
+   *     3
+   */
+  template<typename Derived>
+  bool eigenFromJSON(Eigen::MatrixBase<Derived>& x, const Json::Value &jval)
+  {
+    if(!jval.isArray()) return false; //Must be an array..
+    unsigned int nrows = jval.size();
+    if(nrows < 1) return false; //Must have elements.
+
+    bool is_matrix = jval[0].isArray();
+    if(!is_matrix)
+    {
+      x.setIdentity(nrows,1);//Convert it into a vector.
+      for(int i=0;i<nrows;++i) x(i,0) = jval[i].asDouble();
+    }
+    else
+    {
+      unsigned int ncols = jval[0].size();
+      if(ncols < 1) return false; //Must have elements.
+      for(int i=0;i<nrows;++i){
+        if(ncols != jval[i].size()) return false;
+        for(int j=0;j<ncols;++j)
+          x(i,j) = jval[i][j].asDouble();
+      }
+    }
+    return true;
+  }
+
+  /** Extract an Eigen Quaternion from a JSON value
+   *
+   * Input JSON: [x,y,z,w]
+   *
+   * Output : Eigen quaternion
+   */
+  template<typename Derived>
+  bool eigenFromJSON(Eigen::QuaternionBase<Derived>& q, const Json::Value &jval)
+  {
+    if(!jval.isArray()) return false; //Must be an array..
+    if(4 != jval.size()) return false; //Must have 4 elements.
+
+    for(int i : {0,1,2,3})
+      if(!jval[i].isNumeric()) return false; //Elements must be scalars
+
+    q = Eigen::Quaternion<scl::sFloat>(jval[0].asDouble(),jval[1].asDouble(),jval[2].asDouble(),jval[3].asDouble());
+
+    return true;
   }
 
 }
