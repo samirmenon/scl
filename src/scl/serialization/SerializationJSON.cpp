@@ -56,6 +56,18 @@ namespace scl
     } \
     ret_obj.AAA = arg_json_val[#AAA].TTT();
 
+
+#define MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(AAA) \
+    if(!arg_json_val.isMember(#AAA)) { \
+      std::cout<<"\n deserializeFromJSON() Error : Could not find : "<<#AAA<<std::flush; \
+      return false; \
+    } \
+    flag = scl_util::eigenFromJSON(ret_obj.AAA, arg_json_val[#AAA]); \
+    if(!flag) { \
+      std::cout<<"\n deserializeFromJSON() Error : Could not deserialize : "<<#AAA<<std::flush; \
+      return false; \
+    }
+
   /** *****************************************************************************
    *                          Serialize data to a string
    * **************************************************************************** */
@@ -164,17 +176,6 @@ namespace scl
     MACRO_DESER_RETOBJ_ARGJSONVAL(name_,asString)
     return true;
   }
-
-#define MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(AAA) \
-    if(!arg_json_val.isMember(#AAA)) { \
-      std::cout<<"\n deserializeFromJSON() Error : Could not find : "<<#AAA<<std::flush; \
-      return false; \
-    } \
-    flag = scl_util::eigenFromJSON(ret_obj.AAA, arg_json_val[#AAA]); \
-    if(!flag) { \
-      std::cout<<"\n deserializeFromJSON() Error : Could not deserialize : "<<#AAA<<std::flush; \
-      return false; \
-    }
 
   template<> bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val)
   {
