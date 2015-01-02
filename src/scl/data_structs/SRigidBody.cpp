@@ -80,6 +80,7 @@ namespace scl
     ori_parent_quat_ = Eigen::Quaternion<sFloat>::Identity();
 
     graphics_obj_vec_.clear();
+    collision_type_ = 0;
     render_type_ = RENDER_TYPE_SPHERE;
   }
 }
