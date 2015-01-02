@@ -117,6 +117,9 @@ SET(DYN_SCL_SRC ${SCL_INC_DIR}/dynamics/scl/CDynamicsScl.cpp
 SET(SCL_PARSER_SRC ${SCL_INC_DIR}/parser/sclparser/CParserScl.cpp
                      ${SCL_INC_DIR}/parser/sclparser/tixml_parser/CParserSclTiXml.cpp
    )
+   
+SET(SCL_SERIALIZATION_SRC ${SCL_INC_DIR}/serialization/SerializationJSON.cpp
+   )
 
 SET(OSIM_PARSER_SRC ${SCL_INC_DIR}/parser/osimparser/CParserOsim.cpp
                     ${SCL_INC_DIR}/parser/osimparser/CParserOsimForOldFiles.cpp)
@@ -127,16 +130,19 @@ SET(TIXML_SRC ${TIXML_INC_DIR}/scl_tinyxml/scl_tinystr.cpp
             ${TIXML_INC_DIR}/scl_tinyxml/scl_tinyxmlerror.cpp
             ${TIXML_INC_DIR}/scl_tinyxml/scl_tinyxmlparser.cpp
    )
-ADD_DEFINITIONS(-DTIXML_USE_STL)
+ADD_DEFINITIONS(-DTIXML_USE_STL -std=c++11)
 
 SET(ALLSRC ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} 
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
            ${TAO_SRC} ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
            ${SCL_PARSER_SRC} ${OSIM_PARSER_SRC}
+           ${SCL_SERIALIZATION_SRC}
            ${TIXML_SRC})
 
 #Set the build mode to debug by default
 #SET(CMAKE_BUILD_TYPE Debug)
+
+ADD_DEFINITIONS( -DSCL_LIBRARY_COMPILE_FLAG=1 )
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
   #Add debug definitions
