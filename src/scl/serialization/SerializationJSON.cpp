@@ -39,7 +39,8 @@ namespace scl
    * **************************************************************************** */
   //Yes this is terrible. But seriously. Who the heck wants to write tons of useless code.
   //This is where a metacompiler would be useful. moc moc moc.. Sigh...
-  //NOTE TODO : Remove this when you write a script to autogen all this stuff...
+  // NOTE TODO : Remove this when you write a script to autogen all this stuff...
+  // NOTE TODO : C++1X might have features that does this sort of stuff.. Look into Document number: N3951.
 
 #define MACRO_SER_ARGOBJ_RETJSONVAL(AAA) ret_json_val[#AAA] = arg_obj.AAA;
 
@@ -54,9 +55,6 @@ namespace scl
       return false; \
     } \
     ret_obj.AAA = arg_json_val[#AAA].TTT();
-
-  //NOTE TODO : Finish this..
-#define MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(AAA)
 
   /** *****************************************************************************
    *                          Serialize data to a string
@@ -167,6 +165,17 @@ namespace scl
     return true;
   }
 
+#define MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(AAA) \
+    if(!arg_json_val.isMember(#AAA)) { \
+      std::cout<<"\n deserializeFromJSON() Error : Could not find : "<<#AAA<<std::flush; \
+      return false; \
+    } \
+    flag = scl_util::eigenFromJSON(ret_obj.AAA, arg_json_val[#AAA]); \
+    if(!flag) { \
+      std::cout<<"\n deserializeFromJSON() Error : Could not deserialize : "<<#AAA<<std::flush; \
+      return false; \
+    }
+
   template<> bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val)
   {
     bool flag = deserializeFromJSON(*dynamic_cast<const SObject*>(&ret_obj), arg_json_val);
@@ -199,6 +208,12 @@ namespace scl
 
     if(!arg_json_val.isMember("render_type_")) return false;
     ret_obj.render_type_ = static_cast<ERenderType> (arg_json_val["render_type"].asInt());
+
+    //Read in the Eigen matrix types..
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(com_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(inertia_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(ori_parent_quat_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(pos_in_parent_)
 
     return true;
   }
