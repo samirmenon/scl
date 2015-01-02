@@ -73,36 +73,47 @@ namespace scl_test
       //1. Parse object to JSON value
       Json::Value json_val;
       flag = scl::serializeToJSON(rb,json_val);
-      if(!flag)
-      { throw(std::runtime_error("Could not serialize SRigidBody to JSON value")); }
+      if(!flag) { throw(std::runtime_error("Could not serialize SRigidBody to JSON value")); }
       std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRigidBody object to JSON value : "<<std::endl;
       std::cout<<json_val<<std::endl;
 
       //2. Parse object to JSON string (compact)
       std::string str;
       flag = scl::serializeToJSONString(rb,str,true);
-      if(!flag)
-      { throw(std::runtime_error("Could not serialize SRigidBody to JSON string")); }
+      if(!flag) { throw(std::runtime_error("Could not serialize SRigidBody to JSON string")); }
       std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRigidBody object to JSON string : "<<std::endl;
       std::cout<<str<<std::endl;
 
       //3. Parse object to JSON string (readable)
       flag = scl::serializeToJSONString(rb,str,false);
-      if(!flag)
-      { throw(std::runtime_error("Could not serialize SRigidBody to human-readable JSON string")); }
+      if(!flag) { throw(std::runtime_error("Could not serialize SRigidBody to human-readable JSON string")); }
       std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRigidBody object to human-readable JSON string : "<<std::endl;
       std::cout<<str<<std::endl;
 
       //4. Parse mapped list of objects to JSON string (readable)
       flag = scl::serializeToJSONString(rb_list,str,false);
-      std::cout<<"\n\n*****************************************\n";
-      std::cout<<str<<std::endl;
-      std::cout<<"\n*****************************************\n\n";
-      if(!flag)
-      { throw(std::runtime_error("Could not serialize CMappedList<string,SRigidBody> to human-readable JSON string")); }
+      if(!flag) { throw(std::runtime_error("Could not serialize CMappedList<string,SRigidBody> to human-readable JSON string")); }
       std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized CMappedList<string,SRigidBody> object to human-readable JSON string : "<<std::endl;
       std::cout<<str<<std::endl;
 
+      //5. Deserialize object from JSON value (we will re-use the json_val from above)
+      json_val["name"] = "Bobo";
+      flag = scl::deserializeFromJSON(rb,json_val);
+      if(!flag)
+      { throw(std::runtime_error("Could not deserialize SRigidBody from JSON value")); }
+      std::cout<<"\nTest Result ("<<r_id++<<")  : Deserialized SRigidBody object from JSON value : "<<std::endl;
+      std::cout<<"  My name should be bobo. Name : "<<rb.name_<<std::endl;
+
+      //5. Deserialize object from JSON string (we will re-use the str from above)
+      rb.name_ = "Bobo Nomo";
+      scl::serializeToJSONString(rb,str); //This just worked. So won't check again.
+      Json::Reader json_reader;
+      flag = json_reader.parse(str,json_val);
+      if(!flag) { throw(std::runtime_error("Could not use the Json reader to parse a recently generated Json string")); }
+      flag = scl::deserializeFromJSON(rb,json_val);
+      if(!flag) { throw(std::runtime_error("Could not deserialize SRigidBody from JSON value")); }
+      std::cout<<"\nTest Result ("<<r_id++<<")  : Deserialized SRigidBody object from JSON value obtained from a JSON string : "<<std::endl;
+      std::cout<<"  I am bobo no mo. Name : "<<rb.name_<<std::endl;
 
       std::cout<<"\nTest #"<<id<<" : Succeeded.";
     }
