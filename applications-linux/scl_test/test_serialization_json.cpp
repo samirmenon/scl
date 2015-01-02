@@ -97,7 +97,7 @@ namespace scl_test
       std::cout<<str<<std::endl;
 
       //5. Deserialize object from JSON value (we will re-use the json_val from above)
-      json_val["name"] = "Bobo";
+      json_val["name_"] = "Bobo";
       flag = scl::deserializeFromJSON(rb,json_val);
       if(!flag)
       { throw(std::runtime_error("Could not deserialize SRigidBody from JSON value")); }
