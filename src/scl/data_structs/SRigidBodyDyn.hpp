@@ -105,7 +105,6 @@ namespace scl
     /** spatial force for the rigid body in the articulate body */
     Eigen::MatrixXd spatial_force_;
 
-
     /** The transformation matrix within the link */
     sSpatialXForm sp_X_within_link_;
 
