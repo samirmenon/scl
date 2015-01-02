@@ -150,6 +150,11 @@ namespace scl_test
       std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SActuatorSetMuscleParsed object to human-readable JSON string : "<<std::endl;
       std::cout<<str<<std::endl;
 
+      flag = scl::serializeToJSONString(actsetm,str,true);
+      if(!flag) { throw(std::runtime_error("Could not serialize SActuatorSetMuscleParsed to compact JSON string")); }
+      std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SActuatorSetMuscleParsed object to compact JSON string : "<<std::endl;
+      std::cout<<str<<std::endl;
+
       std::cout<<"\nTest #"<<id<<" : Succeeded.";
     }
     catch (std::exception& ee)
