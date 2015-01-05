@@ -23,6 +23,10 @@ function sclInitDataStructures()
   SCL.mouse_rclick_ = 0;
   SCL.mouse_mclick_ = 0;
 
+  // Redis server interaction
+  SCL.redis_msg_dyn_ = "";
+  SCL.redis_msg_parsed_ = "";
+
   // Graphics stack
   var m1 = new THREE.Matrix4();
   var m2 = new THREE.Matrix4();
@@ -306,6 +310,9 @@ function sclMainLoop () {
   SCL.camera_controls_.update();
   SCL.renderer_.render(SCL.scene_, SCL.camera_);
 
+  // Talk to the SCL server
+  document.getElementById("scl_json_box").innerHTML = SCL.redis_msg_parsed_;
+
   // Do other stuff
   SCL.frames_rendered_++;
   sclHtmlUpdateInRenderLoop("Time : " + SCL.clock_.getElapsedTime() +
@@ -330,6 +337,19 @@ function sclJsEntryPoint(){
   sclTestAddPuma();
 
   // Add any html related event handlers here...
+  // Get JSON from wedis/redis
+  var enableRedisComm = false;
+  if (enableRedisComm){
+    setInterval(function() {
+      var client = new XMLHttpRequest();
+      client.open('GET', 'http://localhost:7379/GET/bobo');
+      client.onreadystatechange = function() {
+        SCL.redis_msg_parsed_ = client.responseText;
+      };
+      client.send();
+    },50);
+  }
+
   window.addEventListener("resize",function (){
     // For mouse pointer tracking..
     SCL.window_halfx_ = window.innerWidth/2;

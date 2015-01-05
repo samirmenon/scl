@@ -1,7 +1,18 @@
-<!-- Set up a simple python http server to start this
+<!-- Steps to get this running (1--3 if you need redis):
+1. Start a redis server
+$ redis-server
+
+2. Start a webdis server (allows us to get keys using AJAX)
+$ webdis
+
+3. Push the key:value "bobo:{json-stuff}" to redis
+
+4. Set up a simple python http server to start this
 $ python -m SimpleHTTPServer 8080
-Then load the page
-http://localhost:8080
+
+Then load the page http://localhost:8080
+The page will render a robot in a webGL interface and will live
+stream redis data using webdis via AJAX calls..
 -->
 <html>
 	<head>
@@ -36,5 +47,6 @@ http://localhost:8080
         <p> Testing : There should be a webgl canvas above. Right clicking it will give you a save-image option..</p>
         <p> WebGL status : <span id="init_status_box"> Not started...</span></p>
         <p> Random data from scl webgl : <div id="scl_data_box"></div></p>
+        <p> JSON from scl webgl : <div id="scl_json_box"></div></p>
 	</body>
 </html>
