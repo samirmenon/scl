@@ -6,6 +6,7 @@ $ redis-server
 $ webdis
 
 3. Push the key:value "bobo:{json-stuff}" to redis
+$ curl --upload-file tmp.json http://127.0.0.1:7379/SET/bobo
 
 4. Set up a simple python http server to start this
 $ python -m SimpleHTTPServer 8080

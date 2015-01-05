@@ -338,7 +338,7 @@ function sclJsEntryPoint(){
 
   // Add any html related event handlers here...
   // Get JSON from wedis/redis
-  var enableRedisComm = false;
+  var enableRedisComm = true;
   if (enableRedisComm){
     setInterval(function() {
       var client = new XMLHttpRequest();
