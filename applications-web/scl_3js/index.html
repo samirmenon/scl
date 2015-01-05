@@ -1,0 +1,40 @@
+<!-- Set up a simple python http server to start this
+$ python -m SimpleHTTPServer 8080
+Then load the page
+http://localhost:8080
+-->
+<html>
+	<head>
+        <title>SCL WebGL</title>
+        <script src="js/three.js"></script>
+        <!--<script src="js/three.min.js"></script>-->
+        <script src="js/loaders/OBJLoader.js"></script>
+        <script src="js/loaders/MTLLoader.js"></script>
+        <script src="js/loaders/OBJMTLLoader.js"></script>
+        <script src="js/controls/TrackballControls.js"></script>
+        <script src="scl_3js_gl.js"></script>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+
+        <!-- This will be called during the webgl update and
+        can be used to update anything in the html -->
+        <script type="text/javascript">
+            function sclHtmlUpdateInRenderLoop(sclWebglData){
+                //<![CDATA[
+                // Above is for valid XHTML
+                // Update text information in the original html document
+                document.getElementById("init_status_box").innerHTML = "WebGL loop is running...";
+                // This uses the passed data..
+                document.getElementById("scl_data_box").innerHTML = sclWebglData;
+                //]]>
+            }
+        </script>
+	</head>
+	<body onload="sclJsEntryPoint()">
+        <p> Testing : There should be a webgl canvas above. Right clicking it will give you a save-image option..</p>
+        <p> WebGL status : <span id="init_status_box"> Not started...</span></p>
+        <p> Random data from scl webgl : <div id="scl_data_box"></div></p>
+	</body>
+</html>
