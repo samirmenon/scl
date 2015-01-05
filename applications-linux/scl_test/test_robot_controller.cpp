@@ -101,8 +101,8 @@ namespace scl_test
       //Turn on the damping
       scl::SRobotParsed* tmp_rob = scl::CDatabase::getData()->s_parser_.robots_.at(arg_robot_name);
       tmp_rob->flag_apply_gc_damping_ = true;
-      tmp_rob->damping_*=0;
-      tmp_rob->damping_.array()+=0.05; //5% velocity loss per second
+      tmp_rob->damping_gc_*=0;
+      tmp_rob->damping_gc_.array()+=0.05; //5% velocity loss per second
 
       //Test the controller application's performance
       double t1,t2;

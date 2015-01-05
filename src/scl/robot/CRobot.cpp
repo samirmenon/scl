@@ -125,7 +125,7 @@ namespace scl
       if(data_.parsed_robot_data_->flag_apply_gc_damping_)
       {
         data_.io_data_->sensors_.dq_.array() -=
-            data_.io_data_->sensors_.dq_.array() * data_.parsed_robot_data_->damping_.array(); //1% Velocity damping.
+            data_.io_data_->sensors_.dq_.array() * data_.parsed_robot_data_->damping_gc_.array(); //1% Velocity damping.
       }
 
       /* Note: Most models' gc limits are not correct right now. Uncomment this after
@@ -292,7 +292,7 @@ namespace scl
 
       //Some defaults:
       //Damping = 1% energy loss per second
-      data_.parsed_robot_data_->damping_.setConstant(data_.io_data_->dof_,db_->sim_dt_/100);
+      data_.parsed_robot_data_->damping_gc_.setConstant(data_.io_data_->dof_,db_->sim_dt_/100);
       //Force limits: 1000 N
       data_.parsed_robot_data_->actuator_forces_max_.setConstant(data_.io_data_->dof_,3000);
       data_.parsed_robot_data_->actuator_forces_min_.setConstant(data_.io_data_->dof_,-3000);
@@ -337,7 +337,7 @@ namespace scl
   {
     sBool flag;
     if(static_cast<sUInt>(arg_d.size()) == data_.io_data_->dof_)
-    { data_.parsed_robot_data_->damping_ = arg_d; flag = true;  }
+    { data_.parsed_robot_data_->damping_gc_ = arg_d; flag = true;  }
     else { flag = false; }
     return flag;
   }

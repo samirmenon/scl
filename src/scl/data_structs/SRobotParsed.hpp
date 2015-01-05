@@ -74,7 +74,7 @@ public:
    * a simple vector.
    *
    * NOTE TODO : Rename this to gc damping. */
-  Eigen::VectorXd damping_;
+  Eigen::VectorXd damping_gc_;
 
   /** The actuators' max force values don't go outside this range */
   Eigen::VectorXd actuator_forces_max_, actuator_forces_min_;
