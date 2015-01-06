@@ -10,12 +10,6 @@ cd ../lib_haptics/ &&
 #rm -rf build_* &&
 sh make_debug.sh &&
 sh make_release.sh &&
-cd ../../yaml-cpp-0.3.0/ &&
-#rm -rf build &&
-mkdir -p build &&
-cd build &&
-cmake .. &&
-make -j8 &&
 cd ../../../applications-linux/scl_lib &&
 #rm -rf build_* &&
 sh make_debug.sh &&
