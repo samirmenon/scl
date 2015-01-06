@@ -202,9 +202,6 @@ namespace scl
     return true;
   }
 
-  template<> bool serializeToJSON<SGcModel>(const SGcModel &arg_obj, Json::Value &ret_json_val)
-  {  return false;  }
-
   template<> bool serializeToJSON<SGraphicsParsed>(const SGraphicsParsed &arg_obj, Json::Value &ret_json_val)
   {
     bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
@@ -330,6 +327,39 @@ namespace scl
     MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(sp_X_joint_)
 
     return false;
+  }
+
+  template<> bool serializeToJSON<SGcModel>(const SGcModel &arg_obj, Json::Value &ret_json_val)
+  {
+    std::string str;
+    Json::Reader json_reader;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(M_gc_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(M_gc_inv_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_gc_cc_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_gc_grav_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(q_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(dq_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(pos_com_)
+
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(rbdyn_tree_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(mass_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(computed_spatial_transformation_and_inertia_)
+
+    ret_json_val["processing_order_"] = Json::Value(Json::arrayValue);
+    for(auto&&element : arg_obj.processing_order_)
+    { ret_json_val["processing_order_"].append(element);  }
+
+    // This is a normal c style array. So can't use fancy methods to parse it.
+    ret_json_val["vec_scratch_"] = Json::Value(Json::arrayValue);
+    for(auto i : {0,1,2,3,4})
+    {
+      Json::Value val;
+      scl_util::eigentoStringArrayJSON(arg_obj.vec_scratch_[i], str);
+      json_reader.parse(str, val);
+      ret_json_val["vec_scratch_"].append(val);
+    }
+
+    return true;
   }
 
   template<> bool serializeToJSON<SRobotSensors>(const SRobotSensors &arg_obj, Json::Value &ret_json_val)
