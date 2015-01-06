@@ -45,6 +45,12 @@ namespace scl
    * Note that this function has to be specialized for each template arg (done
    * in the cpp file).
    *
+   * Points to note:
+   * * Public data in objects is serialized as is with identical variable names
+   *   and class structure
+   * * Meta data in objects is serialized using a "__var" notation. For instance,
+   *   The sort ordering in a mapped list.
+   *
    * To avoid having to re-compile this function over and over again, we'll
    * use C++11's new extern template feature.
    * http://www.stroustrup.com/C++11FAQ.html#extern-templates
