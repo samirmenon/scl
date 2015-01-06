@@ -116,6 +116,22 @@ namespace scl_test
       std::cout<<"  I am bobo no mo. Name : "<<rb.name_<<std::endl;
 
       //7. Serialize a complex object that includes mapped lists etc. to a JSON string
+      scl::SRobotParsed rparsed;
+      rparsed.init();//Initializes the vectors.
+      for(auto&& elem : rb_list)
+      {
+        rparsed.rb_tree_.create(elem.name_, elem, elem.is_root_);
+        rparsed.robot_tree_numeric_id_to_name_.push_back(elem.name_);
+      }
+      // Initializes stuff, since things are pre-sorted anyway...
+      rparsed.rb_tree_.sort(rparsed.robot_tree_numeric_id_to_name_);
+
+      flag = scl::serializeToJSONString(rparsed,str,false);
+      if(!flag) { throw(std::runtime_error("Could not serialize SRobotParsed to human-readable JSON string")); }
+      std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRobotParsed object to human-readable JSON string : "<<std::endl;
+      std::cout<<"  SRobotParsed : "<<str<<std::endl;
+
+      //8. Serialize a different complex object that includes mapped lists etc. to a JSON string
       scl::SMusclePointParsed muscle_pt;
       muscle_pt.parent_link_ = "bobo";
       muscle_pt.pos_in_parent_<<1, 1, 1;
