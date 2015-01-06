@@ -80,6 +80,14 @@ namespace scl
   template<> bool serializeToJSON<sUInt>(const sUInt &arg_obj, Json::Value &ret_json_val)
   { ret_json_val = arg_obj; return true; }
 
+  template<> bool serializeToJSON<SObject>(const SObject &arg_obj, Json::Value &ret_json_val)
+  {
+    MACRO_SER_ARGOBJ_RETJSONVAL(has_been_init_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_)
+    ret_json_val["type_"] = arg_obj.getType();
+    return true;
+  }
+
   template<> bool serializeToJSON<SMusclePointParsed>(const SMusclePointParsed &arg_obj, Json::Value &ret_json_val)
   {
     std::string str;
@@ -125,6 +133,9 @@ namespace scl
 
   template<> bool serializeToJSON<SActuatorSetMuscleParsed>(const SActuatorSetMuscleParsed &arg_obj, Json::Value &ret_json_val)
   {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
     //NOTE TODO : Is the object <name/type> also serialized??
     //Typical data
     MACRO_SER_ARGOBJ_RETJSONVAL(render_muscle_thickness_)
@@ -143,7 +154,15 @@ namespace scl
   }
 
   template<> bool serializeToJSON<SActuatorSetParsed>(const SActuatorSetParsed &arg_obj, Json::Value &ret_json_val)
-  {  return false;  }
+  {
+    // Need if-else here... Ugh! Direct data access so can't use virtual functions
+    if(arg_obj.getType() == "SActuatorSetMuscleParsed")
+    {
+      const SActuatorSetMuscleParsed * obj = dynamic_cast<const SActuatorSetMuscleParsed *>(&arg_obj);
+      if(obj) { return serializeToJSON(*obj, ret_json_val); }
+    }
+    return false;
+  }
 
   template<> bool serializeToJSON<SDatabase>(const SDatabase &arg_obj, Json::Value &ret_json_val)
   {  return false;  }
@@ -155,14 +174,34 @@ namespace scl
   {  return false;  }
 
   template<> bool serializeToJSON<SGraphicsParsed>(const SGraphicsParsed &arg_obj, Json::Value &ret_json_val)
-  {  return false;  }
-
-  template<> bool serializeToJSON<SObject>(const SObject &arg_obj, Json::Value &ret_json_val)
   {
-    MACRO_SER_ARGOBJ_RETJSONVAL(has_been_init_)
-    MACRO_SER_ARGOBJ_RETJSONVAL(name_)
-    ret_json_val["type_"] = arg_obj.getType();
-    return true;
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
+    std::string str;
+    Json::Reader json_reader;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(cam_pos_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(cam_lookat_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(cam_up_)
+
+    ret_json_val["cam_clipping_dist_"] = Json::Value(Json::arrayValue);
+    ret_json_val["cam_clipping_dist_"].append(arg_obj.cam_clipping_dist_[0]);
+    ret_json_val["cam_clipping_dist_"].append(arg_obj.cam_clipping_dist_[1]);
+
+    ret_json_val["background_color_"] = Json::Value(Json::arrayValue);
+    for(auto i : {0,1,2}){ret_json_val["background_color_"] = arg_obj.background_color_[i]; }//RGB.
+
+    ret_json_val["directional_lights_"] = Json::Value(Json::arrayValue);
+    for(auto&& elem : arg_obj.lights_)
+    {
+      Json::Value val;
+      val["lookat_"] = Json::Value(Json::arrayValue);
+      for(auto i : {0,1,2}){val["lookat_"] = elem.lookat_[i]; }
+      val["pos_"] = Json::Value(Json::arrayValue);
+      for(auto i : {0,1,2}){val["pos_"] = elem.lookat_[i]; }
+      ret_json_val["directional_lights_"].append(val);
+    }
+    return false;
   }
 
   template<> bool serializeToJSON<SRigidBodyGraphics>(const SRigidBodyGraphics &arg_obj, Json::Value &ret_json_val)

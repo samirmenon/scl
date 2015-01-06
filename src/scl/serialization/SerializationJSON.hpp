@@ -232,6 +232,7 @@ namespace scl
   extern template bool deserializeFromJSON<SDatabase>(SDatabase &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SForce>(SForce &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SGcModel>(SGcModel &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SGraphicsParsed::SLight>(SGraphicsParsed::SLight &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SGraphicsParsed>(SGraphicsParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SRigidBodyGraphics>(SRigidBodyGraphics &ret_obj, const Json::Value &arg_json_val);
