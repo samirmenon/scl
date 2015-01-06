@@ -123,6 +123,22 @@ public:
     option_axis_frame_size_           = 0.01;//default
     option_muscle_via_pt_sz_          = 0.00;//default
   }
+
+  /** Initializes the Eigen vectors. This is more time consuming and
+   * potentially error prone hence is not in the constructors (avoids
+   * weird C++ states).
+   */
+  bool init()
+  {
+    gc_pos_limit_max_.setZero(3);
+    gc_pos_limit_min_.setZero(3);
+    gc_pos_default_.setZero(3);
+    damping_gc_.setZero(3);
+    actuator_forces_max_.setZero(3);
+    actuator_forces_min_.setZero(3);
+    gravity_.setZero(3);
+    return true;
+  }
 };
 
 }//end of namespace scl_parser
