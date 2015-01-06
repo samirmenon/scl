@@ -211,7 +211,46 @@ namespace scl
   {  return false;  }
 
   template<> bool serializeToJSON<SRobotParsed>(const SRobotParsed &arg_obj, Json::Value &ret_json_val)
-  {  return false;  }
+  {
+    MACRO_SER_ARGOBJ_RETJSONVAL(dof_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(log_file_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_apply_gc_damping_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_apply_gc_pos_limits_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_apply_actuator_force_limits_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_apply_actuator_pos_limits_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_apply_actuator_vel_limits_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_apply_actuator_acc_limits_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_controller_on_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_logging_on_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_wireframe_on_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(option_axis_frame_size_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(option_muscle_via_pt_sz_)
+
+    //Required for the Eigen serialization macro to work
+    Json::Reader json_reader;
+    std::string str;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(gc_pos_limit_max_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(gc_pos_limit_min_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(gc_pos_default_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(damping_gc_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(actuator_forces_max_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(actuator_forces_min_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(gravity_)
+
+    //Special cases
+    const sutil::CMappedList<std::string,SRigidBody> &rbtree_as_mlist = arg_obj.rb_tree_;
+    bool flag = serializeToJSON(rbtree_as_mlist, ret_json_val);
+    if(!flag) { return false; }
+
+    ret_json_val["robot_tree_numeric_id_to_name_"] = Json::Value(Json::arrayValue);
+    for (auto&& element: arg_obj.robot_tree_numeric_id_to_name_)
+    { ret_json_val["robot_tree_numeric_id_to_name_"].append(element); }
+
+    //NOTE TODO : Handle this later...
+    // arg_obj.actuator_sets_
+
+    return true;
+  }
 
   template<> bool serializeToJSON<SUIParsed>(const SUIParsed &arg_obj, Json::Value &ret_json_val)
   {  return false;  }
