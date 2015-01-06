@@ -320,14 +320,13 @@ function sclMainLoop () {
   if(SCL.redis_msg_){
     try{
       SCL.redis_msg_parsed_ = JSON.parse(SCL.redis_msg_.GET);
-      keys = Object.keys(SCL.redis_msg_parsed_.muscles_);
       // Print something to make sure this works..
       document.getElementById("scl_json_box").innerHTML =
-        "Extracted mappedlist data for key : " + keys[0] + "<br />" +
-        JSON.stringify(SCL.redis_msg_parsed_.muscles_[keys[0]]);
+        JSON.stringify(SCL.redis_msg_parsed_.rb_tree_["base"]);
     }
     catch(err) {//If it doesn't find some scl format, just dump the whole message..
-      document.getElementById("scl_json_box").innerHTML = err;
+      document.getElementById("scl_json_box").innerHTML = JSON.stringify(SCL.redis_msg_);
+      document.getElementById("scl_error_box").innerHTML = err;
     }
   }
 
