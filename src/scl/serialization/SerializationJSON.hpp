@@ -151,36 +151,31 @@ namespace scl
 
   template <typename T> bool serializeToJSON(const sutil::CMappedList<std::string,T> &arg_mlist, Json::Value &ret_json_val)
   {
-    //Set the returned value to an empty array
-    ret_json_val["mappedlist"] = Json::Value(Json::arrayValue);
-
     //Add the index and object values for each entry
     auto it = arg_mlist.begin(), ite = arg_mlist.end();
-    for(int i=0;it!=ite;++it,++i)
+    for(;it!=ite;++it)
     {
       // Temps for code clarity
       const T& data = *it;
       const std::string& index = !it;
-      Json::Value &val = ret_json_val["mappedlist"][i];
+      Json::Value &val = ret_json_val[index.c_str()];
 
-      if(false == serializeToJSON(*it, val["obj"]))
+      if(false == serializeToJSON(*it, val))
       { ret_json_val = Json::Value(Json::arrayValue); return false; }
-
-      val["idx"] = index;
     }
 
     //Add sorting information if present.
     if(arg_mlist.isSorted())
     {
-      ret_json_val["is_sorted"] = arg_mlist.isSorted();
+      ret_json_val["__is_sorted"] = arg_mlist.isSorted();
       std::vector<std::string> sort_order;
       if(false == arg_mlist.sort_get_order(sort_order))
       { return false; }
 
-      ret_json_val["sort_order"] = Json::Value(Json::arrayValue);
+      ret_json_val["__sort_order"] = Json::Value(Json::arrayValue);
       // C++11 auto iterator (compact!)
       for (auto&& element: sort_order) {
-        ret_json_val["sort_order"].append(element);
+        ret_json_val["__sort_order"].append(element);
       }
     }
 
