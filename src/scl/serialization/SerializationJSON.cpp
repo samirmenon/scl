@@ -44,7 +44,7 @@ namespace scl
 
 #define MACRO_SER_ARGOBJ_RETJSONVAL(AAA) ret_json_val[#AAA] = arg_obj.AAA;
 
-#define MACRO_SER_ARGOBJ_RETJSONVAL_MList(AAA) \
+#define MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(AAA) \
     if(!serializeToJSON(arg_obj.AAA, ret_json_val[#AAA])) { \
       std::cout<<"\n serializeToJSON() Error : Could not serialize : "<<#AAA<<std::flush; \
       return false; \
@@ -150,8 +150,8 @@ namespace scl
     //Typical data
     MACRO_SER_ARGOBJ_RETJSONVAL(render_muscle_thickness_)
     MACRO_SER_ARGOBJ_RETJSONVAL(render_muscle_via_pt_sz_)
-    MACRO_SER_ARGOBJ_RETJSONVAL_MList(muscles_)
-    MACRO_SER_ARGOBJ_RETJSONVAL_MList(muscle_name_to_id_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(muscles_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(muscle_name_to_id_)
 
     // Std vector of strings (iterable)
     ret_json_val["muscle_id_to_name_"] = Json::Value(Json::arrayValue);
@@ -176,9 +176,9 @@ namespace scl
 
   template<> bool serializeToJSON<SParserData>(const SParserData &arg_obj, Json::Value &ret_json_val)
   {
-    MACRO_SER_ARGOBJ_RETJSONVAL_MList(graphics_worlds_)
-    MACRO_SER_ARGOBJ_RETJSONVAL_MList(robots_)
-    MACRO_SER_ARGOBJ_RETJSONVAL_MList(muscle_sets_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(graphics_worlds_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(robots_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(muscle_sets_)
     return true;
   }
 
@@ -327,13 +327,44 @@ namespace scl
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(sp_Sorth_joint_)
 
     // Special case.. Demands an additional template in the code. Ugh..
-    MACRO_SER_ARGOBJ_RETJSONVAL_MList(sp_X_joint_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(sp_X_joint_)
 
     return false;
   }
 
+  template<> bool serializeToJSON<SRobotSensors>(const SRobotSensors &arg_obj, Json::Value &ret_json_val)
+  {
+    //Read in the Eigen matrix types..
+    std::string str;
+    Json::Reader json_reader;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(q_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(dq_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ddq_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_gc_measured_)
+
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(forces_external_)
+    return false;
+  }
+
+  template<> bool serializeToJSON<SRobotActuators>(const SRobotActuators &arg_obj, Json::Value &ret_json_val)
+  {
+    //Read in the Eigen matrix types..
+    std::string str;
+    Json::Reader json_reader;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_gc_commanded_)
+
+    /** NOTE TODO :
+    sutil::CMappedPointerList<std::string, SActuatorSetBase, false> actuator_sets_;*/
+    return false;
+  }
+
   template<> bool serializeToJSON<SRobotIO>(const SRobotIO &arg_obj, Json::Value &ret_json_val)
-  {  return false;  }
+  {
+    MACRO_SER_ARGOBJ_RETJSONVAL(dof_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(sensors_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(actuators_)
+    return false;
+  }
 
   template<> bool serializeToJSON<SRobotParsed>(const SRobotParsed &arg_obj, Json::Value &ret_json_val)
   {
@@ -366,7 +397,7 @@ namespace scl
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(gravity_)
 
     //Special cases : Mapped tree as a list..
-    MACRO_SER_ARGOBJ_RETJSONVAL_MList(rb_tree_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(rb_tree_)
 
     ret_json_val["robot_tree_numeric_id_to_name_"] = Json::Value(Json::arrayValue);
     for (auto&& element: arg_obj.robot_tree_numeric_id_to_name_)
