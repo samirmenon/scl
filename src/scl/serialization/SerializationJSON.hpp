@@ -83,6 +83,9 @@ namespace scl
    */
   template <typename T>
   bool serializeToJSON(const sutil::CMappedList<std::string,T> &arg_mlist, Json::Value &ret_json_val);
+  /** We will parse trees as lists (the tree information is in the data structure anyway) */
+  template <typename T>
+  bool serializeToJSON(const sutil::CMappedTree<std::string,T> &arg_mlist, Json::Value &ret_json_val);
 
   /** Serialize object into JSON string. Note strings are also YAML compatible.
    *
@@ -180,6 +183,13 @@ namespace scl
     }
 
     return true;
+  }
+
+  template <typename T> bool serializeToJSON(const sutil::CMappedTree<std::string,T> &arg_mlist, Json::Value &ret_json_val)
+  {
+    // Parse it like a mapped list..
+    const sutil::CMappedList<std::string,T> &val = arg_mlist;
+    return serializeToJSON(val,ret_json_val);
   }
 
   template <typename T>

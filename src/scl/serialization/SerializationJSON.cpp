@@ -125,6 +125,7 @@ namespace scl
 
   template<> bool serializeToJSON<SActuatorSetMuscleParsed>(const SActuatorSetMuscleParsed &arg_obj, Json::Value &ret_json_val)
   {
+    //NOTE TODO : Is the object <name/type> also serialized??
     //Typical data
     MACRO_SER_ARGOBJ_RETJSONVAL(render_muscle_thickness_)
     MACRO_SER_ARGOBJ_RETJSONVAL(render_muscle_via_pt_sz_)
@@ -212,6 +213,9 @@ namespace scl
 
   template<> bool serializeToJSON<SRobotParsed>(const SRobotParsed &arg_obj, Json::Value &ret_json_val)
   {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
     MACRO_SER_ARGOBJ_RETJSONVAL(dof_)
     MACRO_SER_ARGOBJ_RETJSONVAL(log_file_)
     MACRO_SER_ARGOBJ_RETJSONVAL(flag_apply_gc_damping_)
@@ -237,10 +241,8 @@ namespace scl
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(actuator_forces_min_)
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(gravity_)
 
-    //Special cases
-    const sutil::CMappedList<std::string,SRigidBody> &rbtree_as_mlist = arg_obj.rb_tree_;
-    bool flag = serializeToJSON(rbtree_as_mlist, ret_json_val);
-    if(!flag) { return false; }
+    //Special cases : Mapped tree as a list..
+    MACRO_SER_ARGOBJ_RETJSONVAL_MList(rb_tree_)
 
     ret_json_val["robot_tree_numeric_id_to_name_"] = Json::Value(Json::arrayValue);
     for (auto&& element: arg_obj.robot_tree_numeric_id_to_name_)
