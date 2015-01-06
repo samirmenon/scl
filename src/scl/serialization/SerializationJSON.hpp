@@ -139,6 +139,7 @@ namespace scl
   extern template bool serializeToJSON<SMuscleParsed>(const SMuscleParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SActuatorSetMuscleParsed>(const SActuatorSetMuscleParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SActuatorSetParsed>(const SActuatorSetParsed &arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SParserData>(const SParserData &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SDatabase>(const SDatabase &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SForce>(const SForce &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SGcModel>(const SGcModel &arg_obj, Json::Value &ret_json_val);
@@ -229,6 +230,7 @@ namespace scl
   extern template bool deserializeFromJSON<SMuscleParsed>(SMuscleParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SActuatorSetMuscleParsed>(SActuatorSetMuscleParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SActuatorSetParsed>(SActuatorSetParsed &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SParserData>(SParserData &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SDatabase>(SDatabase &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SForce>(SForce &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SGcModel>(SGcModel &ret_obj, const Json::Value &arg_json_val);
