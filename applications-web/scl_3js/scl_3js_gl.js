@@ -24,8 +24,9 @@ function sclInitDataStructures()
   SCL.mouse_mclick_ = 0;
 
   // Redis server interaction
-  SCL.redis_msg_dyn_ = "";
-  SCL.redis_msg_parsed_ = "";
+  SCL.redis_msg_ = null;
+  SCL.redis_msg_dyn_ = null;
+  SCL.redis_msg_parsed_ = null;
 
   // Graphics stack
   var m1 = new THREE.Matrix4();
@@ -310,8 +311,25 @@ function sclMainLoop () {
   SCL.camera_controls_.update();
   SCL.renderer_.render(SCL.scene_, SCL.camera_);
 
-  // Talk to the SCL server
-  document.getElementById("scl_json_box").innerHTML = SCL.redis_msg_parsed_;
+  // Get the REDIS JSON and dump it into an object..
+  jQuery.get('http://localhost:7379/GET/bobo', function(data) {
+    SCL.redis_msg_ = data;
+  });
+
+  // Parse the string message into an object..
+  if(SCL.redis_msg_){
+    try{
+      SCL.redis_msg_parsed_ = JSON.parse(SCL.redis_msg_.GET);
+      keys = Object.keys(SCL.redis_msg_parsed_.muscles_);
+      // Print something to make sure this works..
+      document.getElementById("scl_json_box").innerHTML =
+        "Extracted mappedlist data for key : " + keys[0] + "<br />" +
+        JSON.stringify(SCL.redis_msg_parsed_.muscles_[keys[0]]);
+    }
+    catch(err) {
+      document.getElementById("scl_error_box").innerHTML = SCL.redis_msg_.GET;
+    }
+  }
 
   // Do other stuff
   SCL.frames_rendered_++;
@@ -336,8 +354,10 @@ function sclJsEntryPoint(){
   //sclAddStaticMeshes();
   sclTestAddPuma();
 
-  // Add any html related event handlers here...
-  // Get JSON from wedis/redis
+  // ******************************************
+  // Add any html related event handlers here.
+  // ******************************************
+  /* Get JSON from wedis/redis using AJAX!
   var enableRedisComm = true;
   if (enableRedisComm){
     setInterval(function() {
@@ -348,7 +368,7 @@ function sclJsEntryPoint(){
       };
       client.send();
     },50);
-  }
+  }*/
 
   window.addEventListener("resize",function (){
     // For mouse pointer tracking..
@@ -366,7 +386,9 @@ function sclJsEntryPoint(){
     SCL.mouse_y_ = ( event.clientY - SCL.window_halfy_) / 2;
   }, false );
 
-  // Call the render loop
+  // ******************************************
+  // THE MAIN LOOP ENTRY POINT IS HERE!!!
+  // ******************************************
   sclMainLoop();
 }
 
