@@ -144,6 +144,7 @@ namespace scl
   extern template bool serializeToJSON<SGcModel>(const SGcModel &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SGraphicsParsed>(const SGraphicsParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SObject>(const SObject &arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SRigidBodyGraphics>(const SRigidBodyGraphics &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SRigidBody>(const SRigidBody &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SRigidBodyDyn>(const SRigidBodyDyn &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SRigidBody>(const SRigidBody &arg_obj, Json::Value &ret_json_val);
@@ -233,6 +234,7 @@ namespace scl
   extern template bool deserializeFromJSON<SGcModel>(SGcModel &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SGraphicsParsed>(SGraphicsParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SRigidBodyGraphics>(SRigidBodyGraphics &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SRigidBodyDyn>(SRigidBodyDyn &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val);

@@ -165,13 +165,29 @@ namespace scl
     return true;
   }
 
+  template<> bool serializeToJSON<SRigidBodyGraphics>(const SRigidBodyGraphics &arg_obj, Json::Value &ret_json_val)
+  {
+    MACRO_SER_ARGOBJ_RETJSONVAL(collision_type_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(file_name_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(class_)
+
+    std::string str;
+    Json::Reader json_reader;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(pos_in_parent_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ori_parent_quat_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(scaling_)
+
+    /** Color (rgb) */
+    ret_json_val["color_"] = Json::Value(Json::arrayValue);
+    for(auto i:{0,1,2}){ ret_json_val["color_"].append(arg_obj.color_[i]); }
+
+    return true;
+  }
+
   template<> bool serializeToJSON<SRigidBody>(const SRigidBody &arg_obj, Json::Value &ret_json_val)
   {
     bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
     if(!flag) { return false; }
-
-    Json::Reader json_reader;
-    std::string str;
 
     //Read in the standard types (supported by json)
     MACRO_SER_ARGOBJ_RETJSONVAL(collision_type_)
@@ -196,7 +212,17 @@ namespace scl
     MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_vel_lower_)
     MACRO_SER_ARGOBJ_RETJSONVAL(stiction_gc_vel_upper_)
 
+    ret_json_val["graphics_obj_vec_"] = Json::Value(Json::arrayValue);
+    for(auto&& elem : arg_obj.graphics_obj_vec_)
+    {
+      Json::Value val;
+      if(!serializeToJSON(elem,val)){ return false; }
+      ret_json_val["graphics_obj_vec_"].append(val);
+    }
+
     //Read in the Eigen matrix types..
+    std::string str;
+    Json::Reader json_reader;
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(com_)
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(inertia_)
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ori_parent_quat_)
