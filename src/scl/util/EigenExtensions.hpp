@@ -199,6 +199,12 @@ namespace scl_util
     }
   }
 
+  /** Convert an Eigen Transform into a JSON array or array of arrays
+   *  Output (Row-major) : [[1,2,3,p0],[4,5,6,p1],[7,8,9,p2],[0,0,0,1]]
+   * Useful for serialization and deserialization. */
+  void eigentoStringArrayJSON(const Eigen::Affine3d& x, std::string& arg_str)
+  { eigentoStringArrayJSON(x.matrix(),arg_str); }
+
   /** Convert an Eigen Quaternion into a JSON array
    *
    * Input matrix: quaternion
