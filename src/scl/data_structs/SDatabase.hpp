@@ -80,7 +80,11 @@ public:
    * muscle set. */
   sutil::CMappedList<std::string,SActuatorSetMuscleParsed> muscle_sets_;
 
-  /** The parsed gui specification */
+  /** The parsed gui specification
+   * NOTE TODO : This seems to be unused in most places. Consider depracating
+   * and removing.. No point maintaining this if there is no current use.
+   * In particular, we'll also have to maintain serialization etc. Too much
+   * work.. */
   sutil::CMappedList<std::string,SUIParsed> user_interface_;
 
   /** The config file in which the robot and muscle system is specified.
