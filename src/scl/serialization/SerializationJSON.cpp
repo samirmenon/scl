@@ -50,6 +50,8 @@ namespace scl
       return false; \
     }
 
+  //If you figure out a way to get the multi-template thing working then just add a template
+  //specialization and remove this specific macro..
 #define MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(AAA) \
   scl_util::eigentoStringArrayJSON(arg_obj.AAA, str); \
   json_reader.parse(str, ret_json_val[#AAA]);
@@ -80,6 +82,15 @@ namespace scl
   template<> bool serializeToJSON<sUInt>(const sUInt &arg_obj, Json::Value &ret_json_val)
   { ret_json_val = arg_obj; return true; }
 
+  template<> bool serializeToJSON(const sSpatialXForm &arg_obj, Json::Value &ret_json_val)
+  {
+    std::string str;
+    Json::Reader json_reader;
+    scl_util::eigentoStringArrayJSON(arg_obj, str); //Gets a json string..
+    json_reader.parse(str, ret_json_val);
+    return true;
+  }
+
   template<> bool serializeToJSON<SObject>(const SObject &arg_obj, Json::Value &ret_json_val)
   {
     MACRO_SER_ARGOBJ_RETJSONVAL(has_been_init_)
@@ -90,11 +101,11 @@ namespace scl
 
   template<> bool serializeToJSON<SMusclePointParsed>(const SMusclePointParsed &arg_obj, Json::Value &ret_json_val)
   {
-    std::string str;
-    Json::Reader json_reader;
-
     MACRO_SER_ARGOBJ_RETJSONVAL(parent_link_);
     MACRO_SER_ARGOBJ_RETJSONVAL(position_on_muscle_);
+
+    std::string str;
+    Json::Reader json_reader;
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(pos_in_parent_);
 
     return true;
@@ -136,7 +147,6 @@ namespace scl
     bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
     if(!flag) { return false; }
 
-    //NOTE TODO : Is the object <name/type> also serialized??
     //Typical data
     MACRO_SER_ARGOBJ_RETJSONVAL(render_muscle_thickness_)
     MACRO_SER_ARGOBJ_RETJSONVAL(render_muscle_via_pt_sz_)
@@ -176,7 +186,21 @@ namespace scl
   {  return false;  }
 
   template<> bool serializeToJSON<SForce>(const SForce &arg_obj, Json::Value &ret_json_val)
-  {  return false;  }
+  {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
+    ret_json_val["robot_name_"] = arg_obj.robot_->name_;
+    MACRO_SER_ARGOBJ_RETJSONVAL(link_name_)
+
+    std::string str;
+    Json::Reader json_reader;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(pos_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(direction_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(J_)
+    return true;
+  }
 
   template<> bool serializeToJSON<SGcModel>(const SGcModel &arg_obj, Json::Value &ret_json_val)
   {  return false;  }
@@ -279,7 +303,34 @@ namespace scl
   }
 
   template<> bool serializeToJSON<SRigidBodyDyn>(const SRigidBodyDyn &arg_obj, Json::Value &ret_json_val)
-  {  return false;  }
+  {
+    // Special case.. Pointer deref..
+    ret_json_val["name_"] = arg_obj.link_ds_->name_;
+
+    MACRO_SER_ARGOBJ_RETJSONVAL(q_T_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(parent_name_)
+
+    //Read in the Eigen matrix types..
+    std::string str;
+    Json::Reader json_reader;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(J_com_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(T_o_lnk_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(T_lnk_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(sp_q_T_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(sp_dq_T_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(sp_inertia_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(spatial_acceleration_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(spatial_force_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(sp_X_within_link_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(sp_X_o_lnk_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(sp_S_joint_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(sp_Sorth_joint_)
+
+    // Special case.. Demands an additional template in the code. Ugh..
+    MACRO_SER_ARGOBJ_RETJSONVAL_MList(sp_X_joint_)
+
+    return false;
+  }
 
   template<> bool serializeToJSON<SRobotIO>(const SRobotIO &arg_obj, Json::Value &ret_json_val)
   {  return false;  }

@@ -135,6 +135,7 @@ namespace scl
   // Only the scl_lib will set this flag, and will compile all the specialized functions (from the cpp file).
 #ifndef SCL_LIBRARY_COMPILE_FLAG
   extern template bool serializeToJSON<sUInt>(const sUInt &arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON(const sSpatialXForm &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SMusclePointParsed>(const SMusclePointParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SMuscleParsed>(const SMuscleParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SActuatorSetMuscleParsed>(const SActuatorSetMuscleParsed &arg_obj, Json::Value &ret_json_val);
