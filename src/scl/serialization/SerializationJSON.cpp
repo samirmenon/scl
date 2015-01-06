@@ -166,7 +166,6 @@ namespace scl
 
   template<> bool serializeToJSON<SParserData>(const SParserData &arg_obj, Json::Value &ret_json_val)
   {
-    MACRO_SER_ARGOBJ_RETJSONVAL(file_name_)
     MACRO_SER_ARGOBJ_RETJSONVAL_MList(graphics_worlds_)
     MACRO_SER_ARGOBJ_RETJSONVAL_MList(robots_)
     MACRO_SER_ARGOBJ_RETJSONVAL_MList(muscle_sets_)

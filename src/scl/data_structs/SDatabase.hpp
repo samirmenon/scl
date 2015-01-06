@@ -86,11 +86,6 @@ public:
    * In particular, we'll also have to maintain serialization etc. Too much
    * work.. */
   sutil::CMappedList<std::string,SUIParsed> user_interface_;
-
-  /** The config file in which the robot and muscle system is specified.
-   * This is typically set by a database registration function.
-   * NOTE : It is not set in the parser. */
-  std::string file_name_;
 };
 
 /** All the data updated by the controller
