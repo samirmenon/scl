@@ -30,7 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include "test_serialization_json.hpp"
 
 #include <scl/serialization/SerializationJSON.hpp>
-
+#include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/data_structs/SRigidBody.hpp>
 
 #include <string>
@@ -131,7 +131,26 @@ namespace scl_test
       std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRobotParsed object to human-readable JSON string : "<<std::endl;
       std::cout<<"  SRobotParsed : "<<str<<std::endl;
 
-      //8. Serialize a different complex object that includes mapped lists etc. to a JSON string
+      //8. Serialize a Puma robot's parsed spec..
+      scl::CParserScl parser;
+      std::vector<std::string> robot_list;
+      flag = parser.listRobotsInFile("../../specs/Puma/PumaCfg.xml",robot_list);
+      if(!flag) { throw(std::runtime_error("Could not check Puma xml")); }
+      rparsed.init();//Reset everything..
+      flag = parser.readRobotFromFile("../../specs/Puma/PumaCfg.xml","../../specs/",robot_list[0],rparsed);
+      if(!flag) { throw(std::runtime_error("Could not load Puma robot xml")); }
+
+      flag = scl::serializeToJSONString(rparsed,str,false);
+      if(!flag) { throw(std::runtime_error("Could not serialize SRobotParsed : PUMA to human-readable JSON string")); }
+      std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRobotParsed : PUMA object to human-readable JSON string : "<<std::endl;
+      std::cout<<"  SRobotParsed : Puma \n"<<str<<std::endl;
+
+      flag = scl::serializeToJSONString(rparsed,str,true);
+      if(!flag) { throw(std::runtime_error("Could not serialize SRobotParsed : PUMA to compressed JSON string")); }
+      std::cout<<"\nTest Result ("<<r_id++<<")  : Serialized SRobotParsed : PUMA object to compressed JSON string : "<<std::endl;
+      std::cout<<"  SRobotParsed : Puma \n"<<str<<std::endl;
+
+      //9. Serialize a different complex object that includes mapped lists etc. to a JSON string
       scl::SMusclePointParsed muscle_pt;
       muscle_pt.parent_link_ = "bobo";
       muscle_pt.pos_in_parent_<<1, 1, 1;
