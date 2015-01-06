@@ -326,8 +326,8 @@ function sclMainLoop () {
         "Extracted mappedlist data for key : " + keys[0] + "<br />" +
         JSON.stringify(SCL.redis_msg_parsed_.muscles_[keys[0]]);
     }
-    catch(err) {
-      document.getElementById("scl_error_box").innerHTML = SCL.redis_msg_.GET;
+    catch(err) {//If it doesn't find some scl format, just dump the whole message..
+      document.getElementById("scl_json_box").innerHTML = SCL.redis_msg_.GET;
     }
   }
 
