@@ -71,16 +71,14 @@ public:
    *
    * NOTE TODO : Update the friction model. This could
    * require a more sophisticated data structure than
-   * a simple vector.
-   *
-   * NOTE TODO : Rename this to gc damping. */
+   * a simple vector. */
   Eigen::VectorXd damping_gc_;
 
   /** The actuators' max force values don't go outside this range */
   Eigen::VectorXd actuator_forces_max_, actuator_forces_min_;
 
   /** The number of degrees of freedom of the robot */
-  sUInt dof_;
+  sUInt dof_=0;
 
   /** The acceleration due to gravity for the robot */
   Eigen::Vector3d gravity_;
@@ -91,38 +89,24 @@ public:
   /** ---------------------------------------------- */
   /** Flags to control the simulation     | Defaults */
   /** ---------------------------------------------- */
-  sBool flag_apply_gc_damping_;              //false
-  sBool flag_apply_gc_pos_limits_;           //false
-  sBool flag_apply_actuator_force_limits_;   //true
-  sBool flag_apply_actuator_pos_limits_;     //true
-  sBool flag_apply_actuator_vel_limits_;     //true
-  sBool flag_apply_actuator_acc_limits_;     //true
-  sBool flag_controller_on_;                 //true
-  sBool flag_logging_on_;                    //false
-  sBool flag_wireframe_on_;                  //false
-  sFloat option_axis_frame_size_;            //0.01
-  sFloat option_muscle_via_pt_sz_;           //0.00 (not rendered)
+  sBool     flag_apply_gc_damping_            = false;
+  sBool     flag_apply_gc_pos_limits_         = false;
+  sBool     flag_apply_actuator_force_limits_ = true;       //true
+  sBool     flag_apply_actuator_pos_limits_   = true;
+  sBool     flag_apply_actuator_vel_limits_   = true;
+  sBool     flag_apply_actuator_acc_limits_   = true;
+  sBool     flag_controller_on_               = true;
+  sBool     flag_logging_on_                  = false;
+  sBool     flag_wireframe_on_                = false;
+  sFloat    option_axis_frame_size_           = 0.01;//default
+  sFloat    option_muscle_via_pt_sz_          = 0.00;//default
   /** ---------------------------------------------- */
 
   //std::string name_; //Inherited
   //sBool has_been_init_; //Inherited
 
-  SRobotParsed() : SObject(std::string("SRobotParsed") ),
-      dof_(0)
-  {
-    //Flags to control SRobot's behavior
-    flag_apply_gc_damping_            = false;
-    flag_apply_gc_pos_limits_         = false;
-    flag_apply_actuator_force_limits_ = true;
-    flag_apply_actuator_pos_limits_   = true;
-    flag_apply_actuator_vel_limits_   = true;
-    flag_apply_actuator_acc_limits_   = true;
-    flag_controller_on_               = true;
-    flag_logging_on_                  = false;
-    flag_wireframe_on_                = false;
-    option_axis_frame_size_           = 0.01;//default
-    option_muscle_via_pt_sz_          = 0.00;//default
-  }
+  /** Default constructor. Sets type */
+  SRobotParsed() : SObject(std::string("SRobotParsed") ) { }
 
   /** Initializes the Eigen vectors. This is more time consuming and
    * potentially error prone hence is not in the constructors (avoids
@@ -130,6 +114,9 @@ public:
    */
   bool init()
   {
+    rb_tree_.clear();
+    robot_tree_numeric_id_to_name_.clear();
+    actuator_sets_.clear();
     gc_pos_limit_max_.setZero(3);
     gc_pos_limit_min_.setZero(3);
     gc_pos_default_.setZero(3);
