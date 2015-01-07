@@ -373,7 +373,7 @@ namespace scl
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_gc_measured_)
 
     MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(forces_external_)
-    return false;
+    return true;
   }
 
   template<> bool serializeToJSON<SRobotActuators>(const SRobotActuators &arg_obj, Json::Value &ret_json_val)
@@ -385,7 +385,7 @@ namespace scl
 
     /** NOTE TODO :
     sutil::CMappedPointerList<std::string, SActuatorSetBase, false> actuator_sets_;*/
-    return false;
+    return true;
   }
 
   template<> bool serializeToJSON<SRobotIO>(const SRobotIO &arg_obj, Json::Value &ret_json_val)
