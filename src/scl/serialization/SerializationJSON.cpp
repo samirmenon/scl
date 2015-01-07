@@ -171,7 +171,7 @@ namespace scl
       const SActuatorSetMuscleParsed * obj = dynamic_cast<const SActuatorSetMuscleParsed *>(&arg_obj);
       if(obj) { return serializeToJSON(*obj, ret_json_val); }
     }
-    return false;
+    return true;
   }
 
   template<> bool serializeToJSON<SParserData>(const SParserData &arg_obj, Json::Value &ret_json_val)
@@ -230,7 +230,7 @@ namespace scl
       for(auto i : {0,1,2}){val["pos_"] = elem.lookat_[i]; }
       ret_json_val["directional_lights_"].append(val);
     }
-    return false;
+    return true;
   }
 
   template<> bool serializeToJSON<SRigidBodyGraphics>(const SRigidBodyGraphics &arg_obj, Json::Value &ret_json_val)
@@ -326,7 +326,7 @@ namespace scl
     // Special case.. Demands an additional template in the code. Ugh..
     MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(sp_X_joint_)
 
-    return false;
+    return true;
   }
 
   template<> bool serializeToJSON<SGcModel>(const SGcModel &arg_obj, Json::Value &ret_json_val)
