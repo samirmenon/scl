@@ -118,13 +118,32 @@ int main(int argc, char** argv)
   
   long iter = 0, n_iters=50000; double dt=0.004;
   double ke,pe;
-  Json::Value json_val;
-  Json::FastWriter writer;
   
   dyn_sp_scl.calculateKineticEnergy(&rio, &rgcm,ke);
   dyn_sp_scl.calculatePotentialEnergy(&rio,&rgcm,pe);
   std::cout<<"\n Time ("<<iter*dt<<" of "<<n_iters*dt<<"s total). SpEnergy : "<<std::setw(10)<<pe<<" + "
   <<std::setw(10)<<ke<<" = "<<std::setw(10)<<pe+ke;
+
+  /******************************Redis State Export************************************/
+  // Useful for JSON serialization...
+  Json::FastWriter writer;
+  Json::Value json_val;
+
+  // Set the parsed data for the Puma
+  flag = serializeToJSON(rds,json_val);
+  if (!flag) {  printf("\n JSON serialization error.. %s",json_val.toStyledString().c_str());  }
+  std::string ss = "SET SCL:PumaBot:Parsed "+ writer.write(json_val);
+  void *c = redisCommand(redis_serv,ss.c_str());
+  if (c != NULL && redis_serv->err) {  printf("\n Redis Error: %s", redis_serv->errstr);  }
+  json_val.clear();
+
+  // Set the graphics data for the Puma
+  flag = serializeToJSON(rgr,json_val);
+  if (!flag) {  printf("\n JSON serialization error.. %s",json_val.toStyledString().c_str());  }
+  ss = "SET SCL:PumaBot:Graphics "+ writer.write(json_val);
+  c = redisCommand(redis_serv,ss.c_str());
+  if (c != NULL && redis_serv->err) {  printf("\n Redis Error: %s", redis_serv->errstr);  }
+  json_val.clear();
 
   omp_set_num_threads(2);
   int thread_id;
@@ -156,7 +175,7 @@ int main(int argc, char** argv)
           if(simple_comm)
           {        //Communicate with the redis server here:
             char ch[1024];
-            sprintf(ch,"SET SCL:PumaBot:SRobotIO {%lf,%lf,%lf,%lf,%lf,%lf}",
+            sprintf(ch,"SET SCL:PumaBot:IO {%lf,%lf,%lf,%lf,%lf,%lf}",
                 rio.sensors_.q_(0),rio.sensors_.q_(1),rio.sensors_.q_(2),
                 rio.sensors_.q_(3),rio.sensors_.q_(4),rio.sensors_.q_(5));
             void *c = redisCommand(redis_serv,ch);
@@ -165,8 +184,8 @@ int main(int argc, char** argv)
           else{
             flag = serializeToJSON(rio,json_val);
             if (!flag) {  printf("\n JSON serialization error.. %s",json_val.toStyledString().c_str());  }
-            std::string ss = "SET SCL:PumaBot:SRobotIO "+ writer.write(json_val);
-            void *c = redisCommand(redis_serv,ss.c_str());
+            ss = "SET SCL:PumaBot:IO "+ writer.write(json_val);
+            c = redisCommand(redis_serv,ss.c_str());
             if (c != NULL && redis_serv->err) {  printf("\n Redis Error: %s", redis_serv->errstr);  }
           }
         }
