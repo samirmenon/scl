@@ -393,7 +393,7 @@ namespace scl
     MACRO_SER_ARGOBJ_RETJSONVAL(dof_)
     MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(sensors_)
     MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(actuators_)
-    return false;
+    return true;
   }
 
   template<> bool serializeToJSON<SRobotParsed>(const SRobotParsed &arg_obj, Json::Value &ret_json_val)
