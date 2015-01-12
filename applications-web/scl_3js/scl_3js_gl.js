@@ -316,6 +316,22 @@ SCL.prototype.testAddPuma = function()
   this.robots_[this.robots_.length] = robot;
   this.global_root_.add(robot.links_[0]);
 }
+/** Updates the Puma's rendering given a set of joint angles */
+SCL.prototype.testUpdatePuma = function (q){
+  this.robots_[0].links_[1].rotation.z = q[0];
+  this.robots_[0].links_[1].updateMatrix();
+  this.robots_[0].links_[2].rotation.z = q[1];
+  this.robots_[0].links_[2].updateMatrix();
+  this.robots_[0].links_[3].rotation.z = q[2];
+  this.robots_[0].links_[3].updateMatrix();
+  this.robots_[0].links_[4].rotation.z = q[3];
+  this.robots_[0].links_[4].updateMatrix();
+  this.robots_[0].links_[5].rotation.z = q[4];
+  this.robots_[0].links_[5].updateMatrix();
+  this.robots_[0].links_[6].rotation.z = q[5];
+  this.robots_[0].links_[6].updateMatrix();
+}
+
 
 /** The main update loop. This will be called forever. Note that
  * you should add all your communication/state-update/render
@@ -330,6 +346,7 @@ function sclMainLoop () {
   scl_obj.camera_controls_.update();
 
   // Render the scene...
+  scl_obj.testUpdatePuma(scl_data_io.sensors_.q_);
   scl_obj.renderer_.render(scl_obj.scene_, scl_obj.camera_);
   scl_obj.frames_rendered_++;
 
