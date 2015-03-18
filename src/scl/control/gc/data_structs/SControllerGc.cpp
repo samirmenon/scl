@@ -48,6 +48,50 @@ namespace scl
 
   bool SControllerGc::init(const std::string & arg_controller_name,
       SRobotParsed* arg_robot_ds,
+      SRobotIO* arg_robot_io_ds)
+  {
+    bool flag;
+    try
+    {
+      flag = SControllerBase::init(arg_controller_name,arg_robot_ds,arg_robot_io_ds);
+      if(false == flag)
+      { throw(std::runtime_error("Failed to initialize gc controller data structure")); }
+
+      sUInt dof = arg_robot_ds->dof_;
+
+      for(int i=0;i<static_cast<int>(dof);i++)
+      {
+        if(force_gc_min_(i)>= force_gc_max_(i))
+        { throw(std::runtime_error("Specified minimum gc-force exceeds specified maximum gc-force.")); }
+      }
+
+      integral_gain_time_curr_ = -1;
+      integral_gain_time_pre_ = -1;
+
+      integral_force_.setZero(dof);
+
+      des_force_gc_.setZero(dof);
+      des_q_.setZero(dof);
+      des_dq_.setZero(dof);
+      des_ddq_.setZero(dof);
+
+      has_been_init_ = true;
+    }
+    catch(std::exception& e)
+    {
+      std::cerr<<"\nSControllerGc::init() : "<<e.what();
+
+      //Even if it was half-initialized, it might be in an invalid state now.
+      //So, we will keep the past values for error handling / debugging.
+      has_been_init_ = false;
+    }
+    return has_been_init_;
+  }
+
+
+
+  bool SControllerGc::init(const std::string & arg_controller_name,
+      SRobotParsed* arg_robot_ds,
       SRobotIO* arg_robot_io_ds,
       /* The remaining variables initialize the gc controller */
       const Eigen::VectorXd & arg_kp,

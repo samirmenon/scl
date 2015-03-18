@@ -94,6 +94,14 @@ namespace scl
     /** Constructor. Does nothing */
     SControllerGc();
 
+    /* Initialization function. Sets all the control parameters.
+     *
+     * This assumes that you'll separately set the gains etc.
+     * (presumably by parsing them from a file). */
+    sBool init(const std::string & arg_controller_name,
+        SRobotParsed* arg_robot_ds,
+        SRobotIO* arg_robot_io_ds);
+
     /* Initialization function. Sets all the control parameters */
     sBool init(const std::string & arg_controller_name,
         SRobotParsed* arg_robot_ds,
