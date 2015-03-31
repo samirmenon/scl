@@ -163,9 +163,9 @@ int main(int argc, char** argv)
 #ifdef DEBUG
       std::cout<<"\nTesting Tao And Robot Ids "<<robot_name;
 
-      sutil::CMappedTree<std::string, scl::SRigidBody> br =
+      const sutil::CMappedTree<std::string, scl::SRigidBody> &br =
           scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)->rb_tree_;
-      sutil::CMappedTree<std::string, scl::SRigidBody>::iterator it,ite;
+      sutil::CMappedTree<std::string, scl::SRigidBody>::const_iterator it,ite;
       for(it = br.begin(), ite = br.end();
           it!=ite; ++it)
       {
