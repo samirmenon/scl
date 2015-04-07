@@ -20,7 +20,11 @@ I will assume you will get this on to your documents folder. Again, on the termi
 $ cd ~/Documents
 $ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-manips-v2.git scl-manips-v2.git
 
+*** Note replace <your-bitbucket-id> with your actual bitbucket id..
+*** Eg. $ git clone https://samirmenon@bitbucket.org/samirmenon/scl-manips-v2.git scl-manips-v2.git
+
 === Optional : Check out a stable version of the code ===
+(Rember, this step is __optional__. If a tag doesn't work for you, try using the latest branch.
 $ git tag -l
 
 Then pick whatever tag (stable point) you want. Preferably pick the most recent one.
