@@ -24,7 +24,7 @@ $ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-manips-v2.g
 $ git tag -l
 
 Then pick whatever tag (stable point) you want. Preferably pick the most recent one.
-$ git checkout -b tag-v0.9 tags/v0.9
+$ git checkout -b tag-v0.9 tags/v0.95
 
 Unless you have some experience coding, you should consider using a stable version of the code.
 
