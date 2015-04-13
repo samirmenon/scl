@@ -218,7 +218,18 @@ namespace scl_chai_glut_interface
       }
     }
 
-    // 9  is a special flag for moving all ui points independently
+    // option 10-19: UI flags
+    const char numarr2[] = {')', '!', '@', '#', '$', '%', '^', '&', '*', '('};
+    for(int i=0;i<=9;++i)
+    {
+      if (chai_glob_ds->keys_active[static_cast<int>( numarr2[i] )])
+      {//Toggle the UI flag
+        scl::CDatabase::getData()->s_gui_.ui_flag_[10+i] = !scl::CDatabase::getData()->s_gui_.ui_flag_[10+i] ;
+        chai_glob_ds->keys_active[static_cast<int>(numarr2[i])] = false;
+      }
+    }
+
+    // shift+9  is a special flag for moving all ui points independently
     if (chai_glob_ds->keys_active[static_cast<int>('9')])
     {
       if(scl::CDatabase::getData()->s_gui_.ui_point_selector_ == 0)

@@ -171,7 +171,7 @@ public:
 /** The number of UI ints (integers) whose key-handlers are supported. Use these in your app. */
 #define SCL_NUM_UI_INTS 6
 /** The number of UI flags (bool) whose key-handlers are supported. Use these in your app. */
-#define SCL_NUM_UI_FLAGS 9
+#define SCL_NUM_UI_FLAGS 20
 
 /** All the data updated by the gui
  *
