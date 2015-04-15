@@ -921,6 +921,42 @@ namespace scl {
   }
 
 
+  sBool CGraphicsChai::addLineToRender(
+        const Eigen::Vector3d& arg_pos0,
+        const Eigen::Vector3d& arg_pos1,
+        cGenericObject*& arg_ret_ptr,
+        const sFloat arg_thickness)
+  {
+    try
+    {
+      if(!has_been_init_) { return false; }
+
+      //Create a new sphere and add it to the robot.
+      cShapeLine *new_op_gr = new cShapeLine();
+      if(S_NULL == new_op_gr)
+      { throw(std::runtime_error("Could not allocate new rendering object"));  }
+      new_op_gr->m_userName = std::string("scl_id_gr_sphere_floating");
+
+      new_op_gr->m_pointA.set(arg_pos0(0),arg_pos0(1),arg_pos0(2));
+      new_op_gr->m_pointB.set(arg_pos1(0),arg_pos1(1),arg_pos1(2));
+
+      new_op_gr->setLineWidth(arg_thickness);
+
+      //Add it to the parent frame as a child
+      data_->chai_world_->addChild(new_op_gr);
+
+      //Set the return pointer if passed, so that the caller can manipulate the sphere.
+      arg_ret_ptr = new_op_gr;
+    }
+    catch(std::exception& ee)
+    {
+      std::cerr<<"\nCGraphicsChai::addSphereToRender(no-robot) : global-frame : "<<ee.what();
+      return false;
+    }
+    return true;
+  }
+
+
   sBool CGraphicsChai::addSphereToRender(
         const std::string& arg_robot,
         const std::string& arg_link,

@@ -180,6 +180,18 @@ public:
       const std::string& arg_mset)
   { return false; }
 
+  /** Adds a line to the rendering environment wrt the global frame
+   * Connects the two points passed..*/
+  sBool addLineToRender(
+      /** The first point for the line */
+      const Eigen::Vector3d& arg_pos,
+      /** The second point for the line */
+      const Eigen::Vector3d& arg_pos1,
+      /** Reference to a pointer, pass a pointer and get the object for your use */
+      chai3d::cGenericObject*& arg_ret_ptr,
+      /** The thickness of the line (in pixels) */
+      const sFloat arg_thickness=1);
+
   /** Adds a sphere to a link on a robot in the rendering environment */
   sBool addSphereToRender(
       const std::string& arg_robot,
