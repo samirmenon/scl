@@ -213,6 +213,7 @@ namespace scl_chai_glut_interface
     {
       if (chai_glob_ds->keys_active[static_cast<int>( numarr[i] )])
       {//Toggle the UI flag
+        std::cout<<"\n Flipping ui_flag_ : "<<i<<" to "<< !scl::CDatabase::getData()->s_gui_.ui_flag_[10+i];
         scl::CDatabase::getData()->s_gui_.ui_flag_[i] = !scl::CDatabase::getData()->s_gui_.ui_flag_[i] ;
         chai_glob_ds->keys_active[static_cast<int>(numarr[i])] = false;
       }
@@ -224,6 +225,7 @@ namespace scl_chai_glut_interface
     {
       if (chai_glob_ds->keys_active[static_cast<int>( numarr2[i] )])
       {//Toggle the UI flag
+        std::cout<<"\n Flipping ui_flag_ : "<<10+i<<" to "<< !scl::CDatabase::getData()->s_gui_.ui_flag_[10+i];
         scl::CDatabase::getData()->s_gui_.ui_flag_[10+i] = !scl::CDatabase::getData()->s_gui_.ui_flag_[10+i] ;
         chai_glob_ds->keys_active[static_cast<int>(numarr2[i])] = false;
       }
