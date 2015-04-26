@@ -62,7 +62,7 @@
             <parent_link_name>link2</parent_link_name> <!-- The parent link. Ground is fixed. -->
             <joint_type>rz</joint_type> <!-- The type of joint. (p)rismatic/(r)evolute + x/y/z (axis) -->
             <joint_limits>-3.141590 3.141590</joint_limits> <!-- Minimum and maximum joint coordinate values -->
-            <default_joint_position>0.000000</default_joint_position> <!-- Initial configuration -->
+            <default_joint_position>0.200000</default_joint_position> <!-- Initial configuration -->
             <graphics> <!-- Can contain more than one obj file -->
                 <obj_file>
                     <name>Barrett/graphics/link3.obj</name> <!-- obj file format is best. 3ds is possible -->
@@ -84,7 +84,7 @@
             <parent_link_name>link3</parent_link_name> <!-- The parent link. Ground is fixed. -->
             <joint_type>rz</joint_type> <!-- The type of joint. (p)rismatic/(r)evolute + x/y/z (axis) -->
             <joint_limits>-3.141590 3.141590</joint_limits> <!-- Minimum and maximum joint coordinate values -->
-            <default_joint_position>0.000000</default_joint_position> <!-- Initial configuration -->
+            <default_joint_position>0.200000</default_joint_position> <!-- Initial configuration -->
             <graphics> <!-- Can contain more than one obj file -->
                 <obj_file>
                     <name>Barrett/graphics/link4.obj</name> <!-- obj file format is best. 3ds is possible -->
