@@ -182,6 +182,57 @@ namespace sutil
  * ************************************************************************* */
 namespace scl
 {
+  /** This adds an object to the printable registry. That allows pretty-printing
+   * this object from the command line shell...
+   *
+   * NOTE : This function may throw an exception (not typical SCL) */
+  template <class T>
+  bool printableAddObject(const T & arg_obj);
+
+  /** This is to just add an object and member objects
+   * NOTE : This function may throw an exception (not typical SCL) */
+  template <>
+  bool printableAddObject<scl::SRobotParsed>(const scl::SRobotParsed & arg_obj)
+  {
+    //NOTE: The robot's parsed and IO data structures are usually indexed by
+    // the robot name. So we add "Parsed" here at the end to distinguish between
+    // the. (Feel free to change this; you may pick your own convention).
+    bool flag = sutil::printables::add(arg_obj.name_+std::string("Parsed"),arg_obj);
+    if(false == flag)
+    {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
+        arg_obj.name_));  }
+    else
+    { std::cout<<"\n"<<std::setw(10)<< "Printable: Robot: "<<std::setw(51)<<arg_obj.name_+std::string("Parsed"); }
+
+    //Also add the links
+    sutil::CMappedTree<std::string, scl::SRigidBody>::const_iterator itl, itle;
+    for(itl = arg_obj.rb_tree_.begin(), itle = arg_obj.rb_tree_.end();
+        itl!=itle; ++itl)
+    {
+      const scl::SRigidBody& l = *itl;
+      flag = sutil::printables::add(l.name_,l);
+      if(false == flag)
+      {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
+          arg_obj.name_+". Link: "+l.name_));  }
+      else
+      { std::cout<<"\n"<<std::setw(10)<<"Printable: "<<arg_obj.name_<<" "<<l.getType()<<std::setw(40)<<l.name_; }
+    }
+  }
+
+  /** This is to just add an object and member objects */
+  template <>
+  bool printableAddObject<scl::SRobotIO>(const scl::SRobotIO & arg_obj)
+  {
+    //NOTE: The robot's parsed and IO data structures are usually indexed by
+    // the robot name. Also see SRobotParsed
+    bool flag = sutil::printables::add(arg_obj.name_,arg_obj);
+    if(false == flag)
+    {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
+        arg_obj.name_));  }
+    else
+    { std::cout<<"\n"<<std::setw(10)<<"Printable: Robot: "<<std::setw(51)<<arg_obj.name_; }
+  }
+
   bool addRobotPrintables()
   {
     bool flag;
@@ -190,53 +241,20 @@ namespace scl
       std::cout<<"\n\n*** Robot printables ***"
           <<"\n\nscl>> print <printable name>"
           <<"\n\n"<<std::setw(10)<< "Printable information"<<std::setw(45)<<"Printable name\n";
+
       //Add all the robot links as printables.
       sutil::CMappedList<std::string,scl::SRobotParsed>::iterator it,ite;
       for(it = scl::CDatabase::getData()->s_parser_.robots_.begin(),
           ite = scl::CDatabase::getData()->s_parser_.robots_.end();
           it!=ite;++it)
-      {
-        scl::SRobotParsed& rob = *it;
-
-        //NOTE: In the database, the robot's parsed and IO data structures
-        //are both indexed by the robot name. So we add "Parsed" here at the
-        //end to distinguish between the. (You may pick your own convention).
-        flag = sutil::printables::add(rob.name_+std::string("Parsed"),rob);
-        if(false == flag)
-        {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
-            rob.name_));  }
-        else
-        { std::cout<<"\n"<<std::setw(10)<< "Printable: Robot: "<<std::setw(51)<<rob.name_+std::string("Parsed"); }
-
-        //Also add the links
-        sutil::CMappedTree<std::string, scl::SRigidBody>::iterator itl, itle;
-        for(itl = rob.rb_tree_.begin(), itle = rob.rb_tree_.end();
-            itl!=itle; ++itl)
-        {
-          scl::SRigidBody& l = *itl;
-          flag = sutil::printables::add(l.name_,l);
-          if(false == flag)
-          {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
-              rob.name_+". Link: "+l.name_));  }
-          else
-          { std::cout<<"\n"<<std::setw(10)<<"Printable: "<<rob.name_<<" "<<l.getType()<<std::setw(40)<<l.name_; }
-        }
-      }
+      { printableAddObject<scl::SRobotParsed>(*it); }
 
       //Add all the IO data structures for all the robots
       sutil::CMappedList<std::string, scl::SRobotIO>::iterator iti,itie;
       for(iti = scl::CDatabase::getData()->s_io_.io_data_.begin(),
           itie = scl::CDatabase::getData()->s_io_.io_data_.end();
           iti!=itie; ++iti)
-      {
-        scl::SRobotIO& io = *iti;
-        flag = sutil::printables::add(io.name_,io);
-        if(false == flag)
-        {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
-            io.name_));  }
-        else
-        { std::cout<<"\n"<<std::setw(10)<<"Printable: Robot: "<<std::setw(51)<<io.name_; }
-      }
+      { printableAddObject<scl::SRobotIO>(*iti); }
 
       //Add all the task controller data structures for all the robots
       sutil::CMappedPointerList<std::string, scl::SControllerBase,true>::const_iterator itct,itcte;

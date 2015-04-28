@@ -33,6 +33,22 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define SERIALIZATIONJSON_HPP_
 
 #include <scl/data_structs/SDatabase.hpp>
+
+#include <scl/control/data_structs/SControllerBase.hpp>
+#include <scl/control/gc/data_structs/SControllerGc.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPosPIDA1OrderInfTime.hpp>
+#include <scl/control/task/tasks/data_structs/STaskGc.hpp>
+#include <scl/control/task/tasks/data_structs/STaskGcLimitCentering.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPosNoGravity.hpp>
+#include <scl/control/task/tasks/data_structs/STaskComPos.hpp>
+#include <scl/control/task/tasks/data_structs/STaskGcSet.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
+#include <scl/control/task/tasks/data_structs/STaskNullSpaceDamping.hpp>
+#include <scl/control/task/data_structs/SControllerMultiTask.hpp>
+#include <scl/control/task/data_structs/STaskBase.hpp>
+#include <scl/control/task/data_structs/SNonControlTaskBase.hpp>
+#include <scl/control/task/data_structs/SServo.hpp>
+
 #include <jsoncpp/json/json.h>
 #include <string>
 
@@ -155,6 +171,21 @@ namespace scl
   extern template bool serializeToJSON<SRobotIO>(const SRobotIO &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SRobotParsed>(const SRobotParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SUIParsed>(const SUIParsed &arg_obj, Json::Value &ret_json_val);
+
+  // The controller data structures
+  extern template bool serializeToJSON<SControllerGc>(const SControllerGc&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SControllerMultiTask>(const SControllerMultiTask&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<STaskBase>(const STaskBase&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SNonControlTaskBase>(const SNonControlTaskBase&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SServo>(const SServo&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<STaskOpPosPIDA1OrderInfTime>(const STaskOpPosPIDA1OrderInfTime&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<STaskGc>(const STaskGc&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<STaskGcLimitCentering>(const STaskGcLimitCentering&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<STaskOpPosNoGravity>(const STaskOpPosNoGravity&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<STaskComPos>(const STaskComPos&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<STaskGcSet>(const STaskGcSet&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<STaskOpPos>(const STaskOpPos&arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<STaskNullSpaceDamping>(const STaskNullSpaceDamping&arg_obj, Json::Value &ret_json_val);
 #endif
 
   template <typename T> bool serializeToJSON(const sutil::CMappedList<std::string,T> &arg_mlist, Json::Value &ret_json_val)
@@ -249,6 +280,21 @@ namespace scl
   extern template bool deserializeFromJSON<SRobotIO>(SRobotIO &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SRobotParsed>(SRobotParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SUIParsed>(SUIParsed &ret_obj, const Json::Value &arg_json_val);
+
+  // The controller data structures
+  extern template bool deserializeFromJSON<SControllerGc>(SControllerGc&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<STaskBase>(STaskBase&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<SNonControlTaskBase>(SNonControlTaskBase&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<SServo>(SServo&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<STaskOpPosPIDA1OrderInfTime>(STaskOpPosPIDA1OrderInfTime&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<STaskGc>(STaskGc&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<STaskGcLimitCentering>(STaskGcLimitCentering&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<STaskOpPosNoGravity>(STaskOpPosNoGravity&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<STaskComPos>(STaskComPos&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<STaskGcSet>(STaskGcSet&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<STaskOpPos>(STaskOpPos&arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<STaskNullSpaceDamping>(STaskNullSpaceDamping&arg_obj, const Json::Value &ret_json_val);
 #endif
 
   template <typename T> bool deserializeFromJSON(sutil::CMappedList<std::string,T> &ret_mlist, const Json::Value &arg_json_val)

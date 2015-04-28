@@ -442,6 +442,49 @@ namespace scl
   template<> bool serializeToJSON<SUIParsed>(const SUIParsed &arg_obj, Json::Value &ret_json_val)
   {  return false;  }
 
+
+  template<>  bool serializeToJSON<SControllerGc>(const SControllerGc&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<SControllerMultiTask>(const SControllerMultiTask&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskBase>(const STaskBase&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<SNonControlTaskBase>(const SNonControlTaskBase&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<SServo>(const SServo&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskOpPosPIDA1OrderInfTime>(const STaskOpPosPIDA1OrderInfTime&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskGc>(const STaskGc&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskGcLimitCentering>(const STaskGcLimitCentering&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskOpPosNoGravity>(const STaskOpPosNoGravity&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskComPos>(const STaskComPos&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskGcSet>(const STaskGcSet&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskOpPos>(const STaskOpPos&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskNullSpaceDamping>(const STaskNullSpaceDamping&arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+
+
+
   /** *****************************************************************************
    *                        Deserialize data to an object
    * **************************************************************************** */
@@ -529,4 +572,45 @@ namespace scl
 
   template<> bool deserializeFromJSON<SUIParsed>(SUIParsed &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
+
+
+  template<> bool deserializeFromJSON<SControllerGc>(SControllerGc&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskBase>(STaskBase&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SNonControlTaskBase>(SNonControlTaskBase&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SServo>(SServo&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskOpPosPIDA1OrderInfTime>(STaskOpPosPIDA1OrderInfTime&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskGc>(STaskGc&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskGcLimitCentering>(STaskGcLimitCentering&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskOpPosNoGravity>(STaskOpPosNoGravity&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskComPos>(STaskComPos&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskGcSet>(STaskGcSet&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskOpPos>(STaskOpPos&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskNullSpaceDamping>(STaskNullSpaceDamping&arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
 }
