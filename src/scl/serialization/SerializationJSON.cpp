@@ -301,6 +301,9 @@ namespace scl
 
   template<> bool serializeToJSON<SRigidBodyDyn>(const SRigidBodyDyn &arg_obj, Json::Value &ret_json_val)
   {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
     // Special case.. Pointer deref..
     ret_json_val["name_"] = arg_obj.link_ds_->name_;
 
@@ -331,6 +334,9 @@ namespace scl
 
   template<> bool serializeToJSON<SGcModel>(const SGcModel &arg_obj, Json::Value &ret_json_val)
   {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
     std::string str;
     Json::Reader json_reader;
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(M_gc_)
@@ -390,6 +396,9 @@ namespace scl
 
   template<> bool serializeToJSON<SRobotIO>(const SRobotIO &arg_obj, Json::Value &ret_json_val)
   {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
     MACRO_SER_ARGOBJ_RETJSONVAL(dof_)
     MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(sensors_)
     MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(actuators_)
@@ -443,14 +452,21 @@ namespace scl
   {  return false;  }
 
 
-  template<>  bool serializeToJSON<SControllerGc>(const SControllerGc&arg_obj, Json::Value &ret_json_val)
+
+  template<>  bool serializeToJSON<SControllerBase>(const SControllerBase &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<SControllerMultiTask>(const SControllerMultiTask&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<SControllerGc>(const SControllerGc &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<STaskBase>(const STaskBase&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<SControllerMultiTask>(const SControllerMultiTask &arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  template<>  bool serializeToJSON<STaskBase>(const STaskBase &arg_obj, Json::Value &ret_json_val)
   {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
     MACRO_SER_ARGOBJ_RETJSONVAL(type_task_)
     MACRO_SER_ARGOBJ_RETJSONVAL(has_been_activated_)
     MACRO_SER_ARGOBJ_RETJSONVAL(has_control_null_space_)
@@ -501,34 +517,34 @@ namespace scl
     return false;
   }
 
-  template<>  bool serializeToJSON<SNonControlTaskBase>(const SNonControlTaskBase&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<SNonControlTaskBase>(const SNonControlTaskBase &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<SServo>(const SServo&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<SServo>(const SServo &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<STaskOpPosPIDA1OrderInfTime>(const STaskOpPosPIDA1OrderInfTime&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<STaskOpPosPIDA1OrderInfTime>(const STaskOpPosPIDA1OrderInfTime &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<STaskGc>(const STaskGc&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<STaskGc>(const STaskGc &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<STaskGcLimitCentering>(const STaskGcLimitCentering&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<STaskGcLimitCentering>(const STaskGcLimitCentering &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<STaskOpPosNoGravity>(const STaskOpPosNoGravity&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<STaskOpPosNoGravity>(const STaskOpPosNoGravity &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<STaskComPos>(const STaskComPos&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<STaskComPos>(const STaskComPos &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<STaskGcSet>(const STaskGcSet&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<STaskGcSet>(const STaskGcSet &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<STaskOpPos>(const STaskOpPos&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<STaskOpPos>(const STaskOpPos &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
-  template<>  bool serializeToJSON<STaskNullSpaceDamping>(const STaskNullSpaceDamping&arg_obj, Json::Value &ret_json_val)
+  template<>  bool serializeToJSON<STaskNullSpaceDamping>(const STaskNullSpaceDamping &arg_obj, Json::Value &ret_json_val)
   { return false; }
 
 
@@ -623,43 +639,46 @@ namespace scl
   {  return false;  }
 
 
-  template<> bool deserializeFromJSON<SControllerGc>(SControllerGc&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<SControllerBase>(SControllerBase &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<SControllerGc>(SControllerGc &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskBase>(STaskBase&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<SNonControlTaskBase>(SNonControlTaskBase&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskBase>(STaskBase &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<SServo>(SServo&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<SNonControlTaskBase>(SNonControlTaskBase &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskOpPosPIDA1OrderInfTime>(STaskOpPosPIDA1OrderInfTime&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<SServo>(SServo &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskGc>(STaskGc&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskOpPosPIDA1OrderInfTime>(STaskOpPosPIDA1OrderInfTime &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskGcLimitCentering>(STaskGcLimitCentering&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskGc>(STaskGc &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskOpPosNoGravity>(STaskOpPosNoGravity&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskGcLimitCentering>(STaskGcLimitCentering &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskComPos>(STaskComPos&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskOpPosNoGravity>(STaskOpPosNoGravity &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskGcSet>(STaskGcSet&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskComPos>(STaskComPos &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskOpPos>(STaskOpPos&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskGcSet>(STaskGcSet &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskNullSpaceDamping>(STaskNullSpaceDamping&arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskOpPos>(STaskOpPos &arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<STaskNullSpaceDamping>(STaskNullSpaceDamping &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
 }
