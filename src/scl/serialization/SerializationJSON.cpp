@@ -450,7 +450,56 @@ namespace scl
   { return false; }
 
   template<>  bool serializeToJSON<STaskBase>(const STaskBase&arg_obj, Json::Value &ret_json_val)
-  { return false; }
+  {
+    MACRO_SER_ARGOBJ_RETJSONVAL(type_task_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(has_been_activated_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(has_control_null_space_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(priority_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(dof_task_)
+
+    //Required for the Eigen serialization macro to work
+    Json::Reader json_reader;
+    std::string str;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(J_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(J_6_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(J_dyn_inv_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(null_space_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(M_task_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(M_task_inv_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_task_cc_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_task_grav_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_task_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_task_max_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_task_min_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(force_gc_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(range_space_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(kp_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(kv_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ka_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ki_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(shared_data_)
+
+    // Std vector of strings (iterable)
+    ret_json_val["task_nonstd_params_"] = Json::Value(Json::arrayValue);
+    // C++11 auto iterator (compact!)
+    for (auto&& element: arg_obj.task_nonstd_params_) {
+      Json::Value tmp;
+      serializeToJSON(element.data_[0]+std::string(" : ") +element.data_[1],tmp);
+      ret_json_val["task_nonstd_params_"].append(tmp);
+    }
+
+    // Also save the pointers
+    // NOTE TODO : Think about whether this is necessary.. Reconsider doing this if it's not a good idea.
+    std::stringstream ss;
+    ss << static_cast<const void*>(arg_obj.parent_controller_);
+    ret_json_val["parent_controller_"] = ss.str(); ss.clear();
+    ss << static_cast<const void*>(arg_obj.robot_);
+    ret_json_val["robot_"] = ss.str(); ss.clear();
+    ss << static_cast<const void*>(arg_obj.gc_model_);
+    ret_json_val["gc_model_"] = ss.str(); ss.clear();
+
+    return false;
+  }
 
   template<>  bool serializeToJSON<SNonControlTaskBase>(const SNonControlTaskBase&arg_obj, Json::Value &ret_json_val)
   { return false; }
