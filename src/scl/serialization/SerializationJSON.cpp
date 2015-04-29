@@ -452,16 +452,6 @@ namespace scl
   {  return false;  }
 
 
-
-  template<>  bool serializeToJSON<SControllerBase>(const SControllerBase &arg_obj, Json::Value &ret_json_val)
-  { return false; }
-
-  template<>  bool serializeToJSON<SControllerGc>(const SControllerGc &arg_obj, Json::Value &ret_json_val)
-  { return false; }
-
-  template<>  bool serializeToJSON<SControllerMultiTask>(const SControllerMultiTask &arg_obj, Json::Value &ret_json_val)
-  { return false; }
-
   template<>  bool serializeToJSON<STaskBase>(const STaskBase &arg_obj, Json::Value &ret_json_val)
   {
     bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
@@ -548,7 +538,53 @@ namespace scl
   { return false; }
 
 
+  template<>  bool serializeToJSON<SControllerBase>(const SControllerBase &arg_obj, Json::Value &ret_json_val)
+  {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
 
+    /** Name of the robot */
+    MACRO_SER_ARGOBJ_RETJSONVAL(robot_name_)
+
+    // NOTE TODO : Think about whether this should be added (or somehow linked)
+    // const SRobotParsed* robot_;
+    // SRobotIO* io_data_;
+    // SGcModel* gc_model_;
+
+    return true;
+  }
+
+  template<>  bool serializeToJSON<SControllerGc>(const SControllerGc &arg_obj, Json::Value &ret_json_val)
+  { return false; }
+
+  /** Note this isn't as easy as the more elementary data structures. This is because it contains
+   * complex data types that don't fit into the macro style.. */
+  template<>  bool serializeToJSON<SControllerMultiTask>(const SControllerMultiTask &arg_obj, Json::Value &ret_json_val)
+  {
+    bool flag = serializeToJSON(*dynamic_cast<const SControllerBase*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
+    // The servo data structure..
+    MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(servo_)
+
+    // Note, since we specialized the mapped list with a pointer member, we can directly use the
+    // associated template function.
+    const sutil::CMappedList<std::string, STaskBase*> *tmp =
+        dynamic_cast<const sutil::CMappedList<std::string, STaskBase*> *>(& (arg_obj.tasks_));
+    flag = serializeToJSON(*tmp, ret_json_val);
+    if(!flag) { return false; }
+
+    // Note, since we specialized the mapped list with a pointer member, we can directly use the
+    // associated template function.
+    const sutil::CMappedList<std::string, SNonControlTaskBase*> *tmp2 =
+        dynamic_cast<const sutil::CMappedList<std::string, SNonControlTaskBase*> *>(& (arg_obj.tasks_non_ctrl_));
+    flag = serializeToJSON(*tmp2, ret_json_val);
+    if(!flag) { return false; }
+
+    MACRO_SER_ARGOBJ_RETJSONVAL(servo_to_model_rate_)
+
+    return true;
+  }
 
   /** *****************************************************************************
    *                        Deserialize data to an object
@@ -639,14 +675,6 @@ namespace scl
   {  return false;  }
 
 
-  template<> bool deserializeFromJSON<SControllerBase>(SControllerBase &arg_obj, const Json::Value &ret_json_val)
-  {  return false;  }
-
-  template<> bool deserializeFromJSON<SControllerGc>(SControllerGc &arg_obj, const Json::Value &ret_json_val)
-  {  return false;  }
-
-  template<> bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask &arg_obj, const Json::Value &ret_json_val)
-  {  return false;  }
 
   template<> bool deserializeFromJSON<STaskBase>(STaskBase &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
@@ -679,6 +707,16 @@ namespace scl
   {  return false;  }
 
   template<> bool deserializeFromJSON<STaskNullSpaceDamping>(STaskNullSpaceDamping &arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+
+  template<> bool deserializeFromJSON<SControllerBase>(SControllerBase &arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SControllerGc>(SControllerGc &arg_obj, const Json::Value &ret_json_val)
+  {  return false;  }
+
+  template<> bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }
 
 }

@@ -99,6 +99,9 @@ namespace scl
    */
   template <typename T>
   bool serializeToJSON(const sutil::CMappedList<std::string,T> &arg_mlist, Json::Value &ret_json_val);
+  /** We will parse lists of pointers by dereferencing the pointers (we get full objects) */
+  template <typename T>
+  bool serializeToJSON(const sutil::CMappedList<std::string,T*> &arg_mlist, Json::Value &ret_json_val);
   /** We will parse trees as lists (the tree information is in the data structure anyway) */
   template <typename T>
   bool serializeToJSON(const sutil::CMappedTree<std::string,T> &arg_mlist, Json::Value &ret_json_val);
@@ -173,9 +176,6 @@ namespace scl
   extern template bool serializeToJSON<SUIParsed>(const SUIParsed &arg_obj, Json::Value &ret_json_val);
 
   // The controller data structures
-  extern template bool serializeToJSON<SControllerBase>(const SControllerBase &arg_obj, Json::Value &ret_json_val);
-  extern template bool serializeToJSON<SControllerGc>(const SControllerGc &arg_obj, Json::Value &ret_json_val);
-  extern template bool serializeToJSON<SControllerMultiTask>(const SControllerMultiTask &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<STaskBase>(const STaskBase &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SNonControlTaskBase>(const SNonControlTaskBase &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SServo>(const SServo &arg_obj, Json::Value &ret_json_val);
@@ -187,6 +187,10 @@ namespace scl
   extern template bool serializeToJSON<STaskGcSet>(const STaskGcSet &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<STaskOpPos>(const STaskOpPos &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<STaskNullSpaceDamping>(const STaskNullSpaceDamping &arg_obj, Json::Value &ret_json_val);
+
+  extern template bool serializeToJSON<SControllerBase>(const SControllerBase &arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SControllerGc>(const SControllerGc &arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SControllerMultiTask>(const SControllerMultiTask &arg_obj, Json::Value &ret_json_val);
 #endif
 
   template <typename T> bool serializeToJSON(const sutil::CMappedList<std::string,T> &arg_mlist, Json::Value &ret_json_val)
@@ -201,6 +205,40 @@ namespace scl
       Json::Value &val = ret_json_val[index.c_str()];
 
       if(false == serializeToJSON(*it, val))
+      { ret_json_val = Json::Value(Json::arrayValue); return false; }
+    }
+
+    //Add sorting information if present.
+    if(arg_mlist.isSorted())
+    {
+      ret_json_val["__is_sorted"] = arg_mlist.isSorted();
+      std::vector<std::string> sort_order;
+      if(false == arg_mlist.sort_get_order(sort_order))
+      { return false; }
+
+      ret_json_val["__sort_order"] = Json::Value(Json::arrayValue);
+      // C++11 auto iterator (compact!)
+      for (auto&& element: sort_order) {
+        ret_json_val["__sort_order"].append(element);
+      }
+    }
+
+    return true;
+  }
+
+  /** Get the pointer deref */
+  template <typename T> bool serializeToJSON(const sutil::CMappedList<std::string,T*> &arg_mlist, Json::Value &ret_json_val)
+  {
+    //Add the index and object values for each entry
+    auto it = arg_mlist.begin(), ite = arg_mlist.end();
+    for(;it!=ite;++it)
+    {
+      // Temps for code clarity
+      const T& data = **it;
+      const std::string& index = !it;
+      Json::Value &val = ret_json_val[index.c_str()];
+
+      if(false == serializeToJSON(**it, val))
       { ret_json_val = Json::Value(Json::arrayValue); return false; }
     }
 
@@ -283,9 +321,6 @@ namespace scl
   extern template bool deserializeFromJSON<SUIParsed>(SUIParsed &ret_obj, const Json::Value &arg_json_val);
 
   // The controller data structures
-  extern template bool deserializeFromJSON<SControllerBase>(SControllerBase &arg_obj, const Json::Value &ret_json_val);
-  extern template bool deserializeFromJSON<SControllerGc>(SControllerGc &arg_obj, const Json::Value &ret_json_val);
-  extern template bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask &arg_obj, const Json::Value &ret_json_val);
   extern template bool deserializeFromJSON<STaskBase>(STaskBase &arg_obj, const Json::Value &ret_json_val);
   extern template bool deserializeFromJSON<SNonControlTaskBase>(SNonControlTaskBase &arg_obj, const Json::Value &ret_json_val);
   extern template bool deserializeFromJSON<SServo>(SServo &arg_obj, const Json::Value &ret_json_val);
@@ -297,6 +332,10 @@ namespace scl
   extern template bool deserializeFromJSON<STaskGcSet>(STaskGcSet &arg_obj, const Json::Value &ret_json_val);
   extern template bool deserializeFromJSON<STaskOpPos>(STaskOpPos &arg_obj, const Json::Value &ret_json_val);
   extern template bool deserializeFromJSON<STaskNullSpaceDamping>(STaskNullSpaceDamping &arg_obj, const Json::Value &ret_json_val);
+
+  extern template bool deserializeFromJSON<SControllerBase>(SControllerBase &arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<SControllerGc>(SControllerGc &arg_obj, const Json::Value &ret_json_val);
+  extern template bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask &arg_obj, const Json::Value &ret_json_val);
 #endif
 
   template <typename T> bool deserializeFromJSON(sutil::CMappedList<std::string,T> &ret_mlist, const Json::Value &arg_json_val)
