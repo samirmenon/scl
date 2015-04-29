@@ -1,5 +1,6 @@
 # Temp files
 *~
+*.swp
 
 # Compiled Object files
 *.slo
@@ -43,3 +44,13 @@
 
 # Log files
 *.log
+
+# Tutorial files
+tutorial/scl_advanced_creating_new_tasks/scl_advanced_creating_new_tasks
+tutorial/scl_tutorial0_setup_robot/scl_tutorial0_setup_robot
+tutorial/scl_tutorial1_xml_kinematics_dynamics/scl_tutorial1_xml_kinematics_dynamics
+tutorial/scl_tutorial2_physics_integration/scl_tutorial2_physics_integration
+tutorial/scl_tutorial3_graphics_physics_cmake/scl_tutorial3_graphics_physics_cmake
+tutorial/scl_tutorial4_control_gc_op/scl_tutorial4_control_gc_op
+tutorial/scl_tutorial5_control_multi_task/scl_tutorial5_control_multi_task
+tutorial/scl_tutorial6_control_humanoid/scl_tutorial6_control_humanoid
