@@ -122,6 +122,23 @@ namespace sutil
       ostr<<"\nERROR : Could not print JSON for control task: "<< arg_data.name_<<std::endl;
   }
 
+  /** ************************* JSON CALL ******************** */
+  template <>
+  void printToStream<scl::SGcModel>(
+      std::ostream& ostr,
+      const scl::SGcModel& arg_data
+  )
+  {
+    Json::Value val;
+    bool flag = scl::serializeToJSON<scl::SGcModel>(arg_data, val);
+    if(flag){
+      ostr<<val.toStyledString();
+      ostr<<std::endl;
+    }
+    else
+      ostr<<"\nERROR : Could not print JSON for gc model: "<< arg_data.name_<<std::endl;
+  }
+
   template <>
   void printToStream<scl::SControllerMultiTask>(
       std::ostream& ostr,
