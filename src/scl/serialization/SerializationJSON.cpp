@@ -64,6 +64,16 @@ namespace scl
     } \
     ret_obj.AAA = arg_json_val[#AAA].TTT();
 
+#define MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(AAA) \
+    if(!arg_json_val.isMember(#AAA)) { \
+      std::cout<<"\n deserializeFromJSON() Error : Could not find : "<<#AAA<<std::flush; \
+      return false; \
+    } \
+    if(false == deserializeFromJSON(ret_obj.AAA,arg_json_val)){ \
+      std::cout<<"\n deserializeFromJSON() Error : Could not deserialize object : "<<#AAA<<std::flush; \
+      return false; \
+    }
+
 
 #define MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(AAA) \
     if(!arg_json_val.isMember(#AAA)) { \
@@ -665,8 +675,23 @@ namespace scl
   template<> bool deserializeFromJSON<SRigidBodyDyn>(SRigidBodyDyn &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
+
+  template<> bool deserializeFromJSON<SRobotSensors>(SRobotSensors &ret_obj, const Json::Value &arg_json_val)
+  {  return true;  }
+
+  template<> bool deserializeFromJSON<SRobotActuators>(SRobotActuators &ret_obj, const Json::Value &arg_json_val)
+  {  return true;  }
+
   template<> bool deserializeFromJSON<SRobotIO>(SRobotIO &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    bool flag = deserializeFromJSON(*dynamic_cast<SObject*>(&ret_obj), arg_json_val);
+    if(!flag) { return false; }
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL(dof_,asDouble)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(sensors_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(actuators_)
+    return true;
+  }
 
   template<> bool deserializeFromJSON<SRobotParsed>(SRobotParsed &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }

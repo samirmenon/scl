@@ -228,7 +228,7 @@ namespace scl
     {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
         arg_obj.name_));  }
     else
-    { std::cout<<"\n"<<std::setw(10)<<"Printable: Robot: "<<std::setw(51)<<arg_obj.name_; }
+    { std::cout<<"\n"<<std::setw(10)<<"Printable: RobotIO: "<<std::setw(51)<<arg_obj.name_; }
 
     return true;
   }
