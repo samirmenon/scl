@@ -299,6 +299,7 @@ namespace scl
   // specialization functions as extern for client apps, which means that they won't be compiled.
   // Only the scl_lib will set this flag, and will compile all the specialized functions (from the cpp file).
 #ifndef SCL_LIBRARY_COMPILE_FLAG
+  extern template bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SMusclePointParsed>(SMusclePointParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SMuscleParsed>(SMuscleParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SActuatorSetMuscleParsed>(SActuatorSetMuscleParsed &ret_obj, const Json::Value &arg_json_val);
@@ -308,7 +309,6 @@ namespace scl
   extern template bool deserializeFromJSON<SForce>(SForce &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SGraphicsParsed::SLight>(SGraphicsParsed::SLight &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SGraphicsParsed>(SGraphicsParsed &ret_obj, const Json::Value &arg_json_val);
-  extern template bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SRigidBodyGraphics>(SRigidBodyGraphics &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SRigidBodyDyn>(SRigidBodyDyn &ret_obj, const Json::Value &arg_json_val);
@@ -337,8 +337,53 @@ namespace scl
   extern template bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask &arg_obj, const Json::Value &ret_json_val);
 #endif
 
+  /** NOTE TODO : For now, mapped lists usually require setting up pointers etc. As such
+   * we will only deserialize values into mapped lists that are already initialized. This
+   * is a minor limitation that requires a base parse-initialize method before data transfer
+   * across processes.
+   *
+   * There is a tradeoff. If we re-initialize every time, we lose generality and potentially
+   * waste a lot of time setting up pointers and lookup tables etc. If we don't re-initialize
+   * every time, we can't use this method to start from scratch.
+   *
+   * Update this discussion when things are clear.
+   */
   template <typename T> bool deserializeFromJSON(sutil::CMappedList<std::string,T> &ret_mlist, const Json::Value &arg_json_val)
-  { return false; }
+  {
+    // Clear the previous list
+    if(ret_mlist.size() <= 0)
+    { return false; }
+
+    //Add the index and object values for each entry
+    //NOTE : This specifically looks for the passed list's indices in the json and updates their values.
+    // It does NOT re-initialize the list. So if there are extra JSON keys, they will be ignored.
+    for(auto it = ret_mlist.begin(), ite = ret_mlist.end(); it!=ite; ++it)
+    {
+      // Temps for code clarity
+      T& data = *it;
+      const std::string& index = !it;
+      const Json::Value &val = arg_json_val[index.c_str()];
+
+      if(false == deserializeFromJSON(data, val))
+      { return false; }
+    }
+
+    //Add sorting information if present.
+    if(arg_json_val["__is_sorted"].asBool())
+    {
+      std::vector<std::string> sort_order;
+      for(Json::ValueIterator itr = arg_json_val["__sort_order"].begin(), itre = arg_json_val["__sort_order"].end();
+          itr!=itre; ++itr)
+      {
+        //Should be a string (name of link)
+        sort_order.push_back(itr.key().asString());
+      }
+      if(false == ret_mlist.sort(sort_order))
+      { return false; }
+    }
+
+    return true;
+  }
 
   template <typename T>
   bool deserializeFromJSONString(T &ret_obj, const std::string &arg_str)

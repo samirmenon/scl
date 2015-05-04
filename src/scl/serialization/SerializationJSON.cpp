@@ -69,7 +69,7 @@ namespace scl
       std::cout<<"\n deserializeFromJSON() Error : Could not find : "<<#AAA<<std::flush; \
       return false; \
     } \
-    if(false == deserializeFromJSON(ret_obj.AAA,arg_json_val)){ \
+    if(false == deserializeFromJSON(ret_obj.AAA,arg_json_val[#AAA])){ \
       std::cout<<"\n deserializeFromJSON() Error : Could not deserialize object : "<<#AAA<<std::flush; \
       return false; \
     }
@@ -599,6 +599,13 @@ namespace scl
   /** *****************************************************************************
    *                        Deserialize data to an object
    * **************************************************************************** */
+  template<> bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val)
+  {
+    MACRO_DESER_RETOBJ_ARGJSONVAL(has_been_init_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(name_,asString)
+    return true;
+  }
+
   template<> bool deserializeFromJSON<SMusclePointParsed>(SMusclePointParsed &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
@@ -615,7 +622,23 @@ namespace scl
   {  return false;  }
 
   template<> bool deserializeFromJSON<SForce>(SForce &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    // Get the SObject
+    scl::SObject *tmp_obj = dynamic_cast<SObject*>(&ret_obj);
+    bool flag = deserializeFromJSON(*tmp_obj, arg_json_val);
+    if(!flag){ return false; }
+
+    // Now get the force information
+    MACRO_DESER_RETOBJ_ARGJSONVAL(link_name_,asString)
+
+    std::string str;
+    Json::Reader json_reader;
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(pos_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(direction_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(J_)
+    return true;
+  }
 
   template<> bool deserializeFromJSON<SGcModel>(SGcModel &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
@@ -623,16 +646,10 @@ namespace scl
   template<> bool deserializeFromJSON<SGraphicsParsed>(SGraphicsParsed &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val)
-  {
-    MACRO_DESER_RETOBJ_ARGJSONVAL(has_been_init_,asBool)
-    MACRO_DESER_RETOBJ_ARGJSONVAL(name_,asString)
-    return true;
-  }
-
   template<> bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val)
   {
-    bool flag = deserializeFromJSON(*dynamic_cast<const SObject*>(&ret_obj), arg_json_val);
+    scl::SObject *tmp_obj = dynamic_cast<SObject*>(&ret_obj);
+    bool flag = deserializeFromJSON(*tmp_obj, arg_json_val);
     if(!flag){ return false; }
 
     //Read in the standard types (supported by json)
@@ -677,15 +694,31 @@ namespace scl
 
 
   template<> bool deserializeFromJSON<SRobotSensors>(SRobotSensors &ret_obj, const Json::Value &arg_json_val)
-  {  return true;  }
+  {
+    //Read in the Eigen matrix types..
+    bool flag;
+    std::string str;
+    Json::Reader json_reader;
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(q_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(dq_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(ddq_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_gc_measured_)
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(forces_external_)
+    return true;
+  }
 
   template<> bool deserializeFromJSON<SRobotActuators>(SRobotActuators &ret_obj, const Json::Value &arg_json_val)
-  {  return true;  }
+  {
+    return true;
+  }
 
   template<> bool deserializeFromJSON<SRobotIO>(SRobotIO &ret_obj, const Json::Value &arg_json_val)
   {
-    bool flag = deserializeFromJSON(*dynamic_cast<SObject*>(&ret_obj), arg_json_val);
-    if(!flag) { return false; }
+    scl::SObject *tmp_obj = dynamic_cast<SObject*>(&ret_obj);
+    bool flag = deserializeFromJSON(*tmp_obj, arg_json_val);
+    if(!flag){ return false; }
 
     MACRO_DESER_RETOBJ_ARGJSONVAL(dof_,asDouble)
     MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(sensors_)
