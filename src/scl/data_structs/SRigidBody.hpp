@@ -60,6 +60,7 @@ public:
   Eigen::VectorXd scaling_; //Between 0 and 1. Default is 1.
 
   sInt collision_type_;//NOTE TODO : Should be an enum
+  sFloat option_axis_frame_size_;
 
   std::string file_name_;
 
@@ -80,6 +81,7 @@ public:
     ori_parent_quat_(3) = 1;
     scaling_.setConstant(3,1);//x y z scaling. Default = 1
     collision_type_ = 0;
+    option_axis_frame_size_ = 0.0;
     file_name_ = "";
     class_ = GRAPHIC_TYPE_NOT_INIT;
     color_[0] = 0; color_[1] = 0; color_[2] = 0;
