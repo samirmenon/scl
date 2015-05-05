@@ -38,6 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdexcept>
 #include <iomanip>
+#include <algorithm>
 
 #ifdef DEBUG
 #include <cassert>
@@ -81,7 +82,12 @@ namespace sutil
     Json::Value val;
     bool flag = scl::serializeToJSON<scl::SRobotIO>(arg_data, val);
     if(flag){
-      ostr<<val.toStyledString();
+      std::string str = val.toStyledString();
+      ostr<<str;
+      str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+      str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+      ostr<<"\nTo update value : \n";
+      ostr<<"set "<<arg_data.name_<<" "<<str;
       ostr<<std::endl;
     }
     else
