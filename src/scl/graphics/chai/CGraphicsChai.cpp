@@ -211,8 +211,13 @@ namespace scl {
       //7. Set random rendering options (Defaults. Override later if you want.)
       if(0.0<arg_rob_parsed->option_axis_frame_size_)
       {
-        robot_brrep_root->graphics_obj_->setFrameSize(arg_rob_parsed->option_axis_frame_size_,true);
-        robot_brrep_root->graphics_obj_->setShowFrame(true,true);
+        for(auto it = rob_gr_brrep->begin(), ite = rob_gr_brrep->end();
+            it!=ite; ++it)
+        {
+          SGraphicsChaiRigidBody& tmp_crb = *it;
+          tmp_crb.graphics_obj_->setFrameSize(arg_rob_parsed->option_axis_frame_size_,false);
+          tmp_crb.graphics_obj_->setShowFrame(true,false);
+        }
       }
       else
       { robot_brrep_root->graphics_obj_->setShowFrame(false,false); }
@@ -329,7 +334,7 @@ namespace scl {
     {
       if(!has_been_init_) { return false; }
 
-      //0.a. Check whether the passed argument is consist with what we expect
+      //0.a. Check whether the passed argument is consistent with what we expect
       if(S_NULL != arg_link->graphics_obj_)
       { throw(std::runtime_error("Error. Graphics object already initialized"));  }
       if(S_NULL == arg_link->robot_link_)
@@ -390,6 +395,13 @@ namespace scl {
 #ifdef DEBUG
             std::cout<<"\nGraphics link scaling : "<<arg_link->name_<<" : "<< lnk_gr.scaling_.transpose();
 #endif
+            // Enable frame if required
+            if(0 < lnk_gr.option_axis_frame_size_){
+              tmp->setFrameSize(lnk_gr.option_axis_frame_size_,false);
+              tmp->setShowFrame(true,false);
+            }
+            else
+            { tmp->setShowFrame(false,false); }
 
             //Use display lists : Uses the graphics card for faster rendering
             // NOTE : Possibly corrupts the rendering. Disable if required.
