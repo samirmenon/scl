@@ -403,6 +403,19 @@ namespace scl {
 #endif
         }
 
+        obj_data = link_data->FirstChildElement( "option_axis_frame_size" );
+        if ( obj_data )
+        {
+          std::stringstream ss(obj_data->FirstChild()->Value());
+          ss>>tgr.option_axis_frame_size_;
+        }
+        else  {
+#ifdef DEBUG
+          std::cerr<< "\nCParserSclTiXml::readLink() : WARNING : In link ["<<arg_link_ds.name_
+                  <<"]. 'option_axis_frame_size' tag not found for obj file : "<<tgr.file_name_;
+#endif
+        }
+
         arg_link_ds.graphics_obj_vec_.push_back(tgr);
         flag_graphics_element_found = true;
       }// End of obj file
