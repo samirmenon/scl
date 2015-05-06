@@ -43,17 +43,19 @@ namespace scl
   class STaskGc : public scl::STaskBase
   {
   public:
-    Eigen::VectorXd q_;             //Goal Position in the global frame
-    Eigen::VectorXd dq_;            //Goal Velocity in the global frame
-    Eigen::VectorXd ddq_;            //Goal Velocity in the global frame
+    Eigen::VectorXd q_;             ///< Goal Position in the global frame
+    Eigen::VectorXd dq_;            ///< Goal Velocity in the global frame
+    Eigen::VectorXd ddq_;           ///< Goal Velocity in the global frame
 
-    Eigen::VectorXd q_goal_;        //Goal Position in the global frame
-    Eigen::VectorXd dq_goal_;       //Goal Velocity in the global frame
-    Eigen::VectorXd ddq_goal_;      //Goal Acceleration in the global frame
+    Eigen::VectorXd q_goal_;        ///< Goal Position in the global frame
+    Eigen::VectorXd dq_goal_;       ///< Goal Velocity in the global frame
+    Eigen::VectorXd ddq_goal_;      ///< Goal Acceleration in the global frame
 
-    sFloat spatial_resolution_;     //Meters
+    sFloat spatial_resolution_;     ///< Meters
 
-    sBool gravity_enabled_;
+    sBool flag_compute_gravity_;    ///< Use operational point gravity? Default = true
+    sBool flag_compute_cc_forces_;  ///< Use operational centrifugal/coriolis forces? Default = false
+    sBool flag_compute_inertia_;    ///< Use operational inertia? If true, set to identity. Default = true
 
     /** Default constructor sets stuff to S_NULL */
     STaskGc();

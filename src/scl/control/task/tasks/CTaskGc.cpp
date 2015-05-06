@@ -174,11 +174,18 @@ namespace scl
       data_->force_task_ = data_->force_task_.array().min(data_->force_task_max_.array());//Min of self and max
       data_->force_task_ = data_->force_task_.array().max(data_->force_task_min_.array());//Max of self and min
 
-      // NOTE : We subtract gravity (since we want to apply an equal and opposite force
-      if(data_->gravity_enabled_)
-      { data_->force_gc_ =  data_->gc_model_->M_gc_ * data_->force_task_ - data_->gc_model_->force_gc_grav_;  }
+      if(data_->flag_compute_inertia_)
+      { data_->force_gc_ = data_->gc_model_->M_gc_ * data_->force_task_;  }
       else
-      { data_->force_gc_ =  data_->gc_model_->M_gc_ * data_->force_task_;  }
+      { data_->force_gc_ = data_->force_task_;  }
+
+      if(data_->flag_compute_cc_forces_)
+      { data_->force_gc_ += data_->gc_model_->force_gc_cc_;  }
+
+      // NOTE : We subtract gravity (since we want to apply an equal and opposite force
+      if(data_->flag_compute_gravity_)
+      { data_->force_gc_ -= data_->gc_model_->force_gc_grav_;  }
+
       return true;
     }
     else

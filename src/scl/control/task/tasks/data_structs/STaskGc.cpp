@@ -42,7 +42,9 @@ namespace scl
 
   STaskGc::STaskGc():
     spatial_resolution_(SCL_GCTASK_SPATIAL_RESOLUTION),
-    gravity_enabled_(false)
+    flag_compute_gravity_(true),
+    flag_compute_cc_forces_(false),
+    flag_compute_inertia_(true)
   { }
 
   STaskGc::~STaskGc()
@@ -52,6 +54,46 @@ namespace scl
   {
     try
     {
+      //Extra flags..
+      flag_compute_gravity_ = true;
+      flag_compute_cc_forces_ = false;
+      flag_compute_inertia_ = true;
+
+      /** Extract the extra params */
+      std::string parent_link_name;
+      Eigen::Vector3d pos_in_parent;
+
+      std::vector<scl::sString2>::const_iterator it,ite;
+      for(it = task_nonstd_params_.begin(), ite = task_nonstd_params_.end();
+          it!=ite;++it)
+      {
+        const sString2& param = *it;
+        if(param.data_[0] == std::string("flag_compute_gravity"))
+        {//Flags are optional, so we don't need to check them with contains_
+          std::stringstream ss(param.data_[1]);
+          int tmp;
+          ss>>tmp;
+          if(tmp == 0)  { flag_compute_gravity_ = false; }
+          else  { flag_compute_gravity_ = true; }
+        }
+        else if(param.data_[0] == std::string("flag_compute_cc_forces"))
+        {//Flags are optional, so we don't need to check them with contains_
+          std::stringstream ss(param.data_[1]);
+          int tmp;
+          ss>>tmp;
+          if(tmp == 0)  { flag_compute_cc_forces_ = false; }
+          else  { flag_compute_cc_forces_ = true; }
+        }
+        else if(param.data_[0] == std::string("flag_compute_inertia"))
+        {//Flags are optional, so we don't need to check them with contains_
+          std::stringstream ss(param.data_[1]);
+          int tmp;
+          ss>>tmp;
+          if(tmp == 0)  { flag_compute_inertia_ = false; }
+          else  { flag_compute_inertia_ = true; }
+        }
+      }
+
       // To test whether the goal position has been achieved.
       spatial_resolution_ = SCL_GCTASK_SPATIAL_RESOLUTION;
 
@@ -66,8 +108,6 @@ namespace scl
 
       force_gc_.setZero(dof_task_);
       force_task_.setZero(dof_task_);
-
-      gravity_enabled_ = true;
     }
     catch(std::exception& e)
     {

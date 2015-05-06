@@ -99,7 +99,7 @@ namespace scl
     bool setFlagCompensateForGravity(const bool arg_grav_enabled)
     {
       if(NULL == data_){return false;}
-      else{ data_->gravity_enabled_ = arg_grav_enabled; return true;  }
+      else{ data_->flag_compute_gravity_ = arg_grav_enabled; return true;  }
     }
 
     /** Resets the task by removing its data.
