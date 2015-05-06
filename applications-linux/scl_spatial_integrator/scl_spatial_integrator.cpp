@@ -82,10 +82,9 @@ int main(int argc, char** argv)
   //We will use a slightly more complex xml spec than the first few tutorials
   bool flag = p.readRobotFromFile("./RRRRCfg.xml","../../specs","rrrrbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
-  flag = flag && dyn_sp_scl.init(rds);         //Set up integrator object
+  flag = flag && dyn_sp_scl.init(rds);      //Set up integrator object
   flag = flag && dyn_scl.init(rds);         //Set up dynamics computation object
-  flag = flag && rio.init(rds.name_,rds.dof_);
-  for(unsigned int i=0;i<rds.dof_;++i){ rio.sensors_.q_(i) = rds.rb_tree_.at(i)->joint_default_pos_; }
+  flag = flag && rio.init(rds);             //Set up the IO data structure
   if(false == flag){ return 1; }            //Error check.
 
   /******************************ChaiGlut Graphics************************************/
