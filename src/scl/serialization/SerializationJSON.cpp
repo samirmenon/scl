@@ -347,6 +347,8 @@ namespace scl
     bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
     if(!flag) { return false; }
 
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_robot_)
+
     std::string str;
     Json::Reader json_reader;
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(M_gc_)
@@ -409,6 +411,7 @@ namespace scl
     bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
     if(!flag) { return false; }
 
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_robot_)
     MACRO_SER_ARGOBJ_RETJSONVAL(dof_)
     MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(sensors_)
     MACRO_SER_ARGOBJ_RETJSONVAL_MemberObj(actuators_)
@@ -720,6 +723,7 @@ namespace scl
     bool flag = deserializeFromJSON(*tmp_obj, arg_json_val);
     if(!flag){ return false; }
 
+    MACRO_DESER_RETOBJ_ARGJSONVAL(name_robot_,asString)
     MACRO_DESER_RETOBJ_ARGJSONVAL(dof_,asDouble)
     MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(sensors_)
     MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(actuators_)
