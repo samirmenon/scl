@@ -99,7 +99,6 @@ namespace scl_app
       robot_.computeDynamics();
       robot_.computeNonControlOperations();
       robot_.computeServo();
-      robot_.setGeneralizedCoordinatesToZero();
       robot_.setGeneralizedVelocitiesToZero();
       robot_.setGeneralizedAccelerationsToZero();
       robot_.computeDynamics();
