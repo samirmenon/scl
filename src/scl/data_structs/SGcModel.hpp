@@ -60,6 +60,9 @@ namespace scl
     // See http://eigen.tuxfamily.org/dox/StructHavingEigenMembers.html
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
+    /** The parent robot for this gc model */
+    std::string name_robot_;
+
     /** M_gc_: Generalized inertia matrix */
     Eigen::MatrixXd M_gc_;
 

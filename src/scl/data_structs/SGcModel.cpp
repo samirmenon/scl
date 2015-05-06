@@ -53,6 +53,7 @@ namespace scl
       if(0==ndof)
       { throw(std::runtime_error("Can not initialize for a parent-robot with 0 dof")); }
 
+      name_robot_ = arg_robot_data.name_;
       name_ = arg_robot_data.name_ + "_gc_model";
 
       M_gc_.setIdentity(ndof,ndof);
