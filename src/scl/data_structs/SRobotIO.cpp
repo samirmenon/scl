@@ -39,6 +39,7 @@ namespace scl
 
 SRobotIO::SRobotIO() : SObject("SRobotIO")
 {
+  name_robot_ = "";
   dof_ = 0;
   has_been_init_ = true;
 }
@@ -56,7 +57,8 @@ sBool SRobotIO::init(const SRobotParsed& arg_rds)
     if(0 == arg_rds.dof_)
     { throw(std::runtime_error("Can't add a robot with 0 degrees of freedom"));  }
 
-    name_ = arg_rds.name_;
+    name_robot_ = arg_rds.name_;
+    name_ = arg_rds.name_ + "_io_ds";
     dof_ = arg_rds.dof_;
 
     //Initialize sensors

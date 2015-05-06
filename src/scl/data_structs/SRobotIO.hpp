@@ -107,6 +107,9 @@ namespace scl
   class SRobotIO : public SObject
   {
   public:
+    /** The name of the robot that this IO data structure belongs to */
+    std::string name_robot_;
+
     /** The degrees of freedom of the robot that these sensors monitor */
     sUInt dof_;
 
