@@ -76,8 +76,7 @@ int main(int argc, char** argv)
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_scl.init(rds);         //Set up dynamics object
   flag = flag && dyn_tao.init(rds);         //Set up integrator object
-  flag = flag && rio.init(rds.name_,rds.dof_);
-  for(unsigned int i=0;i<rds.dof_;++i){ rio.sensors_.q_(i) = rds.rb_tree_.at(i)->joint_default_pos_; }
+  flag = flag && rio.init(rds);
   if(false == flag){ return 1; }            //Error check.
 
   // Now let us integrate the model for a variety of timesteps and see energy stability

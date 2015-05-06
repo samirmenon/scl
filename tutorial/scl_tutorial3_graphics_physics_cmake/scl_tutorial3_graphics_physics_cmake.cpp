@@ -86,8 +86,7 @@ int main(int argc, char** argv)
   bool flag = p.readRobotFromFile("./RRRRCfg.xml","./","rrrrbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_tao.init(rds);         //Set up integrator object
-  flag = flag && rio.init(rds.name_,rds.dof_);
-  for(unsigned int i=0;i<rds.dof_;++i){ rio.sensors_.q_(i) = rds.rb_tree_.at(i)->joint_default_pos_; }
+  flag = flag && rio.init(rds);
   if(false == flag){ return 1; }            //Error check.
 
   /******************************ChaiGlut Graphics************************************/

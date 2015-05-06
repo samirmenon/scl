@@ -66,7 +66,7 @@ int main(int argc, char** argv)
   bool flag = p.readRobotFromFile("./RRRCfg.xml","./","rrrbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_scl.init(rds);         //Set up dynamics object
-  flag = flag && rio.init(rds.name_,rds.dof_);
+  flag = flag && rio.init(rds);
   for(unsigned int i=0;i<rds.dof_;++i){ rio.sensors_.q_(i) = rds.rb_tree_.at(i)->joint_default_pos_; }
 
   if(false == flag){ return 1; }            //Error check.
