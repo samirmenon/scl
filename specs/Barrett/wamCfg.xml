@@ -84,8 +84,8 @@
             <kp>200</kp>
             <kv>65</kv>
             <ka>0</ka>
-            <force_max>170</force_max>
-            <force_min>-170</force_min>
+            <force_max>20</force_max>
+            <force_min>-20</force_min>
             <flag_compute_op_gravity>1</flag_compute_op_gravity>
             <flag_compute_op_cc_forces>0</flag_compute_op_cc_forces>
             <flag_compute_op_inertia>1</flag_compute_op_inertia>
@@ -112,10 +112,13 @@
             <priority>1</priority>
             <task_dof>0</task_dof> 
             <kp>10</kp>
-            <kv>80</kv>
+            <kv>8</kv>
             <ka>0</ka>
             <force_max>50</force_max>
             <force_min>-50</force_min>
+            <flag_compute_gravity>1</flag_compute_gravity>
+            <flag_compute_cc_forces>0</flag_compute_cc_forces>
+            <flag_compute_inertia>1</flag_compute_inertia>
         </task>
     </controller>
 </scl>
