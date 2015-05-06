@@ -43,18 +43,21 @@ SRobotIO::SRobotIO() : SObject("SRobotIO")
   has_been_init_ = true;
 }
 
-sBool SRobotIO::init(const std::string& arg_robot_name, const sUInt arg_robot_dof)
+sBool SRobotIO::init(const SRobotParsed& arg_rds)
 {
   try
   {
-    if(1 > arg_robot_name.size())
+    if(false == arg_rds.has_been_init_)
+    { throw(std::runtime_error("Passed uninitialized robot data structure."));  }
+
+    if(1 > arg_rds.name_.size())
     { throw(std::runtime_error("Robot's name is too short."));  }
 
-    if(0 == arg_robot_dof)
+    if(0 == arg_rds.dof_)
     { throw(std::runtime_error("Can't add a robot with 0 degrees of freedom"));  }
 
-    name_ = arg_robot_name;
-    dof_ = arg_robot_dof;
+    name_ = arg_rds.name_;
+    dof_ = arg_rds.dof_;
 
     //Initialize sensors
     sensors_.q_.setZero(dof_);
@@ -62,6 +65,13 @@ sBool SRobotIO::init(const std::string& arg_robot_name, const sUInt arg_robot_do
     sensors_.ddq_.setZero(dof_);
     sensors_.force_gc_measured_.setZero(dof_);
     sensors_.forces_external_.clear();
+
+    // Set defaults
+    for(auto it:arg_rds.rb_tree_)
+    {
+      if(0 < it.link_id_ && static_cast<sInt>(arg_rds.dof_) > it.link_id_)
+      { sensors_.q_(it.link_id_) = it.joint_default_pos_; }
+    }
 
     actuators_.force_gc_commanded_.setZero(dof_);
 

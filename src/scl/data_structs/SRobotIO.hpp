@@ -121,8 +121,7 @@ namespace scl
     SRobotIO();
 
     /** Initializes the io data structure */
-    sBool init(const std::string& arg_robot_name,
-        const sUInt arg_robot_dof);
+    sBool init(const SRobotParsed& arg_rds);
 
     /** Joint positions and velocities are necessary
      * and sufficient to determine the system's state. */

@@ -224,7 +224,7 @@ namespace scl_registry
       if(NULL==rob_io)
       { throw(std::runtime_error("Could not create a robot IO data structure on the pile..")); }
 
-      flag = rob_io->init(arg_robot_name, rob->dof_);
+      flag = rob_io->init(*rob);
       if(false==flag)
       { throw(std::runtime_error("Could not initialize the robot's I/O data structure.")); }
 
