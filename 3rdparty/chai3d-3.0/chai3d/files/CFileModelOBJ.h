@@ -83,8 +83,13 @@ namespace chai3d {
 */
 //------------------------------------------------------------------------------
 
+class cOBJModel;
+
 //! Load an OBJ model file.
 bool cLoadFileOBJ(cMultiMesh* a_object, const std::string& a_filename);
+
+//! Load an OBJ model file.
+bool cLoadFileOBJ(cMultiMesh* a_object, cOBJModel &fileObj, const std::string& a_filename);
 
 //! Save an OBJ model file.
 bool cSaveFileOBJ(cMultiMesh* a_object, const std::string& a_filename);

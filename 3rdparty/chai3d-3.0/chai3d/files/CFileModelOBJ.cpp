@@ -63,6 +63,17 @@ namespace chai3d {
 bool g_objLoaderShouldGenerateExtraVertices = false;
 //------------------------------------------------------------------------------
 
+
+bool cLoadFileOBJ(cMultiMesh* a_object, const std::string& a_filename)
+{
+  cOBJModel fileObj;
+
+  // load file into memory. If an error occurs, exit.
+  if (!fileObj.LoadModel(a_filename.c_str())) { return (false); };
+
+  return cLoadFileOBJ(a_object,fileObj, a_filename);
+}
+
 //==============================================================================
 /*!
     Load an OBJ model file.
@@ -73,15 +84,10 @@ bool g_objLoaderShouldGenerateExtraVertices = false;
     \return Return __true__ if operation succeeds, __false__ otherwise.
 */
 //==============================================================================
-bool cLoadFileOBJ(cMultiMesh* a_object, const string& a_filename)
+bool cLoadFileOBJ(cMultiMesh* a_object, cOBJModel &fileObj, const string& a_filename)
 {
     try
     {
-        cOBJModel fileObj;
-
-        // load file into memory. If an error occurs, exit.
-        if (!fileObj.LoadModel(a_filename.c_str())) { return (false); };
-
         // clear all vertices and triangle of current mesh
         a_object->deleteAllMeshes();	
 
