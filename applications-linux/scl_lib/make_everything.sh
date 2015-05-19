@@ -1,5 +1,5 @@
 cd ../../ &&
-git submodule init && git submodule sync && git submodule update &&
+git submodule init && git submodule sync && git submodule init && git submodule update &&
 # NOTE : We compile chai twice. This is a shared lib (works better for faster compiles for non-haptic apps)
 cd 3rdparty/chai3d-3.0/lib/ &&
 #rm -rf build_* &&
