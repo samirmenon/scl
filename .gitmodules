@@ -6,4 +6,4 @@
 	url = https://bitbucket.org/samirmenon/otgtypeii.git
 [submodule "3rdparty/redox.git"]
 	path = 3rdparty/redox.git
-	url = git@github.com:samirmenon/redox.git
+	url = https://github.com/samirmenon/redox.git
