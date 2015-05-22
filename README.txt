@@ -1,8 +1,7 @@
 scl: Standard Control Library
 
-A control and interactive simulation library
-
-Author: Samir Menon <smenon@stanford.edu>
+A control and interactive simulation library. Supports torque control on a variety of robots including
+Unimate PUMA 500, Barrett WAM, Kuka LWR, and the Kuka LBR IIWA.
 
 Wiki: https://bitbucket.org/samirmenon/scl-manips-v2/wiki
 
@@ -88,3 +87,4 @@ $ sh create_new_ctrl.sh
 - Others use a makefile and you can build each one using `make release` or `make` (debug mode)
 
 ==========================================================================================
+
