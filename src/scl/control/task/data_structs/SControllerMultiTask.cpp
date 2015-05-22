@@ -44,7 +44,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
   SControllerMultiTask::SControllerMultiTask() : SControllerBase(),
-      servo_to_model_rate_(1)
+      option_servo_to_model_rate_(1)
   {
     type_ = "SControllerMultiTask";
   }
@@ -78,7 +78,7 @@ namespace scl
       if(false == flag)
       {throw (std::runtime_error("Couldn't initialize the servo"));}
 
-      servo_to_model_rate_ = arg_servo_to_model_rate;
+      option_servo_to_model_rate_ = arg_servo_to_model_rate;
 
       tasks_.clear();
       tasks_non_ctrl_.clear();

@@ -72,7 +72,7 @@ namespace scl
     /** The servo to model update rate.
      * NOTE : This is a recommended value since the servo rate and model rate are decided
      * by the application that calls the controller */
-    sUInt servo_to_model_rate_;
+    sUInt option_servo_to_model_rate_;
 
     /** Inherited stuff:
     std::string robot_name_;
