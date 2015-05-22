@@ -217,6 +217,7 @@ namespace scl
       else
       { std::cout<<"\n"<<std::setw(10)<<"Printable: "<<arg_obj.name_<<" "<<l.getType()<<std::setw(40)<<l.name_; }
     }
+    return true;
   }
 
   /** This is to just add an object and member objects */
@@ -231,6 +232,7 @@ namespace scl
         arg_obj.name_));  }
     else
     { std::cout<<"\n"<<std::setw(10)<<"Printable: Robot: "<<std::setw(51)<<arg_obj.name_; }
+    return true;
   }
 
   bool addRobotPrintables()
