@@ -113,7 +113,7 @@ namespace scl_util
         {
           std::stringstream ss;
           ss<<it->data_[1];
-          ss>>ret_ctrl.servo_to_model_rate_;
+          ss>>ret_ctrl.option_servo_to_model_rate_;
         }
       }
       return true;

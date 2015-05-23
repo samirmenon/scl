@@ -594,7 +594,7 @@ namespace scl
     flag = serializeToJSON(*tmp2, ret_json_val);
     if(!flag) { return false; }
 
-    MACRO_SER_ARGOBJ_RETJSONVAL(servo_to_model_rate_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(option_servo_to_model_rate_)
 
     return true;
   }
