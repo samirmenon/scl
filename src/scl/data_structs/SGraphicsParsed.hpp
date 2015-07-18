@@ -64,8 +64,8 @@ namespace scl
 
     sFloat background_color_[3];///RGB.
 
-    std::string file_background_;///Could provide a 2d image to be used as a background
-    std::string file_foreground_;///Could provide a 2d image to be used as a background
+    std::string file_background_="";///Could provide a 2d image to be used as a background
+    std::string file_foreground_="";///Could provide a 2d image to be used as a background
 
     /** Light source */
     std::vector<SLight> lights_;
