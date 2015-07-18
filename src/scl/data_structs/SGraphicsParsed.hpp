@@ -52,17 +52,20 @@ namespace scl
     class SLight
     {
     public:
-      sFloat pos_[3];//The light's position.
-      sFloat lookat_[3];//Point the light in a direction.
+      sFloat pos_[3];///The light's position.
+      sFloat lookat_[3];///Point the light in a direction.
     };
 
     /** Camera settings for this world. */
-    Eigen::Vector3d cam_pos_;//The camera's position.
-    Eigen::Vector3d cam_lookat_;//Position the camera looks at.
-    Eigen::Vector3d  cam_up_;//The direction of the up-vector.
-    sFloat cam_clipping_dist_[2];//Defines rendering limits along cam's line of sight (meters)
+    Eigen::Vector3d cam_pos_;///The camera's position.
+    Eigen::Vector3d cam_lookat_;///Position the camera looks at.
+    Eigen::Vector3d  cam_up_;///The direction of the up-vector.
+    sFloat cam_clipping_dist_[2];///Defines rendering limits along cam's line of sight (meters)
 
-    sFloat background_color_[3];//RGB.
+    sFloat background_color_[3];///RGB.
+
+    std::string file_background_;///Could provide a 2d image to be used as a background
+    std::string file_foreground_;///Could provide a 2d image to be used as a background
 
     /** Light source */
     std::vector<SLight> lights_;
