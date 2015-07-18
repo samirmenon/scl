@@ -37,7 +37,7 @@
             <lookat>0.0   0.0   -0.5</lookat>
             <up>0   0   1</up>
             <clip>0 10</clip>
-            <background>0 0 0</background>
+            <background>scl.png</background>
         </camera>
         <light>
             <pos>2.0   0.0   0.0</pos>

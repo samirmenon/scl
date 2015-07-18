@@ -41,7 +41,9 @@
             <lookat>0.0   0.0   -0.1</lookat>
             <up>0   0   1</up>
             <clip>0 10</clip>
-            <background>0 0 0</background>
+            <!-- Add a png file here for background/foreground -->
+            <background>scl.png</background>
+            <!-- Use if required : <foreground></foreground> -->
         </camera>
         <light>
             <pos>2.0   0.0   0.0</pos>
