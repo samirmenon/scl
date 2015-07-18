@@ -1115,14 +1115,15 @@ bool CParserScl::readGraphicsFromFile(const std::string &arg_file,
 
       gr_data = _gr_handle.FirstChildElement("camera").FirstChildElement("background").Element();
       if ( gr_data )
-      {
-        std::stringstream ss(gr_data->FirstChild()->Value());
-        ss>>arg_graphics.background_color_[0];
-        ss>>arg_graphics.background_color_[1];
-        ss>>arg_graphics.background_color_[2];
-      }
+      { arg_graphics.file_background_ = gr_data->FirstChild()->Value(); }
       else
-      { throw(std::runtime_error("No background information."));  }
+      { std::cout<<"\n WARNING : No background file information provided with a camera.";  }
+
+      gr_data = _gr_handle.FirstChildElement("camera").FirstChildElement("foreground").Element();
+      if ( gr_data )
+      { arg_graphics.file_foreground_ = gr_data->FirstChild()->Value(); }
+      else
+      { std::cout<<"\n WARNING : No foreground file information provided with a camera.";  }
 
       //Lights
       tiElem_lights = _gr_handle.FirstChildElement( "light" ).ToElement();
