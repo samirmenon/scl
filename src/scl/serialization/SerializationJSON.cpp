@@ -227,6 +227,9 @@ namespace scl
     ret_json_val["cam_clipping_dist_"].append(arg_obj.cam_clipping_dist_[0]);
     ret_json_val["cam_clipping_dist_"].append(arg_obj.cam_clipping_dist_[1]);
 
+    ret_json_val["file_background_"] = arg_obj.file_background_;
+    ret_json_val["file_foreground_"] = arg_obj.file_foreground_;
+
     ret_json_val["background_color_"] = Json::Value(Json::arrayValue);
     for(auto i : {0,1,2}){ret_json_val["background_color_"] = arg_obj.background_color_[i]; }//RGB.
 
