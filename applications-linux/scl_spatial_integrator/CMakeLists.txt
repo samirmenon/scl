@@ -50,7 +50,8 @@ SET(TUTE3_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_spatial_integrator/)
 #These are the source files that will be compiled.
 SET(ALL_SRC ${TUTE3_BASE_DIR}/scl_spatial_integrator.cpp
             ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
+            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
+            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(scl_spatial_integrator ${ALL_SRC})

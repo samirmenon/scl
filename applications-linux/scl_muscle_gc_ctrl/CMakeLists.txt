@@ -50,7 +50,8 @@ SET(GC_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_muscle_gc_ctrl/)
 
 SET(ALL_SRC ${GC_BASE_DIR}/muscle_gc_main.cpp
             ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
+            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
+            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(scl_muscle_gc_ctrl ${ALL_SRC})

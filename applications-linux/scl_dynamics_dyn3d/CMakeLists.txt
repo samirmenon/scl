@@ -56,6 +56,7 @@ SET(DYN_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_dynamics_dyn3d/)
 SET(ALL_SRC ${DYN_BASE_DIR}/scl_dynamics_dyn3d.cpp
             ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
+            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp
             ${SCLEXT_INC_DIR}/dynamics/dynamics3d/CRepCreator3d.cpp
             ${SCLEXT_INC_DIR}/dynamics/dynamics3d/CDynamics3d.cpp)
 

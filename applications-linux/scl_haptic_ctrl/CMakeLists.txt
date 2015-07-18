@@ -72,7 +72,8 @@ SET(ALL_SRC ${EG_BASE_DIR}scl_haptic_main.cpp
 						${SCL_INC_DIR}/haptics/chai/CHapticsChai.cpp 
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
             ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
+            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
+            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(scl_haptic_ctrl ${ALL_SRC})
