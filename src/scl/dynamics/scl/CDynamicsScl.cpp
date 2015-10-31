@@ -268,6 +268,8 @@ namespace scl
     //Walk up the tree.
     while(flag && rbd != NULL)
     {//Keep going till you reach the ancestor
+      // NOTE : T_to_joint is going to be identity in the first loop (we are at
+      // the joint itself).
       const int i = rbd->link_ds_->link_id_;
       switch(rbd->link_ds_->joint_type_)
       {
