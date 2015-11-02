@@ -75,6 +75,14 @@ namespace scl
    */
   sBool quat2axisangle(const Eigen::Quaternion<sFloat> & arg_q,
       Eigen::Vector4d & arg_aa);
+
+  /** Computes the coefficients given the three points p0, p1 and p2 */
+   sBool computePlaneCoefficients(const Eigen::Vector3d & p0, const Eigen::Vector3d & p1, const Eigen::Vector3d & p2,
+       sFloat & a, sFloat & b, sFloat & c, sFloat & d);
+
+   /** Computes the distance of a given point to the plane defined by a b c d */
+   sFloat computePlanePointDistance(sFloat a, sFloat b, sFloat c, sFloat d,
+       const Eigen::Vector3d &p);
 }
 
 #endif /* ROBOTMATH_HPP_ */

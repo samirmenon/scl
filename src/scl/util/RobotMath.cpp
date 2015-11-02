@@ -151,4 +151,31 @@ namespace scl
 
     return true;
  }
+
+  /** Computes the coefficients given the three points p0, p1 and p2 */
+  sBool computePlaneCoefficients(const Eigen::Vector3d & p0, const Eigen::Vector3d & p1, const Eigen::Vector3d & p2,
+      sFloat & a, sFloat & b, sFloat & c, sFloat & d)
+  {
+    // NOTE TODO : Perhaps add error checks here with a debug flag...
+    // For three points A, B, C
+    // a = (By-Ay) * (Cz-Az) - (Cy-Ay) * (Bz-Az)
+    a = (p1(1) - p0(1)) * (p2(2) - p0(2)) - (p2(1) - p0(1)) * (p1(2) - p0(2));
+
+    // b = (Bz-Az) * (Cx-Ax) - (Cz-Az) * (Bx-Ax)
+    b = (p1(2) - p0(2)) * (p2(0) - p0(0)) - (p2(2) - p0(2)) * (p1(0) - p0(0));
+
+    // c = (Bx-Ax) * (Cy-Ay) - (Cx-Ax) * (By-Ay)
+    c = (p1(0) - p0(0)) * (p2(1) - p0(1)) - (p2(0) - p0(0)) * (p1(1) - p0(1));
+
+    // d = -(aAx + bAy + cAz)
+    d = - (a * p0(0) + b * p0(1) + c * p0(2));
+
+    return true;
+  }
+
+  /** Computes the distance of a given point to the plane defined by a b c d */
+  sFloat computePlanePointDistance(sFloat a, sFloat b, sFloat c, sFloat d,
+      const Eigen::Vector3d &p)
+  { return (a*p(0) + b*p(1) + c*p(2) + d) / sqrt(pow(a,2)+pow(b,2)+pow(c,2)); }
+
 }
