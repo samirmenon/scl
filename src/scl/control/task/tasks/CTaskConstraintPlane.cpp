@@ -81,6 +81,9 @@ namespace scl
       if(S_NULL == data_->rbd_)
       { throw(std::runtime_error("Couldn't find link dynamics object")); }
 
+      // Don't need to eat up range space (this is an external force).
+      data_->null_space_.setIdentity(data_->robot_->dof_,data_->robot_->dof_);
+
       has_been_init_ = true;
     }
     catch(std::exception& e)
@@ -101,6 +104,8 @@ namespace scl
       const double arg_stiffness)
   {
     bool flag = computePlaneCoefficients(data_->p0_, data_->p1_, data_->p2_, data_->a_, data_->b_, data_->c_, data_->d_);
+    data_->kp_ *= 0;
+    data_->kp_.array() += arg_stiffness;
     return flag;
   }
 
@@ -109,6 +114,9 @@ namespace scl
     data_ = S_NULL;
     dynamics_ = S_NULL;
     has_been_init_ = false;
+
+    // Don't need to eat up range space (this is an external force).
+    data_->null_space_.setIdentity(data_->robot_->dof_,data_->robot_->dof_);
   }
 
 
@@ -121,8 +129,15 @@ bool CTaskConstraintPlane::computeServo(const SRobotSensors* arg_sensors)
 #endif
   if(data_->has_been_init_)
   {
-    //Step 1: Find position of the op_point
+    dynamics_->computeJacobian(data_->J_6_,*(data_->rbd_),
+        arg_sensors->q_,data_->pos_in_parent_);
+
+    //Use the position jacobian only. This is an op-point task.
+    data_->J_ = data_->J_6_.block(0,0,3,data_->robot_->dof_);
+
+    //Step 1: Find position and velocity of the op_point
     data_->x_ = data_->rbd_->T_o_lnk_ * data_->pos_in_parent_;
+    data_->dx_ = data_->J_ * arg_sensors->dq_;
 
     //Now find the distance it has advanced into the constraint plane.
     double dist = data_->mul_dist_ * computePlanePointDistance(data_->a_, data_->b_, data_->c_, data_->d_, data_->x_);
@@ -150,10 +165,21 @@ bool CTaskConstraintPlane::computeServo(const SRobotSensors* arg_sensors)
     tmp1 /= tmp1.norm();
 
     //Compute the compute the constraint penetration force
-    data_->force_task_ = data_->mul_dist_ * data_->stiffness_ * tmp1;
+    data_->force_task_.array() = data_->mul_dist_ * data_->kp_.array() * tmp1.array();
+
+    tmp2 = (data_->dx_.transpose() * tmp1)*tmp1.array();
+
+    data_->force_task_.array() -= data_->kv_.array() * tmp2.array();
 
     // T = J' F
+    //data_->force_gc_ = data_->force_gc_ + 0.01 * (data_->J_.transpose() * data_->force_task_ - data_->force_gc_);
     data_->force_gc_ = data_->J_.transpose() * data_->force_task_;
+
+
+//    // NOTE TODO : This might be too much (just here for logging)
+//    std::cout<<"\n\t       X: "<<data_->x_.transpose()
+//             <<"\n\t   Ftask: "<<data_->force_task_.transpose()
+//             <<"\n\t Ftaskgc: "<<data_->force_gc_.transpose();
   }
   else
   { return false; }
@@ -172,28 +198,7 @@ bool CTaskConstraintPlane::computeModel(const SRobotSensors* arg_sensors)
   assert(S_NULL!=dynamics_);
 #endif
   if(data_->has_been_init_)
-  {
-    bool flag = true;
-
-    flag = flag && dynamics_->computeJacobian(data_->J_6_,*(data_->rbd_),
-        arg_sensors->q_,data_->pos_in_parent_);
-
-    //Use the position jacobian only. This is an op-point task.
-    data_->J_ = data_->J_6_.block(0,0,3,data_->robot_->dof_);
-
-#ifdef SCL_PRINT_INFO_MESSAGES
-    std::cout<<"\n\tTo_lnk: \n"<<data_->rbd_->T_o_lnk_.matrix()
-              <<"\n\tPosInPar: "<<data_->pos_in_parent_.transpose()
-              <<"\n\t       X: "<<data_->x_.transpose()
-              <<"\n\t   Ftask: "<<data_->force_task_.transpose()
-              <<"\n\t Ftaskgc: "<<data_->force_gc_.transpose();
-#endif
-
-    // Don't need to eat up range space (this is an external force).
-    data_->null_space_.setIdentity(data_->robot_->dof_,data_->robot_->dof_);
-
-    return flag;
-  }
+  { return true; }
   else
   { return false; }
 }

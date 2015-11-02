@@ -114,7 +114,7 @@ protected:
   STaskConstraintPlane* data_;
 
   /** Temporary variables */
-  Eigen::Vector3d tmp1;
+  Eigen::Vector3d tmp1,tmp2;
 };
 
 }

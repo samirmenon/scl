@@ -68,7 +68,7 @@ namespace scl
       std::string parent_link_name;
       Eigen::Vector3d pos_in_parent;
 
-      bool contains_plink = false, contains_posinp = false, contains_stiffness = false;
+      bool contains_plink = false, contains_posinp = false;
       int contains_p = 0;
 
       std::vector<scl::sString2>::const_iterator it,ite;
@@ -138,13 +138,6 @@ namespace scl
 
           contains_p ++;
         }
-        else if(param.data_[0] == std::string("stiffness"))
-        {
-          std::stringstream ss(param.data_[1]);
-          ss>> stiffness_;
-
-          contains_stiffness = true;
-        }
       }
 
       //Error checks
@@ -153,9 +146,6 @@ namespace scl
 
       if(false == contains_posinp)
       { throw(std::runtime_error("Task's nonstandard params do not contain a pos in parent."));  }
-
-      if(false == contains_stiffness)
-      { throw(std::runtime_error("Task's nonstandard params do not contain a stiffness value."));  }
 
       if(4 != contains_p)
       { throw(std::runtime_error("Task's nonstandard params do not contain the three points to define a plane <p0> <p1> <p2> <pfree>."));  }
@@ -174,6 +164,7 @@ namespace scl
 
       //Set task space vector sizes stuff to zero
       x_.setZero(dof_task_);
+      dx_.setZero(dof_task_);
       force_task_.setZero(dof_task_);
 
       //Compute the plane coefficients..

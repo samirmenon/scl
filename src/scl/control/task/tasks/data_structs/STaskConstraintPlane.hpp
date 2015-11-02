@@ -49,10 +49,10 @@ namespace scl
     Eigen::Vector3d pfree_;         ///< The point that lies on the "free" side of the plane
     sFloat mul_dist_=1;             ///< Simplify sidedness check. Simply multiply the final point-plane dist by {1, -1}
     sFloat a_=0,b_=0,c_=0,d_=0;     ///< The plane coefficients. ax + by + cz + d = 0
-    sFloat stiffness_=0;            ///< The plane stiffness.
     sBool is_active_=false;         ///< Whether the constraint is active or not..
 
     Eigen::Vector3d x_;             ///< Position of the operational point in the global frame
+    Eigen::Vector3d dx_;            ///< Velocity of the operational point in the global frame
 
     Eigen::Vector3d pos_in_parent_; ///< Position in the parent link's local frame (x,y,z)
     std::string link_name_;         ///< The parent link
