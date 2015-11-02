@@ -144,6 +144,24 @@ namespace sutil
   }
 
   template <>
+  void printToStream<scl::STaskOpPos>(
+      std::ostream& ostr,
+      const scl::STaskOpPos& arg_data
+  )
+  {
+    ostr<<"\n Name: "<<arg_data.name_;
+    ostr<<"("<<arg_data.getType()<<")";
+    ostr<<". Parent("<<arg_data.parent_controller_->name_<<")";
+    ostr<<"\n Init/Active : "<<arg_data.has_been_init_<<"/"<<arg_data.has_been_activated_;
+    ostr<<"\n Priority    : "<<arg_data.priority_;
+    ostr<<"\n X      : "<<arg_data.x_;
+    ostr<<"\n Xgoal  : "<<arg_data.x_goal_;
+    ostr<<"\n F_task : "<<arg_data.force_task_.transpose();
+    ostr<<"\n F_gc   : "<<arg_data.force_gc_.transpose();
+    ostr<<std::endl;
+  }
+
+  template <>
   void printToStream<scl::SControllerMultiTask>(
       std::ostream& ostr,
       const scl::SControllerMultiTask& arg_data
