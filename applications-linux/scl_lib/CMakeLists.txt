@@ -74,6 +74,8 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskGcSet.cpp
                   ${SCL_INC_DIR}/control/task/tasks/CTaskComPos.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskComPos.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/CTaskConstraintPlane.cpp
+                  ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskConstraintPlane.cpp
    )
    
 # This needs some work. Should add basic trajectory generation support.
