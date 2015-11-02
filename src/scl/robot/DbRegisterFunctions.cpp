@@ -71,6 +71,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskComPos.hpp>
 #include <scl/control/task/tasks/data_structs/STaskComPos.hpp>
 
+#include <scl/control/task/tasks/CTaskConstraintPlane.hpp>
+#include <scl/control/task/tasks/data_structs/STaskConstraintPlane.hpp>
+
 #include <scl/data_structs/SActuatorSetMuscleParsed.hpp>
 #include <scl/actuation/muscles/data_structs/SActuatorSetMuscle.hpp>
 #include <scl/actuation/muscles/CActuatorSetMuscle.hpp>
@@ -583,6 +586,14 @@ namespace scl_registry
       sutil::CDynamicType<std::string,scl::STaskComPos> typeSTaskComPos(std::string("STaskComPos"));
       flag = typeSTaskComPos.registerType();
       if(false == flag) {throw(std::runtime_error("STaskComPos"));}
+
+      sutil::CDynamicType<std::string,scl::CTaskConstraintPlane> typeCTaskConstraintPlane(std::string("CTaskConstraintPlane"));
+      flag = typeCTaskConstraintPlane.registerType();
+      if(false == flag) {throw(std::runtime_error("CTaskConstraintPlane"));}
+
+      sutil::CDynamicType<std::string,scl::STaskConstraintPlane> typeSTaskConstraintPlane(std::string("STaskConstraintPlane"));
+      flag = typeSTaskConstraintPlane.registerType();
+      if(false == flag) {throw(std::runtime_error("STaskConstraintPlane"));}
 
       /** *****************************************************************************************************
        *                                        Actuator Sets
