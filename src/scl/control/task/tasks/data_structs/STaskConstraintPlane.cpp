@@ -33,6 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdexcept>
 #include <iostream>
+#include <math.h>
 
 namespace scl
 {
@@ -40,12 +41,22 @@ namespace scl
       link_name_(""),
       link_ds_(S_NULL),
       rbd_(S_NULL)
-  { }
+  {
+    p0_.setZero(3);
+    p1_.setZero(3);
+    p2_.setZero(3);
+  }
 
   STaskConstraintPlane::~STaskConstraintPlane()
   { }
 
-
+  /** 1. Initializes the task specific data members.
+   *
+   * 2. Parses non standard task parameters,
+   * which are stored in STaskBase::task_nonstd_params_.
+   * Namely:
+   *  (a) parent link name
+   *  (b) pos in parent. */
   bool STaskConstraintPlane::initTaskParams()
   {
     try
@@ -58,6 +69,7 @@ namespace scl
       Eigen::Vector3d pos_in_parent;
 
       bool contains_plink = false, contains_posinp = false, contains_stiffness = false;
+      int contains_p = 0;
 
       std::vector<scl::sString2>::const_iterator it,ite;
       for(it = task_nonstd_params_.begin(), ite = task_nonstd_params_.end();
@@ -78,10 +90,58 @@ namespace scl
 
           contains_posinp = true;
         }
+        else if(param.data_[0] == std::string("p0"))
+        {
+          std::stringstream ss(param.data_[1]);
+          ss>> p0_(0);
+          ss>> p0_(1);
+          ss>> p0_(2);
+
+          if(p0_.norm()<std::numeric_limits<float>::min())
+          { throw(std::runtime_error("Plane point p0 has zero norm."));  }
+
+          contains_p ++;
+        }
+        else if(param.data_[0] == std::string("p1"))
+        {
+          std::stringstream ss(param.data_[1]);
+          ss>> p1_(0);
+          ss>> p1_(1);
+          ss>> p1_(2);
+
+          if(p1_.norm()<std::numeric_limits<float>::min())
+          { throw(std::runtime_error("Plane point p1 has zero norm."));  }
+
+          contains_p ++;
+        }
+        else if(param.data_[0] == std::string("p2"))
+        {
+          std::stringstream ss(param.data_[1]);
+          ss>> p2_(0);
+          ss>> p2_(1);
+          ss>> p2_(2);
+
+          if(p2_.norm()<std::numeric_limits<float>::min())
+          { throw(std::runtime_error("Plane point p2 has zero norm."));  }
+
+          contains_p ++;
+        }
+        else if(param.data_[0] == std::string("pfree"))
+        {
+          std::stringstream ss(param.data_[1]);
+          ss>> pfree_(0);
+          ss>> pfree_(1);
+          ss>> pfree_(2);
+
+          if(pfree_.norm()<std::numeric_limits<float>::min())
+          { throw(std::runtime_error("Plane point pfree has zero norm."));  }
+
+          contains_p ++;
+        }
         else if(param.data_[0] == std::string("stiffness"))
         {
           std::stringstream ss(param.data_[1]);
-          ss>> stiffness;
+          ss>> stiffness_;
 
           contains_stiffness = true;
         }
@@ -96,6 +156,9 @@ namespace scl
 
       if(false == contains_stiffness)
       { throw(std::runtime_error("Task's nonstandard params do not contain a stiffness value."));  }
+
+      if(4 != contains_p)
+      { throw(std::runtime_error("Task's nonstandard params do not contain the three points to define a plane <p0> <p1> <p2> <pfree>."));  }
 
       if(0>=parent_link_name.size())
       { throw(std::runtime_error("Parent link's name is too short."));  }
@@ -112,6 +175,15 @@ namespace scl
       //Set task space vector sizes stuff to zero
       x_.setZero(dof_task_);
       force_task_.setZero(dof_task_);
+
+      //Compute the plane coefficients..
+      computePlaneCoefficients(p0_, p1_, p2_, a_, b_, c_, d_);
+      double dist = computePlanePointDistance(a_, b_, c_, d_,pfree_);
+      if(fabs(dist) < std::numeric_limits<float>::min() )
+      { throw(std::runtime_error("The free point, pfree, lies on the plane defined by the three points p0, p1, p2"));  }
+
+      // The final distance will always assumed to be negative while violating the constraint.
+      dist>0 ? mul_dist_ = 1 : mul_dist_ = -1;
     }
     catch(std::exception& e)
     {

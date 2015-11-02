@@ -35,31 +35,30 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
 
+#include <scl/util/RobotMath.hpp>
+
 #include <Eigen/Dense>
 
 namespace scl
 {
-
   class STaskConstraintPlane : public scl::STaskBase
   {
   public:
     //Computed attributes (last measured, in x dimensional task-space)
-    Eigen::VectorXd p0_,p1_,p2_;    //The three points that define the plane.
-    double stiffness;
+    Eigen::Vector3d p0_,p1_,p2_;    ///< The three points that define the plane.
+    Eigen::Vector3d pfree_;         ///< The point that lies on the "free" side of the plane
+    sFloat mul_dist_=1;             ///< Simplify sidedness check. Simply multiply the final point-plane dist by {1, -1}
+    sFloat a_=0,b_=0,c_=0,d_=0;     ///< The plane coefficients. ax + by + cz + d = 0
+    sFloat stiffness_=0;            ///< The plane stiffness.
+    sBool is_active_=false;         ///< Whether the constraint is active or not..
 
-    Eigen::VectorXd x_;             //Position of the operational point in the global frame
+    Eigen::Vector3d x_;             ///< Position of the operational point in the global frame
 
-    Eigen::Vector3d pos_in_parent_; //Position in the parent link's local frame (x,y,z)
-    std::string link_name_;         //The parent link
-    const SRigidBody *link_ds_;     //The parent link's parsed data structure
+    Eigen::Vector3d pos_in_parent_; ///< Position in the parent link's local frame (x,y,z)
+    std::string link_name_;         ///< The parent link
+    const SRigidBody *link_ds_;     ///< The parent link's parsed data structure
 
-    const SRigidBodyDyn *rbd_;   //For quickly obtaining a task Jacobian
-
-    /** Default constructor sets stuff to S_NULL */
-    STaskConstraintPlane();
-
-    /** Default destructor does nothing */
-    virtual ~STaskConstraintPlane();
+    const SRigidBodyDyn *rbd_;      ///< For quickly obtaining a task Jacobian
 
     /** 1. Initializes the task specific data members.
      *
@@ -69,6 +68,11 @@ namespace scl
      *  (a) parent link name
      *  (b) pos in parent.*/
     virtual bool initTaskParams();
+
+    /** Default constructor sets stuff to S_NULL */
+    STaskConstraintPlane();
+    /** Default destructor does nothing */
+    virtual ~STaskConstraintPlane();
   };
 
 }
