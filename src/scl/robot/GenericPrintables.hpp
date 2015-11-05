@@ -37,6 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotParsed.hpp>
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
+#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
 #include <scl/control/task/data_structs/SControllerMultiTask.hpp>
 
 #include <scl/Singletons.hpp>
