@@ -91,10 +91,16 @@ namespace scl_app
     //Add some markers to display trajectory every 1000 ticks.
     if(ctrl_ctr_%5000 == 0)
     {
+      // Plot ui point (des traj)
+      // Eigen::Vector3d tmp = db_->s_gui_.ui_point_[0];;
+
+      // Plot ee point (exec traj)
+      Eigen::VectorXd tmp; tmp.setZero(3);
+      tsk->getPos(tmp);
+
       if(curr_traj_marker_id_ < SCL_REDIS_MAX_MARKERS)
       {
         /** Render a sphere at the op-point task's position */
-        Eigen::Vector3d tmp = db_->s_gui_.ui_point_[0];
         bool flag = chai_gr_.addSphereToRender(tmp,traj_markers_[curr_traj_marker_id_],0.004);
         if(false == flag)
         { std::cout<<"\nERROR : Could not add marker. Time = "<<sutil::CSystemClock::getSysTime();  }
@@ -105,8 +111,7 @@ namespace scl_app
         int id = curr_traj_marker_id_ % SCL_REDIS_MAX_MARKERS;
 
         // Move the marker to the latest pos...
-        traj_markers_[id]->setLocalPos(db_->s_gui_.ui_point_[0](0),
-            db_->s_gui_.ui_point_[0](1), db_->s_gui_.ui_point_[0](2));
+        traj_markers_[id]->setLocalPos(tmp(0), tmp(1), tmp(2));
 
         curr_traj_marker_id_++;
         if(curr_traj_marker_id_ >= 2* SCL_REDIS_MAX_MARKERS)
