@@ -85,18 +85,17 @@ namespace scl_app
   }
   void  CSclRedisTask::stepMySimulation()
   {
-    sutil::CSystemClock::tick(db_->sim_dt_);//Tick the clock.
-    tsk->setGoalPos(db_->s_gui_.ui_point_[0]); //Interact with the gui
+    // ******************************************
+    // Do the IO operations on the redis server
+    static double tlast = 0;
+    double tnow = sutil::CSystemClock::getSysTime();
+    if(tnow - tlast > 0.01)
+    {//Push to redis at 100Hz...
+      tlast = tnow;
 
-    //Add some markers to display trajectory every 1000 ticks.
-    if(ctrl_ctr_%5000 == 0)
-    {
-      // Plot ui point (des traj)
-      // Eigen::Vector3d tmp = db_->s_gui_.ui_point_[0];;
-
-      // Plot ee point (exec traj)
+      //Add some markers to display trajectory every 10ms ticks.
       Eigen::VectorXd tmp; tmp.setZero(3);
-      tsk->getPos(tmp);
+      tsk->getPos(tmp);// Plot ee point (exec traj)
 
       if(curr_traj_marker_id_ < SCL_REDIS_MAX_MARKERS)
       {
@@ -117,7 +116,23 @@ namespace scl_app
         if(curr_traj_marker_id_ >= 2* SCL_REDIS_MAX_MARKERS)
         { curr_traj_marker_id_ = SCL_REDIS_MAX_MARKERS; }
       }
+
+      // Some static vars for redis ops
+      static char rstr[1024];
+      //Set ee pos in Redis database
+      sprintf(rstr,"%lf %lf %lf", tmp(0),tmp(1),tmp(2));
+      redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "SET %s %s","scl_pos_ee",rstr);
+      freeReplyObject((void*)redis_ds_.reply_);
+
+      //Get desired pos from Redis database..
+      redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "GET scl_pos_ee_des");
+      sscanf(redis_ds_.reply_->str,"%lf %lf %lf", & (db_->s_gui_.ui_point_[0](0)),
+          & (db_->s_gui_.ui_point_[0](1)), & (db_->s_gui_.ui_point_[0](2)));
+      freeReplyObject((void*)redis_ds_.reply_);
     }
+
+    //Set the goal position for the task...
+    tsk->setGoalPos(db_->s_gui_.ui_point_[0]); //Interact with the gui
 
     if(op_link2_set)//Use only if the second task was also initialized.
     { tsk2->setGoalPos(db_->s_gui_.ui_point_[1]); }
@@ -125,7 +140,22 @@ namespace scl_app
     if(ctrl_ctr_%20 == 0)           //Update dynamics at a slower rate
     { robot_.computeDynamics();  }
     robot_.computeServo();           //Run the servo loop
+
+    // ********************************************
+    /** Slow down sim to real time and integrate */
     robot_.integrateDynamics();      //Integrate system
+    sutil::CSystemClock::tick(db_->sim_dt_);
+    double tcurr = sutil::CSystemClock::getSysTime();
+    double tdiff = sutil::CSystemClock::getSimTime() - tcurr;
+    timespec ts = {0, 0};
+    if(tdiff > 0)
+    {
+      ts.tv_sec = static_cast<int>(tdiff);
+      tdiff -= static_cast<int>(tdiff);
+      ts.tv_nsec = tdiff*1e9;
+      nanosleep(&ts,NULL);
+    }
+    // ********************************************
 
     ctrl_ctr_++;//Increment the counter for dynamics computed.
   }

@@ -54,6 +54,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <omp.h>
 #include <GL/freeglut.h>
 
+#include <hiredis/hiredis.h>
+
 #include <sstream>
 #include <fstream>
 #include <stdexcept>
@@ -66,6 +68,17 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl_app
 {
+  /** Basic data for reading from and writing to a redis database...
+   * Makes it easy to keep track of things..*/
+  class SHiredisStruct{
+  public:
+    redisContext *context_ = NULL;
+    redisReply *reply_ = NULL;
+    const char *hostname_ = "127.0.0.1";
+    const int port_ = 6379;
+    const timeval timeout_ = { 1, 500000 }; // 1.5 seconds
+  };
+
   /* Generic code required to run a scl simulation
    * A simulation requires running 3 things. This example uses:
    * 1. A dynamics/physics engine                  :  Tao
@@ -84,6 +97,8 @@ namespace scl_app
     scl::CTaskOpPos* tsk, *tsk2;
     scl::STaskOpPos* tsk_ds, *tsk2_ds;
     scl::sBool op_link_set, op_link2_set;
+
+    SHiredisStruct redis_ds_;
 
     /** Implement this function. Else you will get a linker error. */
     inline void stepMySimulation();
@@ -237,6 +252,25 @@ namespace scl_app
         rob_io_ds_ = db_->s_io_.io_data_.at(robot_name_);
         if(S_NULL == rob_io_ds_)
         { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
+
+        /******************************Redis Database************************************/
+        redis_ds_.context_= redisConnectWithTimeout(redis_ds_.hostname_, redis_ds_.port_, redis_ds_.timeout_);
+        if (redis_ds_.context_ == NULL)
+        { throw(std::runtime_error("Could not allocate redis context."));  }
+
+        if(redis_ds_.context_->err)
+        {
+          std::string err = std::string("Could not connect to redis server : ") + std::string(redis_ds_.context_->errstr);
+          redisFree(redis_ds_.context_);
+          throw(std::runtime_error(err.c_str()));
+        }
+
+        // PING server to make sure things are working..
+        redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_,"PING");
+        std::cout<<"\n\nSCL Redis Task : Pinged Redis server. Reply is, "<<redis_ds_.reply_->str<<"\n";
+        freeReplyObject((void*)redis_ds_.reply_);
+
+        std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
 
         /**********************Initialize Robot Dynamics and Controller*******************/
         flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_tao_);//Note: The robot deletes these pointers.
