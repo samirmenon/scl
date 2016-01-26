@@ -32,6 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "chai3d.h"
 
+#include <stdexcept>
 #include <iostream>
 
 namespace scl
