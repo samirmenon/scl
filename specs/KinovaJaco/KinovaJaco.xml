@@ -178,10 +178,10 @@
 		</graphics>
 	</link>
 	<link>
-		<link_name>link5</link_name>
+		<link_name>hand</link_name>
 		<position_in_parent>0.0 -0.03705 0.064172</position_in_parent>
 		<orientation_in_parent>0.49999999999999994 0 0 0.8660254037844387</orientation_in_parent>
-		<mass>0.85</mass>
+		<mass>0.727</mass><!-- Hand = 727 g. If we split the fingers, we'll assume 427 g base + 100g fingers -->
 		<inertia>0.1 0.1 0.1</inertia>
 		<inertia_gc>1.0</inertia_gc> <!-- +-.54 -->
 		<center_of_mass>0.0 0.0 0.1</center_of_mass>
@@ -199,6 +199,27 @@
 				<name>KinovaJaco/graphics/link5-hand-base.obj</name>
 				<position_in_parent>-0.0085 0.0075 0.00</position_in_parent>
 				<orientation_in_parent>0.707106 0 0.0 0.707106</orientation_in_parent>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>KinovaJaco/graphics/finger0-opposed.obj</name>
+				<position_in_parent>-0.0315 0 .0825</position_in_parent>
+				<orientation_in_parent>-0.707106 0 0.0 0.707106</orientation_in_parent>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>KinovaJaco/graphics/finger1-clockwise-from-top.obj</name>
+				<position_in_parent>0.0315 0.025 .0825</position_in_parent>
+				<orientation_in_parent>-0.707106 0 0.0 0.707106</orientation_in_parent>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>KinovaJaco/graphics/finger2-clockwise-from-top.obj</name>
+				<position_in_parent>0.0315 -0.018 .0825</position_in_parent>
+				<orientation_in_parent>-0.707106 0 0.0 0.707106</orientation_in_parent>
 				<scaling>0.001000 0.001000 0.001000</scaling>
 				<collision_type>0</collision_type>
 			</obj_file>
