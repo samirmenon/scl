@@ -37,7 +37,7 @@
         <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
         <flag_logging_on>false</flag_logging_on>
         <flag_wireframe_on>false</flag_wireframe_on>
-        <option_axis_frame_size>0.2</option_axis_frame_size> <!-- All options are optional -->
+        <option_axis_frame_size>0.0</option_axis_frame_size> <!-- All options are optional -->
     </robot>
 
     <graphics name="KinovaJacoBotStdView">
@@ -70,5 +70,40 @@
         <ki>20</ki>
         <force_max>500</force_max>
         <force_min>-500</force_min>
+    </controller>
+    
+    <controller name="opc">
+        <type>task</type>
+        <must_use_robot>KinovaJacoBot</must_use_robot>
+        <!-- How often to recompute the model wrt. servo ticks. Default = 1 -->
+        <option_servo_to_model_rate>5</option_servo_to_model_rate>
+        
+        <task name="hand">
+            <type>TaskOpPos</type>
+            <parent_link>end-effector</parent_link>
+            <pos_in_parent>0.0 0.00 0.15</pos_in_parent>
+            <priority>0</priority>
+            <task_dof>3</task_dof>
+            <kp>200</kp>
+            <kv>25</kv>
+            <ka>0</ka>
+            <force_max>100</force_max>
+            <force_min>-100</force_min>
+            <flag_compute_op_gravity>1</flag_compute_op_gravity>
+            <flag_compute_op_cc_forces>0</flag_compute_op_cc_forces>
+            <flag_compute_op_inertia>1</flag_compute_op_inertia>
+        </task>
+
+        <!--0 task_dof means a gc task, ie full dofs -->
+        <task name="NullSpaceDampingTask">
+            <type>TaskNullSpaceDamping</type>
+            <priority>2</priority>
+            <task_dof>0</task_dof> 
+            <kp>0</kp>
+            <kv>40</kv>
+            <ka>0</ka>
+            <force_max>300</force_max>
+            <force_min>-300</force_min>
+        </task>
     </controller>
 </scl>

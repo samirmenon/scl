@@ -178,7 +178,7 @@
 		</graphics>
 	</link>
 	<link>
-		<link_name>hand</link_name>
+		<link_name>end-effector</link_name>
 		<position_in_parent>0.0 -0.03705 0.064172</position_in_parent>
 		<orientation_in_parent>0.49999999999999994 0 0 0.8660254037844387</orientation_in_parent>
 		<mass>0.727</mass><!-- Hand = 727 g. If we split the fingers, we'll assume 427 g base + 100g fingers -->
