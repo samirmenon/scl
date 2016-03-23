@@ -29,15 +29,15 @@
 				<name>KinovaJaco/graphics/link0.obj</name> 
 				<position_in_parent>0.0 0.0 0.0</position_in_parent>
 				<orientation_in_parent>-0.5 0.5 -0.5 .5</orientation_in_parent>
-        <scaling>0.001000 0.001000 0.001000</scaling>
+				<scaling>0.001000 0.001000 0.001000</scaling>
 				<collision_type>0</collision_type>
 			</obj_file>
       <obj_file>
-        <name>KinovaJaco/graphics/ring-large.obj</name> 
-        <position_in_parent>0.0 0.0 0.1180</position_in_parent>
+				<name>KinovaJaco/graphics/ring-large.obj</name> 
+				<position_in_parent>0.0 0.0 0.1180</position_in_parent>
 				<orientation_in_parent>0 -0.707106 0 0.707106</orientation_in_parent>
-        <scaling>0.001000 0.001000 0.001000</scaling>
-        <collision_type>0</collision_type>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
       </obj_file>
 		</graphics>
 	</link>
@@ -63,15 +63,15 @@
 				<name>KinovaJaco/graphics/link1.obj</name>
 				<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
 				<orientation_in_parent>0.0 -1.0 0.0 0.0</orientation_in_parent>
-        <scaling>0.001000 0.001000 0.001000</scaling>
+				<scaling>0.001000 0.001000 0.001000</scaling>
 				<collision_type>0</collision_type>
 			</obj_file>
       <obj_file>
-        <name>KinovaJaco/graphics/ring-large.obj</name> 
-        <position_in_parent>0.0 0.0 0.41</position_in_parent>
+				<name>KinovaJaco/graphics/ring-large.obj</name> 
+				<position_in_parent>0.0 0.0 0.41</position_in_parent>
 				<orientation_in_parent>0 -0.707106 0 0.707106</orientation_in_parent>
-        <scaling>0.001000 0.001000 0.001000</scaling>
-        <collision_type>0</collision_type>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
       </obj_file>
 		</graphics>
 	</link>
@@ -97,15 +97,15 @@
 				<name>KinovaJaco/graphics/link2.obj</name>
 				<position_in_parent>0.0 0.0 0.0</position_in_parent>
 				<orientation_in_parent>-0.707106 0.0 0.0 0.707106</orientation_in_parent>
-        <scaling>0.001000 0.001000 0.001000</scaling>
+				<scaling>0.001000 0.001000 0.001000</scaling>
 				<collision_type>0</collision_type>
 			</obj_file>
       <obj_file>
-        <name>KinovaJaco/graphics/ring-small.obj</name> 
-        <position_in_parent>0.0098 0.0 0.2073</position_in_parent>
+				<name>KinovaJaco/graphics/ring-small.obj</name> 
+				<position_in_parent>0.0098 0.0 0.2073</position_in_parent>
 				<orientation_in_parent>0 0 0 1</orientation_in_parent>
-        <scaling>0.001000 0.001000 0.001000</scaling>
-        <collision_type>0</collision_type>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
       </obj_file>
 		</graphics>
 	</link>
@@ -129,9 +129,77 @@
 		<graphics>
 			<obj_file>
 				<name>KinovaJaco/graphics/link3.obj</name>
-				<position_in_parent>0.0 0.0 0.0</position_in_parent>
+				<position_in_parent>0.0 0.0 0.008</position_in_parent>
 				<orientation_in_parent>0.0 0.707106 0.0 0.707106</orientation_in_parent>
-        <scaling>0.001000 0.001000 0.001000</scaling>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>KinovaJaco/graphics/ring-small-b.obj</name>
+				<position_in_parent>0.0 -0.03705 0.064172 </position_in_parent>
+				<orientation_in_parent>0 0 0 1</orientation_in_parent>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>link4</link_name>
+		<position_in_parent>0.0 -0.03705 0.064172</position_in_parent>
+		<orientation_in_parent>0.49999999999999994 0 0 0.8660254037844387</orientation_in_parent>
+		<mass>0.85</mass>
+		<inertia>0.1 0.1 0.1</inertia>
+		<inertia_gc>1.0</inertia_gc> <!-- +-.54 -->
+		<center_of_mass>0.0 0.0 0.1</center_of_mass>
+		<joint_name>j4</joint_name>
+		<parent_link_name>link3</parent_link_name>
+		<joint_type>rz</joint_type>
+		<joint_limits>-20 20</joint_limits>
+		<force_gc_limits>-186.4 186.4</force_gc_limits>
+		<stiction_gc_force>-5.5 5.5</stiction_gc_force>
+		<stiction_gc_velocity_limits>-0.01 0.01</stiction_gc_velocity_limits>
+		<friction_gc_kv>10</friction_gc_kv>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>KinovaJaco/graphics/link4.obj</name>
+				<position_in_parent>0.0 0.0 0.008</position_in_parent>
+				<orientation_in_parent>0.0 0.707106 0.0 0.707106</orientation_in_parent>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+			<obj_file>
+				<name>KinovaJaco/graphics/ring-small-b.obj</name>
+				<position_in_parent>0.0 -0.03705 0.064172 </position_in_parent>
+				<orientation_in_parent>0 0 0 1</orientation_in_parent>
+				<scaling>0.001000 0.001000 0.001000</scaling>
+				<collision_type>0</collision_type>
+			</obj_file>
+		</graphics>
+	</link>
+	<link>
+		<link_name>link5</link_name>
+		<position_in_parent>0.0 -0.03705 0.064172</position_in_parent>
+		<orientation_in_parent>0.49999999999999994 0 0 0.8660254037844387</orientation_in_parent>
+		<mass>0.85</mass>
+		<inertia>0.1 0.1 0.1</inertia>
+		<inertia_gc>1.0</inertia_gc> <!-- +-.54 -->
+		<center_of_mass>0.0 0.0 0.1</center_of_mass>
+		<joint_name>j5</joint_name>
+		<parent_link_name>link4</parent_link_name>
+		<joint_type>rz</joint_type>
+		<joint_limits>-20 20</joint_limits>
+		<force_gc_limits>-186.4 186.4</force_gc_limits>
+		<stiction_gc_force>-5.5 5.5</stiction_gc_force>
+		<stiction_gc_velocity_limits>-0.01 0.01</stiction_gc_velocity_limits>
+		<friction_gc_kv>10</friction_gc_kv>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+			<obj_file>
+				<name>KinovaJaco/graphics/link5-hand-base.obj</name>
+				<position_in_parent>-0.0085 0.0075 0.00</position_in_parent>
+				<orientation_in_parent>0.707106 0 0.0 0.707106</orientation_in_parent>
+				<scaling>0.001000 0.001000 0.001000</scaling>
 				<collision_type>0</collision_type>
 			</obj_file>
 		</graphics>
