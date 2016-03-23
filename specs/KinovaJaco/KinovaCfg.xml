@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE LOTUS SYSTEM "scl.dtd">
+
+<!-- Units are in Std International System -->
+<scl>
+    <robot name="KinovaJacoBot"> 
+        <spec>KinovaJaco</spec>
+        <file>../../specs/KinovaJaco/KinovaJaco.xml</file>
+        <gravity>0.000   0.000   -9.81</gravity> 
+        <root_link>
+            <link_name>ground</link_name>
+            <position_in_parent>0.00   0.000   -0.300</position_in_parent> 
+            <orientation_in_parent>0.000  0.000   0.000   1.000</orientation_in_parent>
+            <graphics>
+			        <obj_file>
+				        <name>KinovaJaco/graphics/base.obj</name>
+				        <position_in_parent>0.0 0.0 0.0</position_in_parent>
+				        <orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				        <scaling>0.001000 0.001000 0.001000</scaling>
+				        <collision_type>0</collision_type>
+			        </obj_file>
+			        <obj_file>
+				        <name>KinovaJaco/graphics/ring-large.obj</name> 
+				        <position_in_parent>0.0 0.0 0.155</position_in_parent>
+				        <orientation_in_parent>0 0 0 1</orientation_in_parent>
+                <scaling>0.001000 0.001000 0.001000</scaling>
+				        <collision_type>0</collision_type>
+			        </obj_file>
+            </graphics>
+        </root_link>
+        <!-- These flags can control the simulation's default behavior. -->
+        <flag_gc_damping>false</flag_gc_damping>
+        <flag_gc_limits>false</flag_gc_limits> <!-- Apply gc position limits (joint limits) -->
+        <flag_actuator_force_limits>true</flag_actuator_force_limits>
+        <flag_actuator_vel_limits>true</flag_actuator_vel_limits>
+        <flag_actuator_acc_limits>true</flag_actuator_acc_limits>
+        <flag_controller_on>true</flag_controller_on> <!-- Controller enabled at the start -->
+        <flag_logging_on>false</flag_logging_on>
+        <flag_wireframe_on>false</flag_wireframe_on>
+        <option_axis_frame_size>0.2</option_axis_frame_size> <!-- All options are optional -->
+    </robot>
+
+    <graphics name="KinovaJacoBotStdView">
+        <camera>
+            <pos>1.25   0.0   0.2</pos>
+            <lookat>0.0   0.0   0.2</lookat>
+            <up>0   0   1</up>
+            <clip>0 10</clip>
+            <!-- Add a png file here for background/foreground -->
+            <background>scl.png</background>
+            <!-- Use if required : <foreground></foreground> -->
+        </camera>
+        <light>
+            <pos>2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.5</lookat>
+        </light>
+        <light>
+            <pos>-2.0   0.0   0.0</pos>
+            <lookat>0.0   0.0   0.0</lookat>
+        </light>
+        <background_color>1.0 1.0 1.0</background_color>
+    </graphics>
+
+    <controller name="KinovaJacoGcCtrl">
+        <type>gc</type>
+        <must_use_robot>KinovaJacoBot</must_use_robot>
+        <kp>100</kp>
+        <kv>15</kv>
+        <ka>0</ka>
+        <ki>20</ki>
+        <force_max>500</force_max>
+        <force_min>-500</force_min>
+    </controller>
+</scl>
