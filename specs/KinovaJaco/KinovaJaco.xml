@@ -135,7 +135,7 @@
 				<collision_type>0</collision_type>
 			</obj_file>
 			<obj_file>
-				<name>KinovaJaco/graphics/ring-small-b.obj</name>
+				<name>KinovaJaco/graphics/ring-small-rot45.obj</name>
 				<position_in_parent>0.0 -0.03705 0.064172 </position_in_parent>
 				<orientation_in_parent>0 0 0 1</orientation_in_parent>
 				<scaling>0.001000 0.001000 0.001000</scaling>
@@ -169,7 +169,7 @@
 				<collision_type>0</collision_type>
 			</obj_file>
 			<obj_file>
-				<name>KinovaJaco/graphics/ring-small-b.obj</name>
+				<name>KinovaJaco/graphics/ring-small-rot45.obj</name>
 				<position_in_parent>0.0 -0.03705 0.064172 </position_in_parent>
 				<orientation_in_parent>0 0 0 1</orientation_in_parent>
 				<scaling>0.001000 0.001000 0.001000</scaling>
