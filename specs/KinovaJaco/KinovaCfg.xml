@@ -42,8 +42,8 @@
 
     <graphics name="KinovaJacoBotStdView">
         <camera>
-            <pos>1.25   0.0   0.2</pos>
-            <lookat>0.0   0.0   0.2</lookat>
+            <pos>1.75   0.0   0.25</pos>
+            <lookat>0.0   0.0   0.25</lookat>
             <up>0   0   1</up>
             <clip>0 10</clip>
             <!-- Add a png file here for background/foreground -->
