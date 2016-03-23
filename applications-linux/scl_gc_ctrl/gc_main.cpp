@@ -248,7 +248,8 @@ int main(int argc, char** argv)
             sutil::CSystemClock::tick(db->sim_dt_);
 
             //1. Simulation Dynamics
-            flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+            if(scl::CDatabase::getData()->pause_ctrl_dyn_ == false)
+            { flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_); }
             //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
             //2. Update the controller
@@ -311,7 +312,8 @@ int main(int argc, char** argv)
 #endif
 
         //1. Simulation Dynamics
-        flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+        if(scl::CDatabase::getData()->pause_ctrl_dyn_ == false)
+        { flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_); }
 //        rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
         //2. Update the controller
