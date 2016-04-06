@@ -75,6 +75,10 @@ namespace scl_app
         }
       }
 
+      // Set up gc damping
+      for(unsigned int i=0;i<rob_ds_->dof_;++i)
+      { rob_ds_->damping_gc_(i) = db_->sim_dt_*10; }
+
       return true;
     }
     catch(std::exception &e)
@@ -148,7 +152,7 @@ namespace scl_app
     for(it = taskvec_ui_ctrl_point_.begin(), ite = taskvec_ui_ctrl_point_.end(); it!=ite; ++it )
     { it->task_->setGoalPos(db_->s_gui_.ui_point_[it->ui_pt_]); } //Set the goal position.
 
-    if(ctrl_ctr_%5 == 0)           //Update dynamics at a slower rate
+    if(ctrl_ctr_%1 == 0)           //Update dynamics at a slower rate
     {
       robot_.computeDynamics();
       robot_.computeNonControlOperations();
