@@ -41,7 +41,7 @@ namespace scl
 #define SCL_COPPTTASK_SPATIAL_RESOLUTION 0.005
 #define SCL_COPPTTASK_TASK_DOF 3
 
-  STaskOpPos::STaskOpPos() : STaskBase(),
+  STaskOpPos::STaskOpPos() : STaskBase("STaskOpPos"),
       link_name_(""),
       link_ds_(S_NULL),
       spatial_resolution_(SCL_COPPTTASK_SPATIAL_RESOLUTION),
