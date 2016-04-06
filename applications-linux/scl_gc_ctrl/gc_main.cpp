@@ -47,6 +47,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/gc/CControllerGc.hpp>
+#include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/util/DatabaseUtils.hpp>
 #include <sutil/CSystemClock.hpp>
@@ -156,8 +157,8 @@ int main(int argc, char** argv)
 #endif
 
       /******************************TaoDynamics************************************/
-      scl::CDynamicsTao tao_dyn_int;
-      flag = tao_dyn_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
+      scl::CDynamicsTao dyn_tao_int;
+      flag = dyn_tao_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
 #ifdef DEBUG
@@ -169,7 +170,7 @@ int main(int argc, char** argv)
       for(it = br.begin(), ite = br.end();
           it!=ite; ++it)
       {
-        taoDNode * tmp = tao_dyn_int.getTaoIdForLink(it->name_);
+        taoDNode * tmp = dyn_tao_int.getTaoIdForLink(it->name_);
         if(S_NULL == tmp)
         {
           std::stringstream ss;
@@ -209,8 +210,8 @@ int main(int argc, char** argv)
       { throw(std::runtime_error("Glut initialization error")); }
 
       /**********************Initialize Robot Dynamics and Controller*******************/
-      scl::CDynamicsTao tao_dyn; //Use for model updates.
-      flag = tao_dyn.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)); //Reads stuff from the database.
+      scl::CDynamicsScl dyn_scl; //Use for model updates.
+      flag = dyn_scl.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)); //Reads stuff from the database.
       if(false == flag) { throw(std::runtime_error("Could not initialize dynamics object"));  }
 
       scl::SControllerGc * gc_ctrl_ds;
@@ -218,7 +219,7 @@ int main(int argc, char** argv)
       if(S_NULL == gc_ctrl_ds) { throw(std::runtime_error("Could not find the controller in the database"));  }
 
       scl::CControllerGc robot_gc_ctrl;
-      flag = robot_gc_ctrl.init(gc_ctrl_ds,&tao_dyn_int);
+      flag = robot_gc_ctrl.init(gc_ctrl_ds,&dyn_scl);
       if(false == flag) { throw(std::runtime_error("Could not initialize the controller object"));  }
 
       /******************************Main Loop************************************/
@@ -250,7 +251,7 @@ int main(int argc, char** argv)
             //1. Simulation Dynamics
             if(scl::CDatabase::getData()->pause_ctrl_dyn_ == false)
             {
-              flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+              flag = dyn_tao_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
 
               /** Slow down sim to real time */
               sutil::CSystemClock::tick(scl::CDatabase::getData()->sim_dt_);
@@ -338,7 +339,7 @@ int main(int argc, char** argv)
         //1. Simulation Dynamics
         if(scl::CDatabase::getData()->pause_ctrl_dyn_ == false)
         {
-          flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+          flag = dyn_tao_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
 
           /** Slow down sim to real time */
           sutil::CSystemClock::tick(scl::CDatabase::getData()->sim_dt_);
