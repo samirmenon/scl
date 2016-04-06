@@ -185,6 +185,9 @@ namespace scl
     /** Constructor */
     STaskBase();
 
+    /** Constructor for setting the type */
+    STaskBase(std::string arg_subclass_type);
+
     /** Destructor : Does nothing */
     virtual ~STaskBase(){}
 

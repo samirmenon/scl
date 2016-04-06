@@ -38,6 +38,19 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
+  STaskBase::STaskBase(std::string arg_subclass_type) : SObject(arg_subclass_type)
+  {
+    name_ = "";
+    priority_ = -1;
+    dof_task_ = 0;
+    robot_ = S_NULL;
+    gc_model_ = S_NULL;
+    parent_controller_ = S_NULL;
+    has_been_init_ = false;
+    has_been_activated_ = false;
+    has_control_null_space_ = true;
+  }
+
   STaskBase::STaskBase() : SObject("STaskBase")
   {
     name_ = "";
