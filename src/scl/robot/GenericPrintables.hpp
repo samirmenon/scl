@@ -38,6 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
 #include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
+#include <scl/control/task/tasks/data_structs/STaskGc.hpp>
 #include <scl/control/task/data_structs/SControllerMultiTask.hpp>
 
 #include <scl/Singletons.hpp>
@@ -159,14 +160,40 @@ namespace sutil
     ostr<<". Parent("<<arg_data.parent_controller_->name_<<")";
     ostr<<"\n Init/Active : "<<arg_data.has_been_init_<<"/"<<arg_data.has_been_activated_;
     ostr<<"\n Priority    : "<<arg_data.priority_;
-    ostr<<"\n X      : "<<arg_data.x_.transpose();
-    ostr<<"\n Xgoal  : "<<arg_data.x_goal_.transpose();
+    ostr<<"\n X       : "<<arg_data.x_.transpose();
+    ostr<<"\n Xgoal   : "<<arg_data.x_goal_.transpose();
     ostr<<"\n dX      : "<<arg_data.dx_.transpose();
     ostr<<"\n dXgoal  : "<<arg_data.dx_goal_.transpose();
-    ostr<<"\n ddX      : "<<arg_data.ddx_.transpose();
-    ostr<<"\n ddXgoal  : "<<arg_data.ddx_goal_.transpose();
-    ostr<<"\n F_task : "<<arg_data.force_task_.transpose();
-    ostr<<"\n F_gc   : "<<arg_data.force_gc_.transpose();
+    ostr<<"\n ddX     : "<<arg_data.ddx_.transpose();
+    ostr<<"\n ddXgoal : "<<arg_data.ddx_goal_.transpose();
+    ostr<<"\n F_task  : "<<arg_data.force_task_.transpose();
+    ostr<<"\n F_gc    : "<<arg_data.force_gc_.transpose();
+    ostr<<"\n M_x     : \n"<<arg_data.M_task_;
+    ostr<<"\n M_x_inv : \n"<<arg_data.M_task_inv_;
+    ostr<<"\n J_x     : \n"<<arg_data.J_;
+    ostr<<std::endl;
+  }
+
+  template <>
+  void printToStream<scl::STaskGc>(
+      std::ostream& ostr,
+      const scl::STaskGc& arg_data
+  )
+  {
+    ostr<<"\n Name: "<<arg_data.name_;
+    ostr<<"("<<arg_data.getType()<<")";
+    ostr<<"\n Init/Active : "<<arg_data.has_been_init_<<"/"<<arg_data.has_been_activated_;
+    ostr<<"\n Priority    : "<<arg_data.priority_;
+    ostr<<"\n Q       : "<<arg_data.q_.transpose();
+    ostr<<"\n Qgoal   : "<<arg_data.q_goal_.transpose();
+    ostr<<"\n dQ      : "<<arg_data.dq_.transpose();
+    ostr<<"\n dQgoal  : "<<arg_data.dq_goal_.transpose();
+    ostr<<"\n ddQ     : "<<arg_data.ddq_.transpose();
+    ostr<<"\n ddQgoal : "<<arg_data.ddq_goal_.transpose();
+    ostr<<"\n F_task  : "<<arg_data.force_task_.transpose();
+    ostr<<"\n F_gc    : "<<arg_data.force_gc_.transpose();
+    ostr<<"\n M_gc    : \n"<<arg_data.gc_model_->M_gc_;
+    ostr<<"\n M_gc_inv: \n"<<arg_data.gc_model_->M_gc_inv_;
     ostr<<std::endl;
   }
 
@@ -194,6 +221,13 @@ namespace sutil
         const scl::STaskOpPos& task = *ptask;
         ostr<<"\n === Task #"<<i<<":"; i++;
         printToStream<scl::STaskOpPos>(ostr, task);
+      }
+      else if((*it)->getType() == "STaskGc")
+      {
+        const scl::STaskGc* ptask = dynamic_cast<const scl::STaskGc*>(*it);
+        const scl::STaskGc& task = *ptask;
+        ostr<<"\n === Task #"<<i<<":"; i++;
+        printToStream<scl::STaskGc>(ostr, task);
       }
       else
       {//If no type has been registered, go for this.
@@ -359,8 +393,7 @@ namespace scl
         if(S_NULL == task)
         { continue;  } //Move on. Not a task.
 #endif
-        // NOTE DELME LATER
-        std::cout<<"\n Found a task type: ["<<task->type_task_<<"]. Registered type: ["<<task->getType()<<"].";
+        // This is the special code for adding an op pos task
         if(task->getType() == "STaskOpPos")
         {
           const scl::STaskOpPos* task2 = dynamic_cast<const scl::STaskOpPos*>(task);
@@ -369,6 +402,17 @@ namespace scl
           {throw(std::runtime_error(std::string("Could not add a printable: ")+task->name_));  }
 
           const scl::STaskOpPos &tt = *task2;
+
+          flag = sutil::printables::add(task->name_,tt);
+        }
+        else if(task->getType() == "STaskGc")
+        {
+          const scl::STaskGc* task2 = dynamic_cast<const scl::STaskGc*>(task);
+
+          if(NULL == task2)
+          {throw(std::runtime_error(std::string("Could not add a printable: ")+task->name_));  }
+
+          const scl::STaskGc &tt = *task2;
 
           flag = sutil::printables::add(task->name_,tt);
         }
