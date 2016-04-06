@@ -75,11 +75,15 @@ namespace sutil
     ostr<<"\n  Jlim_min : "<<arg_data.gc_pos_limit_min_.transpose();
     ostr<<"\n Actuator_force_max : "<<arg_data.actuator_forces_max_.transpose();
     ostr<<"\n Actuator_force_min : "<<arg_data.actuator_forces_min_.transpose();
+    ostr<<"\n GC Damping : "<<arg_data.damping_gc_.transpose();
     ostr<<"\n Flag_gc_pos_limits : "<<arg_data.flag_apply_gc_pos_limits_;
     ostr<<"\n Flag_gc_damping : "<<arg_data.flag_apply_gc_damping_;
     ostr<<"\n Flag_force_limits : "<<arg_data.flag_apply_actuator_force_limits_;
     ostr<<"\n Flag_vel_limits : "<<arg_data.flag_apply_actuator_vel_limits_;
     ostr<<"\n Flag_accel_limits : "<<arg_data.flag_apply_actuator_acc_limits_;
+    ostr<<"\n Links:";
+    for (unsigned int i=0;i<arg_data.robot_tree_numeric_id_to_name_.size(); i++)
+    { ostr<<" ["<<i<<": "<<arg_data.robot_tree_numeric_id_to_name_[i]<<"]"; }
     ostr<<std::endl;
   }
 
@@ -155,8 +159,12 @@ namespace sutil
     ostr<<". Parent("<<arg_data.parent_controller_->name_<<")";
     ostr<<"\n Init/Active : "<<arg_data.has_been_init_<<"/"<<arg_data.has_been_activated_;
     ostr<<"\n Priority    : "<<arg_data.priority_;
-    ostr<<"\n X      : "<<arg_data.x_;
-    ostr<<"\n Xgoal  : "<<arg_data.x_goal_;
+    ostr<<"\n X      : "<<arg_data.x_.transpose();
+    ostr<<"\n Xgoal  : "<<arg_data.x_goal_.transpose();
+    ostr<<"\n dX      : "<<arg_data.dx_.transpose();
+    ostr<<"\n dXgoal  : "<<arg_data.dx_goal_.transpose();
+    ostr<<"\n ddX      : "<<arg_data.ddx_.transpose();
+    ostr<<"\n ddXgoal  : "<<arg_data.ddx_goal_.transpose();
     ostr<<"\n F_task : "<<arg_data.force_task_.transpose();
     ostr<<"\n F_gc   : "<<arg_data.force_gc_.transpose();
     ostr<<std::endl;
@@ -180,10 +188,35 @@ namespace sutil
 #ifdef DEBUG
       assert(NULL != *it);
 #endif
-      const scl::STaskBase& task = **it;
-      ostr<<"\n === Task #"<<i<<":"; i++;
-      printToStream<scl::STaskBase>(ostr, task);
+      if((*it)->getType() == "STaskOpPos")
+      {
+        const scl::STaskOpPos* ptask = dynamic_cast<const scl::STaskOpPos*>(*it);
+        const scl::STaskOpPos& task = *ptask;
+        ostr<<"\n === Task #"<<i<<":"; i++;
+        printToStream<scl::STaskOpPos>(ostr, task);
+      }
+      else
+      {//If no type has been registered, go for this.
+        const scl::STaskBase& task = **it;
+        ostr<<"\n === Task #"<<i<<":"; i++;
+        printToStream<scl::STaskBase>(ostr, task);
+      }
     }
+  }
+
+  template <>
+  void printToStream<scl::SGcModel>(
+      std::ostream& ostr,
+      const scl::SGcModel& arg_data
+  )
+  {
+    ostr<<"\n Name        : "<<arg_data.name_;
+    ostr<<"("<<arg_data.getType()<<")";
+    ostr<<"\n Name (robot): "<<arg_data.name_robot_;
+    ostr<<"\n Init        : "<<arg_data.has_been_init_;
+    ostr<<std::endl;
+    ostr<<"\n M_gc :\n"<<arg_data.M_gc_;
+    ostr<<"\n M_gc_inv :\n"<<arg_data.M_gc_inv_;
   }
 
   template <>
@@ -254,6 +287,21 @@ namespace scl
     return true;
   }
 
+  /** This is to just add a gc model object */
+  template <>
+  bool printableAddObject<scl::SGcModel>(const scl::SGcModel & arg_obj)
+  {
+    //NOTE: The robot's parsed and IO data structures are usually indexed by
+    // the robot name. Also see SRobotParsed
+    bool flag = sutil::printables::add(arg_obj.name_,arg_obj);
+    if(false == flag)
+    {throw(std::runtime_error(std::string("Could not add a printable: GcModel for robot: ")+
+        arg_obj.name_));  }
+    else
+    { std::cout<<"\n"<<std::setw(10)<<"Printable: GcModel: "<<std::setw(51)<<arg_obj.name_; }
+    return true;
+  }
+
   bool addRobotPrintables()
   {
     bool flag;
@@ -290,8 +338,12 @@ namespace scl
         if(false == flag)
         {throw(std::runtime_error(std::string("Could not add a printable: Task Controller: ")+
             ctrl->name_));  }
+        flag = sutil::printables::add(ctrl->gc_model_->name_,*(ctrl->gc_model_));
+        if(false == flag)
+        {throw(std::runtime_error(std::string("Could not add a printable: GcModel: ")+
+            ctrl->gc_model_->name_));  }
         else
-        { std::cout<<"\n"<<std::setw(10)<<"Printable: Task Controller: "<<std::setw(41)<<ctrl->name_; }
+        { std::cout<<"\n"<<std::setw(10)<<"Printable: GcModel: "<<std::setw(41)<<ctrl->gc_model_->name_; }
       }
 
       //Add all the task controller data structures for all the robots
@@ -307,7 +359,21 @@ namespace scl
         if(S_NULL == task)
         { continue;  } //Move on. Not a task.
 #endif
-        flag = sutil::printables::add(task->name_,*task);
+        // NOTE DELME LATER
+        std::cout<<"\n Found a task type: ["<<task->type_task_<<"]. Registered type: ["<<task->getType()<<"].";
+        if(task->getType() == "STaskOpPos")
+        {
+          const scl::STaskOpPos* task2 = dynamic_cast<const scl::STaskOpPos*>(task);
+
+          if(NULL == task2)
+          {throw(std::runtime_error(std::string("Could not add a printable: ")+task->name_));  }
+
+          const scl::STaskOpPos &tt = *task2;
+
+          flag = sutil::printables::add(task->name_,tt);
+        }
+        else
+        { flag = sutil::printables::add(task->name_,*task); }
         if(false == flag)
         {throw(std::runtime_error(std::string("Could not add a printable: Task Controller: ")+
             task->name_));  }

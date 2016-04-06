@@ -38,6 +38,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/gc/CControllerGc.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 
+#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
+
 #include <sutil/CSystemClock.hpp>
 
 namespace scl
@@ -119,7 +121,14 @@ namespace scl
         data_.io_data_->actuators_.force_gc_commanded_.array().max(data_.parsed_robot_data_->actuator_forces_min_.array());
       }
 
-      flag = integrator_->integrate(*(data_.io_data_), CDatabase::getData()->sim_dt_);
+      // NOTE TODO : CLEAN ME UP!!!
+      scl_ext::CDynamicsSclSpatial *dyn_scl_sp = dynamic_cast<scl_ext::CDynamicsSclSpatial *> (integrator_);
+      if(NULL != dyn_scl_sp)
+      {
+        dyn_scl_sp->integrator(*(data_.io_data_),&(data_.dyn_gc_model_),CDatabase::getData()->sim_dt_);
+      }
+      else // Must be Tao dyn
+      { flag = integrator_->integrate(*(data_.io_data_), CDatabase::getData()->sim_dt_);  }
 
       //Apply gc damping
       if(data_.parsed_robot_data_->flag_apply_gc_damping_)
@@ -269,6 +278,7 @@ namespace scl
       //Initialization.
       dynamics_ = arg_dynamics;
       integrator_ = arg_integrator;
+      data_.dyn_gc_model_.init(*arg_robot);
 
       data_.name_ = arg_robot_name;
       data_.parsed_robot_data_ = arg_robot;
