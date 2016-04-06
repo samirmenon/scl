@@ -200,7 +200,6 @@ namespace scl
     for(;it!=ite;++it)
     {
       // Temps for code clarity
-      const T& data = *it;
       const std::string& index = !it;
       Json::Value &val = ret_json_val[index.c_str()];
 
@@ -234,7 +233,6 @@ namespace scl
     for(;it!=ite;++it)
     {
       // Temps for code clarity
-      const T& data = **it;
       const std::string& index = !it;
       Json::Value &val = ret_json_val[index.c_str()];
 

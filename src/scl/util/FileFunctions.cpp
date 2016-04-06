@@ -183,6 +183,8 @@ namespace scl_util
           char buffer [50];
           int n;
           n = sprintf(buffer, "Insufficient entries in line %u (%u of %u)", i, tmp_line_sz, number_of_entries);
+          if(0>=n)
+          { throw(std::runtime_error("Insufficient entries in line .. And error in using sprintf"));  }
           throw(std::runtime_error(std::string(buffer)));
         }
         //Get the next line.

@@ -981,6 +981,8 @@ bool CParserScl::saveRobotToFile(scl::SRobotParsed& arg_robot,
           jtype = "ry"; break;
         case JOINT_TYPE_REVOLUTE_Z:
           jtype = "rz"; break;
+        case JOINT_TYPE_REVOLUTE_AXIS:
+          jtype = "ra"; break;
         case JOINT_TYPE_SPHERICAL:
           jtype = "sp"; break;
         case JOINT_TYPE_SPLINE:

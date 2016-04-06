@@ -153,7 +153,6 @@ namespace scl_ext
     while(static_cast<std::size_t>(i) < arg_gc_model->rbdyn_tree_.size()-1)
     {
       std::map<std::string,scl::sInt> ::iterator it1;
-      int count=0;
       for(it1 = parent_count.begin() ; it1 != parent_count.end() ; it1++ )
       {
         if( parent_count[it1->first] == 0 )// && it1->second!=std::string("ground"))        //if parent counter becomes 0

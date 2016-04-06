@@ -52,7 +52,7 @@ namespace scl
       SRobotIO* arg_io_data,
       SGcModel* arg_gc_model)
   {
-    bool flag;
+    bool flag=false;
     try
     {
       if(1>arg_controller_name.size())
@@ -83,7 +83,7 @@ namespace scl
       if(false == gc_model_->hasBeenInit())
       {
         flag = gc_model_->init(*arg_robot_ds);
-        if(false == gc_model_->hasBeenInit())
+        if(false == gc_model_->hasBeenInit() || false == flag)
         { throw(std::runtime_error("Could not initialize generalized coordinate dynamic matrices")); }
       }
 
