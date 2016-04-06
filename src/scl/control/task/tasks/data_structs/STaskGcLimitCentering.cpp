@@ -40,7 +40,7 @@ namespace scl
 //5mm or 0.005 rad resolution
 #define SCL_GCTASK_SPATIAL_RESOLUTION 0.005
 
-  STaskGcLimitCentering::STaskGcLimitCentering():
+  STaskGcLimitCentering::STaskGcLimitCentering() : STaskBase("STaskGcLimitCentering"),
     spatial_resolution_(SCL_GCTASK_SPATIAL_RESOLUTION)
   { }
 

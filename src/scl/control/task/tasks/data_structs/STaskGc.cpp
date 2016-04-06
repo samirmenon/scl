@@ -40,7 +40,7 @@ namespace scl
 //5mm or 0.005 rad resolution
 #define SCL_GCTASK_SPATIAL_RESOLUTION 0.005
 
-  STaskGc::STaskGc():
+  STaskGc::STaskGc() : STaskBase("STaskGc"),
     spatial_resolution_(SCL_GCTASK_SPATIAL_RESOLUTION),
     flag_compute_gravity_(true),
     flag_compute_cc_forces_(false),

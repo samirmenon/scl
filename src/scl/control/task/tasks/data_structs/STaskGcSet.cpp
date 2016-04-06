@@ -40,7 +40,7 @@ namespace scl
 //5mm or 0.005 rad resolution
 #define SCL_GCTASKSET_SPATIAL_RESOLUTION 0.005
 
-  STaskGcSet::STaskGcSet()
+  STaskGcSet::STaskGcSet() : STaskBase("STaskGcSet")
   { }
 
   STaskGcSet::~STaskGcSet()

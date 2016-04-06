@@ -37,7 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-  STaskConstraintPlane::STaskConstraintPlane() : STaskBase(),
+  STaskConstraintPlane::STaskConstraintPlane() : STaskBase("STaskConstraintPlane"),
       link_name_(""),
       link_ds_(S_NULL),
       rbd_(S_NULL)

@@ -41,7 +41,7 @@ namespace scl
 #define SCL_COPPTTASK_SPATIAL_RESOLUTION 0.005
 #define SCL_COPPTTASK_TASK_DOF 3
 
-  STaskOpPosPIDA1OrderInfTime::STaskOpPosPIDA1OrderInfTime() : STaskBase(),
+  STaskOpPosPIDA1OrderInfTime::STaskOpPosPIDA1OrderInfTime() : STaskBase("STaskOpPosPIDA1OrderInfTime"),
       link_name_(""),
       link_ds_(S_NULL),
       spatial_resolution_(SCL_COPPTTASK_SPATIAL_RESOLUTION),

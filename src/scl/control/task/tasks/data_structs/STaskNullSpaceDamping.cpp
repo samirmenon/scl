@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-  STaskNullSpaceDamping::STaskNullSpaceDamping()
+  STaskNullSpaceDamping::STaskNullSpaceDamping() : STaskBase("STaskNullSpaceDamping")
   { }
 
   STaskNullSpaceDamping::~STaskNullSpaceDamping()

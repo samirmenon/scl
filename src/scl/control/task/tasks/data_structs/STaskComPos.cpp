@@ -39,7 +39,8 @@ namespace scl
   //0.5cm spatial resolution
 #define SCL_COMPOSTASK_SPATIAL_RESOLUTION 0.005
 
-  STaskComPos::STaskComPos() : spatial_resolution_(SCL_COMPOSTASK_SPATIAL_RESOLUTION)
+  STaskComPos::STaskComPos() :  STaskBase("STaskComPos"),
+    spatial_resolution_(SCL_COMPOSTASK_SPATIAL_RESOLUTION)
   { }
 
   STaskComPos::~STaskComPos()
