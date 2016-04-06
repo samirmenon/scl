@@ -56,6 +56,7 @@ namespace scl
   public:
     SRobotParsed * parsed_robot_data_;
     SRobotIO* io_data_;
+    SGcModel dyn_gc_model_;
 
     /** The robot's controller data structures. */
     sutil::CMappedList<std::string,SControllerBase*> controllers_;
