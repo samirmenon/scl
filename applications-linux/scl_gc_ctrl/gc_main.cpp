@@ -234,7 +234,9 @@ int main(int argc, char** argv)
 
       bool flag_status_pida = false;
 
+      double sine_amplitude = 0.2;
 #ifndef NOPARALLEL
+      // This is the threaded version (for release mode)...
       omp_set_num_threads(2);
       int thread_id;
       t_start = sutil::CSystemClock::getSysTime();
@@ -245,19 +247,32 @@ int main(int argc, char** argv)
         {
           while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
           {
-            sutil::CSystemClock::tick(db->sim_dt_);
-
             //1. Simulation Dynamics
             if(scl::CDatabase::getData()->pause_ctrl_dyn_ == false)
-            { flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_); }
+            {
+              flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+
+              /** Slow down sim to real time */
+              sutil::CSystemClock::tick(scl::CDatabase::getData()->sim_dt_);
+              double tcurr = sutil::CSystemClock::getSysTime();
+              double tdiff = sutil::CSystemClock::getSimTime() - tcurr;
+              timespec ts = {0, 0};
+              if(tdiff > 0)
+              {
+                ts.tv_sec = static_cast<int>(tdiff);
+                tdiff -= static_cast<int>(tdiff);
+                ts.tv_nsec = tdiff*1e9;
+                nanosleep(&ts,NULL);
+              }
+            }
             //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
             //2. Update the controller
             for(unsigned int i=0; i< gc_ctrl_ds->robot_->dof_;i++)
-            { gc_ctrl_ds->des_q_(i) = 0.2*sin(sutil::CSystemClock::getSysTime());  }
+            { gc_ctrl_ds->des_q_(i) = sine_amplitude*sin(sutil::CSystemClock::getSimTime());  }
 
             //Slower dynamics update.
-            if(ctrl_ctr%500 == 0)
+            if(ctrl_ctr%5 == 0)
             {
               robot_gc_ctrl.computeKinematics();
               robot_gc_ctrl.computeDynamics();
@@ -282,6 +297,16 @@ int main(int argc, char** argv)
             //Set the command torques for the simulator to the controller's computed torques
             rob_io_ds->actuators_.force_gc_commanded_ = gc_ctrl_ds->des_force_gc_;
             ctrl_ctr++;//Increment the counter for dynamics computed.
+
+            // Once in a while we'll print stuff...
+            if(ctrl_ctr%1000 == 0 && !(scl::CDatabase::getData()->pause_ctrl_dyn_)){
+              std::cout<<"\n ***************************"
+                       <<"\n Q   : "<<rob_io_ds->sensors_.q_.transpose();
+              std::cout<<"\n Qd  : "<<gc_ctrl_ds->des_q_.transpose();
+              std::cout<<"\n dQ  : "<<rob_io_ds->sensors_.dq_.transpose();
+              std::cout<<"\n dQd : "<<gc_ctrl_ds->des_dq_.transpose();
+              std::cout<<"\n Fgc : "<<rob_io_ds->actuators_.force_gc_commanded_.transpose();
+            }
           }
         }
         else
@@ -296,11 +321,10 @@ int main(int argc, char** argv)
         }
       }
 #else
+      // This is the non-threaded version (for debug mode)...
       t_start = sutil::CSystemClock::getSysTime();
       while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
-        sutil::CSystemClock::tick(db->sim_dt_);
-
         assert(rob_io_ds == gc_ctrl_ds->io_data_);
 
 #ifdef SCL_PRINT_INFO_MESSAGES
@@ -313,12 +337,27 @@ int main(int argc, char** argv)
 
         //1. Simulation Dynamics
         if(scl::CDatabase::getData()->pause_ctrl_dyn_ == false)
-        { flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_); }
+        {
+          flag = tao_dyn_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+
+          /** Slow down sim to real time */
+          sutil::CSystemClock::tick(scl::CDatabase::getData()->sim_dt_);
+          double tcurr = sutil::CSystemClock::getSysTime();
+          double tdiff = sutil::CSystemClock::getSimTime() - tcurr;
+          timespec ts = {0, 0};
+          if(tdiff > 0)
+          {
+            ts.tv_sec = static_cast<int>(tdiff);
+            tdiff -= static_cast<int>(tdiff);
+            ts.tv_nsec = tdiff*1e9;
+            nanosleep(&ts,NULL);
+          }
+        }
 //        rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
         //2. Update the controller
         for(unsigned int i=0; i< gc_ctrl_ds->robot_->dof_;i++)
-        { gc_ctrl_ds->des_q_(i) = 0.5*sin(sutil::CSystemClock::getSysTime());  }
+        { gc_ctrl_ds->des_q_(i) = sine_amplitude*sin(sutil::CSystemClock::getSysTime());  }
 
         //Slower dynamics update.
         if(ctrl_ctr%50 == 0)
