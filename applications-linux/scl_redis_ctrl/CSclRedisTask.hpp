@@ -111,6 +111,7 @@ namespace scl_app
     {
       db_ = S_NULL;
       rob_io_ds_ = S_NULL;
+      rob_ds_ = S_NULL;
       dyn_tao_ = S_NULL;
       dyn_scl_ = S_NULL;
 
