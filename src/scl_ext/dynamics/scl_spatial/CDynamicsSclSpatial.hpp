@@ -92,12 +92,13 @@ namespace scl_ext
     { return false; }
 
     /** Calculate joint position and velocity using Newton numerical integrator */
-    bool integrator(/** Current robot state. q, dq, ddq,
-            sensed generalized forces and perceived external forces.*/
-        scl::SRobotIO &arg_io_data,
+    virtual scl::sBool integrate(
         /** Individual link Jacobians, and composite inertial,
             centrifugal/coriolis gravity estimates. */
-        scl::SGcModel *arg_gc_model,
+        scl::SGcModel &arg_gc_model,
+        /** Current robot state. q, dq, ddq,
+            sensed generalized forces and perceived external forces.*/
+        scl::SRobotIO &arg_io_data,
         /** step dt time */
         const scl::sFloat arg_time_interval);
 

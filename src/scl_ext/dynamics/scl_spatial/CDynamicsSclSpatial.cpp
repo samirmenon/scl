@@ -456,35 +456,36 @@ namespace scl_ext
     return true;
   }
 
-  bool CDynamicsSclSpatial::integrator(/** Current robot state. q, dq, ddq,
-            sensed generalized forces and perceived external forces.*/
-      scl::SRobotIO &arg_io_data,
+  bool CDynamicsSclSpatial::integrate(
       /** Individual link Jacobians, and composite inertial,
-            centrifugal/coriolis gravity estimates. */
-      scl::SGcModel *arg_gc_model,
+          centrifugal/coriolis gravity estimates. */
+      scl::SGcModel &arg_gc_model,
+      /** Current robot state. q, dq, ddq,
+          sensed generalized forces and perceived external forces.*/
+      scl::SRobotIO &arg_io_data,
       /** step dt time */
       const scl::sFloat arg_time_interval)
   {
     // Cache the current state.
-    arg_gc_model->vec_scratch_[0] = arg_io_data.sensors_.q_;
-    arg_gc_model->vec_scratch_[1] = arg_io_data.sensors_.dq_;
-    arg_gc_model->vec_scratch_[2] = arg_io_data.sensors_.ddq_;
+    arg_gc_model.vec_scratch_[0] = arg_io_data.sensors_.q_;
+    arg_gc_model.vec_scratch_[1] = arg_io_data.sensors_.dq_;
+    arg_gc_model.vec_scratch_[2] = arg_io_data.sensors_.ddq_;
 
     // Original integrator: Simple forward euler
     arg_io_data.sensors_.dq_ += arg_io_data.sensors_.ddq_ * arg_time_interval;
     arg_io_data.sensors_.q_ += arg_io_data.sensors_.dq_  * arg_time_interval;
 
     // We use the forward euler integrator results here to compute the forward dynamics.
-    forwardDynamicsCRBA(&arg_io_data, arg_gc_model ,arg_io_data.sensors_.ddq_);
+    forwardDynamicsCRBA(&arg_io_data, &arg_gc_model ,arg_io_data.sensors_.ddq_);
 
-    // Now use Heun's method to correct for hot.
-    arg_io_data.sensors_.dq_ = arg_gc_model->vec_scratch_[1] +
-        arg_time_interval*0.5*(arg_gc_model->vec_scratch_[2]+arg_io_data.sensors_.ddq_);
-    arg_io_data.sensors_.q_ = arg_gc_model->vec_scratch_[0] +
-        arg_time_interval*0.5*(arg_gc_model->vec_scratch_[1] + arg_io_data.sensors_.dq_);
+    // Now use Heun's method to correct for higher order terms.
+    arg_io_data.sensors_.dq_ = arg_gc_model.vec_scratch_[1] +
+        arg_time_interval*0.5*(arg_gc_model.vec_scratch_[2]+arg_io_data.sensors_.ddq_);
+    arg_io_data.sensors_.q_ = arg_gc_model.vec_scratch_[0] +
+        arg_time_interval*0.5*(arg_gc_model.vec_scratch_[1] + arg_io_data.sensors_.dq_);
 
     // Finally recompute the accelerations.
-    forwardDynamicsCRBA(&arg_io_data, arg_gc_model,arg_io_data.sensors_.ddq_);
+    forwardDynamicsCRBA(&arg_io_data, &arg_gc_model,arg_io_data.sensors_.ddq_);
 
     return true;
   }
