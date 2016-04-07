@@ -264,9 +264,11 @@ namespace scl
               if(NULL == tmp_ui_ctrl_pt.chai_pos_des_){ throw(std::runtime_error("Could not add sphere at ui ctrl desired pos"));  }
 
               //Make desired position red/orange
-              chai3d::cMaterial mat_red;
-              mat_red.setRedFireBrick();
-              tmp_ui_ctrl_pt.chai_pos_des_->setMaterial(mat_red, false);
+              chai3d::cMaterial tmp_mat;
+              tmp_mat.setRedFireBrick();
+              tmp_ui_ctrl_pt.chai_pos_des_->setMaterial(tmp_mat, false);
+              tmp_mat.setGreenYellow();
+              tmp_ui_ctrl_pt.chai_pos_->setMaterial(tmp_mat, false);
 #endif
 
               //Add the initialized task to the vector
