@@ -240,11 +240,38 @@ public:
    * Operates on the SRobotIO data structure.
    *
    * Reads from, and updates:
-   *    arg_inputs_.sensors_.q_, dq_, ddq_
+   *    arg_gcm
+   *    arg_inputs.sensors_.q_, dq_, ddq_
    *
    * Reads from:
-   *    arg_inputs_.sensors_.forces_external_
-   *    arg_inputs_.actuators_.force_gc_commanded_
+   *    arg_inputs.sensors_.forces_external_
+   *    arg_inputs.actuators_.force_gc_commanded_
+   */
+  virtual sBool integrate(
+      /** Individual link Jacobians, and composite inertial,
+          centrifugal/coriolis gravity estimates. */
+      scl::SGcModel &arg_gc_model,
+      /** The existing generalized coordinates, velocities and
+       * accelerations + The generalized forces + task (euclidean)
+       * forces and the list of contact points and links. */
+      SRobotIO& arg_inputs,
+      /** The time across which the system should integrate the
+       * dynamics. Could take fixed steps or dynamic ones in between.
+       * Up to the integrator implementation. */
+      const sFloat arg_time_interval)
+  { return false; }
+
+  /** Integrates the robot's state.
+   * Uses the given applied forces, torques, positions and velocities
+   * and its internal dynamic model to compute new positions and velocities.
+   * Operates on the SRobotIO data structure.
+   *
+   * Reads from, and updates:
+   *    arg_inputs.sensors_.q_, dq_, ddq_
+   *
+   * Reads from:
+   *    arg_inputs.sensors_.forces_external_
+   *    arg_inputs.actuators_.force_gc_commanded_
    */
   virtual sBool integrate(
       /** The existing generalized coordinates, velocities and
