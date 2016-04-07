@@ -36,8 +36,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/control/task/CTaskBase.hpp>
 #include <scl/robot/CRobot.hpp>
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
+
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
+#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/CGraphicsChai.hpp>
@@ -158,12 +159,12 @@ namespace scl
 
     scl::CRobot robot_;                  //Generic robot
     scl::SRobotParsed *rob_ds_;          //Generic robot data structure
-    scl::SRobotIO* rob_io_ds_;       //Access the robot's sensors and actuators
+    scl::SRobotIO* rob_io_ds_;           //Access the robot's sensors and actuators
 
-    scl::CDynamicsTao* dyn_tao_;         //Generic tao dynamics
-    scl::CDynamicsScl* dyn_scl_;         //Generic tao dynamics
+    scl_ext::CDynamicsSclSpatial* dyn_scl_sp_;   //Generic scl spatial dynamics
+    scl::CDynamicsScl* dyn_scl_;          //Generic scl dynamics
 
-    scl::sLongLong ctrl_ctr_;            //Controller computation counter
+    scl::sLongLong ctrl_ctr_;             //Controller computation counter
     scl::sFloat t_start_, t_end_;         //Start and end times
 
     /** This is an internal class for organizing the control-task

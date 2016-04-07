@@ -345,7 +345,6 @@ namespace scl
      * NOTE : This may be the same as the dynamics_ object. */
     CDynamicsBase* integrator_;
 
-
     /** A mapped list of controllers that can control this robot. */
     sutil::CMappedList<std::string,CControllerBase*> ctrl_;
 

@@ -42,6 +42,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <sutil/CSystemClock.hpp>
 
+#include <stdio.h>
+
 namespace scl
 {
   // **********************************************************************
@@ -125,10 +127,10 @@ namespace scl
       scl_ext::CDynamicsSclSpatial *dyn_scl_sp = dynamic_cast<scl_ext::CDynamicsSclSpatial *> (integrator_);
       if(NULL != dyn_scl_sp)
       {
-        dyn_scl_sp->integrator(*(data_.io_data_),&(data_.dyn_gc_model_),CDatabase::getData()->sim_dt_);
+        dyn_scl_sp->integrate(data_.dyn_gc_model_, *(data_.io_data_),CDatabase::getData()->sim_dt_);
       }
-      else // Must be Tao dyn
-      { flag = integrator_->integrate(*(data_.io_data_), CDatabase::getData()->sim_dt_);  }
+      else // Must be Tao dyn (no longer supported)
+      { std::cout<<"\n\n CRobot::integrateDynamics() : ERROR!!! Integrator type is not scl_ext.\n\n"<<std::flush; exit(EXIT_FAILURE);  }
 
       //Apply gc damping
       if(data_.parsed_robot_data_->flag_apply_gc_damping_)

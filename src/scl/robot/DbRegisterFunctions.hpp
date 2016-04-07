@@ -47,8 +47,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/parser/CParserBase.hpp>
 
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
-
 namespace scl_registry
 {
   /** Loads everything in a file and registers
