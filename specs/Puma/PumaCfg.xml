@@ -118,7 +118,7 @@
         </task>
     </controller>
 
-    <controller name="opcpida"> <!-- Integral gains -->
+<!--    <controller name="opcpida"> 
         <type>task</type>
         <must_use_robot>PumaBot</must_use_robot>
         <task name="handpida">
@@ -144,5 +144,5 @@
             <force_max>100</force_max>
             <force_min>-100</force_min>
         </task>
-    </controller>
+    </controller>-->
 </scl>
