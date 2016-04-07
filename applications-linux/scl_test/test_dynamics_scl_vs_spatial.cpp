@@ -25,6 +25,7 @@
 #include <scl/util/DatabaseUtils.hpp>
 
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
+#include <scl/dynamics/tao/CDynamicsTao.hpp>
 
 #include <scl/dynamics/analytic/CDynamicsAnalyticRPP.hpp>
 
