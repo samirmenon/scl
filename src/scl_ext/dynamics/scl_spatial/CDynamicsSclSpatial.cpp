@@ -490,12 +490,17 @@ namespace scl_ext
     return true;
   }
 
-  bool CDynamicsSclSpatial::calculateKineticEnergy(const scl::SRobotIO *arg_io_data, scl::SGcModel *arg_gc_model,
+  bool CDynamicsSclSpatial::computeEnergyKinetic(
+      /** Individual link Jacobians, and composite inertial,
+                centrifugal/coriolis gravity estimates. */
+      scl::SGcModel &arg_gc_model,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q,
+      /** The current generalized velocities. */
+      const Eigen::VectorXd& arg_dq,
       scl::sFloat &ret_kinetic_energy)
   {
 #ifdef DEBUG
-    assert(arg_gc_model!=NULL);
-    assert(arg_io_data!=NULL);
     assert(has_been_init_);
 #endif
 
@@ -505,14 +510,14 @@ namespace scl_ext
     ret_kinetic_energy = 0.0;
 
     //calculate spatial inertia and transformation matrix
-    calculateTransformationAndInertia(arg_gc_model);
+    calculateTransformationAndInertia(&arg_gc_model);
 
     //calculate tree processing order
-    if(arg_gc_model->processing_order_.size() == 0)
+    if(arg_gc_model.processing_order_.size() == 0)
     {
       std::vector<std::string>processing_order;
-      calculateOrderOfProcessing(arg_gc_model , processing_order);
-      arg_gc_model->processing_order_ = processing_order;
+      calculateOrderOfProcessing(&arg_gc_model , processing_order);
+      arg_gc_model.processing_order_ = processing_order;
     }
 
     scl::sInt body , link_id;
@@ -520,11 +525,11 @@ namespace scl_ext
     std::string link_name;
 
     // Calculate joint velocity and kinetic energy
-    for(body = 0 ; body < static_cast<int>(arg_gc_model->processing_order_.size()) ; ++body )
+    for(body = 0 ; body < static_cast<int>(arg_gc_model.processing_order_.size()) ; ++body )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model.rbdyn_tree_.at(arg_gc_model.processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order_[body];
+      link_name = arg_gc_model.processing_order_[body];
 
       link->sp_S_joint_ = Eigen::MatrixXd::Zero(6,1);
 
@@ -532,10 +537,10 @@ namespace scl_ext
 
       //calculate joint transformation and motion subspace.
       calculateTransformationAndSubspace(transformation, link->sp_S_joint_ , link->link_ds_->joint_type_ ,
-          arg_io_data->sensors_.q_.array()[link_id]);
+          arg_q.array()[link_id]);
 
       //calculate link velocity
-      link->spatial_velocity_= link->sp_S_joint_*arg_io_data->sensors_.dq_[link_id];
+      link->spatial_velocity_= link->sp_S_joint_*arg_dq[link_id];
 
       //calculate transformation from one link frame to another consecutive link frame
       transformation = transformation*link->sp_X_within_link_;
@@ -554,40 +559,42 @@ namespace scl_ext
     sutil::CMappedTree<std::string, scl::SRigidBodyDyn>::const_iterator it,ite;
 
     //initializing composite  inertia with spatial inertia
-    for(it = arg_gc_model->rbdyn_tree_.begin(),ite = arg_gc_model->rbdyn_tree_.end(); it!=ite; ++it)
+    for(it = arg_gc_model.rbdyn_tree_.begin(),ite = arg_gc_model.rbdyn_tree_.end(); it!=ite; ++it)
     {
       if(it->link_ds_->is_root_){ continue; }
       int idx = it->link_ds_->link_id_;
-      ret_kinetic_energy += 0.5* arg_io_data->sensors_.dq_(idx) * arg_io_data->sensors_.dq_(idx) *
+      ret_kinetic_energy += 0.5* arg_dq(idx) * arg_dq(idx) *
           it->link_ds_->inertia_gc_;
     }
 
     return true;
   }
 
-  bool CDynamicsSclSpatial::calculatePotentialEnergy( const scl::SRobotIO *arg_io_data,
-      scl::SGcModel *arg_gc_model,
+  bool CDynamicsSclSpatial::computeEnergyPotential(
+      /** Individual link Jacobians, and composite inertial,
+                centrifugal/coriolis gravity estimates. */
+      scl::SGcModel &arg_gc_model,
+      /** The current generalized coordinates. */
+      const Eigen::VectorXd& arg_q,
       scl::sFloat &ret_potential_energy)
   {
 #ifdef DEBUG
-    assert(arg_gc_model!=NULL);
-    assert(arg_io_data!=NULL);
     assert(has_been_init_);
 #endif
 
     if(false == has_been_init_){return false;}
 
     //calculate spatial inertia and transformation matrix
-    calculateTransformationAndInertia(arg_gc_model);
+    calculateTransformationAndInertia(&arg_gc_model);
 
     //calculate tree processing order
-    if(arg_gc_model->processing_order_.size() == 0)
+    if(arg_gc_model.processing_order_.size() == 0)
     {
       std::vector<std::string>processing_order;
-      calculateOrderOfProcessing(arg_gc_model , processing_order);
-      arg_gc_model->processing_order_ = processing_order;
+      calculateOrderOfProcessing(&arg_gc_model, processing_order);
+      arg_gc_model.processing_order_ = processing_order;
     }
-    scl::sInt body , link_id , total_link = arg_gc_model->processing_order_.size();
+    scl::sInt body , link_id , total_link = arg_gc_model.processing_order_.size();
 
     std::vector<Eigen::MatrixXd> Xup(total_link) ;
     Eigen::MatrixXd  XJ(6,6) ;
@@ -597,9 +604,9 @@ namespace scl_ext
     //First iteration : Calculate transformation matrix from parent's frame to body frame
     for(body = 0 ; body < static_cast<int>(total_link) ; ++body )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model.rbdyn_tree_.at(arg_gc_model.processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order_[body];
+      link_name = arg_gc_model.processing_order_[body];
 
       if(-1 == link_id) { continue; } //Do nothing for the root node.
 
@@ -607,7 +614,7 @@ namespace scl_ext
 
       //calculate joint transformation and motion subspace.
       calculateTransformationAndSubspace(XJ, link->sp_S_joint_ , link->link_ds_->joint_type_ ,
-          arg_io_data->sensors_.q_.array()[link_id]);
+          arg_q.array()[link_id]);
 
       //calculate transformation from one link frame to another consecutive link frame
       Xup[link_id] = XJ * link->sp_X_within_link_;
@@ -619,9 +626,9 @@ namespace scl_ext
     Eigen::MatrixXd total_inertia = Eigen::MatrixXd::Zero(6,6);
     for(body = static_cast<int>(total_link) - 1 ; body >= 0 ; --body )
     {
-      scl::SRigidBodyDyn* link = arg_gc_model->rbdyn_tree_.at(arg_gc_model->processing_order_[body]);
+      scl::SRigidBodyDyn* link = arg_gc_model.rbdyn_tree_.at(arg_gc_model.processing_order_[body]);
       link_id = link->link_ds_->link_id_;
-      link_name = arg_gc_model->processing_order_[body];
+      link_name = arg_gc_model.processing_order_[body];
 
       if( -1  != link->parent_addr_->link_ds_->link_id_)
       {

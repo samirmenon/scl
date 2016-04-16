@@ -124,22 +124,24 @@ namespace scl_ext
     { return false; }
 
     /** Gets the robot's kinetic energy using spatial algorithm*/
-    bool calculateKineticEnergy(/** Current robot state. q, dq, ddq,
-            sensed generalized forces and perceived external forces.*/
-        const scl::SRobotIO *arg_io_data,
+    bool computeEnergyKinetic(
         /** Individual link Jacobians, and composite inertial,
     		          centrifugal/coriolis gravity estimates. */
-        scl::SGcModel *arg_gc_model,
+        scl::SGcModel &arg_gc_model,
+        /** The current generalized coordinates. */
+        const Eigen::VectorXd& arg_q,
+        /** The current generalized velocities. */
+        const Eigen::VectorXd& arg_dq,
         /** the returned kinetic energy */
         scl::sFloat &ret_kinetic_energy);
 
     /** Gets the robot's potential energy using spatial algorithm*/
-    bool calculatePotentialEnergy(/** Current robot state. q, dq, ddq,
-            sensed generalized forces and perceived external forces.*/
-        const scl::SRobotIO *arg_io_data,
+    bool computeEnergyPotential(
         /** Individual link Jacobians, and composite inertial,
-    		          centrifugal/coriolis gravity estimates. */
-        scl::SGcModel *arg_gc_model,
+                  centrifugal/coriolis gravity estimates. */
+        scl::SGcModel &arg_gc_model,
+        /** The current generalized coordinates. */
+        const Eigen::VectorXd& arg_q,
         /** the returned potential energy */
         scl::sFloat &ret_potential_energy);
 
