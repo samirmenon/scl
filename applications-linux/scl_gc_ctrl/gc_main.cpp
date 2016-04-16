@@ -52,7 +52,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/util/DatabaseUtils.hpp>
 #include <sutil/CSystemClock.hpp>
 
-#include <scl/dynamics/tao/tao/dynamics/taoDNode.h>
+#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 
 #include <omp.h>
 #include <GL/freeglut.h>
@@ -64,7 +64,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  * application.
  *
  * A simulation requires running 3 things:
- * 1. A dynamics/physics engine                  :  Tao
+ * 1. A dynamics/physics engine                  :  SCL Spatial
  * 2. A controller                               :  Scl
  * 3. A graphic rendering+interaction interface  :  Chai3d + FreeGlut
  */
@@ -157,36 +157,13 @@ int main(int argc, char** argv)
 #endif
 
       /******************************TaoDynamics************************************/
-      scl::CDynamicsTao dyn_tao_int;
-      flag = dyn_tao_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
+      scl_ext::CDynamicsSclSpatial dyn_scl_sp_int;
+      flag = dyn_scl_sp_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
-#ifdef DEBUG
-      std::cout<<"\nTesting Tao And Robot Ids "<<robot_name;
-
-      const sutil::CMappedTree<std::string, scl::SRigidBody> &br =
-          scl::CDatabase::getData()->s_parser_.robots_.at(robot_name)->rb_tree_;
-      sutil::CMappedTree<std::string, scl::SRigidBody>::const_iterator it,ite;
-      for(it = br.begin(), ite = br.end();
-          it!=ite; ++it)
-      {
-        taoDNode * tmp = dyn_tao_int.getTaoIdForLink(it->name_);
-        if(S_NULL == tmp)
-        {
-          std::stringstream ss;
-          ss<<"No tao node found for (or id lookup not working for) link name : "<<it->name_
-              <<" Id : "<<it->link_id_;
-          std::string s; s = ss.str();
-          std::cout<<"\n*******WARNING : "<<s;
-        }
-        else
-        {
-          std::cout<<"\n Link "<<it->link_id_<<" : "<<it->name_<<"\tTao : "<<tmp->getID()<<" : "<<tmp->name_;
-        }
-      }
-#endif
-
-
+      scl::SGcModel dyn_scl_gcm;
+      flag = dyn_scl_gcm.init(*rob_ds);
+      if(false == flag) { throw(std::runtime_error("Could not initialize gc model for the physics simulator"));  }
 
       /******************************Shared I/O Data Structure************************************/
       scl::SRobotIO* rob_io_ds;
@@ -234,8 +211,8 @@ int main(int argc, char** argv)
       std::cout<<"\nStarting simulation. Timestep : "<<db->sim_dt_<<std::flush;
 
       bool flag_status_pida = false;
-
       double sine_amplitude = 0.2;
+
 #ifndef NOPARALLEL
       // This is the threaded version (for release mode)...
       omp_set_num_threads(2);
@@ -251,7 +228,9 @@ int main(int argc, char** argv)
             //1. Simulation Dynamics
             if(scl::CDatabase::getData()->pause_ctrl_dyn_ == false)
             {
-              flag = dyn_tao_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+              flag = dyn_scl_sp_int.integrate(dyn_scl_gcm,(*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+              if(rob_ds->flag_apply_gc_damping_)
+              { rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); }//1% Velocity damping.
 
               /** Slow down sim to real time */
               sutil::CSystemClock::tick(scl::CDatabase::getData()->sim_dt_);
@@ -266,14 +245,13 @@ int main(int argc, char** argv)
                 nanosleep(&ts,NULL);
               }
             }
-            //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
             //2. Update the controller
             for(unsigned int i=0; i< gc_ctrl_ds->robot_->dof_;i++)
             { gc_ctrl_ds->des_q_(i) = sine_amplitude*sin(sutil::CSystemClock::getSimTime());  }
 
             //Slower dynamics update.
-            if(ctrl_ctr%5 == 0)
+            if(ctrl_ctr%3 == 0)
             {
               robot_gc_ctrl.computeKinematics();
               robot_gc_ctrl.computeDynamics();
@@ -339,7 +317,9 @@ int main(int argc, char** argv)
         //1. Simulation Dynamics
         if(scl::CDatabase::getData()->pause_ctrl_dyn_ == false)
         {
-          flag = dyn_tao_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+          flag = dyn_scl_sp_int.integrate(dyn_scl_gcm,(*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+          if(rob_ds->flag_apply_gc_damping_)
+          { rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); }//1% Velocity damping.
 
           /** Slow down sim to real time */
           sutil::CSystemClock::tick(scl::CDatabase::getData()->sim_dt_);
@@ -354,19 +334,33 @@ int main(int argc, char** argv)
             nanosleep(&ts,NULL);
           }
         }
-//        rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
         //2. Update the controller
         for(unsigned int i=0; i< gc_ctrl_ds->robot_->dof_;i++)
         { gc_ctrl_ds->des_q_(i) = sine_amplitude*sin(sutil::CSystemClock::getSysTime());  }
 
-        //Slower dynamics update.
+        //(Much) Slower dynamics update.
         if(ctrl_ctr%50 == 0)
         {
           robot_gc_ctrl.computeKinematics();
           robot_gc_ctrl.computeDynamics();
         }
-        robot_gc_ctrl.computeControlForces();
+
+        // The actual control loop and some code to print transitions between PDA and PIDA control
+        if(db->s_gui_.ui_flag_[1])
+        {
+          if(false == flag_status_pida)
+          { std::cout<<"\n scl_gc_ctrl: Moving to PIDA control."; std::cout.flush(); }
+          flag_status_pida = true;
+          robot_gc_ctrl.computeControlForcesPIDA(sutil::CSystemClock::getSysTime());
+        }
+        else
+        {
+          if(true == flag_status_pida)
+          { std::cout<<"\n scl_gc_ctrl: Moving to PDA control."; std::cout.flush(); }
+          flag_status_pida = false;
+          robot_gc_ctrl.computeControlForces();
+        }
 
         //Set the command torques for the simulator to the controller's computed torques
         rob_io_ds->actuators_.force_gc_commanded_ = gc_ctrl_ds->des_force_gc_;
