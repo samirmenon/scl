@@ -119,8 +119,8 @@ int main(int argc, char** argv)
   long iter = 0, n_iters=50000; double dt=0.004;
   double ke,pe;
   
-  dyn_sp_scl.calculateKineticEnergy(&rio, &rgcm,ke);
-  dyn_sp_scl.calculatePotentialEnergy(&rio,&rgcm,pe);
+  dyn_sp_scl.computeEnergyKinetic(rgcm, rio.sensors_.q_, rio.sensors_.dq_, ke);
+  dyn_sp_scl.computeEnergyPotential(rgcm, rio.sensors_.q_, pe);
   std::cout<<"\n Time ("<<iter*dt<<" of "<<n_iters*dt<<"s total). SpEnergy : "<<std::setw(10)<<pe<<" + "
   <<std::setw(10)<<ke<<" = "<<std::setw(10)<<pe+ke;
 
@@ -193,8 +193,8 @@ int main(int argc, char** argv)
         // Compute energy. Energy should be conserved.
         if(iter % 300 == 0)
         {
-          dyn_sp_scl.calculateKineticEnergy(&rio, &rgcm,ke);
-          dyn_sp_scl.calculatePotentialEnergy(&rio,&rgcm,pe);
+          dyn_sp_scl.computeEnergyKinetic(rgcm, rio.sensors_.q_, rio.sensors_.dq_, ke);
+          dyn_sp_scl.computeEnergyPotential(rgcm, rio.sensors_.q_, pe);
           std::cout<<"\n Time ("<<iter*dt<<" of "<<n_iters*dt<<"s total). SpEnergy : "<<std::setw(10)<<pe<<" + "
           <<std::setw(10)<<ke<<" = "<<std::setw(10)<<pe+ke;
 
@@ -210,8 +210,8 @@ int main(int argc, char** argv)
   }
 
   std::cout<<"\n\nEnd of simulation. ";
-  dyn_sp_scl.calculateKineticEnergy(&rio, &rgcm,ke);
-  dyn_sp_scl.calculatePotentialEnergy(&rio,&rgcm,pe);
+  dyn_sp_scl.computeEnergyKinetic(rgcm, rio.sensors_.q_, rio.sensors_.dq_, ke);
+  dyn_sp_scl.computeEnergyPotential(rgcm, rio.sensors_.q_, pe);
   std::cout<<"\n Time ("<<iter*dt<<" of "<<n_iters*dt<<"s total). SpEnergy : "<<std::setw(10)<<pe<<" + "
   <<std::setw(10)<<ke<<" = "<<std::setw(10)<<pe+ke;
   std::cout<<"\nTotal iterations      : "<<iter;
