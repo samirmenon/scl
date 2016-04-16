@@ -101,6 +101,12 @@ int main(int argc, char** argv)
   std::cout<<"\nIntegrating the rrrbot's physics. Press (x) to exit.";
   long iter = 0, n_iters=50000; double dt=0.001;
 
+  // Set q to a new random number every time.
+  // NOTE TODO : Eigen's random number generator needs to be seeded with time or something...
+  std::cout<<"\nSetting the generalized coordinates to a random values (to make the sim interesting)";
+  rio.sensors_.q_ = Eigen::VectorXd::Random(rio.dof_);
+  rio.sensors_.dq_ = Eigen::VectorXd::Random(rio.dof_);
+
   double ke,pe;
 
   omp_set_num_threads(2);
@@ -111,7 +117,7 @@ int main(int argc, char** argv)
     if(thread_id==1) //Simulate physics and update the rio data structure..
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
-        dyn_sp_scl.integrator(rio,&rgcm,dt); iter++;
+        dyn_sp_scl.integrate(rgcm,rio,dt); iter++;
 
         /** Slow down sim to real time */
         sutil::CSystemClock::tick(dt);
