@@ -137,8 +137,8 @@ int main(int argc, char** argv)
         // Compute energy. Energy should be conserved.
         if(iter % 100 == 0)
         {
-          dyn_sp_scl.calculateKineticEnergy(&rio, &rgcm,ke);
-          dyn_sp_scl.calculatePotentialEnergy(&rio,&rgcm,pe);
+          dyn_sp_scl.computeEnergyKinetic(&rio, &rgcm,ke);
+          dyn_sp_scl.computeEnergyPotential(&rio,&rgcm,pe);
           std::cout<<"\n Time ("<<iter*dt<<" of "<<n_iters*dt<<"s total). SpEnergy : "<<std::setw(10)<<pe<<" + "
           <<std::setw(10)<<ke<<" = "<<std::setw(10)<<pe+ke;
         }
