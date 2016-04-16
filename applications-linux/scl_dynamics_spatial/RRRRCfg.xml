@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<!DOCTYPE SCL SYSTEM "scl.dtd">
+
+<!-- Units are in Std International System -->
+<scl>
+    <!-- Contains all the links in a flat file (ie no link nesting). The robot is constructed by
+         the parser by finding each link's parent and attaching the link as a child. -->
+    <robot name="rrrrbot"> 
+        <gravity>0.000   0.000  -9.81</gravity> 
+        <spec>RRRR</spec>
+        <file>./RRRRCfg.xml</file>
+        <root_link>
+            <link_name>root</link_name>
+            <position_in_parent>0 0 0.2</position_in_parent> 
+            <orientation_in_parent>0 0 0 1</orientation_in_parent>
+        </root_link>
+    </robot> 
+
+    <graphics name="rrrrgraphics">
+      <camera>
+          <pos>1.5   0.3   -0.5</pos>
+          <lookat>0.0   0.0   -0.1</lookat>
+          <up>0   0   1</up>
+          <clip>0 10</clip>
+          <background>0 0 0</background>
+      </camera>
+      <light>
+          <pos>2.0   0.0   0.0</pos>
+          <lookat>0.0   0.0   0.5</lookat>
+      </light>
+      <light>
+          <pos>-2.0   0.0   0.0</pos>
+          <lookat>0.0   0.0   0.0</lookat>
+      </light>
+      <background_color>0.0 0.0 0.0</background_color>
+    </graphics>
+    
+    <!-- To support multiple robots of the same type, we separate the robot specification -->
+    <robot spec_name="RRRR"> 
+	      <link>
+		      <link_name>link_0</link_name> <!--unique link name -->
+		      <position_in_parent>0 0 0</position_in_parent> <!--xyz in parent frame -->
+		      <orientation_in_parent>0 0 0 1</orientation_in_parent> <!-- xyz w quaternion in parent frame -->
+		      <mass>1.0</mass> <!-- Of the link, in kgs. -->
+		      <inertia>0.1 0.1 0.01</inertia> <!-- Ixx Iyy Izz at the center of mass -->
+		      <inertia_gc>0.5</inertia_gc> <!-- The motor inertia -->
+		      <center_of_mass>0 0 -0.1</center_of_mass> <!-- xyz -->
+		      <joint_name>q0-rot-y</joint_name> <!-- unique joint name. -->
+		      <parent_link_name>root</parent_link_name> <!-- The parent link. Ground is fixed. -->
+		      <joint_type>ry</joint_type> <!-- The type of joint. (p)rismatic/(r)evolute + x/y/z (axis) -->
+		      <joint_limits>-3.141590 3.141590</joint_limits> <!-- Minimum and maximum joint coordinate values -->
+		      <default_joint_position>1.0</default_joint_position> <!-- Initial configuration -->
+          <graphics>
+            <sphere>
+              <radius>0.05</radius>
+              <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+              <color>1.0 0.0 0.0</color>
+            </sphere>
+            <cylinder>
+              <position_in_parent>0.000000 0.000000 -0.200000</position_in_parent>
+              <color>0.3 0.3 0.35</color>
+              <baseR_topR_height>0.03 0.03 0.2</baseR_topR_height>
+            </cylinder>
+          </graphics>
+	      </link>
+	      <link>
+		      <link_name>link_1</link_name>
+		      <position_in_parent>0.0 0.0 -0.2</position_in_parent>
+		      <orientation_in_parent>0 0 0 1</orientation_in_parent>
+		      <mass>1.0</mass>
+		      <inertia>0.1 0.1 0.01</inertia>
+		      <inertia_gc>0.5</inertia_gc>
+		      <center_of_mass>0.0 0.0 -0.05</center_of_mass>
+		      <joint_name>q1-rot-y</joint_name>
+		      <parent_link_name>link_0</parent_link_name>
+		      <joint_type>ry</joint_type>
+		      <joint_limits>-3.141590 3.141590</joint_limits>
+		      <default_joint_position>0.0</default_joint_position>
+          <graphics>
+            <sphere>
+              <radius>0.05</radius>
+              <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+              <color>1.0 0.0 0.0</color>
+            </sphere>
+            <cylinder>
+              <position_in_parent>0.000000 0.000000 -0.100000</position_in_parent>
+              <color>0.3 0.3 0.35</color>
+              <baseR_topR_height>0.03 0.03 0.1</baseR_topR_height>
+            </cylinder>
+          </graphics>
+	      </link>
+	      <link>
+		      <link_name>link_2</link_name>
+		      <position_in_parent>0.0 0.0 -0.1</position_in_parent>
+		      <orientation_in_parent>0 0 0 1</orientation_in_parent>
+		      <mass>1.0</mass>
+		      <inertia>0.1 0.1 0.01</inertia>
+		      <inertia_gc>0.5</inertia_gc>
+		      <center_of_mass>0.0 0.0 -0.1</center_of_mass>
+		      <joint_name>q2-rot-x</joint_name>
+		      <parent_link_name>link_1</parent_link_name>
+		      <joint_type>rx</joint_type>
+		      <joint_limits>-3.141590 3.141590</joint_limits>
+		      <default_joint_position>-1.57</default_joint_position>
+          <graphics>
+            <sphere>
+              <radius>0.05</radius>
+              <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+              <color>1.0 0.0 0.0</color>
+            </sphere>
+            <cylinder>
+              <position_in_parent>0.000000 0.000000 -0.200000</position_in_parent>
+              <color>0.3 0.3 0.35</color>
+              <baseR_topR_height>0.03 0.03 0.2</baseR_topR_height>
+            </cylinder>
+          </graphics>
+	      </link>
+	      <link>
+		      <link_name>link_3</link_name>
+		      <position_in_parent>0.0 0.0 -0.2</position_in_parent>
+		      <orientation_in_parent>0 0 0 1</orientation_in_parent>
+		      <mass>1.0</mass>
+		      <inertia>0.1 0.1 0.01</inertia>
+		      <inertia_gc>0.5</inertia_gc>
+		      <center_of_mass>0.0 0.0 -0.2</center_of_mass>
+		      <joint_name>q3-rot-y</joint_name>
+		      <parent_link_name>link_2</parent_link_name>
+		      <joint_type>ry</joint_type>
+		      <joint_limits>-3.141590 3.141590</joint_limits>
+		      <default_joint_position>0.0</default_joint_position>
+          <graphics>
+            <sphere>
+              <radius>0.05</radius>
+              <position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+              <color>1.0 0.0 0.0</color>
+            </sphere>
+            <cylinder>
+              <position_in_parent>0.000000 0.000000 -0.40000</position_in_parent>
+              <color>0.3 0.3 0.35</color>
+              <baseR_topR_height>0.03 0.03 0.4</baseR_topR_height>
+            </cylinder>
+            <sphere>
+              <radius>0.05</radius>
+              <position_in_parent>0.000000 0.000000 -0.400000</position_in_parent>
+              <color>0.0 0.0 1.0</color>
+            </sphere>
+          </graphics>
+	      </link>
+    </robot>
+</scl>
