@@ -1,0 +1,248 @@
+<?xml version="1.0" ?>
+<!DOCTYPE LOTUS SYSTEM "scl.dtd">
+
+<scl>
+  <robot spec_name="RParRR">
+  <!-- Contains all the links in a flat file (ie no link nesting). The robot is constructed by
+       the parser by finding each link's parent and attaching the link as a child. -->
+       
+  <!-- ********************************************************************************
+                     Link 0 : The base rotating link (with motors on it)
+       ******************************************************************************** -->
+	<link>
+		<link_name>link0</link_name> <!--unique link name -->
+		<!-- NOTE TODO : Get correct height of link0 from base, and offset along y-axis -->
+		<position_in_parent>0.0 0.23 1.25</position_in_parent> <!--xyz in parent frame -->
+		<orientation_in_parent>0 0 0 1</orientation_in_parent> <!-- xyz w quaternion in parent frame -->
+		<!-- NOTE TODO : Fix me! -->
+		<mass>4.0</mass> <!-- Of the link, in kgs. -->
+		<!-- NOTE TODO : Fix me! -->
+		<inertia>0.2 0.2 0.2</inertia> <!-- Ixx Iyy Izz at the center of mass -->
+		<!-- NOTE TODO : This looks fishy. Think about it. 4 Mega Joules for a 1rad/s joint velocity? -->
+		<inertia_gc>1</inertia_gc> <!-- 3951180 = 5420 kgm² * 27² E.g., Motor/actuator inertia at the joint -->
+		<!-- NOTE TODO : Correct this.. -->
+		<center_of_mass>0.0 -0.05 0.0</center_of_mass> <!-- xyz -->
+		<joint_name>ground_to_link0</joint_name> <!-- unique joint name. -->
+		<parent_link_name>ground</parent_link_name> <!-- The parent link. Ground is fixed. -->
+		<joint_type>ry</joint_type> <!-- The type of joint. (p)rismatic/(r)evolute + x/y/z (axis) -->
+		<joint_limits>-0.75 0.75</joint_limits> <!-- (+-45deg) Minimum and maximum joint coordinate values -->
+		<force_gc_limits>-12.609 12.609</force_gc_limits> <!--0.0934 Nm/A * 5A (ss) * 27 gear ratio -->
+		<!-- NOTE TODO : We need to measure this -->
+		<stiction_gc_force>-0.1 0.1</stiction_gc_force> <!-- Static friction -->
+		<stiction_gc_velocity_limits>-0.01 0.01</stiction_gc_velocity_limits> <!-- Velocity needs to be lower than this to apply static friction. Else we apply dynamic friction -->
+		<friction_gc_kv>1</friction_gc_kv> <!-- This is a velocity dissipative gain. Aka. Dynamic friction. F = kv * velocity. So for a 1 rad/s vel, it will apply a friction force of kv Nm. --> 
+		<default_joint_position>0.000000</default_joint_position> <!-- Initial configuration -->
+		<graphics> <!-- Can contain more than one obj file -->
+   		<!-- obj file format is best. 3ds is possible -->
+   		<!-- 0 = no collision, 1 = convex hull collision, 2 = polygon collision. -->
+			<!-- NOTE TODO : Get the graphics file. 
+			<obj_file>
+				<name>RParRR/graphics/shoulder_bl.obj</name> 
+				<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+				<orientation_in_parent>0.000000 0.000000 0.000000 1.000000</orientation_in_parent>
+				<collision_type>0</collision_type>
+			</obj_file>-->
+      <cylinder>
+        <position_in_parent>0.0 -0.07 0.0</position_in_parent>
+        <orientation_in_parent>0.7071067811865476 0.000000 0.000000 0.7071067811865476</orientation_in_parent>
+        <color>0.75 0.75 0.75</color>
+        <baseR_topR_height>0.135 0.135 0.02</baseR_topR_height>
+        <collision_type>0</collision_type>
+      </cylinder>
+		</graphics>
+	</link>
+
+  <!-- ********************************************************************************
+                           Link 1 : The side-facing capstan link
+       ******************************************************************************** -->
+  <link>
+		<link_name>link1</link_name>
+		<!-- Yes, we made a great coordinate system choice for link 0 :-) -->
+		<position_in_parent>0.0 0.0 0.0</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<!-- NOTE TODO : Fix me! -->
+		<mass>0.3</mass>
+		<!-- NOTE TODO : Fix me! -->
+		<inertia>0.1 0.1 0.1</inertia>
+		<inertia_gc>1</inertia_gc> <!-- 548000 = 1370 kgm² * 20² -->
+		<!-- NOTE TODO : Fix me! -->
+		<center_of_mass>0.0 0.1 -0.02</center_of_mass>
+		<joint_name>link_0_to_link_2</joint_name>
+		<parent_link_name>link0</parent_link_name>
+		<joint_type>rz</joint_type>
+		<!-- NOTE TODO : Fix me! -->
+		<joint_limits>-0.5 0.5</joint_limits> 
+		<force_gc_limits>-4.5828 4.5828</force_gc_limits><!-- .06030 Nm/A * 3.8A * 20 gear -->
+		<!-- NOTE TODO : Measure me! -->
+		<stiction_gc_force>-0.01 0.01</stiction_gc_force>
+		<stiction_gc_velocity_limits>-0.01 0.01</stiction_gc_velocity_limits>
+		<!-- NOTE TODO : Measure me! -->
+		<friction_gc_kv>0.1</friction_gc_kv>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+  		<!-- NOTE TODO : Get the graphics file. 
+			<obj_file>
+				<name>RParRR/graphics/shaft2_bl.obj</name>
+				<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+				<orientation_in_parent>-0.707106 0 0 0.707106</orientation_in_parent>
+				<collision_type>0</collision_type>
+			</obj_file> -->
+      <cylinder>
+        <position_in_parent>0.0 0.0 0.015</position_in_parent>
+        <orientation_in_parent>0 0 0 1</orientation_in_parent>
+        <color>0.75 0.75 0.75</color>
+        <baseR_topR_height>0.1 0.1 0.022</baseR_topR_height>
+        <collision_type>0</collision_type>
+      </cylinder>
+      <cylinder>
+        <position_in_parent>0.0 0.05 0.0</position_in_parent>
+        <orientation_in_parent>-0.7071067811865476 0.000000 0.000000 0.7071067811865476</orientation_in_parent>
+        <color>0.35 0.35 0.35</color>
+        <baseR_topR_height>0.0125 0.0125 0.4</baseR_topR_height>
+        <collision_type>0</collision_type>
+      </cylinder>
+		</graphics>
+	</link>
+	
+	
+  <!-- ********************************************************************************
+                           Link 2 : The front-facing capstan link
+       ******************************************************************************** -->
+  <link>
+		<link_name>link2</link_name>
+		<!-- Yes, we made a great coordinate system choice for link 0 :-) -->
+		<position_in_parent>0.0 0.0 0.0</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<!-- NOTE TODO : Fix me! -->
+		<mass>0.3</mass>
+		<!-- NOTE TODO : Fix me! -->
+		<inertia>0.1 0.1 0.1</inertia>
+		<inertia_gc>1</inertia_gc> <!-- 548000 = 1370 kgm² * 20² -->
+		<!-- NOTE TODO : Fix me! -->
+		<center_of_mass>0.1 0.0 0.02</center_of_mass>
+		<joint_name>link_0_to_link_1</joint_name>
+		<parent_link_name>link0</parent_link_name>
+		<joint_type>rz</joint_type>
+		<!-- NOTE TODO : Fix me! -->
+		<joint_limits>-0.5 0.5</joint_limits> 
+		<force_gc_limits>-4.5828 4.5828</force_gc_limits><!-- .06030 Nm/A * 3.8A * 20 gear -->
+		<!-- NOTE TODO : Measure me! -->
+		<stiction_gc_force>-0.01 0.01</stiction_gc_force>
+		<stiction_gc_velocity_limits>-0.01 0.01</stiction_gc_velocity_limits>
+		<!-- NOTE TODO : Measure me! -->
+		<friction_gc_kv>0.1</friction_gc_kv>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+  		<!-- NOTE TODO : Get the graphics file. 
+			<obj_file>
+				<name>RParRR/graphics/shaft2_bl.obj</name>
+				<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+				<orientation_in_parent>-0.707106 0 0 0.707106</orientation_in_parent>
+				<collision_type>0</collision_type>
+			</obj_file> -->
+      <cylinder>
+        <position_in_parent>0.0 0.0 -0.037</position_in_parent>
+        <orientation_in_parent>0 0 0 1</orientation_in_parent>
+        <color>0.75 0.75 0.75</color>
+        <baseR_topR_height>0.1 0.1 0.022</baseR_topR_height>
+        <collision_type>0</collision_type>
+      </cylinder>
+      <cylinder>
+        <position_in_parent>0.05 0.0 0.0</position_in_parent>
+        <orientation_in_parent>0.0 0.7071067811865476 0.0 0.7071067811865476</orientation_in_parent>
+        <color>0.35 0.35 0.35</color>
+        <baseR_topR_height>0.0125 0.0125 0.4</baseR_topR_height>
+        <collision_type>0</collision_type>
+      </cylinder>
+		</graphics>
+	</link>
+	
+	<!-- ********************************************************************************
+                     Link 3 : The side-facing front (crossbar) pgram link
+       ******************************************************************************** -->
+  <link>
+		<link_name>link3</link_name>
+		<position_in_parent>0.45 0.0 0.0</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<!-- NOTE TODO : Fix me! -->
+		<mass>0.15</mass>
+		<!-- NOTE TODO : Fix me! -->
+		<inertia>0.1 0.1 0.1</inertia>
+		<inertia_gc>0</inertia_gc> <!-- 1370 kgm² * 20² -->
+		<!-- NOTE TODO : Fix me! -->
+		<center_of_mass>0.0 0.225 0.0</center_of_mass>
+		<joint_name>link_2_to_link_3</joint_name>
+		<parent_link_name>link2</parent_link_name>
+		<joint_type>rz</joint_type>
+		<!-- NOTE TODO : Fix me! -->
+		<joint_limits>-0.5 0.5</joint_limits> 
+		<force_gc_limits>-0 0</force_gc_limits><!-- .06030 Nm/A * 3.8A * 20 gear -->
+		<!-- NOTE TODO : Measure me! -->
+		<stiction_gc_force>-0.01 0.01</stiction_gc_force>
+		<stiction_gc_velocity_limits>-0.01 0.01</stiction_gc_velocity_limits>
+		<!-- NOTE TODO : Measure me! -->
+		<friction_gc_kv>0.1</friction_gc_kv>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+  		<!-- NOTE TODO : Get the graphics file. 
+			<obj_file>
+				<name>RParRR/graphics/shaft2_bl.obj</name>
+				<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+				<orientation_in_parent>-0.707106 0 0 0.707106</orientation_in_parent>
+				<collision_type>0</collision_type>
+			</obj_file> -->
+      <cylinder>
+        <position_in_parent>0.0 0.05 0.0</position_in_parent>
+        <orientation_in_parent>-0.7071067811865476 0.000000 0.000000 0.7071067811865476</orientation_in_parent>
+        <color>0.35 0.35 0.35</color>
+        <baseR_topR_height>0.0125 0.0125 0.4</baseR_topR_height>
+        <collision_type>0</collision_type>
+      </cylinder>
+		</graphics>
+	</link>
+	
+	<!-- ********************************************************************************
+                     Link 4 : The into-the-mri link
+       ******************************************************************************** -->
+  <link>
+		<link_name>link4</link_name>
+		<position_in_parent>0.0 0.45 0.0</position_in_parent>
+		<orientation_in_parent>0 0 0 1</orientation_in_parent>
+		<!-- NOTE TODO : Fix me! -->
+		<mass>0.15</mass>
+		<!-- NOTE TODO : Fix me! -->
+		<inertia>0.1 0.1 0.1</inertia>
+		<inertia_gc>0</inertia_gc> <!-- 1370 kgm² * 20² -->
+		<!-- NOTE TODO : Fix me! -->
+		<center_of_mass>0.75 0.0 0.0</center_of_mass>
+		<joint_name>link_1_to_link_4</joint_name>
+		<parent_link_name>link1</parent_link_name>
+		<joint_type>rz</joint_type>
+		<!-- NOTE TODO : Fix me! -->
+		<joint_limits>-0.5 0.5</joint_limits> 
+		<force_gc_limits>-0 0</force_gc_limits><!-- .06030 Nm/A * 3.8A * 20 gear -->
+		<!-- NOTE TODO : Measure me! -->
+		<stiction_gc_force>-0.01 0.01</stiction_gc_force>
+		<stiction_gc_velocity_limits>-0.01 0.01</stiction_gc_velocity_limits>
+		<!-- NOTE TODO : Measure me! -->
+		<friction_gc_kv>0.1</friction_gc_kv>
+		<default_joint_position>0.000000</default_joint_position>
+		<graphics>
+  		<!-- NOTE TODO : Get the graphics file. 
+			<obj_file>
+				<name>RParRR/graphics/shaft2_bl.obj</name>
+				<position_in_parent>0.000000 0.000000 0.000000</position_in_parent>
+				<orientation_in_parent>-0.707106 0 0 0.707106</orientation_in_parent>
+				<collision_type>0</collision_type>
+			</obj_file> -->
+      <cylinder>
+        <position_in_parent>0.05 0.0 0.0</position_in_parent>
+        <orientation_in_parent>0.0 0.7071067811865476 0.0 0.7071067811865476</orientation_in_parent>
+        <color>0.35 0.35 0.35</color>
+        <baseR_topR_height>0.0125 0.0125 1.4</baseR_topR_height>
+        <collision_type>0</collision_type>
+      </cylinder>
+		</graphics>
+	</link>
+</robot>
+</scl>
