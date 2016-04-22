@@ -72,6 +72,9 @@ namespace scl
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
     data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 - data_->gc_model_->force_gc_grav_;
 
+    // Now set the forces in the io data structure
+    data_->io_data_->actuators_.force_gc_commanded_ = data_->des_force_gc_;
+
     return true;
   }
 
@@ -96,6 +99,9 @@ namespace scl
 
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
     data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 - data_->gc_model_->force_gc_grav_;
+
+    // Now set the forces in the io data structure
+    data_->io_data_->actuators_.force_gc_commanded_ = data_->des_force_gc_;
 
     return true;
   }
@@ -134,6 +140,9 @@ namespace scl
     // We do not use the centrifugal/coriolis forces. They can cause instabilities.
     data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp3 - data_->gc_model_->force_gc_grav_;
 
+    // Now set the forces in the io data structure
+    data_->io_data_->actuators_.force_gc_commanded_ = data_->des_force_gc_;
+
     return true;
   }
 
@@ -150,6 +159,9 @@ namespace scl
     tmp1 = tmp1.array().max(data_->force_gc_min_.array()); // Remain above the lower bound.
 
     data_->des_force_gc_ = data_->gc_model_->M_gc_ * tmp1 - data_->gc_model_->force_gc_grav_;
+
+    // Now set the forces in the io data structure
+    data_->io_data_->actuators_.force_gc_commanded_ = data_->des_force_gc_;
 
 #ifdef DEBUG
     Eigen::VectorXd tmp2 = data_->gc_model_->M_gc_ * tmp1;
