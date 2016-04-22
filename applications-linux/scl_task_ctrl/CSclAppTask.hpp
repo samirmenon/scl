@@ -40,7 +40,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
+#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
@@ -96,7 +96,7 @@ namespace scl_app
     {
       db_ = S_NULL;
       rob_io_ds_ = S_NULL;
-      dyn_tao_ = S_NULL;
+      dyn_scl_sp_ = S_NULL;
       dyn_scl_ = S_NULL;
 
       ctrl = S_NULL;           //Use a task controller
@@ -149,18 +149,18 @@ namespace scl_app
 
     scl::CRobot robot_;                  //Generic robot
     scl::SRobotParsed *rob_ds_;          //Generic robot ds
-    scl::SRobotIO* rob_io_ds_;       //Access the robot's sensors and actuators
+    scl::SRobotIO* rob_io_ds_;           //Access the robot's sensors and actuators
 
-    scl::CDynamicsTao* dyn_tao_;          //Generic tao dynamics
-    scl::CDynamicsScl* dyn_scl_;          //Generic tao dynamics
-    scl::CGraphicsChai chai_gr_;         //Generic chai graphics
+    scl_ext::CDynamicsSclSpatial* dyn_scl_sp_; //scl spatial dynamics (physics integrator)
+    scl::CDynamicsScl* dyn_scl_;         //scl dynamics (dynamics computations)
+    scl::CGraphicsChai chai_gr_;         //chai graphics
 
     scl::sLongLong ctrl_ctr_;            //Controller computation counter
     scl::sLongLong gr_ctr_;              //Controller computation counter
-    scl::sFloat t_start_, t_end_;         //Start and end times
+    scl::sFloat t_start_, t_end_;        //Start and end times
 
-    std::fstream log_file_;             //Logs vectors of [q, dq, x]
-    std::fstream log_file_J_;           //Logs J
+    std::fstream log_file_;              //Logs vectors of [q, dq, x]
+    std::fstream log_file_J_;            //Logs J
 
     chai3d::cGenericObject* traj_markers_[SCL_TASK_APP_MAX_MARKERS_TO_ADD];
     int traj_markers_added_so_far_;
@@ -216,11 +216,6 @@ namespace scl_app
         if(!scl_util::isStringInVector(robot_name_,robots_parsed_))
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
-        /******************************TaoDynamics************************************/
-        dyn_tao_ = new scl::CDynamicsTao();
-        flag = dyn_tao_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
-        if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
-
         /******************************SclDynamics************************************/
         dyn_scl_ = new scl::CDynamicsScl();
         flag = dyn_scl_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
@@ -235,8 +230,13 @@ namespace scl_app
         if(S_NULL == rob_io_ds_)
         { throw(std::runtime_error("Robot I/O data structure does not exist in the database"));  }
 
+        /******************************Scl Spatial Dynamics************************************/
+        dyn_scl_sp_ = new scl_ext::CDynamicsSclSpatial();
+        flag = dyn_scl_sp_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
+        if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
+
         /**********************Initialize Robot Dynamics and Controller*******************/
-        flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_tao_);//Note: The robot deletes these pointers.
+        flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_scl_sp_);//Note: The robot deletes these pointers.
         if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
 
         ctrl_name_ = argv[3];
