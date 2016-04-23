@@ -101,6 +101,7 @@ int main(int argc, char** argv)
     flag = flag && dyn_scl.init(rds);         //Set up kinematics and dynamics object
     flag = flag && rio.init(rds);             //Set up the I/O data structure
     if(false == flag){ return 1; }            //Error check.
+    std::cout<<"\n Parsed file and initialized static data structures."<<std::endl;
 
     /******************************Set up Controller Specification************************************/
     // Read xml file info into task specifications.
@@ -140,11 +141,15 @@ int main(int argc, char** argv)
     mat.setRedLightSalmon(); rtask_des_gr->setMaterial(mat,true);
     mat.setWhiteIvory(); rtask_gr->setMaterial(mat,true);
 
+    std::cout<<"\n Set up graphics and initialized task marker balls."<<std::endl;
+
     /******************************Set Control Point Initial Position************************************/
     rtask_hand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand")) );
     if(NULL == rtask_hand)  {return 1;}       //Error check
     // Once the controller has been initialized, set the goal position to the task position. (To keep things stable).
     db->s_gui_.ui_point_[0] = rtask_hand->x_;
+
+    std::cout<<"\n Set up initial ui control point positions."<<std::endl;
 
     /******************************Main Loop************************************/
     std::cout<<"\nStarting simulation. Timestep : "<<db->sim_dt_<<std::flush;

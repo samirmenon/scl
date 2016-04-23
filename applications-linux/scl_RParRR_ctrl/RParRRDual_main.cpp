@@ -91,7 +91,7 @@ int main(int argc, char** argv)
     std::vector<scl::STaskBase*> rtasks;              //A set of executable tasks
     std::vector<scl::SNonControlTaskBase*> rtasks_nc; //A set of non-control tasks
     std::vector<scl::sString2> ctrl_params;        //Used to parse extra xml tags
-    scl::STaskOpPos* rtask_hand, *rtask_rhand; //Will need to set hand desired positions etc.
+    scl::STaskOpPos* rtask_lhand, *rtask_rhand; //Will need to set hand desired positions etc.
 
     /******************************File Parsing************************************/
     bool flag = p.readRobotFromFile(fname,"../../specs/",robot_name,rds);
@@ -101,6 +101,7 @@ int main(int argc, char** argv)
     flag = flag && dyn_scl.init(rds);         //Set up kinematics and dynamics object
     flag = flag && rio.init(rds);             //Set up the I/O data structure
     if(false == flag){ return 1; }            //Error check.
+    std::cout<<"\n Parsed file and initialized static data structures."<<std::endl;
 
     /******************************Set up Controller Specification************************************/
     // Read xml file info into task specifications.
@@ -116,11 +117,13 @@ int main(int argc, char** argv)
     rctr.computeDynamics();
     rctr.computeControlForces();
 
-    rtask_hand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand")) );
-    if(NULL == rtask_hand)  {return 1;}       //Error check
+    rtask_lhand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand")) );
+    if(NULL == rtask_lhand)  {return 1;}       //Error check
 
     rtask_rhand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand2")) );
     if(NULL == rtask_rhand)  {return 1;}       //Error check
+
+    std::cout<<"\n Set up controller and initialized task data structures."<<std::endl;
 
     /******************************ChaiGlut Graphics************************************/
     glutInit(&argc, argv); // We will use glut for the window pane (not the graphics).
@@ -148,14 +151,18 @@ int main(int argc, char** argv)
     mat.setRedLightSalmon(); rtask_rhand_des_gr->setMaterial(mat,true);
     mat.setWhiteIvory(); rtask_rhand_gr->setMaterial(mat,true);
 
+    std::cout<<"\n Set up graphics and initialized task marker balls."<<std::endl;
+
     /******************************Set Control Point Initial Position************************************/
-    rtask_hand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand")) );
-    if(NULL == rtask_hand)  {return 1;}       //Error check
+    rtask_lhand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand")) );
+    if(NULL == rtask_lhand)  {return 1;}       //Error check
     rtask_rhand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand2")) );
     if(NULL == rtask_rhand)  {return 1;}       //Error check
     // Once the controller has been initialized, set the goal position to the task position. (To keep things stable).
-    db->s_gui_.ui_point_[0] = rtask_hand->x_;
+    db->s_gui_.ui_point_[0] = rtask_lhand->x_;
     db->s_gui_.ui_point_[1] = rtask_rhand->x_;
+
+    std::cout<<"\n Set up initial ui control point positions."<<std::endl;
 
     /******************************Main Loop************************************/
     std::cout<<"\nStarting simulation. Timestep : "<<db->sim_dt_<<std::flush;
@@ -184,7 +191,7 @@ int main(int argc, char** argv)
            *                           Update the controller
            * ****************************************************************************************** */
           //1. Update the controller
-          rtask_hand->x_goal_ = db->s_gui_.ui_point_[0];
+          rtask_lhand->x_goal_ = db->s_gui_.ui_point_[0];
           rtask_rhand->x_goal_ = db->s_gui_.ui_point_[1];
 
           // Compute control forces (note that these directly have access to the io data ds).
@@ -236,9 +243,9 @@ int main(int argc, char** argv)
                 <<"\n    Q : "<<rio.sensors_.q_.transpose()
                 <<"\n   dQ : "<<rio.sensors_.dq_.transpose()
                 <<"\n  Fgc : "<<rio.actuators_.force_gc_commanded_.transpose()
-                <<"\n xcur : "<<rtask_hand->x_.transpose()
-                <<"\n xdes : "<<rtask_hand->x_goal_.transpose()
-                <<"\n xdes : "<<rtask_hand->x_goal_.transpose()<<std::flush;
+                <<"\n xcur : "<<rtask_lhand->x_.transpose()
+                <<"\n xdes : "<<rtask_lhand->x_goal_.transpose()
+                <<"\n xdes : "<<rtask_lhand->x_goal_.transpose()<<std::flush;
           }
 
           /** Slow down sim to real time */
