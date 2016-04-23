@@ -91,7 +91,7 @@ int main(int argc, char** argv)
     std::vector<scl::STaskBase*> rtasks;              //A set of executable tasks
     std::vector<scl::SNonControlTaskBase*> rtasks_nc; //A set of non-control tasks
     std::vector<scl::sString2> ctrl_params;        //Used to parse extra xml tags
-    scl::STaskOpPos* rtask_hand, *rtask_rhand; //Will need to set hand desired positions etc.
+    scl::STaskOpPos* rtask_hand; //Will need to set hand desired positions etc.
 
     /******************************File Parsing************************************/
     bool flag = p.readRobotFromFile(fname,"../../specs/",robot_name,rds);
@@ -122,10 +122,6 @@ int main(int argc, char** argv)
     db->s_gui_.ui_point_[0] = rtask_hand->x_;
     rtask_hand->x_goal_ = rtask_hand->x_;
 
-    // NOTE TODO : Add support for 2nd BFR.
-//    rtask_rhand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand2")) );
-//    if(NULL == rtask_lhand)  {return 1;}       //Error check
-
     /******************************ChaiGlut Graphics************************************/
     glutInit(&argc, argv); // We will use glut for the window pane (not the graphics).
     flag = p.readGraphicsFromFile(fname,"RParRRBotStdView",rgr);
@@ -149,11 +145,6 @@ int main(int argc, char** argv)
     if(NULL == rtask_hand)  {return 1;}       //Error check
     // Once the controller has been initialized, set the goal position to the task position. (To keep things stable).
     db->s_gui_.ui_point_[0] = rtask_hand->x_;
-
-    // NOTE TODO : Add support for 2nd BFR.
-//    rtask_rhand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand2")) );
-//    if(NULL == rtask_lhand)  {return 1;}       //Error check
-
 
     /******************************Main Loop************************************/
     std::cout<<"\nStarting simulation. Timestep : "<<db->sim_dt_<<std::flush;
