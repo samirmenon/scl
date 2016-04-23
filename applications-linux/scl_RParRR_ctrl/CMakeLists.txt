@@ -48,13 +48,13 @@ SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
 #Set all the sources required for the library
 SET(RParRR_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_RParRR_ctrl/)
 
-SET(ALL_SRC ${RParRR_BASE_DIR}/RParRR_main.cpp
-            ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
+SET(ALL_SRC ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
             ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
-
+            
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
-add_executable(scl_RParRR_ctrl ${ALL_SRC})
+add_executable(scl_RParRR_ctrl ${RParRR_BASE_DIR}/RParRR_main.cpp ${ALL_SRC})
+add_executable(scl_RParRRDual_ctrl ${RParRR_BASE_DIR}/RParRRDual_main.cpp ${ALL_SRC})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
 find_library( SCL_LIBRARY_DEBUG NAMES scl
@@ -69,6 +69,7 @@ SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
               optimized ${SCL_LIBRARY_RELEASE} )
 
 target_link_libraries(scl_RParRR_ctrl ${SCL_LIBRARY})
+target_link_libraries(scl_RParRRDual_ctrl ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
 find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
@@ -83,7 +84,10 @@ SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
               optimized ${CHAI_LIBRARY_RELEASE} )
 
 target_link_libraries(scl_RParRR_ctrl ${CHAI_LIBRARY})
+target_link_libraries(scl_RParRRDual_ctrl ${CHAI_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
 target_link_libraries(scl_RParRR_ctrl gomp GL GLU GLEW glut ncurses rt dl)
+target_link_libraries(scl_RParRRDual_ctrl gomp GL GLU GLEW glut ncurses rt dl)
+
