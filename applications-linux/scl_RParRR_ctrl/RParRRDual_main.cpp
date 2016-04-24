@@ -52,6 +52,18 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <stdexcept>
 #include <cassert>
 #include <sstream>
+#include <hiredis/hiredis.h>
+
+/** Basic data for reading from and writing to a redis database...
+ * Makes it easy to keep track of things..*/
+class SHiredisStructRParRRDual{
+public:
+  redisContext *context_ = NULL;
+  redisReply *reply_ = NULL;
+  const char *hostname_ = "127.0.0.1";
+  const int port_ = 6379;
+  const timeval timeout_ = { 1, 500000 }; // 1.5 seconds
+};
 
 /**
  * A sample application to compute the dynamics of an RParRRDual robot
@@ -137,6 +149,7 @@ int main(int argc, char** argv)
     flag = flag && rchai.addSphereToRender("RParRRDualBot", "link4", Eigen::Vector3d(1.5,0,0), 0.0275, &rtask_lhand_gr);
     flag = flag && rchai.addSphereToRender(Eigen::Vector3d(0,0,0), rtask_lhand_des_gr, 0.03);
     if(false==flag) { std::cout<<"\nCouldn't initialize chai graphics\n"; return 1; }
+
     // Color the balls...
     chai3d::cMaterial mat;
     mat.setRedLightSalmon(); rtask_lhand_des_gr->setMaterial(mat,true);
@@ -164,12 +177,85 @@ int main(int argc, char** argv)
 
     std::cout<<"\n Set up initial ui control point positions."<<std::endl;
 
+    /******************************Constraint Matrix************************************/
+    // This assumes that we get joint angles and velocities from the robot. It translates
+    // them back to the simulated (unconstrained) robot
+    //  q_unconstrained_robot = C * q_RParRRDual
+    // dq_unconstrained_robot = C * dq_RParRRDual
+    Eigen::MatrixXd CRParRRDual;
+    CRParRRDual.setZero(10,6);
+    CRParRRDual(0,0) = 1;
+    CRParRRDual(1,1) = 1;
+    CRParRRDual(2,2) = 1;
+    CRParRRDual(3,1) = 1;
+    CRParRRDual(3,2) = -1;
+    CRParRRDual(4,1) = -1;
+    CRParRRDual(4,2) = 1;
+
+    CRParRRDual(5,3) = 1;
+    CRParRRDual(6,4) = 1;
+    CRParRRDual(7,5) = 1;
+    CRParRRDual(8,4) = 1;
+    CRParRRDual(8,5) = -1;
+    CRParRRDual(9,4) = -1;
+    CRParRRDual(9,5) = 1;
+
+    // This assumes that we get joint angles and velocities from the simulator. It constrains
+    // the loop in a manner that chain control formulations still work.
+    // (Mainly the scl controller computes torques for a chain while one edge in the chain isn't
+    // actuated; so we have to pretend it is).
+    //  q_unconstrained_robot = CSim * q_RParRRDual_sim
+    // dq_unconstrained_robot = CSim * dq_RParRRDual_sim
+    Eigen::MatrixXd CSimRParRRDual;
+    CSimRParRRDual.setZero(10,10);
+    CSimRParRRDual(0,0) = 1;
+    CSimRParRRDual(1,1) = 1;
+    CSimRParRRDual(2,1) = 1;
+    CSimRParRRDual(2,4) = 1;
+    CSimRParRRDual(3,1) = 1;
+    CSimRParRRDual(3,2) = -1;
+    CSimRParRRDual(4,4) = 1;
+
+    CSimRParRRDual(5,5) = 1;
+    CSimRParRRDual(6,6) = 1;
+    CSimRParRRDual(7,6) = 1;
+    CSimRParRRDual(7,9) = 1;
+    CSimRParRRDual(8,6) = 1;
+    CSimRParRRDual(8,7) = -1;
+    CSimRParRRDual(9,9) = 1;
+
+    /******************************Redis Database************************************/
+    Eigen::VectorXd q_robot(6); q_robot<<0,0,0,0,0,0;
+    Eigen::VectorXd dq_robot(6); dq_robot<<0,0,0,0,0,0;
+    char rstr[1024];//Add a long enough string to support redis ops.
+
+    SHiredisStructRParRRDual redis_ds_;
+    redis_ds_.context_= redisConnectWithTimeout(redis_ds_.hostname_, redis_ds_.port_, redis_ds_.timeout_);
+    if (redis_ds_.context_ == NULL)
+    { throw(std::runtime_error("Could not allocate redis context."));  }
+
+    if(redis_ds_.context_->err)
+    {
+      std::string err = std::string("Could not connect to redis server : ") + std::string(redis_ds_.context_->errstr);
+      redisFree(redis_ds_.context_);
+      throw(std::runtime_error(err.c_str()));
+    }
+
+    // PING server to make sure things are working..
+    redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_,"PING");
+    std::cout<<"\n\nSCL Redis Task : Pinged Redis server. Reply is, "<<redis_ds_.reply_->str<<"\n";
+    freeReplyObject((void*)redis_ds_.reply_);
+
+    std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
+
     /******************************Main Loop************************************/
     std::cout<<"\nStarting simulation. Timestep : "<<db->sim_dt_<<std::flush;
 
     scl::sLongLong ctrl_ctr=0;//Controller computation counter
     scl::sLongLong gr_ctr=0;//Controller computation counter
     scl::sFloat tstart, tcurr;
+    bool run_integrator = true;
+    db->s_gui_.ui_flag_[1] = true;
 
     omp_set_num_threads(2);
     int thread_id;
@@ -183,8 +269,12 @@ int main(int argc, char** argv)
         std::cout<<"\n\n***************************************************************"
             <<"\n Starting op space (task coordinate) controller..."
             <<"\n This will move the BFR's hands in task (cartesian) space."
-            <<"\n\n Press '1' to toggle control of the hand into either the {sw,da,eq keys} or {a default sine wave}"
-            <<"\n***************************************************************";
+            <<"\n\n Press '1' : Toggle physics integration or redis communication"
+            <<"\n             (redis will contain state from the real robot). "
+            <<"\n             By default, we will use physics."
+            <<"\n\n Press '2' : Toggle printing state on the command line"
+            <<"\n\n Press 'p' : Toggle pause integrator"
+            <<"\n***************************************************************\n\nSimulation running...\n\n"<<std::flush;
         while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
         {
           /** ******************************************************************************************
@@ -202,42 +292,78 @@ int main(int argc, char** argv)
            *                           Integrate physics.
            * ****************************************************************************************** */
           //2. Simulation Dynamics
-          if(db->pause_ctrl_dyn_ == false)
+          if(db->s_gui_.ui_flag_[1] != run_integrator)
           {
-            flag = dyn_scl_sp.integrate(rgcm_integ, rio, db->sim_dt_);
-            for(int i=0;i<rio.dof_;++i)
+            run_integrator = db->s_gui_.ui_flag_[1];
+            run_integrator ? std::cout<<"\n  Key '1' (true) : Starting physics integrator"<<std::flush :
+                std::cout<<"\n  Key '1' (false) : Starting redis comm"<<std::flush;
+          }
+          if(run_integrator){
+            if(db->pause_ctrl_dyn_ == false)
             {
-              if(rio.sensors_.q_(i)>rds.gc_pos_limit_max_(i))
-              { rio.sensors_.q_(i)=rds.gc_pos_limit_max_(i);  rio.sensors_.dq_(i) *= -0.8; }
+              flag = dyn_scl_sp.integrate(rgcm_integ, rio, db->sim_dt_);
+              // Apply joint limits
+              for(unsigned int i=0;i<rio.dof_;++i)
+              {
+                if(rio.sensors_.q_(i)>rds.gc_pos_limit_max_(i))
+                { rio.sensors_.q_(i)=rds.gc_pos_limit_max_(i);  rio.sensors_.dq_(i) *= -0.8; }
 
-              if(rio.sensors_.q_(i)<rds.gc_pos_limit_min_(i))
-              { rio.sensors_.q_(i)=rds.gc_pos_limit_min_(i);  rio.sensors_.dq_(i) *= -0.8; }
+                if(rio.sensors_.q_(i)<rds.gc_pos_limit_min_(i))
+                { rio.sensors_.q_(i)=rds.gc_pos_limit_min_(i);  rio.sensors_.dq_(i) *= -0.8; }
+              }
+              // Apply constraints...
+              rio.sensors_.q_ = CSimRParRRDual * rio.sensors_.q_;
+              rio.sensors_.dq_ = CSimRParRRDual * rio.sensors_.dq_;
+              rio.sensors_.ddq_ = CSimRParRRDual * rio.sensors_.ddq_;
+
+              ctrl_ctr++;//Increment the counter for dynamics computed.
             }
 
-#ifdef BFR_CAPSTAN_LINKS_FREE
-            // Here we consider the into-the-mri link to be constrained..
-            rio.sensors_.q_(4) = -(rio.sensors_.q_(1) - rio.sensors_.q_(2));
-            rio.sensors_.dq_(4) = -(rio.sensors_.dq_(1) - rio.sensors_.dq_(2));
+            //Set desired pos in Redis database..
+            sprintf(rstr,"%lf %lf %lf %lf %lf %lf", rio.sensors_.q_(0), rio.sensors_.q_(1), rio.sensors_.q_(2),
+                rio.sensors_.q_(5), rio.sensors_.q_(6), rio.sensors_.q_(7));
+            redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "SET %s %s","scl::RParRRDual::q",rstr);
+            freeReplyObject((void*)redis_ds_.reply_);
 
-            rio.sensors_.q_(9) = -(rio.sensors_.q_(6) - rio.sensors_.q_(7));
-            rio.sensors_.dq_(9) = -(rio.sensors_.dq_(6) - rio.sensors_.dq_(7));
-#else
-            // Here we consider the front facing capstan link to be constrained..
-            rio.sensors_.q_(2) = (rio.sensors_.q_(1) + rio.sensors_.q_(4));
-            rio.sensors_.dq_(2) = (rio.sensors_.dq_(1) + rio.sensors_.dq_(4));
+            //Set desired vel in Redis database..
+            sprintf(rstr,"%lf %lf %lf %lf %lf %lf", rio.sensors_.dq_(0), rio.sensors_.dq_(1), rio.sensors_.dq_(2),
+                rio.sensors_.dq_(5), rio.sensors_.dq_(6), rio.sensors_.dq_(7));
+            redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "SET %s %s","scl::RParRRDual::dq",rstr);
+            freeReplyObject((void*)redis_ds_.reply_);
 
-            rio.sensors_.q_(7) = (rio.sensors_.q_(6) + rio.sensors_.q_(9));
-            rio.sensors_.dq_(7) = (rio.sensors_.dq_(6) + rio.sensors_.dq_(9));
-#endif
-            // The front bar link is always constrained
-            rio.sensors_.q_(3) = (rio.sensors_.q_(1) - rio.sensors_.q_(2));
-            rio.sensors_.dq_(3) = (rio.sensors_.dq_(1) - rio.sensors_.dq_(2));
-
-            rio.sensors_.q_(8) = (rio.sensors_.q_(6) - rio.sensors_.q_(7));
-            rio.sensors_.dq_(8) = (rio.sensors_.dq_(6) - rio.sensors_.dq_(7));
-
-            ctrl_ctr++;//Increment the counter for dynamics computed.
           }
+          else { //Run redis comm
+            //Get desired pos from Redis database..
+            redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "GET scl::RParRRDual::q");
+            sscanf(redis_ds_.reply_->str,"%lf %lf %lf %lf %lf %lf", & (q_robot(0)), & (q_robot(1)), & (q_robot(2)),
+                & (q_robot(3)), & (q_robot(4)), & (q_robot(5)));
+            freeReplyObject((void*)redis_ds_.reply_);
+
+            //Get desired vel from Redis database..
+            redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "GET scl::RParRRDual::dq");
+            sscanf(redis_ds_.reply_->str,"%lf %lf %lf %lf %lf %lf", & (dq_robot(0)), & (dq_robot(1)), & (dq_robot(2)),
+                & (dq_robot(3)), & (dq_robot(4)), & (dq_robot(5)));
+            freeReplyObject((void*)redis_ds_.reply_);
+
+            // Now map the positions to the robot.
+            rio.sensors_.q_ = CRParRRDual * q_robot;
+            rio.sensors_.dq_ = CRParRRDual * dq_robot;
+          }
+
+          //Set ee pos in Redis database
+          sprintf(rstr,"%lf %lf %lf %lf %lf %lf", rio.actuators_.force_gc_commanded_(0),rio.actuators_.force_gc_commanded_(1),
+              rio.actuators_.force_gc_commanded_(2), rio.actuators_.force_gc_commanded_(5), rio.actuators_.force_gc_commanded_(6),
+              rio.actuators_.force_gc_commanded_(7));
+          redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "SET %s %s","scl::RParRRDual::fgc_commanded",rstr);
+          freeReplyObject((void*)redis_ds_.reply_);
+
+          sprintf(rstr,"%lf %lf %lf", rtask_lhand->x_(0),rtask_lhand->x_(1), rtask_lhand->x_(2));
+          redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "SET %s %s","scl::RParRRDual::x_l",rstr);
+          freeReplyObject((void*)redis_ds_.reply_);
+
+          sprintf(rstr,"%lf %lf %lf", rtask_rhand->x_(0),rtask_rhand->x_(1), rtask_rhand->x_(2));
+          redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "SET %s %s","scl::RParRRDual::x_r",rstr);
+          freeReplyObject((void*)redis_ds_.reply_);
 
           /** ******************************************************************************************
            *                           Non-essential stuff (prints, real-time)
@@ -246,15 +372,18 @@ int main(int argc, char** argv)
           const int prints_per_sec = 2;
           bool print_flag = /** Convert time from sec to sim ticks */static_cast<int>(sutil::CSystemClock::getSimTime()/db->sim_dt_)%
               /**Normalize by sim ticks and make % work */ static_cast<int>(1/(prints_per_sec*db->sim_dt_)) == 0;
-          if(print_flag && !(db->pause_ctrl_dyn_)){
+          if(print_flag && !(db->pause_ctrl_dyn_) && db->s_gui_.ui_flag_[2]){
             std::cout<<"\n ***************************"
-                <<"\n    t : "<<sutil::CSystemClock::getSimTime()
-                <<"\n    Q : "<<rio.sensors_.q_.transpose()
-                <<"\n   dQ : "<<rio.sensors_.dq_.transpose()
-                <<"\n  Fgc : "<<rio.actuators_.force_gc_commanded_.transpose()
-                <<"\n xcur : "<<rtask_lhand->x_.transpose()
-                <<"\n xdes : "<<rtask_lhand->x_goal_.transpose()
-                <<"\n xdes : "<<rtask_lhand->x_goal_.transpose()<<std::flush;
+                <<"\n     t : "<<sutil::CSystemClock::getSimTime()
+                <<"\n   q_r : "<<q_robot.transpose()
+                <<"\n  dq_r : "<<dq_robot.transpose()
+                <<"\n     Q : "<<rio.sensors_.q_.transpose()
+                <<"\n    dQ : "<<rio.sensors_.dq_.transpose()
+                <<"\n   Fgc : "<<rio.actuators_.force_gc_commanded_.transpose()
+                <<"\n   x_l : "<<rtask_lhand->x_.transpose()
+                <<"\n xdesl : "<<rtask_lhand->x_goal_.transpose()
+                <<"\n   x_r : "<<rtask_rhand->x_.transpose()
+                <<"\n xdesr : "<<rtask_rhand->x_goal_.transpose()<<std::flush;
           }
 
           /** Slow down sim to real time */
