@@ -131,9 +131,8 @@ int main(int argc, char** argv)
 
     rtask_hand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at("hand")) );
     if(NULL == rtask_hand)  {return 1;}       //Error check
-    // Once the controller has been initialized, set the goal position to the task position. (To keep things stable).
-    db->s_gui_.ui_point_[0] = rtask_hand->x_;
-    rtask_hand->x_goal_ = rtask_hand->x_;
+
+    std::cout<<"\n Set up controller and initialized task data structures."<<std::endl;
 
     /******************************ChaiGlut Graphics************************************/
     glutInit(&argc, argv); // We will use glut for the window pane (not the graphics).
@@ -224,8 +223,8 @@ int main(int argc, char** argv)
     scl::sLongLong ctrl_ctr=0;//Controller computation counter
     scl::sLongLong gr_ctr=0;//Controller computation counter
     scl::sFloat tstart, tcurr;
-    bool run_integrator=false;
-    db->s_gui_.ui_flag_[1] = false;
+    bool run_integrator = true;
+    db->s_gui_.ui_flag_[1] = true;
 
     omp_set_num_threads(2);
     int thread_id;
@@ -241,7 +240,7 @@ int main(int argc, char** argv)
             <<"\n This will move the BFR's hands in task (cartesian) space."
             <<"\n\n Press '1' : Toggle physics integration or redis communication"
             <<"\n             (redis will contain state from the real robot). "
-            <<"\n             By default, we will use redis."
+            <<"\n             By default, we will use physics."
             <<"\n\n Press '2' : Toggle printing state on the command line"
             <<"\n\n Press 'p' : Toggle pause integrator"
             <<"\n***************************************************************\n\nSimulation running...\n\n"<<std::flush;
