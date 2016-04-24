@@ -88,6 +88,6 @@ target_link_libraries(scl_RParRRDual_ctrl ${CHAI_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_RParRR_ctrl gomp GL GLU GLEW glut ncurses rt dl)
-target_link_libraries(scl_RParRRDual_ctrl gomp GL GLU GLEW glut ncurses rt dl)
+target_link_libraries(scl_RParRR_ctrl gomp GL GLU GLEW glut ncurses rt dl hiredis)
+target_link_libraries(scl_RParRRDual_ctrl gomp GL GLU GLEW glut ncurses rt dl hiredis)
 
