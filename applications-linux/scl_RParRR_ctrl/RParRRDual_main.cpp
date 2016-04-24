@@ -205,6 +205,15 @@ int main(int argc, char** argv)
           if(db->pause_ctrl_dyn_ == false)
           {
             flag = dyn_scl_sp.integrate(rgcm_integ, rio, db->sim_dt_);
+            for(int i=0;i<rio.dof_;++i)
+            {
+              if(rio.sensors_.q_(i)>rds.gc_pos_limit_max_(i))
+              { rio.sensors_.q_(i)=rds.gc_pos_limit_max_(i);  rio.sensors_.dq_(i) *= -0.8; }
+
+              if(rio.sensors_.q_(i)<rds.gc_pos_limit_min_(i))
+              { rio.sensors_.q_(i)=rds.gc_pos_limit_min_(i);  rio.sensors_.dq_(i) *= -0.8; }
+            }
+
 #ifdef BFR_CAPSTAN_LINKS_FREE
             // Here we consider the into-the-mri link to be constrained..
             rio.sensors_.q_(4) = -(rio.sensors_.q_(1) - rio.sensors_.q_(2));
