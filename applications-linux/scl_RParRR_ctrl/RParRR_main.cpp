@@ -263,8 +263,8 @@ int main(int argc, char** argv)
           if(db->s_gui_.ui_flag_[1] != run_integrator)
           {
             run_integrator = db->s_gui_.ui_flag_[1];
-            run_integrator ? std::cout<<"\nKey '1' (true) : Starting physics integrator"<<std::flush :
-                std::cout<<"\nKey '1' (false) : Starting redis comm"<<std::flush;
+            run_integrator ? std::cout<<"\n  Key '1' (true) : Starting physics integrator"<<std::flush :
+                std::cout<<"\n  Key '1' (false) : Starting redis comm"<<std::flush;
           }
           if(run_integrator){
             if(db->pause_ctrl_dyn_ == false)
