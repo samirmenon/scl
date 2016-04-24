@@ -53,8 +53,9 @@ SET(ALL_SRC ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp
             ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
             
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
-add_executable(scl_RParRR_ctrl ${RParRR_BASE_DIR}/RParRR_main.cpp ${ALL_SRC})
-add_executable(scl_RParRRDual_ctrl ${RParRR_BASE_DIR}/RParRRDual_main.cpp ${ALL_SRC})
+add_executable(scl_RParRR ${RParRR_BASE_DIR}/RParRR_main.cpp ${ALL_SRC})
+add_executable(scl_RParRRDual ${RParRR_BASE_DIR}/RParRRDual_main.cpp ${ALL_SRC})
+add_executable(scl_RParRRDualHandle ${RParRR_BASE_DIR}/RParRRDualHandle_main.cpp ${ALL_SRC})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
 find_library( SCL_LIBRARY_DEBUG NAMES scl
@@ -68,8 +69,9 @@ find_library( SCL_LIBRARY_RELEASE NAMES scl
 SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
               optimized ${SCL_LIBRARY_RELEASE} )
 
-target_link_libraries(scl_RParRR_ctrl ${SCL_LIBRARY})
-target_link_libraries(scl_RParRRDual_ctrl ${SCL_LIBRARY})
+target_link_libraries(scl_RParRR ${SCL_LIBRARY})
+target_link_libraries(scl_RParRRDual ${SCL_LIBRARY})
+target_link_libraries(scl_RParRRDualHandle ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
 find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
@@ -83,11 +85,13 @@ find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
 SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
               optimized ${CHAI_LIBRARY_RELEASE} )
 
-target_link_libraries(scl_RParRR_ctrl ${CHAI_LIBRARY})
-target_link_libraries(scl_RParRRDual_ctrl ${CHAI_LIBRARY})
+target_link_libraries(scl_RParRR ${CHAI_LIBRARY})
+target_link_libraries(scl_RParRRDual ${CHAI_LIBRARY})
+target_link_libraries(scl_RParRRDualHandle ${CHAI_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_RParRR_ctrl gomp GL GLU GLEW glut ncurses rt dl hiredis)
-target_link_libraries(scl_RParRRDual_ctrl gomp GL GLU GLEW glut ncurses rt dl hiredis)
+target_link_libraries(scl_RParRR gomp GL GLU GLEW glut ncurses rt dl hiredis)
+target_link_libraries(scl_RParRRDual gomp GL GLU GLEW glut ncurses rt dl hiredis)
+target_link_libraries(scl_RParRRDualHandle gomp GL GLU GLEW glut ncurses rt dl hiredis)
 
