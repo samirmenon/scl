@@ -102,6 +102,28 @@ namespace scl_ext
         /** step dt time */
         const scl::sFloat arg_time_interval);
 
+    /** Calculate joint position and velocity using Newton numerical integrator.
+     * Also make sure that there is no motion inconsistent with the given constriant Jacobian.
+     *
+     * Any motion is possible in the null space of the constraint Jacobian.
+     * This dynamics engine assumes that all articulated bodies are rigid and can
+     * sustain infinite internal forces without breaking. As such the Jacobian's
+     * range space forces are ignored (internal forces do no work; don't affect
+     * the physics integration)*/
+    bool integrateWithConstraints(
+        /** Individual link Jacobians, and composite inertial,
+                centrifugal/coriolis gravity estimates. */
+        scl::SGcModel &arg_gc_model,
+        /** Current robot state. q, dq, ddq,
+                sensed generalized forces and perceived external forces.*/
+        scl::SRobotIO &arg_io_data,
+        /** The constraint Jacobian. This provides the space along which no
+         * motion should be possible. E.g., for a x-axis constraint at a typical
+         * operational point, it will be J[0,:]. */
+        Eigen::MatrixXd &arg_Jc,
+        /** step dt time */
+        const scl::sFloat arg_time_interval);
+
     /* *******************************************************************
      *                      Dynamics State functions.
      * ******************************************************************* */

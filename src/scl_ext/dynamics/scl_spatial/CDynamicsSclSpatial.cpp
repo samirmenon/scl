@@ -490,6 +490,83 @@ namespace scl_ext
     return true;
   }
 
+  bool CDynamicsSclSpatial::integrateWithConstraints(
+      /** Individual link Jacobians, and composite inertial,
+          centrifugal/coriolis gravity estimates. */
+      scl::SGcModel &arg_gc_model,
+      /** Current robot state. q, dq, ddq,
+          sensed generalized forces and perceived external forces.*/
+      scl::SRobotIO &arg_io_data,
+      /** The constraint Jacobian. This is a (constrained direction x dof) matrix*/
+      Eigen::MatrixXd &arg_Jc,
+      /** step dt time */
+      const scl::sFloat arg_time_interval)
+  {
+    /** Compute the null space of the constraint :
+     * The constraint Jacobian will always be fat. Its transpose is skinny and has
+     * a left inverse. The null space of the transpose is the space of unconstrained
+     * displacements. The column vectors of the transpose are the basis vectors for
+     * motions along the constraint.
+     * (I - J' J'+)
+     * (I - (J' J)^-1 J' J) */
+    // First set the null space matrix to identity.
+    Eigen::MatrixXd &Ndq = arg_gc_model.mat_scratch_n_n[0];
+    Ndq.setIdentity(arg_io_data.dof_,arg_io_data.dof_);
+
+    // Compute the svd of the Jacobian transpose (for doing null spaces later).
+    arg_gc_model.svd_scratch_n_n.compute(arg_Jc.transpose(),
+            Eigen::ComputeThinU | Eigen::ComputeThinV | Eigen::ColPivHouseholderQRPreconditioner);
+
+    // Now invert the singular values
+    int n_svd = arg_gc_model.svd_scratch_n_n.matrixV().rows();
+    Eigen::MatrixXd & svd_S = arg_gc_model.mat_scratch_n_n[1];
+    svd_S.setIdentity(n_svd,n_svd);
+    for(int i=0;i<n_svd;++i)
+    {
+      if(arg_gc_model.svd_scratch_n_n.singularValues()(i) > 0.0005)
+      { svd_S(i,i) = 1.0/arg_gc_model.svd_scratch_n_n.singularValues()(i);  }
+      else
+      { svd_S(i,i) = 0;  }
+    }
+
+    // Matrix sizes: J : c,n. J' : n,c.
+    // SVD Matrix sizes: U : n,c; S : c,c; V' : c,c.
+    // J' * Pinv : J' V S U' : [ (n,c) [(c,c) (c,c)] ] (c,n)
+    // Finally compute the kinematic null space of the Jacobian.
+    // NOTE TODO : Test if this actually multiplies things in the order indicated by parentheses?
+    Ndq -= (arg_Jc.transpose() * /**/(arg_gc_model.svd_scratch_n_n.matrixV() * svd_S)/**/) *
+        arg_gc_model.svd_scratch_n_n.matrixU().transpose();
+
+    // Cache the current state.
+    arg_gc_model.vec_scratch_[0] = arg_io_data.sensors_.q_;
+    // Zero out any velocity along the constrained axis.
+    arg_gc_model.vec_scratch_[1] = Ndq * arg_io_data.sensors_.dq_;
+    // Zero out any acceleration along the constrained axis.
+    // NOTE TODO : For now, we assume that d/dt(Ndq) is zero (changes slowly).
+    // This should be fixed.
+    arg_gc_model.vec_scratch_[2] = Ndq * arg_io_data.sensors_.ddq_;
+
+    // Original integrator: Simple forward euler
+    arg_io_data.sensors_.dq_ += arg_io_data.sensors_.ddq_ * arg_time_interval;
+    arg_io_data.sensors_.q_ += arg_io_data.sensors_.dq_  * arg_time_interval;
+
+    // We use the forward euler integrator results here to compute the forward dynamics.
+    forwardDynamicsCRBA(&arg_io_data, &arg_gc_model ,arg_io_data.sensors_.ddq_);
+
+    // Now use Heun's method to correct for higher order terms.
+    arg_io_data.sensors_.dq_ = arg_gc_model.vec_scratch_[1] +
+        arg_time_interval*0.5*(arg_gc_model.vec_scratch_[2]+ Ndq * arg_io_data.sensors_.ddq_);
+    arg_io_data.sensors_.q_ = arg_gc_model.vec_scratch_[0] +
+        arg_time_interval*0.5*(arg_gc_model.vec_scratch_[1] + Ndq * arg_io_data.sensors_.dq_);
+
+    // Finally recompute the accelerations.
+    forwardDynamicsCRBA(&arg_io_data, &arg_gc_model,arg_io_data.sensors_.ddq_);
+
+    arg_io_data.sensors_.ddq_ *= Ndq;
+
+    return true;
+  }
+
   bool CDynamicsSclSpatial::computeEnergyKinetic(
       /** Individual link Jacobians, and composite inertial,
                 centrifugal/coriolis gravity estimates. */
