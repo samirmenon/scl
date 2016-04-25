@@ -107,6 +107,10 @@ namespace scl
     /** A set of vectors to be used as temp vectors during dynamics operations */
     Eigen::VectorXd vec_scratch_[5];
 
+    /** These are used by the constrained dynamics integration */
+    Eigen::MatrixXd mat_scratch_n_n[2];
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd_scratch_n_n;
+
     /* *********************************************************************
      *                      Initialization functions
      * ********************************************************************* */
