@@ -181,6 +181,8 @@ namespace scl_registry
           {
             if(S_NULL != scl_registry::parseTaskController(arg_file, *itr, (*itc).first, arg_parser))
             { ctrl++; break;  }
+            else
+            { std::cout<<"\n\n *** WARNING : Could not parse task controller : "<<(*itc).first<<std::endl; }
           }
           if(ctrl==0)
           { throw(std::runtime_error("Could not register a task controller with the database"));  }
@@ -464,6 +466,10 @@ namespace scl_registry
           { serr = serr + tmp_task2add->name_;  }
           else
           { serr = serr + "NULL task pointer (should not be NULL)"; }
+
+          if(S_NULL!=db->s_controller_.tasks_.at(tmp_task2add->name_))
+          {  serr = serr + ". \n\tAnother task with the same id exists in the controller task mapped list.\n\tConsider renaming your task.";  }
+
           throw (std::runtime_error(serr.c_str()));
         }
       }
@@ -486,6 +492,10 @@ namespace scl_registry
           { serr = serr + tmp_task2add->name_;  }
           else
           { serr = serr + "NULL task pointer (should not be NULL)"; }
+
+          if(S_NULL!=db->s_controller_.tasks_non_ctrl_.at(tmp_task2add->name_))
+          {  serr = serr + ". \n\tAnother task with the same id exists in the controller task mapped list.\n\tConsider renaming your task.";  }
+
           throw (std::runtime_error(serr.c_str()));
         }
       }
