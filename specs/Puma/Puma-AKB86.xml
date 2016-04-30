@@ -148,7 +148,7 @@
 		<center_of_mass>0.000000 0.000000 0.032000</center_of_mass>
 		<joint_name>wrist-roll2</joint_name>
 		<parent_link_name>wrist-finger</parent_link_name>
-		<joint_type>rz</joint_type>
+		<joint_type>rx</joint_type>
 		<joint_limits>-3.141590 3.141590</joint_limits>
 		<force_gc_limits>-21.3 21.3</force_gc_limits>
 		<stiction_gc_force>-1.2 1.2</stiction_gc_force>
