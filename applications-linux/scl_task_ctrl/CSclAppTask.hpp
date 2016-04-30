@@ -148,7 +148,7 @@ namespace scl_app
     std::string ctrl_name_;              //Currently selected controller
 
     scl::CRobot robot_;                  //Generic robot
-    scl::SRobotParsed *rob_ds_;          //Generic robot ds
+    scl::SRobotParsed *rob_ds_=S_NULL;          //Generic robot ds
     scl::SRobotIO* rob_io_ds_;           //Access the robot's sensors and actuators
 
     scl_ext::CDynamicsSclSpatial* dyn_scl_sp_; //scl spatial dynamics (physics integrator)
