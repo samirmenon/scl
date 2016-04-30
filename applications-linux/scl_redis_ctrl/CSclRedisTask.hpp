@@ -40,8 +40,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
+#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
@@ -112,7 +112,7 @@ namespace scl_app
       db_ = S_NULL;
       rob_io_ds_ = S_NULL;
       rob_ds_ = S_NULL;
-      dyn_tao_ = S_NULL;
+      dyn_scl_sp_ = S_NULL;
       dyn_scl_ = S_NULL;
 
       ctrl = S_NULL;           //Use a task controller
@@ -165,11 +165,11 @@ namespace scl_app
 
     scl::CRobot robot_;                  //Generic robot
     scl::SRobotParsed *rob_ds_;          //Generic robot ds
-    scl::SRobotIO* rob_io_ds_;       //Access the robot's sensors and actuators
+    scl::SRobotIO* rob_io_ds_;           //Access the robot's sensors and actuators
 
-    scl::CDynamicsTao* dyn_tao_;          //Generic tao dynamics
-    scl::CDynamicsScl* dyn_scl_;          //Generic tao dynamics
-    scl::CGraphicsChai chai_gr_;         //Generic chai graphics
+    scl_ext::CDynamicsSclSpatial* dyn_scl_sp_; //Generic tao dynamics
+    scl::CDynamicsScl* dyn_scl_;           //Generic tao dynamics
+    scl::CGraphicsChai chai_gr_;           //Generic chai graphics
 
     scl::sLongLong ctrl_ctr_;            //Controller computation counter
     scl::sLongLong gr_ctr_;              //Controller computation counter
@@ -236,8 +236,8 @@ namespace scl_app
         { throw(std::runtime_error("Could not find passed robot name in file"));  }
 
         /******************************TaoDynamics************************************/
-        dyn_tao_ = new scl::CDynamicsTao();
-        flag = dyn_tao_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
+        dyn_scl_sp_ = new scl_ext::CDynamicsSclSpatial();
+        flag = dyn_scl_sp_->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name_));
         if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
         /******************************SclDynamics************************************/
@@ -274,7 +274,7 @@ namespace scl_app
         std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
 
         /**********************Initialize Robot Dynamics and Controller*******************/
-        flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_tao_);//Note: The robot deletes these pointers.
+        flag = robot_.initFromDb(robot_name_,dyn_scl_,dyn_scl_sp_);//Note: The robot deletes these pointers.
         if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
 
         ctrl_name_ = argv[3];

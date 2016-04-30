@@ -126,8 +126,15 @@ namespace scl_app
 
       //Get desired pos from Redis database..
       redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "GET scl_pos_ee_des");
-      sscanf(redis_ds_.reply_->str,"%lf %lf %lf", & (db_->s_gui_.ui_point_[0](0)),
-          & (db_->s_gui_.ui_point_[0](1)), & (db_->s_gui_.ui_point_[0](2)));
+      if(redis_ds_.reply_->len <=0)
+      {// The key probably doesn't exist. Set it instead.
+        freeReplyObject((void*)redis_ds_.reply_);
+        redis_ds_.reply_ = (redisReply *)redisCommand(redis_ds_.context_, "SET %s %s","scl_pos_ee_des",rstr);
+      }
+      else{
+        sscanf(redis_ds_.reply_->str,"%lf %lf %lf", & (db_->s_gui_.ui_point_[0](0)),
+            & (db_->s_gui_.ui_point_[0](1)), & (db_->s_gui_.ui_point_[0](2)));
+      }
       freeReplyObject((void*)redis_ds_.reply_);
     }
 
