@@ -370,7 +370,7 @@ namespace scl
     if(arg_json_val["__is_sorted"].asBool())
     {
       std::vector<std::string> sort_order;
-      for(Json::ValueIterator itr = arg_json_val["__sort_order"].begin(), itre = arg_json_val["__sort_order"].end();
+      for(Json::Value::const_iterator itr = arg_json_val["__sort_order"].begin(), itre = arg_json_val["__sort_order"].end();
           itr!=itre; ++itr)
       {
         //Should be a string (name of link)
