@@ -26,8 +26,8 @@ SUTIL_INC_DIR = ../../3rdparty/sUtil/src/
 INCLUDEDIRS = -I../../src/ -I$(SCL_INC_DIR) -I$(SCL_TAO_INC_DIR) -I$(EIGEN_INC_DIR) -I$(SUTIL_INC_DIR)
 
 ############################# Compile options ############################
-DBGFLAGS = -Wall -ggdb -pg -O0 $(INCLUDEDIRS) -fPIC $(SCL_DBG_LIB_DIR) $(SCL_LIBS) $(SCL_DEFS_DBG)
-FINALFLAGS = -Wall -O3 $(INCLUDEDIRS) -fPIC $(SCL_FIN_LIB_DIR) $(SCL_LIBS) $(SCL_DEFS_FIN) 
+DBGFLAGS = -std=c++11 -Wall -ggdb -pg -O0 $(INCLUDEDIRS) -fPIC $(SCL_DBG_LIB_DIR) $(SCL_LIBS) $(SCL_DEFS_DBG)
+FINALFLAGS = -std=c++11 -Wall -O3 $(INCLUDEDIRS) -fPIC $(SCL_FIN_LIB_DIR) $(SCL_LIBS) $(SCL_DEFS_FIN) 
 
 ############################ BUILD SPECIFICATIONS ############################
 # The final application ot be built
