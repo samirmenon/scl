@@ -91,7 +91,11 @@ public:
       const bool arg_reset_chai_world=true);
 
   /** Default constructor */
-  SGraphicsChai();
+  SGraphicsChai()  : SObject(std::string("SGraphicsChai"))
+  {
+    //For drag and click
+    mouse_grab_pos_ = Eigen::Vector3d::Zero();
+  }
 
   /** Virtual destructor */
   virtual ~SGraphicsChai(){}

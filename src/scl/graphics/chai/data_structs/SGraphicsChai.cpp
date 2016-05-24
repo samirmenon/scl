@@ -173,11 +173,4 @@ namespace scl
     return true;
   }
 
-  /** Constructor : Sets stuff to NULL. */
-  SGraphicsChai::SGraphicsChai() : SObject(std::string("SGraphicsChai"))
-  {
-    //For drag and click
-    mouse_grab_pos_ = Eigen::Vector3d::Zero();
-  }
-
 }
