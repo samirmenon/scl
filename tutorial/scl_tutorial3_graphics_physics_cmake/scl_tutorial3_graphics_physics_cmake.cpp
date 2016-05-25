@@ -103,6 +103,8 @@ int main(int argc, char** argv)
   std::cout<<"\nIntegrating the rrrbot's physics. Press (x) to exit.";
   long iter = 0, n_iters=100000; double dt=0.0001;
 
+  // Set the io data initial config to something interesting
+  rio.sensors_.q_(0) = 0.5;
   omp_set_num_threads(2);
   int thread_id;
 #pragma omp parallel private(thread_id)
