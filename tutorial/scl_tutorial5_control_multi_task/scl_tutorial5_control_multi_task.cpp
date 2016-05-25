@@ -127,6 +127,15 @@ int main(int argc, char** argv)
   std::cout<<"\nIntegrating the r6bot's physics. \nWill test two different controllers.\n Press (x) to exit at anytime.";
   long long iter = 0; double dt=0.0001;
 
+  // Initialize the robot to a reasonable configuration
+  rio.sensors_.q_(0) = 0.3;
+  rio.sensors_.q_(1) = -0.3;
+  rio.sensors_.q_(2) = 0.3;
+  rio.sensors_.q_(3) = -0.3;
+  rio.sensors_.q_(4) = -0.3;
+  rio.sensors_.q_(5) = 0.3;
+
+  // Set up the threading
   omp_set_num_threads(2);
   int thread_id; double tstart, tcurr; flag = false;
 
