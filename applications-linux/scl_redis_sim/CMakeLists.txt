@@ -20,41 +20,31 @@ SET(SCL_BASE_DIR ../../)
 ###(a) Scl controller
 SET(SCL_INC_DIR ${SCL_BASE_DIR}src/scl/)
 SET(SCL_INC_DIR_BASE ${SCL_BASE_DIR}src/)
-SET(TAO_INC_DIR ${SCL_INC_DIR}dynamics/tao/)
 ADD_DEFINITIONS(-DTIXML_USE_STL)
 
 ###(b) Eigen
 SET(EIGEN_INC_DIR ${SCL_BASE_DIR}3rdparty/eigen/)
 
-###(c) Chai3D scenegraph
-SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/chai3d/)
-ADD_DEFINITIONS(-D_LINUX -DLINUX)
-
-### (d) sUtil code
+### (c) sUtil code
 SET(SUTIL_INC_DIR ${SCL_BASE_DIR}3rdparty/sUtil/src/)
 
-### (e) scl_tinyxml (parser)
+### (d) scl_tinyxml (parser)
 SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
 
 ################Initialize the executable#################
 #Set the include directories
-INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR}) 
+INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${EIGEN_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR}) 
 
 #Set the compilation flags
 SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp -std=c++11")
-SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -O0 -pg -DGRAPHICS_ON -DASSERT=assert -DDEBUG=1")
-SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
+SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -O0 -pg -DASSERT=assert -DDEBUG=1")
+SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 #Set all the sources required for the library
 SET(DYN_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_redis_sim/)
 
-SET(ALL_SRC ${DYN_BASE_DIR}/scl_redis_sim.cpp
-            ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
-            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
-
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
-add_executable(scl_redis_sim ${ALL_SRC})
+add_executable(scl_redis_sim ${DYN_BASE_DIR}/scl_redis_sim.cpp)
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
 find_library( SCL_LIBRARY_DEBUG NAMES scl
@@ -70,20 +60,5 @@ SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
 
 target_link_libraries(scl_redis_sim ${SCL_LIBRARY})
 
-###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
-find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
-            PATHS   ${CHAI_INC_DIR}../lib/
-            PATH_SUFFIXES debug )
-
-find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
-            PATHS   ${CHAI_INC_DIR}../lib/
-            PATH_SUFFIXES release )
-
-SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
-              optimized ${CHAI_LIBRARY_RELEASE} )
-
-target_link_libraries(scl_redis_sim ${CHAI_LIBRARY})
-
-
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_redis_sim gomp GL GLU GLEW glut ncurses rt dl)
+target_link_libraries(scl_redis_sim hiredis)
