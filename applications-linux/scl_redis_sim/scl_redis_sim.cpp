@@ -208,17 +208,17 @@ int main(int argc, char** argv)
         //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_/100000;
 
         // REDIS IO : Set q
-        { std::stringstream ss; ss<< rio.sensors_.q_.transpose(); sprintf(rstr, "%s", ss.str().c_str());  }
+        { std::stringstream ss; for(scl::sUInt i=0;i<rio.dof_;++i) ss<<rio.sensors_.q_(i)<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
         redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::sensors::q %s",rstr_robot_base,rstr);
         freeReplyObject((void*)redis_ds.reply_);
 
         // REDIS IO : Set dq
-        { std::stringstream ss; ss<< rio.sensors_.dq_.transpose(); sprintf(rstr, "%s", ss.str().c_str());  }
+        { std::stringstream ss; for(scl::sUInt i=0;i<rio.dof_;++i) ss<<rio.sensors_.dq_(i)<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
         redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::sensors::dq %s",rstr_robot_base,rstr);
         freeReplyObject((void*)redis_ds.reply_);
 
         // REDIS IO : Set fgc_sensed
-        { std::stringstream ss; ss<< rio.sensors_.force_gc_measured_.transpose(); sprintf(rstr, "%s", ss.str().c_str());  }
+        { std::stringstream ss; for(scl::sUInt i=0;i<rio.dof_;++i) ss<<rio.sensors_.force_gc_measured_(i)<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
         redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::sensors::fgc %s",rstr_robot_base,rstr);
         freeReplyObject((void*)redis_ds.reply_);
 
