@@ -144,11 +144,12 @@ int main(int argc, char** argv)
       std::cout<<"\n  scl::robot::"<<robot_name<<"::sensors::q";
       std::cout<<"\n  scl::robot::"<<robot_name<<"::sensors::dq";
       std::cout<<"\n  scl::robot::"<<robot_name<<"::actuators::fgc";
-      std::cout<<"\n  scl::robot::"<<robot_name<<"::torques_enabled";
+      std::cout<<"\n  scl::robot::"<<robot_name<<"::fgc_command_enabled";
       std::cout<<"\n  scl::robot::"<<robot_name<<"::dof";
       std::cout<<"\n  (note some drivers also require) scl::robot::"<<robot_name<<"::operate_mode";
 
       char rstr[1024], rstr_robot_base[1024]; //For redis key formatting
+      int enable_fgc_command=0;
 
       sprintf(rstr_robot_base, "scl::robot::%s",robot_name.c_str());
 
@@ -164,7 +165,7 @@ int main(int argc, char** argv)
 
       // PING server to make sure things are working..
       redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_,"PING");
-      std::cout<<"\n\n Redis : Pinged Redis server. Reply is, "<<redis_ds.reply_->str<<"\n";
+      std::cout<<"\n\n Redis : Redis server is live. Reply to PING is, "<<redis_ds.reply_->str<<"\n";
       freeReplyObject((void*)redis_ds.reply_);
 
       // REDIS IO : Add robot to set of active robots..
@@ -174,6 +175,19 @@ int main(int argc, char** argv)
       // REDIS IO : Add DOF key..
       redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::dof %d", rstr_robot_base, static_cast<int>(rio.dof_));
       freeReplyObject((void*)redis_ds.reply_);
+
+      // REDIS IO : Create fgc key and set it to zero (initial state)
+      { std::stringstream ss; ss<< Eigen::VectorXd::Zero(rio.dof_).transpose(); sprintf(rstr, "%s", ss.str().c_str());  }
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::actuators::fgc %s", rstr_robot_base,rstr, rstr);
+      freeReplyObject((void*)redis_ds.reply_);
+
+      // REDIS IO : Get fgc_enabled key : fgc_command_enabled
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::fgc_command_enabled", rstr_robot_base);
+      if(redis_ds.reply_->len >0)
+      { std::stringstream ss; ss<<redis_ds.reply_->str; ss>>enable_fgc_command;  }
+
+      if(false == enable_fgc_command)
+      { std::cout<<"\n\n ** WARNING : To enable torque commands set the following key to '1' : "<<rstr_robot_base<<"::fgc_command_enabled **\n\n"; }
 
       std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
 
@@ -187,6 +201,10 @@ int main(int argc, char** argv)
         // The physics integrator
         sutil::CSystemClock::tick(sim_dt);
         flag = dyn_scl_sp.integrate(rgcm, rio, sim_dt); // Run the integrator with a 1ms timestep..
+
+        // Update sensors. (Assume perfect torque control for now).
+        rio.sensors_.force_gc_measured_ = rio.actuators_.force_gc_commanded_;
+
         //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_/100000;
 
         // REDIS IO : Set q
@@ -198,6 +216,27 @@ int main(int argc, char** argv)
         { std::stringstream ss; ss<< rio.sensors_.dq_.transpose(); sprintf(rstr, "%s", ss.str().c_str());  }
         redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::sensors::dq %s",rstr_robot_base,rstr);
         freeReplyObject((void*)redis_ds.reply_);
+
+        // REDIS IO : Set fgc_sensed
+        { std::stringstream ss; ss<< rio.sensors_.force_gc_measured_.transpose(); sprintf(rstr, "%s", ss.str().c_str());  }
+        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::sensors::fgc %s",rstr_robot_base,rstr);
+        freeReplyObject((void*)redis_ds.reply_);
+
+        // REDIS IO : Get fgc_enabled key : fgc_command_enabled
+        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::fgc_command_enabled", rstr_robot_base);
+        if(redis_ds.reply_->len > 0)
+        { std::stringstream ss; ss<<redis_ds.reply_->str; ss>>enable_fgc_command;  }
+        else  { enable_fgc_command = 0;  }
+        freeReplyObject((void*)redis_ds.reply_);
+
+        if(enable_fgc_command){ //Read command torques if the enable flag is true
+          // REDIS IO : Get fgc_commanded
+          redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::actuators::fgc", rstr_robot_base);
+          { std::stringstream ss; ss<<redis_ds.reply_->str; for(scl::sUInt i=0;i<rio.dof_;++i) ss>>rio.actuators_.force_gc_commanded_(i);  }
+          freeReplyObject((void*)redis_ds.reply_);
+        }
+        else // If the enable flag is false, set torques to zero.
+        { rio.actuators_.force_gc_commanded_.setZero(rio.dof_); }
       }
 
       t_end = sutil::CSystemClock::getSysTime();
@@ -209,7 +248,10 @@ int main(int argc, char** argv)
 
       // REDIS IO : Remove all keys..
       redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "DEL %s::dof", rstr_robot_base); freeReplyObject((void*)redis_ds.reply_);
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "DEL %s::q", rstr_robot_base); freeReplyObject((void*)redis_ds.reply_);
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "DEL %s::sensors::q", rstr_robot_base); freeReplyObject((void*)redis_ds.reply_);
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "DEL %s::sensors::dq", rstr_robot_base); freeReplyObject((void*)redis_ds.reply_);
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "DEL %s::sensors::fgc", rstr_robot_base); freeReplyObject((void*)redis_ds.reply_);
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "DEL %s::actuators::fgc", rstr_robot_base); freeReplyObject((void*)redis_ds.reply_);
 
       /****************************Print Collected Statistics*****************************/
       //Now you can get the energies
