@@ -48,6 +48,22 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Freeglut windowing environment
 #include <GL/freeglut.h>
 
+//Redis
+#include <hiredis/hiredis.h>
+
+
+/** Basic data for reading from and writing to a redis database...
+ * Makes it easy to keep track of things..*/
+class SHiredisStruct_RobotVis{
+public:
+  redisContext *context_ = NULL;
+  redisReply *reply_ = NULL;
+  const char *hostname_ = "127.0.0.1";
+  const int port_ = 6379;
+  const timeval timeout_ = { 1, 500000 }; // 1.5 seconds
+};
+
+
 /** A sample application to render a physics simulation being run in scl.
  *
  * It will display the robot in an OpenGL graphics window. */
@@ -82,6 +98,7 @@ int main(int argc, char** argv)
       scl::SGraphicsParsed rgr;  //Robot graphics data structure.
       scl::CGraphicsChai rchai;  //Chai interface (updates graphics rendering tree etc.)
       scl::CParserScl p;         //This time, we'll parse the tree from a file.
+      SHiredisStruct_RobotVis redis_ds; //The data structure we'll use for redis comm.
 
       /******************************File Parsing************************************/
       std::string tmp_infile(argv[1]);
@@ -116,6 +133,35 @@ int main(int argc, char** argv)
       flag = flag && rio.init(rds);             //Set up the IO data structure
       if(false == flag){ return 1; }            //Error check.
 
+      /******************************Redis Initialization************************************/
+      std::cout<<"\n The REDIS key used is: ";
+      std::cout<<"\n  scl::robot::"<<robot_name<<"::sensors::q";
+
+      char rstr[1024], rstr_qkey[1024]; //For redis key formatting
+      sprintf(rstr_qkey, "scl::robot::%s::sensors::q",robot_name.c_str());
+
+      redis_ds.context_= redisConnectWithTimeout(redis_ds.hostname_, redis_ds.port_, redis_ds.timeout_);
+      if (redis_ds.context_ == NULL) { throw(std::runtime_error("Could not allocate redis context."));  }
+
+      if(redis_ds.context_->err)
+      {
+        std::string err = std::string("Could not connect to redis server : ") + std::string(redis_ds.context_->errstr);
+        redisFree(redis_ds.context_);
+        throw(std::runtime_error(err.c_str()));
+      }
+
+      // PING server to make sure things are working..
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_,"PING");
+      std::cout<<"\n\n Redis : Redis server is live. Reply to PING is, "<<redis_ds.reply_->str<<"\n";
+      freeReplyObject((void*)redis_ds.reply_);
+
+      // REDIS IO : Get q key. If unavailable, throw an error..
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s", rstr_qkey);
+      if(redis_ds.reply_->len <= 0)
+      { throw(std::runtime_error(std::string("Could not find redis key for robot: ") +std::string(rstr_qkey)));  }
+
+      std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
+
       /******************************ChaiGlut Graphics************************************/
       glutInit(&argc, argv); // We will use glut for the window pane (not the graphics).
 
@@ -130,7 +176,17 @@ int main(int argc, char** argv)
       {
         glutMainLoopEvent();
 
-        const timespec ts = {0, 20000000};/*20ms sleep : 50Hz update*/
+        // REDIS IO : Get q key (we assume it will exist else would have thrown an error earlier)
+        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s", rstr_qkey);
+        if(redis_ds.reply_->len <= 0)
+        { throw(std::runtime_error(std::string("Could not find redis key for robot: ") +std::string(rstr_qkey)));  }
+
+        std::stringstream ss; ss<<redis_ds.reply_->str;
+        for(scl::sUInt i=0;i<rio.dof_;++i)
+        { ss>>rio.sensors_.q_(i); }
+        freeReplyObject((void*)redis_ds.reply_);
+
+        const timespec ts = {0, 20000000};/*20ms sleep : ~50Hz update*/
         nanosleep(&ts,NULL);
       }
 
