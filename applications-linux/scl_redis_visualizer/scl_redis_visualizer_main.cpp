@@ -100,42 +100,42 @@ int main(int argc, char** argv)
       SHiredisStruct_RobotVis redis_ds; //The data structure we'll use for redis comm.
 
       /******************************File Parsing************************************/
-      std::string tmp_infile(argv[1]);
-      std::cout<<"\nRunning scl_redis_sim for input file: "<<tmp_infile;
+      std::string name_infile(argv[1]);
+      std::cout<<"\nRunning scl_redis_sim for input file: "<<name_infile;
 
-      std::string robot_name, gr_name;
+      std::string name_robot, name_graphics;
 
       std::vector<std::string> str_vec;
       if(argc<3)
       {//Use the first robot spec in the file if one isn't specified by the user.
-        flag = p.listRobotsInFile(tmp_infile,str_vec);
+        flag = p.listRobotsInFile(name_infile,str_vec);
         if(false == flag) { throw(std::runtime_error("Could not read robot names from the file"));  }
-        robot_name = str_vec[0];//Use the first available robot.
+        name_robot = str_vec[0];//Use the first available robot.
       }
-      else { robot_name = argv[2];}
+      else { name_robot = argv[2];}
 
       if(argc<4)
       {
         str_vec.clear();
-        flag = p.listGraphicsInFile(tmp_infile,str_vec);
+        flag = p.listGraphicsInFile(name_infile,str_vec);
         if(false == flag) { throw(std::runtime_error("Could not read graphics xml from the file"));  }
-        gr_name = str_vec[0];//Use the first available graphics
+        name_graphics = str_vec[0];//Use the first available graphics
       }
-      else { gr_name = argv[3];}
+      else { name_graphics = argv[3];}
 
-      std::cout<<"\nParsing robot: "<<robot_name;
+      std::cout<<"\nParsing robot: "<<name_robot;
       if(false == flag) { throw(std::runtime_error("Could not read robot description from file"));  }
 
       /******************************Load Robot Specification************************************/
       //We will use a slightly more complex xml spec than the first few tutorials
-      bool flag = p.readRobotFromFile(tmp_infile,"../../specs/",robot_name,rds);
+      bool flag = p.readRobotFromFile(name_infile,"../../specs/",name_robot,rds);
       flag = flag && rio.init(rds);             //Set up the IO data structure
       if(false == flag){ return 1; }            //Error check.
 
       /******************************ChaiGlut Graphics************************************/
       glutInit(&argc, argv); // We will use glut for the window pane (not the graphics).
 
-      flag = p.readGraphicsFromFile(tmp_infile,gr_name,rgr);
+      flag = p.readGraphicsFromFile(name_infile,name_graphics,rgr);
       flag = flag && rchai.initGraphics(&rgr);
       flag = flag && rchai.addRobotToRender(&rds,&rio);
       flag = flag && scl_chai_glut_interface::initializeGlutForChai(&rgr, &rchai);
@@ -143,10 +143,10 @@ int main(int argc, char** argv)
 
       /******************************Redis Initialization************************************/
       std::cout<<"\n The REDIS key used is: ";
-      std::cout<<"\n  scl::robot::"<<robot_name<<"::sensors::q";
+      std::cout<<"\n  scl::robot::"<<name_robot<<"::sensors::q";
 
       char rstr_qkey[1024]; //For redis key formatting
-      sprintf(rstr_qkey, "scl::robot::%s::sensors::q",robot_name.c_str());
+      sprintf(rstr_qkey, "scl::robot::%s::sensors::q",name_robot.c_str());
 
       redis_ds.context_= redisConnectWithTimeout(redis_ds.hostname_, redis_ds.port_, redis_ds.timeout_);
       if (redis_ds.context_ == NULL) { throw(std::runtime_error("Could not allocate redis context."));  }
