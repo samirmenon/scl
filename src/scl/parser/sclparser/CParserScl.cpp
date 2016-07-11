@@ -1182,7 +1182,7 @@ bool CParserScl::readGraphicsFromFile(const std::string &arg_file,
     }//End of loop over graphics objects in the xml file.
 
     if(false == flag)
-    { throw(std::runtime_error("Did not find specified graphics specification in the file")); }
+    { throw(std::runtime_error(std::string("Did not find specified graphics specification in the file: ")+ arg_graphics_name)); }
 
     return true;
   }
