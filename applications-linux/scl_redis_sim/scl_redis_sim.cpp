@@ -202,10 +202,22 @@ int main(int argc, char** argv)
         sutil::CSystemClock::tick(sim_dt);
         flag = dyn_scl_sp.integrate(rgcm, rio, sim_dt); // Run the integrator with a 1ms timestep..
 
+        /** Slow down sim to real time */
+        double tcurr = sutil::CSystemClock::getSysTime() - t_start;
+        double tdiff = sutil::CSystemClock::getSimTime() - tcurr;
+        timespec ts = {0, 0};
+        if(tdiff > 0)
+        {
+          ts.tv_sec = static_cast<int>(tdiff);
+          tdiff -= static_cast<int>(tdiff);
+          ts.tv_nsec = tdiff*1e9;
+          nanosleep(&ts,NULL);
+        }
+
         // Update sensors. (Assume perfect torque control for now).
         rio.sensors_.force_gc_measured_ = rio.actuators_.force_gc_commanded_;
 
-        //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_/100000;
+        //rio.sensors_.dq_ -= rio.sensors_.dq_/1000;
 
         // REDIS IO : Set q
         { std::stringstream ss; for(scl::sUInt i=0;i<rio.dof_;++i) ss<<rio.sensors_.q_(i)<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
