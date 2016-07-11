@@ -43,7 +43,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //Standard includes (for printing and multi-threading)
 #include <iostream>
-#include <omp.h>
 
 //Freeglut windowing environment
 #include <GL/freeglut.h>
@@ -146,7 +145,7 @@ int main(int argc, char** argv)
       std::cout<<"\n The REDIS key used is: ";
       std::cout<<"\n  scl::robot::"<<robot_name<<"::sensors::q";
 
-      char rstr[1024], rstr_qkey[1024]; //For redis key formatting
+      char rstr_qkey[1024]; //For redis key formatting
       sprintf(rstr_qkey, "scl::robot::%s::sensors::q",robot_name.c_str());
 
       redis_ds.context_= redisConnectWithTimeout(redis_ds.hostname_, redis_ds.port_, redis_ds.timeout_);
