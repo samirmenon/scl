@@ -113,25 +113,25 @@ int main(int argc, char** argv)
       double sim_dt = 0.001;     //Simulation timestep..
 
       /******************************File Parsing************************************/
-      std::string tmp_infile(argv[1]);
-      std::cout<<"\nRunning scl_redis_sim for input file: "<<tmp_infile;
+      std::string name_infile(argv[1]);
+      std::cout<<"\nRunning scl_redis_sim for input file: "<<name_infile;
 
-      std::string robot_name;
+      std::string name_robot;
       if(argc==2)
       {//Use the first robot spec in the file if one isn't specified by the user.
         std::vector<std::string> robot_names;
-        flag = p.listRobotsInFile(tmp_infile,robot_names);
+        flag = p.listRobotsInFile(name_infile,robot_names);
         if(false == flag) { throw(std::runtime_error("Could not read robot names from the file"));  }
-        robot_name = robot_names[0];//Use the first available robot.
+        name_robot = robot_names[0];//Use the first available robot.
       }
-      else { robot_name = argv[2];}
+      else { name_robot = argv[2];}
 
-      std::cout<<"\nParsing robot: "<<robot_name;
+      std::cout<<"\nParsing robot: "<<name_robot;
       if(false == flag) { throw(std::runtime_error("Could not read robot description from file"));  }
 
       /******************************Initialization************************************/
       //We will use a slightly more complex xml spec than the first few tutorials
-      flag = p.readRobotFromFile(tmp_infile,"../../specs/",robot_name,rds);
+      flag = p.readRobotFromFile(name_infile,"../../specs/",name_robot,rds);
       flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
       flag = flag && rio.init(rds);             //Set up the IO data structure
       flag = flag && dyn_scl_sp.init(rds);      //Set up integrator object
@@ -141,17 +141,17 @@ int main(int argc, char** argv)
 
       /******************************Redis Initialization************************************/
       std::cout<<"\n The default REDIS keys used are: ";
-      std::cout<<"\n  scl::robot::"<<robot_name<<"::sensors::q";
-      std::cout<<"\n  scl::robot::"<<robot_name<<"::sensors::dq";
-      std::cout<<"\n  scl::robot::"<<robot_name<<"::actuators::fgc";
-      std::cout<<"\n  scl::robot::"<<robot_name<<"::fgc_command_enabled";
-      std::cout<<"\n  scl::robot::"<<robot_name<<"::dof";
-      std::cout<<"\n  (note some drivers also require) scl::robot::"<<robot_name<<"::operate_mode";
+      std::cout<<"\n  scl::robot::"<<name_robot<<"::sensors::q";
+      std::cout<<"\n  scl::robot::"<<name_robot<<"::sensors::dq";
+      std::cout<<"\n  scl::robot::"<<name_robot<<"::actuators::fgc";
+      std::cout<<"\n  scl::robot::"<<name_robot<<"::fgc_command_enabled";
+      std::cout<<"\n  scl::robot::"<<name_robot<<"::dof";
+      std::cout<<"\n  (note some drivers also require) scl::robot::"<<name_robot<<"::operate_mode";
 
       char rstr[1024], rstr_robot_base[1024]; //For redis key formatting
       int enable_fgc_command=0;
 
-      sprintf(rstr_robot_base, "scl::robot::%s",robot_name.c_str());
+      sprintf(rstr_robot_base, "scl::robot::%s",name_robot.c_str());
 
       redis_ds.context_= redisConnectWithTimeout(redis_ds.hostname_, redis_ds.port_, redis_ds.timeout_);
       if (redis_ds.context_ == NULL) { throw(std::runtime_error("Could not allocate redis context."));  }
@@ -169,7 +169,7 @@ int main(int argc, char** argv)
       freeReplyObject((void*)redis_ds.reply_);
 
       // REDIS IO : Add robot to set of active robots..
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SADD %s %s","scl::robots",robot_name.c_str());
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SADD %s %s","scl::robots",name_robot.c_str());
       freeReplyObject((void*)redis_ds.reply_);
 
       // REDIS IO : Add DOF key..
@@ -177,7 +177,7 @@ int main(int argc, char** argv)
       freeReplyObject((void*)redis_ds.reply_);
 
       // REDIS IO : Create fgc key and set it to zero (initial state)
-      { std::stringstream ss; ss<< Eigen::VectorXd::Zero(rio.dof_).transpose(); sprintf(rstr, "%s", ss.str().c_str());  }
+      { std::stringstream ss; for(scl::sUInt i=0;i<rio.dof_;++i) ss<<0.0<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
       redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::actuators::fgc %s", rstr_robot_base,rstr, rstr);
       freeReplyObject((void*)redis_ds.reply_);
 
@@ -243,7 +243,7 @@ int main(int argc, char** argv)
 
       /******************************Redis Shutdown (remove keys)************************************/
       // REDIS IO : Remove robot from set of active robots..
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SREM %s %s","scl::robots",robot_name.c_str());
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SREM %s %s","scl::robots",name_robot.c_str());
       freeReplyObject((void*)redis_ds.reply_);
 
       // REDIS IO : Remove all keys..
