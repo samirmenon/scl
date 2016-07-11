@@ -133,6 +133,15 @@ int main(int argc, char** argv)
       flag = flag && rio.init(rds);             //Set up the IO data structure
       if(false == flag){ return 1; }            //Error check.
 
+      /******************************ChaiGlut Graphics************************************/
+      glutInit(&argc, argv); // We will use glut for the window pane (not the graphics).
+
+      flag = p.readGraphicsFromFile(tmp_infile,gr_name,rgr);
+      flag = flag && rchai.initGraphics(&rgr);
+      flag = flag && rchai.addRobotToRender(&rds,&rio);
+      flag = flag && scl_chai_glut_interface::initializeGlutForChai(&rgr, &rchai);
+      if(false==flag) { std::cout<<"\nCouldn't initialize chai graphics\n"; return 1; }
+
       /******************************Redis Initialization************************************/
       std::cout<<"\n The REDIS key used is: ";
       std::cout<<"\n  scl::robot::"<<robot_name<<"::sensors::q";
@@ -158,18 +167,9 @@ int main(int argc, char** argv)
       // REDIS IO : Get q key. If unavailable, throw an error..
       redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s", rstr_qkey);
       if(redis_ds.reply_->len <= 0)
-      { throw(std::runtime_error(std::string("Could not find redis key for robot: ") +std::string(rstr_qkey)));  }
+      { std::cout<<"\n WARNING : Could not find redis key for robot: "<<rstr_qkey<<". Will wait for it...";  }
 
       std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
-
-      /******************************ChaiGlut Graphics************************************/
-      glutInit(&argc, argv); // We will use glut for the window pane (not the graphics).
-
-      flag = p.readGraphicsFromFile(tmp_infile,gr_name,rgr);
-      flag = flag && rchai.initGraphics(&rgr);
-      flag = flag && rchai.addRobotToRender(&rds,&rio);
-      flag = flag && scl_chai_glut_interface::initializeGlutForChai(&rgr, &rchai);
-      if(false==flag) { std::cout<<"\nCouldn't initialize chai graphics\n"; return 1; }
 
       /******************************Graphics Rendering************************************/
       while(scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
@@ -178,13 +178,19 @@ int main(int argc, char** argv)
 
         // REDIS IO : Get q key (we assume it will exist else would have thrown an error earlier)
         redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s", rstr_qkey);
-        if(redis_ds.reply_->len <= 0)
-        { throw(std::runtime_error(std::string("Could not find redis key for robot: ") +std::string(rstr_qkey)));  }
-
-        std::stringstream ss; ss<<redis_ds.reply_->str;
-        for(scl::sUInt i=0;i<rio.dof_;++i)
-        { ss>>rio.sensors_.q_(i); }
-        freeReplyObject((void*)redis_ds.reply_);
+        if(redis_ds.reply_->len > 0)
+        {
+          std::stringstream ss; ss<<redis_ds.reply_->str;
+          for(scl::sUInt i=0;i<rio.dof_;++i)
+          { ss>>rio.sensors_.q_(i); }
+          freeReplyObject((void*)redis_ds.reply_);
+        }
+        else{
+          std::cout<<"\n WARNING : Could not find redis key for robot: "<<rstr_qkey<<". Will wait for it...";
+          const timespec ts = {0, 200000000};/*200ms sleep : ~5Hz update*/
+          nanosleep(&ts,NULL);
+          continue;
+        }
 
         const timespec ts = {0, 20000000};/*20ms sleep : ~50Hz update*/
         nanosleep(&ts,NULL);
