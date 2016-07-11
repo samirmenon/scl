@@ -91,7 +91,7 @@ int main(int argc, char** argv)
   {
     std::cout<<"\n The 'scl_redis_sim' application uses scl to simulate the physics of a robot with redis io."
         <<"\n ERROR : Provided incorrect arguments. The correct input format is:"
-        <<"\n   ./scl_redis_sim <file_name.xml> <optional: robot_name.xml>"
+        <<"\n   ./scl_redis_sim <file_name.xml> <optional: robot_name>"
         <<"\n If a robot name isn't provided, the first one from the xml file will be used.\n";
     return 0;
   }
