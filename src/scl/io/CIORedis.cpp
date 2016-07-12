@@ -39,7 +39,7 @@ namespace scl
   /** Connects to the Redis database using parameters specified in the
    * data structure. Also stores the connection details in the data
    * structure. */
-  bool connect(SIORedis &arg_ds, bool arg_ping_server)
+  bool CIORedis::connect(SIORedis &arg_ds, bool arg_ping_server)
   {
     // Connect to the redis server
     arg_ds.context_= redisConnectWithTimeout(arg_ds.hostname_, arg_ds.port_, arg_ds.timeout_);
@@ -78,7 +78,7 @@ namespace scl
   }
 
   /** Sends a message. */
-  bool runCommand(SIORedis &arg_ds, char* arg_msg)
+  bool CIORedis::runCommand(SIORedis &arg_ds, char* arg_msg)
   {
     bool flag=false;
     arg_ds.reply_ = (redisReply *)redisCommand(arg_ds.context_, "%s", arg_msg);
@@ -88,7 +88,7 @@ namespace scl
   }
 
   /** Sets an Eigen vector as a string key. */
-  bool set(SIORedis &arg_ds, const char* arg_key, const Eigen::VectorXd &arg_vec)
+  bool CIORedis::set(SIORedis &arg_ds, const char* arg_key, const Eigen::VectorXd &arg_vec)
   {
     bool flag=false;
     // NOTE TODO : Probably faster to use sprintf.
@@ -105,7 +105,7 @@ namespace scl
   }
 
   /** Sets an Eigen vector as a string key. */
-  bool get(SIORedis &arg_ds, const char* arg_key, Eigen::VectorXd &arg_vec)
+  bool CIORedis::get(SIORedis &arg_ds, const char* arg_key, Eigen::VectorXd &arg_vec)
   {
     // Get the key
     arg_ds.reply_ = (redisReply *)redisCommand(arg_ds.context_, "GET %s",arg_key);
