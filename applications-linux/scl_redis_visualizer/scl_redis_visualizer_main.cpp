@@ -35,6 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
+#include <scl/io/CIORedis.hpp>
 
 #include <sutil/CSystemClock.hpp>
 
@@ -46,22 +47,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //Freeglut windowing environment
 #include <GL/freeglut.h>
-
-//Redis
-#include <hiredis/hiredis.h>
-
-
-/** Basic data for reading from and writing to a redis database...
- * Makes it easy to keep track of things..*/
-class SHiredisStruct_RobotVis{
-public:
-  redisContext *context_ = NULL;
-  redisReply *reply_ = NULL;
-  const char *hostname_ = "127.0.0.1";
-  const int port_ = 6379;
-  const timeval timeout_ = { 1, 500000 }; // 1.5 seconds
-};
-
 
 /** A sample application to render a physics simulation being run in scl.
  *
@@ -97,7 +82,6 @@ int main(int argc, char** argv)
       scl::SGraphicsParsed rgr;  //Robot graphics data structure.
       scl::CGraphicsChai rchai;  //Chai interface (updates graphics rendering tree etc.)
       scl::CParserScl p;         //This time, we'll parse the tree from a file.
-      SHiredisStruct_RobotVis redis_ds; //The data structure we'll use for redis comm.
 
       /******************************File Parsing************************************/
       std::string name_infile(argv[1]);
@@ -142,57 +126,31 @@ int main(int argc, char** argv)
       if(false==flag) { std::cout<<"\nCouldn't initialize chai graphics\n"; return 1; }
 
       /******************************Redis Initialization************************************/
-      std::cout<<"\n The REDIS key used is: ";
-      std::cout<<"\n  scl::robot::"<<name_robot<<"::sensors::q";
-
       char rstr_qkey[1024]; //For redis key formatting
       sprintf(rstr_qkey, "scl::robot::%s::sensors::q",name_robot.c_str());
 
-      redis_ds.context_= redisConnectWithTimeout(redis_ds.hostname_, redis_ds.port_, redis_ds.timeout_);
-      if (redis_ds.context_ == NULL) { throw(std::runtime_error("Could not allocate redis context."));  }
+      scl::CIORedis ioredis;
+      scl::SIORedis ioredis_ds;
+      ioredis.connect(ioredis_ds,false);
 
-      if(redis_ds.context_->err)
-      {
-        std::string err = std::string("Could not connect to redis server : ") + std::string(redis_ds.context_->errstr);
-        redisFree(redis_ds.context_);
-        throw(std::runtime_error(err.c_str()));
-      }
-
-      // PING server to make sure things are working..
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_,"PING");
-      std::cout<<"\n\n Redis : Redis server is live. Reply to PING is, "<<redis_ds.reply_->str<<"\n";
-      freeReplyObject((void*)redis_ds.reply_);
-
-      // REDIS IO : Get q key. If unavailable, throw an error..
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s", rstr_qkey);
-      if(redis_ds.reply_->len <= 0)
-      { std::cout<<"\n WARNING : Could not find redis key for robot: "<<rstr_qkey<<". Will wait for it...";  }
-
+      std::cout<<"\n Monitoring REDIS key : "<<rstr_qkey;
       std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
 
       /******************************Graphics Rendering************************************/
       while(scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
+        // Update graphics
         glutMainLoopEvent();
 
         // REDIS IO : Get q key (we assume it will exist else would have thrown an error earlier)
-        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s", rstr_qkey);
-        if(redis_ds.reply_->len > 0)
+        flag = ioredis.get(ioredis_ds,rstr_qkey,rio.sensors_.q_);
+        if(false == flag)
         {
-          std::stringstream ss; ss<<redis_ds.reply_->str;
-          for(scl::sUInt i=0;i<rio.dof_;++i)
-          { ss>>rio.sensors_.q_(i); }
-          freeReplyObject((void*)redis_ds.reply_);
-        }
-        else{
           std::cout<<"\n WARNING : Could not find redis key for robot: "<<rstr_qkey<<". Will wait for it...";
-          const timespec ts = {0, 200000000};/*200ms sleep : ~5Hz update*/
-          nanosleep(&ts,NULL);
-          continue;
+          const timespec ts = {0, 200000000};/*200ms sleep */ nanosleep(&ts,NULL); continue;
         }
 
-        const timespec ts = {0, 20000000};/*20ms sleep : ~50Hz update*/
-        nanosleep(&ts,NULL);
+        const timespec ts = {0, 25000000};/*25ms sleep : ~40Hz update*/ nanosleep(&ts,NULL);
       }
 
       /******************************Exit Gracefully************************************/
