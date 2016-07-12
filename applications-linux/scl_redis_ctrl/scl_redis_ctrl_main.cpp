@@ -229,6 +229,7 @@ int main(int argc, char** argv)
 
       /****************************** Control Loop************************************/
       Eigen::Vector3d xgoal(0,0,0);
+      int enable_fgc_command = 0;
       while(flag_running)
       {
         flag_keys_available = true;
@@ -254,15 +255,33 @@ int main(int argc, char** argv)
         else { flag_keys_available=false;  }
         freeReplyObject((void*)redis_ds.reply_);
 
+        // REDIS IO : Get fgc_enabled key : fgc_command_enabled
+        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::fgc_command_enabled", rstr_robot_base);
+        if(redis_ds.reply_->len >0)
+        { std::stringstream ss; ss<<redis_ds.reply_->str; ss>>enable_fgc_command;  }
+        else { flag_keys_available=false;  }
+
         if(false == flag_keys_available){
           std::cout<<"\n WARNING : Could not find {q, dq} redis keys for robot: "<<rstr_robot_base<<". Will wait for it...";
           const timespec ts = {0, 50000000};/*50ms sleep */ nanosleep(&ts,NULL);
+          continue;
         }
 
         /* ************************************ COMPUTE CONTROL FORCES ************************** */
         // Compute control forces (note that these directly have access to the io data ds).
-        rtask_hand->x_goal_ = xgoal;
         rctr.computeDynamics();
+
+        // If the torque command is enabled, use the latest goal position.
+        if(1 == enable_fgc_command) { rtask_hand->x_goal_ = xgoal;  }
+        // If the torque command is not enabled, move the goal point to the current position..
+        else {
+          rtask_hand->x_goal_ = rtask_hand->x_;
+
+          { std::stringstream ss; for(scl::sUInt i=0;i<3;++i) ss<<rtask_hand->x_(i)<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
+          redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::traj::xgoal %s", rstr_robot_base,rstr, rstr);
+          freeReplyObject((void*)redis_ds.reply_);
+        }
+
         rctr.computeControlForces(); //Directly update io data structure for now...
 
         /* ************************************ WRITE TO REDIS ************************** */
@@ -277,7 +296,21 @@ int main(int argc, char** argv)
       }
 
       /******************************Exit Gracefully************************************/
-      std::cout<<"\n\nExecuted Successfully";
+      // Send Zero torques to redis
+      { std::stringstream ss; for(scl::sUInt i=0;i<rio.dof_;++i) ss<<0.0<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::actuators::fgc %s",rstr_robot_base,rstr);
+      freeReplyObject((void*)redis_ds.reply_);
+
+      // Give the controller some time to read the zero torques.
+      const timespec ts = {0, 20000000};/*20ms sleep : ~50Hz update*/
+      nanosleep(&ts,NULL);
+
+      // REDIS IO : Disable the fgc enabled key and then exit : fgc_command_enabled
+      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::fgc_command_enabled 0", rstr_robot_base);
+      if(redis_ds.reply_->len <= 0)
+      { std::cout<<"\n\n Failed to exit in a clean manner. The robot might misbehave. Be careful!";  }
+      else
+      { std::cout<<"\n\nExecuted Successfully"; }
       std::cout<<"\n**********************************\n"<<std::flush;
 
       return 0;
