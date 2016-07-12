@@ -118,4 +118,20 @@ namespace scl
 
     return true;
   }
+
+
+  bool CIORedis::get(SIORedis &arg_ds, const char* arg_key, int &arg_int)
+  {
+    // Get the key
+    arg_ds.reply_ = (redisReply *)redisCommand(arg_ds.context_, "GET %s",arg_key);
+    if(arg_ds.reply_->len <= 0){ freeReplyObject((void*)arg_ds.reply_); return false;  }
+
+    // NOTE TODO : Probably faster to use sprintf.
+    std::stringstream ss; ss<<arg_ds.reply_->str;
+    ss>>arg_int;
+    freeReplyObject((void*)arg_ds.reply_);
+
+    return true;
+  }
+
 } /* namespace scl */

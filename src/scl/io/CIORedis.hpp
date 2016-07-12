@@ -73,8 +73,11 @@ namespace scl
     /** Sets an Eigen vector as a string key. */
     bool set(SIORedis &arg_ds, const char* arg_key, const Eigen::VectorXd &arg_vec);
 
-    /** Sets an Eigen vector as a string key. */
+    /** Gets an Eigen vector for the string key. */
     bool get(SIORedis &arg_ds, const char* arg_key, Eigen::VectorXd &arg_vec);
+
+    /** Sets an Eigen vector as a string key. */
+    bool get(SIORedis &arg_ds, const char* arg_key, int &arg_int);
 
     /** Default constructor. Does nothing */
     CIORedis() {}
