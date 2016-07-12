@@ -73,6 +73,9 @@ namespace scl
     /** Sets an Eigen vector as a string key. */
     bool set(SIORedis &arg_ds, const char* arg_key, const Eigen::VectorXd &arg_vec);
 
+    /** Sets an Eigen vector as a string key. */
+    bool set(SIORedis &arg_ds, const char* arg_key, const int arg_int);
+
     /** Gets an Eigen vector for the string key. */
     bool get(SIORedis &arg_ds, const char* arg_key, Eigen::VectorXd &arg_vec);
 
