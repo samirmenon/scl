@@ -120,6 +120,9 @@ SET(SCL_PARSER_SRC ${SCL_INC_DIR}/parser/sclparser/CParserScl.cpp
                      ${SCL_INC_DIR}/parser/sclparser/tixml_parser/CParserSclTiXml.cpp
    )
    
+SET(SCL_IO_SRC ${SCL_INC_DIR}/io/CIORedis.cpp
+   )
+
 SET(SCL_SERIALIZATION_SRC ${SCL_INC_DIR}/serialization/SerializationJSON.cpp
    )
 
@@ -138,7 +141,7 @@ SET(ALLSRC ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC}
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
            ${TAO_SRC} ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
            ${SCL_PARSER_SRC} ${OSIM_PARSER_SRC}
-           ${SCL_SERIALIZATION_SRC}
+           ${SCL_IO_SRC} ${SCL_SERIALIZATION_SRC}
            ${TIXML_SRC})
 
 #Set the build mode to debug by default
