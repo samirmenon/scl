@@ -103,13 +103,14 @@ int main(int argc, char** argv)
       //1. Initialize the database and clock.
       if(false == sutil::CSystemClock::start()) { throw(std::runtime_error("Could not start clock"));  }
 
-      scl::SRobotParsed rds;     //Robot data structure....
-      scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
-      scl::SRobotIO rio;         //I/O data structure
+      scl::SRobotParsed rds;     // Robot data structure....
+      scl::SGcModel rgcm;        // Robot data structure with dynamic quantities...
+      scl::SRobotIO rio;         // I/O data structure
       scl_ext::CDynamicsSclSpatial dyn_scl_sp; //Robot physics integrator...
-      scl::CParserScl p;         //This time, we'll parse the tree from a file...
+      scl::CParserScl p;         // This time, we'll parse the tree from a file...
 
-      double sim_dt = 0.001;     //Simulation timestep..
+      double sim_dt = 0.001;     // Simulation timestep..
+      int enable_fgc_command=0;  // Whether to use fgc commands
 
       /******************************File Parsing************************************/
       std::string name_infile(argv[1]);
@@ -145,18 +146,19 @@ int main(int argc, char** argv)
       if(false == flag)
       { throw(std::runtime_error( std::string("Could not connect to redis server : ") + std::string(ioredis_ds.context_->errstr) ));  }
 
-      std::cout<<"\n The default REDIS keys used are: ";
-      std::cout<<"\n  scl::robot::"<<name_robot<<"::sensors::q";
-      std::cout<<"\n  scl::robot::"<<name_robot<<"::sensors::dq";
-      std::cout<<"\n  scl::robot::"<<name_robot<<"::actuators::fgc";
-      std::cout<<"\n  scl::robot::"<<name_robot<<"::fgc_command_enabled";
-      std::cout<<"\n  scl::robot::"<<name_robot<<"::dof";
-      std::cout<<"\n  (note some drivers also require) scl::robot::"<<name_robot<<"::operate_mode";
-
-      char rstr[1024], rstr_robot_base[1024]; //For redis key formatting
-      int enable_fgc_command=0;
-
+      // Set up the keys here so we don't have to run sprintfs in the while loop...
+      char rstr[1024], rstr_robot_base[1024], rstr_actfgc[1024], rstr_fgcenab[1024],
+           rstr_q[1024], rstr_dq[1024], rstr_sensfgc[1024]; //For redis key formatting
       sprintf(rstr_robot_base, "scl::robot::%s",name_robot.c_str());
+      sprintf(rstr_actfgc, "%s::actuators::fgc", rstr_robot_base);
+      sprintf(rstr_fgcenab, "%s::fgc_command_enabled", rstr_robot_base);
+      sprintf(rstr_q, "%s::sensors::q", rstr_robot_base);
+      sprintf(rstr_dq, "%s::sensors::dq", rstr_robot_base);
+      sprintf(rstr_sensfgc, "%s::sensors::fgc", rstr_robot_base);
+
+      std::cout<<"\n The default REDIS keys used are: ";
+      std::cout<<"\n  "<<rstr_q<<"\n  "<<rstr_dq<<"\n  "<<rstr_sensfgc<<"\n  "<<rstr_actfgc<<"\n  "<<rstr_fgcenab;
+      std::cout<<"\n  scl::robot::"<<name_robot<<"::dof";
 
       // REDIS IO : Add robot to set of active robots..
       sprintf(rstr, "SADD scl::robots %s",name_robot.c_str());
@@ -168,12 +170,10 @@ int main(int argc, char** argv)
 
       // REDIS IO : Create fgc key and set it to zero (initial state)
       rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
-      sprintf(rstr, "%s::actuators::fgc", rstr_robot_base);
-      flag = flag && ioredis.set(ioredis_ds, rstr, rio.actuators_.force_gc_commanded_);
+      flag = flag && ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
 
       // REDIS IO : Get fgc_enabled key : fgc_command_enabled
-      sprintf(rstr, "%s::fgc_command_enabled", rstr_robot_base);
-      flag = flag && ioredis.get(ioredis_ds, rstr, enable_fgc_command);
+      flag = flag && ioredis.get(ioredis_ds, rstr_fgcenab, enable_fgc_command);
 
       if(0 == enable_fgc_command)
       { std::cout<<"\n\n ** WARNING : To enable torque commands set the following key to '1' : "<<rstr_robot_base<<"::fgc_command_enabled **\n\n"; }
@@ -187,7 +187,7 @@ int main(int argc, char** argv)
 
       while(flag_sim_enabled)
       {
-        // The physics integrator
+        // ***************** The physics integrator *****************
         sutil::CSystemClock::tick(sim_dt);
         flag = dyn_scl_sp.integrate(rgcm, rio, sim_dt); // Run the integrator with a 1ms timestep..
 
@@ -208,31 +208,20 @@ int main(int argc, char** argv)
 
         //rio.sensors_.dq_ -= rio.sensors_.dq_/1000;
 
-        // REDIS IO : Set q
-        sprintf(rstr, "%s::sensors::q", rstr_robot_base);
-        flag = flag && ioredis.set(ioredis_ds, rstr, rio.sensors_.q_);
-
-        // REDIS IO : Set dq
-        sprintf(rstr, "%s::sensors::dq", rstr_robot_base);
-        flag = flag && ioredis.set(ioredis_ds, rstr, rio.sensors_.dq_);
-
-        // REDIS IO : Set fgc_sensed
-        sprintf(rstr, "%s::sensors::fgc", rstr_robot_base);
-        flag = flag && ioredis.set(ioredis_ds, rstr, rio.sensors_.force_gc_measured_);
-
-        // REDIS IO : Get fgc_enabled key : fgc_command_enabled
-        sprintf(rstr, "%s::fgc_command_enabled", rstr_robot_base);
-        flag = flag && ioredis.get(ioredis_ds, rstr, enable_fgc_command);
+        // ***************** The Redis IO *****************
+        flag = flag && ioredis.set(ioredis_ds, rstr_q, rio.sensors_.q_);   // REDIS IO : Set q
+        flag = flag && ioredis.set(ioredis_ds, rstr_dq, rio.sensors_.dq_); // REDIS IO : Set dq
+        flag = flag && ioredis.set(ioredis_ds, rstr_sensfgc, rio.sensors_.force_gc_measured_); // REDIS IO : Set fgc_sensed
+        flag = flag && ioredis.get(ioredis_ds, rstr_fgcenab, enable_fgc_command); // REDIS IO : Get fgc_enabled key : fgc_command_enabled
         if(false == flag){  enable_fgc_command = 0; } // Just to be safe..
 
-        if(enable_fgc_command){ //Read command torques if the enable flag is true
-          // REDIS IO : Get fgc_commanded
-          sprintf(rstr, "%s::actuators::fgc", rstr_robot_base);
-          flag = flag && ioredis.get(ioredis_ds, rstr, rio.actuators_.force_gc_commanded_);
-        }
+        if(enable_fgc_command) //Read command torques if the enable flag is true
+        { flag = flag && ioredis.get(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);  } // REDIS IO : Get fgc_commanded
         else // If the enable flag is false, set torques to zero.
         { rio.actuators_.force_gc_commanded_.setZero(rio.dof_); }
-      }
+
+        if(false == flag){ std::cout<<"\n ERROR : Can't get fgc command. Something is probably seriously wrong. Should quit"; break;  }
+      } // End of while loop
 
       t_end = sutil::CSystemClock::getSysTime();
 
@@ -242,7 +231,7 @@ int main(int argc, char** argv)
       sprintf(rstr, "SREM scl::robots %s",name_robot.c_str());
       flag = flag && ioredis.runCommand(ioredis_ds, rstr);
 
-      // REDIS IO : Remove all keys..
+      // REDIS IO : Remove all keys. This is just easier with the raw redis command so we won't use the SCL wrapper.
       ioredis_ds.reply_ = (redisReply *)redisCommand(ioredis_ds.context_, "DEL %s::dof", rstr_robot_base); freeReplyObject((void*)ioredis_ds.reply_);
       ioredis_ds.reply_ = (redisReply *)redisCommand(ioredis_ds.context_, "DEL %s::sensors::q", rstr_robot_base); freeReplyObject((void*)ioredis_ds.reply_);
       ioredis_ds.reply_ = (redisReply *)redisCommand(ioredis_ds.context_, "DEL %s::sensors::dq", rstr_robot_base); freeReplyObject((void*)ioredis_ds.reply_);
