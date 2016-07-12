@@ -77,7 +77,7 @@ namespace scl
     return true;
   }
 
-  /** Sends a message. */
+  /** Sends a message.
   bool CIORedis::runCommand(SIORedis &arg_ds, char* arg_msg)
   {
     bool flag=false;
@@ -85,7 +85,7 @@ namespace scl
     if(arg_ds.reply_->len > 0){ flag = true;  }//Succeeded
     freeReplyObject((void*)arg_ds.reply_);
     return flag;
-  }
+  }*/
 
   /** Sets an Eigen vector as a string key. */
   bool CIORedis::set(SIORedis &arg_ds, const char* arg_key, const Eigen::VectorXd &arg_vec)

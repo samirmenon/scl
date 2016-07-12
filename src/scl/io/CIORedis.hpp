@@ -67,8 +67,8 @@ namespace scl
      * structure. */
     bool connect(SIORedis &arg_ds, bool arg_ping_server=false);
 
-    /** Sends a message. */
-    bool runCommand(SIORedis &arg_ds, char* arg_msg);
+    /** Sends a message.
+    bool runCommand(SIORedis &arg_ds, char* arg_msg);*/
 
     /** Sets an Eigen vector as a string key. */
     bool set(SIORedis &arg_ds, const char* arg_key, const Eigen::VectorXd &arg_vec);
