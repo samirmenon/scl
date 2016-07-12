@@ -131,7 +131,9 @@ int main(int argc, char** argv)
 
       scl::CIORedis ioredis;
       scl::SIORedis ioredis_ds;
-      ioredis.connect(ioredis_ds,false);
+      flag = ioredis.connect(ioredis_ds,false);
+      if(false == flag)
+      { throw(std::runtime_error( std::string("Could not connect to redis server : ") + std::string(ioredis_ds.context_->errstr) ));  }
 
       std::cout<<"\n Monitoring REDIS key : "<<rstr_qkey;
       std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
