@@ -213,6 +213,7 @@ int main(int argc, char** argv)
         flag = flag && ioredis.set(ioredis_ds, rstr_dq, rio.sensors_.dq_); // REDIS IO : Set dq
         flag = flag && ioredis.set(ioredis_ds, rstr_sensfgc, rio.sensors_.force_gc_measured_); // REDIS IO : Set fgc_sensed
         flag = flag && ioredis.get(ioredis_ds, rstr_fgcenab, enable_fgc_command); // REDIS IO : Get fgc_enabled key : fgc_command_enabled
+
         if(false == flag){  enable_fgc_command = 0; } // Just to be safe..
 
         if(enable_fgc_command) //Read command torques if the enable flag is true
