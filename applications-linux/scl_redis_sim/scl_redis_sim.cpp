@@ -227,10 +227,14 @@ int main(int argc, char** argv)
       t_end = sutil::CSystemClock::getSysTime();
 
       /******************************Redis Shutdown (remove keys)************************************/
+      // Disable fgc commands (we won't delete it because it might be used by others)
+      flag = ioredis.set(ioredis_ds, rstr_fgcenab, 0); // REDIS IO : Set fgc_enabled key
+
       // REDIS IO : Remove robot from set of active robots..
-      // REDIS IO : Add robot to set of active robots..
       sprintf(rstr, "SREM scl::robots %s",name_robot.c_str());
       flag = flag && ioredis.runCommand(ioredis_ds, rstr);
+
+      if(false == flag){ std::cout<<"\n ERROR : Could not cleanly remove robot keys in redis ds. Consider flushing all redis keys.";  }
 
       // REDIS IO : Remove all keys. This is just easier with the raw redis command so we won't use the SCL wrapper.
       ioredis_ds.reply_ = (redisReply *)redisCommand(ioredis_ds.context_, "DEL %s::dof", rstr_robot_base); freeReplyObject((void*)ioredis_ds.reply_);
