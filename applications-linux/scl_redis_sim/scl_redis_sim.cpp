@@ -161,22 +161,30 @@ int main(int argc, char** argv)
       std::cout<<"\n  scl::robot::"<<name_robot<<"::dof";
 
       // REDIS IO : Add robot to set of active robots..
-      sprintf(rstr, "SADD scl::robots %s",name_robot.c_str());
-      flag = flag && ioredis.runCommand(ioredis_ds, rstr);
+      ioredis_ds.reply_ = (redisReply *)redisCommand(ioredis_ds.context_, "SADD scl::robots %s", name_robot.c_str());
+      freeReplyObject((void*)ioredis_ds.reply_);
 
       // REDIS IO : Add DOF key..
-      sprintf(rstr, "SET %s::dof %d", rstr_robot_base, static_cast<int>(rio.dof_));
-      flag = flag && ioredis.runCommand(ioredis_ds, rstr);
+      ioredis_ds.reply_ = (redisReply *)redisCommand(ioredis_ds.context_, "SET %s::dof %d", rstr_robot_base, static_cast<int>(rio.dof_));
+      freeReplyObject((void*)ioredis_ds.reply_);
 
       // REDIS IO : Create fgc key and set it to zero (initial state)
       rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
       flag = flag && ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
 
+      if(false == flag) { throw(std::runtime_error("Could not complete initial redis key set/gets." ));  }
+
       // REDIS IO : Get fgc_enabled key : fgc_command_enabled
-      flag = flag && ioredis.get(ioredis_ds, rstr_fgcenab, enable_fgc_command);
+      flag = ioredis.get(ioredis_ds, rstr_fgcenab, enable_fgc_command);
+      if(false == flag)
+      {
+        std::cout<<"\n NOTE : Did not find an '"<< rstr_fgcenab<<"' key so creating it and setting it to zero";
+        enable_fgc_command = 0;
+        ioredis.set(ioredis_ds, rstr_fgcenab, enable_fgc_command);
+      }
 
       if(0 == enable_fgc_command)
-      { std::cout<<"\n\n ** WARNING : To enable torque commands set the following key to '1' : "<<rstr_robot_base<<"::fgc_command_enabled **\n\n"; }
+      { std::cout<<"\n ** WARNING : To enable torque commands set the following key to '1' : "<<rstr_robot_base<<"::fgc_command_enabled **\n"; }
 
       std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
 
@@ -229,12 +237,12 @@ int main(int argc, char** argv)
       /******************************Redis Shutdown (remove keys)************************************/
       // Disable fgc commands (we won't delete it because it might be used by others)
       flag = ioredis.set(ioredis_ds, rstr_fgcenab, 0); // REDIS IO : Set fgc_enabled key
+      if(false == flag){ std::cout<<"\n ERROR : Could not cleanly remove fgc enabled key in redis ds. Consider setting it manually.";  }
 
       // REDIS IO : Remove robot from set of active robots..
-      sprintf(rstr, "SREM scl::robots %s",name_robot.c_str());
-      flag = flag && ioredis.runCommand(ioredis_ds, rstr);
+      ioredis_ds.reply_ = (redisReply *)redisCommand(ioredis_ds.context_, "SREM scl::robots %s", name_robot.c_str());
+      freeReplyObject((void*)ioredis_ds.reply_);
 
-      if(false == flag){ std::cout<<"\n ERROR : Could not cleanly remove robot keys in redis ds. Consider flushing all redis keys.";  }
 
       // REDIS IO : Remove all keys. This is just easier with the raw redis command so we won't use the SCL wrapper.
       ioredis_ds.reply_ = (redisReply *)redisCommand(ioredis_ds.context_, "DEL %s::dof", rstr_robot_base); freeReplyObject((void*)ioredis_ds.reply_);
