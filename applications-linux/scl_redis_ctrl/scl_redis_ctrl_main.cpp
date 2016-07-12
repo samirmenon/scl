@@ -36,6 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
+#include <scl/io/CIORedis.hpp>
 
 // Used for dynamic typing
 #include <scl/robot/DbRegisterFunctions.hpp>
@@ -140,11 +141,11 @@ int main(int argc, char** argv)
 
       /******************************Load Robot Specification************************************/
       //We will use a slightly more complex xml spec than the first few tutorials
-      bool flag = p.readRobotFromFile(name_infile,"../../specs/",name_robot,rds);
+      flag = p.readRobotFromFile(name_infile,"../../specs/",name_robot,rds);
       flag = flag && rio.init(rds);             //Set up the IO data structure
       flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
       flag = flag && dyn_scl.init(rds);         //Set up kinematics and dynamics object
-      if(false == flag){ return 1; }            //Error check.
+      if(false == flag){ throw(std::runtime_error("Could not initialize robot spec")); }            //Error check.
 
       /******************************Set up Controller Specification************************************/
       // Read xml file info into task specifications.
@@ -155,114 +156,88 @@ int main(int argc, char** argv)
       flag = flag && scl_registry::registerNativeDynamicTypes();
       flag = flag && scl_util::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
       flag = flag && rctr.init(&rctr_ds,&dyn_scl);  //Set up the controller (needs parsed data and a dyn object)
-      if(false == flag){ return 1; }                //Error check.
+      if(false == flag){ throw(std::runtime_error("Could not initialize controller")); }            //Error check.
 
       // Set up a special task
       rtask_hand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at(name_task)) );
-      if(NULL == rtask_hand)  {return 1;}           //Error check
+      if(NULL == rtask_hand){ throw(std::runtime_error("Could not find control task")); }            //Error check.
 
       // Compute the dynamics to begin with (flushes state across all matrices).
       rctr.computeDynamics();
       rctr.computeControlForces(); //Directly update io data structure for now...
 
       /******************************Redis Initialization************************************/
-      std::cout<<"\n The default REDIS keys used are: ";
-      std::cout<<"\n  scl::robot::"<<name_robot<<"::sensors::q";
-      std::cout<<"\n  scl::robot::"<<name_robot<<"::sensors::dq";
-      std::cout<<"\n  scl::robot::"<<name_robot<<"::actuators::fgc";
+      scl::CIORedis ioredis;
+      scl::SIORedis ioredis_ds;
+      flag = ioredis.connect(ioredis_ds,false);
+      if(false == flag)
+      { throw(std::runtime_error( std::string("Could not connect to redis server : ") + std::string(ioredis_ds.context_->errstr) ));  }
 
+      // Set up the keys here so we don't have to run sprintfs in the while loop...
+      char rstr_robot_base[1024], rstr_actfgc[1024], rstr_fgcenab[1024], rstr_q[1024], rstr_dq[1024], rstr_xgoal[1024];
+      int enable_fgc_command = 0;
 
-      char rstr[1024], rstr_robot_base[1024]; //For redis key formatting
       sprintf(rstr_robot_base, "scl::robot::%s",name_robot.c_str());
+      sprintf(rstr_actfgc, "%s::actuators::fgc", rstr_robot_base);
+      sprintf(rstr_fgcenab, "%s::fgc_command_enabled", rstr_robot_base);
+      sprintf(rstr_q, "%s::sensors::q", rstr_robot_base);
+      sprintf(rstr_dq, "%s::sensors::dq", rstr_robot_base);
+      sprintf(rstr_xgoal, "%s::traj::xgoal", rstr_robot_base);
 
-      redis_ds.context_= redisConnectWithTimeout(redis_ds.hostname_, redis_ds.port_, redis_ds.timeout_);
-      if (redis_ds.context_ == NULL) { throw(std::runtime_error("Could not allocate redis context."));  }
-
-      if(redis_ds.context_->err)
-      {
-        std::string err = std::string("Could not connect to redis server : ") + std::string(redis_ds.context_->errstr);
-        redisFree(redis_ds.context_);
-        throw(std::runtime_error(err.c_str()));
-      }
-
-      // PING server to make sure things are working..
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_,"PING");
-      std::cout<<"\n\n Redis : Redis server is live. Reply to PING is, "<<redis_ds.reply_->str<<"\n";
-      freeReplyObject((void*)redis_ds.reply_);
+      std::cout<<"\n The default REDIS keys used are: ";
+      std::cout<<"\n  "<<rstr_q<<"\n  "<<rstr_dq<<"\n  "<<rstr_actfgc<<"\n  "<<rstr_fgcenab;
 
       // Check to see if all keys are available:
-      bool flag_keys_available = false;
-      while(false == flag_keys_available){
-        flag_keys_available = true;//Hopefully.
+      flag = false;
+      while(false == flag){
+        flag = true;//Hopefully.
 
-        // REDIS IO : Get q key. If unavailable, throw an error..
-        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::sensors::q", rstr_robot_base);
-        if(redis_ds.reply_->len > 0)
-        { std::stringstream ss; ss<<redis_ds.reply_->str; for(scl::sUInt i=0;i<rio.dof_;++i) ss>>rio.sensors_.q_(i);  }
-        else {  flag_keys_available=false;  }
-        freeReplyObject((void*)redis_ds.reply_);
-
-        // REDIS IO : Get dq key. If unavailable, throw an error..
-        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::sensors::dq", rstr_robot_base);
-        if(redis_ds.reply_->len > 0)
-        { std::stringstream ss; ss<<redis_ds.reply_->str; for(scl::sUInt i=0;i<rio.dof_;++i) ss>>rio.sensors_.dq_(i);  }
-        else {  flag_keys_available=false;  }
-        freeReplyObject((void*)redis_ds.reply_);
-
-        if(flag_keys_available){  break;  } // Found both keys...
+        // REDIS IO : Get q and dq keys. If unavailable, throw an error..
+        flag = flag && ioredis.get(ioredis_ds, rstr_q, rio.sensors_.q_);
+        flag = flag && ioredis.get(ioredis_ds, rstr_dq, rio.sensors_.dq_);
+        if(flag){  break;  } // Found both keys and so flag is still true...
 
         std::cout<<"\n WARNING : Could not find {q, dq} redis keys for robot: "<<rstr_robot_base<<". Will wait for it...";
         const timespec ts = {0, 50000000};/*50ms sleep */ nanosleep(&ts,NULL);
       }
 
+      // Now that we have the actual q and dq, let's update control matrices..
+      rctr.computeDynamics(); // Update all the positions given that we have q values now.
+      rctr.computeControlForces(); //Directly update io data structure for now...
+
       // REDIS IO : Create fgc key and set it to zero (initial state)
-      { std::stringstream ss; for(scl::sUInt i=0;i<rio.dof_;++i) ss<<rio.actuators_.force_gc_commanded_(i)<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::actuators::fgc %s", rstr_robot_base,rstr, rstr);
-      freeReplyObject((void*)redis_ds.reply_);
+      rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
+      flag = ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
 
-      // REDIS IO : Create xgoal key and set it to zero (initial state)
-      { std::stringstream ss; for(scl::sUInt i=0;i<3;++i) ss<<rtask_hand->x_(i)<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::traj::xgoal %s", rstr_robot_base,rstr, rstr);
-      freeReplyObject((void*)redis_ds.reply_);
+      // REDIS IO : Create xgoal key and set it to the current goal position state
+      rtask_hand->x_goal_ = rtask_hand->x_;
+      flag = flag && ioredis.set(ioredis_ds, rstr_xgoal, rtask_hand->x_goal_);
 
-      std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
+      if(false == flag){ throw(std::runtime_error("Could not set up fgc and/or xgoal key(s) in the redis server")); }  //Error check.
+
+      // Get the
+      flag = ioredis.get(ioredis_ds, rstr_fgcenab, enable_fgc_command);
+      if(false == flag){ throw(std::runtime_error("Could not set find fgc enabled key in the redis server")); }  //Error check.
+
+      std::cout<<"\n ** Started: To monitor Redis messages, open a redis-cli and type 'monitor' **\n"<<std::flush;
+
+      if(0 == enable_fgc_command)
+      {  std::cout<<"\n ** NOTE: The '"<<rstr_fgcenab<<"' key needs to be '1' before the controller torques are used **\n"<<std::flush; }
 
       /****************************** Control Loop************************************/
-      Eigen::Vector3d xgoal(0,0,0);
-      int enable_fgc_command = 0;
+      Eigen::VectorXd xgoal; xgoal = rtask_hand->x_goal_;
       while(flag_running)
       {
-        flag_keys_available = true;
+        flag = true;
         /* ************************************ READ FROM REDIS ************************** */
-        // REDIS IO : Get q
-        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::sensors::q", rstr_robot_base);
-        if(redis_ds.reply_->len > 0)
-        { std::stringstream ss; ss<<redis_ds.reply_->str; for(scl::sUInt i=0;i<rio.dof_;++i) ss>>rio.sensors_.q_(i);  }
-        else {  flag_keys_available = false;  }
-        freeReplyObject((void*)redis_ds.reply_);
+        // REDIS IO : Get q and dq keys. If unavailable, throw an error..
+        flag = flag && ioredis.get(ioredis_ds, rstr_q, rio.sensors_.q_);
+        flag = flag && ioredis.get(ioredis_ds, rstr_dq, rio.sensors_.dq_);
+        flag = flag && ioredis.get(ioredis_ds, rstr_xgoal, xgoal);
+        flag = flag && ioredis.get(ioredis_ds, rstr_fgcenab, enable_fgc_command);
 
-        // REDIS IO : Get dq
-        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::sensors::dq", rstr_robot_base);
-        if(redis_ds.reply_->len > 0)
-        { std::stringstream ss; ss<<redis_ds.reply_->str; for(scl::sUInt i=0;i<rio.dof_;++i) ss>>rio.sensors_.dq_(i);  }
-        else { flag_keys_available=false;  }
-        freeReplyObject((void*)redis_ds.reply_);
-
-        // REDIS IO : Get xgoal
-        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::traj::xgoal", rstr_robot_base);
-        if(redis_ds.reply_->len > 0)
-        { std::stringstream ss; ss<<redis_ds.reply_->str; for(scl::sUInt i=0;i<3;++i) ss>>xgoal(i);  }
-        else { flag_keys_available=false;  }
-        freeReplyObject((void*)redis_ds.reply_);
-
-        // REDIS IO : Get fgc_enabled key : fgc_command_enabled
-        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "GET %s::fgc_command_enabled", rstr_robot_base);
-        if(redis_ds.reply_->len >0)
-        { std::stringstream ss; ss<<redis_ds.reply_->str; ss>>enable_fgc_command;  }
-        else { flag_keys_available=false;  }
-
-        if(false == flag_keys_available){
-          std::cout<<"\n WARNING : Could not find {q, dq} redis keys for robot: "<<rstr_robot_base<<". Will wait for it...";
+        if(false == flag){
+          std::cout<<"\n WARNING : Could not find {q, dq, xgoal, fgcenab} redis keys for robot: "<<rstr_robot_base<<". Will wait for it...";
           const timespec ts = {0, 50000000};/*50ms sleep */ nanosleep(&ts,NULL);
           continue;
         }
@@ -276,19 +251,20 @@ int main(int argc, char** argv)
         // If the torque command is not enabled, move the goal point to the current position..
         else {
           rtask_hand->x_goal_ = rtask_hand->x_;
+          flag = ioredis.set(ioredis_ds, rstr_xgoal, rtask_hand->x_goal_);
 
-          { std::stringstream ss; for(scl::sUInt i=0;i<3;++i) ss<<rtask_hand->x_(i)<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
-          redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::traj::xgoal %s", rstr_robot_base,rstr, rstr);
-          freeReplyObject((void*)redis_ds.reply_);
+          rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
+          flag = flag && ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
+
+          if(false == flag) { std::cout<<"\n WARNING : Could not set xgoal or fgc. Check robot before re-enabling fgc commands"; }
         }
 
         rctr.computeControlForces(); //Directly update io data structure for now...
 
         /* ************************************ WRITE TO REDIS ************************** */
         // REDIS IO : Set fgc_commanded
-        { std::stringstream ss; for(scl::sUInt i=0;i<rio.dof_;++i) ss<<rio.actuators_.force_gc_commanded_(i)<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
-        redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::actuators::fgc %s",rstr_robot_base,rstr);
-        freeReplyObject((void*)redis_ds.reply_);
+        flag = ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
+        if(false == flag){  std::cout<<"\n ERROR : Could not set force gc and/or xgoal. Probably serious. Consider aborting."; }
 
         // Optional, sleep a bit.
 //        const timespec ts = {0, 20000000};/*20ms sleep : ~50Hz update*/
@@ -297,20 +273,10 @@ int main(int argc, char** argv)
 
       /******************************Exit Gracefully************************************/
       // Send Zero torques to redis
-      { std::stringstream ss; for(scl::sUInt i=0;i<rio.dof_;++i) ss<<0.0<<" "; sprintf(rstr, "%s", ss.str().c_str());  }
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::actuators::fgc %s",rstr_robot_base,rstr);
-      freeReplyObject((void*)redis_ds.reply_);
+      rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
+      ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
 
-      // Give the controller some time to read the zero torques.
-      const timespec ts = {0, 20000000};/*20ms sleep : ~50Hz update*/
-      nanosleep(&ts,NULL);
-
-      // REDIS IO : Disable the fgc enabled key and then exit : fgc_command_enabled
-      redis_ds.reply_ = (redisReply *)redisCommand(redis_ds.context_, "SET %s::fgc_command_enabled 0", rstr_robot_base);
-      if(redis_ds.reply_->len <= 0)
-      { std::cout<<"\n\n Failed to exit in a clean manner. The robot might misbehave. Be careful!";  }
-      else
-      { std::cout<<"\n\nExecuted Successfully"; }
+      std::cout<<"\n\nExecuted Successfully";
       std::cout<<"\n**********************************\n"<<std::flush;
 
       return 0;
