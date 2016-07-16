@@ -41,6 +41,7 @@ SET(UTIL_SRC ${SCL_INC_DIR}/util/DatabaseUtils.cpp
              ${SCL_INC_DIR}/util/HelperFunctions.cpp
              ${SCL_INC_DIR}/util/FileFunctions.cpp
              ${SCL_INC_DIR}/util/RobotMath.cpp
+             ${SCL_INC_DIR}/util/CmdLineArgReader.cpp
    )
 
 SET(ROBOT_SRC ${SCL_INC_DIR}/robot/CRobot.cpp
