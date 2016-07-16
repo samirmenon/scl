@@ -36,6 +36,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/io/CIORedis.hpp>
+#include <scl/util/CmdLineArgReader.hpp>
 
 #include <sutil/CSystemClock.hpp>
 
@@ -61,18 +62,23 @@ int main(int argc, char** argv)
       <<"\n        appropriate keys are set";
 
   bool flag;
-  if((argc < 2)||(argc > 4))
+  if(argc < 2)
   {
     std::cout<<"\n The 'scl_redis_visualizer' application can graphically render an scl physics simulation robot with redis io."
         <<"\n ERROR : Provided incorrect arguments. The correct input format is:"
-        <<"\n   ./scl_redis_visualizer <file_name.xml> <optional: robot_name> <optional: graphics_name>"
-        <<"\n If a robot name isn't provided, the first one from the xml file will be used.\n";
+        <<"\n   ./scl_redis_visualizer <file_name.xml> <optional: -r robot_name> <optional: -g graphics_name> <optional : -muscles/-m>"
+        <<"\n If a robot or graphics name isn't provided, the first one from the xml file will be used. Muscles are not rendered by default.\n";
     return 0;
   }
   else
   {
     try
     {
+      /******************************Parse Command Line Args************************************/
+      scl::SCmdLineOptions_OneRobot rcmd;
+      flag = scl::cmdLineArgReaderOneRobot(argc,argv,rcmd);
+      if(false == flag) { throw(std::runtime_error("Could not parse command line arguments"));  }
+
       /******************************Initialization************************************/
       //1. Initialize the database and clock.
       if(false == sutil::CSystemClock::start()) { throw(std::runtime_error("Could not start clock"));  }
@@ -84,42 +90,34 @@ int main(int argc, char** argv)
       scl::CParserScl p;         //This time, we'll parse the tree from a file.
 
       /******************************File Parsing************************************/
-      std::string name_infile(argv[1]);
-      std::cout<<"\nRunning scl_redis_sim for input file: "<<name_infile;
-
-      std::string name_robot, name_graphics;
+      std::cout<<"\nRunning scl_redis_sim for input file: "<<rcmd.name_file_config_;
 
       std::vector<std::string> str_vec;
-      if(argc<3)
+      if(rcmd.name_robot_ == "")
       {//Use the first robot spec in the file if one isn't specified by the user.
-        flag = p.listRobotsInFile(name_infile,str_vec);
+        flag = p.listRobotsInFile(rcmd.name_file_config_,str_vec);
         if(false == flag) { throw(std::runtime_error("Could not read robot names from the file"));  }
-        name_robot = str_vec[0];//Use the first available robot.
+        rcmd.name_robot_ = str_vec[0];//Use the first available robot.
       }
-      else { name_robot = argv[2];}
 
-      if(argc<4)
+      if(rcmd.name_graphics_ == "")
       {
         str_vec.clear();
-        flag = p.listGraphicsInFile(name_infile,str_vec);
+        flag = p.listGraphicsInFile(rcmd.name_file_config_,str_vec);
         if(false == flag) { throw(std::runtime_error("Could not read graphics xml from the file"));  }
-        name_graphics = str_vec[0];//Use the first available graphics
+        rcmd.name_graphics_ = str_vec[0];//Use the first available graphics
       }
-      else { name_graphics = argv[3];}
-
-      std::cout<<"\nParsing robot: "<<name_robot;
-      if(false == flag) { throw(std::runtime_error("Could not read robot description from file"));  }
 
       /******************************Load Robot Specification************************************/
-      //We will use a slightly more complex xml spec than the first few tutorials
-      bool flag = p.readRobotFromFile(name_infile,"../../specs/",name_robot,rds);
+      std::cout<<"\nParsing robot: "<<rcmd.name_robot_;
+      bool flag = p.readRobotFromFile(rcmd.name_file_config_,"../../specs/",rcmd.name_robot_,rds);
       flag = flag && rio.init(rds);             //Set up the IO data structure
-      if(false == flag){ return 1; }            //Error check.
+      if(false == flag) { throw(std::runtime_error("Could not read robot description from file"));  }
 
       /******************************ChaiGlut Graphics************************************/
-      glutInit(&argc, argv); // We will use glut for the window pane (not the graphics).
+      glutInit(&argc, argv); // We will use glut for the window pane (chai for the graphics).
 
-      flag = p.readGraphicsFromFile(name_infile,name_graphics,rgr);
+      flag = p.readGraphicsFromFile(rcmd.name_file_config_,rcmd.name_graphics_,rgr);
       flag = flag && rchai.initGraphics(&rgr);
       flag = flag && rchai.addRobotToRender(&rds,&rio);
       flag = flag && scl_chai_glut_interface::initializeGlutForChai(&rgr, &rchai);
@@ -127,7 +125,7 @@ int main(int argc, char** argv)
 
       /******************************Redis Initialization************************************/
       char rstr_qkey[1024]; //For redis key formatting
-      sprintf(rstr_qkey, "scl::robot::%s::sensors::q",name_robot.c_str());
+      sprintf(rstr_qkey, "scl::robot::%s::sensors::q",rcmd.name_robot_.c_str());
 
       scl::CIORedis ioredis;
       scl::SIORedis ioredis_ds;
