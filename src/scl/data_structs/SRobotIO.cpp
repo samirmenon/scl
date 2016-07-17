@@ -87,6 +87,7 @@ sBool SRobotIO::init(const SRobotParsed& arg_rds)
       if(NULL == tmp_aset)
       { throw(std::runtime_error(std::string("Can't add an actuator set: ")+val.name_));  }
 
+      // The dynamic typing allows us to handle arbitrary subtypes of the base actuator set class..
       void* obj = NULL;
       bool flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(val.getType(),obj);
       if(false == flag)

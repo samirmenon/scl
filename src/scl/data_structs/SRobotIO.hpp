@@ -95,9 +95,9 @@ namespace scl
     /** Muscle actuator sets. Use the type information to do
      * stuff with the data depending on actuator type.
      *
-     * NOTE : The CMappedPointerList false arg merely indicates that sutil
-     * will NOT deallocate memory for these objects. */
-    sutil::CMappedPointerList<std::string, SActuatorSetBase, false> actuator_sets_;
+     * NOTE : The CMappedPointerList true arg indicates that sutil
+     * will deallocate memory for these objects. */
+    sutil::CMappedPointerList<std::string, SActuatorSetBase, true> actuator_sets_;
   };
 
   /** Wraps input (sensor) and output (actuator) data for a robot.
@@ -135,10 +135,6 @@ namespace scl
      * and sufficient to determine the system's state. */
     void setGcVelocity(const Eigen::VectorXd &arg_vel)
     { sensors_.dq_ = arg_vel;  }
-
-    /** Adds an actuator set with muscle actuators */
-    sBool addActuatorSet(SActuatorSetBase*& ret_aset_dyn)
-    { return NULL != actuators_.actuator_sets_.create(ret_aset_dyn->name_,ret_aset_dyn);  }
 
     /** Prints all the robot info to the screen */
     sBool printInfo();
