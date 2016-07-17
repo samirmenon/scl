@@ -31,7 +31,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/util/DatabaseUtils.hpp>
 #include <scl/Singletons.hpp>
-#include <scl/data_structs/SRobotParsed.hpp>
+#include <scl/data_structs/AllHeaders.hpp>
+
 #include <sutil/CRegisteredDynamicTypes.hpp>
 
 #include <vector>
