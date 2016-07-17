@@ -37,6 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/graphics/chai/data_structs/SGraphicsChaiRigidBody.hpp>
 #include <scl/graphics/chai/data_structs/SGraphicsChaiMuscleSet.hpp>
 
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
+// NOTE TODO : Consider trimming this and adding it. Will reduce some code duplication.
+// #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 
 #endif /* SRC_SCL_GRAPHICS_ALLHEADERS_HPP_ */
