@@ -41,20 +41,20 @@ namespace scl
   namespace dsquery
   {
     /** Does what the name says. Else returns NULL */
-    scl::SActuatorSetMuscleParsed* getFromActuatorSetFirstMuscleSet(scl::SActuatorSetParsed& arg_aset) const
+    scl::SActuatorSetMuscleParsed* getFromRobotParsedFirstMuscleSet(scl::SRobotParsed& arg_rds)
     {
       scl::SActuatorSetMuscleParsed* ret_mset = NULL;
       // Let's find the parsed actuator set and make sure it has a type "muscle"
       sutil::CMappedPointerList<std::string, scl::SActuatorSetParsed, true>::iterator it,ite;
-      for (it = arg_aset.begin(), ite = arg_aset.end(); it!=ite;++it)
+      for (it = arg_rds.actuator_sets_.begin(), ite = arg_rds.actuator_sets_.end(); it!=ite;++it)
       {
         scl::SActuatorSetParsed* tmp_aset = *it;
         // Since there could be different actuator types, the code casts their objects to a
         // simpler type and so we have to cast them to the correct type.
         if("SActuatorSetMuscleParsed" == tmp_aset->getType())
         {
-          rob_mset_ds = dynamic_cast<scl::SActuatorSetMuscleParsed*>(tmp_aset);
-          if(NULL==rob_mset_ds)
+          ret_mset = dynamic_cast<scl::SActuatorSetMuscleParsed*>(tmp_aset);
+          if(NULL==ret_mset)
           {
             std::cout<<"\n WARNING : getFromActuatorSetFirstMuscleSet() : Actuator set type mismatch. This should be a muscle set:"
             <<tmp_aset->name_;
