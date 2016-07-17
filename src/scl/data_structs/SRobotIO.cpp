@@ -31,6 +31,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/data_structs/SRobotIO.hpp>
 
+#include <sutil/CRegisteredDynamicTypes.hpp>
+
 #include <stdexcept>
 #include <iostream>
 
@@ -76,6 +78,21 @@ sBool SRobotIO::init(const SRobotParsed& arg_rds)
     }
 
     actuators_.force_gc_commanded_.setZero(dof_);
+
+    // Loop over the actuator sets and create placeholders for objects..
+    for(auto it=arg_rds.actuator_sets_.begin(); it != arg_rds.actuator_sets_.end(); ++it)
+    {
+      SActuatorSetParsed &val = **it;
+      SActuatorSetBase **tmp_aset = actuators_.actuator_sets_.create(val.name_);
+      if(NULL == tmp_aset)
+      { throw(std::runtime_error(std::string("Can't add an actuator set: ")+val.name_));  }
+
+      void* obj = NULL;
+      bool flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(val.getType(),obj);
+      if(false == flag)
+      { throw(std::runtime_error(std::string("Failed to get dyn type object for type (is it registered/standard?): ")+val.getType()));  }
+      *tmp_aset = reinterpret_cast<SActuatorSetBase *>(obj);
+    }
 
     has_been_init_ = true;
   }
