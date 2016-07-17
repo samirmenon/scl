@@ -1314,6 +1314,8 @@ namespace scl {
             l->m_pointB = par2->getGlobalPos() + rotvec2; //Translate the rotated position vector from the frame's position.
 
             // Set the line's color. Scale to max force generation ability.
+            if(act_musc->force_actuator_.rows()<=0)
+            { throw(std::runtime_error("A muscle's force_actuator_ vector has not been initialized (size zero). Can't set muscle color."));  }
             double tmp_col = act_musc->force_actuator_(i)/itm->muscle_parsed_->max_isometric_force_;
             if(tmp_col > 0.0)
             {
