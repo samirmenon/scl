@@ -33,6 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef SRC_SCL_TRAJECTORY_ALLHEADERS_HPP_
 #define SRC_SCL_TRAJECTORY_ALLHEADERS_HPP_
 
-#include <scl/trajectory/CTrajectoryGenerator.hpp>
+// NOTE TODO : This is under construction
+// #include <scl/trajectory/CTrajectoryGenerator.hpp>
 
 #endif /* SRC_SCL_TRAJECTORY_ALLHEADERS_HPP_ */
