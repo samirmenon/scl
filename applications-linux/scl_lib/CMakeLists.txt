@@ -26,6 +26,10 @@ INCLUDE_DIRECTORIES(../../src/ ${SCL_INC_DIR}
                     ${SUTIL_INC_DIR} ${TIXML_INC_DIR} 
                     ${SCLEXT_INC_DIR})
 
+#Set all the base sources required for the library
+SET(SCL_BASE_SRC ${SCL_INC_DIR}/Init.cpp
+   )
+
 #Set all the sources required for the library
 SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIO.cpp
            ${SCL_INC_DIR}/data_structs/SRigidBody.cpp
@@ -138,7 +142,7 @@ SET(TIXML_SRC ${TIXML_INC_DIR}/scl_tinyxml/scl_tinystr.cpp
    )
 ADD_DEFINITIONS(-DTIXML_USE_STL -std=c++11)
 
-SET(ALLSRC ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} 
+SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} 
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
            ${TAO_SRC} ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
            ${SCL_PARSER_SRC} ${OSIM_PARSER_SRC}
