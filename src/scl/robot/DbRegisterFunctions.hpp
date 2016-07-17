@@ -41,11 +41,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef DBREGISTERFUNCTIONS_HPP_
 #define DBREGISTERFUNCTIONS_HPP_
 
-#include <string>
-
-#include <scl/data_structs/SDatabase.hpp>
 
 #include <scl/parser/CParserBase.hpp>
+#include <scl/data_structs/SDatabase.hpp>
+#include <scl/DataTypes.hpp>
+#include <scl/Init.hpp>
+
+#include <string>
 
 namespace scl_registry
 {
@@ -164,9 +166,6 @@ namespace scl_registry
           const std::string &arg_robot_name,
           const std::string &arg_ctrl_name,
           scl::CParserBase *arg_parser);
-
-  /** Registers the native dynamic types */
-  scl::sBool registerNativeDynamicTypes();
 }
 
 #endif /* DBREGISTERFUNCTIONS_HPP_ */
