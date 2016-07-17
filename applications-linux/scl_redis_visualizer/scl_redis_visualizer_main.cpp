@@ -117,7 +117,7 @@ int main(int argc, char** argv)
 
       /******************************Load Robot Muscle Specification************************************/
       scl::SActuatorSetMuscleParsed *rob_mset_ds = NULL;  // This is the parsed muscle specification (not modified during runtime)
-      scl::SActuatorSetMuscle *rob_mset_ds_dyn = NULL;     // This is the actuator force description (stored in rio and modified in runtime)
+      scl::SActuatorSetMuscle *rob_mset_ds_dyn = NULL;    // This is the actuator force description (stored in rio and modified in runtime)
 
       char rstr_musclekey[1024];//For redis key formatting
       sprintf(rstr_musclekey, "scl::robot::%s::actuators::fm",rcmd.name_robot_.c_str());
