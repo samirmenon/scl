@@ -33,7 +33,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CACTUATORSETMUSCLE_HPP_
 
 #include <scl/data_structs/SRobotParsed.hpp>
+#include <scl/data_structs/SRobotIO.hpp>
+
 #include <scl/dynamics/CDynamicsBase.hpp>
+
 #include <scl/actuation/CActuatorSetBase.hpp>
 #include <scl/actuation/muscles/CActuatorMuscle.hpp>
 #include <scl/actuation/muscles/data_structs/SActuatorSetMuscle.hpp>
