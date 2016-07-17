@@ -30,6 +30,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <scl/Init.hpp>
+#include <scl/AllHeaders.hpp>
+
+#include <sutil/CRegisteredDynamicTypes.hpp>
+
+#include <string>
 
 namespace scl
 {
