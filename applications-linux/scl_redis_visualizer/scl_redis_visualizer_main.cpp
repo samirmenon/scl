@@ -114,6 +114,56 @@ int main(int argc, char** argv)
       flag = flag && rio.init(rds);             //Set up the IO data structure
       if(false == flag) { throw(std::runtime_error("Could not read robot description from file"));  }
 
+      /******************************Load Robot Muscle Specification************************************/
+      scl::SActuatorSetMuscleParsed *rob_mset_ds=NULL;  // This is the parsed muscle specification (not modified during runtime)
+      scl::SActuatorSetMuscle *rob_mset_ds_dyn = NULL;  // This is the actuator force description (stored in rio and modified in runtime)
+
+      char rstr_musclekey[1024];//For redis key formatting
+      sprintf(rstr_musclekey, "scl::robot::%s::actuators::fm",rcmd.name_robot_.c_str());
+
+      // Also render muscles..
+      // NOTE : If the robot has a valid muscle spec, it will already be parsed and ready in the
+      // robot data structure. We just have to use it to configure the graphics rendering.
+      // So let's look in the actuator sets and find the first muscle set (there should only
+      // be one muscle set, but we'll be lazy for now and ignore the rest if they exist).
+      if(rcmd.flag_muscles_)
+      {
+        // Let's find the parsed actuator set and make sure it has a type "muscle"
+        sutil::CMappedPointerList<std::string, scl::SActuatorSetParsed, true>::iterator it,ite;
+        for (it = rds.actuator_sets_.begin(), ite = rds.actuator_sets_.end(); it!=ite;++it)
+        {
+          scl::SActuatorSetParsed* tmp_aset = *it;
+          // Since there could be different actuator types, the code casts their objects to a
+          // simpler type and so we have to cast them to the correct type.
+          if("SActuatorSetMuscleParsed" == tmp_aset->getType())
+          {
+            rob_mset_ds = dynamic_cast<scl::SActuatorSetMuscleParsed*>(tmp_aset);
+            if(NULL==rob_mset_ds)
+            {throw(std::runtime_error( std::string("Actuator set type mismatch. This should be a muscle set:")+tmp_aset->name_ )); }
+            else  { break;  }//We found a suitable muscle actuator set. Won't look for more and so will exit the loop.
+          }
+        }
+
+        if(NULL == rob_mset_ds)
+        { throw(std::runtime_error("Did not find muscle actuator set for robot. Check xml spec file. Should have \n\t<robot>\n\t\t...\n\t\t<option_actuator_set_muscle>RobotMsys</option_actuator_set_muscle>\n\t\t...\n\t</robot>"));  }
+
+        //Now get the dynamic muscle set spec...
+        scl::SActuatorSetBase ** rob_mset_ds_dynp = rio.actuators_.actuator_sets_.create(rob_mset_ds->name_);
+        if(NULL == rob_mset_ds_dynp) { throw(std::runtime_error("Could not create muscle actuator set in io data structure."));  }
+
+        rob_mset_ds_dyn = new scl::SActuatorSetMuscle();
+        if(NULL == rob_mset_ds_dyn) { throw(std::runtime_error("Could not allocate muscle actuator set on heap."));  }
+
+        flag = rob_mset_ds_dyn->init(rob_mset_ds);
+        if(false == flag) { throw(std::runtime_error("Could not initialize muscle actuator set dyn data struct"));  }
+
+        *rob_mset_ds_dynp = dynamic_cast<scl::SActuatorSetBase*>(rob_mset_ds_dyn);
+
+        // Initialize the actuator force vector..
+        rob_mset_ds_dyn->force_actuator_.setZero(rob_mset_ds->muscles_.size());
+        rob_mset_ds_dyn->force_actuator_.array()+=0.01;//Just to make sure all the muscles aren't green.
+      }
+
       /******************************ChaiGlut Graphics************************************/
       glutInit(&argc, argv); // We will use glut for the window pane (chai for the graphics).
 
@@ -146,8 +196,15 @@ int main(int argc, char** argv)
         flag = ioredis.get(ioredis_ds,rstr_qkey,rio.sensors_.q_);
         if(false == flag)
         {
-          std::cout<<"\n WARNING : Could not find redis key for robot: "<<rstr_qkey<<". Will wait for it...";
+          std::cout<<"\n WARNING : Missing redis key: "<<rstr_qkey<<" size("<< rio.dof_<<"). Will wait for it...";
           const timespec ts = {0, 200000000};/*200ms sleep */ nanosleep(&ts,NULL); continue;
+        }
+
+        if(rcmd.flag_muscles_)
+        {
+          flag = ioredis.get(ioredis_ds,rstr_musclekey,rob_mset_ds_dyn->force_actuator_);
+          if(false == flag)
+          { std::cout<<"\n WARNING : Missing redis key: "<<rstr_musclekey<<" size("<< rob_mset_ds->muscles_.size()<<"). Will wait for it..."; }
         }
 
         const timespec ts = {0, 25000000};/*25ms sleep : ~40Hz update*/ nanosleep(&ts,NULL);
