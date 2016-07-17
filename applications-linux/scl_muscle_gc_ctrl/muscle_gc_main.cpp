@@ -38,8 +38,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/gc/CControllerGc.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/util/DatabaseUtils.hpp>
-#include <scl/dynamics/tao/tao/dynamics/taoDNode.h>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
+#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 #include <scl/actuation/muscles/CActuatorSetMuscle.hpp>
 
 #include <sutil/CSystemClock.hpp>
@@ -65,7 +65,7 @@ const double SVD_THESHOLD = 0.0001;
  * application.
  *
  * A simulation requires running 3 things:
- * 1. A dynamics/physics engine                  :  Tao
+ * 1. A dynamics/physics engine                  :  Scl Spatial
  * 2. A controller                               :  Scl
  * 3. A graphic rendering+interaction interface  :  Chai3d + FreeGlut
  */
@@ -158,10 +158,14 @@ int main(int argc, char** argv)
       scl_util::printRobotLinkTree(*( rob_ds->rb_tree_.getRootNode()),0);
 #endif
 
-      /**************************Initialize Tao Dynamics for Integrator********************************/
-      scl::CDynamicsTao dyn_tao_int;
-      flag = dyn_tao_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
+      /**************************Initialize SCL Spatial Dynamics for Integrator********************************/
+      scl_ext::CDynamicsSclSpatial dyn_scl_sp_int;
+      flag = dyn_scl_sp_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
+
+      scl::SGcModel rgcm_int;//For the integrator
+      flag = rgcm_int.init(*rob_ds);
+      if(false == flag) { throw(std::runtime_error("Could not initialize dynamics model for the integrator"));  }
 
       /***************************Initialize Scl Dynamics for Algorithms********************/
       scl::CDynamicsScl dyn_scl; //Use for model updates.
@@ -288,7 +292,7 @@ int main(int argc, char** argv)
             sutil::CSystemClock::tick(db->sim_dt_);
 
             //1. Simulation Dynamics
-            flag = dyn_tao_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+            flag = dyn_scl_sp_int.integrate(rgcm_int,(*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
             //rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
             //2. Update the controller
@@ -352,7 +356,7 @@ int main(int argc, char** argv)
         assert(rob_io_ds == gc_ctrl_ds->io_data_);
 
         //1. Simulation Dynamics
-        flag = dyn_tao_int.integrate((*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
+        flag = dyn_scl_sp_int.integrate(rgcm_int,(*rob_io_ds), scl::CDatabase::getData()->sim_dt_);
 //        rob_io_ds->sensors_.dq_ -= rob_io_ds->sensors_.dq_ * (db->sim_dt_/100); //1% Velocity damping.
 
         //2. Update the controller
