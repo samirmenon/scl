@@ -35,6 +35,7 @@ SET(DB_SRC ${SCL_INC_DIR}/data_structs/SRobotIO.cpp
            ${SCL_INC_DIR}/data_structs/SRigidBody.cpp
            ${SCL_INC_DIR}/data_structs/SGcModel.cpp
            ${SCL_INC_DIR}/data_structs/SActuatorSetMuscleParsed.cpp
+           ${SCL_INC_DIR}/data_structs/DataStructQueryFunctions.cpp
    )
 
 SET(ACT_SRC ${SCL_INC_DIR}/actuation/muscles/CActuatorMuscle.cpp
