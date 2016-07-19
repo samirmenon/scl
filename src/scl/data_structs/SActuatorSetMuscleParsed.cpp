@@ -67,7 +67,9 @@ namespace scl
   SMuscleParsed::~SMuscleParsed()
   {}
 
-  SActuatorSetMuscleParsed::SActuatorSetMuscleParsed() : SActuatorSetParsed(std::string("SActuatorSetMuscleParsed"))
+  SActuatorSetMuscleParsed::SActuatorSetMuscleParsed() :
+      /** The object's type */ SActuatorSetParsed(std::string("SActuatorSetMuscleParsed"),
+      /** The dyn type */ std::string("SActuatorSetMuscle"))
   {
     muscles_.clear();
     render_muscle_thickness_ = 3;

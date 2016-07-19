@@ -50,16 +50,28 @@ namespace scl
     /** The robot to which this actuator set is attached */
     const SRobotParsed *robot_;
 
+  protected:
+    /** Must have a dynamic type object as well. For instance, a muscle
+     * actuator set parsed ("SActuatorSetMuscleParsed") will have a dyn type
+     * "SActuatorSetMuscle" */
+    std::string type_dyn_obj_;
+
+  public:
     /* ******************************************************
      *                        Initialization
      * ****************************************************** */
-    explicit SActuatorSetParsed(const std::string& subclass_type_name) :
-      SObject(subclass_type_name), robot_(NULL){}
+    explicit SActuatorSetParsed(const std::string& subclass_type_name,
+        const std::string& subclass_type_dyn_name) :
+      SObject(subclass_type_name),  robot_(NULL), type_dyn_obj_(subclass_type_dyn_name){}
 
-    explicit SActuatorSetParsed(const char* subclass_type_name) :
-      SObject(subclass_type_name), robot_(NULL){}
+    explicit SActuatorSetParsed(const char* subclass_type_name,
+        const std::string& subclass_type_dyn_name) :
+      SObject(subclass_type_name), robot_(NULL), type_dyn_obj_(subclass_type_dyn_name){}
 
     virtual ~SActuatorSetParsed(){}
+
+    /** Returns the type of the dynamic object associated with this object */
+    const std::string & getTypeDyn(){return type_dyn_obj_; }
 
   private:
     /** This is private to force subclasses to expose their type */

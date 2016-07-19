@@ -89,7 +89,7 @@ sBool SRobotIO::init(const SRobotParsed& arg_rds)
 
       // The dynamic typing allows us to handle arbitrary subtypes of the base actuator set class..
       void* obj = NULL;
-      bool flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(val.getType(),obj);
+      bool flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(val.getTypeDyn(),obj);
       if(false == flag)
       { throw(std::runtime_error(std::string("Failed to get dyn type object for type (is it registered/standard?): ")+val.getType()));  }
       *tmp_aset = reinterpret_cast<SActuatorSetBase *>(obj);
