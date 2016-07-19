@@ -38,6 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/io/CIORedis.hpp>
 #include <scl/util/CmdLineArgReader.hpp>
+#include <scl/Init.hpp>
 
 #include <sutil/CSystemClock.hpp>
 
@@ -83,6 +84,9 @@ int main(int argc, char** argv)
       /******************************Initialization************************************/
       //1. Initialize the database and clock.
       if(false == sutil::CSystemClock::start()) { throw(std::runtime_error("Could not start clock"));  }
+
+      //2. Set up dynamic types
+      scl::init::registerNativeDynamicTypes();
 
       scl::SRobotParsed rds;     //Robot data structure.
       scl::SRobotIO rio;         //I/O data structure.
