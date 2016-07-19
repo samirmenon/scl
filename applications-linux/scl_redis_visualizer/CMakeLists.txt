@@ -86,4 +86,4 @@ target_link_libraries(scl_redis_visualizer ${CHAI_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_redis_visualizer gomp GL GLU GLEW glut ncurses rt dl hiredis)
+target_link_libraries(scl_redis_visualizer gomp GL GLU GLEW glut ncurses rt dl hiredis jsoncpp)
