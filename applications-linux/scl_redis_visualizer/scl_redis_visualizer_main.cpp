@@ -176,8 +176,9 @@ int main(int argc, char** argv)
 
         // REDIS IO : Get q key (we assume it will exist else would have thrown an error earlier)
         flag = ioredis.get(ioredis_ds,rstr_qkey,rio.sensors_.q_);
-        if(false == flag)
+        if(false == flag || rio.sensors_.q_.rows() != rio.dof_)
         {
+          rio.sensors_.q_.setZero(rio.dof_); // We'll set the key to zero just to be safe..
           std::cout<<"\n WARNING : Missing redis key: "<<rstr_qkey<<" size("<< rio.dof_<<"). Will wait for it...";
           const timespec ts = {0, 200000000};/*200ms sleep */ nanosleep(&ts,NULL); continue;
         }
