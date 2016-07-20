@@ -9,6 +9,29 @@
 import redis
 import json
 import time
+import signal
+import sys
+
+# Set up a handler to report ctrl+c and gracefully exit the program.
+def signal_handler(signal, frame):
+    print('You pressed Ctrl+C! Will now exit...');
+    print("SCL-py : We're finished here.");
+    sys.exit(0);
+
+# Attach the signal handler to the ctrl+c command
+signal.signal(signal.SIGINT, signal_handler)
+print('Starting SCL-py reader. Press ctrl+c to exit..');
+
+# Returns a trajectory increment for a given alexa command
+def alexa_cmd_to_Dtraj(x):
+    return {
+        'left': [0, -0.03, 0],
+        'right': [0, 0.03, 0],
+        'front': [0.03, 0, 0],
+        'back': [-0.03, 0, 0],
+        'up': [0, 0, 0.03],
+        'down': [0, 0, -0.03]
+    }[x]
 
 # Specify the string to be used for sending a traj
 str_redis_traj = 'scl::robot::kinovajaco6::traj::xgoal';
@@ -18,6 +41,10 @@ ip_redis_serv = '192.168.0.101';
 r = redis.StrictRedis(host=ip_redis_serv, port=6379, db=0)
 print("SCL-py : Connected to the redis server on ip: "+ip_redis_serv);
 
+# Connect to the redis server
+r2 = redis.StrictRedis(host='localhost', port=6379, db=0)
+print("SCL-py : Connected to the redis server on ip: localhost");
+
 # Enable torque control on the kinova
 flag = r.ping();
 print("SCL-py : Pinged the redis server. Worked :" + str(flag));
@@ -26,8 +53,8 @@ while 1:
     # *********** Get the alexa command ***********
     alexa_msg = r.get('alexa::from');
     if len(alexa_msg)<1:
-        print("SCL-py : Waiting (0.2s) for alexa command...");
-        time.sleep(0.2); # Wait for a command if there isn't one..
+        print("SCL-py : Waiting (0.1s) for alexa command...");
+        time.sleep(0.1); # Wait for a command if there isn't one..
         continue;
     # Remove the key now that we have it and have found it to be valid.
     r.set('alexa::from','');
@@ -38,10 +65,10 @@ while 1:
 
     # *********** Read the scl traj position ***********
     traj_xpos = [];
-    tmp_l = r.get(str_redis_traj).split(" ");
-    traj_xpos.append(tmp_l[0]);
-    traj_xpos.append(tmp_l[1]);
-    traj_xpos.append(tmp_l[2]);
+    tmp_l = r2.get(str_redis_traj).split(" ");
+    traj_xpos.append(float(tmp_l[0]));
+    traj_xpos.append(float(tmp_l[1]));
+    traj_xpos.append(float(tmp_l[2]));
     print("SCL-py : Present scl traj is :");
     print(traj_xpos);
 
@@ -54,4 +81,12 @@ while 1:
     # Iterate over the commands
     ii=1;
     for cmd in alexa_cmd_strlist:
-        print("Command("+str(ii)+") : "+cmd); ii+=1;
+        print("SCL-py :Command("+str(ii)+") : "+cmd); ii+=1;
+        dtraj = alexa_cmd_to_Dtraj(cmd);
+        traj_xpos[0]+=dtraj[0];
+        traj_xpos[1]+=dtraj[1];
+        traj_xpos[2]+=dtraj[2];
+    print("SCL-py : Setting robot goal position to:");
+    print(traj_xpos);
+    tmp_s = str(traj_xpos[0])+" "+str(traj_xpos[1])+" "+str(traj_xpos[2]);
+    r2.set(str_redis_traj,tmp_s);
