@@ -1,0 +1,21 @@
+This script listens for alexa commands on a redis pipe and translates them into robot commands.
+It's a work in progress.
+
+To begin, we need to ensure that the redis server is accessible:
+1. Stop it:
+$ sudo /etc/init.d/redis-server stop
+$ sudo /etc/init.d/redis-server start
+
+Or go to the redis-cli and type 'shutdown'
+
+2. Copy the config file to a local dir.
+$ sudo cp /etc/redis/redis.conf .
+
+3. Add your hard network IP to the bind command in the config file (search for it)
+Replace :
+  bind 127.0.0.1
+With (say):
+  bind 127.0.0.1 192.168.0.101
+
+4. Re-start the redis server with the new config file..
+$ sudo ./redis-server /path/to/redis.conf
