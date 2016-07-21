@@ -25,12 +25,13 @@ print('Starting SCL-py reader. Press ctrl+c to exit..');
 # Returns a trajectory increment for a given alexa command
 def alexa_cmd_to_Dtraj(x):
     return {
-        'left': [0, -0.03, 0],
-        'right': [0, 0.03, 0],
-        'front': [0.03, 0, 0],
-        'back': [-0.03, 0, 0],
+        'front': [0, -0.03, 0],
+        'back': [0, 0.03, 0],
+        'right': [0.03, 0, 0],
+        'left': [-0.03, 0, 0],
         'up': [0, 0, 0.03],
-        'down': [0, 0, -0.03]
+        'down': [0, 0, -0.03],
+        '' : [0, 0, 0]
     }[x]
 
 # Specify the string to be used for sending a traj
