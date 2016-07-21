@@ -24,13 +24,14 @@ print('Starting SCL-py reader. Press ctrl+c to exit..');
 
 # Returns a trajectory increment for a given alexa command
 def alexa_cmd_to_Dtraj(x):
+    dval = 0.06;
     return {
-        'front': [0, -0.03, 0],
-        'back': [0, 0.03, 0],
-        'right': [0.03, 0, 0],
-        'left': [-0.03, 0, 0],
-        'up': [0, 0, 0.03],
-        'down': [0, 0, -0.03],
+        'front': [0, -dval, 0],
+        'back': [0, dval, 0],
+        'right': [dval, 0, 0],
+        'left': [-dval, 0, 0],
+        'up': [0, 0, dval],
+        'down': [0, 0, -dval],
         '' : [0, 0, 0]
     }[x]
 
@@ -54,7 +55,7 @@ while 1:
     # *********** Get the alexa command ***********
     alexa_msg = r.get('alexa::from');
     if len(alexa_msg)<1:
-        print("SCL-py : Waiting (0.1s) for alexa command...");
+        #print("SCL-py : Waiting (0.1s) for alexa command...");
         time.sleep(0.1); # Wait for a command if there isn't one..
         continue;
     # Remove the key now that we have it and have found it to be valid.
