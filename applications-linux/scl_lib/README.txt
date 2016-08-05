@@ -1,9 +1,9 @@
 Using dynamic linking:
 
-Example : Build main.cpp linked with sneuron classes
+Example : Build main.cpp linked with scl classes
 
 > g++ -I../../src/ -c -Wall -fPIC -o main.o main.cpp
-> g++ -L../../lib/<debug/final> -Wl,--rpath=../../lib/<debug/final> -lsneuron -o main main.o
+> g++ -L../../lib/<debug/final> -Wl,--rpath=../../lib/<debug/final> -lscl -o main main.o
 
 ################
 Important flags:
