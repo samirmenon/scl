@@ -33,8 +33,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <scl/Singletons.hpp>
+#include <scl/Init.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
+
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <GL/freeglut.h>
@@ -106,7 +108,7 @@ namespace scl
         if(S_NULL==db_) { throw(std::runtime_error("Database not initialized"));  }
 
         //For parsing controllers
-        flag = scl_registry::registerNativeDynamicTypes();
+        flag = scl::init::registerNativeDynamicTypes();
         if(false ==flag)  { throw(std::runtime_error("Could not register native dynamic types"));  }
 
         //For parsing your (custom) tasks

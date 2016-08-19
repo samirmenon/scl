@@ -35,6 +35,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
 
+// All the init functions (code required for scl dynamic typing and inter-module comm etc.).
+#include <scl/Init.hpp>
+
 // All the header files except for those from the robot/ directory
 #include <scl/AllHeaders.hpp>
 
