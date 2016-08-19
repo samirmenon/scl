@@ -38,6 +38,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Standard includes
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
+#include <scl/Init.hpp>
+
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
@@ -146,7 +148,7 @@ namespace scl_test
     double runSimulationClockCtrl(double arg_exec_sim_time);
 
     //Data types. Feel free to use them.
-    scl::SDatabase* db;                 //Generic database (for sharing data)
+    scl::SDatabase* db=NULL;            //Generic database (for sharing data)
 
     std::vector<std::string> robots_parsed;   //Parsed robots
     std::vector<std::string> graphics_parsed; //Parsed graphics views
@@ -155,16 +157,16 @@ namespace scl_test
     std::string ctrl_name;              //Currently selected controller
 
     scl::CRobot robot;                  //Generic robot
-    scl::SRobotParsed *rob_ds;          //Generic robot data structure
-    scl::SRobotIO* rob_io_ds;       //Access the robot's sensors and actuators
+    scl::SRobotParsed *rob_ds=NULL;     //Generic robot data structure
+    scl::SRobotIO* rob_io_ds=NULL;      //Access the robot's sensors and actuators
 
-    scl_ext::CDynamicsSclSpatial* dyn_scl_sp;          //Generic tao dynamics
-    scl::CDynamicsScl* scl_dyn;          //Generic tao dynamics
+    scl_ext::CDynamicsSclSpatial* dyn_scl_sp=NULL;//Generic tao dynamics
+    scl::CDynamicsScl* scl_dyn=NULL;    //Generic tao dynamics
     scl::CGraphicsChai chai_gr;         //Generic chai graphics
 
-    scl::sLongLong ctrl_ctr;            //Controller computation counter
-    scl::sLongLong gr_ctr;              //Controller computation counter
-    scl::sFloat t_start, t_end;         //Start and end times
+    scl::sLongLong ctrl_ctr=0;          //Controller computation counter
+    scl::sLongLong gr_ctr=0;            //Controller computation counter
+    scl::sFloat t_start=0.0, t_end=0.0; //Start and end times
   };
 
 
@@ -193,7 +195,7 @@ namespace scl_test
       db->dir_specs_ = db->cwd_ + std::string("../../specs/"); //Set the specs dir so scl knows where the graphics are.
 
       //For parsing controllers
-      flag = scl_registry::registerNativeDynamicTypes();
+      flag = scl::init::registerNativeDynamicTypes();
       if(false ==flag)  { throw(std::runtime_error("Could not register native dynamic types"));  }
 
       //Get going..
