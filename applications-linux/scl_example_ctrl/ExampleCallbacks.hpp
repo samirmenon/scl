@@ -34,10 +34,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/Singletons.hpp>
 
-#include <sutil/CRegisteredPrintables.hpp>
-
 #include <scl/robot/GenericCallbacks.hpp>
-#include <scl/robot/GenericPrintables.hpp>
+#include <scl/serialization/PrintablesJSON.hpp>
 
 #include <iostream>
 #include <string>
@@ -108,7 +106,8 @@ namespace scl_app
           std::string("print") );
       if(false == flag){throw(std::runtime_error("Could not add a print callback"));  }
 
-      flag = scl::addRobotPrintables();
+
+      flag = scl::printableAddObject<scl::SDatabase>(*scl::CDatabase::getData());
       if(false == flag){throw(std::runtime_error("Could not add callbacks to print robot info"));  }
     }
     catch(std::exception &e)
