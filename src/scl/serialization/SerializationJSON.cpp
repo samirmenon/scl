@@ -548,7 +548,24 @@ namespace scl
   { return false; }
 
   template<>  bool serializeToJSON<STaskOpPos>(const STaskOpPos &arg_obj, Json::Value &ret_json_val)
-  { return false; }
+  {
+    bool flag = serializeToJSON<STaskBase>(*dynamic_cast<const STaskBase *>(&arg_obj), ret_json_val);
+
+    // NOTE : Adding the task-specific fields..
+    MACRO_SER_ARGOBJ_RETJSONVAL(parent_controller_->name_)
+
+    // To use the eigen json macro.
+    Json::Reader json_reader;
+    std::string str;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(x_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(dx_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ddx_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(x_goal_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(dx_goal_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ddx_goal_)
+
+    return flag;
+  }
 
   template<>  bool serializeToJSON<STaskNullSpaceDamping>(const STaskNullSpaceDamping &arg_obj, Json::Value &ret_json_val)
   { return false; }
