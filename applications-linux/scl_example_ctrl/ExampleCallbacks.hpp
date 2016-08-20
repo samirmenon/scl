@@ -106,7 +106,12 @@ namespace scl_app
           std::string("print") );
       if(false == flag){throw(std::runtime_error("Could not add a print callback"));  }
 
-
+      /** ************************************************************************
+       * Add a print callback hooks for everything in the database.
+       * NOTE : This only works if you use the database. So it won't work in apps
+       * that don't use the database. In that case, you'll have to manually add
+       * hooks. Look at the function below and extract the appropriate code.
+       * *************************************************************************/
       flag = scl::printableAddObject<scl::SDatabase>(*scl::CDatabase::getData());
       if(false == flag){throw(std::runtime_error("Could not add callbacks to print robot info"));  }
     }
