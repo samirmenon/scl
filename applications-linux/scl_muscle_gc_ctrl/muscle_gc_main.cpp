@@ -31,6 +31,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //scl lib
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
+#include <scl/Init.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
@@ -90,7 +91,7 @@ int main(int argc, char** argv)
       if(S_NULL==db) { throw(std::runtime_error("Database not initialized"));  }
 
       //For parsing controllers
-      flag = scl_registry::registerNativeDynamicTypes();
+      flag = scl::init::registerNativeDynamicTypes();
       if(false ==flag)  { throw(std::runtime_error("Could not register native dynamic types"));  }
 
       db->dir_specs_ = db->cwd_ + std::string("../../specs/"); //Set the specs dir so scl knows where the graphics are.
