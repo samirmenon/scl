@@ -156,8 +156,6 @@ SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC}
 #Set the build mode to debug by default
 #SET(CMAKE_BUILD_TYPE Debug)
 
-ADD_DEFINITIONS( -DSCL_LIBRARY_COMPILE_FLAG=1 )
-
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
   #Add debug definitions
   ADD_DEFINITIONS( -DASSERT=assert -DDEBUG=1)

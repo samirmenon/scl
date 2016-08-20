@@ -28,6 +28,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
+
+// NOTE : We need this here to make sure the extern symbols are
+//        ignored _FOR THIS CPP FILE ONLY_
+#define SCL_LIBRARY_COMPILE_FLAG 1
+
 #include <scl/serialization/SerializationJSON.hpp>
 #include <scl/util/EigenExtensions.hpp>
 #include <cmath>
