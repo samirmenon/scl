@@ -86,4 +86,4 @@ target_link_libraries(scl_2rob_ctrl ${CHAI_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_2rob_ctrl gomp GL GLU GLEW glut ncurses)
+target_link_libraries(scl_2rob_ctrl gomp GL GLU GLEW glut ncurses jsoncpp)
