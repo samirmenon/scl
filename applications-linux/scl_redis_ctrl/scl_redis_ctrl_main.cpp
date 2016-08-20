@@ -31,6 +31,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 //scl lib
 #include <scl/DataTypes.hpp>
+#include <scl/Init.hpp>
 #include <scl/data_structs/SGcModel.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
@@ -38,8 +39,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
 #include <scl/io/CIORedis.hpp>
 
-// Used for dynamic typing
-#include <scl/robot/DbRegisterFunctions.hpp>
 // Used to simplify the controller setup (has a few helper functions).
 #include <scl/util/DatabaseUtils.hpp>
 
@@ -153,7 +152,7 @@ int main(int argc, char** argv)
       flag = flag && rctr_ds.init(name_ctrl,&rds,&rio,&rgcm); //Set up the control data structure..
 
       // Tasks are initialized after we find their type with dynamic typing.
-      flag = flag && scl_registry::registerNativeDynamicTypes();
+      flag = flag && scl::init::registerNativeDynamicTypes();
       flag = flag && scl_util::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
       flag = flag && rctr.init(&rctr_ds,&dyn_scl);  //Set up the controller (needs parsed data and a dyn object)
       if(false == flag){ throw(std::runtime_error("Could not initialize controller")); }            //Error check.
