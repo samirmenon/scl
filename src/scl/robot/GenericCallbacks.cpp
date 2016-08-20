@@ -60,7 +60,7 @@ namespace scl
     }
   }
 
-  CCallbackEcho::base* createObject()
+  CCallbackEcho::base* CCallbackEcho::createObject()
   { return dynamic_cast<CCallbackEcho::base*>(new CCallbackEcho()); }
 
   /** Print out a specific data structure.
