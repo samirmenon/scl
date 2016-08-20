@@ -53,7 +53,6 @@ SET(UTIL_SRC ${SCL_INC_DIR}/util/DatabaseUtils.cpp
 SET(ROBOT_SRC ${SCL_INC_DIR}/robot/CRobot.cpp
               ${SCL_INC_DIR}/robot/data_structs/SRobot.cpp
               ${SCL_INC_DIR}/robot/DbRegisterFunctions.cpp
-              ${SCL_INC_DIR}/robot/GenericPrintables.cpp
               ${SCL_INC_DIR}/robot/GenericCallbacks.cpp
    )
 
