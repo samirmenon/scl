@@ -38,6 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 //Standard includes
 #include <scl/DataTypes.hpp>
 #include <scl/Singletons.hpp>
+#include <scl/Init.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/dynamics/tao/CDynamicsTao.hpp>
@@ -206,7 +207,7 @@ namespace scl_app
         db_->dir_specs_ = db_->cwd_ + std::string("../../specs/"); //Set the specs dir so scl knows where the graphics are.
 
         //For parsing controllers
-        flag = scl_registry::registerNativeDynamicTypes();
+        flag = scl::init::registerNativeDynamicTypes();
         if(false ==flag)  { throw(std::runtime_error("Could not register native dynamic types"));  }
 
         //Get going..
