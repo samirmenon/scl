@@ -56,7 +56,7 @@ namespace sutil
       ostr<<std::endl;
     }
     else{
-      ostr<<"\nERROR : Could not print JSON for parsed robot: "<< arg_data.name_<<std::endl;
+      ostr<<"\nERROR : Could not print JSON for parsed robot: "<< arg_data.name_<<" ("<<arg_data.getType()<<")"<<std::endl;
     }
 
   }
@@ -80,7 +80,7 @@ namespace sutil
       ostr<<std::endl;
     }
     else
-      ostr<<"\nERROR : Could not print JSON for robot io: "<< arg_data.name_<<std::endl;
+      ostr<<"\nERROR : Could not print JSON for robot io: "<< arg_data.name_<<" ("<<arg_data.getType()<<")"<<std::endl;
   }
 
   /** ************************* JSON CALL ******************** */
@@ -97,7 +97,7 @@ namespace sutil
       ostr<<std::endl;
     }
     else
-      ostr<<"\nERROR : Could not print JSON for rigid body: "<< arg_data.name_<<std::endl;
+      ostr<<"\nERROR : Could not print JSON for rigid body: "<< arg_data.name_<<" ("<<arg_data.getType()<<")"<<std::endl;
   }
 
   /** ************************* JSON CALL ******************** */
@@ -114,7 +114,7 @@ namespace sutil
       ostr<<std::endl;
     }
     else
-      ostr<<"\nERROR : Could not print JSON for control task: "<< arg_data.name_<<std::endl;
+      ostr<<"\nERROR : Could not print JSON for control task: "<< arg_data.name_<<" ("<<arg_data.getType()<<")"<<std::endl;
   }
 
   /** ************************* JSON CALL ******************** */
@@ -131,7 +131,7 @@ namespace sutil
       ostr<<std::endl;
     }
     else
-      ostr<<"\nERROR : Could not print JSON for op control task: "<< arg_data.name_<<std::endl;
+      ostr<<"\nERROR : Could not print JSON for op control task: "<< arg_data.name_<<" ("<<arg_data.getType()<<")"<<std::endl;
   }
   /** ************************* JSON CALL ******************** */
   template <>
@@ -147,7 +147,7 @@ namespace sutil
       ostr<<std::endl;
     }
     else
-      ostr<<"\nERROR : Could not print JSON for gc control task: "<< arg_data.name_<<std::endl;
+      ostr<<"\nERROR : Could not print JSON for gc control task: "<< arg_data.name_<<" ("<<arg_data.getType()<<")"<<std::endl;
   }
 
   /** ************************* JSON CALL ******************** */
@@ -164,7 +164,7 @@ namespace sutil
       ostr<<std::endl;
     }
     else
-      ostr<<"\nERROR : Could not print JSON for gc model: "<< arg_data.name_<<std::endl;
+      ostr<<"\nERROR : Could not print JSON for gc model: "<< arg_data.name_<<" ("<<arg_data.getType()<<")"<<std::endl;
   }
 
   template <>
