@@ -55,8 +55,10 @@ namespace sutil
       ostr<<val.toStyledString();
       ostr<<std::endl;
     }
-    else
+    else{
       ostr<<"\nERROR : Could not print JSON for parsed robot: "<< arg_data.name_<<std::endl;
+    }
+
   }
 
   /** ************************* JSON CALL ******************** */
@@ -113,6 +115,39 @@ namespace sutil
     }
     else
       ostr<<"\nERROR : Could not print JSON for control task: "<< arg_data.name_<<std::endl;
+  }
+
+  /** ************************* JSON CALL ******************** */
+  template <>
+  void printToStream<scl::STaskOpPos>(
+      std::ostream& ostr,
+      const scl::STaskOpPos& arg_data
+  )
+  {
+    Json::Value val;
+    bool flag = scl::serializeToJSON<scl::STaskOpPos>(arg_data, val);
+    if(flag){
+      ostr<<val.toStyledString();
+      ostr<<std::endl;
+    }
+    else
+      ostr<<"\nERROR : Could not print JSON for op control task: "<< arg_data.name_<<std::endl;
+  }
+  /** ************************* JSON CALL ******************** */
+  template <>
+  void printToStream<scl::STaskGc>(
+      std::ostream& ostr,
+      const scl::STaskGc& arg_data
+  )
+  {
+    Json::Value val;
+    bool flag = scl::serializeToJSON<scl::STaskGc>(arg_data, val);
+    if(flag){
+      ostr<<val.toStyledString();
+      ostr<<std::endl;
+    }
+    else
+      ostr<<"\nERROR : Could not print JSON for gc control task: "<< arg_data.name_<<std::endl;
   }
 
   /** ************************* JSON CALL ******************** */
@@ -273,7 +308,32 @@ namespace scl
         if(S_NULL == task)
         { continue;  } //Move on. Not a task.
 #endif
-        flag = sutil::printables::add(task->name_,*task);
+        // This is the special code for adding an op pos task
+        if(task->getType() == "STaskOpPos")
+        {
+          const scl::STaskOpPos* task2 = dynamic_cast<const scl::STaskOpPos*>(task);
+
+          if(NULL == task2)
+          {throw(std::runtime_error(std::string("Could not add a printable: ")+task->name_));  }
+
+          const scl::STaskOpPos &tt = *task2;
+
+          flag = sutil::printables::add(task->name_,tt);
+        }
+        else if(task->getType() == "STaskGc")
+        {
+          const scl::STaskGc* task2 = dynamic_cast<const scl::STaskGc*>(task);
+
+          if(NULL == task2)
+          {throw(std::runtime_error(std::string("Could not add a printable: ")+task->name_));  }
+
+          const scl::STaskGc &tt = *task2;
+
+          flag = sutil::printables::add(task->name_,tt);
+        }
+        else
+        { flag = sutil::printables::add(task->name_,*task); }
+
         if(false == flag)
         {throw(std::runtime_error(std::string("Could not add a printable: Task Controller: ")+
             task->name_));  }

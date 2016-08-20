@@ -82,6 +82,16 @@ namespace sutil
       std::ostream& ostr,
       const scl::STaskBase& arg_data
   );
+  template <>
+  void printToStream<scl::STaskOpPos>(
+      std::ostream& ostr,
+      const scl::STaskOpPos& arg_data
+  );
+  template <>
+  void printToStream<scl::STaskGc>(
+      std::ostream& ostr,
+      const scl::STaskGc& arg_data
+  );
 
   /** ************************* JSON CALL ******************** */
   template <>
