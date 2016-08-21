@@ -27,7 +27,7 @@ Rember, this step is __optional__. If a tag doesn't work for you, try using the 
 $ git tag -l
 
 Then pick whatever tag (stable point) you want. Preferably pick the most recent one.
-$ git checkout -b tag-v0.97 tags/v0.97
+$ git checkout -b tag-v0.98 tags/v0.98
 
 Unless you have some experience coding, you should consider using a stable version of the code.
 
