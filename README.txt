@@ -24,6 +24,7 @@ $ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-manips-v2.g
 
 === Optional : Check out a stable version of the code ===
 Rember, this step is __optional__. If a tag doesn't work for you, try using the latest branch (unstable in general but very likely to have your problem fixed).
+Alternatively try an older tag or file some bugs.
 $ git tag -l
 
 Then pick whatever tag (stable point) you want. Preferably pick the most recent one.
