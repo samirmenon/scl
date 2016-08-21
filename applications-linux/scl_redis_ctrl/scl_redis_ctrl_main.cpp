@@ -39,18 +39,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
 #include <scl/io/CIORedis.hpp>
 
-// Used to simplify the controller setup (has a few helper functions).
-#include <scl/util/DatabaseUtils.hpp>
-
-
 #include <sutil/CSystemClock.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
-
-//Standard includes (for printing and multi-threading)
-#include <iostream>
-
 //Redis
 #include <hiredis/hiredis.h>
 
@@ -153,7 +145,7 @@ int main(int argc, char** argv)
 
       // Tasks are initialized after we find their type with dynamic typing.
       flag = flag && scl::init::registerNativeDynamicTypes();
-      flag = flag && scl_util::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
+      flag = flag && scl::init::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
       flag = flag && rctr.init(&rctr_ds,&dyn_scl);  //Set up the controller (needs parsed data and a dyn object)
       if(false == flag){ throw(std::runtime_error("Could not initialize controller")); }            //Error check.
 
