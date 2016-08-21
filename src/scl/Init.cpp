@@ -150,7 +150,7 @@ namespace scl
       }
       catch (std::exception& e)
       {
-        std::cout<<"\nregisterNativeDynamicTypes() : Could not register type : "<<e.what();
+        std::cout<<"\nscl::init::registerNativeDynamicTypes() : Could not register type : "<<e.what();
         return false;
       }
       return true;
@@ -296,12 +296,12 @@ namespace scl
         }
 #ifdef DEBUG
         if(0==nc_tasks_parsed)
-        { std::cout<<"\nDatabaseUtils::initMultiTaskCtrlDsFromParsedTasks() : WARNING : Did not find any non-control tasks";}
+        { std::cout<<"\nscl::init::initMultiTaskCtrlDsFromParsedTasks() : WARNING : Did not find any non-control tasks";}
 #endif
       }
       catch(std::exception& ee)
       {
-        std::cerr<<"\nDatabaseUtils::initMultiTaskCtrlDsFromParsedTasks() : "<<ee.what();
+        std::cerr<<"\nscl::init::initMultiTaskCtrlDsFromParsedTasks() : "<<ee.what();
         return 0;
       }
       return tasks_parsed;
@@ -351,7 +351,7 @@ namespace scl
         return true;
       }
       catch (std::exception & e)
-      { std::cout<<"\ninitMultiTaskCtrlDsFromParsedTasks() : Failed "<<e.what(); }
+      { std::cout<<"\nscl::init::initMultiTaskCtrlDsFromParsedTasks() : Failed "<<e.what(); }
       return false;
     }
 
@@ -405,7 +405,7 @@ namespace scl
       }
       catch(std::exception& ee)
       {
-        std::cerr<<"\nDatabaseUtils::initDynRobotFromParsedRobot() : "<<ee.what();
+        std::cerr<<"\nscl::init::initDynRobotFromParsedRobot() : "<<ee.what();
         return false;
       }
       return true;
