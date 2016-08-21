@@ -42,7 +42,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl_util
 {
 
-  /** Prints a robot link tree with a passed link as its root. */
+  /** Prints a robot link tree with a passed link as its root.
+   *
+   * NOTE TODO : This function is now mostly obsolete. It is preferable
+   * to use the JSON serializer instead. However, we'll keep it for now
+   * since it's a simple and clean print; the json print is overwhelming
+   * (displays everything).*/
   void printRobotLinkTree(const scl::SRigidBody &link, scl::sInt depth);
 
   /** Checks if a muscle system is compatible with a given robot. Looks for
