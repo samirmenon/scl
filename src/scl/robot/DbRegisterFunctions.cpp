@@ -44,8 +44,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/AllHeaders.hpp>
 #include <scl/actuation/AllHeaders.hpp>
 
-#include <scl/util/DatabaseUtils.hpp>
-
 #include <sutil/CRegisteredDynamicTypes.hpp>
 
 #include <iostream>

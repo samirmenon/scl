@@ -43,7 +43,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <chai3d.h>
 #endif
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 #include <scl/util/HelperFunctions.hpp>
 
 #include <sutil/CSystemClock.hpp>
