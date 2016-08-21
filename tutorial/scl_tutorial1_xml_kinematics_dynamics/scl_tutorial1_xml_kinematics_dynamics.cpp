@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SGcModel.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
+#include <scl/serialization/SerializationJSON.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
@@ -71,7 +71,11 @@ int main(int argc, char** argv)
 
   if(false == flag){ return 1; }            //Error check.
   std::cout<<"\nRobot generalized coordinates (q) = "<<rio.sensors_.q_.transpose();
-  scl_util::printRobotLinkTree(*(rds.rb_tree_.getRootNode()),0);
+
+  std::string tmp_str;
+  scl::serializeToJSONString(rds.rb_tree_, tmp_str,false);
+  std::cout<<"\nPrinting parsed robot: \n"<<tmp_str;
+
   std::cout<<"\n\n **** Progress : Initialized static and dynamic robot trees, and dynamics object.";
 
   // Compute dynamics.
