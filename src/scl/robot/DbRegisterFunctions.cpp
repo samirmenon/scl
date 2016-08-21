@@ -401,7 +401,7 @@ namespace scl_registry
       if(false == flag)
       { throw (std::runtime_error("Could not initialize the controller's data structure."));  }
 
-      unsigned int tasks_parsed = scl_util::initMultiTaskCtrlDsFromParsedTasks(
+      unsigned int tasks_parsed = scl::init::initMultiTaskCtrlDsFromParsedTasks(
           taskvec, taskvec_non_ctrl,*ret_ctrl);
 
       if(0==tasks_parsed)

@@ -45,34 +45,6 @@ namespace scl_util
   /** Prints a robot link tree with a passed link as its root. */
   void printRobotLinkTree(const scl::SRigidBody &link, scl::sInt depth);
 
-  /** In addition to the default initMultiTaskCtrlDsFromParsedTasks(), this function
-   * also parses some extra options if they exist.
-   *
-   * It also helps split the code for the task parsing from the param parsing (potentially
-   * easier to read for some).
-   *
-   * Sometimes parameters may be provided as strings and might require dynamic type
-   * resolution. As such, we will parse them here... */
-  int initMultiTaskCtrlDsFromParsedTasks(
-        const std::vector<scl::STaskBase*> &arg_taskvec,
-        const std::vector<scl::SNonControlTaskBase*> &arg_taskvec_nc,
-        const std::vector<scl::sString2> &arg_ctrl_params,
-        scl::SControllerMultiTask& ret_ctrl);
-
-  /** Checks whether dynamic type information is available. If so, it parses
-   * tasks into the control data structure
-   *
-   * NOTE : This would have been part of the core data structure except for the
-   * need for dynamic typing, which is useful for parsing user specified tasks. */
-  int initMultiTaskCtrlDsFromParsedTasks(
-      const std::vector<scl::STaskBase*> &arg_taskvec,
-      const std::vector<scl::SNonControlTaskBase*> &arg_taskvec_nc,
-      scl::SControllerMultiTask& arg_ctrl);
-
-  /** Initializes a dynamic tree given a static tree for a robot. */
-  bool initDynRobotFromParsedRobot(sutil::CMappedTree<std::string, scl::SRigidBodyDyn>& arg_rbd_tree,
-      const sutil::CMappedTree<std::string, scl::SRigidBody>& arg_rb_tree);
-
   /** Checks if a muscle system is compatible with a given robot. Looks for
    * both in the database */
   scl::sBool isMuscleCompatWithRobot(const std::string& arg_msys,

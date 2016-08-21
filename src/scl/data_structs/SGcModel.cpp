@@ -31,7 +31,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <scl/data_structs/SGcModel.hpp>
-#include <scl/util/DatabaseUtils.hpp>
+#include <scl/Init.hpp>
 
 #include <stdexcept>
 #include <iostream>
@@ -66,7 +66,7 @@ namespace scl
 
       computed_spatial_transformation_and_inertia_ = false;
 
-      flag = scl_util::initDynRobotFromParsedRobot(rbdyn_tree_,arg_robot_data.rb_tree_);
+      flag = scl::init::initDynRobotFromParsedRobot(rbdyn_tree_,arg_robot_data.rb_tree_);
       if(false==flag)
       { throw(std::runtime_error("Could not initialize dynamic tree from the static tree for a robot.")); }
 

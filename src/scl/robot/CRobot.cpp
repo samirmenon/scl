@@ -303,6 +303,7 @@ namespace scl
       data_.io_data_->sensors_.ddq_.setZero(data_.io_data_->dof_);
 
       //Some defaults:
+      // NOTE TODO : Shouldn't these be in the xml file???
       //Damping = 1% energy loss per second
       data_.parsed_robot_data_->damping_gc_.setConstant(data_.io_data_->dof_,db_->sim_dt_/100);
       //Force limits: 1000 N
