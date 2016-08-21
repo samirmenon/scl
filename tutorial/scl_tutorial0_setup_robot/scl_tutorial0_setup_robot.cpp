@@ -33,7 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SGcModel.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
+#include <scl/serialization/SerializationJSON.hpp>
 
 //Eigen 3rd party lib for math computations
 #include <Eigen/Dense>
@@ -126,7 +126,9 @@ int main(int argc, char** argv)
   rds.has_been_init_ = true;
 
   std::cout<<"\nPrinting parsed robot "<<rname;
-  scl_util::printRobotLinkTree(*(rds.rb_tree_.getRootNode()),0);
+  std::string tmp_str;
+  scl::serializeToJSONString(rds.rb_tree_, tmp_str,false);
+  std::cout<<"\n"<<tmp_str;
 
   std::cout<<"\n\n **** Progress : Initialized robot data structure.";
 
