@@ -525,7 +525,7 @@ namespace scl
     ss << static_cast<const void*>(arg_obj.gc_model_);
     ret_json_val["gc_model_"] = ss.str(); ss.clear();
 
-    return false;
+    return true;
   }
 
   template<>  bool serializeToJSON<SNonControlTaskBase>(const SNonControlTaskBase &arg_obj, Json::Value &ret_json_val)
