@@ -47,9 +47,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 // use a coding style similar to the tutorials).
 #include <scl/robot/CRobotApp.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/robot/GenericCallbacks.hpp>
 #include <scl/robot/data_structs/SRobot.hpp>
 #include <scl/robot/CRobot.hpp>
-#include <scl/robot/GenericPrintables.hpp>
 
 #endif /* SCL_HPP_ */

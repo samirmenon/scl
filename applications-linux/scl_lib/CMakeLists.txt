@@ -52,7 +52,6 @@ SET(UTIL_SRC ${SCL_INC_DIR}/util/HelperFunctions.cpp
 SET(ROBOT_SRC ${SCL_INC_DIR}/robot/CRobot.cpp
               ${SCL_INC_DIR}/robot/data_structs/SRobot.cpp
               ${SCL_INC_DIR}/robot/DbRegisterFunctions.cpp
-              ${SCL_INC_DIR}/robot/GenericCallbacks.cpp
    )
    
 SET(SHELL_SRC ${SCL_INC_DIR}/shell/ConsoleShell.cpp)
@@ -133,7 +132,10 @@ SET(SCL_IO_SRC ${SCL_INC_DIR}/io/CIORedis.cpp
    )
 
 SET(SCL_SERIALIZATION_SRC ${SCL_INC_DIR}/serialization/SerializationJSON.cpp
-                          ${SCL_INC_DIR}/serialization/PrintablesJSON.cpp
+   )
+   
+SET(SCL_CALLBACKS_SRC ${SCL_INC_DIR}/callbacks/GenericCallbacks.cpp
+                      ${SCL_INC_DIR}/callbacks/PrintablesJSON.cpp
    )
 
 SET(OSIM_PARSER_SRC ${SCL_INC_DIR}/parser/osimparser/CParserOsim.cpp
@@ -151,7 +153,7 @@ SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} ${SHELL
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
            ${TAO_SRC} ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
            ${SCL_PARSER_SRC} ${OSIM_PARSER_SRC}
-           ${SCL_IO_SRC} ${SCL_SERIALIZATION_SRC}
+           ${SCL_IO_SRC} ${SCL_SERIALIZATION_SRC} ${SCL_CALLBACKS_SRC}
            ${TIXML_SRC})
 
 #Set the build mode to debug by default

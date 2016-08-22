@@ -34,8 +34,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/Singletons.hpp>
 
-#include <scl/robot/GenericCallbacks.hpp>
-#include <scl/serialization/PrintablesJSON.hpp>
+#include <scl/callbacks/GenericCallbacks.hpp>
+#include <scl/callbacks/PrintablesJSON.hpp>
 
 #include <iostream>
 #include <string>
