@@ -28,26 +28,19 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
+//scl lib
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
 
-#include <sstream>
-
-//Standard includes
-#include <iostream>
-#include <stdexcept>
+#include <sutil/CSystemClock.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
 
-//scl lib
-#include <scl/DataTypes.hpp>
-#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <sutil/CSystemClock.hpp>
+//Standard includes
+#include <sstream>
+#include <iostream>
+#include <stdexcept>
 
 //Openmp
 #include <omp.h>
