@@ -227,12 +227,13 @@ namespace scl
         itl!=itle; ++itl)
     {
       const scl::SRigidBody& l = *itl;
-      flag = sutil::printables::add(l.name_,l);
+      std::string rbid = arg_obj.name_+std::string("::")+l.name_;
+      flag = sutil::printables::add(rbid,l);
       if(false == flag)
       {throw(std::runtime_error(std::string("Could not add a printable: Robot: ")+
-          arg_obj.name_+". Link: "+l.name_));  }
+          arg_obj.name_+". Link: "+l.name_ +". Map-Idx: "+rbid ));  }
       else
-      { std::cout<<"\n"<<std::setw(10)<<"Printable: "<<arg_obj.name_<<" "<<l.getType()<<std::setw(40)<<l.name_; }
+      { std::cout<<"\n"<<std::setw(10)<<"Printable: "<<arg_obj.name_<<" "<<l.getType()<<std::setw(40)<<rbid; }
     }
 
     return true;
