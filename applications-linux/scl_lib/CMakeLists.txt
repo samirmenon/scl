@@ -42,8 +42,7 @@ SET(ACT_SRC ${SCL_INC_DIR}/actuation/muscles/CActuatorMuscle.cpp
             ${SCL_INC_DIR}/actuation/muscles/CActuatorSetMuscle.cpp
    )
 
-SET(UTIL_SRC ${SCL_INC_DIR}/util/DatabaseUtils.cpp
-             ${SCL_INC_DIR}/util/HelperFunctions.cpp
+SET(UTIL_SRC ${SCL_INC_DIR}/util/HelperFunctions.cpp
              ${SCL_INC_DIR}/util/FileFunctions.cpp
              ${SCL_INC_DIR}/util/RobotMath.cpp
              ${SCL_INC_DIR}/util/CmdLineArgReader.cpp

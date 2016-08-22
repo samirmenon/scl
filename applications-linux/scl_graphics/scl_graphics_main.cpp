@@ -37,7 +37,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/serialization/SerializationJSON.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 
 #include <scl/robot/GenericCallbacks.hpp>
 #include <scl/serialization/PrintablesJSON.hpp>

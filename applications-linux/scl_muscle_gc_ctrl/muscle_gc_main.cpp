@@ -38,7 +38,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/control/gc/CControllerGc.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 #include <scl/actuation/muscles/CActuatorSetMuscle.hpp>

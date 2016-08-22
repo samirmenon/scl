@@ -49,7 +49,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <scl/robot/CRobot.hpp>
 #include <sutil/CSystemClock.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 #include <scl/util/HelperFunctions.hpp>
 
 #include <omp.h>

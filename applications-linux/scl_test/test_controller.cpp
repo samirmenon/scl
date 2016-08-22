@@ -46,8 +46,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskNULL.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 
-#include <scl/util/DatabaseUtils.hpp>
-
 //Tao Dynamics
 #include <scl/dynamics/tao/CDynamicsTao.hpp>
 #include <scl/dynamics/tao/CTaoRepCreator.hpp>

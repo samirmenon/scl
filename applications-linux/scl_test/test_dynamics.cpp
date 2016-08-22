@@ -35,7 +35,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 
 //Tao Dynamics
 #include <scl/dynamics/tao/CDynamicsTao.hpp>

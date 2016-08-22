@@ -23,7 +23,6 @@
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/robot/CRobotApp.hpp>
 #include <scl/util/HelperFunctions.hpp>
