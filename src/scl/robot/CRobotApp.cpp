@@ -54,7 +54,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 
 //String tokenizer uses std::algorithm
-#include <iostream>
 #include <algorithm>
 #include <iterator>
 
