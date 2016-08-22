@@ -34,6 +34,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/actuation/AllHeaders.hpp>
 
+#include <scl/callbacks/AllHeaders.hpp>
+
 #include <scl/control/AllHeaders.hpp>
 
 #include <scl/data_structs/AllHeaders.hpp>
