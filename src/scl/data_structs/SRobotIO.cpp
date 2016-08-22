@@ -60,7 +60,7 @@ sBool SRobotIO::init(const SRobotParsed& arg_rds)
     { throw(std::runtime_error("Can't add a robot with 0 degrees of freedom"));  }
 
     name_robot_ = arg_rds.name_;
-    name_ = arg_rds.name_ + "_io_ds";
+    name_ = arg_rds.name_ + "::io_ds";
     dof_ = arg_rds.dof_;
 
     //Initialize sensors
