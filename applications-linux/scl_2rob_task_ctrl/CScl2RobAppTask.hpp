@@ -128,7 +128,7 @@ namespace scl_app
     /** Runs a simulation using two threads:
      * Thread 1: Computes the robot dynamics
      * Thread 2: Renders the graphics and handles gui interaction */
-    void runMainLoopThreaded();
+    void runMainLoopThreaded(int thread_id);
 
     /** Runs a simulation using one thread.
      * 1: Computes the robot dynamics
@@ -319,62 +319,55 @@ namespace scl_app
     std::cout<<"\n********************************************\n"<<std::flush;
   }
 
-  void CScl2RobAppTask::runMainLoopThreaded()
+  void CScl2RobAppTask::runMainLoopThreaded(int thread_id)
   {
-    omp_set_num_threads(2);
-    int thread_id;
-
-#pragma omp parallel private(thread_id)
-    {//Start threaded region
-      thread_id = omp_get_thread_num();
-      if(thread_id==1)
+    if(thread_id==1)
+    {
+      //Thread 1 : Run the simulation
+      while(scl::CDatabase::getData()->running_)
       {
-        //Thread 1 : Run the simulation
-        while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
+        if(!scl::CDatabase::getData()->pause_ctrl_dyn_)
+        { stepMySimulation(); }
+        //If paused, but step required, step it and set step flag to false.
+        else if(scl::CDatabase::getData()->step_ctrl_dyn_)
         {
-          if(!scl::CDatabase::getData()->pause_ctrl_dyn_)
-          { stepMySimulation(); }
-          //If paused, but step required, step it and set step flag to false.
-          else if(scl::CDatabase::getData()->step_ctrl_dyn_)
-          {
-            scl::CDatabase::getData()->step_ctrl_dyn_ = false;
-            stepMySimulation();
-          }
-          else
-          {//Paused and no step required. Sleep for a bit.
-            const timespec ts = {0, 15000000};//Sleep for 15ms
-            nanosleep(&ts,NULL);
-          }
-
-          if(!scl::CDatabase::getData()->pause_ctrl_dyn_ &&
-              scl::CDatabase::getData()->param_logging_on_)
-          {//Logs vectors of [q, dq, x, J]
-            for(int i=0; i<2; ++i)
-            {
-              log_file_[i]<<sutil::CSystemClock::getSimTime()<<" "
-                  <<rob_io_ds[i]->sensors_.q_.transpose()<<" "
-                  <<rob_io_ds[i]->sensors_.dq_.transpose()<<" "
-                  <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i].transpose()
-                  <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i+1].transpose()
-                  <<std::endl;
-              log_file_J_[i]<<tsk_ds[i]->J_<<std::endl;
-              log_file_J_[i]<<tsk2_ds[i]->J_<<std::endl;
-            }
-          }
+          scl::CDatabase::getData()->step_ctrl_dyn_ = false;
+          stepMySimulation();
         }
-      }
-      else
-      {
-        //Thread 2 : Run the graphics and gui
-        while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
-        {
+        else
+        {//Paused and no step required. Sleep for a bit.
           const timespec ts = {0, 15000000};//Sleep for 15ms
           nanosleep(&ts,NULL);
-          glutMainLoopEvent(); //Update the graphics
-          gr_ctr++;
+        }
+
+        if(!scl::CDatabase::getData()->pause_ctrl_dyn_ &&
+            scl::CDatabase::getData()->param_logging_on_)
+        {//Logs vectors of [q, dq, x, J]
+          for(int i=0; i<2; ++i)
+          {
+            log_file_[i]<<sutil::CSystemClock::getSimTime()<<" "
+                <<rob_io_ds[i]->sensors_.q_.transpose()<<" "
+                <<rob_io_ds[i]->sensors_.dq_.transpose()<<" "
+                <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i].transpose()
+                <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i+1].transpose()
+                <<std::endl;
+            log_file_J_[i]<<tsk_ds[i]->J_<<std::endl;
+            log_file_J_[i]<<tsk2_ds[i]->J_<<std::endl;
+          }
         }
       }
-    }//End of threaded region
+    }
+    else
+    {
+      //Thread 2 : Run the graphics and gui
+      while(scl::CDatabase::getData()->running_)
+      {
+        const timespec ts = {0, 15000000};//Sleep for 15ms
+        nanosleep(&ts,NULL);
+        glutMainLoopEvent(); //Update the graphics
+        gr_ctr++;
+      }
+    }
   }
 
   void CScl2RobAppTask::runMainLoop()
