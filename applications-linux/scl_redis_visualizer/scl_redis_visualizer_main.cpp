@@ -30,15 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/data_structs/SGcModel.hpp>
-#include <scl/data_structs/DataStructQueryFunctions.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/io/CIORedis.hpp>
-#include <scl/util/CmdLineArgReader.hpp>
-#include <scl/Init.hpp>
+#include <scl/scl.hpp>
 
 #include <sutil/CSystemClock.hpp>
 
