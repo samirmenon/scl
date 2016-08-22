@@ -32,7 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include "CExampleApp.hpp"
 #include "ExampleCallbacks.hpp"
 
-#include <scl/robot/ConsoleShell.hpp>
+#include <scl/shell/ConsoleShell.hpp>
 
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>

@@ -53,8 +53,9 @@ SET(ROBOT_SRC ${SCL_INC_DIR}/robot/CRobot.cpp
               ${SCL_INC_DIR}/robot/data_structs/SRobot.cpp
               ${SCL_INC_DIR}/robot/DbRegisterFunctions.cpp
               ${SCL_INC_DIR}/robot/GenericCallbacks.cpp
-              ${SCL_INC_DIR}/robot/ConsoleShell.cpp
    )
+   
+SET(SHELL_SRC ${SCL_INC_DIR}/shell/ConsoleShell.cpp)
 
 SET(CTR_SRC ${SCL_INC_DIR}/control/data_structs/SControllerBase.cpp
             ${SCL_INC_DIR}/control/gc/data_structs/SControllerGc.cpp
@@ -146,7 +147,7 @@ SET(TIXML_SRC ${TIXML_INC_DIR}/scl_tinyxml/scl_tinystr.cpp
    )
 ADD_DEFINITIONS(-DTIXML_USE_STL -std=c++11)
 
-SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} 
+SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} ${SHELL_SRC}
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
            ${TAO_SRC} ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
            ${SCL_PARSER_SRC} ${OSIM_PARSER_SRC}

@@ -29,7 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <scl/robot/ConsoleShell.hpp>
+#include "ConsoleShell.hpp"
 #include <sutil/CRegisteredCallbacks.hpp>
 
 #include <sstream>
