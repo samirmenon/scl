@@ -52,6 +52,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/serialization/AllHeaders.hpp>
 
+#include <scl/shell/AllHeaders.hpp>
+
 #include <scl/trajectory/AllHeaders.hpp>
 
 #include <scl/util/AllHeaders.hpp>
