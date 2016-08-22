@@ -30,8 +30,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "CScl2RobAppTask.hpp"
-#include <scl/shell/ConsoleShell.hpp>
-#include <scl/callbacks/AllHeaders.hpp>
 
 #include <cassert>
 

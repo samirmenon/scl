@@ -36,20 +36,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CSCL_2ROB_APP_TASK_HPP_
 
 //Standard includes
-#include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/Init.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/control/task/CControllerMultiTask.hpp>
-#include <scl/control/task/tasks/CTaskOpPos.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/robot/CRobot.hpp>
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
+
 #include <sutil/CSystemClock.hpp>
-#include <scl/util/HelperFunctions.hpp>
 
 #include <omp.h>
 #include <GL/freeglut.h>
@@ -58,10 +48,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <fstream>
 #include <stdexcept>
 #include <string>
-
-//User modified includes to suit your application
-#include <scl/control/task/tasks/CTaskOpPos.hpp>
-
 
 namespace scl_app
 {
