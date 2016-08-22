@@ -64,6 +64,11 @@ namespace scl
      * is set to false.
      */
     void runConsoleShell(scl::SDatabase &arg_db);
+
+    /** Tokenizes the char arr into a vector of strings
+     * I.e., Splits up the words and places them in a vector.
+     */
+    void tokenizeCharArr(const char* arg_arr, std::vector<std::string> &ret_vec);
   }
 
 } /* namespace scl */

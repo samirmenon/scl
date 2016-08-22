@@ -47,6 +47,16 @@ namespace scl
 {
   namespace shell
   {
+    void tokenizeCharArr(const char* arg_arr, std::vector<std::string> &ret_vec)
+    {
+      ret_vec.clear();
+      //Split the string into string tokens
+      std::istringstream iss(arg_arr);
+      std::copy(std::istream_iterator<std::string>(iss),
+          std::istream_iterator<std::string>(),
+          std::back_inserter<std::vector<std::string> >(ret_vec));
+    }
+
     void runConsoleShell(scl::SDatabase &arg_db)
     {
       bool flag, flag2;
@@ -55,7 +65,7 @@ namespace scl
       using namespace std;
 
       std::vector<std::string> last_command;
-      last_command.clear();
+      std::vector<std::string> tokens;
 
       char cmd_buf[1024];
 
@@ -65,16 +75,12 @@ namespace scl
         {
           std::cout<<"\nscl>> ";
 
+          // Get the input string(s)
           char* ret = fgets(cmd_buf,1024,stdin);
-          if(ret!=cmd_buf)
-          { std::cout<<"\nError in shell: Could not read stdin";  }
+          if(ret!=cmd_buf)  { std::cout<<"\nError in shell: Could not read stdin";  }
 
-          //Split the string into string tokens
-          std::istringstream iss(cmd_buf);
-          std::vector<std::string> tokens;
-          std::copy(std::istream_iterator<std::string>(iss),
-              std::istream_iterator<std::string>(),
-              std::back_inserter<std::vector<std::string> >(tokens));
+          // Tokenize the string so we can parse it easily.
+          tokenizeCharArr(cmd_buf, tokens);
 
           //Some error checks
           if(tokens.begin() == tokens.end())
