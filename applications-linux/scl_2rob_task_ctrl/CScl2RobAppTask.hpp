@@ -122,7 +122,7 @@ namespace scl_app
     void runMainLoop();
 
     //Data types. Feel free to use them.
-    scl::SDatabase* db;                    //Generic database (for sharing data)
+    scl::SDatabase* db=NULL;               //Generic database (for sharing data)
 
     std::vector<std::string> robots_parsed;   //Parsed robots
     std::vector<std::string> graphics_parsed; //Parsed graphics views
@@ -138,9 +138,9 @@ namespace scl_app
     scl::CDynamicsScl* dyn_scl_[2];        //Generic scl dynamics
     scl::CGraphicsChai chai_gr;            //Generic chai graphics
 
-    scl::sLongLong ctrl_ctr;               //Controller computation counter
-    scl::sLongLong gr_ctr;                 //Controller computation counter
-    scl::sFloat t_start, t_end;            //Start and end times
+    scl::sLongLong ctrl_ctr=0;             //Controller computation counter
+    scl::sLongLong gr_ctr=0;               //Controller computation counter
+    scl::sFloat t_start=0.0, t_end=0.0;    //Start and end times
 
     std::fstream log_file_[2];             //Logs vectors of [q, dq, x]
     std::fstream log_file_J_[2];           //Logs J
