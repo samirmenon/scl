@@ -37,7 +37,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>

@@ -35,7 +35,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
 #include <scl/dynamics/tao/CDynamicsTao.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>

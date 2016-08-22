@@ -33,11 +33,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 #include <scl/data_structs/SGcModel.hpp>
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
+#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 
 //For timing
 #include <sutil/CSystemClock.hpp>
@@ -71,11 +70,12 @@ int main(int argc, char** argv)
 
   scl::SRobotParsed rds;     //Robot data structure....
   scl::SGraphicsParsed rgr;  //Robot graphics data structure...
-  scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
+  scl::SGcModel rgcm;        //Robot data structure with dynamic quantities (for the control)...
+  scl::SGcModel rgcm_dyn;    //Robot data structure with dynamic quantities (for the physics)...
   scl::SRobotIO rio;         //I/O data structure
   scl::CGraphicsChai rchai;  //Chai interface (updates graphics rendering tree etc.)
   scl::CDynamicsScl dyn_scl; //Robot kinematics and dynamics computation object...
-  scl::CDynamicsTao dyn_tao; //Robot physics integrator
+  scl_ext::CDynamicsSclSpatial dyn_scl_sp; //Robot physics integrator
   scl::CParserScl p;         //This time, we'll parse the tree from a file...
   sutil::CSystemClock::start();
 
@@ -83,7 +83,8 @@ int main(int argc, char** argv)
   //We will use a slightly more complex xml spec than the first few tutorials
   bool flag = p.readRobotFromFile("./R6Cfg.xml","./","r6bot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
-  flag = flag && dyn_tao.init(rds);         //Set up integrator object
+  flag = flag && rgcm_dyn.init(rds);            //Simple way to set up dynamic tree...
+  flag = flag && dyn_scl_sp.init(rds);      //Set up integrator object
   flag = flag && dyn_scl.init(rds);         //Set up kinematics and dynamics object
   flag = flag && rio.init(rds);             //Set up the I/O data structure
   if(false == flag){ return 1; }            //Error check.
@@ -126,7 +127,8 @@ int main(int argc, char** argv)
         // Controller : fgc = kp * (sin(t) - q) + kv(0 - dq)
         // Set the desired positions so that the joints move in a sine wave
         rio.actuators_.force_gc_commanded_ = 100 * (sin(tcurr-tstart) - rio.sensors_.q_.array()) - 20 * rio.sensors_.dq_.array();
-        dyn_tao.integrate(rio,dt); iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL);
+        dyn_scl_sp.integrate(rgcm_dyn,rio,dt);
+        iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL);
 
         if(iter % n_iters/10 == 0){std::cout<<"\nTracking error: "<<(sin(tcurr-tstart) - rio.sensors_.q_.array()).transpose(); }
       }
