@@ -30,11 +30,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "CExampleApp.hpp"
-#include "tasks/CTaskGcExample.hpp"
 #include "tasks/CTaskOpExample.hpp"
-
-#include <scl/DataTypes.hpp>
-#include <scl/data_structs/SDatabase.hpp>
+#include "tasks/CTaskGcExample.hpp"
 
 #include <sutil/CSystemClock.hpp>
 

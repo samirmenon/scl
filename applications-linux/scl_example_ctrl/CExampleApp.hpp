@@ -32,13 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CEXAMPLEAPP_HPP_
 #define CEXAMPLEAPP_HPP_
 
-#include <scl/robot/CRobotApp.hpp>
-
-#include <scl/control/task/CControllerMultiTask.hpp>
-#include <scl/control/task/tasks/CTaskOpPos.hpp>
-#include <scl/control/task/tasks/CTaskComPos.hpp>
-
-#include <scl/graphics/chai/data_structs/SGraphicsChai.hpp>
+#include <scl/scl.hpp>
 
 namespace scl_app
 {

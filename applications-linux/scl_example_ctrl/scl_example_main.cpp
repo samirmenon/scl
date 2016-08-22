@@ -32,13 +32,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include "CExampleApp.hpp"
 #include "ExampleCallbacks.hpp"
 
-#include <scl/shell/ConsoleShell.hpp>
-
-#ifdef GRAPHICS_ON
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#endif
-#include <util/HelperFunctions.hpp>
-
 #include <sutil/CSystemClock.hpp>
 
 #include <omp.h>
