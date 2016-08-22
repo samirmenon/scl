@@ -18,11 +18,8 @@ SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
 #sUtil Includes
 SET(SUTIL_INC_DIR ../../3rdparty/sUtil/src)
 
-SET(TAO_INC_DIR ${SCL_INC_DIR}/dynamics/tao)
-
 #Set all include directories
-INCLUDE_DIRECTORIES(../../src/ ${SCL_INC_DIR}
-                    ${EIGEN_INC_DIR} ${TAO_INC_DIR}		    						
+INCLUDE_DIRECTORIES(../../src/ ${EIGEN_INC_DIR}	    						
                     ${SUTIL_INC_DIR} ${TIXML_INC_DIR} 
                     ${SCLEXT_INC_DIR})
 
@@ -89,32 +86,6 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
 # This needs some work. Should add basic trajectory generation support.
 SET(CTR_TRAJ_SRC 
    )
-   
-SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDNode.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABDynamics.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABJoint.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoWorld.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDynamics.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoJoint.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoNode.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoArticulatedBodyLink.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/utility/TaoDeMassProp.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeQuaternionf.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeMatrix6.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeVector6.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeMatrix3f.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeTransform.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/vector_util.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/Status.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/State.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/Model.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/wrap_eigen.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/tao_util.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/tao_dump.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/strutil.cpp
-            ${SCL_INC_DIR}/dynamics/tao/CDynamicsTao.cpp
-            ${SCL_INC_DIR}/dynamics/tao/CTaoRepCreator.cpp
-   )
 
 SET(DYN_ANALYTIC_SRC ${SCL_INC_DIR}/dynamics/analytic/CDynamicsAnalyticRPP.cpp
    )
@@ -151,7 +122,7 @@ ADD_DEFINITIONS(-DTIXML_USE_STL -std=c++11)
 
 SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} ${SHELL_SRC}
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
-           ${TAO_SRC} ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
+           ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
            ${SCL_PARSER_SRC} ${OSIM_PARSER_SRC}
            ${SCL_IO_SRC} ${SCL_SERIALIZATION_SRC} ${SCL_CALLBACKS_SRC}
            ${TIXML_SRC})
