@@ -28,7 +28,7 @@ Alternatively try an older tag or file some bugs.
 $ git tag -l
 
 Then pick whatever tag (stable point) you want. Preferably pick the most recent one.
-$ git checkout -b tag-v0.98 tags/v0.98
+$ git checkout -b tag-v0.99 tags/v0.99
 
 Unless you have some experience coding, you should consider using a stable version of the code.
 
