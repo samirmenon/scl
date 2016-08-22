@@ -30,11 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/data_structs/SGcModel.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/serialization/SerializationJSON.hpp>
+#include <scl/scl.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
