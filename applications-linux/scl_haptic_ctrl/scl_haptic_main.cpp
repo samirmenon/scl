@@ -32,6 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include "CHapticApp.hpp"
 #include "HapticCallbacks.hpp"
 
+#include <scl/robot/ConsoleShell.hpp>
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #endif
@@ -95,7 +96,7 @@ int main(int argc, char** argv)
     thread_id = omp_get_thread_num();
 
     /***********************Main Loop*****************************/
-    if(2 == thread_id) { app.runConsoleShell(); }
+    if(2 == thread_id) { scl::shell::runConsoleShell(*CDatabase::getData()); }
     else {//No shell in debug mode for now.
 #ifndef DEBUG
       app.runMainLoopThreaded(thread_id);  //Run multi-threaded in release mode
