@@ -30,13 +30,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/data_structs/SGcModel.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
@@ -77,14 +72,14 @@ int main(int argc, char** argv)
   scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
   scl::SRobotIO rio;         //I/O data structure
   scl::CGraphicsChai rchai;  //Chai interface (updates graphics rendering tree etc.)
-  scl::CDynamicsTao dyn_tao; //Robot physics integrator...
+  scl_ext::CDynamicsSclSpatial dyn_scl_sp; //Robot physics integrator...
   scl::CParserScl p;         //This time, we'll parse the tree from a file...
 
   /******************************Load Robot Specification************************************/
   //We will use a slightly more complex xml spec than the first few tutorials
   bool flag = p.readRobotFromFile("./RRRRCfg.xml","./","rrrrbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
-  flag = flag && dyn_tao.init(rds);         //Set up integrator object
+  flag = flag && dyn_scl_sp.init(rds);         //Set up integrator object
   flag = flag && rio.init(rds);
   if(false == flag){ return 1; }            //Error check.
 
@@ -111,7 +106,7 @@ int main(int argc, char** argv)
     thread_id = omp_get_thread_num();
     if(thread_id==1) //Simulate physics and update the rio data structure..
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
-      { dyn_tao.integrate(rio,dt); iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL); }
+      { dyn_scl_sp.integrate(rgcm,rio,dt); iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL); }
     else  //Read the rio data structure and updated rendererd robot..
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       { glutMainLoopEvent(); const timespec ts = {0, 15000000};/*15ms*/ nanosleep(&ts,NULL); }
