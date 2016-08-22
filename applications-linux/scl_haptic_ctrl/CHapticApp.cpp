@@ -31,10 +31,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CHapticApp.hpp"
 
-
-#include <scl/DataTypes.hpp>
-#include <scl/data_structs/SDatabase.hpp>
-
 #include <sutil/CSystemClock.hpp>
 
 #include <chai3d.h>
