@@ -1,7 +1,8 @@
 scl: Standard Control Library
 
 A control and interactive simulation library. Supports torque control on a variety of robots including
-Unimate PUMA 500, Barrett WAM, Kuka LWR, and the Kuka LBR IIWA.
+Unimate PUMA 500, Barrett WAM, Kinova Jaco, Neurobot {v1, v2, v3}, HFI {v1, v2, v2.5, v3, v5}, Kuka LWR, 
+and Kuka LBR IIWA. (Low-level robot drivers must be obtained separately).
 
 Wiki: https://bitbucket.org/samirmenon/scl-manips-v2/wiki
 
