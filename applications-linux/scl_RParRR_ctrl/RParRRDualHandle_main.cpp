@@ -30,19 +30,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/Init.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/control/task/CControllerMultiTask.hpp>
-#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <sutil/CSystemClock.hpp>
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
 
-#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
+#include <sutil/CSystemClock.hpp>
 
 #include <omp.h>
 #include <GL/freeglut.h>
