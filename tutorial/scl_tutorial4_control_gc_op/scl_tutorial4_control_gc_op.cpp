@@ -158,7 +158,8 @@ int main(int argc, char** argv)
         rio.actuators_.force_gc_commanded_ = Jx.block(0,0,3,rio.dof_).transpose() * (100*(x_des-x) - 20 * dx) - 20*rio.sensors_.dq_;
 
         // Integrate the dynamics
-        dyn_tao.integrate(rio,dt); iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL);
+        dyn_scl_sp.integrate(rgcm_dyn,rio,dt);
+        iter++; const timespec ts = {0, 5000};/*.05ms*/ nanosleep(&ts,NULL);
 
         if(iter % static_cast<long>(n_iters/10) == 0)
         { std::cout<<"\nTracking error: "<<(x_des-x).transpose()<<". Norm: "<<(x_des-x).norm(); }
