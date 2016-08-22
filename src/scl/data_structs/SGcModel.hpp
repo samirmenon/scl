@@ -98,7 +98,7 @@ namespace scl
 
     /** bool specifying whther spatial transformation 
      * and inertia is calculated or not */
-    bool computed_spatial_transformation_and_inertia_; 
+    bool computed_spatial_transformation_and_inertia_=false;
 
     /** A vector of the dynamics information for all the rigid bodies in the
      * articulated body */
