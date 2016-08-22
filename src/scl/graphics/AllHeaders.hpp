@@ -32,12 +32,16 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef SRC_SCL_GRAPHICS_ALLHEADERS_HPP_
 #define SRC_SCL_GRAPHICS_ALLHEADERS_HPP_
 
+#ifdef GRAPHICS_ON
+
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/data_structs/SGraphicsChai.hpp>
 #include <scl/graphics/chai/data_structs/SGraphicsChaiRigidBody.hpp>
 #include <scl/graphics/chai/data_structs/SGraphicsChaiMuscleSet.hpp>
 
 // NOTE TODO : Consider trimming this and adding it. Will reduce some code duplication.
-// #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
+#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
+
+#endif
 
 #endif /* SRC_SCL_GRAPHICS_ALLHEADERS_HPP_ */
