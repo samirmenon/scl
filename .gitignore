@@ -45,6 +45,26 @@
 # Log files
 *.log
 
+# Standard Applications 
+applications-linux/scl_2rob_task_ctrl/scl_2rob_ctrl
+applications-linux/scl_RParRR_ctrl/scl_RParRR
+applications-linux/scl_RParRR_ctrl/scl_RParRRDual
+applications-linux/scl_RParRR_ctrl/scl_RParRRDualHandle
+applications-linux/scl_dynamics/scl_dynamics
+applications-linux/scl_example_ctrl/run_puma.sh
+applications-linux/scl_example_ctrl/scl_eg_ctrl
+applications-linux/scl_gc_ctrl/scl_gc_ctrl
+applications-linux/scl_graphics/scl_graphics
+applications-linux/scl_graphics/scl_graphics_mod
+applications-linux/scl_haptic_ctrl/scl_haptic_ctrl
+applications-linux/scl_redis_ctrl/run_kinova.sh
+applications-linux/scl_redis_ctrl/scl_redis_ctrl
+applications-linux/scl_redis_sim/README.txt
+applications-linux/scl_redis_sim/scl_redis_sim
+applications-linux/scl_redis_visualizer/scl_redis_visualizer
+applications-linux/scl_task_ctrl/scl_task_ctrl
+applications-linux/scl_test/scl_test
+
 # Tutorial files
 tutorial/scl_advanced_creating_new_tasks/scl_advanced_creating_new_tasks
 tutorial/scl_tutorial0_setup_robot/scl_tutorial0_setup_robot
