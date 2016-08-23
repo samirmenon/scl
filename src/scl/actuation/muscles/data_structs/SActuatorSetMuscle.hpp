@@ -57,7 +57,16 @@ namespace scl
     {
       if(NULL == arg_mset_parsed){ return false; }
       if(false == arg_mset_parsed->hasBeenInit()){ return false; }
+
+      // Save a pointer to the parsed data.
+      // NOTE TODO : Perhaps reconsider this? Might want to pass both around, where needed.
       mset_ = arg_mset_parsed;
+
+      // Initialize the data to zero.
+      force_actuator_.setZero(arg_mset_parsed->muscles_.size());
+      force_gc_des_.setZero(arg_mset_parsed->robot_->dof_);
+      J_.setZero(arg_mset_parsed->muscles_.size(),arg_mset_parsed->robot_->dof_);
+
       has_been_init_ = true;
       return true;
     }
