@@ -140,12 +140,6 @@ int main(int argc, char** argv)
       if(S_NULL == scl_registry::parseGcController(tmp_infile, robot_name, ctrl_name, &tmp_lparser))
       { throw(std::runtime_error("Could not register controller with the database"));  }
 
-#ifdef DEBUG
-      std::cout<<"\nPrinting parsed robot "<<robot_name;
-      scl_util::printRobotLinkTree(*( scl::CDatabase::getData()->
-          s_parser_.robots_.at(robot_name)->rb_tree_.getRootNode()),0);
-#endif
-
       /******************************Scl Spatial Dynamics************************************/
       scl_ext::CDynamicsSclSpatial dyn_scl_sp_int;
       flag = dyn_scl_sp_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
