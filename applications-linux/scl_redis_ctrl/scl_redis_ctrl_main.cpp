@@ -52,19 +52,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 bool flag_running=true;
 void handleExit(int s) { flag_running=false; }
 
-
-/** Basic data for reading from and writing to a redis database...
- * Makes it easy to keep track of things..*/
-class SHiredisStruct_RobotCtrl{
-public:
-  redisContext *context_ = NULL;
-  redisReply *reply_ = NULL;
-  const char *hostname_ = "127.0.0.1";
-  const int port_ = 6379;
-  const timeval timeout_ = { 1, 500000 }; // 1.5 seconds
-};
-
-
 /** A sample application to render a physics simulation being run in scl.
  *
  * It will display the robot in an OpenGL graphics window. */
@@ -103,9 +90,7 @@ int main(int argc, char** argv)
       scl::SRobotParsed rds;     //Robot data structure.
       scl::SRobotIO rio;         //I/O data structure.
       scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
-      scl::SGraphicsParsed rgr;  //Robot graphics data structure.
       scl::CParserScl p;         //This time, we'll parse the tree from a file.
-      SHiredisStruct_RobotCtrl redis_ds; //The data structure we'll use for redis comm.
 
       scl::CDynamicsScl dyn_scl; //Robot kinematics and dynamics computation object...
       scl::SControllerMultiTask rctr_ds; //A multi-task controller data structure
