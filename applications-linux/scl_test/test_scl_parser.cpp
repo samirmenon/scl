@@ -159,29 +159,4 @@ void test_scl_parser(int id)
     std::cout<<"\nTest #"<<id<<" : Failed.";
   }
 }
-
-
-/***
- * Tests the tao representation creator:
- *
- * Basically converts a parsed robot representation
- * into a tao dynamics engine tree.
- *
- */
-void test_tao_rep_creator(int id)
-{
-  try
-  {
-
-  }
-  catch(int i)
-  {
-    printf("\nTest %d : Failed",id);
-    printf("\n*************************");
-    return;
-  }
-  printf("\nTest %d : Succeeded",id);
-  printf("\n*************************");
-}
-
 }

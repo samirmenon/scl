@@ -41,15 +41,6 @@ namespace scl_test
  */
 void test_scl_parser(int id);
 
-/**
- * Tests the tao representation creator:
- *
- * Basically converts a parsed robot representation
- * into a tao dynamics engine tree.
- *
- * NOTE TODO : Incomplete
- */
-void test_tao_rep_creator(int id);
 }
 
 #endif /* TEST_LOTUS_PARSER_HPP_ */
