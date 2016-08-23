@@ -114,11 +114,6 @@ int main(int argc, char** argv)
       if(NULL == rob_ds)
       { throw(std::runtime_error("Could not find registered robot data struct in the database"));  }
 
-#ifdef DEBUG
-      std::cout<<"\nPrinting parsed robot "<<robot_name;
-      scl_util::printRobotLinkTree(*(rob_ds->rb_tree_.getRootNode()),0);
-#endif
-
       /******************************SclDynamics************************************/
       scl_ext::CDynamicsSclSpatial dyn_scl_sp;
       flag = dyn_scl_sp.init(*rob_ds);
