@@ -134,7 +134,7 @@ namespace scl_chai_glut_interface
       glutInitWindowPosition(chai_glob_ds->GLOB_windowPosX, chai_glob_ds->GLOB_windowPosX);
       glutInitWindowSize(chai_glob_ds->GLOB_chaiDbptr->gl_width_, chai_glob_ds->GLOB_chaiDbptr->gl_height_);
       glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-      glutCreateWindow("scl_busylizzy");
+      glutCreateWindow("scl_jasmine");
       glewInit();
 
       //Set up glut's handlers
