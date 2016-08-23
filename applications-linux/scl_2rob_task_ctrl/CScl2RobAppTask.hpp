@@ -134,7 +134,7 @@ namespace scl_app
     scl::SRobotParsed *rob_ds[2];          // Parsed robot data.
     scl::SRobotIO* rob_io_ds[2];           //Access the robot's sensors and actuators
 
-    scl_ext::CDynamicsSclSpatial* dyn_scl_sp_[2];        //Generic tao dynamics
+    scl_ext::CDynamicsSclSpatial* dyn_scl_sp_[2];        //Generic scl spatial dynamics
     scl::CDynamicsScl* dyn_scl_[2];        //Generic scl dynamics
     scl::CGraphicsChai chai_gr;            //Generic chai graphics
 
