@@ -68,7 +68,7 @@ namespace scl_test
 {
   /* Generic code required to run a scl simulation
    * A simulation requires running 3 things. This example uses:
-   * 1. A dynamics/physics engine                  :  Tao
+   * 1. A dynamics/physics engine                  :  Scl Spatial
    * 2. A controller                               :  Scl
    * 3. A graphic rendering+interaction interface  :  Chai3d + FreeGlut
    */
@@ -159,8 +159,8 @@ namespace scl_test
     scl::SRobotParsed *rob_ds=NULL;     //Generic robot data structure
     scl::SRobotIO* rob_io_ds=NULL;      //Access the robot's sensors and actuators
 
-    scl_ext::CDynamicsSclSpatial* dyn_scl_sp=NULL;//Generic tao dynamics
-    scl::CDynamicsScl* scl_dyn=NULL;    //Generic tao dynamics
+    scl_ext::CDynamicsSclSpatial* dyn_scl_sp=NULL;//Generic scl_spatial dynamics
+    scl::CDynamicsScl* scl_dyn=NULL;    //Generic scl dynamics
     scl::CGraphicsChai chai_gr;         //Generic chai graphics
 
     scl::sLongLong ctrl_ctr=0;          //Controller computation counter
@@ -217,7 +217,7 @@ namespace scl_test
       if(NULL == rob_ds)
       { throw(std::runtime_error("Could not find registered robot data struct in the database"));  }
 
-      /******************************TaoDynamics************************************/
+      /******************************Scl Spatial Dynamics************************************/
       // NOTE : We do NOT delete this.. When passed to the controller, the controller takes care of it.
       dyn_scl_sp = new scl_ext::CDynamicsSclSpatial();
       flag = dyn_scl_sp->init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));

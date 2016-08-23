@@ -35,19 +35,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl_test
 {
-  /**
-   * Tests the performance of the tao dynamics engine:
-   *
-   * Reads in a toy robot specification and lets it fall under gravity
-   * with full dynamics.
-   */
-  void test_dynamics(int id, const std::string &file_name);
-
   /** Tests the performance of analytical dynamics implementations in scl for
-   * RPP bot and compares them with the tao dynamics implementation.
-   *
-   * Tests tao's accuracy. */
-  void test_dynamics_tao_vs_analytic_rpp(int id);
+   * RPP bot and compares them with the scl spatial dynamics implementation.
+   * */
+  void test_dynamics_scl_sp_vs_analytic_rpp(int id);
 }
 #endif /* TEST_DYNAMICS_HPP_ */
 

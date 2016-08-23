@@ -125,11 +125,6 @@ namespace scl_test
           { throw(std::runtime_error("Could not sort unsorted robot branching representation."));  }
         }
 
-  #ifdef DEBUG
-        std::cout<<"\nPrinting parsed robot "<<rob_ds->name_;
-        scl_util::printRobotLinkTree( *(rob_ds->rb_tree_.getRootNode()), 0);
-  #endif
-
         //*********** Create the dynamics computational object *************
         // Initialize the dynamics computational object
         flag = dynamics.init(*rob_ds);

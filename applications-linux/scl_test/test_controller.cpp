@@ -46,9 +46,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/task/tasks/CTaskNULL.hpp>
 #include <scl/control/task/tasks/CTaskOpPos.hpp>
 
-//Tao Dynamics
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
-#include <scl/dynamics/tao/CTaoRepCreator.hpp>
+#include <scl_ext/scl_ext.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -268,7 +266,7 @@ namespace scl_test
    */
   void test_controller_dynamics(int id, const std::string &file_name)
   {
-    scl::CDynamicsTao * dynamics = S_NULL;
+    scl_ext::CDynamicsSclSpatial * dynamics = S_NULL;
     scl::sUInt r_id=0;
     //    bool flag;
     try
@@ -349,17 +347,17 @@ namespace scl_test
       { std::cout<<"\nTest Result ("<<r_id++<<")  Created controller's data struct" <<std::flush;  }
 
       //Initialize the dynamics computational object
-      dynamics = new scl::CDynamicsTao();
+      dynamics = new scl_ext::CDynamicsSclSpatial();
       if (S_NULL==dynamics)
-      { throw(std::runtime_error("Failed to allocate memory for tao dynamics."));  }
+      { throw(std::runtime_error("Failed to allocate memory for scl_sp dynamics."));  }
 
-      std::cout<<"\n"; //CDynamicsTao uses \n at the end convention.
+      std::cout<<"\n"; //CDynamicsSclSpatial uses \n at the end convention.
       flag = dynamics->init(robot_name);
-      if (false==flag) { throw(std::runtime_error("Failed to initialize tao dynamics."));  }
-      else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized tao dynamics for the robot.";  }
+      if (false==flag) { throw(std::runtime_error("Failed to initialize scl_sp dynamics."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized scl_sp dynamics for the robot.";  }
 
 
-      //4. Initialize the controller (initializes the tao tree within the init function).
+      //4. Initialize the controller (initializes the scl_sp tree within the init function).
       scl::CControllerMultiTask ctrl;
       flag = ctrl.init(ctrl_ds, dynamics);
       if(false == flag) { throw(std::runtime_error("Could not initialize the controller"));  }
@@ -387,7 +385,7 @@ namespace scl_test
       std::cout<<"\nTest Result ("<<r_id++<<") Executed "<<imax <<" iterations of a null task."
           <<"\n\tServo took time: "<<t2-t1<<std::flush;
 
-      //6. Re-Initialize the controller (initializes the tao tree within the init function).
+      //6. Re-Initialize the controller (initializes the scl_sp tree within the init function).
       ctrl.reset();
       flag = ctrl.init(ctrl_ds, dynamics);
       if(false == flag) { throw(std::runtime_error("Could not reset and reinitialize the controller"));  }

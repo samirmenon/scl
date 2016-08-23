@@ -101,12 +101,6 @@ namespace scl_test
             <<robot_names[0]<<" in the database"<<std::flush;
       }
 
-#ifdef DEBUG
-      std::cout<<"\nPrinting parsed robot "
-          <<db->s_parser_.robots_.at(robot_names[0])->name_;
-      scl_util::printRobotLinkTree(*( db->s_parser_.robots_.at(robot_names[0])->rb_tree_.getRootNode()),0);
-#endif
-
       //1.b. Pull out the robot's ds from the db
       rob_ds = db->s_parser_.robots_.at(robot_names[0]);
       if(S_NULL == rob_ds)
