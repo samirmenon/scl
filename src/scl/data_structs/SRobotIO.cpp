@@ -46,7 +46,8 @@ SRobotIO::SRobotIO() : SObject("SRobotIO")
   has_been_init_ = true;
 }
 
-sBool SRobotIO::init(const SRobotParsed& arg_rds)
+sBool SRobotIO::init(const SRobotParsed& arg_rds,
+    const std::string &actuator_set_to_activate)
 {
   try
   {
@@ -94,6 +95,20 @@ sBool SRobotIO::init(const SRobotParsed& arg_rds)
       { throw(std::runtime_error(std::string("Failed to get dyn type object for type (is it registered/standard?): ")+val.getType()));  }
       *tmp_aset = reinterpret_cast<SActuatorSetBase *>(obj);
     }
+
+    if(0 < actuators_.actuator_sets_.size())
+    {// If there is at least one actuator set, select the current actuator..
+      SActuatorSetBase **tmp_aset = actuators_.actuator_sets_.at(actuator_set_to_activate);
+      if(NULL == tmp_aset)
+      {
+        actuators_.aset_curr_ = *actuators_.actuator_sets_.at(0);
+        if(NULL == actuators_.aset_curr_)
+        { throw(std::runtime_error(std::string("ActuatorSet .size() is greater than zero and .at(0) is NULL")));  }
+      }
+      actuators_.aset_curr_ = *tmp_aset;
+    }
+    else //There wasn't any actuator set in the parsed data..
+    { actuators_.aset_curr_ = NULL; }
 
     has_been_init_ = true;
   }

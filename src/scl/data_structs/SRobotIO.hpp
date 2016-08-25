@@ -83,8 +83,7 @@ namespace scl
   class SRobotActuators
   {
   public:
-    /**
-     * The control generalized forces (usually torques) to
+    /** The control generalized forces (usually torques) to
      * be applied to a robot.
      * Eg.
      * a) By the controller
@@ -98,6 +97,9 @@ namespace scl
      * NOTE : The CMappedPointerList true arg indicates that sutil
      * will deallocate memory for these objects. */
     sutil::CMappedPointerList<std::string, SActuatorSetBase, true> actuator_sets_;
+
+    /** The presently activated actuator set (to avoid constant lookups) */
+    SActuatorSetBase *aset_curr_=NULL;
   };
 
   /** Wraps input (sensor) and output (actuator) data for a robot.
@@ -123,8 +125,14 @@ namespace scl
     /** Constructor **/
     SRobotIO();
 
-    /** Initializes the io data structure */
-    sBool init(const SRobotParsed& arg_rds);
+    /** Initializes the io data structure. Extracts all the necessary
+     * dof data and actuator sets etc. and sets up the associated fields
+     * in the io data structure.
+     *
+     * NOTE : By default it will activate the first actuator set if there
+     *        is more than one and one of them isn't specified. */
+    sBool init(const SRobotParsed& arg_rds,
+        const std::string &actuator_set_to_activate="");
 
     /** Joint positions and velocities are necessary
      * and sufficient to determine the system's state. */
