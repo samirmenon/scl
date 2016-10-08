@@ -107,10 +107,9 @@ namespace scl
     /** Initializes the actuators. This involves determining whether the muscle
      * matches the robot etc. It also sets up the Jacobians to be computed etc.
      */
-    virtual sBool init(const std::string& arg_name,
-        const SRobotParsed *arg_robot,
-        const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
-        SActuatorSetMuscle *arg_mset,
+    virtual sBool init(
+        SActuatorSetMuscle &arg_mset,
+        SGcModel &arg_rgcm,
         CDynamicsBase *arg_dynamics);
 
     /** Has this actuator been initialized */

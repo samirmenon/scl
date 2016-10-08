@@ -48,7 +48,7 @@ namespace scl
      *                        Data
      * ****************************************************** */
     /** The parsed muscle specification */
-    const SActuatorSetMuscleParsed *mset_;
+    const SActuatorSetMuscleParsed *mset_parsed_;
 
     /* ******************************************************
      *                        Initialization
@@ -60,7 +60,7 @@ namespace scl
 
       // Save a pointer to the parsed data.
       // NOTE TODO : Perhaps reconsider this? Might want to pass both around, where needed.
-      mset_ = arg_mset_parsed;
+      mset_parsed_ = arg_mset_parsed;
 
       // Initialize the data to zero.
       force_actuator_.setZero(arg_mset_parsed->muscles_.size());
@@ -73,7 +73,7 @@ namespace scl
 
     /** Default constructor. Sets stuff to NULL. */
     SActuatorSetMuscle() : SActuatorSetBase("SActuatorSetMuscle"),
-        mset_(NULL){}
+        mset_parsed_(NULL){}
 
     /** Default destructor. Does nothing. */
     virtual ~SActuatorSetMuscle(){}

@@ -46,37 +46,40 @@ namespace scl
   /** Initializes the actuator. This involves determining whether the muscle
    * matches the robot etc. It also sets up the Jacobians to be computed etc.
    */
-  sBool CActuatorSetMuscle::init(const std::string& arg_name,
-      const SRobotParsed *arg_robot,
-      const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
-      SActuatorSetMuscle *arg_mset,
+  sBool CActuatorSetMuscle::init(
+      SActuatorSetMuscle &arg_mset,
+      SGcModel &arg_rgcm,
       CDynamicsBase *arg_dynamics)
   {
     bool flag;
     try
     {
-      //Check pointers.
-      if(NULL==arg_robot)
-      { throw(std::runtime_error("Passed NULL robot parsed data struct")); }
-      if(NULL==arg_mset)
-      { throw(std::runtime_error("Passed NULL muscle actuator set data struct")); }
-      if(false==arg_mset->hasBeenInit())
+      //Check passed objects (should all have been initialized).
+      if(false==arg_mset.hasBeenInit())
       { throw(std::runtime_error("Passed unintialized muscle actuator set data struct")); }
-      if(false==arg_mset->mset_->hasBeenInit())
+      if(false==arg_mset.mset_parsed_->hasBeenInit())
       { throw(std::runtime_error("Passed unintialized muscle actuator set parsed data struct")); }
-      if(NULL==arg_dynamics)
-      { throw(std::runtime_error("Passed NULL robot dynamics object")); }
+      if(false==arg_rgcm.hasBeenInit())
+      { throw(std::runtime_error("Passed uninitialized robot gc model")); }
+      if(false==arg_dynamics->hasBeenInit())
+      { throw(std::runtime_error("Passed uninitialized robot dynamics object")); }
+
+      if(NULL == arg_mset.mset_parsed_->robot_)
+      { throw(std::runtime_error("Passed mset is linked to a mset_parsed data struct that has a null robot pointer")); }
+
+      // The robot pased data structure..
+      const SRobotParsed &rds = *(arg_mset.mset_parsed_->robot_);
 
       //Set the muscle name
-      name_ = arg_name;
+      name_ = arg_mset.name_;
 
       //Save pointers
-      data_ = arg_mset;
+      data_ = &arg_mset;
       dynamics_ = arg_dynamics;
 
       // Initialize all the muscles in the muscle spec
       sutil::CMappedList<std::string, SMuscleParsed>::const_iterator it,ite;
-      for (it = data_->mset_->muscles_.begin(), ite = data_->mset_->muscles_.end();
+      for (it = data_->mset_parsed_->muscles_.begin(), ite = data_->mset_parsed_->muscles_.end();
           it != ite; ++it)
       {
         // Create a muscle computational object
@@ -84,12 +87,12 @@ namespace scl
         if(NULL == musc)
         { throw(std::runtime_error(std::string("Could not create muscle: ")+it->name_)); }
 
-        flag = musc->init(it->name_,arg_robot, data_->mset_, arg_rbdtree, arg_dynamics);
+        flag = musc->init(it->name_,*(arg_mset.mset_parsed_), arg_rgcm, arg_dynamics);
         if(false == flag)
         { throw(std::runtime_error(std::string("Could not initialize muscle: ")+it->name_)); }
       }
 
-      flag = muscles_.sort(data_->mset_->muscle_id_to_name_);
+      flag = muscles_.sort(data_->mset_parsed_->muscle_id_to_name_);
       if(false == flag)
       { throw(std::runtime_error("Could not sort parsed muscle set's computational objects")); }
 
@@ -107,9 +110,9 @@ namespace scl
   sBool CActuatorSetMuscle::hasBeenInit()
   {
 #ifdef DEBUG
-    if(NULL == data_->mset_->robot_) {  has_been_init_ = false; return false; }
-    if(NULL == data_->mset_) {  has_been_init_ = false; return false; }
-    if(false == data_->mset_->has_been_init_) {  has_been_init_ = false; return false; }
+    if(NULL == data_->mset_parsed_->robot_) {  has_been_init_ = false; return false; }
+    if(NULL == data_->mset_parsed_) {  has_been_init_ = false; return false; }
+    if(false == data_->mset_parsed_->has_been_init_) {  has_been_init_ = false; return false; }
     if(NULL == dynamics_) {  has_been_init_ = false; return false; }
 #endif
     return has_been_init_;
@@ -129,9 +132,9 @@ namespace scl
     bool flag = true;
 
     // del-L_m = J del-q
-    ret_J.resize(muscles_.size(),data_->mset_->robot_->dof_);
+    ret_J.resize(muscles_.size(),data_->mset_parsed_->robot_->dof_);
 
-    row_J_.resize(data_->mset_->robot_->dof_);
+    row_J_.resize(data_->mset_parsed_->robot_->dof_);
 
     // Compute a row vector for each muscle to get the full muscle Jacobian
     int i=0;
