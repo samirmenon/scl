@@ -75,7 +75,15 @@ namespace scl_registry
       //2. List the robot specifications in the file and parse them into the database
       std::vector<std::string> robot_names;
       flag = arg_parser->listRobotsInFile(arg_file,robot_names);
-      if(false == flag) { throw(std::runtime_error("Could not read robot names from the file"));  }
+      if(false == flag) {
+#ifdef DEBUG
+        std::cout<<"\nFILE : "<<arg_file;
+        for(auto &it : robot_names)
+        { std::cout<<"\nRobot : "<<it; }
+        std::cout<<"\n";
+#endif
+        throw(std::runtime_error("Could not read robot names from the file"));
+      }
 
       std::vector<std::string>::iterator itr, itre;
       for(itr = robot_names.begin(), itre = robot_names.end();itr!=itre;++itr)
