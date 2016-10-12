@@ -105,7 +105,8 @@ sBool SRobotIO::init(const SRobotParsed& arg_rds,
         if(NULL == actuators_.aset_curr_)
         { throw(std::runtime_error(std::string("ActuatorSet .size() is greater than zero and .at(0) is NULL")));  }
       }
-      actuators_.aset_curr_ = *tmp_aset;
+      else
+      { actuators_.aset_curr_ = *tmp_aset;  }
     }
     else //There wasn't any actuator set in the parsed data..
     { actuators_.aset_curr_ = NULL; }
