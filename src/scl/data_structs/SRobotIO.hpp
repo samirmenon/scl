@@ -94,6 +94,12 @@ namespace scl
     /** Muscle actuator sets. Use the type information to do
      * stuff with the data depending on actuator type.
      *
+     * NOTE : This is the dyn data. To utilize this properly, you'll
+     * also require parsed data : Something that subclasses SActuatorSetParsed.
+     *
+     * Typically, the parsed data is stored in the the parsed robot data structure
+     * (the one into which you load the config file data).
+     *
      * NOTE : The CMappedPointerList true arg indicates that sutil
      * will deallocate memory for these objects. */
     sutil::CMappedPointerList<std::string, SActuatorSetBase, true> actuator_sets_;

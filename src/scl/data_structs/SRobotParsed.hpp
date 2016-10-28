@@ -58,7 +58,12 @@ public:
   /** The indices of the different links in the mapped tree */
   std::vector<std::string> robot_tree_numeric_id_to_name_;
 
-  /** A set of actuators that move this robot */
+  /** A set of actuators that move this robot.
+   *
+   * NOTE : This is the parsed data. To utilize this properly, you'll
+   * also require dyn data : Something that subclasses SActuatorSetBase.
+   *
+   * Typically, the dyn data is stored in the robot io data structure*/
   sutil::CMappedPointerList<std::string, SActuatorSetParsed, true> actuator_sets_;
 
   /** The joint values don't go outside this range */
