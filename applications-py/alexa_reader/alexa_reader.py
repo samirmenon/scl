@@ -39,7 +39,7 @@ def alexa_cmd_to_Dtraj(x):
 str_redis_traj = 'scl::robot::kinovajaco6::traj::xgoal';
 
 # Connect to the redis server
-ip_redis_serv = '192.168.0.101';
+ip_redis_serv = 'localhost';#'192.168.0.101';
 r = redis.StrictRedis(host=ip_redis_serv, port=6379, db=0)
 print("SCL-py : Connected to the redis server on ip: "+ip_redis_serv);
 
@@ -50,6 +50,10 @@ print("SCL-py : Connected to the redis server on ip: localhost");
 # Enable torque control on the kinova
 flag = r.ping();
 print("SCL-py : Pinged the redis server. Worked :" + str(flag));
+
+# Starting alexa reader. Flushing alexa queue.
+print("Starting alexa reader. Flushing alexa queue.");
+alexa_msg = r.set('alexa::from','');
 
 while 1:
     # *********** Get the alexa command ***********
