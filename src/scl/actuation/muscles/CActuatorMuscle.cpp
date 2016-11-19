@@ -40,28 +40,26 @@ namespace scl
   /** Default constructor. Sets stuff to NULL. */
   CActuatorMuscle::CActuatorMuscle() :
       robot_(NULL),
-      msys_(NULL), muscle_(NULL), dynamics_(NULL)
+      mset_parsed_(NULL), muscle_(NULL), dynamics_(NULL)
   {}
 
   /** Initializes the actuator. This involves determining whether the muscle
    * matches the robot etc. It also sets up the Jacobians to be computed etc.
    */
-  sBool CActuatorMuscle::init(const std::string& arg_name,
-      const SRobotParsed *arg_robot,
-      const SActuatorSetMuscleParsed *arg_msys,
-      const sutil::CMappedList<std::string,SRigidBodyDyn> &arg_rbdtree,
+  sBool CActuatorMuscle::init(
+      const std::string& arg_name,
+      const SActuatorSetMuscleParsed &arg_mset,
+      SGcModel &arg_rgcm,
       CDynamicsBase *arg_dynamics)
   {
     bool flag;
     try
     {
       //Check pointers.
-      if(NULL==arg_robot)
-      { throw(std::runtime_error("Passed NULL robot parsed data struct")); }
-      if(NULL==arg_msys)
-      { throw(std::runtime_error("Passed NULL muscle spec data struct")); }
-      if(false==arg_msys->hasBeenInit())
+      if(false==arg_mset.hasBeenInit())
       { throw(std::runtime_error("Passed unintialized muscle spec data struct")); }
+      if(false==arg_rgcm.hasBeenInit())
+      { throw(std::runtime_error("Passed unintialized robot gc model data struct")); }
       if(NULL==arg_dynamics)
       { throw(std::runtime_error("Passed NULL robot dynamics object")); }
 
@@ -69,12 +67,12 @@ namespace scl
       data_.name_ = arg_name;
 
       //Save pointers
-      robot_ = arg_robot;
-      msys_ = arg_msys;
+      robot_ = arg_mset.robot_;
+      mset_parsed_ = &arg_mset;
       dynamics_ = arg_dynamics;
 
       //Check that the muscle exists
-      muscle_ = arg_msys->muscles_.at_const(arg_name);
+      muscle_ = arg_mset.muscles_.at_const(arg_name);
       if(NULL==muscle_)
       { throw(std::runtime_error("Could not find muscle in provided muscle system")); }
 
@@ -100,18 +98,18 @@ namespace scl
         { continue; } //Bot points are connected to same link. Don't contribute to J. Ignore.
 
         //Test that the parent links for both muscle attachment points exist in the robot
-        const SRigidBody *tmp_rb_0 = arg_robot->rb_tree_.at_const(tmp_pt_0.parent_link_);
+        const SRigidBody *tmp_rb_0 = arg_mset.robot_->rb_tree_.at_const(tmp_pt_0.parent_link_);
         if(NULL == tmp_rb_0)
         { throw(std::runtime_error(std::string("Could not find parent link for muscle: ")+tmp_pt_0.parent_link_)); }
 
-        const SRigidBody *tmp_rb_1 = arg_robot->rb_tree_.at_const(tmp_pt_1.parent_link_);
+        const SRigidBody *tmp_rb_1 = arg_mset.robot_->rb_tree_.at_const(tmp_pt_1.parent_link_);
         if(NULL == tmp_rb_1)
         { throw(std::runtime_error(std::string("Could not find parent link for muscle: ")+tmp_pt_1.parent_link_)); }
 
         //Check which of the two links is the parent (useful for determining the dynamics -> getIdForLink())
-        if(arg_robot->rb_tree_.isAncestor(tmp_rb_0, tmp_rb_1))
+        if(arg_mset.robot_->rb_tree_.isAncestor(tmp_rb_0, tmp_rb_1))
         { tmp_child_link_id = 0;  }
-        else if(arg_robot->rb_tree_.isAncestor(tmp_rb_1, tmp_rb_0))
+        else if(arg_mset.robot_->rb_tree_.isAncestor(tmp_rb_1, tmp_rb_0))
         { tmp_child_link_id = 1;  }
         else
         { throw(std::runtime_error(std::string("Parent links for successive muscle via points disconnected at: ")+arg_name)); }
@@ -150,10 +148,10 @@ namespace scl
 #endif
 
         // Get the dynamic objects (used to compute the Jacobian later).
-        pt_set->rigid_body_dyn_0_ = arg_rbdtree.at_const(pt_set->parent_link_0_);
+        pt_set->rigid_body_dyn_0_ = arg_rgcm.rbdyn_tree_.at_const(pt_set->parent_link_0_);
         if(S_NULL == pt_set->rigid_body_dyn_0_)
         { throw(std::runtime_error(std::string("Could not find link dyn object: ") + pt_set->parent_link_0_)); }
-        pt_set->rigid_body_dyn_1_ = arg_rbdtree.at_const(pt_set->parent_link_1_);
+        pt_set->rigid_body_dyn_1_ = arg_rgcm.rbdyn_tree_.at_const(pt_set->parent_link_1_);
         if(S_NULL == pt_set->rigid_body_dyn_1_)
         { throw(std::runtime_error(std::string("Could not find link dyn object: ") + pt_set->parent_link_1_)); }
 
@@ -194,8 +192,8 @@ namespace scl
   {
 #ifdef DEBUG
     if(NULL == robot_) {  data_.has_been_init_ = false; return false; }
-    if(NULL == msys_) {  data_.has_been_init_ = false; return false; }
-    if(false == msys_->has_been_init_) {  data_.has_been_init_ = false; return false; }
+    if(NULL == mset_parsed_) {  data_.has_been_init_ = false; return false; }
+    if(false == mset_parsed_->has_been_init_) {  data_.has_been_init_ = false; return false; }
     if(NULL == muscle_) {  data_.has_been_init_ = false; return false; }
     if(NULL == dynamics_) {  data_.has_been_init_ = false; return false; }
 #endif

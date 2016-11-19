@@ -36,20 +36,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define CSCL_2ROB_APP_TASK_HPP_
 
 //Standard includes
-#include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/control/task/CControllerMultiTask.hpp>
-#include <scl/control/task/tasks/CTaskOpPos.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/robot/CRobot.hpp>
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
+
 #include <sutil/CSystemClock.hpp>
-#include <scl/util/DatabaseUtils.hpp>
-#include <scl/util/HelperFunctions.hpp>
 
 #include <omp.h>
 #include <GL/freeglut.h>
@@ -59,15 +49,11 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <stdexcept>
 #include <string>
 
-//User modified includes to suit your application
-#include <scl/control/task/tasks/CTaskOpPos.hpp>
-
-
 namespace scl_app
 {
   /* Generic code required to run a scl simulation
    * A simulation requires running 3 things. This example uses:
-   * 1. A dynamics/physics engine                  :  Tao
+   * 1. A dynamics/physics engine                  :  SCL Spatial
    * 2. A controller                               :  Scl
    * 3. A graphic rendering+interaction interface  :  Chai3d + FreeGlut
    */
@@ -128,7 +114,7 @@ namespace scl_app
     /** Runs a simulation using two threads:
      * Thread 1: Computes the robot dynamics
      * Thread 2: Renders the graphics and handles gui interaction */
-    void runMainLoopThreaded();
+    void runMainLoopThreaded(int thread_id);
 
     /** Runs a simulation using one thread.
      * 1: Computes the robot dynamics
@@ -136,7 +122,7 @@ namespace scl_app
     void runMainLoop();
 
     //Data types. Feel free to use them.
-    scl::SDatabase* db;                    //Generic database (for sharing data)
+    scl::SDatabase* db=NULL;               //Generic database (for sharing data)
 
     std::vector<std::string> robots_parsed;   //Parsed robots
     std::vector<std::string> graphics_parsed; //Parsed graphics views
@@ -148,13 +134,13 @@ namespace scl_app
     scl::SRobotParsed *rob_ds[2];          // Parsed robot data.
     scl::SRobotIO* rob_io_ds[2];           //Access the robot's sensors and actuators
 
-    scl::CDynamicsTao* dyn_tao_[2];        //Generic tao dynamics
+    scl_ext::CDynamicsSclSpatial* dyn_scl_sp_[2];        //Generic scl spatial dynamics
     scl::CDynamicsScl* dyn_scl_[2];        //Generic scl dynamics
     scl::CGraphicsChai chai_gr;            //Generic chai graphics
 
-    scl::sLongLong ctrl_ctr;               //Controller computation counter
-    scl::sLongLong gr_ctr;                 //Controller computation counter
-    scl::sFloat t_start, t_end;            //Start and end times
+    scl::sLongLong ctrl_ctr=0;             //Controller computation counter
+    scl::sLongLong gr_ctr=0;               //Controller computation counter
+    scl::sFloat t_start=0.0, t_end=0.0;    //Start and end times
 
     std::fstream log_file_[2];             //Logs vectors of [q, dq, x]
     std::fstream log_file_J_[2];           //Logs J
@@ -192,7 +178,7 @@ namespace scl_app
         db->dir_specs_ = db->cwd_ + std::string("../../specs/"); //Set the specs dir so scl knows where the graphics are.
 
         //For parsing controllers
-        flag = scl_registry::registerNativeDynamicTypes();
+        flag = scl::init::registerNativeDynamicTypes();
         if(false ==flag)  { throw(std::runtime_error("Could not register native dynamic types"));  }
 
         //Get going..
@@ -220,8 +206,8 @@ namespace scl_app
           rob_ds[i] = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name[i]);
 
           /******************************TaoDynamics************************************/
-          dyn_tao_[i] = new scl::CDynamicsTao();
-          flag = dyn_tao_[i]->init(* (rob_ds[i]) );
+          dyn_scl_sp_[i] = new scl_ext::CDynamicsSclSpatial();
+          flag = dyn_scl_sp_[i]->init(* (rob_ds[i]) );
           if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }
 
           dyn_scl_[i] = new scl::CDynamicsScl();
@@ -262,7 +248,7 @@ namespace scl_app
           }
 
           /**********************Initialize Robot Dynamics and Controller*******************/
-          flag = robot[i].initFromDb(robot_name[i],dyn_scl_[i],dyn_tao_[i]);//Note: The robot deletes these pointers.
+          flag = robot[i].initFromDb(robot_name[i],dyn_scl_[i],dyn_scl_sp_[i]);//Note: The robot deletes these pointers.
           if(false == flag) { throw(std::runtime_error("Could not initialize robot"));  }
 
           ctrl_name[i] = argv[i*5+3];
@@ -319,62 +305,55 @@ namespace scl_app
     std::cout<<"\n********************************************\n"<<std::flush;
   }
 
-  void CScl2RobAppTask::runMainLoopThreaded()
+  void CScl2RobAppTask::runMainLoopThreaded(int thread_id)
   {
-    omp_set_num_threads(2);
-    int thread_id;
-
-#pragma omp parallel private(thread_id)
-    {//Start threaded region
-      thread_id = omp_get_thread_num();
-      if(thread_id==1)
+    if(thread_id==1)
+    {
+      //Thread 1 : Run the simulation
+      while(scl::CDatabase::getData()->running_)
       {
-        //Thread 1 : Run the simulation
-        while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
+        if(!scl::CDatabase::getData()->pause_ctrl_dyn_)
+        { stepMySimulation(); }
+        //If paused, but step required, step it and set step flag to false.
+        else if(scl::CDatabase::getData()->step_ctrl_dyn_)
         {
-          if(!scl::CDatabase::getData()->pause_ctrl_dyn_)
-          { stepMySimulation(); }
-          //If paused, but step required, step it and set step flag to false.
-          else if(scl::CDatabase::getData()->step_ctrl_dyn_)
-          {
-            scl::CDatabase::getData()->step_ctrl_dyn_ = false;
-            stepMySimulation();
-          }
-          else
-          {//Paused and no step required. Sleep for a bit.
-            const timespec ts = {0, 15000000};//Sleep for 15ms
-            nanosleep(&ts,NULL);
-          }
-
-          if(!scl::CDatabase::getData()->pause_ctrl_dyn_ &&
-              scl::CDatabase::getData()->param_logging_on_)
-          {//Logs vectors of [q, dq, x, J]
-            for(int i=0; i<2; ++i)
-            {
-              log_file_[i]<<sutil::CSystemClock::getSimTime()<<" "
-                  <<rob_io_ds[i]->sensors_.q_.transpose()<<" "
-                  <<rob_io_ds[i]->sensors_.dq_.transpose()<<" "
-                  <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i].transpose()
-                  <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i+1].transpose()
-                  <<std::endl;
-              log_file_J_[i]<<tsk_ds[i]->J_<<std::endl;
-              log_file_J_[i]<<tsk2_ds[i]->J_<<std::endl;
-            }
-          }
+          scl::CDatabase::getData()->step_ctrl_dyn_ = false;
+          stepMySimulation();
         }
-      }
-      else
-      {
-        //Thread 2 : Run the graphics and gui
-        while(true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
-        {
+        else
+        {//Paused and no step required. Sleep for a bit.
           const timespec ts = {0, 15000000};//Sleep for 15ms
           nanosleep(&ts,NULL);
-          glutMainLoopEvent(); //Update the graphics
-          gr_ctr++;
+        }
+
+        if(!scl::CDatabase::getData()->pause_ctrl_dyn_ &&
+            scl::CDatabase::getData()->param_logging_on_)
+        {//Logs vectors of [q, dq, x, J]
+          for(int i=0; i<2; ++i)
+          {
+            log_file_[i]<<sutil::CSystemClock::getSimTime()<<" "
+                <<rob_io_ds[i]->sensors_.q_.transpose()<<" "
+                <<rob_io_ds[i]->sensors_.dq_.transpose()<<" "
+                <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i].transpose()
+                <<scl::CDatabase::getData()->s_gui_.ui_point_[2*i+1].transpose()
+                <<std::endl;
+            log_file_J_[i]<<tsk_ds[i]->J_<<std::endl;
+            log_file_J_[i]<<tsk2_ds[i]->J_<<std::endl;
+          }
         }
       }
-    }//End of threaded region
+    }
+    else
+    {
+      //Thread 2 : Run the graphics and gui
+      while(scl::CDatabase::getData()->running_)
+      {
+        const timespec ts = {0, 15000000};//Sleep for 15ms
+        nanosleep(&ts,NULL);
+        glutMainLoopEvent(); //Update the graphics
+        gr_ctr++;
+      }
+    }
   }
 
   void CScl2RobAppTask::runMainLoop()

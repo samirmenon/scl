@@ -30,11 +30,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl headers used
-#include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
-#include <scl/io/CIORedis.hpp>
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
 
 //sutil clock.
 #include <sutil/CSystemClock.hpp>

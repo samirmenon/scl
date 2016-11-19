@@ -35,7 +35,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 
 #include <sutil/CSystemClock.hpp>
 #include <Eigen/Dense>
@@ -101,12 +100,6 @@ namespace scl_test
         std::cout<<"\nTest Result ("<<r_id++<<")  Created a robot "
             <<robot_names[0]<<" in the database"<<std::flush;
       }
-
-#ifdef DEBUG
-      std::cout<<"\nPrinting parsed robot "
-          <<db->s_parser_.robots_.at(robot_names[0])->name_;
-      scl_util::printRobotLinkTree(*( db->s_parser_.robots_.at(robot_names[0])->rb_tree_.getRootNode()),0);
-#endif
 
       //1.b. Pull out the robot's ds from the db
       rob_ds = db->s_parser_.robots_.at(robot_names[0]);

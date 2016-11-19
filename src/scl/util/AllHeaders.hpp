@@ -34,8 +34,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/util/CmdLineArgReader.hpp>
 
-#include <scl/util/DatabaseUtils.hpp>
-
 #include <scl/util/EigenExtensions.hpp>
 
 #include <scl/util/FileFunctions.hpp>

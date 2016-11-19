@@ -83,8 +83,7 @@ namespace scl
   class SRobotActuators
   {
   public:
-    /**
-     * The control generalized forces (usually torques) to
+    /** The control generalized forces (usually torques) to
      * be applied to a robot.
      * Eg.
      * a) By the controller
@@ -95,9 +94,18 @@ namespace scl
     /** Muscle actuator sets. Use the type information to do
      * stuff with the data depending on actuator type.
      *
+     * NOTE : This is the dyn data. To utilize this properly, you'll
+     * also require parsed data : Something that subclasses SActuatorSetParsed.
+     *
+     * Typically, the parsed data is stored in the the parsed robot data structure
+     * (the one into which you load the config file data).
+     *
      * NOTE : The CMappedPointerList true arg indicates that sutil
      * will deallocate memory for these objects. */
     sutil::CMappedPointerList<std::string, SActuatorSetBase, true> actuator_sets_;
+
+    /** The presently activated actuator set (to avoid constant lookups) */
+    SActuatorSetBase *aset_curr_=NULL;
   };
 
   /** Wraps input (sensor) and output (actuator) data for a robot.
@@ -123,8 +131,14 @@ namespace scl
     /** Constructor **/
     SRobotIO();
 
-    /** Initializes the io data structure */
-    sBool init(const SRobotParsed& arg_rds);
+    /** Initializes the io data structure. Extracts all the necessary
+     * dof data and actuator sets etc. and sets up the associated fields
+     * in the io data structure.
+     *
+     * NOTE : By default it will activate the first actuator set if there
+     *        is more than one and one of them isn't specified. */
+    sBool init(const SRobotParsed& arg_rds,
+        const std::string &actuator_set_to_activate="");
 
     /** Joint positions and velocities are necessary
      * and sufficient to determine the system's state. */

@@ -48,6 +48,9 @@ namespace scl
     /** The actuator set forces in the actuator coordinates */
     Eigen::VectorXd force_actuator_;
 
+    /** The desired gc forces that will be mapped to actuator forces */
+    Eigen::VectorXd force_gc_des_;
+
     /** The Jacobian that maps actuator forces into gc forces
      *  => force_gc_ = J_ * force_actuator_;
      */

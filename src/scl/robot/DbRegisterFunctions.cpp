@@ -44,8 +44,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/control/AllHeaders.hpp>
 #include <scl/actuation/AllHeaders.hpp>
 
-#include <scl/util/DatabaseUtils.hpp>
-
 #include <sutil/CRegisteredDynamicTypes.hpp>
 
 #include <iostream>
@@ -77,7 +75,15 @@ namespace scl_registry
       //2. List the robot specifications in the file and parse them into the database
       std::vector<std::string> robot_names;
       flag = arg_parser->listRobotsInFile(arg_file,robot_names);
-      if(false == flag) { throw(std::runtime_error("Could not read robot names from the file"));  }
+      if(false == flag) {
+#ifdef DEBUG
+        std::cout<<"\nFILE : "<<arg_file;
+        for(auto &it : robot_names)
+        { std::cout<<"\nRobot : "<<it; }
+        std::cout<<"\n";
+#endif
+        throw(std::runtime_error("Could not read robot names from the file"));
+      }
 
       std::vector<std::string>::iterator itr, itre;
       for(itr = robot_names.begin(), itre = robot_names.end();itr!=itre;++itr)
@@ -401,7 +407,7 @@ namespace scl_registry
       if(false == flag)
       { throw (std::runtime_error("Could not initialize the controller's data structure."));  }
 
-      unsigned int tasks_parsed = scl_util::initMultiTaskCtrlDsFromParsedTasks(
+      unsigned int tasks_parsed = scl::init::initMultiTaskCtrlDsFromParsedTasks(
           taskvec, taskvec_non_ctrl,*ret_ctrl);
 
       if(0==tasks_parsed)

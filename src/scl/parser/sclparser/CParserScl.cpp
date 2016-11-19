@@ -850,6 +850,8 @@ bool CParserScl::readActuatorSetMuscleFromFile(
     if(num_muscle_asets<1)
     { throw(std::runtime_error(std::string("Didn't find any muscle spec called: ")+arg_muscle_set_name)); }
 
+    // Finishing touches.
+    ret_mset.n_muscles_ = ret_mset.muscles_.size();
     ret_mset.has_been_init_ = true;
     return true;
   }

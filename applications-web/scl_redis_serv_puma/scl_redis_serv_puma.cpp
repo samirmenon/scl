@@ -35,7 +35,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/parser/sclparser/CParserScl.hpp>
 #include <scl/graphics/chai/CGraphicsChai.hpp>
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 #include <scl/serialization/SerializationJSON.hpp>
 
 #include <scl/dynamics/scl/CDynamicsScl.hpp>
@@ -80,7 +79,6 @@ int main(int argc, char** argv)
   scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
   scl::SRobotIO rio;         //I/O data structure
   scl::CGraphicsChai rchai;  //Chai interface (updates graphics rendering tree etc.)
-  scl::CDynamicsScl dyn_scl; //Robot physics integrator...
   scl_ext::CDynamicsSclSpatial dyn_sp_scl; //Robot physics integrator...
   scl::CParserScl p;         //This time, we'll parse the tree from a file...
 
@@ -98,8 +96,7 @@ int main(int argc, char** argv)
   bool flag = p.readRobotFromFile("../../specs/Puma/PumaCfg.xml","../../specs/","PumaBot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
   flag = flag && dyn_sp_scl.init(rds);         //Set up integrator object
-  flag = flag && dyn_scl.init(rds);         //Set up dynamics computation object
-  flag = flag && rio.init(rds.name_,rds.dof_);
+  flag = flag && rio.init(rds);
   for(unsigned int i=0;i<rds.dof_;++i){ rio.sensors_.q_(i) = rds.rb_tree_.at(i)->joint_default_pos_; }
   if(false == flag){ return 1; }            //Error check.
 
@@ -153,7 +150,7 @@ int main(int argc, char** argv)
     if(thread_id==1) //Simulate physics and update the rio data structure..
       while(iter < n_iters && true == scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
-        dyn_sp_scl.integrator(rio,&rgcm,dt); iter++;
+        dyn_sp_scl.integrate(rgcm,rio,dt); iter++;
 
         sutil::CSystemClock::tick(dt);
         /** Slow down sim to real time */

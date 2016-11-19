@@ -33,15 +33,16 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <scl/Singletons.hpp>
+#include <scl/Init.hpp>
 #include <scl/control/task/CControllerMultiTask.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
+
 #ifdef GRAPHICS_ON
 #include <scl/graphics/chai/ChaiGlutHandlers.hpp>
 #include <GL/freeglut.h>
 #include <chai3d.h>
 #endif
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
 #include <scl/util/HelperFunctions.hpp>
 
 #include <sutil/CSystemClock.hpp>
@@ -53,7 +54,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 
 //String tokenizer uses std::algorithm
-#include <iostream>
 #include <algorithm>
 #include <iterator>
 
@@ -106,7 +106,7 @@ namespace scl
         if(S_NULL==db_) { throw(std::runtime_error("Database not initialized"));  }
 
         //For parsing controllers
-        flag = scl_registry::registerNativeDynamicTypes();
+        flag = scl::init::registerNativeDynamicTypes();
         if(false ==flag)  { throw(std::runtime_error("Could not register native dynamic types"));  }
 
         //For parsing your (custom) tasks
@@ -398,96 +398,6 @@ namespace scl
         gr_ctr_++;
       }
 #endif
-    }
-  }
-
-  void CRobotApp::runConsoleShell()
-  {
-    bool flag, flag2;
-    bool mode_char = false;
-
-    using namespace std;
-
-    std::vector<std::string> last_command;
-    last_command.clear();
-
-    char cmd_buf[1024];
-
-    while(scl::CDatabase::getData()->running_)
-    {
-      while(scl::CDatabase::getData()->running_ &&
-          mode_char == false)
-      {
-        std::cout<<"\nscl>> ";
-
-        char* ret = fgets(cmd_buf,1024,stdin);
-        if(ret!=cmd_buf)
-        { std::cout<<"\nError in shell: Could not read stdin";  }
-
-        //Split the string into string tokens
-        std::istringstream iss(cmd_buf);
-        std::vector<std::string> tokens;
-        std::copy(std::istream_iterator<std::string>(iss),
-            std::istream_iterator<std::string>(),
-            std::back_inserter<std::vector<std::string> >(tokens));
-
-        //Some error checks
-        if(tokens.begin() == tokens.end())
-        {//Pressing enter executes the last command
-          if(0==last_command.size())
-          { std::cout<<"Command not found"; continue; }
-          else
-          { tokens = last_command; }
-        }
-
-        last_command = tokens;//Set the last command
-
-        if(std::string("exit") == *(tokens.begin()) )
-        {
-          scl::CDatabase::getData()->running_ = false;
-          break;
-        }
-        else if(std::string("x") == *(tokens.begin()) )
-        { mode_char = true; std::cout<<"  Switched to char mode and back"; continue; }
-        else if(std::string("p") == *(tokens.begin()) )
-        {//Toggle pause
-          if(scl::CDatabase::getData()->pause_ctrl_dyn_)
-          { std::cout<<"  Un-paused controller and dynamics engine"; }
-          else { std::cout<<"  Paused controller and dynamics engine"; }
-
-          scl::CDatabase::getData()->pause_ctrl_dyn_= !scl::CDatabase::getData()->pause_ctrl_dyn_;
-          continue;
-        }
-
-        //Find and call the callback
-        flag = sutil::callbacks::call<std::string, std::vector<std::string> >(
-            *(tokens.begin()),tokens);
-        if(false == flag) { std::cout<<"Command not found"; }
-      }
-
-      initscr(); //Start ncurses (the library for console io)
-      raw();     //Disable line buffering (disable the enter key press)
-      printw("  Char mode (press x to exit)\n\n>>");
-      while(scl::CDatabase::getData()->running_ &&
-          mode_char == true)
-      {
-        char input='1';
-        input = getch();
-
-        if('x' == tolower(input)){ mode_char = false; continue; }
-        if('p' == tolower(input))
-        {scl::CDatabase::getData()->pause_ctrl_dyn_= !scl::CDatabase::getData()->pause_ctrl_dyn_;
-        continue;}
-
-        flag2 = tolower(input) != input;
-        flag = sutil::callbacks::call<char,bool,double>(tolower(input), flag2);
-        if(false == flag)
-        {
-          flag = sutil::callbacks::call<char,bool,Eigen::VectorXd>(tolower(input), flag2);
-          if(false == flag) { std::cout<<" NotFound "; }
-        }
-      }
-      endwin(); //Stop ncurses
     }
   }
 

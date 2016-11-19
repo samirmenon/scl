@@ -54,6 +54,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <map>
 #include <string>
 #include <iostream>
+#include <atomic>
 
 namespace scl {
 
@@ -112,7 +113,7 @@ class SControllerData
 public:
   /** Enables string access for controller data.
    * NOTE : Each controller is stored along with it's name
-   * in a pilemap.
+   * in a mapped list.
    *
    * A mapped pointer list so that it can manage memory for
    * subclasses as well (by storing and later deleting their
@@ -152,7 +153,7 @@ public:
       if(S_NULL == tmp->robot_)
       {
         std::cout<<"SControllerData::getControllersForRobot()"
-            <<"WARNING : Found NULL robot controller ds in the pile.";
+            <<"WARNING : Found NULL robot controller ds in the mapped list.";
         return false;
       }
 
@@ -228,7 +229,7 @@ public:
 class SIOData
 {
 public:
-  /** A pile of io data objects containing robot sensor + actuator data.
+  /** A mapped list of io data objects containing robot sensor + actuator data.
    * String ID = Robot name
    * Each robot thus has a unique IO data structure. */
   sutil::CMappedList<std::string, SRobotIO> io_data_;
@@ -300,19 +301,19 @@ public:
    * Exec data:
    ************/
   /** Whether the program is on or not */
-  sBool running_;
+  std::atomic<sBool> running_;
 
   /** Whether the controller+dynamics are paused or not */
-  sBool pause_ctrl_dyn_;
+  std::atomic<sBool> pause_ctrl_dyn_;
 
   /** Whether the dynamics should pause after the next iteration */
-  sBool step_ctrl_dyn_;
+  std::atomic<sBool> step_ctrl_dyn_;
 
   /** Whether the graphics updates are paused or not */
-  sBool pause_graphics_;
+  std::atomic<sBool> pause_graphics_;
 
   /** Whether the logging is on or not */
-  sBool param_logging_on_;
+  std::atomic<sBool> param_logging_on_;
 
   SDatabase()
   {

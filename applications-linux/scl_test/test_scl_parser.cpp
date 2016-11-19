@@ -29,23 +29,21 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "test_scl_parser.hpp"
 
+
+#include <scl/data_structs/SRobotParsed.hpp>
+#include <scl/robot/DbRegisterFunctions.hpp>
+#include <scl/parser/sclparser/CParserScl.hpp>
+
+#include <scl/Singletons.hpp>
+#include <scl/DataTypes.hpp>
+#include <scl/Init.hpp>
+
 #include <string>
 #include <vector>
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
-
 #include <stdexcept>
-
-#include <scl/DataTypes.hpp>
-#include <scl/parser/CParserBase.hpp>
-
-#include <scl/data_structs/SRobotParsed.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-
-#include <scl/parser/sclparser/CParserScl.hpp>
-
-#include <scl/Singletons.hpp>
 
 namespace scl_test
 {
@@ -141,7 +139,7 @@ void test_scl_parser(int id)
     }
 
     //8. Test the full parser and scl_registry API
-    flag = scl_registry::registerNativeDynamicTypes();
+    flag = scl::init::registerNativeDynamicTypes();
     if(false == flag)
     { throw(std::runtime_error("Could not register the native dynamic types (required for parsing)")); }
     else
@@ -161,29 +159,4 @@ void test_scl_parser(int id)
     std::cout<<"\nTest #"<<id<<" : Failed.";
   }
 }
-
-
-/***
- * Tests the tao representation creator:
- *
- * Basically converts a parsed robot representation
- * into a tao dynamics engine tree.
- *
- */
-void test_tao_rep_creator(int id)
-{
-  try
-  {
-
-  }
-  catch(int i)
-  {
-    printf("\nTest %d : Failed",id);
-    printf("\n*************************");
-    return;
-  }
-  printf("\nTest %d : Succeeded",id);
-  printf("\n*************************");
-}
-
 }

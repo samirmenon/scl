@@ -1,7 +1,8 @@
 scl: Standard Control Library
 
 A control and interactive simulation library. Supports torque control on a variety of robots including
-Unimate PUMA 500, Barrett WAM, Kuka LWR, and the Kuka LBR IIWA.
+Unimate PUMA 500, Barrett WAM, Kinova Jaco, Neurobot {v1, v2, v3}, HFI {v1, v2, v2.5, v3, v5}, Kuka LWR, 
+and Kuka LBR IIWA. (Low-level robot drivers must be obtained separately).
 
 Wiki: https://bitbucket.org/samirmenon/scl-manips-v2/wiki
 
@@ -24,10 +25,11 @@ $ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-manips-v2.g
 
 === Optional : Check out a stable version of the code ===
 Rember, this step is __optional__. If a tag doesn't work for you, try using the latest branch (unstable in general but very likely to have your problem fixed).
+Alternatively try an older tag or file some bugs.
 $ git tag -l
 
 Then pick whatever tag (stable point) you want. Preferably pick the most recent one.
-$ git checkout -b tag-v0.97 tags/v0.97
+$ git checkout -b tag-v1.00 tags/v1.00
 
 Unless you have some experience coding, you should consider using a stable version of the code.
 

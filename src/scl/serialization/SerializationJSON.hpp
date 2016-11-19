@@ -77,11 +77,16 @@ namespace scl
    *
    *   #define SCL_LIBRARY_COMPILE_FLAG
    *
-   * Clients should ideally not set this flag during the compile process.
+   * Clients should ideally not set this flag during the compile process in a location
+   * of the code that is above the SerializationJSON.hpp include command. If they do
+   * so, they will not trigger the extern spec for the template specializations and so
+   * will instantiate an empty template for a variety of types.
+   * As such, the serialization will not work.
    *
-   * Client code should not worry about this and go about using the template
-   * with any SCL data type. Unrecognized data type entries will simply return
-   * false.*/
+   * Client code should not try to circumvent SCL's template specializations and should
+   * simply go about using the template with any SCL data type. Unrecognized data type
+   * entries will simply return false.
+   * */
   template <typename T>
   bool serializeToJSON(const T &arg_obj, Json::Value &ret_json_val)
   { return false; }

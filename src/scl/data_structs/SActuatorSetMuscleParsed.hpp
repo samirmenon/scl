@@ -134,9 +134,12 @@ namespace scl
     /** The muscle name to numeric id map */
     sutil::CMappedList<std::string, sUInt> muscle_name_to_id_;
 
+    /** Useful size int */
+    sUInt n_muscles_=0;
+
     /** Graphics properties */
-    int render_muscle_thickness_;//pixels
-    double render_muscle_via_pt_sz_;//size of sphere
+    int render_muscle_thickness_=3;      /// pixels
+    double render_muscle_via_pt_sz_=0.0; /// size of sphere
 
     /** ******************** FUNCTIONS *********************** */
     /** Default constructor. Sets the type. */

@@ -30,20 +30,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/data_structs/SGcModel.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/control/task/CControllerMultiTask.hpp>
-#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
-//scl functions to simplify dynamic typing and data sharing
-#include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/util/DatabaseUtils.hpp>
-#include <scl/util/HelperFunctions.hpp>
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
 
 // Custom Task
 #include "CTaskCustom.hpp"
@@ -74,10 +62,11 @@ int main(int argc, char** argv)
   scl::SRobotParsed rds;     //Robot data structure....
   scl::SGraphicsParsed rgr;  //Robot graphics data structure...
   scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
+  scl::SGcModel rgcm_dyn;    //Robot data structure with dynamic quantities (for the integrator)...
   scl::SRobotIO rio;         //I/O data structure
   scl::CGraphicsChai rchai;  //Chai interface (updates graphics rendering tree etc.)
   scl::CDynamicsScl dyn_scl; //Robot kinematics and dynamics computation object...
-  scl::CDynamicsTao dyn_tao; //Robot physics integrator
+  scl_ext::CDynamicsSclSpatial dyn_scl_sp; //Robot physics integrator
   scl::CParserScl p;         //This time, we'll parse the tree from a file...
 
   scl::SControllerMultiTask rctr_ds; //A multi-task controller data structure
@@ -108,7 +97,8 @@ int main(int argc, char** argv)
   const std::string fname("./StanbotCustomCfg.xml");
   flag = p.readRobotFromFile(fname,"../../specs/","Stanbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
-  flag = flag && dyn_tao.init(rds);         //Set up integrator object
+  flag = flag && rgcm_dyn.init(rds);        //Simple way to set up dynamic tree (for the integ)...
+  flag = flag && dyn_scl_sp.init(rds);      //Set up integrator object
   flag = flag && dyn_scl.init(rds);         //Set up kinematics and dynamics object
   flag = flag && rio.init(rds);             //Set up the I/O data structure
   if(false == flag){ return 1; }            //Error check.
@@ -118,8 +108,8 @@ int main(int argc, char** argv)
   flag = p.readTaskControllerFromFile(fname,"opc",rtasks,rtasks_nc,ctrl_params);
   flag = flag && rctr_ds.init("opc",&rds,&rio,&rgcm); //Set up the control data structure..
   // Tasks are initialized after find their type with dynamic typing.
-  flag = flag && scl_registry::registerNativeDynamicTypes();
-  flag = flag && scl_util::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
+  flag = flag && scl::init::registerNativeDynamicTypes();
+  flag = flag && scl::init::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
   flag = flag && rctr.init(&rctr_ds,&dyn_scl);        //Set up the controller (needs parsed data and a dyn object)
   if(false == flag){ return 1; }            //Error check.
 
@@ -198,7 +188,7 @@ int main(int argc, char** argv)
         rctr.computeControlForces();
 
         // Integrate the dynamics
-        dyn_tao.integrate(rio,dt); iter++;
+        dyn_scl_sp.integrate(rgcm_dyn,rio,dt); iter++;
 
         /** Slow down sim to real time */
         sutil::CSystemClock::tick(dt);

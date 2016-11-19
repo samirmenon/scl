@@ -30,28 +30,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/data_structs/SGcModel.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/control/task/CControllerMultiTask.hpp>
-#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
-#include <scl/io/CIORedis.hpp>
-
-// Used for dynamic typing
-#include <scl/robot/DbRegisterFunctions.hpp>
-// Used to simplify the controller setup (has a few helper functions).
-#include <scl/util/DatabaseUtils.hpp>
-
+#include <scl/scl.hpp>
 
 #include <sutil/CSystemClock.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
-
-//Standard includes (for printing and multi-threading)
-#include <iostream>
-
 //Redis
 #include <hiredis/hiredis.h>
 
@@ -67,19 +51,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 // Handle ctrl+c
 bool flag_running=true;
 void handleExit(int s) { flag_running=false; }
-
-
-/** Basic data for reading from and writing to a redis database...
- * Makes it easy to keep track of things..*/
-class SHiredisStruct_RobotCtrl{
-public:
-  redisContext *context_ = NULL;
-  redisReply *reply_ = NULL;
-  const char *hostname_ = "127.0.0.1";
-  const int port_ = 6379;
-  const timeval timeout_ = { 1, 500000 }; // 1.5 seconds
-};
-
 
 /** A sample application to render a physics simulation being run in scl.
  *
@@ -119,9 +90,7 @@ int main(int argc, char** argv)
       scl::SRobotParsed rds;     //Robot data structure.
       scl::SRobotIO rio;         //I/O data structure.
       scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
-      scl::SGraphicsParsed rgr;  //Robot graphics data structure.
       scl::CParserScl p;         //This time, we'll parse the tree from a file.
-      SHiredisStruct_RobotCtrl redis_ds; //The data structure we'll use for redis comm.
 
       scl::CDynamicsScl dyn_scl; //Robot kinematics and dynamics computation object...
       scl::SControllerMultiTask rctr_ds; //A multi-task controller data structure
@@ -153,8 +122,8 @@ int main(int argc, char** argv)
       flag = flag && rctr_ds.init(name_ctrl,&rds,&rio,&rgcm); //Set up the control data structure..
 
       // Tasks are initialized after we find their type with dynamic typing.
-      flag = flag && scl_registry::registerNativeDynamicTypes();
-      flag = flag && scl_util::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
+      flag = flag && scl::init::registerNativeDynamicTypes();
+      flag = flag && scl::init::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
       flag = flag && rctr.init(&rctr_ds,&dyn_scl);  //Set up the controller (needs parsed data and a dyn object)
       if(false == flag){ throw(std::runtime_error("Could not initialize controller")); }            //Error check.
 

@@ -31,10 +31,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CHapticApp.hpp"
 
-
-#include <scl/DataTypes.hpp>
-#include <scl/data_structs/SDatabase.hpp>
-
 #include <sutil/CSystemClock.hpp>
 
 #include <chai3d.h>
@@ -60,7 +56,7 @@ namespace scl_app
   {
     try
     {
-      std::cout<<"\nTo use haptics, connect haptic devices and use flag : -haptic <num-devices>"
+      std::cout<<"\nTo use haptics, connect haptic devices and use flag : -haptics <num-devices>"
                <<"\n NOTE : Run as sudo for usb.\n\n"<<std::flush;
       //First set up the haptics
       int tmp_n_haptics_connected = haptics_.connectToDevices();

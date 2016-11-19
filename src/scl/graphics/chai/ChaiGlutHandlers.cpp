@@ -134,7 +134,7 @@ namespace scl_chai_glut_interface
       glutInitWindowPosition(chai_glob_ds->GLOB_windowPosX, chai_glob_ds->GLOB_windowPosX);
       glutInitWindowSize(chai_glob_ds->GLOB_chaiDbptr->gl_width_, chai_glob_ds->GLOB_chaiDbptr->gl_height_);
       glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-      glutCreateWindow("scl_busylizzy");
+      glutCreateWindow("scl_jasmine");
       glewInit();
 
       //Set up glut's handlers
@@ -145,7 +145,9 @@ namespace scl_chai_glut_interface
       glutMouseFunc(mouseClick);
       glutMotionFunc(mouseMove);
       glutPassiveMotionFunc(mousePassiveMove);
-      glutSetWindowTitle("SCL : Standard Control Library v0.99");
+      std::string tmp_str;
+      tmp_str = std::string("SCL : Standard Control Library ") + std::string(scl::VERSION);
+      glutSetWindowTitle(tmp_str.c_str());
 
       // create a mouse menu (right button)
       glutCreateMenu(scl_chai_glut_interface::menuSelect);

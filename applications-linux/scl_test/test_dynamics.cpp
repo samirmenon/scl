@@ -35,13 +35,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/Singletons.hpp>
 #include <scl/robot/DbRegisterFunctions.hpp>
 #include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
-
-//Tao Dynamics
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
-#include <scl/dynamics/tao/CTaoRepCreator.hpp>
 
 #include <scl/dynamics/analytic/CDynamicsAnalyticRPP.hpp>
+#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
 
 #include <iostream>
 #include <stdexcept>
@@ -58,151 +54,10 @@ using namespace std;
 
 namespace scl_test
 {
-
-  /**
-   * Tests the performance of the tao dynamics engine:
-   *
-   * Reads in a toy robot specification and lets it fall under gravity
-   * with full dynamics.
-   */
-  void test_dynamics(int id, const std::string &file_name)
-  {
-    scl::CDynamicsTao * dynamics = S_NULL;
-    scl::sUInt r_id=0;
-    bool flag;
-
-    try
-    {
-      //0. Create vars
-      long long i; //Counters
-      long long imax; //Counter limits
-      sClock t1,t2; //Clocks: pre and post
-
-      //Test database
-      scl::SDatabase * db = scl::CDatabase::getData();
-      if(S_NULL==db)
-      { throw(std::runtime_error("Database not initialized."));  }
-      else
-      { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized database"<<std::flush;  }
-
-      db->dir_specs_ = scl::CDatabase::getData()->cwd_ + std::string("../../specs/");
-
-      //0. Parse the file for robots
-      std::string tmp_infile;
-      tmp_infile = scl::CDatabase::getData()->cwd_+ file_name;
-      std::cout<<"\nTest Result ("<<r_id++<<")  Opening file : "<<tmp_infile;
-
-      scl::CParserScl tmp_lparser;
-
-      //1 Create robot from a file specification (And register it with the db)
-      std::vector<std::string> rob_names;
-      flag = tmp_lparser.listRobotsInFile(tmp_infile,rob_names);
-      if(false == flag)
-      { throw(std::runtime_error("Could not read a list of robots from the file"));  }
-
-      std::string robot_name; robot_name = rob_names.at(0);
-      flag = scl_registry::parseRobot(tmp_infile, robot_name, &tmp_lparser);
-      if(false == flag)
-      { throw(std::runtime_error("Could not register robot with the database"));  }
-      else
-      {
-        std::cout<<"\nTest Result ("<<r_id++<<")  Created a robot "
-            <<robot_name<<" on the pile"<<std::flush;
-      }
-
-#ifdef DEBUG
-      std::cout<<"\nPrinting parsed robot "
-          <<db->s_parser_.robots_.at(robot_name)->name_;
-      scl_util::printRobotLinkTree(*( db->s_parser_.robots_.at(robot_name)->rb_tree_.getRootNode()),0);
-#endif
-
-      //Initialize the dynamics computational object
-      dynamics = new scl::CDynamicsTao();
-      if (S_NULL==dynamics)
-      { throw(std::runtime_error("Failed to allocate memory for tao dynamics."));  }
-
-      flag = dynamics->init(* db->s_parser_.robots_.at(robot_name));
-      if (false==flag) { throw(std::runtime_error("Failed to initialize tao dynamics."));  }
-      else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized tao dynamics for the robot.";  }
-
-      SRobotIO * io_ds;
-      io_ds = scl::CDatabase::getData()->s_io_.io_data_.at(robot_name);
-      if(S_NULL == io_ds)
-      { throw(std::runtime_error("Could not find the robot's I/O data structure in the database"));  }
-
-      scl::sFloat ke[2], pe[2];
-      flag = dynamics->integrate((*io_ds), scl::CDatabase::getData()->sim_dt_); //Need to integrate once to flush the state
-      if(false == flag)
-      { throw(std::runtime_error("Could not integrate with the dynamics engine"));  }
-
-//      ke[0] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
-//      pe[0] = dynamics->getPotentialEnergy_Depracated();
-//      if(0.001 > fabs(pe[0]))
-//      { throw(std::runtime_error("Zero potential energy at start."));  }
-
-      imax = 200;
-      sFloat tstep = 0.0001;
-      t1 = sutil::CSystemClock::getSysTime();
-      for(i=0; i<imax; ++i)
-      {
-        flag = dynamics->integrate((*io_ds), scl::CDatabase::getData()->sim_dt_);
-      }
-      t2 = sutil::CSystemClock::getSysTime();
-
-//      ke[1] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
-//      if(0.001 > fabs(ke[1]))
-//      { throw(std::runtime_error("Zero kinetic energy after dynamics simulation."));  }
-//      pe[1] = dynamics->getPotentialEnergy_Depracated();
-//      if(0.001 > fabs(pe[1]))
-//      { throw(std::runtime_error("Zero potential energy after dynamics simulation."));  }
-
-      scl::sFloat energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
-      std::cout<<"\nTest Result ("<<r_id++<<") Initial Energy : "<<(ke[0]+pe[0])
-                             <<". Final Energy : "<<(ke[1]+pe[1])<<". Error : "<<energy_err;
-      std::cout<<"\nTest Result ("<<r_id++<<") Total Simulated Time : "<<((double)imax)*tstep <<" sec";
-      std::cout<<"\nTest Result ("<<r_id++<<") Simulation Took Time : "<<t2-t1 <<" sec";
-
-      //Now stress test the setup -- Only in release mode.
-#ifndef DEBUG
-//      ke[0] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
-//      pe[0] = dynamics->getPotentialEnergy_Depracated();
-
-      imax = 20000;
-      tstep = 0.0001;
-      t1 = sutil::CSystemClock::getSysTime();
-      for(i=0; i<imax; ++i)
-      {
-        flag = dynamics->integrate((*io_ds), scl::CDatabase::getData()->sim_dt_);
-      }
-      t2 = sutil::CSystemClock::getSysTime();
-
-//      ke[1] = dynamics->getKineticEnergy_Depracated(); //Now you can get the energies
-//      pe[1] = dynamics->getPotentialEnergy_Depracated();
-//      energy_err = ((ke[1]+pe[1]) - (ke[0]+pe[0]))/(ke[0]+pe[0]);
-      std::cout<<"\nTest Result ("<<r_id++<<") Initial Energy : "<<(ke[0]+pe[0])
-                                       <<". Final Energy : "<<(ke[1]+pe[1])<<". Error : "<<energy_err;
-      std::cout<<"\nTest Result ("<<r_id++<<") Total Simulated Time : "<<((double)imax)*tstep <<" sec";
-      std::cout<<"\nTest Result ("<<r_id++<<") Simulation Took Time : "<<t2-t1 <<" sec";
-#endif
-
-      //Delete stuff
-      if(S_NULL!= dynamics)  {  delete dynamics; dynamics = S_NULL; }
-
-      std::cout<<"\nTest #"<<id<<" : Succeeded.";
-    }
-    catch (std::exception& ee)
-    {
-      std::cout<<"\nTest Result ("<<r_id++<<") : "<<ee.what();
-      std::cout<<"\nTest #"<<id<<" : Failed.";
-
-      if(S_NULL!= dynamics)  {  delete dynamics; dynamics = S_NULL; }
-    }
-  }
-
   /** Tests the performance of analytical dynamics implementations in scl. */
-  void test_dynamics_tao_vs_analytic_rpp(int id)
+  void test_dynamics_scl_sp_vs_analytic_rpp(int id)
   {
-    scl::CDynamicsTao * dynamics = S_NULL;
+    scl_ext::CDynamicsSclSpatial * dynamics = S_NULL;
     scl::sUInt r_id=0;
     bool flag;
 
@@ -266,20 +121,15 @@ namespace scl_test
         { throw(std::runtime_error("Could not sort unsorted robot branching representation."));  }
       }
 
-#ifdef DEBUG
-      std::cout<<"\nPrinting parsed robot "<<rob_ds->name_;
-      scl_util::printRobotLinkTree( *(rob_ds->rb_tree_.getRootNode()), 0);
-#endif
-
       //*********** Create the dynamics computational object *************
-      dynamics = new scl::CDynamicsTao();
+      dynamics = new scl_ext::CDynamicsSclSpatial();
       if (S_NULL==dynamics)
-      { throw(std::runtime_error("Failed to allocate memory for tao dynamics."));  }
+      { throw(std::runtime_error("Failed to allocate memory for scl spatial dynamics."));  }
 
       // Initialize the dynamics computational object
       flag = dynamics->init(*rob_ds);
-      if (false==flag) { throw(std::runtime_error("Failed to initialize tao dynamics."));  }
-      else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized tao dynamics for the robot.";  }
+      if (false==flag) { throw(std::runtime_error("Failed to initialize scl spatial dynamics."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Initialized scl spatial dynamics for the robot.";  }
 
       //*********** Create and intialize the analytic dynamics computational object *************
       scl::CDynamicsAnalyticRPP dyn_anlyt;
@@ -312,7 +162,7 @@ namespace scl_test
 //      // *********************************************************************************************************
 //      // Set up variables.
 //      std::string link_name;
-//      Eigen::Affine3d Ttao, Tanlyt;
+//      Eigen::Affine3d Tscl_spatial, Tanlyt;
 //
 //      // Loop through all links and get transformations.
 //      sutil::CMappedTree<std::string, SRigidBody>::const_iterator it,ite;
@@ -325,8 +175,8 @@ namespace scl_test
 //        // Skip the root node (all matrices are zero).
 //        if(it->is_root_) { continue; }
 //
-//        flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
-//        if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
+//        flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Tscl_spatial);
+//        if (false==flag) { throw(std::runtime_error("Failed to compute scl_spatial transformation matrix."));  }
 //
 //        flag = dyn_anlyt.computeTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
 //            dyn_anlyt.getIdForLink("root"), Tanlyt);
@@ -334,18 +184,18 @@ namespace scl_test
 //
 //        for(int i=0; i<4 && flag; i++)
 //          for(int j=0; j<4 && flag; j++)
-//          { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision);  }
+//          { flag = flag && (fabs(Tscl_spatial.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision);  }
 //
 //        if (false==flag)
 //        {
-//          std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+//          std::cout<<"\nScl spatial transform Org->"<<link_name<<":\n"<<Tscl_spatial.matrix();
 //          std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
-//          throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
+//          throw(std::runtime_error("Scl spatial and analytic transformation matrices don't match."));
 //        }
-//        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for zero position : "<<link_name;  }
+//        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl_spatial transformations match for zero position : "<<link_name;  }
 //
 //#ifdef DEBUG
-//        std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+//        std::cout<<"\nScl spatial transform Org->"<<link_name<<":\n"<<Tscl_spatial.matrix();
 //        std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
 //#endif
 //      }
@@ -365,7 +215,7 @@ namespace scl_test
 //            if (false==flag)
 //            {
 //              std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
-//              throw(std::runtime_error("Failed to update tao's internal state.."));
+//              throw(std::runtime_error("Failed to update scl_spatial's internal state.."));
 //            }
 //
 //            // Loop through all links and get transformations.
@@ -378,8 +228,8 @@ namespace scl_test
 //              // Skip the root node (all matrices are zero).
 //              if(it->is_root_) { continue; }
 //
-//              flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Ttao);
-//              if (false==flag) { throw(std::runtime_error("Failed to compute tao transformation matrix."));  }
+//              flag = dynamics->computeTransform_Depracated(dynamics->getIdForLink(link_name),Tscl_spatial);
+//              if (false==flag) { throw(std::runtime_error("Failed to compute scl_spatial transformation matrix."));  }
 //
 //              flag = dyn_anlyt.computeTransformationMatrix(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name),
 //                  dyn_anlyt.getIdForLink("root"), Tanlyt);
@@ -387,47 +237,47 @@ namespace scl_test
 //
 //              for(int i=0; i<4 && flag; i++)
 //                for(int j=0; j<4 && flag; j++)
-//                { flag = flag && (fabs(Ttao.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision); }
+//                { flag = flag && (fabs(Tscl_spatial.matrix()(i,j) - Tanlyt.matrix()(i,j))<test_precision); }
 //
 //              if (false==flag)
 //              {
 //                std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
-//                std::cout<<"\nTao transform Org->"<<link_name<<":\n"<<Ttao.matrix();
+//                std::cout<<"\nScl spatial transform Org->"<<link_name<<":\n"<<Tscl_spatial.matrix();
 //                std::cout<<"\nAnalytic transform Org->"<<link_name<<":\n"<<Tanlyt.matrix();
-//                throw(std::runtime_error("Tao and analytic transformation matrices don't match."));
+//                throw(std::runtime_error("Scl spatial and analytic transformation matrices don't match."));
 //              }
 //            }
 //          }
-//      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao transformations match for all links and gcs [-pi,pi]";
+//      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl_spatial transformations match for all links and gcs [-pi,pi]";
 //
 //      // *********************************************************************************************************
 //      //                                         Test Generalized Inertia Matrix
 //      // *********************************************************************************************************
 //      // Set up variables.
-//      Eigen::MatrixXd Mgc_tao, Mgc_anlyt;
+//      Eigen::MatrixXd Mgc_scl_spatial, Mgc_anlyt;
 //
 //      flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
-//      if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
+//      if (false==flag) { throw(std::runtime_error("Failed to compute scl_spatial model matrices (for generalized inertia)."));  }
 //
-//      Mgc_tao = rob_gc_model.M_gc_;
+//      Mgc_scl_spatial = rob_gc_model.M_gc_;
 //
 //      flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
 //      if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
 //
 //      for(int i=0; i<3; i++)
 //        for(int j=0; j<3; j++)
-//        { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<test_precision); }
+//        { flag = flag && (fabs(Mgc_scl_spatial(i,j) - Mgc_anlyt(i,j))<test_precision); }
 //
 //      if (false==flag)
 //      {
-//        std::cout<<"\nTao Mgc:\n"<<Mgc_tao;
+//        std::cout<<"\nScl spatial Mgc:\n"<<Mgc_scl_spatial;
 //        std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
-//        throw(std::runtime_error("Tao and analytic Generalized Inertias don't match."));
+//        throw(std::runtime_error("Scl spatial and analytic Generalized Inertias don't match."));
 //      }
-//      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao Generalized Inertias match for zero position";  }
+//      else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl_spatial Generalized Inertias match for zero position";  }
 //
 //#ifdef DEBUG
-//      std::cout<<"\nTao Mgc:\n"<<Mgc_tao;
+//      std::cout<<"\nScl spatial Mgc:\n"<<Mgc_scl_spatial;
 //      std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
 //#endif
 //
@@ -443,32 +293,32 @@ namespace scl_test
 //            io_ds->sensors_.q_(2) = c;
 //
 //            flag = dynamics->computeGCModel(&(io_ds->sensors_),&rob_gc_model);
-//            if (false==flag) { throw(std::runtime_error("Failed to compute tao model matrices (for generalized inertia)."));  }
+//            if (false==flag) { throw(std::runtime_error("Failed to compute scl_spatial model matrices (for generalized inertia)."));  }
 //
-//            Mgc_tao = rob_gc_model.M_gc_;
+//            Mgc_scl_spatial = rob_gc_model.M_gc_;
 //
 //            flag = dyn_anlyt.computeMgc(io_ds->sensors_.q_, Mgc_anlyt);
 //            if (false==flag) { throw(std::runtime_error("Failed to compute analytic generalized inertia."));  }
 //
 //            for(int i=0; i<3; i++)
 //              for(int j=0; j<3; j++)
-//              { flag = flag && (fabs(Mgc_tao(i,j) - Mgc_anlyt(i,j))<test_precision); }
+//              { flag = flag && (fabs(Mgc_scl_spatial(i,j) - Mgc_anlyt(i,j))<test_precision); }
 //
 //            if (false==flag)
 //            {
 //              std::cout<<"\nGeneralized Coordinates: "<<io_ds->sensors_.q_.transpose();
-//              std::cout<<"\nTao Mgc:\n"<<Mgc_tao;
+//              std::cout<<"\nScl spatial Mgc:\n"<<Mgc_scl_spatial;
 //              std::cout<<"\nAnalytic Mgc:\n"<<Mgc_anlyt;
-//              throw(std::runtime_error("Tao and analytic Generalized Inertias don't match."));
+//              throw(std::runtime_error("Scl spatial and analytic Generalized Inertias don't match."));
 //            }
 //          }
-//      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao Generalized Inertias match for all gcs [-pi, pi]";
+//      std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl_spatial Generalized Inertias match for all gcs [-pi, pi]";
 
 //      // *********************************************************************************************************
 //      //                                         Test Com Jacobians
 //      // *********************************************************************************************************
 //      // Set up variables.
-//      Eigen::MatrixXd Jcom_tao, Jcom_anlyt;
+//      Eigen::MatrixXd Jcom_scl_spatial, Jcom_anlyt;
 //      Eigen::VectorXd pos;
 //      pos.setZero(3);
 //
@@ -482,26 +332,26 @@ namespace scl_test
 //        if(it->is_root_) { continue; }
 //
 //        pos = it->com_;
-//        flag = dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),pos,Jcom_tao);
-//        if (false==flag) { throw(std::runtime_error("Failed to compute tao com Jacobian."));  }
+//        flag = dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),pos,Jcom_scl_spatial);
+//        if (false==flag) { throw(std::runtime_error("Failed to compute scl_spatial com Jacobian."));  }
 //
 //        flag = dyn_anlyt.computeJcom(io_ds->sensors_.q_, dyn_anlyt.getIdForLink(link_name), Jcom_anlyt);
 //        if (false==flag) { throw(std::runtime_error("Failed to compute analytic com Jacobian."));  }
 //
 //        for(int i=0; i<3; i++)
 //          for(int j=0; j<3; j++)
-//          { flag = flag && fabs(Jcom_tao(i,j) - Jcom_anlyt(i,j)) < test_precision; }
+//          { flag = flag && fabs(Jcom_scl_spatial(i,j) - Jcom_anlyt(i,j)) < test_precision; }
 //
 //        if (false==flag)
 //        {
-//          std::cout<<"\nTao Jcom_"<<link_name<<":\n"<<Jcom_tao;
+//          std::cout<<"\nScl spatial Jcom_"<<link_name<<":\n"<<Jcom_scl_spatial;
 //          std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
-//          throw(std::runtime_error("Tao and analytic Jacobians don't match."));
+//          throw(std::runtime_error("Scl spatial and analytic Jacobians don't match."));
 //        }
-//        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and tao com Jacobians match for zero position : "<<link_name;  }
+//        else { std::cout<<"\nTest Result ("<<r_id++<<")  Analytic and scl_spatial com Jacobians match for zero position : "<<link_name;  }
 //
 //#ifdef DEBUG
-//        std::cout<<"\nTao Jcom_"<<link_name<<":\n"<<Jcom_tao;
+//        std::cout<<"\nScl spatial Jcom_"<<link_name<<":\n"<<Jcom_scl_spatial;
 //        std::cout<<"\nAnalytic Jcom_"<<link_name<<":\n"<<Jcom_anlyt;
 //#endif
 //      }
@@ -545,11 +395,11 @@ namespace scl_test
 //            {
 //              // Skip the root node (all matrices are zero).
 //              if(it->is_root_) { continue; }
-//              dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),it->com_,Jcom_tao);
+//              dynamics->computeJacobian_Depracated(dynamics->getIdForLink(link_name),it->com_,Jcom_scl_spatial);
 //            }
 //          }
 //      t2 = sutil::CSystemClock::getSysTime();
-//      std::cout<<"\nTest Result ("<<r_id++<<")  Tao Jacobian performance: "
+//      std::cout<<"\nTest Result ("<<r_id++<<")  Scl spatial Jacobian performance: "
 //          <<pow(double(int(6.28/double(gcstep))),3)*3<<" Jacobians in "<<t2-t1<<"s. \n\t\tFreq : "
 //          <<pow(double(int(6.28/double(gcstep))),3)*3.0/(t2-t1)<<" Hz";
 //

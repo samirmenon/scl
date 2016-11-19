@@ -128,27 +128,6 @@ namespace scl
      * 2: Renders the graphics and handles gui interaction */
     void runMainLoop();
 
-    /** Runs a console shell that enables you to modify
-     * the app through your commands (provided you've
-     * registered them with the callback registry.
-     *
-     * NOTE : The console runs in two modes:
-     *
-     * Mode 1 : String lookup:
-     * function name  = string
-     * arguments      = vector<string>
-     *
-     * Mode 2 : Char lookup:
-     * function name  = char
-     * is_caps?       = bool
-     *
-     * Default starts in string lookup. Press 'x' to switch between
-     * modes.
-     *
-     * (See the callback registry sutil/CCallbackRegistry.hpp for
-     * more details) */
-    void runConsoleShell();
-
     //Data types. Feel free to use them.
     scl::SDatabase* db_;                 //Generic database (for sharing data)
 

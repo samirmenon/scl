@@ -30,17 +30,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/serialization/SerializationJSON.hpp>
-#include <scl/util/DatabaseUtils.hpp>
-
-#include <scl/robot/GenericCallbacks.hpp>
-#include <scl/serialization/PrintablesJSON.hpp>
+#include <scl/scl.hpp>
 
 #include <GL/freeglut.h>
 #include <Eigen/Core>

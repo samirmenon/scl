@@ -48,7 +48,12 @@ namespace scl_app
 
       //Initialize the first op point controller
       op_link_name[arg_rob_idx] = argv[5*arg_rob_idx+4];
-      db->s_gui_.ui_point_[2*arg_rob_idx+0]<<0,0.1,0; //Ctrl tracks this control point.
+      if(arg_rob_idx==0){
+        db->s_gui_.ui_point_[2*arg_rob_idx+0]<<0.2,0.15,0; //Ctrl tracks this control point.
+      }
+      else{
+        db->s_gui_.ui_point_[2*arg_rob_idx+0]<<0.5,0.1,0; //Ctrl tracks this control point.
+      }
       tsk[arg_rob_idx] = (scl::CTaskOpPos*)(ctrl[arg_rob_idx]->getTask(op_link_name[arg_rob_idx]));
       if(S_NULL == tsk[arg_rob_idx])
       { throw(std::runtime_error("Could not get specified task"));  }
@@ -62,7 +67,12 @@ namespace scl_app
 
       //If second op point name was passed, use it.
       op_link2_name[arg_rob_idx] = argv[5*arg_rob_idx+5];
-      db->s_gui_.ui_point_[2*arg_rob_idx+1]<<0,-0.1,0; //Ctrl2 tracks this control point.
+      if(arg_rob_idx==0){
+        db->s_gui_.ui_point_[2*arg_rob_idx+1]<<0.2,-0.15,0; //Ctrl tracks this control point.
+      }
+      else{
+        db->s_gui_.ui_point_[2*arg_rob_idx+1]<<0.5,-0.1,0; //Ctrl tracks this control point.
+      }
       tsk2[arg_rob_idx] = (scl::CTaskOpPos*)(ctrl[arg_rob_idx]->getTask(op_link2_name[arg_rob_idx]));
       if(S_NULL == tsk2[arg_rob_idx])
       { throw(std::runtime_error("Could not get specified task"));  }
@@ -80,6 +90,7 @@ namespace scl_app
     { std::cout<<"\nCScl2RobAppTask::initMyController() : "<<e.what(); }
     return false;
   }
+
   void  CScl2RobAppTask::stepMySimulation()
   {
     for(int i=0; i<2; ++i)
@@ -102,19 +113,44 @@ namespace scl_app
   }
 }
 
+bool addCallbacks()
+{
+  // Add a bunch of callback functions to the command line shell
+  bool flag = sutil::callbacks::add<scl::CCallbackHelp, std::string, std::vector<std::string> >(std::string("help") );
+  flag = flag && sutil::callbacks::add<scl::CCallbackEcho, std::string, std::vector<std::string> >(std::string("echo") );
+  flag = flag && sutil::callbacks::add<scl::CCallbackPrint, std::string, std::vector<std::string> >(std::string("print") );
+  flag = flag && scl::printableAddObject<scl::SDatabase>(*scl::CDatabase::getData());
+  return flag;
+}
+
 /** A sample application to demonstrate marker tracking with
  * an operational space controller on a robot. */
 int main(int argc, char** argv)
 {
+  // Initialize the application
   scl_app::CScl2RobAppTask app;
-
   if(false == app.init(argc,argv)) {   return 1;  }
+
+  // Initialize the console shell callbacks.
+  addCallbacks();
 
   /***********************Main Loop*****************************/
   app.t_start = sutil::CSystemClock::getSysTime();
 
 #ifndef DEBUG
-  app.runMainLoopThreaded();  //Run multi-threaded in release mode
+
+  omp_set_num_threads(3);
+  int thread_id;
+
+#pragma omp parallel private(thread_id)
+  {//Start threaded region
+    thread_id = omp_get_thread_num();
+
+    if(2==thread_id)
+    { scl::shell::runConsoleShell(*scl::CDatabase::getData());  }
+    else
+    { app.runMainLoopThreaded(thread_id);  }//Run multi-threaded in release mode
+  }
 #else
   app.runMainLoop();          //Run single-threaded in debug mode
 #endif

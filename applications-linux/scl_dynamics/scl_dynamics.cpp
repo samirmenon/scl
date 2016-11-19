@@ -28,27 +28,19 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
+//scl lib
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
 
-#include <sstream>
-
-//Standard includes
-#include <iostream>
-#include <stdexcept>
+#include <sutil/CSystemClock.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
 
-//scl lib
-#include <scl/DataTypes.hpp>
-#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
-#include <sutil/CSystemClock.hpp>
+//Standard includes
+#include <sstream>
+#include <iostream>
+#include <stdexcept>
 
 //Openmp
 #include <omp.h>
@@ -121,11 +113,6 @@ int main(int argc, char** argv)
       scl::SRobotParsed *rob_ds = scl::CDatabase::getData()->s_parser_.robots_.at(robot_name);
       if(NULL == rob_ds)
       { throw(std::runtime_error("Could not find registered robot data struct in the database"));  }
-
-#ifdef DEBUG
-      std::cout<<"\nPrinting parsed robot "<<robot_name;
-      scl_util::printRobotLinkTree(*(rob_ds->rb_tree_.getRootNode()),0);
-#endif
 
       /******************************SclDynamics************************************/
       scl_ext::CDynamicsSclSpatial dyn_scl_sp;

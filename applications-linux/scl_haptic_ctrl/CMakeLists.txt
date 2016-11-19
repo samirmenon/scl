@@ -20,7 +20,6 @@ SET(SCL_BASE_DIR ../../)
 ###(a) Scl controller
 SET(SCL_INC_DIR ${SCL_BASE_DIR}src/scl/)
 SET(SCL_INC_DIR_BASE ${SCL_BASE_DIR}src/)
-SET(TAO_INC_DIR ${SCL_INC_DIR}dynamics/tao/)
 ADD_DEFINITIONS(-DTIXML_USE_STL)
 
 ###(b) Eigen
@@ -56,7 +55,7 @@ SET(CLIBPNG_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/libpng/include)
 
 ################Initialize the executable#################
 #Set the include directories
-INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR}
+INCLUDE_DIRECTORIES(${SCL_INC_DIR_BASE} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR}
 ${CDHD_INC_DIR} ${CGEL_INC_DIR} ${CGIFLIB_INC_DIR} ${CLIB3DS_INC_DIR} ${CLIBJPEG_INC_DIR} ${CLIBPNG_INC_DIR} ) 
 
 #Set the compilation flags
@@ -142,4 +141,4 @@ target_link_libraries(scl_haptic_ctrl ${CDHD_LIBRARY} ${CDRD_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_haptic_ctrl gomp GL GLU GLEW glut ncurses usb-1.0 pthread rt pci z dl)
+target_link_libraries(scl_haptic_ctrl gomp GL GLU GLEW glut ncurses usb-1.0 pthread rt pci z dl jsoncpp)

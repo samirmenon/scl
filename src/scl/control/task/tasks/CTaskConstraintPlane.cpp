@@ -29,8 +29,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <control/task/tasks/CTaskConstraintPlane.hpp>
-#include <scl/control/task/tasks/data_structs/STaskConstraintPlane.hpp>
+#include "CTaskConstraintPlane.hpp"
 
 #include <stdio.h>
 #include <iostream>

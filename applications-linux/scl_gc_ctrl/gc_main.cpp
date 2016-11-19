@@ -29,30 +29,20 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#include <sstream>
+//scl lib
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
 
-//Standard includes
-#include <iostream>
-#include <stdexcept>
-#include <cassert>
+#include <sutil/CSystemClock.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
 
-//scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/control/task/CControllerMultiTask.hpp>
-#include <scl/control/gc/CControllerGc.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
-#include <sutil/CSystemClock.hpp>
-
-#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
+//Standard includes
+#include <sstream>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
 
 #include <omp.h>
 #include <GL/freeglut.h>
@@ -150,13 +140,7 @@ int main(int argc, char** argv)
       if(S_NULL == scl_registry::parseGcController(tmp_infile, robot_name, ctrl_name, &tmp_lparser))
       { throw(std::runtime_error("Could not register controller with the database"));  }
 
-#ifdef DEBUG
-      std::cout<<"\nPrinting parsed robot "<<robot_name;
-      scl_util::printRobotLinkTree(*( scl::CDatabase::getData()->
-          s_parser_.robots_.at(robot_name)->rb_tree_.getRootNode()),0);
-#endif
-
-      /******************************TaoDynamics************************************/
+      /******************************Scl Spatial Dynamics************************************/
       scl_ext::CDynamicsSclSpatial dyn_scl_sp_int;
       flag = dyn_scl_sp_int.init(* scl::CDatabase::getData()->s_parser_.robots_.at(robot_name));
       if(false == flag) { throw(std::runtime_error("Could not initialize physics simulator"));  }

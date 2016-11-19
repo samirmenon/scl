@@ -32,7 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef EIGENEXTENSIONS_HPP_
 #define EIGENEXTENSIONS_HPP_
 
-#include <Eigen/Core>
+#include <Eigen/Eigen>
 #include <jsoncpp/json/json.h>
 
 #include <string>
@@ -202,8 +202,7 @@ namespace scl_util
   /** Convert an Eigen Transform into a JSON array or array of arrays
    *  Output (Row-major) : [[1,2,3,p0],[4,5,6,p1],[7,8,9,p2],[0,0,0,1]]
    * Useful for serialization and deserialization. */
-  void eigentoStringArrayJSON(const Eigen::Affine3d& x, std::string& arg_str)
-  { eigentoStringArrayJSON(x.matrix(),arg_str); }
+  void eigentoStringArrayJSON(const Eigen::Affine3d& x, std::string& arg_str);
 
   /** Convert an Eigen Quaternion into a JSON array
    *
@@ -266,15 +265,15 @@ namespace scl_util
     if(!is_matrix)
     {
       x.setIdentity(nrows,1);//Convert it into a vector.
-      for(int i=0;i<nrows;++i) x(i,0) = jval[i].asDouble();
+      for(unsigned int i=0;i<nrows;++i) x(i,0) = jval[i].asDouble();
     }
     else
     {
       unsigned int ncols = jval[0].size();
       if(ncols < 1) return false; //Must have elements.
-      for(int i=0;i<nrows;++i){
+      for(unsigned int i=0;i<nrows;++i){
         if(ncols != jval[i].size()) return false;
-        for(int j=0;j<ncols;++j)
+        for(unsigned int j=0;j<ncols;++j)
           x(i,j) = jval[i][j].asDouble();
       }
     }
@@ -295,7 +294,7 @@ namespace scl_util
     for(int i : {0,1,2,3})
       if(!jval[i].isNumeric()) return false; //Elements must be scalars
 
-    q = Eigen::Quaternion<scl::sFloat>(jval[0].asDouble(),jval[1].asDouble(),jval[2].asDouble(),jval[3].asDouble());
+    q = Eigen::Quaternion<double>(jval[0].asDouble(),jval[1].asDouble(),jval[2].asDouble(),jval[3].asDouble());
 
     return true;
   }

@@ -30,19 +30,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/Singletons.hpp>
-#include <scl/robot/DbRegisterFunctions.hpp>
-#include <scl/graphics/chai/CGraphicsChai.hpp>
-#include <scl/graphics/chai/ChaiGlutHandlers.hpp>
-#include <scl/control/task/CControllerMultiTask.hpp>
-#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
-#include <sutil/CSystemClock.hpp>
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
 
-#include <scl_ext/dynamics/scl_spatial/CDynamicsSclSpatial.hpp>
+#include <sutil/CSystemClock.hpp>
 
 #include <omp.h>
 #include <GL/freeglut.h>
@@ -120,8 +111,8 @@ int main(int argc, char** argv)
     flag = p.readTaskControllerFromFile(fname,"opc",rtasks,rtasks_nc,ctrl_params);
     flag = flag && rctr_ds.init("opc",&rds,&rio,&rgcm); //Set up the control data structure..
     // Tasks are initialized after find their type with dynamic typing.
-    flag = flag && scl_registry::registerNativeDynamicTypes();
-    flag = flag && scl_util::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
+    flag = flag && scl::init::registerNativeDynamicTypes();
+    flag = flag && scl::init::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
     flag = flag && rctr.init(&rctr_ds,&dyn_scl);  //Set up the controller (needs parsed data and a dyn object)
     if(false == flag){ return 1; }                //Error check.
 

@@ -32,18 +32,16 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef CTASKCONSTRAINTPLANE_HPP_
 #define CTASKCONSTRAINTPLANE_HPP_
 
-#include <string>
-#include <vector>
-
 #include <scl/DataTypes.hpp>
 
-#include <scl/control/task/tasks/data_structs/STaskConstraintPlane.hpp>
+#include "data_structs/STaskConstraintPlane.hpp"
 
 #include <scl/control/task/CTaskBase.hpp>
 
 #include <Eigen/Dense>
 #include <Eigen/SVD>
-
+#include <string>
+#include <vector>
 
 namespace scl
 {

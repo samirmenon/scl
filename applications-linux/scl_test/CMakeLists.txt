@@ -20,7 +20,6 @@ SET(SCL_BASE_DIR ../../)
 ###(a) Scl controller
 SET(SCL_INC_DIR ${SCL_BASE_DIR}src/scl/)
 SET(SCL_INC_DIR_BASE ${SCL_BASE_DIR}src/)
-SET(TAO_INC_DIR ${SCL_INC_DIR}dynamics/tao/)
 ADD_DEFINITIONS(-DTIXML_USE_STL)
 
 ###(b) Eigen
@@ -38,7 +37,7 @@ SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
 
 ################Initialize the executable#################
 #Set the include directories
-INCLUDE_DIRECTORIES(${SCL_INC_DIR} ${SCL_INC_DIR_BASE} ${TAO_INC_DIR} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR})
+INCLUDE_DIRECTORIES(${SCL_INC_DIR_BASE} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR})
 
 #Set the compilation flags
 SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp -std=c++11")
@@ -58,7 +57,6 @@ SET(ALL_SRC ${TEST_BASE_DIR}scl_test.cpp
             ${TEST_BASE_DIR}test_dynamics_scl.cpp 
             ${TEST_BASE_DIR}test_dynamics_sclspatial_math.cpp
             ${TEST_BASE_DIR}test_dynamics_sclspatial.cpp
-            ${TEST_BASE_DIR}test_dynamics_scl_vs_spatial.cpp
             ${TEST_BASE_DIR}test_robot_controller.cpp 
             ${TEST_BASE_DIR}test_graphics.cpp
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 

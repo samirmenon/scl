@@ -30,12 +30,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //scl lib
-#include <scl/DataTypes.hpp>
-#include <scl/data_structs/SGcModel.hpp>
-#include <scl/dynamics/scl/CDynamicsScl.hpp>
-#include <scl/dynamics/tao/CDynamicsTao.hpp>
-#include <scl/parser/sclparser/CParserScl.hpp>
-#include <scl/util/DatabaseUtils.hpp>
+#include <scl/scl.hpp>
+#include <scl_ext/scl_ext.hpp>
 
 //Eigen 3rd party lib
 #include <Eigen/Dense>
@@ -67,31 +63,38 @@ int main(int argc, char** argv)
   scl::SRobotParsed rds;     //Robot data structure....
   scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
   scl::SRobotIO rio;         //I/O data structure
-  scl::CDynamicsScl dyn_scl; //Robot kinematics and dynamics computation object...
-  scl::CDynamicsTao dyn_tao; //Robot physics integrator...
+  scl_ext::CDynamicsSclSpatial dyn_scl_sp; //Robot physics integrator...
   scl::CParserScl p;         //This time, we'll parse the tree from a file...
 
   //We will reuse the xml spec file from the first tutorial
   bool flag = p.readRobotFromFile("./RRRCfg.xml","./","rrrbot",rds);
   flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
-  flag = flag && dyn_scl.init(rds);         //Set up dynamics object
-  flag = flag && dyn_tao.init(rds);         //Set up integrator object
+  flag = flag && dyn_scl_sp.init(rds);      //Set up integrator object
   flag = flag && rio.init(rds);
   if(false == flag){ return 1; }            //Error check.
 
   // Now let us integrate the model for a variety of timesteps and see energy stability
   std::cout<<"\nIntegrating the rrrbot's physics";
-  for(long n_iters=10000; n_iters < 500000; n_iters*=2)
+  for(long n_iters=1000; n_iters < 50000; n_iters*=2)
   {
-    double e_init, e_fin, dt=0.0001;
-    e_init = dyn_scl.computeEnergyKinetic(rgcm.rbdyn_tree_,rio.sensors_.q_,rio.sensors_.dq_)+
-        dyn_scl.computeEnergyPotential(rgcm.rbdyn_tree_,rio.sensors_.q_);
-    for(long ii=0; ii<n_iters; ++ii)  { dyn_tao.integrate(rio,dt);  }
-    e_fin = dyn_scl.computeEnergyKinetic(rgcm.rbdyn_tree_,rio.sensors_.q_,rio.sensors_.dq_)+
-        dyn_scl.computeEnergyPotential(rgcm.rbdyn_tree_,rio.sensors_.q_);
+    double tmp[2],e_init, e_fin, dt=0.001;
 
+    // Measure the energy at the start
+    dyn_scl_sp.computeEnergyKinetic(rgcm,rio.sensors_.q_,rio.sensors_.dq_,tmp[0]);
+    dyn_scl_sp.computeEnergyPotential(rgcm,rio.sensors_.q_,tmp[1]);
+    e_init = tmp[0] + tmp[1];
+
+    // Integrate dynamics
+    for(long ii=0; ii<n_iters; ++ii)  { dyn_scl_sp.integrate(rgcm,rio,dt);  }
+
+    // Measure the energy at the end
+    dyn_scl_sp.computeEnergyKinetic(rgcm,rio.sensors_.q_,rio.sensors_.dq_,tmp[0]);
+    dyn_scl_sp.computeEnergyPotential(rgcm,rio.sensors_.q_,tmp[1]);
+    e_fin = tmp[0] + tmp[1];
+
+    // Print out the statistics.
     std::cout<<"\n Sim time (s) = "<<static_cast<double>(n_iters)*dt;
-    std::cout<<". Energy change (% of start) = "<<(e_fin-e_init)/e_init;
+    std::cout<<". Energy change (% of start) = "<<(e_fin-e_init)/e_init<<std::flush;
   }
 
   /******************************Exit Gracefully************************************/

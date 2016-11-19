@@ -33,8 +33,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef SRC_SCL_SERIALIZATION_ALLHEADERS_HPP_
 #define SRC_SCL_SERIALIZATION_ALLHEADERS_HPP_
 
-#include <scl/serialization/PrintablesJSON.hpp>
-
 #include <scl/serialization/SerializationJSON.hpp>
 
 #endif /* SRC_SCL_SERIALIZATION_ALLHEADERS_HPP_ */

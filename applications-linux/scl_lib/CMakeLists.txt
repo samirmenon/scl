@@ -18,11 +18,8 @@ SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
 #sUtil Includes
 SET(SUTIL_INC_DIR ../../3rdparty/sUtil/src)
 
-SET(TAO_INC_DIR ${SCL_INC_DIR}/dynamics/tao)
-
 #Set all include directories
-INCLUDE_DIRECTORIES(../../src/ ${SCL_INC_DIR}
-                    ${EIGEN_INC_DIR} ${TAO_INC_DIR}		    						
+INCLUDE_DIRECTORIES(../../src/ ${EIGEN_INC_DIR}	    						
                     ${SUTIL_INC_DIR} ${TIXML_INC_DIR} 
                     ${SCLEXT_INC_DIR})
 
@@ -42,17 +39,19 @@ SET(ACT_SRC ${SCL_INC_DIR}/actuation/muscles/CActuatorMuscle.cpp
             ${SCL_INC_DIR}/actuation/muscles/CActuatorSetMuscle.cpp
    )
 
-SET(UTIL_SRC ${SCL_INC_DIR}/util/DatabaseUtils.cpp
-             ${SCL_INC_DIR}/util/HelperFunctions.cpp
+SET(UTIL_SRC ${SCL_INC_DIR}/util/HelperFunctions.cpp
              ${SCL_INC_DIR}/util/FileFunctions.cpp
              ${SCL_INC_DIR}/util/RobotMath.cpp
              ${SCL_INC_DIR}/util/CmdLineArgReader.cpp
+             ${SCL_INC_DIR}/util/EigenExtensions.cpp
    )
 
 SET(ROBOT_SRC ${SCL_INC_DIR}/robot/CRobot.cpp
               ${SCL_INC_DIR}/robot/data_structs/SRobot.cpp
               ${SCL_INC_DIR}/robot/DbRegisterFunctions.cpp
    )
+   
+SET(SHELL_SRC ${SCL_INC_DIR}/shell/ConsoleShell.cpp)
 
 SET(CTR_SRC ${SCL_INC_DIR}/control/data_structs/SControllerBase.cpp
             ${SCL_INC_DIR}/control/gc/data_structs/SControllerGc.cpp
@@ -87,32 +86,6 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
 # This needs some work. Should add basic trajectory generation support.
 SET(CTR_TRAJ_SRC 
    )
-   
-SET(TAO_SRC ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDNode.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABDynamics.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoABJoint.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoWorld.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoDynamics.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoJoint.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoNode.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/dynamics/taoArticulatedBodyLink.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/utility/TaoDeMassProp.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeQuaternionf.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeMatrix6.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeVector6.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeMatrix3f.cpp
-            ${SCL_INC_DIR}/dynamics/tao/tao/matrix/TaoDeTransform.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/vector_util.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/Status.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/State.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/Model.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/wrap_eigen.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/tao_util.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/tao_dump.cpp
-            ${SCL_INC_DIR}/dynamics/tao/jspace/strutil.cpp
-            ${SCL_INC_DIR}/dynamics/tao/CDynamicsTao.cpp
-            ${SCL_INC_DIR}/dynamics/tao/CTaoRepCreator.cpp
-   )
 
 SET(DYN_ANALYTIC_SRC ${SCL_INC_DIR}/dynamics/analytic/CDynamicsAnalyticRPP.cpp
    )
@@ -131,6 +104,10 @@ SET(SCL_IO_SRC ${SCL_INC_DIR}/io/CIORedis.cpp
 
 SET(SCL_SERIALIZATION_SRC ${SCL_INC_DIR}/serialization/SerializationJSON.cpp
    )
+   
+SET(SCL_CALLBACKS_SRC ${SCL_INC_DIR}/callbacks/GenericCallbacks.cpp
+                      ${SCL_INC_DIR}/callbacks/PrintablesJSON.cpp
+   )
 
 SET(OSIM_PARSER_SRC ${SCL_INC_DIR}/parser/osimparser/CParserOsim.cpp
                     ${SCL_INC_DIR}/parser/osimparser/CParserOsimForOldFiles.cpp)
@@ -143,17 +120,15 @@ SET(TIXML_SRC ${TIXML_INC_DIR}/scl_tinyxml/scl_tinystr.cpp
    )
 ADD_DEFINITIONS(-DTIXML_USE_STL -std=c++11)
 
-SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} 
+SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} ${SHELL_SRC}
            ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
-           ${TAO_SRC} ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
+           ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
            ${SCL_PARSER_SRC} ${OSIM_PARSER_SRC}
-           ${SCL_IO_SRC} ${SCL_SERIALIZATION_SRC}
+           ${SCL_IO_SRC} ${SCL_SERIALIZATION_SRC} ${SCL_CALLBACKS_SRC}
            ${TIXML_SRC})
 
 #Set the build mode to debug by default
 #SET(CMAKE_BUILD_TYPE Debug)
-
-ADD_DEFINITIONS( -DSCL_LIBRARY_COMPILE_FLAG=1 )
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
   #Add debug definitions
