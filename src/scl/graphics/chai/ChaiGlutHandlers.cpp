@@ -99,7 +99,7 @@ namespace scl_chai_glut_interface
       }
 
       SChaiGlobals* chai_glob_ds = CChaiGlobals::getData();
-      if(S_NULL == db) { throw(std::runtime_error("Chai shared data singleton not initialized")); }
+      if(S_NULL == chai_glob_ds) { throw(std::runtime_error("Chai shared data singleton not initialized")); }
 
       if(S_NULL == arg_chai_glut)
       { throw(std::runtime_error("Passed invalid chai object")); }
