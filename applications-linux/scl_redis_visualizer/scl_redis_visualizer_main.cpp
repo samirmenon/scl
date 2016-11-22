@@ -148,8 +148,13 @@ int main(int argc, char** argv)
       if(false==flag) { std::cout<<"\nCouldn't initialize chai graphics\n"; return 1; }
 
       /******************************Redis Initialization************************************/
-      char rstr_qkey[1024]; //For redis key formatting
-      sprintf(rstr_qkey, "scl::robot::%s::sensors::q",rcmd.name_robot_.c_str());
+      char rstr_q_key[1024]; //For redis key formatting
+      sprintf(rstr_q_key, "scl::robot::%s::sensors::q",rcmd.name_robot_.c_str());
+
+      char rstr_campos_key[1024],rstr_camlookat_key[1024], rstr_camup_key[1024]; //For ui redis key formatting
+      sprintf(rstr_campos_key, "scl::robot::%s::ui::cam_pos",rcmd.name_robot_.c_str());
+      sprintf(rstr_camlookat_key, "scl::robot::%s::ui::cam_lookat",rcmd.name_robot_.c_str());
+      sprintf(rstr_camup_key, "scl::robot::%s::ui::cam_up",rcmd.name_robot_.c_str());
 
       scl::CIORedis ioredis;
       scl::SIORedis ioredis_ds;
@@ -157,8 +162,16 @@ int main(int argc, char** argv)
       if(false == flag)
       { throw(std::runtime_error( std::string("Could not connect to redis server : ") + std::string(ioredis_ds.context_->errstr) ));  }
 
-      std::cout<<"\n Monitoring REDIS key : "<<rstr_qkey;
+      std::cout<<"\n Monitoring REDIS key : "<<rstr_q_key;
       std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
+
+      /* ************** Set up UI keys *************************** */
+      scl_chai_glut_interface::SChaiGlobals* chai_glob_ds = scl_chai_glut_interface::CChaiGlobals::getData();
+      if(S_NULL == chai_glob_ds) { throw(std::runtime_error("Chai shared data singleton not initialized")); }
+
+      ioredis.set(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
+      ioredis.set(ioredis_ds,rstr_camlookat_key, rgr.cam_lookat_);
+      ioredis.set(ioredis_ds,rstr_camup_key, rgr.cam_up_);
 
       /******************************Graphics Rendering************************************/
       while(scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
@@ -166,12 +179,36 @@ int main(int argc, char** argv)
         // Update graphics
         glutMainLoopEvent();
 
+        // **************************************************************************************
+        //                                User Interface IO
+        // **************************************************************************************
+        // Update the camera position.
+        ioredis.get(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
+        ioredis.get(ioredis_ds,rstr_camlookat_key, rgr.cam_lookat_);
+        ioredis.get(ioredis_ds,rstr_camup_key, rgr.cam_up_);
+
+        // Set new position to camera
+        chai_glob_ds->cam_lookat_x_ = rgr.cam_lookat_(0);
+        chai_glob_ds->cam_lookat_y_ = rgr.cam_lookat_(1);
+        chai_glob_ds->cam_lookat_z_ = rgr.cam_lookat_(2);
+
+        // Move to spherical coordinates so the mouse rotation still works.
+        chai_glob_ds->cam_sph_x_=(rgr.cam_pos_ - rgr.cam_lookat_).norm();
+        chai_glob_ds->cam_sph_v_= 180/M_PI*(std::asin(rgr.cam_pos_[2]/chai_glob_ds->cam_sph_x_));
+        chai_glob_ds->cam_sph_h_= 180/M_PI*(std::asin(rgr.cam_pos_[1]/
+            (chai_glob_ds->cam_sph_x_*chai3d::cCosDeg(chai_glob_ds->cam_sph_v_))));
+
+        scl_chai_glut_interface::updateCameraPosition();
+
+        // **************************************************************************************
+        //                                ROBOT STATE IO
+        // **************************************************************************************
         // REDIS IO : Get q key (we assume it will exist else would have thrown an error earlier)
-        flag = ioredis.get(ioredis_ds,rstr_qkey,rio.sensors_.q_);
+        flag = ioredis.get(ioredis_ds,rstr_q_key,rio.sensors_.q_);
         if(false == flag || rio.sensors_.q_.rows() != rio.dof_)
         {
           rio.sensors_.q_.setZero(rio.dof_); // We'll set the key to zero just to be safe..
-          std::cout<<"\n WARNING : Missing redis key: "<<rstr_qkey<<" size("<< rio.dof_<<"). Will wait for it...";
+          std::cout<<"\n WARNING : Missing redis key: "<<rstr_q_key<<" size("<< rio.dof_<<"). Will wait for it...";
           const timespec ts = {0, 200000000};/*200ms sleep */ nanosleep(&ts,NULL); continue;
         }
 
@@ -181,9 +218,16 @@ int main(int argc, char** argv)
           if(false == flag)
           { std::cout<<"\n WARNING : Missing redis key: "<<rstr_musclekey<<" size("<< rob_mset_ds->muscles_.size()<<"). Will wait for it..."; }
         }
+        // **************************************************************************************
 
         const timespec ts = {0, 25000000};/*25ms sleep : ~40Hz update*/ nanosleep(&ts,NULL);
       }
+
+      /* ************** Clean up UI keys *************************** */
+      ioredis.del(ioredis_ds,rstr_campos_key);
+      ioredis.del(ioredis_ds,rstr_camlookat_key);
+      ioredis.del(ioredis_ds,rstr_camup_key);
+
 
       /******************************Exit Gracefully************************************/
       std::cout<<"\n\nExecuted Successfully";
