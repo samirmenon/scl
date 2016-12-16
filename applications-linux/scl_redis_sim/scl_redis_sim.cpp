@@ -109,6 +109,9 @@ int main(int argc, char** argv)
       double sim_dt = 0.001;     // Simulation timestep..
       int enable_fgc_command=0;  // Whether to use fgc commands
 
+      flag = scl::init::registerNativeDynamicTypes();
+      if(false == flag) { throw(std::runtime_error("Could not initialize native dynamic types (parser might not work)"));  }
+
       /******************************File Parsing************************************/
       std::string name_infile(argv[1]);
       std::cout<<"\nRunning scl_redis_sim for input file: "<<name_infile;
