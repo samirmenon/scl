@@ -94,6 +94,10 @@ sBool SRobotIO::init(const SRobotParsed& arg_rds,
       if(false == flag)
       { throw(std::runtime_error(std::string("Failed to get dyn type object for type (is it registered/standard?): ")+val.getType()));  }
       *tmp_aset = reinterpret_cast<SActuatorSetBase *>(obj);
+
+      flag = (*tmp_aset)->init(&val);
+      if(false == flag)
+      { throw(std::runtime_error(std::string("Failed to init actuator set data struct object for : ")+val.getName()));  }
     }
 
     if(0 < actuators_.actuator_sets_.size())
