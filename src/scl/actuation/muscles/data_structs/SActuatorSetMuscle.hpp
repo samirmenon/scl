@@ -53,10 +53,15 @@ namespace scl
     /* ******************************************************
      *                        Initialization
      * ****************************************************** */
+    virtual bool init(const SActuatorSetParsed * arg_actuator_set)
+    { return init(dynamic_cast<const SActuatorSetMuscleParsed *>(arg_actuator_set));  }
+
     bool init(const SActuatorSetMuscleParsed * arg_mset_parsed)
     {
       if(NULL == arg_mset_parsed){ return false; }
       if(false == arg_mset_parsed->hasBeenInit()){ return false; }
+
+      name_ = arg_mset_parsed->name_;
 
       // Save a pointer to the parsed data.
       // NOTE TODO : Perhaps reconsider this? Might want to pass both around, where needed.

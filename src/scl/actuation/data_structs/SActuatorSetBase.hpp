@@ -32,7 +32,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef SACTUATORSETBASE_HPP_
 #define SACTUATORSETBASE_HPP_
 
-#include <scl/data_structs/SObject.hpp>
+#include <scl/data_structs/SActuatorSetParsed.hpp>
 
 #include <Eigen/Core>
 
@@ -66,6 +66,8 @@ namespace scl
       SObject(subclass_type_name){}
 
     virtual ~SActuatorSetBase(){}
+
+    virtual bool init(const SActuatorSetParsed * arg_actuator_set)=0;
 
   private:
     /** This is private to force subclasses to expose their type */
