@@ -49,6 +49,8 @@ namespace scl
 
     std::string name_graphics_="";
 
+    std::string name_actuator_set_="";
+
     bool flag_pause_at_start_=false;
     bool flag_muscles_=false;
   };

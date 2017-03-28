@@ -92,6 +92,11 @@ namespace scl
         {
           ret_cmd_ds.flag_muscles_ = true;
         }
+        else if (std::string(argv[args_ctr]) == "-actuatorset" || std::string(argv[args_ctr]) == "-aset" )
+        {
+          ret_cmd_ds.name_actuator_set_ = argv[args_ctr+1];
+          args_ctr++;
+        }
 
         //Defaults : Assume
         // $ ./<executable> <cfg_file_name> <robot_name> <controller>
