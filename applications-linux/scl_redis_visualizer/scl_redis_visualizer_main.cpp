@@ -53,15 +53,19 @@ int main(int argc, char** argv)
   std::cout<<"\n*******************************************************\n";
   std::cout<<"\n NOTE : This application assumes a default redis server is "
       <<"\n        running on the standard port (6379) and that "
-      <<"\n        appropriate keys are set";
+      <<"\n        appropriate keys are set\n";
 
   bool flag;
   if(argc < 2)
   {
     std::cout<<"\n The 'scl_redis_visualizer' application can graphically render an scl physics simulation robot with redis io."
-        <<"\n ERROR : Provided incorrect arguments. The correct input format is:"
-        <<"\n   ./scl_redis_visualizer <file_name.xml> <optional: -r robot_name> <optional: -g graphics_name> <optional : -muscles/-m>"
-        <<"\n If a robot or graphics name isn't provided, the first one from the xml file will be used. Muscles are not rendered by default.\n";
+        <<"\n\n ERROR : Provided incorrect arguments. The correct input format is:"
+        <<"\n\n   ./scl_redis_visualizer <file_name.xml> <options...>"
+        <<"\n\n    Command Line Options : \n"
+        <<"\n          -r <robot_name; default = first in xml file> "
+        <<"\n          -g <graphics_name; default = first in xml file>"
+        <<"\n          -muscles/-m : Activate muscle rendering; default = false"
+        <<"\n          -redis-master : Sets camera and ui-pos/flag/int keys in redis; default = false\n\n";
     return 0;
   }
   else
