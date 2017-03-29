@@ -115,7 +115,7 @@ int main(int argc, char** argv)
       scl::SActuatorSetMuscleParsed *rob_mset_ds = NULL;  // This is the parsed muscle specification (not modified during runtime)
       scl::SActuatorSetMuscle *rob_mset_ds_dyn = NULL;    // This is the actuator force description (stored in rio and modified in runtime)
 
-      char rstr_musclekey[1024];//For redis key formatting
+      char rstr_musclekey[128];//For redis key formatting
       sprintf(rstr_musclekey, "scl::robot::%s::actuators::fm",rcmd.name_robot_.c_str());
 
       // Also render muscles..
@@ -147,11 +147,13 @@ int main(int argc, char** argv)
       flag = flag && scl_chai_glut_interface::initializeGlutForChai(&rgr, &rchai);
       if(false==flag) { std::cout<<"\nCouldn't initialize chai graphics\n"; return 1; }
 
-      /******************************Redis Initialization************************************/
-      char rstr_q_key[1024]; //For redis key formatting
+      /****************************** Redis Initialization ************************************/
+      // ======= SET UP KEY STRINGS (so later key access is faster)
+      char rstr_q_key[128]; //For redis key formatting
       sprintf(rstr_q_key, "scl::robot::%s::sensors::q",rcmd.name_robot_.c_str());
 
-      char rstr_campos_key[1024],rstr_camlookat_key[1024], rstr_camup_key[1024], rstr_ui_master[1024],
+      // Add strings for the standard (cam) ui vars
+      char rstr_campos_key[128],rstr_camlookat_key[128], rstr_camup_key[128], rstr_ui_master[128],
         rstr_ui_id[64]; //For ui redis key formatting
       sprintf(rstr_campos_key, "scl::robot::%s::ui::cam_pos",rcmd.name_robot_.c_str());
       sprintf(rstr_camlookat_key, "scl::robot::%s::ui::cam_lookat",rcmd.name_robot_.c_str());
@@ -159,6 +161,16 @@ int main(int argc, char** argv)
       sprintf(rstr_ui_master, "scl::robot::%s::ui::master",rcmd.name_robot_.c_str());
       sprintf(rstr_ui_id, "scl_redis_visualizer::%s", rcmd.id_time_created_str_.c_str());
 
+      // Add strings for the special (data) ui vars
+      char rstr_ui_pt[SCL_NUM_UI_POINTS][128], rstr_ui_flag[SCL_NUM_UI_FLAGS][128], rstr_ui_int[SCL_NUM_UI_INTS][128];
+      for(int i=0; i<SCL_NUM_UI_POINTS;++i)
+      { sprintf(rstr_ui_pt[i], "scl::robot::%s::ui::point::%d", rcmd.name_robot_.c_str(), i); }
+      for(int i=0; i<SCL_NUM_UI_FLAGS;++i)
+      { sprintf(rstr_ui_flag[i], "scl::robot::%s::ui::flag::%d", rcmd.name_robot_.c_str(), i); }
+      for(int i=0; i<SCL_NUM_UI_INTS;++i)
+      { sprintf(rstr_ui_int[i], "scl::robot::%s::ui::int::%d", rcmd.name_robot_.c_str(), i); }
+
+      // ======= NOW CONNECT TO REDIS SERVER
       scl::CIORedis ioredis;
       scl::SIORedis ioredis_ds;
       flag = ioredis.connect(ioredis_ds,false);
@@ -168,9 +180,12 @@ int main(int argc, char** argv)
       std::cout<<"\n\n Monitoring REDIS key : "<<rstr_q_key;
       std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
 
-      /* ************** Set up UI keys *************************** */
+      /* ********************************* Set UI keys in Redis ********************************* */
       scl_chai_glut_interface::SChaiGlobals* chai_glob_ds = scl_chai_glut_interface::CChaiGlobals::getData();
       if(S_NULL == chai_glob_ds) { throw(std::runtime_error("Chai shared data singleton not initialized")); }
+
+      // Get a handle to the gui data structure
+      scl::SGuiData &rgui = scl::CDatabase::getData()->s_gui_;
 
       ioredis.set(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
       ioredis.set(ioredis_ds,rstr_camlookat_key, rgr.cam_lookat_);
@@ -181,13 +196,12 @@ int main(int argc, char** argv)
         std::cout<<"\n UI window is redis master. Taking control of redis camera keys!" << std::endl;
       }
       else
-      {
-        std::cout<<"\n UI window is redis slave. Will read camera keys from redis!" << std::endl;
-      }
+      { std::cout<<"\n UI window is redis slave. Will read camera keys from redis!" << std::endl; }
 
       /******************************Graphics Rendering************************************/
       while(scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
       {
+        // NOTE TODO : Consider having separate update rates for the ui graphics and the glut loop..
         // Update graphics
         glutMainLoopEvent();
 
@@ -200,6 +214,14 @@ int main(int argc, char** argv)
           ioredis.set(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
           ioredis.set(ioredis_ds,rstr_camlookat_key, rgr.cam_lookat_);
           ioredis.set(ioredis_ds,rstr_camup_key, rgr.cam_up_);
+
+          // Also set the ui points etc.
+          for(int i=0; i<SCL_NUM_UI_POINTS;++i)
+          { ioredis.set(ioredis_ds, rstr_ui_pt[i], rgui.ui_point_[i]);  }
+          for(int i=0; i<SCL_NUM_UI_FLAGS;++i)
+          { ioredis.set(ioredis_ds, rstr_ui_flag[i], rgui.ui_flag_[i]);  }
+          for(int i=0; i<SCL_NUM_UI_INTS;++i)
+          { ioredis.set(ioredis_ds, rstr_ui_int[i], rgui.ui_int_[i]);  }
         }
         else
         {
@@ -238,7 +260,12 @@ int main(int argc, char** argv)
         {
           flag = ioredis.get(ioredis_ds,rstr_musclekey,rob_mset_ds_dyn->force_actuator_);
           if(false == flag)
-          { std::cout<<"\n WARNING : Missing redis key: "<<rstr_musclekey<<" size("<< rob_mset_ds->muscles_.size()<<"). Will wait for it..."; }
+          {
+            std::cout<<"\n WARNING : Missing redis key: "<<rstr_musclekey<<" size("<< rob_mset_ds->muscles_.size()
+                <<"). Will wait for it...";
+            const timespec ts = {0, 200000000};/*200ms sleep */ nanosleep(&ts,NULL); continue;
+          }
+
         }
         // **************************************************************************************
 
@@ -250,7 +277,16 @@ int main(int argc, char** argv)
       ioredis.del(ioredis_ds,rstr_camlookat_key);
       ioredis.del(ioredis_ds,rstr_camup_key);
       if(rcmd.flag_is_redis_master_) // If command line args say become master, clear key
-      { ioredis.del(ioredis_ds,rstr_ui_master); }
+      {
+        ioredis.del(ioredis_ds,rstr_ui_master);
+
+        for(int i=0; i<SCL_NUM_UI_POINTS;++i)
+        { ioredis.del(ioredis_ds, rstr_ui_pt[i]);  }
+        for(int i=0; i<SCL_NUM_UI_FLAGS;++i)
+        { ioredis.del(ioredis_ds, rstr_ui_flag[i]);  }
+        for(int i=0; i<SCL_NUM_UI_INTS;++i)
+        { ioredis.del(ioredis_ds, rstr_ui_int[i]);  }
+      }
 
       /******************************Exit Gracefully************************************/
       std::cout<<"\n Executed Successfully";
