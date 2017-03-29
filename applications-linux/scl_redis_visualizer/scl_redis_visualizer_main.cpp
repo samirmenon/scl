@@ -90,6 +90,9 @@ int main(int argc, char** argv)
       scl::CGraphicsChai rchai;  //Chai interface (updates graphics rendering tree etc.)
       scl::CParserScl p;         //This time, we'll parse the tree from a file.
 
+      bool flag_write_ui_to_redis = rcmd.flag_is_redis_master_; // Will depend on command line args. False by default.
+      std::string ui_master_current;
+
       /******************************File Parsing************************************/
       std::cout<<"\n - Running scl_redis_sim for input file: "<<rcmd.name_file_config_;
 
@@ -158,7 +161,8 @@ int main(int argc, char** argv)
 
       // Add strings for the standard (cam) ui vars
       char rstr_campos_key[SCL_MAX_REDIS_KEY_LEN_CHARS],rstr_camlookat_key[SCL_MAX_REDIS_KEY_LEN_CHARS],
-        rstr_camup_key[SCL_MAX_REDIS_KEY_LEN_CHARS], rstr_ui_master[SCL_MAX_REDIS_KEY_LEN_CHARS],
+        rstr_camup_key[SCL_MAX_REDIS_KEY_LEN_CHARS],
+        rstr_ui_master[SCL_MAX_REDIS_KEY_LEN_CHARS],
         rstr_ui_id[64]; //For ui redis key formatting
       sprintf(rstr_campos_key, "scl::robot::%s::ui::cam_pos",rcmd.name_robot_.c_str());
       sprintf(rstr_camlookat_key, "scl::robot::%s::ui::cam_lookat",rcmd.name_robot_.c_str());
@@ -196,13 +200,16 @@ int main(int argc, char** argv)
       ioredis.set(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
       ioredis.set(ioredis_ds,rstr_camlookat_key, rgr.cam_lookat_);
       ioredis.set(ioredis_ds,rstr_camup_key, rgr.cam_up_);
-      if(rcmd.flag_is_redis_master_) // If command line args say become master, do so and set your key in redis.
+      if(flag_write_ui_to_redis) // If command line args say become master, do so and set your key in redis.
       {
         ioredis.set(ioredis_ds,rstr_ui_master, std::string(rstr_ui_id));
-        std::cout<<"\n UI window is redis master. Taking control of redis camera keys!" << std::endl;
+        ui_master_current = rstr_ui_id;
+        std::cout<<"\n UI window is redis master. Taking control of redis camera keys!";
+        std::cout<<"\n If you'd like to take control of redis, change the master key to something else: "<< rstr_ui_master;
+        std::cout<<"\n If you'd like to relinquish control of redis later, del the master key: "<< rstr_ui_master<<std::endl;
       }
       else
-      { std::cout<<"\n UI window is redis slave. Will read camera keys from redis!" << std::endl; }
+      { std::cout<<"\n UI window is redis slave. Will never try to take control. \n Will simply read camera keys from redis!" << std::endl; }
 
       /******************************Graphics Rendering************************************/
       while(scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
@@ -214,7 +221,26 @@ int main(int argc, char** argv)
         // **************************************************************************************
         //                                User Interface IO
         // **************************************************************************************
-        if(rcmd.flag_is_redis_master_)
+        if (rcmd.flag_is_redis_master_)// Will only try to assume control if it had an original command to do so
+        {
+          // Figure out if the ui is still master
+          flag = ioredis.get(ioredis_ds,rstr_ui_master, ui_master_current);
+          if(false == flag){
+            std::cout<<"\n EVENT : key("<<rstr_ui_master<<") not set."
+                <<"\n Someone took ownership and left ownership."
+                <<"\n *** Visualizer is taking control of redis keys again ***"<<std::flush;
+            ui_master_current=rstr_ui_id;
+            ioredis.set(ioredis_ds,rstr_ui_master, ui_master_current);
+            flag_write_ui_to_redis = true;
+          }
+          else{
+            if(ui_master_current == std::string(rstr_ui_id))
+            { flag_write_ui_to_redis = true;  }// still the master
+            else{ flag_write_ui_to_redis = false; }
+          }
+        }
+
+        if(flag_write_ui_to_redis && rcmd.flag_is_redis_master_)
         {
           // Set the camera position.
           ioredis.set(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
@@ -248,6 +274,14 @@ int main(int argc, char** argv)
               (chai_glob_ds->cam_sph_x_*chai3d::cCosDeg(chai_glob_ds->cam_sph_v_))));
 
           scl_chai_glut_interface::updateCameraPosition();
+
+          // Update the ui points
+          for(int i=0; i<SCL_NUM_UI_POINTS;++i)
+          { ioredis.get(ioredis_ds, rstr_ui_pt[i], rgui.ui_point_[i]);  }
+          for(int i=0; i<SCL_NUM_UI_FLAGS;++i)
+          { ioredis.get(ioredis_ds, rstr_ui_flag[i], rgui.ui_flag_[i]);  }
+          for(int i=0; i<SCL_NUM_UI_INTS;++i)
+          { ioredis.get(ioredis_ds, rstr_ui_int[i], rgui.ui_int_[i]);  }
         }
 
         // **************************************************************************************
@@ -282,8 +316,8 @@ int main(int argc, char** argv)
       ioredis.del(ioredis_ds,rstr_campos_key);
       ioredis.del(ioredis_ds,rstr_camlookat_key);
       ioredis.del(ioredis_ds,rstr_camup_key);
-      if(rcmd.flag_is_redis_master_) // If command line args say become master, clear key
-      {
+      if(flag_write_ui_to_redis) // If command line args say become master, clear keys
+      {// If someone else has assumed master's role, do not clear the keys
         ioredis.del(ioredis_ds,rstr_ui_master);
 
         for(int i=0; i<SCL_NUM_UI_POINTS;++i)
