@@ -80,24 +80,37 @@ namespace scl
     /** Sets an Eigen vector as a string key. */
     bool set(SIORedis &arg_ds, const char* arg_key, const Eigen::VectorXd &arg_vec);
 
-    /** Sets an Eigen vector as a string key. */
+    /** Sets an Eigen vector 3d as a string key. */
     bool set(SIORedis &arg_ds, const char* arg_key, const Eigen::Vector3d &arg_vec);
 
-    /** Sets an Eigen vector as a string key. */
+    /** Sets an int key. */
     bool set(SIORedis &arg_ds, const char* arg_key, const int arg_int);
+
+    /** Sets a bool key. */
+    bool set(SIORedis &arg_ds, const char* arg_key, const bool arg_bool)
+    { return set(arg_ds,arg_key,static_cast<int>(arg_bool?1:0)); } // force a 1/0 type cast to int
 
     // ****************************** GET ******************************************
     /** Sets a string key. */
-    bool get(SIORedis &arg_ds, const char* arg_key, std::string &arg_str);
+    bool get(SIORedis &arg_ds, const char* arg_key, std::string &ret_str);
 
     /** Gets an Eigen vector for the string key. */
-    bool get(SIORedis &arg_ds, const char* arg_key, Eigen::VectorXd &arg_vec);
+    bool get(SIORedis &arg_ds, const char* arg_key, Eigen::VectorXd &ret_vec);
 
-    /** Gets an Eigen vector for the string key. */
-    bool get(SIORedis &arg_ds, const char* arg_key, Eigen::Vector3d &arg_vec);
+    /** Gets an Eigen vector 3d for the string key. */
+    bool get(SIORedis &arg_ds, const char* arg_key, Eigen::Vector3d &ret_vec);
 
-    /** Sets an Eigen vector as a string key. */
-    bool get(SIORedis &arg_ds, const char* arg_key, int &arg_int);
+    /** Gets an int key. */
+    bool get(SIORedis &arg_ds, const char* arg_key, int &ret_int);
+
+    /** Gets a bool key. */
+    bool get(SIORedis &arg_ds, const char* arg_key, bool &ret_bool)
+    {//Non zero int casts to true; else false.
+      int x;
+      bool flag = get(arg_ds,arg_key,x);
+      if(flag){ret_bool = (x!=0)?true:false;}
+      return flag;
+    }
 
     // ****************************** DEL ******************************************
     /** Deletes this key */
