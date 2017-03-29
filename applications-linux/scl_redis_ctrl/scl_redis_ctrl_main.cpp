@@ -72,7 +72,9 @@ int main(int argc, char** argv)
            <<"\n and sets the appropriate redis key.\n";
   std::cout<<"\n NOTE : This application assumes a default redis server is "
              <<"\n        running on the standard port (6379) and that "
-             <<"\n        appropriate keys are set";
+             <<"\n        appropriate keys are set"
+             <<"\n\n Required keys include setting ui keys (these are usually "
+             <<"\n set by the gui; if you don't have a gui, set them yourself)";
 
   // Set up terminate handler.
   struct sigaction sigIntHandler;
@@ -188,6 +190,9 @@ int main(int argc, char** argv)
       sprintf(rstr_dq, "%s::sensors::dq", rstr_robot_base);
       sprintf(rstr_xgoal, "%s::traj::xgoal", rstr_robot_base);
 
+      char rstr_ui_master[SCL_MAX_REDIS_KEY_LEN_CHARS];
+      sprintf(rstr_ui_master, "scl::robot::%s::ui::master",rcmd.name_robot_.c_str());
+
       std::cout<<"\n The default REDIS keys used are: ";
       std::cout<<"\n  "<<rstr_q<<"\n  "<<rstr_dq<<"\n  "<<rstr_actfgc<<"\n  "<<rstr_fgcenab;
 
@@ -232,8 +237,12 @@ int main(int argc, char** argv)
 
       std::cout<<"\n ** Started: To monitor Redis messages, open a redis-cli and type 'monitor' **\n"<<std::flush;
 
+      int enable_fgc_command_pre = 0;
       if(0 == enable_fgc_command)
-      {  std::cout<<"\n ** NOTE: The '"<<rstr_fgcenab<<"' key needs to be '1' before the controller torques are used **\n"<<std::flush; }
+      {
+        std::cout<<"\n ** NOTE: The '"<<rstr_fgcenab<<"' key needs to be '1' before the controller torques are used **\n"<<std::flush;
+        enable_fgc_command_pre = 1;// Needs to the the complement of enable_fgc_command
+      }
 
       /****************************** Control Loop************************************/
       while(flag_running)
@@ -258,6 +267,13 @@ int main(int argc, char** argv)
         // If the torque command is enabled, use the latest goal position.
         if(1 == enable_fgc_command)
         {
+          if(enable_fgc_command_pre!=enable_fgc_command)
+          { // Just flipped flag. Relinquish the UI master position (give the gui or something write control over the keys)
+            ioredis.del(ioredis_ds,rstr_ui_master);
+            std::cout<<"\n Relinquishing the UI master position. Will now get goal positions from redis";
+          }
+
+          // FGC Enabled : Read goal positions
           for(int i=0; i< n_tasks; ++i)
           {
             flag = ioredis.get(ioredis_ds, rstr_ui_pt[i], rtask_ds_[i]->x_goal_);
@@ -273,7 +289,15 @@ int main(int argc, char** argv)
           }
         }
         // If the torque command is not enabled, move the goal point to the current position..
-        else {
+        else
+        {
+          if(enable_fgc_command_pre!=enable_fgc_command)
+          { // Just flipped flag. Become the UI master (obtain write control over the keys)
+            ioredis.set(ioredis_ds,rstr_ui_master, std::string("scl_redis_ctrl_main::")+rcmd.id_time_created_str_);
+            std::cout<<"\n Assuming the UI master position. Will now set goal positions to present positions in redis";
+          }
+
+          // FGC Disabled : Write goal positions (helps remain smooth; no jerky return to goal when fgc is enabled again..)
           for(int i=0; i< n_tasks; ++i)
           {// Move the goal position to the actual position and reset it in redis...
             rtask_ds_[i]->x_goal_ = rtask_ds_[i]->x_;
@@ -296,7 +320,10 @@ int main(int argc, char** argv)
         // Optional, sleep a bit.
 //        const timespec ts = {0, 20000000};/*20ms sleep : ~50Hz update*/
 //        nanosleep(&ts,NULL);
-      }
+
+        // Need to refresh the enable command cycle..
+        enable_fgc_command_pre = enable_fgc_command;
+      }// ************** END OF CONTROL LOOP!!!
 
       /******************************Exit Gracefully************************************/
       // Send Zero torques to redis
