@@ -34,6 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 #include <vector>
+#include <time.h>
 
 namespace scl
 {
@@ -51,8 +52,25 @@ namespace scl
 
     std::string name_actuator_set_="";
 
+    /** A unique id for a program that may be specified
+     * at the start in the command line args. */
+    std::string id_time_created_str_="";
+
     bool flag_pause_at_start_=false;
     bool flag_muscles_=false;
+    /** Setting this to true will enable the program
+     * to control redis keys related to itself
+     * A few roles for program types:
+     *  gui : Controls camera pos, ui points, etc.
+     *  py-cam script : Controls camera (disable gui from controlling camera) */
+    bool flag_is_redis_master_ = false;
+
+    SCmdLineOptions_OneRobot()
+    {
+      time_t curtime;
+      time(&curtime);
+      id_time_created_str_ = ctime(&curtime);
+    }
   };
 
   /** Reads the command line arguments into a cmd arg structure.

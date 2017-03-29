@@ -88,6 +88,10 @@ namespace scl
         {
           ret_cmd_ds.flag_pause_at_start_ = true;
         }
+        else if (std::string(argv[args_ctr]) == "-redis-master")
+        {
+          ret_cmd_ds.flag_is_redis_master_ = true;
+        }
         else if (std::string(argv[args_ctr]) == "-muscles" || std::string(argv[args_ctr]) == "-m" )
         {
           ret_cmd_ds.flag_muscles_ = true;
