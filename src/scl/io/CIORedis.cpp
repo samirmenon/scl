@@ -87,6 +87,19 @@ namespace scl
     return flag;
   }*/
 
+  /** Sets a string key. */
+  bool CIORedis::set(SIORedis &arg_ds, const char* arg_key, const std::string &arg_str)
+  {
+    bool flag=false;
+
+    // Set the key
+    arg_ds.reply_ = (redisReply *)redisCommand(arg_ds.context_, "SET %s %s",arg_key,arg_str.c_str());
+    if(arg_ds.reply_->len > 0){ flag = true;  }//Succeeded
+    freeReplyObject((void*)arg_ds.reply_);     //Clean up
+
+    return flag;
+  }
+
   /** Sets an Eigen vector as a string key. */
   bool CIORedis::set(SIORedis &arg_ds, const char* arg_key, const Eigen::VectorXd &arg_vec)
   {
@@ -138,22 +151,20 @@ namespace scl
   }
 
   /** Sets an Eigen vector as a string key. */
-  bool CIORedis::get(SIORedis &arg_ds, const char* arg_key, Eigen::VectorXd &arg_vec)
+  bool CIORedis::get(SIORedis &arg_ds, const char* arg_key, std::string &ret_str)
   {
     // Get the key
     arg_ds.reply_ = (redisReply *)redisCommand(arg_ds.context_, "GET %s",arg_key);
     if(arg_ds.reply_->len <= 0){ freeReplyObject((void*)arg_ds.reply_); return false;  }
-
-    // NOTE TODO : Probably faster to use sprintf.
-    std::stringstream ss; ss<<arg_ds.reply_->str;
-    for(int i=0;i<arg_vec.rows();++i) { ss>>arg_vec(i);  }
+    // Set the returned key
+    ret_str  = arg_ds.reply_->str;
     freeReplyObject((void*)arg_ds.reply_);
 
     return true;
   }
 
   /** Sets an Eigen vector as a string key. */
-  bool CIORedis::get(SIORedis &arg_ds, const char* arg_key, Eigen::Vector3d &arg_vec)
+  bool CIORedis::get(SIORedis &arg_ds, const char* arg_key, Eigen::VectorXd &ret_vec)
   {
     // Get the key
     arg_ds.reply_ = (redisReply *)redisCommand(arg_ds.context_, "GET %s",arg_key);
@@ -161,14 +172,29 @@ namespace scl
 
     // NOTE TODO : Probably faster to use sprintf.
     std::stringstream ss; ss<<arg_ds.reply_->str;
-    for(int i=0;i<arg_vec.rows();++i) { ss>>arg_vec(i);  }
+    for(int i=0;i<ret_vec.rows();++i) { ss>>ret_vec(i);  }
+    freeReplyObject((void*)arg_ds.reply_);
+
+    return true;
+  }
+
+  /** Sets an Eigen vector as a string key. */
+  bool CIORedis::get(SIORedis &arg_ds, const char* arg_key, Eigen::Vector3d &ret_vec)
+  {
+    // Get the key
+    arg_ds.reply_ = (redisReply *)redisCommand(arg_ds.context_, "GET %s",arg_key);
+    if(arg_ds.reply_->len <= 0){ freeReplyObject((void*)arg_ds.reply_); return false;  }
+
+    // NOTE TODO : Probably faster to use sprintf.
+    std::stringstream ss; ss<<arg_ds.reply_->str;
+    for(int i=0;i<ret_vec.rows();++i) { ss>>ret_vec(i);  }
     freeReplyObject((void*)arg_ds.reply_);
 
     return true;
   }
 
 
-  bool CIORedis::get(SIORedis &arg_ds, const char* arg_key, int &arg_int)
+  bool CIORedis::get(SIORedis &arg_ds, const char* arg_key, int &ret_int)
   {
     // Get the key
     arg_ds.reply_ = (redisReply *)redisCommand(arg_ds.context_, "GET %s",arg_key);
@@ -176,7 +202,7 @@ namespace scl
 
     // NOTE TODO : Probably faster to use sprintf.
     std::stringstream ss; ss<<arg_ds.reply_->str;
-    ss>>arg_int;
+    ss>>ret_int;
     freeReplyObject((void*)arg_ds.reply_);
 
     return true;

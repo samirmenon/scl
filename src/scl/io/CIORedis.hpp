@@ -62,6 +62,7 @@ namespace scl
   class CIORedis
   {
   public:
+    // ****************************** CONNECT ******************************************
     /** Connects to the Redis database using parameters specified in the
      * data structure. Also stores the connection details in the data
      * structure. */
@@ -69,6 +70,10 @@ namespace scl
 
     /** Sends a message.
     bool runCommand(SIORedis &arg_ds, char* arg_msg);*/
+
+    // ****************************** SET ******************************************
+    /** Sets a string key. */
+    bool set(SIORedis &arg_ds, const char* arg_key, const std::string &arg_str);
 
     /** Sets an Eigen vector as a string key. */
     bool set(SIORedis &arg_ds, const char* arg_key, const Eigen::VectorXd &arg_vec);
@@ -79,6 +84,10 @@ namespace scl
     /** Sets an Eigen vector as a string key. */
     bool set(SIORedis &arg_ds, const char* arg_key, const int arg_int);
 
+    // ****************************** GET ******************************************
+    /** Sets a string key. */
+    bool get(SIORedis &arg_ds, const char* arg_key, std::string &arg_str);
+
     /** Gets an Eigen vector for the string key. */
     bool get(SIORedis &arg_ds, const char* arg_key, Eigen::VectorXd &arg_vec);
 
@@ -88,6 +97,7 @@ namespace scl
     /** Sets an Eigen vector as a string key. */
     bool get(SIORedis &arg_ds, const char* arg_key, int &arg_int);
 
+    // ****************************** DEL ******************************************
     /** Deletes this key */
     bool del(SIORedis &arg_ds, const char* arg_key);
 
