@@ -119,7 +119,7 @@ int main(int argc, char** argv)
       scl::SActuatorSetMuscleParsed *rob_mset_ds = NULL;  // This is the parsed muscle specification (not modified during runtime)
       scl::SActuatorSetMuscle *rob_mset_ds_dyn = NULL;    // This is the actuator force description (stored in rio and modified in runtime)
 
-      char rstr_musclekey[128];//For redis key formatting
+      char rstr_musclekey[SCL_MAX_REDIS_KEY_LEN_CHARS];//For redis key formatting
       sprintf(rstr_musclekey, "scl::robot::%s::actuators::fm",rcmd.name_robot_.c_str());
 
       // Also render muscles..
@@ -153,11 +153,12 @@ int main(int argc, char** argv)
 
       /****************************** Redis Initialization ************************************/
       // ======= SET UP KEY STRINGS (so later key access is faster)
-      char rstr_q_key[128]; //For redis key formatting
+      char rstr_q_key[SCL_MAX_REDIS_KEY_LEN_CHARS]; //For redis key formatting
       sprintf(rstr_q_key, "scl::robot::%s::sensors::q",rcmd.name_robot_.c_str());
 
       // Add strings for the standard (cam) ui vars
-      char rstr_campos_key[128],rstr_camlookat_key[128], rstr_camup_key[128], rstr_ui_master[128],
+      char rstr_campos_key[SCL_MAX_REDIS_KEY_LEN_CHARS],rstr_camlookat_key[SCL_MAX_REDIS_KEY_LEN_CHARS],
+        rstr_camup_key[SCL_MAX_REDIS_KEY_LEN_CHARS], rstr_ui_master[SCL_MAX_REDIS_KEY_LEN_CHARS],
         rstr_ui_id[64]; //For ui redis key formatting
       sprintf(rstr_campos_key, "scl::robot::%s::ui::cam_pos",rcmd.name_robot_.c_str());
       sprintf(rstr_camlookat_key, "scl::robot::%s::ui::cam_lookat",rcmd.name_robot_.c_str());
@@ -166,7 +167,8 @@ int main(int argc, char** argv)
       sprintf(rstr_ui_id, "scl_redis_visualizer::%s", rcmd.id_time_created_str_.c_str());
 
       // Add strings for the special (data) ui vars
-      char rstr_ui_pt[SCL_NUM_UI_POINTS][128], rstr_ui_flag[SCL_NUM_UI_FLAGS][128], rstr_ui_int[SCL_NUM_UI_INTS][128];
+      char rstr_ui_pt[SCL_NUM_UI_POINTS][SCL_MAX_REDIS_KEY_LEN_CHARS], rstr_ui_flag[SCL_NUM_UI_FLAGS][SCL_MAX_REDIS_KEY_LEN_CHARS],
+        rstr_ui_int[SCL_NUM_UI_INTS][SCL_MAX_REDIS_KEY_LEN_CHARS];
       for(int i=0; i<SCL_NUM_UI_POINTS;++i)
       { sprintf(rstr_ui_pt[i], "scl::robot::%s::ui::point::%d", rcmd.name_robot_.c_str(), i); }
       for(int i=0; i<SCL_NUM_UI_FLAGS;++i)
