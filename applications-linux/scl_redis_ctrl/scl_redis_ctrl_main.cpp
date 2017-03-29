@@ -86,9 +86,9 @@ int main(int argc, char** argv)
   bool flag;
   if(argc < 4)
   {
-    std::cout<<"\n The 'scl_redis_visualizer' application computes fgc commands and sends them (to a robot) using a redis io interface."
+    std::cout<<"\n The 'scl_redis_ctrl' application computes fgc commands and sends them (to a robot) using a redis io interface."
         <<"\n ERROR : Provided incorrect arguments. The correct input format is:"
-        <<"\n   ./scl_redis_visualizer <file_name.xml> <robot_name> <controller_name>  -op <task0> -op <task1> ... \n";
+        <<"\n   ./scl_redis_ctrl <file_name.xml> <robot_name> <controller_name>  -op <task0> -op <task1> ... \n";
     return 0;
   }
   else
@@ -134,7 +134,6 @@ int main(int argc, char** argv)
       { std::cout<<"\n      Task("<<i<<"): "<<rcmd.name_tasks_[i]; }
 
       /******************************Load Robot Specification************************************/
-      //We will use a slightly more complex xml spec than the first few tutorials
       flag = p.readRobotFromFile(rcmd.name_file_config_,"../../specs/",rcmd.name_robot_,rds);
       flag = flag && rio.init(rds);             //Set up the IO data structure
       flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
@@ -180,7 +179,9 @@ int main(int argc, char** argv)
       { throw(std::runtime_error( std::string("Could not connect to redis server : ") + std::string(ioredis_ds.context_->errstr) ));  }
 
       // Set up the keys here so we don't have to run sprintfs in the while loop...
-      char rstr_robot_base[1024], rstr_actfgc[1024], rstr_fgcenab[1024], rstr_q[1024], rstr_dq[1024], rstr_xgoal[1024];
+      char rstr_robot_base[SCL_MAX_REDIS_KEY_LEN_CHARS], rstr_actfgc[SCL_MAX_REDIS_KEY_LEN_CHARS], 
+      	rstr_fgcenab[SCL_MAX_REDIS_KEY_LEN_CHARS], rstr_q[SCL_MAX_REDIS_KEY_LEN_CHARS], 
+      	rstr_dq[SCL_MAX_REDIS_KEY_LEN_CHARS];
       int enable_fgc_command = 0;
 
       sprintf(rstr_robot_base, "scl::robot::%s",rcmd.name_robot_.c_str());
@@ -188,13 +189,13 @@ int main(int argc, char** argv)
       sprintf(rstr_fgcenab, "%s::fgc_command_enabled", rstr_robot_base);
       sprintf(rstr_q, "%s::sensors::q", rstr_robot_base);
       sprintf(rstr_dq, "%s::sensors::dq", rstr_robot_base);
-      sprintf(rstr_xgoal, "%s::traj::xgoal", rstr_robot_base);
 
       char rstr_ui_master[SCL_MAX_REDIS_KEY_LEN_CHARS];
       sprintf(rstr_ui_master, "scl::robot::%s::ui::master",rcmd.name_robot_.c_str());
 
       std::cout<<"\n The default REDIS keys used are: ";
-      std::cout<<"\n  "<<rstr_q<<"\n  "<<rstr_dq<<"\n  "<<rstr_actfgc<<"\n  "<<rstr_fgcenab;
+      std::cout<<"\n  "<<rstr_q<<"\n  "<<rstr_dq<<"\n  "<<rstr_actfgc<<"\n  "
+      	<<rstr_fgcenab;
 
       // Add strings for the special (data) ui vars
       char rstr_ui_pt[SCL_NUM_UI_POINTS][SCL_MAX_REDIS_KEY_LEN_CHARS];
@@ -330,14 +331,14 @@ int main(int argc, char** argv)
       rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
       ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
 
-      std::cout<<"\n\nExecuted Successfully";
+      std::cout<<"\n\n Executed Successfully";
       std::cout<<"\n**********************************\n"<<std::flush;
 
       return 0;
     }
     catch(std::exception & e)
     {
-      std::cout<<"\nSCL Failed: "<< e.what();
+      std::cout<<"\n\n ERROR: \n SCL Failed: "<< e.what();
       std::cout<<"\n*************************\n";
       return 1;
     }
