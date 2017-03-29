@@ -87,7 +87,7 @@ int main(int argc, char** argv)
       scl::CParserScl p;         //This time, we'll parse the tree from a file.
 
       /******************************File Parsing************************************/
-      std::cout<<"\nRunning scl_redis_sim for input file: "<<rcmd.name_file_config_;
+      std::cout<<"\n - Running scl_redis_sim for input file: "<<rcmd.name_file_config_;
 
       std::vector<std::string> str_vec;
       if(rcmd.name_robot_ == "")
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
       }
 
       /******************************Load Robot Specification************************************/
-      std::cout<<"\nParsing robot: "<<rcmd.name_robot_;
+      std::cout<<"\n - Parsing robot: "<<rcmd.name_robot_;
       bool flag = p.readRobotFromFile(rcmd.name_file_config_,"../../specs/",rcmd.name_robot_,rds);
       flag = flag && rio.init(rds);             //Set up the IO data structure
       if(false == flag) { throw(std::runtime_error("Could not read robot description from file"));  }
@@ -151,10 +151,13 @@ int main(int argc, char** argv)
       char rstr_q_key[1024]; //For redis key formatting
       sprintf(rstr_q_key, "scl::robot::%s::sensors::q",rcmd.name_robot_.c_str());
 
-      char rstr_campos_key[1024],rstr_camlookat_key[1024], rstr_camup_key[1024]; //For ui redis key formatting
+      char rstr_campos_key[1024],rstr_camlookat_key[1024], rstr_camup_key[1024], rstr_ui_master[1024],
+        rstr_ui_id[64]; //For ui redis key formatting
       sprintf(rstr_campos_key, "scl::robot::%s::ui::cam_pos",rcmd.name_robot_.c_str());
       sprintf(rstr_camlookat_key, "scl::robot::%s::ui::cam_lookat",rcmd.name_robot_.c_str());
       sprintf(rstr_camup_key, "scl::robot::%s::ui::cam_up",rcmd.name_robot_.c_str());
+      sprintf(rstr_ui_master, "scl::robot::%s::ui::master",rcmd.name_robot_.c_str());
+      sprintf(rstr_ui_id, "scl_redis_visualizer::%s", rcmd.id_time_created_str_.c_str());
 
       scl::CIORedis ioredis;
       scl::SIORedis ioredis_ds;
@@ -162,7 +165,7 @@ int main(int argc, char** argv)
       if(false == flag)
       { throw(std::runtime_error( std::string("Could not connect to redis server : ") + std::string(ioredis_ds.context_->errstr) ));  }
 
-      std::cout<<"\n Monitoring REDIS key : "<<rstr_q_key;
+      std::cout<<"\n\n Monitoring REDIS key : "<<rstr_q_key;
       std::cout<<"\n ** To monitor Redis messages, open a redis-cli and type 'monitor' **";
 
       /* ************** Set up UI keys *************************** */
@@ -172,6 +175,15 @@ int main(int argc, char** argv)
       ioredis.set(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
       ioredis.set(ioredis_ds,rstr_camlookat_key, rgr.cam_lookat_);
       ioredis.set(ioredis_ds,rstr_camup_key, rgr.cam_up_);
+      if(rcmd.flag_is_redis_master_) // If command line args say become master, do so and set your key in redis.
+      {
+        ioredis.set(ioredis_ds,rstr_ui_master, std::string(rstr_ui_id));
+        std::cout<<"\n UI window is redis master. Taking control of redis camera keys!" << std::endl;
+      }
+      else
+      {
+        std::cout<<"\n UI window is redis slave. Will read camera keys from redis!" << std::endl;
+      }
 
       /******************************Graphics Rendering************************************/
       while(scl_chai_glut_interface::CChaiGlobals::getData()->chai_glut_running)
@@ -182,23 +194,33 @@ int main(int argc, char** argv)
         // **************************************************************************************
         //                                User Interface IO
         // **************************************************************************************
-        // Update the camera position.
-        ioredis.get(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
-        ioredis.get(ioredis_ds,rstr_camlookat_key, rgr.cam_lookat_);
-        ioredis.get(ioredis_ds,rstr_camup_key, rgr.cam_up_);
+        if(rcmd.flag_is_redis_master_)
+        {
+          // Set the camera position.
+          ioredis.set(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
+          ioredis.set(ioredis_ds,rstr_camlookat_key, rgr.cam_lookat_);
+          ioredis.set(ioredis_ds,rstr_camup_key, rgr.cam_up_);
+        }
+        else
+        {
+          // Update the camera position.
+          ioredis.get(ioredis_ds,rstr_campos_key, rgr.cam_pos_);
+          ioredis.get(ioredis_ds,rstr_camlookat_key, rgr.cam_lookat_);
+          ioredis.get(ioredis_ds,rstr_camup_key, rgr.cam_up_);
 
-        // Set new position to camera
-        chai_glob_ds->cam_lookat_x_ = rgr.cam_lookat_(0);
-        chai_glob_ds->cam_lookat_y_ = rgr.cam_lookat_(1);
-        chai_glob_ds->cam_lookat_z_ = rgr.cam_lookat_(2);
+          // Set new position to camera
+          chai_glob_ds->cam_lookat_x_ = rgr.cam_lookat_(0);
+          chai_glob_ds->cam_lookat_y_ = rgr.cam_lookat_(1);
+          chai_glob_ds->cam_lookat_z_ = rgr.cam_lookat_(2);
 
-        // Move to spherical coordinates so the mouse rotation still works.
-        chai_glob_ds->cam_sph_x_=(rgr.cam_pos_ - rgr.cam_lookat_).norm();
-        chai_glob_ds->cam_sph_v_= 180/M_PI*(std::asin(rgr.cam_pos_[2]/chai_glob_ds->cam_sph_x_));
-        chai_glob_ds->cam_sph_h_= 180/M_PI*(std::asin(rgr.cam_pos_[1]/
-            (chai_glob_ds->cam_sph_x_*chai3d::cCosDeg(chai_glob_ds->cam_sph_v_))));
+          // Move to spherical coordinates so the mouse rotation still works.
+          chai_glob_ds->cam_sph_x_=(rgr.cam_pos_ - rgr.cam_lookat_).norm();
+          chai_glob_ds->cam_sph_v_= 180/M_PI*(std::asin(rgr.cam_pos_[2]/chai_glob_ds->cam_sph_x_));
+          chai_glob_ds->cam_sph_h_= 180/M_PI*(std::asin(rgr.cam_pos_[1]/
+              (chai_glob_ds->cam_sph_x_*chai3d::cCosDeg(chai_glob_ds->cam_sph_v_))));
 
-        scl_chai_glut_interface::updateCameraPosition();
+          scl_chai_glut_interface::updateCameraPosition();
+        }
 
         // **************************************************************************************
         //                                ROBOT STATE IO
@@ -227,17 +249,18 @@ int main(int argc, char** argv)
       ioredis.del(ioredis_ds,rstr_campos_key);
       ioredis.del(ioredis_ds,rstr_camlookat_key);
       ioredis.del(ioredis_ds,rstr_camup_key);
-
+      if(rcmd.flag_is_redis_master_) // If command line args say become master, clear key
+      { ioredis.del(ioredis_ds,rstr_ui_master); }
 
       /******************************Exit Gracefully************************************/
-      std::cout<<"\n\nExecuted Successfully";
+      std::cout<<"\n Executed Successfully";
       std::cout<<"\n**********************************\n"<<std::flush;
 
       return 0;
     }
     catch(std::exception & e)
     {
-      std::cout<<"\nSCL Failed: "<< e.what();
+      std::cout<<"\n SCL Failed: "<< e.what();
       std::cout<<"\n*************************\n";
       return 1;
     }
