@@ -37,6 +37,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <Eigen/Core>
 #include <hiredis/hiredis.h>
 
+#define SCL_MAX_REDIS_KEY_LEN_CHARS 128
+
 namespace scl
 {
   /** Basic data for reading from and writing to a redis database...
@@ -50,7 +52,7 @@ namespace scl
     const timeval timeout_ = { 1, 500000 }; // 1.5 seconds
 
     // A scratch string for formatting messages
-    char str_[1024];
+    char str_[SCL_MAX_REDIS_KEY_LEN_CHARS];
   };
 
   /** A class to simplify IO operations using hiredis.
