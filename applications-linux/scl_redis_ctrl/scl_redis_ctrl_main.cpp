@@ -52,14 +52,24 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 bool flag_running=true;
 void handleExit(int s) { flag_running=false; }
 
-/** A sample application to render a physics simulation being run in scl.
+/** A sample application to control a robot in scl.
  *
- * It will display the robot in an OpenGL graphics window. */
+ * Reads from redis :
+ *   - q
+ *   - dq
+ *   - x_task
+ *   - dx_task
+ * Writes to redis :
+ *   - fgc
+ * */
 int main(int argc, char** argv)
 {
   std::cout<<"\n*******************************************************\n";
   std::cout<<  "               SCL Redis Task Controller";
   std::cout<<"\n*******************************************************\n";
+  std::cout<<"\n 'scl_redis_ctrl'"
+           <<"\n\n Application computes fgc commands given an task goal input"
+           <<"\n and sets the appropriate redis key.\n";
   std::cout<<"\n NOTE : This application assumes a default redis server is "
              <<"\n        running on the standard port (6379) and that "
              <<"\n        appropriate keys are set";
@@ -72,11 +82,11 @@ int main(int argc, char** argv)
   sigaction(SIGINT, &sigIntHandler, NULL);
 
   bool flag;
-  if(argc < 5)
+  if(argc < 4)
   {
     std::cout<<"\n The 'scl_redis_visualizer' application computes fgc commands and sends them (to a robot) using a redis io interface."
         <<"\n ERROR : Provided incorrect arguments. The correct input format is:"
-        <<"\n   ./scl_redis_visualizer <file_name.xml> <robot_name> <controller_name> <control point> <optional: control point 2> ... \n";
+        <<"\n   ./scl_redis_visualizer <file_name.xml> <robot_name> <controller_name>  -op <task0> -op <task1> ... \n";
     return 0;
   }
   else
@@ -86,31 +96,44 @@ int main(int argc, char** argv)
       /******************************Initialization************************************/
       //1. Initialize the database and clock.
       if(false == sutil::CSystemClock::start()) { throw(std::runtime_error("Could not start clock"));  }
+      if(false == scl::init::registerNativeDynamicTypes()){ throw(std::runtime_error("Could not set up dynamic types"));  }
 
+      // Parsing data structures
+      scl::CParserScl p;         //This time, we'll parse the tree from a file.
+      scl::SCmdLineOptions_OneRobot rcmd; // For parsing command line options
+      char tmp_message[1024];    // Use with the redis comm..
+
+      // Robot data structures
       scl::SRobotParsed rds;     //Robot data structure.
       scl::SRobotIO rio;         //I/O data structure.
       scl::SGcModel rgcm;        //Robot data structure with dynamic quantities...
-      scl::CParserScl p;         //This time, we'll parse the tree from a file.
-
       scl::CDynamicsScl dyn_scl; //Robot kinematics and dynamics computation object...
+
+      // Controller data structures..
       scl::SControllerMultiTask rctr_ds; //A multi-task controller data structure
       scl::CControllerMultiTask rctr;    //A multi-task controller
       std::vector<scl::STaskBase*> rtasks;              //A set of executable tasks
       std::vector<scl::SNonControlTaskBase*> rtasks_nc; //A set of non-control tasks
       std::vector<scl::sString2> ctrl_params;        //Used to parse extra xml tags
-      scl::STaskOpPos* rtask_hand;       //Will need to set hand desired positions etc.
+      scl::STaskOpPos *rtask_ds_[SCL_NUM_UI_POINTS];    // Control task (support as many as there are ui points)
+      int n_tasks=0;             //The number of tasks used in this controller (with the ui/redis update)
 
-      /******************************File Parsing************************************/
-      std::string name_infile(argv[1]), name_robot(argv[2]), name_ctrl(argv[3]), name_task(argv[4]);
-      std::cout<<"\nRunning scl_redis_ctrl for:"
-          <<"\n Input file: "<<name_infile
-          <<"\n      Robot: "<<name_robot
-          <<"\n Controller: "<<name_ctrl
-          <<"\n       Task: "<<name_task;
+      /******************************Cmd Arg Parsing************************************/
+      flag = scl::cmdLineArgReaderOneRobot(argc,argv,rcmd);
+      if(false == flag) { throw(std::runtime_error("Could not parse command line args")); }
+      // Find the number of ui tasks...
+      n_tasks = rcmd.name_tasks_.size();
+
+      std::cout<<"\nRunning scl_redis_muscle_ctrl for:"
+          <<"\n Input file: "<<rcmd.name_file_config_
+          <<"\n      Robot: "<<rcmd.name_robot_
+          <<"\n Controller: "<<rcmd.name_ctrl_;
+      for(int i=0; i<n_tasks; ++i)
+      { std::cout<<"\n      Task("<<i<<"): "<<rcmd.name_tasks_[i]; }
 
       /******************************Load Robot Specification************************************/
       //We will use a slightly more complex xml spec than the first few tutorials
-      flag = p.readRobotFromFile(name_infile,"../../specs/",name_robot,rds);
+      flag = p.readRobotFromFile(rcmd.name_file_config_,"../../specs/",rcmd.name_robot_,rds);
       flag = flag && rio.init(rds);             //Set up the IO data structure
       flag = flag && rgcm.init(rds);            //Simple way to set up dynamic tree...
       flag = flag && dyn_scl.init(rds);         //Set up kinematics and dynamics object
@@ -118,18 +141,30 @@ int main(int argc, char** argv)
 
       /******************************Set up Controller Specification************************************/
       // Read xml file info into task specifications.
-      flag = p.readTaskControllerFromFile(name_infile,name_ctrl,rtasks,rtasks_nc,ctrl_params);
-      flag = flag && rctr_ds.init(name_ctrl,&rds,&rio,&rgcm); //Set up the control data structure..
+      flag = p.readTaskControllerFromFile(rcmd.name_file_config_,rcmd.name_ctrl_,rtasks,rtasks_nc,ctrl_params);
+      flag = flag && rctr_ds.init(rcmd.name_ctrl_,&rds,&rio,&rgcm); //Set up the control data structure..
 
       // Tasks are initialized after we find their type with dynamic typing.
-      flag = flag && scl::init::registerNativeDynamicTypes();
       flag = flag && scl::init::initMultiTaskCtrlDsFromParsedTasks(rtasks,rtasks_nc,rctr_ds);
       flag = flag && rctr.init(&rctr_ds,&dyn_scl);  //Set up the controller (needs parsed data and a dyn object)
       if(false == flag){ throw(std::runtime_error("Could not initialize controller")); }            //Error check.
 
-      // Set up a special task
-      rtask_hand = dynamic_cast<scl::STaskOpPos*>( *(rctr_ds.tasks_.at(name_task)) );
-      if(NULL == rtask_hand){ throw(std::runtime_error("Could not find control task")); }            //Error check.
+      // Set up the tasks that will receive goal positions etc.
+      if(0 >= n_tasks)
+      { std::cout<<"\n WARNING : Did not provide any tasks in the command line arguments: -t/-op/-ui <task name>"; }
+      if(SCL_NUM_UI_POINTS < n_tasks)
+      {
+        sprintf(tmp_message,"Too many tasks provided. Can support at most : %d", SCL_NUM_UI_POINTS);
+        throw(std::runtime_error( tmp_message ));
+      }
+
+      for(int i=0; i< n_tasks; ++i)
+      {
+        // Find the task data structure
+        rtask_ds_[i] = dynamic_cast<scl::STaskOpPos*>(*rctr_ds.tasks_.at(rcmd.name_tasks_[i]));
+        if(NULL == rtask_ds_[i])
+        { throw(std::runtime_error(std::string("Did not find the task : ") + rcmd.name_tasks_.at(i))); }
+      }
 
       // Compute the dynamics to begin with (flushes state across all matrices).
       rctr.computeDynamics();
@@ -146,7 +181,7 @@ int main(int argc, char** argv)
       char rstr_robot_base[1024], rstr_actfgc[1024], rstr_fgcenab[1024], rstr_q[1024], rstr_dq[1024], rstr_xgoal[1024];
       int enable_fgc_command = 0;
 
-      sprintf(rstr_robot_base, "scl::robot::%s",name_robot.c_str());
+      sprintf(rstr_robot_base, "scl::robot::%s",rcmd.name_robot_.c_str());
       sprintf(rstr_actfgc, "%s::actuators::fgc", rstr_robot_base);
       sprintf(rstr_fgcenab, "%s::fgc_command_enabled", rstr_robot_base);
       sprintf(rstr_q, "%s::sensors::q", rstr_robot_base);
@@ -156,9 +191,14 @@ int main(int argc, char** argv)
       std::cout<<"\n The default REDIS keys used are: ";
       std::cout<<"\n  "<<rstr_q<<"\n  "<<rstr_dq<<"\n  "<<rstr_actfgc<<"\n  "<<rstr_fgcenab;
 
+      // Add strings for the special (data) ui vars
+      char rstr_ui_pt[SCL_NUM_UI_POINTS][SCL_MAX_REDIS_KEY_LEN_CHARS];
+      for(int i=0; i<SCL_NUM_UI_POINTS;++i)
+      { sprintf(rstr_ui_pt[i], "scl::robot::%s::ui::point::%d", rcmd.name_robot_.c_str(), i); }
+
       // Check to see if all keys are available:
       flag = false;
-      while(false == flag){
+      while(false == flag && flag_running){
         flag = true;//Hopefully.
 
         // REDIS IO : Get q and dq keys. If unavailable, throw an error..
@@ -167,7 +207,9 @@ int main(int argc, char** argv)
         if(flag){  break;  } // Found both keys and so flag is still true...
 
         std::cout<<"\n WARNING : Could not find {q, dq} redis keys for robot: "<<rstr_robot_base<<". Will wait for it...";
-        const timespec ts = {0, 50000000};/*50ms sleep */ nanosleep(&ts,NULL);
+        std::cout<<"\n    q : "<<rstr_q;
+        std::cout<<"\n   dq : "<<rstr_dq;
+        const timespec ts = {0, 500000000};/*.5s sleep */ nanosleep(&ts,NULL);
       }
 
       // Now that we have the actual q and dq, let's update control matrices..
@@ -178,9 +220,9 @@ int main(int argc, char** argv)
       rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
       flag = ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
 
-      // REDIS IO : Create xgoal key and set it to the current goal position state
-      rtask_hand->x_goal_ = rtask_hand->x_;
-      flag = flag && ioredis.set(ioredis_ds, rstr_xgoal, rtask_hand->x_goal_);
+      // Reset all task positions
+      for(int j=0; j< n_tasks; ++j)
+      { rtask_ds_[j]->x_goal_ = rtask_ds_[j]->x_; }
 
       if(false == flag){ throw(std::runtime_error("Could not set up fgc and/or xgoal key(s) in the redis server")); }  //Error check.
 
@@ -194,7 +236,6 @@ int main(int argc, char** argv)
       {  std::cout<<"\n ** NOTE: The '"<<rstr_fgcenab<<"' key needs to be '1' before the controller torques are used **\n"<<std::flush; }
 
       /****************************** Control Loop************************************/
-      Eigen::VectorXd xgoal; xgoal = rtask_hand->x_goal_;
       while(flag_running)
       {
         flag = true;
@@ -202,11 +243,10 @@ int main(int argc, char** argv)
         // REDIS IO : Get q and dq keys. If unavailable, throw an error..
         flag = flag && ioredis.get(ioredis_ds, rstr_q, rio.sensors_.q_);
         flag = flag && ioredis.get(ioredis_ds, rstr_dq, rio.sensors_.dq_);
-        flag = flag && ioredis.get(ioredis_ds, rstr_xgoal, xgoal);
         flag = flag && ioredis.get(ioredis_ds, rstr_fgcenab, enable_fgc_command);
 
         if(false == flag){
-          std::cout<<"\n WARNING : Could not find {q, dq, xgoal, fgcenab} redis keys for robot: "<<rstr_robot_base<<". Will wait for it...";
+          std::cout<<"\n WARNING : Could not find {q, dq, fgcenab} redis keys for robot: "<<rstr_robot_base<<". Will wait for it...";
           const timespec ts = {0, 50000000};/*50ms sleep */ nanosleep(&ts,NULL);
           continue;
         }
@@ -216,16 +256,34 @@ int main(int argc, char** argv)
         rctr.computeDynamics();
 
         // If the torque command is enabled, use the latest goal position.
-        if(1 == enable_fgc_command) { rtask_hand->x_goal_ = xgoal;  }
+        if(1 == enable_fgc_command)
+        {
+          for(int i=0; i< n_tasks; ++i)
+          {
+            flag = ioredis.get(ioredis_ds, rstr_ui_pt[i], rtask_ds_[i]->x_goal_);
+            if(false == flag)
+            {
+              std::cout<<"\n ERROR : Could not get xgoal for a task. Resetting all x_goal values to x."
+                  <<"\n Check key : "<<rstr_ui_pt[i];
+              // Reset all task positions
+              for(int j=0; j< n_tasks; ++j)
+              { rtask_ds_[j]->x_goal_ = rtask_ds_[j]->x_; }
+              break;
+            }
+          }
+        }
         // If the torque command is not enabled, move the goal point to the current position..
         else {
-          rtask_hand->x_goal_ = rtask_hand->x_;
-          flag = ioredis.set(ioredis_ds, rstr_xgoal, rtask_hand->x_goal_);
+          for(int i=0; i< n_tasks; ++i)
+          {// Move the goal position to the actual position and reset it in redis...
+            rtask_ds_[i]->x_goal_ = rtask_ds_[i]->x_;
+            flag = ioredis.set(ioredis_ds, rstr_ui_pt[i], rtask_ds_[i]->x_goal_);
+          }
 
           rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
           flag = flag && ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
 
-          if(false == flag) { std::cout<<"\n WARNING : Could not set xgoal or fgc. Check robot before re-enabling fgc commands"; }
+          if(false == flag) { std::cout<<"\n WARNING : Could not reset xgoal or fgc. Check robot before re-enabling fgc commands"; }
         }
 
         rctr.computeControlForces(); //Directly update io data structure for now...
