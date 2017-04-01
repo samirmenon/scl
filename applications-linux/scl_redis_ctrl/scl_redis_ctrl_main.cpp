@@ -75,6 +75,7 @@ int main(int argc, char** argv)
              <<"\n        appropriate keys are set"
              <<"\n\n Required keys include setting ui keys (these are usually "
              <<"\n set by the gui; if you don't have a gui, set them yourself)";
+  std::cout<<"\n*******************************************************\n\n";
 
   // Set up terminate handler.
   struct sigaction sigIntHandler;
@@ -117,6 +118,8 @@ int main(int argc, char** argv)
       std::vector<scl::STaskBase*> rtasks;              //A set of executable tasks
       std::vector<scl::SNonControlTaskBase*> rtasks_nc; //A set of non-control tasks
       std::vector<scl::sString2> ctrl_params;        //Used to parse extra xml tags
+
+      // Data structures that connect the user interface (or trajectory gen) to the controller..
       scl::STaskOpPos *rtask_ds_[SCL_NUM_UI_POINTS];    // Control task (support as many as there are ui points)
       int n_tasks=0;             //The number of tasks used in this controller (with the ui/redis update)
 
@@ -179,23 +182,20 @@ int main(int argc, char** argv)
       { throw(std::runtime_error( std::string("Could not connect to redis server : ") + std::string(ioredis_ds.context_->errstr) ));  }
 
       // Set up the keys here so we don't have to run sprintfs in the while loop...
-      char rstr_robot_base[SCL_MAX_REDIS_KEY_LEN_CHARS], rstr_actfgc[SCL_MAX_REDIS_KEY_LEN_CHARS], 
-      	rstr_fgcenab[SCL_MAX_REDIS_KEY_LEN_CHARS], rstr_q[SCL_MAX_REDIS_KEY_LEN_CHARS], 
-      	rstr_dq[SCL_MAX_REDIS_KEY_LEN_CHARS];
+      char rstr_robot_base[SCL_MAX_REDIS_KEY_LEN_CHARS], 
+        rstr_q[SCL_MAX_REDIS_KEY_LEN_CHARS], rstr_dq[SCL_MAX_REDIS_KEY_LEN_CHARS],
+        rstr_fgc[SCL_MAX_REDIS_KEY_LEN_CHARS],
+      	rstr_fgcenab[SCL_MAX_REDIS_KEY_LEN_CHARS];
       int enable_fgc_command = 0;
 
       sprintf(rstr_robot_base, "scl::robot::%s",rcmd.name_robot_.c_str());
-      sprintf(rstr_actfgc, "%s::actuators::fgc", rstr_robot_base);
+      sprintf(rstr_fgc, "%s::actuators::fgc", rstr_robot_base);
       sprintf(rstr_fgcenab, "%s::fgc_command_enabled", rstr_robot_base);
       sprintf(rstr_q, "%s::sensors::q", rstr_robot_base);
       sprintf(rstr_dq, "%s::sensors::dq", rstr_robot_base);
 
       char rstr_ui_master[SCL_MAX_REDIS_KEY_LEN_CHARS];
       sprintf(rstr_ui_master, "scl::robot::%s::ui::master",rcmd.name_robot_.c_str());
-
-      std::cout<<"\n The default REDIS keys used are: ";
-      std::cout<<"\n  "<<rstr_q<<"\n  "<<rstr_dq<<"\n  "<<rstr_actfgc<<"\n  "
-      	<<rstr_fgcenab;
 
       // Add strings for the special (data) ui vars
       char rstr_ui_pt[SCL_NUM_UI_POINTS][SCL_MAX_REDIS_KEY_LEN_CHARS];
@@ -224,7 +224,7 @@ int main(int argc, char** argv)
 
       // REDIS IO : Create fgc key and set it to zero (initial state)
       rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
-      flag = ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
+      flag = ioredis.set(ioredis_ds, rstr_fgc, rio.actuators_.force_gc_commanded_);
 
       // Reset all task positions
       for(int j=0; j< n_tasks; ++j)
@@ -234,7 +234,12 @@ int main(int argc, char** argv)
 
       // Get the
       flag = ioredis.get(ioredis_ds, rstr_fgcenab, enable_fgc_command);
-      if(false == flag){ throw(std::runtime_error("Could not set find fgc enabled key in the redis server")); }  //Error check.
+      if(false == flag)
+      {  //Error check.
+        std::cout<<"\n WARNING : Could not find fgc enabled key in the redis server; setting to zero.";
+        enable_fgc_command = 0;
+        ioredis.set(ioredis_ds, rstr_fgcenab, enable_fgc_command);
+      }
 
       std::cout<<"\n ** Started: To monitor Redis messages, open a redis-cli and type 'monitor' **\n"<<std::flush;
 
@@ -306,7 +311,7 @@ int main(int argc, char** argv)
           }
 
           rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
-          flag = flag && ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
+          flag = flag && ioredis.set(ioredis_ds, rstr_fgc, rio.actuators_.force_gc_commanded_);
 
           if(false == flag) { std::cout<<"\n WARNING : Could not reset xgoal or fgc. Check robot before re-enabling fgc commands"; }
         }
@@ -315,7 +320,7 @@ int main(int argc, char** argv)
 
         /* ************************************ WRITE TO REDIS ************************** */
         // REDIS IO : Set fgc_commanded
-        flag = ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
+        flag = ioredis.set(ioredis_ds, rstr_fgc, rio.actuators_.force_gc_commanded_);
         if(false == flag){  std::cout<<"\n ERROR : Could not set force gc and/or xgoal. Probably serious. Consider aborting."; }
 
         // Optional, sleep a bit.
@@ -329,7 +334,7 @@ int main(int argc, char** argv)
       /******************************Exit Gracefully************************************/
       // Send Zero torques to redis
       rio.actuators_.force_gc_commanded_.setZero(rio.dof_);
-      ioredis.set(ioredis_ds, rstr_actfgc, rio.actuators_.force_gc_commanded_);
+      ioredis.set(ioredis_ds, rstr_fgc, rio.actuators_.force_gc_commanded_);
 
       std::cout<<"\n\n Executed Successfully";
       std::cout<<"\n**********************************\n"<<std::flush;
