@@ -19,29 +19,34 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
-/* \file AllHeaders.hpp
+ */
+/* \file PrettyPrint.hpp
  *
- *  Created on: Jul 16, 2016
+ *  Created on: Mar 31, 2017
  *
- *  Copyright (C) 2016
+ *  Copyright (C) 2017
  *
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef SRC_SCL_UTIL_ALLHEADERS_HPP_
-#define SRC_SCL_UTIL_ALLHEADERS_HPP_
+#ifndef SRC_SCL_UTIL_PRETTYPRINT_HPP_
+#define SRC_SCL_UTIL_PRETTYPRINT_HPP_
 
-#include <scl/util/CmdLineArgReader.hpp>
+#include <scl/scl.hpp>
 
-#include <scl/util/EigenExtensions.hpp>
+namespace scl{
+  namespace print{
+    /** Prints the various command line stuff */
+    template<typename T >
+    void prettyPrint(const T& arg_obj)
+    {
+      std::string tmp;
+      serializeToJSONString(arg_obj,tmp,false);
+      std::cout<<"\n"<<tmp;
+    }
+  }
+}
 
-#include <scl/util/FileFunctions.hpp>
 
-#include <scl/util/HelperFunctions.hpp>
 
-#include <scl/util/PrettyPrint.hpp>
-
-#include <scl/util/RobotMath.hpp>
-
-#endif /* SRC_SCL_UTIL_ALLHEADERS_HPP_ */
+#endif /* SRC_SCL_UTIL_PRETTYPRINT_HPP_ */
