@@ -63,4 +63,4 @@ SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
 target_link_libraries(scl_redis_ctrl ${SCL_LIBRARY})
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################
-target_link_libraries(scl_redis_ctrl hiredis)
+target_link_libraries(scl_redis_ctrl hiredis jsoncpp)
