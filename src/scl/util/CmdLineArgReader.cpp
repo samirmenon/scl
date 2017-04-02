@@ -33,6 +33,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdexcept>
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace scl
 {
