@@ -33,6 +33,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define SERIALIZATIONJSON_HPP_
 
 #include <scl/data_structs/SDatabase.hpp>
+#include <scl/data_structs/SCmdLineOptions.hpp>
 
 #include <scl/control/data_structs/SControllerBase.hpp>
 #include <scl/control/gc/data_structs/SControllerGc.hpp>
@@ -179,6 +180,7 @@ namespace scl
   extern template bool serializeToJSON<SRobotIO>(const SRobotIO &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SRobotParsed>(const SRobotParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SUIParsed>(const SUIParsed &arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SCmdLineOptions_OneRobot>(const SCmdLineOptions_OneRobot &arg_obj, Json::Value &ret_json_val);
 
   // The controller data structures
   extern template bool serializeToJSON<STaskBase>(const STaskBase &arg_obj, Json::Value &ret_json_val);

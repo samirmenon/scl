@@ -472,6 +472,33 @@ namespace scl
   template<> bool serializeToJSON<SUIParsed>(const SUIParsed &arg_obj, Json::Value &ret_json_val)
   {  return false;  }
 
+  template<> bool serializeToJSON<SCmdLineOptions_OneRobot>(const SCmdLineOptions_OneRobot &arg_obj, Json::Value &ret_json_val)
+  {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_file_config_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_robot_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_ctrl_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_graphics_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(name_actuator_set_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(id_time_created_str_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_pause_at_start_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_pause_at_start_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_is_redis_master_)
+
+    // Std vector of strings (iterable)
+    ret_json_val["name_tasks_"] = Json::Value(Json::arrayValue);
+    // C++11 auto iterator (compact!)
+    for (auto&& element: arg_obj.name_tasks_) {
+      Json::Value tmp;
+      serializeToJSON(element,tmp);
+      ret_json_val["name_tasks_"].append(tmp);
+    }
+
+    return true;
+  }
+
 
   template<>  bool serializeToJSON<STaskBase>(const STaskBase &arg_obj, Json::Value &ret_json_val)
   {
