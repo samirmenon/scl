@@ -118,6 +118,7 @@ namespace scl
         args_ctr++;
       }
 
+      ret_cmd_ds.has_been_init_ = true;
       return true;
     }
     catch(std::exception &e)
