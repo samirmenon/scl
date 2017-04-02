@@ -172,7 +172,7 @@ int main(int argc, char** argv)
         flag = flag && ioredis.get(ioredis_ds, rstr_dq, rio.sensors_.dq_);
         if(flag){  break;  } // Found both keys and so flag is still true...
 
-        std::cout<<"\n WARNING : Could not find {q, dq} redis keys for robot: "<<rstr_robot_base<<". Will wait for it...";
+        std::cout<<"\n WARNING : Could not find {q, dq} redis keys for robot: (scl::robot::"<<rcmd.name_robot_<<"). Will wait for it...";
         std::cout<<"\n    q : "<<rstr_q;
         std::cout<<"\n   dq : "<<rstr_dq;
         const timespec ts = {0, 500000000};/*.5s sleep */ nanosleep(&ts,NULL);
