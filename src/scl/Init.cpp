@@ -156,6 +156,138 @@ namespace scl
       return true;
     }
 
+    /** An acme (swiss knife/random util/highly customized junk function) that
+     * consolidates a lot of init code.
+     * This just happens to be what is required for a generic control app.
+     * It's not general at all. If you write your own app, I strongly recommend
+     * that you copy the function's contents and insert them into your main
+     * file. I just don't want to keep repeating this code all over the
+     * place so it's consolidated here.
+     */
+    bool parseAndInitRobotAndController(
+        scl::CParserScl &arg_p /** Parser */,
+        scl::SCmdLineOptions_OneRobot arg_rcmd /* For parsing command line options */,
+        scl::SRobotParsed &arg_rds /**Robot data structure*/,
+        scl::SRobotIO &arg_rio /**I/O data structure. */,
+        scl::SGcModel &arg_rgcm /**Robot data structure with dynamic quantities...*/,
+        scl::CDynamicsScl &arg_dyn_scl /**Robot kinematics and dynamics computation object...*/,
+        scl::SControllerMultiTask &arg_rctr_ds /**A multi-task controller data structure*/,
+        scl::CControllerMultiTask &arg_rctr /**A multi-task controller*/,
+        std::vector<scl::STaskBase*> &arg_rtasks /**A set of executable tasks*/,
+        std::vector<scl::SNonControlTaskBase*> &arg_rtasks_nc /**A set of non-control tasks*/,
+        std::vector<scl::sString2> &arg_ctrl_params /**Used to parse extra xml tags)*/
+    )
+    {
+      bool flag;
+      try
+      {
+        flag = parseAndInitRobotAndDynamics(arg_p, arg_rcmd, arg_rds, arg_rio, arg_rgcm, arg_dyn_scl);
+        if(false == flag) { throw(std::runtime_error("Failed to parse robot and dynamics"));  }
+
+        /******************************Set up Controller Specification************************************/
+        // Read xml file info into task specifications.
+        flag = arg_p.readTaskControllerFromFile(arg_rcmd.name_file_config_,arg_rcmd.name_ctrl_,arg_rtasks,arg_rtasks_nc,arg_ctrl_params);
+        flag = flag && arg_rctr_ds.init(arg_rcmd.name_ctrl_,&arg_rds,&arg_rio,&arg_rgcm); //Set up the control data structure..
+
+        // Tasks are initialized after we find their type with dynamic typing.
+        flag = flag && scl::init::initMultiTaskCtrlDsFromParsedTasks(arg_rtasks,arg_rtasks_nc,arg_rctr_ds);
+        flag = flag && arg_rctr.init(&arg_rctr_ds,&arg_dyn_scl);  //Set up the controller (needs parsed data and a dyn object)
+        if(false == flag){ throw(std::runtime_error("Could not initialize controller")); }            //Error check.
+
+        // Set up the tasks that will receive goal positions etc.
+        if(0 >= arg_rcmd.name_tasks_.size())
+        { std::cout<<"\n WARNING : Did not provide any tasks in the command line arguments: -t/-op/-ui <task name>"; }
+        if(SCL_NUM_UI_POINTS < arg_rcmd.name_tasks_.size())
+        {
+          char tmp_message[256];
+          sprintf(tmp_message,"Too many tasks provided. Can support at most : %d", SCL_NUM_UI_POINTS);
+          throw(std::runtime_error( tmp_message ));
+        }
+
+        // Compute the dynamics to begin with (flushes state across all matrices).
+        arg_rctr.computeDynamics();
+        arg_rctr.computeControlForces(); //Directly update io data structure for now...
+      }
+      catch (std::exception& e)
+      {
+        std::cout<<"\nscl::init::parseAndInitRobotAndController() : ERROR : "<<e.what();
+        return false;
+      }
+      return true;
+    }
+
+    bool parseAndInitRobotAndDynamics(
+        scl::CParserScl &arg_p /** Parser */,
+        scl::SCmdLineOptions_OneRobot arg_rcmd /* For parsing command line options */,
+        scl::SRobotParsed &arg_rds /**Robot data structure*/,
+        scl::SRobotIO &arg_rio /**I/O data structure. */,
+        scl::SGcModel &arg_rgcm /**Robot data structure with dynamic quantities...*/,
+        scl::CDynamicsScl &arg_dyn_scl /**Robot kinematics and dynamics computation object...*/
+    )
+    {
+      try
+      {
+        /******************************Load Robot Specification************************************/
+        bool flag = arg_p.readRobotFromFile(arg_rcmd.name_file_config_,"../../specs/",arg_rcmd.name_robot_,arg_rds);
+        if(false == flag){ throw(std::runtime_error("Could not parse robot spec")); }            //Error check.
+
+        flag = arg_rio.init(arg_rds);             //Set up the IO data structure
+        if(false == flag){ throw(std::runtime_error("Could not initialize robot io")); }            //Error check.
+
+        flag = arg_rgcm.init(arg_rds);            //Simple way to set up dynamic tree...
+        if(false == flag){ throw(std::runtime_error("Could not initialize robot gc model")); }            //Error check.
+
+        flag = arg_dyn_scl.init(arg_rds);         //Set up kinematics and dynamics object
+        if(false == flag){ throw(std::runtime_error("Could not initialize robot dynamics")); }            //Error check.
+      }
+      catch (std::exception& e)
+      {
+        std::cout<<"\nscl::init::parseAndInitRobotAndDynamics() : ERROR : "<<e.what();
+        return false;
+      }
+      return true;
+    }
+
+    /** In many places we assign a subset of tasks to 3d vector control points.
+     * This is a very common operation FOR SOME APPS so we'll add some code here to avoid repetition
+     *
+     * Note it's not general enough to warrant inclusion in any of the core functions.
+     */
+    bool initUI3dPointVectorFromParsedTasksAndCmdLineArgs(
+        const scl::SCmdLineOptions_OneRobot &arg_rcmd /** For parsing command line options */,
+        scl::SControllerMultiTask &arg_rctr_ds /** The initialized controller multi-task data struct */,
+        std::vector<scl::STaskOpPos*> &arg_rtask_ui_3d_ds /** This will contain the final op pos tasks */
+    )
+    {
+      bool flag;
+      try
+      {
+        if(false == arg_rctr_ds.hasBeenInit())
+        { throw(std::runtime_error("The passed controller data structure was not initialized. Try again..")); }
+
+        if(false == arg_rcmd.hasBeenInit())
+        { throw(std::runtime_error("The passed command line args were not initialized. Try again..")); }
+
+        // Pre-alloc vector data for the different tasks..
+        arg_rtask_ui_3d_ds.resize(arg_rcmd.name_tasks_.size());
+
+        // Loop over the tasks. Find the desired 3d point tasks and return them.
+        for(int i=0; i< arg_rcmd.name_tasks_.size(); ++i)
+        {
+          // Find the task data structure
+          arg_rtask_ui_3d_ds[i] = dynamic_cast<scl::STaskOpPos*>(*arg_rctr_ds.tasks_.at(arg_rcmd.name_tasks_[i]));
+          if(NULL == arg_rtask_ui_3d_ds[i])
+          { throw(std::runtime_error(std::string("Did not find the desired command line task in the controller tasks : ") + arg_rcmd.name_tasks_.at(i))); }
+        }
+      }
+      catch (std::exception& e)
+      {
+        std::cout<<"\nscl::init::parseAndInitRobotAndDynamics() : ERROR : "<<e.what();
+        return false;
+      }
+      return true;
+    }
+
 
 
     /** Checks whether dynamic type information is available. If so, it parses

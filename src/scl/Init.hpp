@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 
-#include <scl/control/task/data_structs/SControllerMultiTask.hpp>
+#include <scl/AllHeaders.hpp>
 
 namespace scl
 {
@@ -50,8 +50,66 @@ namespace scl
 
 
     /** ***********************************************************
-                        DATA STRUCT INIT
+                        PARSE AND INIT
      *********************************************************** **/
+    /** An acme (swiss knife/random util/highly customized junk function) that
+     * consolidates a lot of init code.
+     * This just happens to be what is required for a generic control app.
+     * It's not general at all. If you write your own app, I strongly recommend
+     * that you copy the function's contents and insert them into your main
+     * file. I just don't want to keep repeating this code all over the
+     * place so it's consolidated here.
+     */
+    bool parseAndInitRobotAndController(
+        scl::CParserScl &arg_p /** Parser */,
+        const scl::SCmdLineOptions_OneRobot arg_rcmd /** The command line options */,
+        scl::SRobotParsed &arg_rds /**Robot data structure*/,
+        scl::SRobotIO &arg_rio /**I/O data structure. */,
+        scl::SGcModel &arg_rgcm /**Robot data structure with dynamic quantities...*/,
+        scl::CDynamicsScl &arg_dyn_scl /**Robot kinematics and dynamics computation object...*/,
+        scl::SControllerMultiTask &arg_rctr_ds /**A multi-task controller data structure*/,
+        scl::CControllerMultiTask &arg_rctr /**A multi-task controller*/,
+        std::vector<scl::STaskBase*> &arg_rtasks /**A set of executable tasks*/,
+        std::vector<scl::SNonControlTaskBase*> &arg_rtasks_nc /**A set of non-control tasks*/,
+        std::vector<scl::sString2> &arg_ctrl_params /**Used to parse extra xml tags)*/
+    );
+
+    /** An acme (swiss knife/random util/highly customized junk function) that
+     * consolidates a lot of init code.
+     * This just happens to be what is required for a generic control app.
+     * It's not general at all. If you write your own app, I strongly recommend
+     * that you copy the function's contents and insert them into your main
+     * file. I just don't want to keep repeating this code all over the
+     * place so it's consolidated here.
+     */
+    bool parseAndInitRobotAndDynamics(
+        scl::CParserScl &arg_p /** Parser */,
+        scl::SCmdLineOptions_OneRobot arg_rcmd /* For parsing command line options */,
+        scl::SRobotParsed &arg_rds /**Robot data structure*/,
+        scl::SRobotIO &arg_rio /**I/O data structure. */,
+        scl::SGcModel &arg_rgcm /**Robot data structure with dynamic quantities...*/,
+        scl::CDynamicsScl &arg_dyn_scl /**Robot kinematics and dynamics computation object...*/
+    );
+
+    /** ***********************************************************
+                            DATA STRUCT INIT
+     * Some commonly used init functions; not general enough to be
+     * in the core lib, but common enough to warrant some helper
+     * functions.
+     *********************************************************** **/
+    /** In many places we assign a subset of tasks to 3d vector control points.
+     * Note that the controller ds (arg_rctr_ds) is not a const because the ui vector
+     * stores direct pointers into its members (that are modified later)....
+     *
+     * This is a very common operation FOR SOME APPS so we'll add some code here to avoid repetition
+     * It's not general enough to warrant inclusion in any of the core functions.
+     */
+    bool initUI3dPointVectorFromParsedTasksAndCmdLineArgs(
+        const scl::SCmdLineOptions_OneRobot &arg_rcmd /** For parsing command line options */,
+        scl::SControllerMultiTask &arg_rctr_ds /** The initialized controller multi-task data struct */,
+        std::vector<scl::STaskOpPos*> &arg_rtask_ui_3d_ds /** This will contain the final op pos tasks */
+    );
+
     /** Checks whether dynamic type information is available. If so, it parses
      * tasks into the control data structure
      *
