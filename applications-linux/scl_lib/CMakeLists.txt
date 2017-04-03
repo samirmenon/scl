@@ -83,6 +83,11 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
                   ${SCL_INC_DIR}/control/task/tasks/data_structs/STaskConstraintPlane.cpp
    )
    
+   
+SET(CTR2_TASKS_SRC ${SCL_INC_DIR}/control/tasks/CTaskOpPos.cpp
+                  ${SCL_INC_DIR}/control/tasks/data_structs/STaskOpPos.cpp
+   )
+   
 # This needs some work. Should add basic trajectory generation support.
 SET(CTR_TRAJ_SRC 
    )
@@ -121,7 +126,7 @@ SET(TIXML_SRC ${TIXML_INC_DIR}/scl_tinyxml/scl_tinystr.cpp
 ADD_DEFINITIONS(-DTIXML_USE_STL -std=c++11)
 
 SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} ${SHELL_SRC}
-           ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR_TRAJ_SRC} 
+           ${CTR_SRC} ${CTR_TASKS_SRC} ${CTR2_TASKS_SRC} ${CTR_TRAJ_SRC} 
            ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
            ${SCL_PARSER_SRC} ${OSIM_PARSER_SRC}
            ${SCL_IO_SRC} ${SCL_SERIALIZATION_SRC} ${SCL_CALLBACKS_SRC}
