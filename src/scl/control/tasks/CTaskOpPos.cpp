@@ -69,53 +69,53 @@ namespace scl
 #ifdef DEBUG
       assert(has_been_init_);
 #endif
-      if(data_.has_been_init_)
+      if(data_->has_been_init_)
       {
         // Get the link at which the Jacobian is to be computed...
-        const SRigidBodyDyn *rbd = arg_gcm.rbdyn_tree_.at_const(data_.link_name_);
-        if(NULL == rbd){  data_.error_state_ = ERROR_STATE::BadDynamics_CouldNotFindLinkInRBDynTree; return false; }
+        const SRigidBodyDyn *rbd = arg_gcm.rbdyn_tree_.at_const(data_->link_name_);
+        if(NULL == rbd){  data_->error_state_ = ERROR_STATE::BadDynamics_CouldNotFindLinkInRBDynTree; return false; }
 
         //Step 1: Find position of the op_point
-        data_.x_ = rbd->T_o_lnk_ * data_.pos_in_parent_;
+        data_->x_ = rbd->T_o_lnk_ * data_->pos_in_parent_;
 
         //Global coordinates : dx = J . dq
-        data_.dx_ = data_.J_ * arg_sensors.dq_;
+        data_->dx_ = data_->J_ * arg_sensors.dq_;
 
         //Compute the servo torques
-        tmp1 = (data_.x_goal_ - data_.x_);
-        tmp1 =  data_.kp_.array() * tmp1.array();
+        tmp1 = (data_->x_goal_ - data_->x_);
+        tmp1 =  data_->kp_.array() * tmp1.array();
 
-        tmp2 = (data_.dx_goal_ - data_.dx_);
-        tmp2 = data_.kv_.array() * tmp2.array();
+        tmp2 = (data_->dx_goal_ - data_->dx_);
+        tmp2 = data_->kv_.array() * tmp2.array();
 
         //Obtain force to be applied to a unit mass floating about
         //in space (ie. A dynamically decoupled mass).
-        data_.ddx_ = data_.ka_.array() * (data_.ddx_goal_ - data_.ddx_).array();
-        data_.ddx_ += tmp2 + tmp1;
+        data_->ddx_ = data_->ka_.array() * (data_->ddx_goal_ - data_->ddx_).array();
+        data_->ddx_ += tmp2 + tmp1;
 
         // NOTE : We apply the force limits in "task space". This is the whole point of
         // using operational space control. Since the control point is effectively a unit
         // inertia object floating in space, it is very easy to specify force limits. Moreover,
         // one can usually specify isotropic limits instead of hand-tuning different limits
         // for different directions.
-        data_.ddx_ = data_.ddx_.array().min(data_.force_task_max_.array());//Min of self and max
-        data_.ddx_ = data_.ddx_.array().max(data_.force_task_min_.array());//Max of self and min
+        data_->ddx_ = data_->ddx_.array().min(data_->force_task_max_.array());//Min of self and max
+        data_->ddx_ = data_->ddx_.array().max(data_->force_task_min_.array());//Max of self and min
 
-        if(data_.flag_compute_op_inertia_)
-        { data_.force_task_ = data_.M_task_ * data_.ddx_;  }
+        if(data_->flag_compute_op_inertia_)
+        { data_->force_task_ = data_->M_task_ * data_->ddx_;  }
         else
-        { data_.force_task_ = data_.ddx_;  }
+        { data_->force_task_ = data_->ddx_;  }
 
-        if(data_.flag_compute_op_cc_forces_)
-        { data_.force_task_ += data_.force_task_cc_;  }
+        if(data_->flag_compute_op_cc_forces_)
+        { data_->force_task_ += data_->force_task_cc_;  }
 
         // NOTE : We subtract gravity (since we want to apply an equal and opposite force
-        if(data_.flag_compute_op_gravity_)
-        { data_.force_task_ -= data_.force_task_grav_;  }
+        if(data_->flag_compute_op_gravity_)
+        { data_->force_task_ -= data_->force_task_grav_;  }
 
         // T = J' ( M x F* + p)
         // We do not use the centrifugal/coriolis forces. They can cause instabilities.
-        data_.force_gc_ = data_.J_.transpose() * data_.force_task_;
+        data_->force_gc_ = data_->J_.transpose() * data_->force_task_;
       }
       else
       { return false; }
@@ -137,50 +137,50 @@ namespace scl
     {
 #ifdef DEBUG
       assert(has_been_init_);
-      assert(data_.has_been_init_);
+      assert(data_->has_been_init_);
 #endif
-      if(data_.has_been_init_)
+      if(data_->has_been_init_)
       {
         bool flag = true;
 
         // Get the link at which the Jacobian is to be computed...
-        const SRigidBodyDyn *rbd = arg_gcm.rbdyn_tree_.at_const(data_.link_name_);
-        if(NULL == rbd){  data_.error_state_ = ERROR_STATE::BadDynamics_CouldNotFindLinkInRBDynTree; return false; }
+        const SRigidBodyDyn *rbd = arg_gcm.rbdyn_tree_.at_const(data_->link_name_);
+        if(NULL == rbd){  data_->error_state_ = ERROR_STATE::BadDynamics_CouldNotFindLinkInRBDynTree; return false; }
 
-        flag = flag && arg_dyn.computeJacobian(data_.J_6_,*rbd,
-            arg_sensors.q_,data_.pos_in_parent_);
+        flag = flag && arg_dyn.computeJacobian(data_->J_6_,*rbd,
+            arg_sensors.q_,data_->pos_in_parent_);
 
         //Use the position jacobian only. This is an op-point task.
-        data_.J_ = data_.J_6_.block(0,0,3,data_.robot_->dof_);
+        data_->J_ = data_->J_6_.block(0,0,3,data_->robot_->dof_);
 
         //Operational space mass/KE matrix:
         //    // NOTE TODO : Decide a good scheme for disabling operational space inertia
-        //    if(data_.flag_compute_op_inertia_)
+        //    if(data_->flag_compute_op_inertia_)
         //    {   }
         //    else
-        //    { data_.M_task_inv_ = Eigen::Matrix3d::Identity();  }
+        //    { data_->M_task_inv_ = Eigen::Matrix3d::Identity();  }
 
         //Lambda = (J * Ainv * J')^-1
-        data_.M_task_inv_ = data_.J_ * arg_gcm.M_gc_inv_ * data_.J_.transpose();
+        data_->M_task_inv_ = data_->J_ * arg_gcm.M_gc_inv_ * data_->J_.transpose();
 
         // NOTE TODO : Delme later if required...
-//#ifdef SCL_PRINT_INFO_MESSAGES
-//        std::cout<<"\n\tJx6:\n"<<data_.J_6_
-//            <<"\n\tFgrav_gc:\n"<<data_.gc_model_->force_gc_grav_.transpose();
-//
-//        std::cout<<"\n\tMx_inv:\n"<<data_.M_task_inv_
-//            <<"\n\tJx:\n"<<data_.J_
-//            <<"\n\tJx6:\n"<<data_.J_6_
-//            <<"\n\tMgcinv:\n"<<arg_gcm.M_gc_inv_;
-//
-//        std::cout<<"\n\tTo_lnk: \n"<<rbd->T_o_lnk_.matrix()
-//                              <<"\n\tPosInPar: "<<data_.pos_in_parent_.transpose()
-//                              <<"\n\t       X: "<<data_.x_.transpose()
-//                              <<"\n\t   Xgoal: "<<data_.x_goal_.transpose()
-//                              <<"\n\t   Ftask: "<<data_.force_task_.transpose()
-//                              <<"\n\t Ftaskgc: "<<data_.force_gc_.transpose()
-//                              <<"\n\t  Fxgrav: "<<data_.force_task_grav_.transpose();
-//#endif
+        //#ifdef SCL_PRINT_INFO_MESSAGES
+        //        std::cout<<"\n\tJx6:\n"<<data_->J_6_
+        //            <<"\n\tFgrav_gc:\n"<<data_->gc_model_->force_gc_grav_.transpose();
+        //
+        //        std::cout<<"\n\tMx_inv:\n"<<data_->M_task_inv_
+        //            <<"\n\tJx:\n"<<data_->J_
+        //            <<"\n\tJx6:\n"<<data_->J_6_
+        //            <<"\n\tMgcinv:\n"<<arg_gcm.M_gc_inv_;
+        //
+        //        std::cout<<"\n\tTo_lnk: \n"<<rbd->T_o_lnk_.matrix()
+        //                              <<"\n\tPosInPar: "<<data_->pos_in_parent_.transpose()
+        //                              <<"\n\t       X: "<<data_->x_.transpose()
+        //                              <<"\n\t   Xgoal: "<<data_->x_goal_.transpose()
+        //                              <<"\n\t   Ftask: "<<data_->force_task_.transpose()
+        //                              <<"\n\t Ftaskgc: "<<data_->force_gc_.transpose()
+        //                              <<"\n\t  Fxgrav: "<<data_->force_task_grav_.transpose();
+        //#endif
 
         if(!use_svd_for_lambda_inv_)
         {
@@ -188,9 +188,9 @@ namespace scl
           //3x3 matrix inversion behaves quite well. Even near singularities where
           //singular values go down to ~0.001. If the model is coarse, use a n-k rank
           //approximation with the SVD for a k rank loss in a singularity.
-          qr_.compute(data_.M_task_inv_);
+          qr_.compute(data_->M_task_inv_);
           if(qr_.isInvertible())
-          { data_.M_task_ = qr_.inverse();  }
+          { data_->M_task_ = qr_.inverse();  }
           else
           { use_svd_for_lambda_inv_ = true; }
         }
@@ -200,7 +200,7 @@ namespace scl
           //Use a Jacobi svd. No preconditioner is required coz lambda inv is square.
           //NOTE : This is slower and generally performs worse than the simple inversion
           //for small (3x3) matrices that are usually used in op-space controllers.
-          svd_.compute(data_.M_task_inv_,
+          svd_.compute(data_->M_task_inv_,
               Eigen::ComputeFullU | Eigen::ComputeFullV | Eigen::ColPivHouseholderQRPreconditioner);
 
 #ifdef DEBUG
@@ -230,7 +230,7 @@ namespace scl
           if(0 < rank_loss)
           { std::cout<<"\nCTaskOpPos::computeModel() : Warning. Lambda_inv is ill conditioned. SVD rank loss (@.005) = "<<rank_loss; }
 
-          data_.M_task_ = svd_.matrixV() * singular_values_ * svd_.matrixU().transpose();
+          data_->M_task_ = svd_.matrixV() * singular_values_ * svd_.matrixU().transpose();
 
           //Turn off the svd after 50 iterations
           //Don't worry, the qr will pop back to svd if it is still singular
@@ -241,24 +241,24 @@ namespace scl
 
         //Compute the Jacobian dynamically consistent generalized inverse :
         //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
-        data_.J_dyn_inv_ = arg_gcm.M_gc_inv_ * data_.J_.transpose() * data_.M_task_;
+        data_->J_dyn_inv_ = arg_gcm.M_gc_inv_ * data_->J_.transpose() * data_->M_task_;
 
         //J' * J_dyn_inv'
-        sUInt dof = data_.robot_->dof_;
-        data_.null_space_ = Eigen::MatrixXd::Identity(dof, dof) -
-            data_.J_.transpose() * data_.J_dyn_inv_.transpose();
+        sUInt dof = data_->robot_->dof_;
+        data_->null_space_ = Eigen::MatrixXd::Identity(dof, dof) -
+            data_->J_.transpose() * data_->J_dyn_inv_.transpose();
 
         // We do not use the centrifugal/coriolis forces. They can cause instabilities.
         // NOTE TODO : Fix this...
-        //    if(data_.flag_compute_op_gravity_)
+        //    if(data_->flag_compute_op_gravity_)
         //    { /** I need some code */ }
         //    else
-        //    { data_.force_task_cc_.setZero(data_.dof_task_,1);  }
-        data_.force_task_cc_.setZero(data_.dof_task_,1);
+        //    { data_->force_task_cc_.setZero(data_->dof_task_,1);  }
+        data_->force_task_cc_.setZero(data_->dof_task_,1);
 
         // J' * J_dyn_inv' * g(q)
-        if(data_.flag_compute_op_gravity_)
-        { data_.force_task_grav_ =  data_.J_dyn_inv_.transpose() * arg_gcm.force_gc_grav_;  }
+        if(data_->flag_compute_op_gravity_)
+        { data_->force_task_grav_ =  data_->J_dyn_inv_.transpose() * arg_gcm.force_gc_grav_;  }
 
         return flag;
       }
@@ -278,11 +278,11 @@ namespace scl
     {
       if(NULL != arg_xgoal)
       {
-        if((data_.dof_task_ == arg_xgoal->cols() && 1 == arg_xgoal->rows()) ||
-            (1 == arg_xgoal->cols() && data_.dof_task_ == arg_xgoal->rows()) )
-        { data_.x_goal_ = *arg_xgoal; }
+        if((data_->dof_task_ == arg_xgoal->cols() && 1 == arg_xgoal->rows()) ||
+            (1 == arg_xgoal->cols() && data_->dof_task_ == arg_xgoal->rows()) )
+        { data_->x_goal_ = *arg_xgoal; }
         else {
-          std::cerr<<"\nCTaskOpPos::setStateGoal() : Error : XGoal vector's size != data_.dof_task_"<<std::flush;
+          std::cerr<<"\nCTaskOpPos::setStateGoal() : Error : XGoal vector's size != data_->dof_task_"<<std::flush;
           return false;
         }
       }
@@ -290,11 +290,11 @@ namespace scl
       // Set velocities
       if(NULL != arg_xgoal)
       {
-        if((data_.dof_task_ == arg_dxgoal->cols() && 1 == arg_dxgoal->rows()) ||
-            (1 == arg_dxgoal->cols() && data_.dof_task_ == arg_dxgoal->rows()) )
-        { data_.dx_goal_ = *arg_dxgoal; }
+        if((data_->dof_task_ == arg_dxgoal->cols() && 1 == arg_dxgoal->rows()) ||
+            (1 == arg_dxgoal->cols() && data_->dof_task_ == arg_dxgoal->rows()) )
+        { data_->dx_goal_ = *arg_dxgoal; }
         else {
-          std::cerr<<"\nCTaskOpPos::setStateGoal() : Error : dXGoal vector's size != data_.dof_task_"<<std::flush;
+          std::cerr<<"\nCTaskOpPos::setStateGoal() : Error : dXGoal vector's size != data_->dof_task_"<<std::flush;
           return false;
         }
       }
@@ -302,11 +302,11 @@ namespace scl
       // Set accelerations
       if(NULL != arg_ddxgoal)
       {
-        if((data_.dof_task_ == arg_ddxgoal->cols() && 1 == arg_ddxgoal->rows()) ||
-            (1 == arg_ddxgoal->cols() && data_.dof_task_ == arg_ddxgoal->rows()) )
-        { data_.ddx_goal_ = *arg_ddxgoal; }
+        if((data_->dof_task_ == arg_ddxgoal->cols() && 1 == arg_ddxgoal->rows()) ||
+            (1 == arg_ddxgoal->cols() && data_->dof_task_ == arg_ddxgoal->rows()) )
+        { data_->ddx_goal_ = *arg_ddxgoal; }
         else {
-          std::cerr<<"\nCTaskOpPos::setStateGoal() : Error : ddXGoal vector's size != data_.dof_task_"<<std::flush;
+          std::cerr<<"\nCTaskOpPos::setStateGoal() : Error : ddXGoal vector's size != data_->dof_task_"<<std::flush;
           return false;
         }
       }
@@ -321,9 +321,9 @@ namespace scl
         Eigen::VectorXd * ret_dxgoal,
         Eigen::VectorXd * ret_ddxgoal) const
     {
-      if(NULL!=ret_xgoal) *ret_xgoal = data_.x_goal_;
-      if(NULL!=ret_dxgoal) *ret_dxgoal = data_.dx_goal_;
-      if(NULL!=ret_ddxgoal) *ret_ddxgoal = data_.ddx_goal_;
+      if(NULL!=ret_xgoal) *ret_xgoal = data_->x_goal_;
+      if(NULL!=ret_dxgoal) *ret_dxgoal = data_->dx_goal_;
+      if(NULL!=ret_ddxgoal) *ret_ddxgoal = data_->ddx_goal_;
       return true;
     }
 
@@ -333,9 +333,9 @@ namespace scl
         Eigen::VectorXd * ret_dx,
         Eigen::VectorXd * ret_ddx) const
     {
-      if(NULL!=ret_x) *ret_x = data_.x_;
-      if(NULL!=ret_dx) *ret_dx = data_.dx_;
-      if(NULL!=ret_ddx) *ret_ddx = data_.ddx_;
+      if(NULL!=ret_x) *ret_x = data_->x_;
+      if(NULL!=ret_dx) *ret_dx = data_->dx_;
+      if(NULL!=ret_ddx) *ret_ddx = data_->ddx_;
       return true;
     }
 
@@ -346,9 +346,9 @@ namespace scl
     bool CTaskOpPos::achievedGoalPos()
     {
       sFloat dist;
-      dist = fabs((data_.x_goal_ - data_.x_).norm());
+      dist = fabs((data_->x_goal_ - data_->x_).norm());
 
-      if(dist > data_.spatial_resolution_)
+      if(dist > data_->spatial_resolution_)
       { return false; }
       else
       { return true;  }
@@ -364,10 +364,10 @@ namespace scl
         bool flag = scl::deserializeFromJSONString(data_,arg_json_ds_string);
         if(false == flag)
         {
-          data_.error_state_ = ERROR_STATE::BadInitState_CouldNotDeserializeDataFromJSON;
+          data_->error_state_ = ERROR_STATE::BadInitState_CouldNotDeserializeDataFromJSON;
           throw(std::runtime_error("Could not initialize CTaskOpPos data structure from json string"));
         }
-        data_.has_been_init_ = true;
+        data_->has_been_init_ = true;
 
         //Defaults
         singular_values_.setZero();
@@ -375,7 +375,7 @@ namespace scl
         //Try to use the householder qr instead of the svd in general
         //Computing this once here initializes memory and resizes qr_
         //It will be used later.
-        qr_.compute(data_.M_task_);
+        qr_.compute(data_->M_task_);
 
         has_been_init_ = true;
       }
@@ -383,11 +383,48 @@ namespace scl
       {
         std::cerr<<"\nCTaskOpPos::init() :"<<e.what()<<"\n JSON String passed: \n"<<arg_json_ds_string;
         has_been_init_ = false;
-        data_.has_been_init_ = false;
+        data_->has_been_init_ = false;
       }
       return has_been_init_;
     }
 
 
+    /** Initializes the task object. Copies values from passed object. */
+    bool CTaskOpPos::init(const STaskBase &arg_task_obj)
+    {
+      try
+      {
+        if(false == arg_task_obj.has_been_init_)
+        { throw(std::runtime_error("Passed uninitialized object")); }
+
+        const STaskOpPos * tmp = dynamic_cast<const STaskOpPos *>(&arg_task_obj);
+        if(NULL == tmp)
+        { throw(std::runtime_error(std::string("Passed object that has incompatible type: ")+arg_task_obj.getType() )); }
+
+        // Initialize the data..
+        if(NULL != data_){  delete data_; }
+
+        data_ = new STaskOpPos(*tmp);
+
+        //Defaults
+        singular_values_.setZero();
+
+        //Try to use the householder qr instead of the svd in general
+        //Computing this once here initializes memory and resizes qr_
+        //It will be used later.
+        qr_.compute(data_->M_task_);
+
+        has_been_init_ = true;
+      }
+      catch(std::exception& e)
+      {
+        std::cerr<<"\nCTaskOpPos::init() :"<<e.what();
+        has_been_init_ = false;
+        data_->has_been_init_ = false;
+      }
+      return has_been_init_;
+    }
   }
+
 }
+

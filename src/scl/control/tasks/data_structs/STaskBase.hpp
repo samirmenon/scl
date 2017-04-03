@@ -183,7 +183,7 @@ namespace scl
     private:
       /** Constructor : Disallow direct init so we can ensure type info is properly set up. */
       STaskBase();
-      STaskBase(const STaskBase &);
+
     public:
       /** Constructor for setting the type */
       STaskBase(const std::string &arg_subclass_type) : SObject(arg_subclass_type){}

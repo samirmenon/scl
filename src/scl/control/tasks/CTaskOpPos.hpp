@@ -88,10 +88,10 @@ namespace scl
        *                   Status Get/Set Functions
        * ************************************************************** */
       /** Return this task controller's task data structure.*/
-      virtual STaskBase* getTaskData() { return &data_;  }
+      virtual STaskBase* getTaskData() { return data_;  }
 
       /** Return this task controller's task data structure (const).*/
-      virtual const STaskBase* getTaskDataConst() const { return static_cast<const STaskBase*>(&data_);  }
+      virtual const STaskBase* getTaskDataConst() const { return static_cast<const STaskBase*>(data_);  }
 
       /** Sets the current goal position, velocity, and acceleration.
        * Leave vector pointers NULL if you don't want to set them. */
@@ -118,13 +118,13 @@ namespace scl
       sBool achievedGoalPos();
 
       void setFlagComputeOpGravity(sBool arg_compute_grav)
-      { data_.flag_compute_op_gravity_ = !arg_compute_grav; }
+      { data_->flag_compute_op_gravity_ = !arg_compute_grav; }
 
       void setFlagComputeOpCCForces(sBool arg_compute_cc_forces)
-      { data_.flag_compute_op_cc_forces_ = !arg_compute_cc_forces; }
+      { data_->flag_compute_op_cc_forces_ = !arg_compute_cc_forces; }
 
       void setFlagComputeOpInertia(sBool arg_compute_inertia)
-      { data_.flag_compute_op_inertia_ = !arg_compute_inertia; }
+      { data_->flag_compute_op_inertia_ = !arg_compute_inertia; }
 
       /* *******************************
        * Initialization specific functions
@@ -142,17 +142,20 @@ namespace scl
        *          initialize the data structure (STaskOpPos). */
       bool init(const std::string &arg_json_ds_string);
 
+      /** Initializes the task object. Copies values from passed object. */
+      bool init(const STaskBase &arg_task_obj);
+
       /** Resets the task by removing its data.
        * NOTE : Does not deallocate its data structure*/
       virtual void reset()
       {
-        data_.has_been_init_ = false;
+        data_->has_been_init_ = false;
         has_been_init_ = false;
       }
 
     protected:
       /** The actual data structure for this computational object */
-      STaskOpPos data_;
+      STaskOpPos *data_=NULL;
 
       /** Temporary variables */
       Eigen::VectorXd tmp1, tmp2;
