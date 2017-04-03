@@ -57,7 +57,7 @@ namespace scl
      * 2. The task servo (computes the dynamically decoupled task
      * forces and the torques. uses the task model to do so).
      */
-    class CTaskOpPos : public scl::CTaskBase
+    class CTaskOpPos : public scl::tasks::CTaskBase
     {
     public:
       /********************************
@@ -71,6 +71,7 @@ namespace scl
        * Fgc_task is stored locally in this object's data structure. */
       virtual bool computeControl(
           const SRobotSensors &arg_sensors,
+          const SGcModel &arg_gcm,
           const CDynamicsBase &arg_dyn);
 
       /** Computes the dynamics (task model, inertias, gravity etc.)
@@ -87,7 +88,10 @@ namespace scl
        *                   Status Get/Set Functions
        * ************************************************************** */
       /** Return this task controller's task data structure.*/
-      virtual STaskBase* getTaskData();
+      virtual STaskBase* getTaskData() { return &data_;  }
+
+      /** Return this task controller's task data structure (const).*/
+      virtual const STaskBase* getTaskDataConst() const { return static_cast<const STaskBase*>(&data_);  }
 
       /** Sets the current goal position, velocity, and acceleration.
        * Leave vector pointers NULL if you don't want to set them. */
@@ -99,25 +103,13 @@ namespace scl
        * If a passed pointer is NULL, nothing is returned.. */
       bool getStateGoal(Eigen::VectorXd * ret_xgoal,
           Eigen::VectorXd * ret_dxgoal=NULL,
-          Eigen::VectorXd * ret_ddxgoal=NULL) const
-      {
-        if(NULL!=ret_xgoal) *ret_xgoal = data_.x_goal_;
-        if(NULL!=ret_dxgoal) *ret_dxgoal = data_.dx_goal_;
-        if(NULL!=ret_ddxgoal) *ret_ddxgoal = data_.ddx_goal_;
-        return true;
-      }
+          Eigen::VectorXd * ret_ddxgoal=NULL) const;
 
       /** Gets the current position, velocity and acceleration.
        * If a passed pointer is NULL, nothing is returned.. */
       bool getState(Eigen::VectorXd * ret_x,
           Eigen::VectorXd * ret_dx=NULL,
-          Eigen::VectorXd * ret_ddx=NULL) const
-      {
-        if(NULL!=ret_x) *ret_x = data_.x_;
-        if(NULL!=ret_dx) *ret_dx = data_.dx_;
-        if(NULL!=ret_ddx) *ret_ddx = data_.ddx_;
-        return true;
-      }
+          Eigen::VectorXd * ret_ddx=NULL) const;
 
       /* *******************************
        * CTaskOpPos specific functions
@@ -138,19 +130,25 @@ namespace scl
        * Initialization specific functions
        ******************************** */
       /** Default constructor : Does nothing   */
-      CTaskOpPos();
+      CTaskOpPos() : CTaskBase("CTaskOpPos"){}
 
       /** Default destructor : Does nothing.   */
       virtual ~CTaskOpPos(){}
 
       /** Initializes the task object. Required to set output
-       * gc force dofs */
-      virtual bool init(STaskBase* arg_task_data,
-          CDynamicsBase* arg_dynamics);
+       * gc force dofs
+       *
+       *  Input : A JSON string that contains all the data required to
+       *          initialize the data structure (STaskOpPos). */
+      bool init(const std::string &arg_json_ds_string);
 
       /** Resets the task by removing its data.
        * NOTE : Does not deallocate its data structure*/
-      virtual void reset();
+      virtual void reset()
+      {
+        data_.has_been_init_ = false;
+        has_been_init_ = false;
+      }
 
     protected:
       /** The actual data structure for this computational object */
@@ -163,7 +161,7 @@ namespace scl
       Eigen::ColPivHouseholderQR<Eigen::Matrix3d> qr_;
 
       /** True when the lambda_inv matrix turns singular. */
-      sBool use_svd_for_lambda_inv_;
+      sBool use_svd_for_lambda_inv_=false;
 
       /** For inverting the operational space inertia matrix
        * near singularities. 3x3 for operational point tasks. */

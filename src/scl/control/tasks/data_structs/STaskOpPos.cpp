@@ -38,24 +38,6 @@ namespace scl
 {
   namespace tasks
   {
-    //0.5cm spatial resolution
-    const double SCL_COPPTTASK_SPATIAL_RESOLUTION=0.005;
-    const int SCL_COPPTTASK_TASK_DOF=3;
-
-    STaskOpPos::STaskOpPos() : STaskBase("STaskOpPos"),
-        link_name_(""),
-        link_ds_(S_NULL),
-        spatial_resolution_(SCL_COPPTTASK_SPATIAL_RESOLUTION),
-        rbd_(S_NULL),
-        flag_compute_op_gravity_(true),
-        flag_compute_op_cc_forces_(false),
-        flag_compute_op_inertia_(true)
-    { }
-
-    STaskOpPos::~STaskOpPos()
-    { }
-
-
     bool STaskOpPos::initTaskParams()
     {
       try

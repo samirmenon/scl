@@ -34,7 +34,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/DataTypes.hpp>
 
-#include <scl/control/tasks/data_structs/STaskBase.hpp>
+#include "data_structs/STaskBase.hpp"
 
 #include <scl/data_structs/SRobotIO.hpp>
 
@@ -43,7 +43,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
   namespace tasks{
-
     /** Container class to encapsulate a task model and a task servo.
      *
      * NOTE : Virtual class. Subclass and implement functions
@@ -62,6 +61,7 @@ namespace scl
        * Fgc_task is stored locally in this object's data structure. */
       virtual bool computeControl(
           const SRobotSensors &arg_sensors,
+          const SGcModel &arg_gcm,
           const CDynamicsBase &arg_dyn)=0;
 
       /** Computes the dynamics (task model)

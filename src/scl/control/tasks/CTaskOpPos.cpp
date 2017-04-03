@@ -31,6 +31,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CTaskOpPos.hpp"
 
+#include <scl/serialization/SerializationJSON.hpp>
+
 #include <stdio.h>
 #include <iostream>
 #include <stdexcept>
@@ -49,139 +51,35 @@ namespace scl
 {
   namespace tasks
   {
-    CTaskOpPos::CTaskOpPos() :
-         CTaskBase("CTaskOpPos"),
-         data_(S_NULL),
-         use_svd_for_lambda_inv_(false)
-    { }
-
-    //************************
-    // Inherited stuff
-    //************************
-    bool CTaskOpPos::init(STaskBase* arg_task_data,
-        CDynamicsBase* arg_dynamics)
-    {
-      try
-      {
-        if(S_NULL == arg_task_data)
-        { throw(std::runtime_error("Passed a null task data structure"));  }
-
-        if(false == arg_task_data->has_been_init_)
-        { throw(std::runtime_error("Passed an uninitialized task data structure"));  }
-
-        if(S_NULL == arg_dynamics)
-        { throw(std::runtime_error("Passed a null dynamics object"));  }
-
-        if(false == arg_dynamics->hasBeenInit())
-        { throw(std::runtime_error("Passed an uninitialized dynamics object"));  }
-
-        data_ = dynamic_cast<STaskOpPos*>(arg_task_data);
-
-        dynamics_ = arg_dynamics;
-        data_.rbd_ = data_.gc_model_->rbdyn_tree_.at_const(data_.link_name_);
-        if(S_NULL == data_.rbd_)
-        { throw(std::runtime_error("Couldn't find link dynamics object")); }
-
-        //Defaults
-        singular_values_.setZero();
-
-        //Try to use the householder qr instead of the svd in general
-        //Computing this once here initializes memory and resizes qr_
-        //It will be used later.
-        qr_.compute(data_.M_task_);
-
-        has_been_init_ = true;
-      }
-      catch(std::exception& e)
-      {
-        std::cerr<<"\nCTaskOpPos::init() :"<<e.what();
-        has_been_init_ = false;
-      }
-      return has_been_init_;
-    }
-
-    STaskBase* CTaskOpPos::getTaskData()
-    { return data_; }
-
-    /** Sets the current goal position */
-    bool CTaskOpPos::setGoalPos(const Eigen::VectorXd & arg_goal)
-    {
-      if((data_.dof_task_ == arg_goal.cols() && 1 == arg_goal.rows()) ||
-          (1 == arg_goal.cols() && data_.dof_task_ == arg_goal.rows()) )
-      {
-        data_.x_goal_ = arg_goal;
-        return true;
-      }
-#ifdef DEBUG
-      else
-      {
-        std::cerr<<"\nCTaskOpPos::setGoalPos() : Error : Goal vector's size != data_.dof_task_"<<std::flush;
-        assert(false);
-      }
-#endif
-      return false;
-    }
-
-    /** Sets the current goal velocity */
-    bool CTaskOpPos::setGoalVel(const Eigen::VectorXd & arg_goal)
-    {
-      if((data_.dof_task_ == arg_goal.cols() && 1 == arg_goal.rows()) ||
-          (1 == arg_goal.cols() && data_.dof_task_ == arg_goal.rows()) )
-      {
-        data_.dx_goal_ = arg_goal;
-        return true;
-      }
-#ifdef DEBUG
-      else
-      {
-        std::cerr<<"\nCTaskOpPos::setGoalVel() : Error : Goal vector's size != data_.dof_task_"<<std::flush;
-        assert(false);
-      }
-#endif
-      return false;
-    }
-
-    /** Sets the current goal acceleration */
-    bool CTaskOpPos::setGoalAcc(const Eigen::VectorXd & arg_goal)
-    {
-      if((data_.dof_task_ == arg_goal.cols() && 1 == arg_goal.rows()) ||
-          (1 == arg_goal.cols() && data_.dof_task_ == arg_goal.rows()) )
-      {
-        data_.ddx_goal_ = arg_goal;
-        return true;
-      }
-#ifdef DEBUG
-      else
-      {
-        std::cerr<<"\nCTaskOpPos::setGoalAcc() : Error : Goal vector's size != data_.dof_task_"<<std::flush;
-        assert(false);
-      }
-#endif
-      return false;
-    }
-
-    void CTaskOpPos::reset()
-    {
-      data_ = S_NULL;
-      dynamics_ = S_NULL;
-      has_been_init_ = false;
-    }
-
-
-    bool CTaskOpPos::computeServo(const SRobotSensors* arg_sensors)
+    /********************************
+     * CTaskBase API
+     *********************************/
+    /** Computes the task torques :
+     *
+     * This is essentially a function of the type:
+     *   Fgc_task = PDA ( x, xgoal, dx, dxgoal, ddxgoal )
+     *
+     * Fgc_task is stored locally in this object's data structure. */
+    bool CTaskOpPos::computeControl(
+        const SRobotSensors &arg_sensors,
+        const SGcModel &arg_gcm,
+        const CDynamicsBase &arg_dyn)
     {
       bool flag = true;
 #ifdef DEBUG
       assert(has_been_init_);
-      assert(S_NULL!=dynamics_);
 #endif
       if(data_.has_been_init_)
       {
+        // Get the link at which the Jacobian is to be computed...
+        const SRigidBodyDyn *rbd = arg_gcm.rbdyn_tree_.at_const(data_.link_name_);
+        if(NULL == rbd){  data_.error_state_ = ERROR_STATE::BadDynamics_CouldNotFindLinkInRBDynTree; return false; }
+
         //Step 1: Find position of the op_point
-        data_.x_ = data_.rbd_->T_o_lnk_ * data_.pos_in_parent_;
+        data_.x_ = rbd->T_o_lnk_ * data_.pos_in_parent_;
 
         //Global coordinates : dx = J . dq
-        data_.dx_ = data_.J_ * arg_sensors->dq_;
+        data_.dx_ = data_.J_ * arg_sensors.dq_;
 
         //Compute the servo torques
         tmp1 = (data_.x_goal_ - data_.x_);
@@ -225,23 +123,32 @@ namespace scl
       return flag;
     }
 
-    /** Computes the dynamics (task model)
-     * Assumes that the data_.model_.gc_model_ has been updated. */
-    bool CTaskOpPos::computeModel(const SRobotSensors* arg_sensors)
+
+
+    /** Computes the dynamics (task model, inertias, gravity etc.)
+     *
+     * The model matrices etc. are stored locally in this object's
+     * data structure
+     * */
+    bool CTaskOpPos::computeModel(
+        const SRobotSensors &arg_sensors,
+        const SGcModel &arg_gcm,
+        const CDynamicsBase &arg_dyn)
     {
 #ifdef DEBUG
       assert(has_been_init_);
       assert(data_.has_been_init_);
-      assert(S_NULL!=data_.rbd_);
-      assert(S_NULL!=dynamics_);
 #endif
       if(data_.has_been_init_)
       {
         bool flag = true;
-        const SGcModel* gcm = data_.gc_model_;
 
-        flag = flag && dynamics_->computeJacobian(data_.J_6_,*(data_.rbd_),
-            arg_sensors->q_,data_.pos_in_parent_);
+        // Get the link at which the Jacobian is to be computed...
+        const SRigidBodyDyn *rbd = arg_gcm.rbdyn_tree_.at_const(data_.link_name_);
+        if(NULL == rbd){  data_.error_state_ = ERROR_STATE::BadDynamics_CouldNotFindLinkInRBDynTree; return false; }
+
+        flag = flag && arg_dyn.computeJacobian(data_.J_6_,*rbd,
+            arg_sensors.q_,data_.pos_in_parent_);
 
         //Use the position jacobian only. This is an op-point task.
         data_.J_ = data_.J_6_.block(0,0,3,data_.robot_->dof_);
@@ -254,25 +161,26 @@ namespace scl
         //    { data_.M_task_inv_ = Eigen::Matrix3d::Identity();  }
 
         //Lambda = (J * Ainv * J')^-1
-        data_.M_task_inv_ = data_.J_ * gcm->M_gc_inv_ * data_.J_.transpose();
+        data_.M_task_inv_ = data_.J_ * arg_gcm.M_gc_inv_ * data_.J_.transpose();
 
-#ifdef SCL_PRINT_INFO_MESSAGES
-        std::cout<<"\n\tJx6:\n"<<data_.J_6_
-            <<"\n\tFgrav_gc:\n"<<data_.gc_model_->force_gc_grav_.transpose();
-
-        std::cout<<"\n\tMx_inv:\n"<<data_.M_task_inv_
-            <<"\n\tJx:\n"<<data_.J_
-            <<"\n\tJx6:\n"<<data_.J_6_
-            <<"\n\tMgcinv:\n"<<gcm->M_gc_inv_;
-
-        std::cout<<"\n\tTo_lnk: \n"<<data_.rbd_->T_o_lnk_.matrix()
-                          <<"\n\tPosInPar: "<<data_.pos_in_parent_.transpose()
-                          <<"\n\t       X: "<<data_.x_.transpose()
-                          <<"\n\t   Xgoal: "<<data_.x_goal_.transpose()
-                          <<"\n\t   Ftask: "<<data_.force_task_.transpose()
-                          <<"\n\t Ftaskgc: "<<data_.force_gc_.transpose()
-                          <<"\n\t  Fxgrav: "<<data_.force_task_grav_.transpose();
-#endif
+        // NOTE TODO : Delme later if required...
+//#ifdef SCL_PRINT_INFO_MESSAGES
+//        std::cout<<"\n\tJx6:\n"<<data_.J_6_
+//            <<"\n\tFgrav_gc:\n"<<data_.gc_model_->force_gc_grav_.transpose();
+//
+//        std::cout<<"\n\tMx_inv:\n"<<data_.M_task_inv_
+//            <<"\n\tJx:\n"<<data_.J_
+//            <<"\n\tJx6:\n"<<data_.J_6_
+//            <<"\n\tMgcinv:\n"<<arg_gcm.M_gc_inv_;
+//
+//        std::cout<<"\n\tTo_lnk: \n"<<rbd->T_o_lnk_.matrix()
+//                              <<"\n\tPosInPar: "<<data_.pos_in_parent_.transpose()
+//                              <<"\n\t       X: "<<data_.x_.transpose()
+//                              <<"\n\t   Xgoal: "<<data_.x_goal_.transpose()
+//                              <<"\n\t   Ftask: "<<data_.force_task_.transpose()
+//                              <<"\n\t Ftaskgc: "<<data_.force_gc_.transpose()
+//                              <<"\n\t  Fxgrav: "<<data_.force_task_grav_.transpose();
+//#endif
 
         if(!use_svd_for_lambda_inv_)
         {
@@ -333,7 +241,7 @@ namespace scl
 
         //Compute the Jacobian dynamically consistent generalized inverse :
         //J_dyn_inv = Ainv * J' (J * Ainv * J')^-1
-        data_.J_dyn_inv_ = gcm->M_gc_inv_ * data_.J_.transpose() * data_.M_task_;
+        data_.J_dyn_inv_ = arg_gcm.M_gc_inv_ * data_.J_.transpose() * data_.M_task_;
 
         //J' * J_dyn_inv'
         sUInt dof = data_.robot_->dof_;
@@ -350,7 +258,7 @@ namespace scl
 
         // J' * J_dyn_inv' * g(q)
         if(data_.flag_compute_op_gravity_)
-        { data_.force_task_grav_ =  data_.J_dyn_inv_.transpose() * gcm->force_gc_grav_;  }
+        { data_.force_task_grav_ =  data_.J_dyn_inv_.transpose() * arg_gcm.force_gc_grav_;  }
 
         return flag;
       }
@@ -358,6 +266,78 @@ namespace scl
       { return false; }
     }
 
+    /* **************************************************************
+     *                   Status Get/Set Functions
+     * ************************************************************** */
+    /** Sets the current goal position, velocity, and acceleration.
+     * Leave vector pointers NULL if you don't want to set them. */
+    bool CTaskOpPos::setStateGoal(
+        const Eigen::VectorXd * arg_xgoal,
+        const Eigen::VectorXd * arg_dxgoal,
+        const Eigen::VectorXd * arg_ddxgoal)
+    {
+      if(NULL != arg_xgoal)
+      {
+        if((data_.dof_task_ == arg_xgoal->cols() && 1 == arg_xgoal->rows()) ||
+            (1 == arg_xgoal->cols() && data_.dof_task_ == arg_xgoal->rows()) )
+        { data_.x_goal_ = *arg_xgoal; }
+        else {
+          std::cerr<<"\nCTaskOpPos::setStateGoal() : Error : XGoal vector's size != data_.dof_task_"<<std::flush;
+          return false;
+        }
+      }
+
+      // Set velocities
+      if(NULL != arg_xgoal)
+      {
+        if((data_.dof_task_ == arg_dxgoal->cols() && 1 == arg_dxgoal->rows()) ||
+            (1 == arg_dxgoal->cols() && data_.dof_task_ == arg_dxgoal->rows()) )
+        { data_.dx_goal_ = *arg_dxgoal; }
+        else {
+          std::cerr<<"\nCTaskOpPos::setStateGoal() : Error : dXGoal vector's size != data_.dof_task_"<<std::flush;
+          return false;
+        }
+      }
+
+      // Set accelerations
+      if(NULL != arg_ddxgoal)
+      {
+        if((data_.dof_task_ == arg_ddxgoal->cols() && 1 == arg_ddxgoal->rows()) ||
+            (1 == arg_ddxgoal->cols() && data_.dof_task_ == arg_ddxgoal->rows()) )
+        { data_.ddx_goal_ = *arg_ddxgoal; }
+        else {
+          std::cerr<<"\nCTaskOpPos::setStateGoal() : Error : ddXGoal vector's size != data_.dof_task_"<<std::flush;
+          return false;
+        }
+      }
+
+      // All done...
+      return true;
+    }
+
+    /** Gets the current goal position, velocity and acceleration.
+     * If a passed pointer is NULL, nothing is returned.. */
+    bool CTaskOpPos::getStateGoal(Eigen::VectorXd * ret_xgoal,
+        Eigen::VectorXd * ret_dxgoal,
+        Eigen::VectorXd * ret_ddxgoal) const
+    {
+      if(NULL!=ret_xgoal) *ret_xgoal = data_.x_goal_;
+      if(NULL!=ret_dxgoal) *ret_dxgoal = data_.dx_goal_;
+      if(NULL!=ret_ddxgoal) *ret_ddxgoal = data_.ddx_goal_;
+      return true;
+    }
+
+    /** Gets the current position, velocity and acceleration.
+     * If a passed pointer is NULL, nothing is returned.. */
+    bool CTaskOpPos::getState(Eigen::VectorXd * ret_x,
+        Eigen::VectorXd * ret_dx,
+        Eigen::VectorXd * ret_ddx) const
+    {
+      if(NULL!=ret_x) *ret_x = data_.x_;
+      if(NULL!=ret_dx) *ret_dx = data_.dx_;
+      if(NULL!=ret_ddx) *ret_ddx = data_.ddx_;
+      return true;
+    }
 
     //************************
     // Task specific stuff
@@ -373,6 +353,41 @@ namespace scl
       else
       { return true;  }
     }
+
+    /* *******************************
+     * Initialization specific functions
+     ******************************** */
+    bool CTaskOpPos::init(const std::string &arg_json_ds_string)
+    {
+      try
+      {
+        bool flag = scl::deserializeFromJSONString(data_,arg_json_ds_string);
+        if(false == flag)
+        {
+          data_.error_state_ = ERROR_STATE::BadInitState_CouldNotDeserializeDataFromJSON;
+          throw(std::runtime_error("Could not initialize CTaskOpPos data structure from json string"));
+        }
+        data_.has_been_init_ = true;
+
+        //Defaults
+        singular_values_.setZero();
+
+        //Try to use the householder qr instead of the svd in general
+        //Computing this once here initializes memory and resizes qr_
+        //It will be used later.
+        qr_.compute(data_.M_task_);
+
+        has_been_init_ = true;
+      }
+      catch(std::exception& e)
+      {
+        std::cerr<<"\nCTaskOpPos::init() :"<<e.what()<<"\n JSON String passed: \n"<<arg_json_ds_string;
+        has_been_init_ = false;
+        data_.has_been_init_ = false;
+      }
+      return has_been_init_;
+    }
+
 
   }
 }

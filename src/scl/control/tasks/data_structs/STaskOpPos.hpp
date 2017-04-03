@@ -41,9 +41,11 @@ namespace scl
 {
   namespace tasks
   {
-
-    class STaskOpPos : public scl::STaskBase
+    class STaskOpPos : public scl::tasks::STaskBase
     {
+    private:
+      //0.5cm spatial resolution
+      const int task_dof_=3;
     public:
       //Computed attributes (last measured, in x dimensional task-space)
       Eigen::VectorXd x_;             //Position in the global frame
@@ -55,22 +57,20 @@ namespace scl
       Eigen::VectorXd ddx_goal_;      //Goal Acceleration in the global frame
 
       Eigen::Vector3d pos_in_parent_; //Position in the parent link's local frame (x,y,z)
-      std::string link_name_;         //The parent link
-      const SRigidBody *link_ds_;     //The parent link's parsed data structure
+      std::string link_name_="";      //The parent link
+      const SRigidBody *link_ds_=NULL;//The parent link's parsed data structure
 
-      sFloat spatial_resolution_;     //Meters
+      sFloat spatial_resolution_=0.005;//Meters
 
-      const SRigidBodyDyn *rbd_;   //For quickly obtaining a task Jacobian
-
-      sBool flag_compute_op_gravity_;  ///< Use operational point gravity? Default = true
-      sBool flag_compute_op_cc_forces_;///< Use operational centrifugal/coriolis forces? Default = false
-      sBool flag_compute_op_inertia_;  ///< Use operational inertia? If true, set to identity. Default = true
+      sBool flag_compute_op_gravity_=true;  ///< Use operational point gravity? Default = true
+      sBool flag_compute_op_cc_forces_=false;///< Use operational centrifugal/coriolis forces? Default = false
+      sBool flag_compute_op_inertia_=true;  ///< Use operational inertia? If true, set to identity. Default = true
 
       /** Default constructor sets stuff to S_NULL */
-      STaskOpPos();
+      STaskOpPos() : STaskBase("STaskOpPos"){}
 
       /** Default destructor does nothing */
-      virtual ~STaskOpPos();
+      virtual ~STaskOpPos(){}
 
       /** 1. Initializes the task specific data members.
        *
