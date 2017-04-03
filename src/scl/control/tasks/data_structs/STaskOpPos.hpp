@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /* \file STaskOpPos.hpp
  *
  *  Created on: Jan 1, 2011
@@ -33,53 +33,55 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKOPPOS_HPP_
 
 #include <scl/DataTypes.hpp>
-#include <scl/control/task/data_structs/STaskBase.hpp>
+#include "STaskBase.hpp"
 
 #include <Eigen/Dense>
 
 namespace scl
 {
-
-  class STaskOpPos : public scl::STaskBase
+  namespace tasks
   {
-  public:
-    //Computed attributes (last measured, in x dimensional task-space)
-    Eigen::VectorXd x_;             //Position in the global frame
-    Eigen::VectorXd dx_;            //Velocity in the global frame
-    Eigen::VectorXd ddx_;           //Acceleration in the global frame
 
-    Eigen::VectorXd x_goal_;        //Goal Position in the global frame
-    Eigen::VectorXd dx_goal_;       //Goal Velocity in the global frame
-    Eigen::VectorXd ddx_goal_;      //Goal Acceleration in the global frame
+    class STaskOpPos : public scl::STaskBase
+    {
+    public:
+      //Computed attributes (last measured, in x dimensional task-space)
+      Eigen::VectorXd x_;             //Position in the global frame
+      Eigen::VectorXd dx_;            //Velocity in the global frame
+      Eigen::VectorXd ddx_;           //Acceleration in the global frame
 
-    Eigen::Vector3d pos_in_parent_; //Position in the parent link's local frame (x,y,z)
-    std::string link_name_;         //The parent link
-    const SRigidBody *link_ds_;     //The parent link's parsed data structure
+      Eigen::VectorXd x_goal_;        //Goal Position in the global frame
+      Eigen::VectorXd dx_goal_;       //Goal Velocity in the global frame
+      Eigen::VectorXd ddx_goal_;      //Goal Acceleration in the global frame
 
-    sFloat spatial_resolution_;     //Meters
+      Eigen::Vector3d pos_in_parent_; //Position in the parent link's local frame (x,y,z)
+      std::string link_name_;         //The parent link
+      const SRigidBody *link_ds_;     //The parent link's parsed data structure
 
-    const SRigidBodyDyn *rbd_;   //For quickly obtaining a task Jacobian
+      sFloat spatial_resolution_;     //Meters
 
-    sBool flag_compute_op_gravity_;  ///< Use operational point gravity? Default = true
-    sBool flag_compute_op_cc_forces_;///< Use operational centrifugal/coriolis forces? Default = false
-    sBool flag_compute_op_inertia_;  ///< Use operational inertia? If true, set to identity. Default = true
+      const SRigidBodyDyn *rbd_;   //For quickly obtaining a task Jacobian
 
-    /** Default constructor sets stuff to S_NULL */
-    STaskOpPos();
+      sBool flag_compute_op_gravity_;  ///< Use operational point gravity? Default = true
+      sBool flag_compute_op_cc_forces_;///< Use operational centrifugal/coriolis forces? Default = false
+      sBool flag_compute_op_inertia_;  ///< Use operational inertia? If true, set to identity. Default = true
 
-    /** Default destructor does nothing */
-    virtual ~STaskOpPos();
+      /** Default constructor sets stuff to S_NULL */
+      STaskOpPos();
 
-    /** 1. Initializes the task specific data members.
-     *
-     * 2. Parses non standard task parameters,
-     * which are stored in STaskBase::task_nonstd_params_.
-     * Namely:
-     *  (a) parent link name
-     *  (b) pos in parent.*/
-    virtual bool initTaskParams();
-  };
+      /** Default destructor does nothing */
+      virtual ~STaskOpPos();
 
+      /** 1. Initializes the task specific data members.
+       *
+       * 2. Parses non standard task parameters,
+       * which are stored in STaskBase::task_nonstd_params_.
+       * Namely:
+       *  (a) parent link name
+       *  (b) pos in parent.*/
+      virtual bool initTaskParams();
+    };
+
+  }
 }
-
 #endif /* SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKOPPOS_HPP_ */

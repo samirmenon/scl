@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License and a copy of the GNU General Public License along with
 scl. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /* \file CTaskOpPos.hpp
  *
  *  Created on: Aug 19, 2010
@@ -32,137 +32,144 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef SRC_SCL_CONTROL_TASKS_CTASKOPPOS_HPP_
 #define SRC_SCL_CONTROL_TASKS_CTASKOPPOS_HPP_
 
-#include <string>
-#include <vector>
-
 #include <scl/DataTypes.hpp>
 
-#include <scl/control/task/tasks/data_structs/STaskOpPos.hpp>
-
-#include <scl/control/task/CTaskBase.hpp>
+#include "data_structs/STaskOpPos.hpp"
+#include "CTaskBase.hpp"
 
 #include <Eigen/Dense>
 #include <Eigen/SVD>
-
+#include <string>
+#include <vector>
 
 namespace scl
 {
-  /**
-   * Computes the operational space  forces for a single
-   * 3-d (x,y,z) goal point Euclidean task
-   *
-   * It computes:
-   *
-   * 1. The task model (computes, mass, jacobian, inv jacobian,
-   * coriolis, centrifugal and gravity matrices/vectors).
-   *
-   * 2. The task servo (computes the dynamically decoupled task
-   * forces and the torques. uses the task model to do so).
-   */
-class CTaskOpPos : public scl::CTaskBase
-{
-public:
-  /********************************
-   * CTaskBase API
-   *********************************/
-  /** Computes the task torques */
-  virtual bool computeServo(const SRobotSensors* arg_sensors);
+  namespace tasks
+  {
+    /** Computes the operational space  forces for a single
+     * 3-d (x,y,z) goal point Euclidean task
+     *
+     * It computes:
+     *
+     * 1. The task model (computes, mass, jacobian, inv jacobian,
+     * coriolis, centrifugal and gravity matrices/vectors).
+     *
+     * 2. The task servo (computes the dynamically decoupled task
+     * forces and the torques. uses the task model to do so).
+     */
+    class CTaskOpPos : public scl::CTaskBase
+    {
+    public:
+      /********************************
+       * CTaskBase API
+       *********************************/
+      /** Computes the task torques :
+       *
+       * This is essentially a function of the type:
+       *   Fgc_task = PDA ( x, xgoal, dx, dxgoal, ddxgoal )
+       *
+       * Fgc_task is stored locally in this object's data structure. */
+      virtual bool computeControl(
+          const SRobotSensors &arg_sensors,
+          const CDynamicsBase &arg_dyn);
 
-  /** Computes the dynamics (task model)
-   * Assumes that the data_->model_.gc_model_ has been updated. */
-  virtual bool computeModel(const SRobotSensors* arg_sensors);
+      /** Computes the dynamics (task model, inertias, gravity etc.)
+       *
+       * The model matrices etc. are stored locally in this object's
+       * data structure
+       * */
+      virtual bool computeModel(
+          const SRobotSensors &arg_sensors,
+          const SGcModel &arg_gcm,
+          const CDynamicsBase &arg_dyn);
 
-  /* **************************************************************
-   *                   Status Get/Set Functions
-   * ************************************************************** */
-  /** Return this task controller's task data structure.*/
-  virtual STaskBase* getTaskData();
+      /* **************************************************************
+       *                   Status Get/Set Functions
+       * ************************************************************** */
+      /** Return this task controller's task data structure.*/
+      virtual STaskBase* getTaskData();
 
-  /** Sets the current goal position */
-  virtual bool setGoalPos(const Eigen::VectorXd & arg_goal);
+      /** Sets the current goal position, velocity, and acceleration.
+       * Leave vector pointers NULL if you don't want to set them. */
+      bool setStateGoal(const Eigen::VectorXd * arg_xgoal,
+          const Eigen::VectorXd * arg_dxgoal=NULL,
+          const Eigen::VectorXd * arg_ddxgoal=NULL);
 
-  /** Sets the current goal velocity */
-  virtual bool setGoalVel(const Eigen::VectorXd & arg_goal);
+      /** Gets the current goal position, velocity and acceleration.
+       * If a passed pointer is NULL, nothing is returned.. */
+      bool getStateGoal(Eigen::VectorXd * ret_xgoal,
+          Eigen::VectorXd * ret_dxgoal=NULL,
+          Eigen::VectorXd * ret_ddxgoal=NULL) const
+      {
+        if(NULL!=ret_xgoal) *ret_xgoal = data_.x_goal_;
+        if(NULL!=ret_dxgoal) *ret_dxgoal = data_.dx_goal_;
+        if(NULL!=ret_ddxgoal) *ret_ddxgoal = data_.ddx_goal_;
+        return true;
+      }
 
-  /** Sets the current goal acceleration */
-  virtual bool setGoalAcc(const Eigen::VectorXd & arg_goal);
+      /** Gets the current position, velocity and acceleration.
+       * If a passed pointer is NULL, nothing is returned.. */
+      bool getState(Eigen::VectorXd * ret_x,
+          Eigen::VectorXd * ret_dx=NULL,
+          Eigen::VectorXd * ret_ddx=NULL) const
+      {
+        if(NULL!=ret_x) *ret_x = data_.x_;
+        if(NULL!=ret_dx) *ret_dx = data_.dx_;
+        if(NULL!=ret_ddx) *ret_ddx = data_.ddx_;
+        return true;
+      }
 
-  /** Gets the current goal position. Returns false if not supported by task. */
-  virtual bool getGoalPos(Eigen::VectorXd & arg_goal) const
-  { arg_goal = data_->x_goal_; return true; }
+      /* *******************************
+       * CTaskOpPos specific functions
+       ******************************** */
+      /** Whether the task has achieved its goal position. */
+      sBool achievedGoalPos();
 
-  /** Gets the current goal velocity. Returns false if not supported by task. */
-  virtual bool getGoalVel(Eigen::VectorXd & arg_goal) const
-  { arg_goal = data_->dx_goal_; return true; }
+      void setFlagComputeOpGravity(sBool arg_compute_grav)
+      { data_.flag_compute_op_gravity_ = !arg_compute_grav; }
 
-  /** Gets the current goal acceleration. Returns false if not supported by task. */
-  virtual bool getGoalAcc(Eigen::VectorXd & arg_goal) const
-  { arg_goal = data_->ddx_goal_; return true; }
+      void setFlagComputeOpCCForces(sBool arg_compute_cc_forces)
+      { data_.flag_compute_op_cc_forces_ = !arg_compute_cc_forces; }
 
-  /** Gets the current position. Returns false if not supported by task. */
-  virtual bool getPos(Eigen::VectorXd & arg_pos) const
-  { arg_pos = data_->x_; return true; }
+      void setFlagComputeOpInertia(sBool arg_compute_inertia)
+      { data_.flag_compute_op_inertia_ = !arg_compute_inertia; }
 
-  /** Gets the current velocity. Returns false if not supported by task. */
-  virtual bool getVel(Eigen::VectorXd & arg_vel) const
-  { arg_vel = data_->dx_; return true; }
+      /* *******************************
+       * Initialization specific functions
+       ******************************** */
+      /** Default constructor : Does nothing   */
+      CTaskOpPos();
 
-  /** Gets the current acceleration. Returns false if not supported by task. */
-  virtual bool getAcc(Eigen::VectorXd & arg_acc) const
-  { arg_acc = data_->ddx_; return true; }
+      /** Default destructor : Does nothing.   */
+      virtual ~CTaskOpPos(){}
 
-  /* *******************************
-   * CTaskOpPos specific functions
-   ******************************** */
-  /** Whether the task has achieved its goal position. */
-  sBool achievedGoalPos();
+      /** Initializes the task object. Required to set output
+       * gc force dofs */
+      virtual bool init(STaskBase* arg_task_data,
+          CDynamicsBase* arg_dynamics);
 
-  void setFlagComputeOpGravity(sBool arg_compute_grav)
-  { data_->flag_compute_op_gravity_ = !arg_compute_grav; }
+      /** Resets the task by removing its data.
+       * NOTE : Does not deallocate its data structure*/
+      virtual void reset();
 
-  void setFlagComputeOpCCForces(sBool arg_compute_cc_forces)
-  { data_->flag_compute_op_cc_forces_ = !arg_compute_cc_forces; }
+    protected:
+      /** The actual data structure for this computational object */
+      STaskOpPos data_;
 
-  void setFlagComputeOpInertia(sBool arg_compute_inertia)
-  { data_->flag_compute_op_inertia_ = !arg_compute_inertia; }
+      /** Temporary variables */
+      Eigen::VectorXd tmp1, tmp2;
 
-  /* *******************************
-   * Initialization specific functions
-   ******************************** */
-  /** Default constructor : Does nothing   */
-  CTaskOpPos();
+      /** For inverting the lambda matrix (when it gets singular) */
+      Eigen::ColPivHouseholderQR<Eigen::Matrix3d> qr_;
 
-  /** Default destructor : Does nothing.   */
-  virtual ~CTaskOpPos(){}
+      /** True when the lambda_inv matrix turns singular. */
+      sBool use_svd_for_lambda_inv_;
 
-  /** Initializes the task object. Required to set output
-   * gc force dofs */
-  virtual bool init(STaskBase* arg_task_data,
-      CDynamicsBase* arg_dynamics);
-
-  /** Resets the task by removing its data.
-   * NOTE : Does not deallocate its data structure*/
-  virtual void reset();
-
-protected:
-  /** The actual data structure for this computational object */
-  STaskOpPos* data_;
-
-  /** Temporary variables */
-  Eigen::VectorXd tmp1, tmp2;
-
-  /** For inverting the lambda matrix (when it gets singular) */
-  Eigen::ColPivHouseholderQR<Eigen::Matrix3d> qr_;
-
-  /** True when the lambda_inv matrix turns singular. */
-  sBool use_svd_for_lambda_inv_;
-
-  /** For inverting the operational space inertia matrix
-   * near singularities. 3x3 for operational point tasks. */
-  Eigen::JacobiSVD<Eigen::Matrix3d > svd_;
-  Eigen::Matrix3d singular_values_;
-};
-
+      /** For inverting the operational space inertia matrix
+       * near singularities. 3x3 for operational point tasks. */
+      Eigen::JacobiSVD<Eigen::Matrix3d > svd_;
+      Eigen::Matrix3d singular_values_;
+    };
+  }
 }
-
 #endif /* SRC_SCL_CONTROL_TASKS_CTASKOPPOS_HPP_ */
