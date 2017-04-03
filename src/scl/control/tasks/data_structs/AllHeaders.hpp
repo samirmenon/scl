@@ -35,14 +35,10 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 // All the tasks..
 #include <STaskBase.hpp>
 #include <STaskComPos.hpp>
-#include <STaskConstraintPlane.hpp>
 #include <STaskGc.hpp>
 #include <STaskGcLimitCentering.hpp>
 #include <STaskGcSet.hpp>
 #include <STaskNullSpaceDamping.hpp>
 #include <STaskOpPos.hpp>
-#include <STaskOpPosNoGravity.hpp>
-#include <STaskOpPosPIDA1OrderInfTime.hpp>
-
 
 #endif /* SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_ALLHEADERS_HPP_ */

@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CTASKGCLIMITCENTERING_HPP_
-#define CTASKGCLIMITCENTERING_HPP_
+#ifndef SRC_SCL_CONTROL_TASKS_CTASKGCLIMITCENTERING_HPP_
+#define SRC_SCL_CONTROL_TASKS_CTASKGCLIMITCENTERING_HPP_
 
 #include <scl/control/task/CTaskBase.hpp>
 
@@ -97,4 +97,4 @@ namespace scl
 
 }
 
-#endif /* CTASKGCLIMITCENTERING_HPP_ */
+#endif /* SRC_SCL_CONTROL_TASKS_CTASKGCLIMITCENTERING_HPP_ */

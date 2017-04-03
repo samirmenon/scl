@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef STASKGCLIMITCENTERING_HPP_
-#define STASKGCLIMITCENTERING_HPP_
+#ifndef SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKGCLIMITCENTERING_HPP_
+#define SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKGCLIMITCENTERING_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
@@ -65,4 +65,4 @@ namespace scl
 
 }
 
-#endif /* STASKGCLIMITCENTERING_HPP_ */
+#endif /* SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKGCLIMITCENTERING_HPP_ */

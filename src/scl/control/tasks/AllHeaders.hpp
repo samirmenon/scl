@@ -40,15 +40,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 // All the tasks..
 #include <CTaskComPos.hpp>
-#include <CTaskConstraintPlane.hpp>
 #include <CTaskGc.hpp>
 #include <CTaskGcLimitCentering.hpp>
 #include <CTaskGcSet.hpp>
 #include <CTaskNULL.hpp>
 #include <CTaskNullSpaceDamping.hpp>
 #include <CTaskOpPos.hpp>
-#include <CTaskOpPosNoGravity.hpp>
-#include <CTaskOpPosPIDA1OrderInfTime.hpp>
 
 
 #endif /* SRC_SCL_CONTROL_TASKS_ALLHEADERS_HPP_ */

@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef STASKGCSET_HPP_
-#define STASKGCSET_HPP_
+#ifndef SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKGCSET_HPP_
+#define SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKGCSET_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/control/task/data_structs/STaskBase.hpp>
@@ -64,4 +64,4 @@ namespace scl
   };
 
 } /* namespace scl */
-#endif /* STASKGCSET_HPP_ */
+#endif /* SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKGCSET_HPP_ */

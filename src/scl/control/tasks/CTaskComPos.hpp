@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CCOMPOSTASK_HPP_
-#define CCOMPOSTASK_HPP_
+#ifndef SCL_CONTROL_TASKS_CCOMPOSTASK_HPP_
+#define SCL_CONTROL_TASKS_CCOMPOSTASK_HPP_
 
 #include <scl/DataTypes.hpp>
 #include <scl/control/task/tasks/data_structs/STaskComPos.hpp>
@@ -153,4 +153,4 @@ namespace scl
   };
 
 } /* namespace scl */
-#endif /* CCOMPOSTASK_HPP_ */
+#endif /* SCL_CONTROL_TASKS_CCOMPOSTASK_HPP_ */

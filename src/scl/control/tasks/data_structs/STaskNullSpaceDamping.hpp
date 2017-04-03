@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef STASKNULLSPACEDAMPING_HPP_
-#define STASKNULLSPACEDAMPING_HPP_
+#ifndef SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKNULLSPACEDAMPING_HPP_
+#define SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKNULLSPACEDAMPING_HPP_
 
 #include <scl/control/task/data_structs/STaskBase.hpp>
 
@@ -50,4 +50,4 @@ namespace scl
 
 }
 
-#endif /* STASKNULLSPACEDAMPING_HPP_ */
+#endif /* SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKNULLSPACEDAMPING_HPP_ */

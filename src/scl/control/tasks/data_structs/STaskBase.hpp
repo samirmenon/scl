@@ -29,10 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef STASKBASE_HPP_
-#define STASKBASE_HPP_
-
-#include <string>
+#ifndef SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKBASE_HPP_
+#define SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKBASE_HPP_
 
 #include <scl/DataTypes.hpp>
 
@@ -41,6 +39,9 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/data_structs/SRobotIO.hpp>
 
 #include <scl/data_structs/SGcModel.hpp>
+
+#include <string>
+
 
 namespace scl
 {
@@ -225,4 +226,4 @@ namespace scl
     virtual bool initTaskParams()=0;
   };
 }
-#endif /* STASKBASE_HPP_ */
+#endif /* SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_STASKBASE_HPP_ */

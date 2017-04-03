@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef COPPOINTTASK_HPP_
-#define COPPOINTTASK_HPP_
+#ifndef SRC_SCL_CONTROL_TASKS_CTASKOPPOS_HPP_
+#define SRC_SCL_CONTROL_TASKS_CTASKOPPOS_HPP_
 
 #include <string>
 #include <vector>
@@ -165,4 +165,4 @@ protected:
 
 }
 
-#endif /* CMARKERTRACKTASK_HPP_ */
+#endif /* SRC_SCL_CONTROL_TASKS_CTASKOPPOS_HPP_ */

@@ -29,8 +29,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  *  Author: Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef CTASKNULLSPACEDAMPING_HPP_
-#define CTASKNULLSPACEDAMPING_HPP_
+#ifndef SRC_SCL_CONTROL_TASKS_CTASKNULLSPACEDAMPING_HPP_
+#define SRC_SCL_CONTROL_TASKS_CTASKNULLSPACEDAMPING_HPP_
 
 #include <scl/control/task/CTaskBase.hpp>
 
@@ -83,4 +83,4 @@ namespace scl
 
 }
 
-#endif /* CTASKNULLSPACEDAMPING_HPP_ */
+#endif /* SRC_SCL_CONTROL_TASKS_CTASKNULLSPACEDAMPING_HPP_ */
