@@ -186,8 +186,7 @@ namespace scl
       STaskBase(const STaskBase &);
     public:
       /** Constructor for setting the type */
-      STaskBase(const std::string &arg_subclass_type)
-    : SObject(arg_subclass_type){}
+      STaskBase(const std::string &arg_subclass_type) : SObject(arg_subclass_type){}
 
       /** Destructor : Does nothing */
       virtual ~STaskBase(){}
