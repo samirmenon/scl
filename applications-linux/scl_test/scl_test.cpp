@@ -37,6 +37,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include "test_math.hpp"
 //Controller tests
 #include "test_controller.hpp"
+#include "test_controller2.hpp"
 #include "test_robot_controller.hpp"
 //Test Scl spatial dynamics engine
 #include "test_dynamics.hpp"
@@ -161,6 +162,15 @@ int main(int argc, char** argv)
           <<sutil::CSystemClock::getSysTime()<<" "
           <<sutil::CSystemClock::getSimTime()<<"]";
       scl_test::test_dynamics_sclspatial(id);
+    }
+    ++id;
+
+    if((tid==0)||(tid==id))
+    {//Test Controller for robots : Controller V2
+      std::cout<<"\n\nTest #"<<id<<". Controller2 [Sys time, Sim time :"
+          <<sutil::CSystemClock::getSysTime() <<" "
+          <<sutil::CSystemClock::getSimTime() <<"]";
+      scl_test::test_controller2(id);
     }
     ++id;
 

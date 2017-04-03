@@ -58,6 +58,7 @@ SET(ALL_SRC ${TEST_BASE_DIR}scl_test.cpp
             ${TEST_BASE_DIR}test_dynamics_sclspatial_math.cpp
             ${TEST_BASE_DIR}test_dynamics_sclspatial.cpp
             ${TEST_BASE_DIR}test_robot_controller.cpp 
+            ${TEST_BASE_DIR}test_controller2.cpp 
             ${TEST_BASE_DIR}test_graphics.cpp
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
             ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
