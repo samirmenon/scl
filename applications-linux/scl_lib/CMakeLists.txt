@@ -86,6 +86,7 @@ SET(CTR_TASKS_SRC ${SCL_INC_DIR}/control/task/tasks/CTaskNULL.cpp
    
 SET(CTR2_TASKS_SRC ${SCL_INC_DIR}/control/tasks/CTaskOpPos.cpp
                   ${SCL_INC_DIR}/control/tasks/data_structs/STaskOpPos.cpp
+                  ${SCL_INC_DIR}/control/tasks/data_structs/STaskBase.cpp
    )
    
 # This needs some work. Should add basic trajectory generation support.
