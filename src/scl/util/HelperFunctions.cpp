@@ -30,6 +30,7 @@ this file. If not, see <http://www.gnu.org/licenses/>.
 #include <sstream>
 #include <stdexcept>
 #include <iostream>
+#include <ctype.h>
 #ifndef WIN32
 //For getting the current working directory.
 #include <unistd.h>
@@ -38,29 +39,32 @@ this file. If not, see <http://www.gnu.org/licenses/>.
 namespace scl_util
 {
 
-  unsigned int countNumbersInString(const char* ss)
+  unsigned int countNumbersInString(const char* arg_str)
   {
-    if(ss==NULL)
+    if(arg_str==NULL)
     { return 0; }
 
     unsigned int ctr = 0, sz=0;
     //Assume numbers are separated by whitespace.
-    while(ss[ctr]!='\0')
+    while(arg_str[ctr]!='\0')
     {
-      while(ss[ctr]==' ')
+      // Iterate till a number appears.
+      while(std::isspace(arg_str[ctr]))
       {
         ctr++;
-        if(ss[ctr]=='\0')
+        if(arg_str[ctr]=='\0')
         { return sz;  }
       }
       sz++;//Found a number (presumably)
-      while(ss[ctr]!=' ')
+
+      // Now iterate till the end of the number.
+      while(false == std::isspace(arg_str[ctr]))
       {
         ctr++;
-        if(ss[ctr]=='\0')
+        if(arg_str[ctr]=='\0')
         { return sz;  }
       }
-    }
+    }// End of while loop over string.
     return sz;
   }
 

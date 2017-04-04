@@ -32,6 +32,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #ifndef EIGENEXTENSIONS_HPP_
 #define EIGENEXTENSIONS_HPP_
 
+#include <scl/util/HelperFunctions.hpp>
+
 #include <Eigen/Eigen>
 #include <jsoncpp/json/json.h>
 
@@ -237,6 +239,35 @@ namespace scl_util
     ss.str(std::string());
 
     arg_str.append("]");
+  }
+
+  /** Initialize an Eigen Vector from a string array
+   *
+   * Input (string) : "1 2 3"
+   * Eigen vector:
+   *     1
+   *     2
+   *     3
+   */
+  template<typename Derived>
+  bool eigenVectorFromString(Eigen::MatrixBase<Derived>& x, const std::string &arg_str,
+      const unsigned int arg_nrows=0)
+  {
+    unsigned int nrows = arg_nrows;
+    if(nrows == 0 )
+    {// Try to estimate vector size.
+      nrows = scl_util::countNumbersInString(arg_str.c_str());
+      if(nrows == 0)
+      { return false; } //Must have elements.
+    }
+
+    x.setIdentity(nrows,1);//Convert it into a vector.
+
+    std::stringstream ss(arg_str);
+    for(unsigned int i=0;i<nrows;++i)
+    { ss>>x(i,0); }
+
+    return true;
   }
 
   /** Initialize an Eigen Matrix from a JSON array or array of arrays

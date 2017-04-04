@@ -31,6 +31,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "EigenExtensions.hpp"
 
+#include <ctype.h>
 
 namespace scl_util
 {
@@ -42,5 +43,4 @@ namespace scl_util
   {
     eigentoStringArrayJSON<>(x.matrix(),arg_str);
   }
-
 }

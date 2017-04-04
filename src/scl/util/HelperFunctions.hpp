@@ -24,8 +24,8 @@ this file. If not, see <http://www.gnu.org/licenses/>.
  *  Copyright (C) 2010, Samir Menon <smenon@stanford.edu>
  */
 
-#ifndef RANDOMFUNCTIONS_HPP_
-#define RANDOMFUNCTIONS_HPP_
+#ifndef HELPERFUNCTIONS_HPP_
+#define HELPERFUNCTIONS_HPP_
 
 #include <string>
 #include <vector>
@@ -38,11 +38,21 @@ this file. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl_util
 {
-  unsigned int countNumbersInString(const char* str);
+  /** A function that counts the number of words in
+   * a string.
+   * Input : A const pointer to a string (say a.c_str() for a std::string)
+   * Output : -1 (error) 0,1... (the number of words in a string)
+   *   E.g. "1 1.2 1" -> 3
+   *        "0" -> 1
+   *        "bobo is a clown" -> 4
+   */
+  unsigned int countNumbersInString(const char* arg_str);
 
+  /** Tests if a given string is in a given vector */
   bool isStringInVector(const std::string& arg_str,
       const std::vector<std::string>& arg_vec);
 
+  /** Does what it says */
   bool getCurrentDir(std::string& arg_cwd);
 }
 
