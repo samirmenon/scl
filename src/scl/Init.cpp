@@ -259,7 +259,6 @@ namespace scl
         std::vector<scl::STaskOpPos*> &arg_rtask_ui_3d_ds /** This will contain the final op pos tasks */
     )
     {
-      bool flag;
       try
       {
         if(false == arg_rctr_ds.hasBeenInit())
