@@ -33,12 +33,12 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_ALLHEADERS_HPP_
 
 // All the tasks..
-#include <STaskBase.hpp>
-#include <STaskComPos.hpp>
-#include <STaskGc.hpp>
-#include <STaskGcLimitCentering.hpp>
-#include <STaskGcSet.hpp>
-#include <STaskNullSpaceDamping.hpp>
-#include <STaskOpPos.hpp>
+#include "STaskBase.hpp"
+//#include "STaskComPos.hpp"
+//#include "STaskGc.hpp"
+//#include "STaskGcLimitCentering.hpp"
+//#include "STaskGcSet.hpp"
+//#include "STaskNullSpaceDamping.hpp"
+#include "STaskOpPos.hpp"
 
 #endif /* SRC_SCL_CONTROL_TASKS_DATA_STRUCTS_ALLHEADERS_HPP_ */

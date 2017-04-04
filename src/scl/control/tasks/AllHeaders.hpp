@@ -33,19 +33,19 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #define SRC_SCL_CONTROL_TASKS_ALLHEADERS_HPP_
 
 // All the data structures
-#include <data_structs/AllHeaders.hpp>
+#include "data_structs/AllHeaders.hpp"
 
 // The task base..
-#include <CTaskBase.hpp>
+#include "CTaskBase.hpp"
 
 // All the tasks..
-#include <CTaskComPos.hpp>
-#include <CTaskGc.hpp>
-#include <CTaskGcLimitCentering.hpp>
-#include <CTaskGcSet.hpp>
-#include <CTaskNULL.hpp>
-#include <CTaskNullSpaceDamping.hpp>
-#include <CTaskOpPos.hpp>
+//#include "CTaskComPos.hpp"
+//#include "CTaskGc.hpp"
+//#include "CTaskGcLimitCentering.hpp"
+//#include "CTaskGcSet.hpp"
+//#include "CTaskNULL.hpp"
+//#include "CTaskNullSpaceDamping.hpp"
+#include "CTaskOpPos.hpp"
 
 
 #endif /* SRC_SCL_CONTROL_TASKS_ALLHEADERS_HPP_ */
