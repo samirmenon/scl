@@ -60,7 +60,8 @@ namespace scl
         if(0>=link_name_.size())
         { throw(std::runtime_error("Parent link's name is too short."));  }
 
-        tmp_p = arg_params.at_const("pos_in_parent"); if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: pos_in_parent")); }
+        tmp_p = arg_params.at_const("pos_in_parent");
+        if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: pos_in_parent")); }
         if(false == scl_util::eigenVectorFromString(pos_in_parent_, *tmp_p, 3))
         { throw(std::runtime_error("Ill formatted key value: pos_in_parent")); }
 

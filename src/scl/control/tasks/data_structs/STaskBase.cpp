@@ -31,11 +31,13 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "STaskBase.hpp"
 
+#include <scl/util/EigenExtensions.hpp>
+
+#include <Eigen/Core>
+
 #include <stdexcept>
 #include <iostream>
 #include <string>
-
-#include <Eigen/Core>
 
 
 namespace scl
@@ -51,8 +53,8 @@ namespace scl
       bool flag = true;
       try
       {
-        std::string & arg_name;
-        std::string & arg_type;
+        std::string arg_name;
+        std::string arg_type;
         sUInt arg_priority;
         scl::sUInt arg_task_dof;
         Eigen::VectorXd arg_kp;
@@ -63,55 +65,48 @@ namespace scl
         Eigen::VectorXd arg_ftask_min;
 
         const std::string *tmp_p;
-        tmp_p = arg_params.at("name");
+        tmp_p = arg_params.at_const("name");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: name")); }
-        flag = scl_util::eigenVectorFromString(arg_name, *tmp_p);
-        if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
+        arg_name = *tmp_p;
 
-        tmp_p = arg_params.at("type");
+        tmp_p = arg_params.at_const("type");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: type")); }
-        flag = scl_util::eigenVectorFromString(arg_type, *tmp_p);
-        if(false == flag) { throw(std::runtime_error("Ill formatted key value: type")); }
+        arg_type = *tmp_p;
 
-        tmp_p = arg_params.at("priority");
+        tmp_p = arg_params.at_const("priority");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: priority")); }
         arg_priority = atoi(tmp_p->c_str());
 
-        tmp_p = arg_params.at("task_dof");
+        tmp_p = arg_params.at_const("task_dof");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: task_dof")); }
         arg_priority = atoi(tmp_p->c_str());
 
-        tmp_p = arg_params.at_const("pos_in_parent");
-        if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: pos_in_parent")); }
-        if(false == scl_util::eigenVectorFromString(pos_in_parent_, *tmp_p, 3))
-        { throw(std::runtime_error("Ill formatted key value: pos_in_parent")); }
-
-        tmp_p = arg_params.at("kp");
+        tmp_p = arg_params.at_const("kp");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: kp")); }
         flag = scl_util::eigenVectorFromString(arg_kp, *tmp_p);
         if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
 
-        tmp_p = arg_params.at("kv");
+        tmp_p = arg_params.at_const("kv");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: kv")); }
         flag = scl_util::eigenVectorFromString(arg_kv, *tmp_p);
         if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
 
-        tmp_p = arg_params.at("ka");
+        tmp_p = arg_params.at_const("ka");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: ka")); }
         flag = scl_util::eigenVectorFromString(arg_ka, *tmp_p);
         if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
 
-        tmp_p = arg_params.at("ki");
+        tmp_p = arg_params.at_const("ki");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: ki")); }
         flag = scl_util::eigenVectorFromString(arg_ki, *tmp_p);
         if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
 
-        tmp_p = arg_params.at("ftask_max");
+        tmp_p = arg_params.at_const("ftask_max");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: ftask_max")); }
         flag = scl_util::eigenVectorFromString(arg_ftask_max, *tmp_p);
         if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
 
-        tmp_p = arg_params.at("ftask_min");
+        tmp_p = arg_params.at_const("ftask_min");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: ftask_min")); }
         flag = scl_util::eigenVectorFromString(arg_ftask_min, *tmp_p);
         if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
@@ -223,9 +218,11 @@ namespace scl
         if((1!=arg_ftask_min.size()) && (arg_task_dof!=(sUInt)arg_ftask_min.size()))
         { throw(std::runtime_error("Minimum task-force vector size should be 1 or task-dof")); }
 
+        if(getType() != arg_type)
+        { throw(std::runtime_error(std::string("Task type is inconsistent with the desired task type")+arg_type)); }
+
         //Start initializing the task
         name_ = arg_name;
-        type_task_ = arg_type;
         priority_ = arg_priority;
         if(0 == arg_task_dof)//Generalized coordinate controller
         { dof_task_ = arg_robot_ds->dof_; }
@@ -279,7 +276,7 @@ namespace scl
           { throw(std::runtime_error("Specified minimum task-force exceeds specified maximum task force.")); }
         }
 
-        flag = initTaskParams();
+        flag = initTaskSubclass(arg_params);
         if(false == flag)
         { throw(std::runtime_error("Could not initialize the non standard task parameters. \nTODO : Subclass STaskBase, implement your task data structure, and make the function return true.")); }
 
