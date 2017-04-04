@@ -58,13 +58,13 @@ namespace scl
 
       Eigen::Vector3d pos_in_parent_; //Position in the parent link's local frame (x,y,z)
       std::string link_name_="";      //The parent link
-      const SRigidBody *link_ds_=NULL;//The parent link's parsed data structure
 
       sFloat spatial_resolution_=0.005;//Meters
 
-      sBool flag_compute_op_gravity_=true;  ///< Use operational point gravity? Default = true
-      sBool flag_compute_op_cc_forces_=false;///< Use operational centrifugal/coriolis forces? Default = false
-      sBool flag_compute_op_inertia_=true;  ///< Use operational inertia? If true, set to identity. Default = true
+      const  sBool flag_defaults_[3] = {true, false, true}; ///< Well we'll try to not be too verbose..
+      sBool flag_compute_op_gravity_=flag_defaults_[0];  ///< Use operational point gravity? Default = true
+      sBool flag_compute_op_cc_forces_=flag_defaults_[1];///< Use operational centrifugal/coriolis forces? Default = false
+      sBool flag_compute_op_inertia_=flag_defaults_[2];  ///< Use operational inertia? If true, set to identity. Default = true
 
       /** Default constructor sets stuff to S_NULL */
       STaskOpPos() : STaskBase("STaskOpPos"){}
@@ -72,14 +72,19 @@ namespace scl
       /** Default destructor does nothing */
       virtual ~STaskOpPos(){}
 
-      /** 1. Initializes the task specific data members.
+      /** Processes the task's non standard parameters.
+       * This function is called by init() and must be implemented
+       * by all subclasses. Else it will be impossible to initialize
+       * the task. Ie. init() will always return false.
        *
-       * 2. Parses non standard task parameters,
-       * which are stored in STaskBase::task_nonstd_params_.
-       * Namely:
-       *  (a) parent link name
-       *  (b) pos in parent.*/
-      virtual bool initTaskParams();
+       * Eg.The parent link and the pos in parent, which are required by op
+       *    point tasks but not by gc tasks. These can be accessed using the
+       *    mapped list .at() function. A string is returned. E.g.,
+       *    arg_params.at("parent_link") == "base"
+       *    arg_params.at("pos_in_parent") == "0.0 0.0 0.0"
+       *    arg_params.at("my_new_arbitrary_option") == "8080"*/
+      virtual bool initTaskSubclass(
+          const sutil::CMappedList<std::string, std::string>& arg_params);
     };
 
   }

@@ -31,6 +31,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include "STaskOpPos.hpp"
 
+#include <scl/util/EigenExtensions.hpp>
+
 #include <stdexcept>
 #include <iostream>
 
@@ -38,7 +40,8 @@ namespace scl
 {
   namespace tasks
   {
-    bool STaskOpPos::initTaskParams()
+    bool STaskOpPos::initTaskSubclass(
+        const sutil::CMappedList<std::string, std::string>& arg_params)
     {
       try
       {
@@ -46,79 +49,51 @@ namespace scl
         { throw(std::runtime_error("Operational point tasks MUST have 3 dofs (xyz translation at a point)."));  }
 
         // Set defaults
-        flag_compute_op_gravity_ = true;
-        flag_compute_op_cc_forces_ = false;
-        flag_compute_op_inertia_ = true;
+        flag_compute_op_gravity_ = flag_defaults_[0];
+        flag_compute_op_cc_forces_ = flag_defaults_[1];
+        flag_compute_op_inertia_ = flag_defaults_[2];
 
         /** Extract the extra params */
-        std::string parent_link_name;
-        Eigen::Vector3d pos_in_parent;
-
-        bool contains_plink = false, contains_posinp = false;
-
-        std::vector<scl::sString2>::const_iterator it,ite;
-        for(it = task_nonstd_params_.begin(), ite = task_nonstd_params_.end();
-            it!=ite;++it)
-        {
-          const sString2& param = *it;
-          if(param.data_[0] == std::string("parent_link"))
-          {
-            parent_link_name = param.data_[1];
-            contains_plink = true;
-          }
-          else if(param.data_[0] == std::string("pos_in_parent"))
-          {
-            std::stringstream ss(param.data_[1]);
-            ss>> pos_in_parent[0];
-            ss>> pos_in_parent[1];
-            ss>> pos_in_parent[2];
-
-            contains_posinp = true;
-          }
-          else if(param.data_[0] == std::string("flag_compute_op_gravity"))
-          {//Flags are optional, so we don't need to check them with contains_
-            std::stringstream ss(param.data_[1]);
-            int tmp;
-            ss>>tmp;
-            if(tmp == 0)  { flag_compute_op_gravity_ = false; }
-            else  { flag_compute_op_gravity_ = true; }
-          }
-          else if(param.data_[0] == std::string("flag_compute_op_cc_forces"))
-          {//Flags are optional, so we don't need to check them with contains_
-            std::stringstream ss(param.data_[1]);
-            int tmp;
-            ss>>tmp;
-            if(tmp == 0)  { flag_compute_op_cc_forces_ = false; }
-            else  { flag_compute_op_cc_forces_ = true; }
-          }
-          else if(param.data_[0] == std::string("flag_compute_op_inertia"))
-          {//Flags are optional, so we don't need to check them with contains_
-            std::stringstream ss(param.data_[1]);
-            int tmp;
-            ss>>tmp;
-            if(tmp == 0)  { flag_compute_op_inertia_ = false; }
-            else  { flag_compute_op_inertia_ = true; }
-          }
-        }
-
-        //Error checks
-        if(false == contains_plink)
-        { throw(std::runtime_error("Task's nonstandard params do not contain a parent link name."));  }
-
-        if(false == contains_posinp)
-        { throw(std::runtime_error("Task's nonstandard params do not contain a pos in parent."));  }
-
-        if(0>=parent_link_name.size())
+        const std::string *tmp_p;
+        tmp_p = arg_params.at_const("parent_link"); if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: parent_link")); }
+        link_name_ = *tmp_p;
+        if(0>=link_name_.size())
         { throw(std::runtime_error("Parent link's name is too short."));  }
 
-        link_name_ = parent_link_name;
+        tmp_p = arg_params.at_const("pos_in_parent"); if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: pos_in_parent")); }
+        if(false == scl_util::eigenVectorFromString(pos_in_parent_, *tmp_p, 3))
+        { throw(std::runtime_error("Ill formatted key value: pos_in_parent")); }
 
-        link_ds_ = dynamic_cast<const SRigidBody *>(robot_->rb_tree_.at_const(link_name_));
-        if(S_NULL == link_ds_)
-        { throw(std::runtime_error("Could not find the parent link in the parsed robot data structure"));  }
+        // Parse optional params : Issues warning if they don't exist...
+        {
+          tmp_p = arg_params.at_const("flag_compute_op_gravity");
+          if(NULL == tmp_p) { std::cout<<"\n STaskOpPos::init ["<<name_<<"] : WARNING : Using default for: flag_compute_op_gravity"; goto LABEL_NEXT; }
 
-        //Initalize the task data structure.
-        pos_in_parent_ = pos_in_parent;
+          std::stringstream ss(*tmp_p);
+          int tmp; ss>>tmp;
+          tmp == 0 ? flag_compute_op_gravity_ = false : flag_compute_op_gravity_ = true;
+        }
+        LABEL_NEXT:
+
+        {
+          tmp_p = arg_params.at_const("flag_compute_op_cc_forces");
+          if(NULL == tmp_p) { std::cout<<"\n STaskOpPos::init ["<<name_<<"] : WARNING : Using default for: flag_compute_op_cc_forces"; goto LABEL_NEXT2; }
+
+          std::stringstream ss(*tmp_p);
+          int tmp; ss>>tmp;
+          tmp == 0 ? flag_compute_op_cc_forces_ = false : flag_compute_op_cc_forces_ = true;
+        }
+        LABEL_NEXT2:
+
+        {
+          tmp_p = arg_params.at_const("flag_compute_op_inertia");
+          if(NULL == tmp_p) { std::cout<<"\n STaskOpPos::init ["<<name_<<"] : WARNING : Using default for: flag_compute_op_inertia"; goto LABEL_NEXT3; }
+
+          std::stringstream ss(*tmp_p);
+          int tmp; ss>>tmp;
+          tmp == 0 ? flag_compute_op_inertia_ = false : flag_compute_op_inertia_ = true;
+        }
+        LABEL_NEXT3:
 
         //Set task space vector sizes stuff to zero
         x_.setZero(dof_task_);
