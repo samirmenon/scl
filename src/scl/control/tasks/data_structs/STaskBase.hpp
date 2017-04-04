@@ -40,6 +40,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <scl/data_structs/SGcModel.hpp>
 
+#include <sutil/CMappedList.hpp>
+
 #include <string>
 
 
@@ -66,19 +68,16 @@ namespace scl
      * the output joint space..
      *
      * NOTE : YOU CAN NOT USE THIS TASK DATA STRUCTURE DIRECTLY.
-     * You must subclass it, re-implement the function:
+     * You must subclass it, then implement the function:
      *    virtual bool initTaskParams()
      * to parse all the custom parameters (from the xml file)
      * stored in
-     *    task_nonstd_params_.
+     *    task_params_
      * The function must then return true
      */
     class STaskBase : public SObject
     {
     public:
-      /** The type of the task */
-      std::string type_task_="";
-
       /** Is it a subspace task? This variable controls whether the controller
        * computes remaining null spaces for lower level tasks or not. If
        * it is true, the lower level task null spaces are not computed,
@@ -156,21 +155,6 @@ namespace scl
        * Used by     : The task-servo to calculate task forces */
       Eigen::VectorXd kp_, kv_, ka_, ki_;
 
-      /** A set of additional options that may be used by users to
-       * initialize this specific task. These typically go above and
-       * beyond the standard options.
-       *
-       * Eg.The parent link and the pos in parent, which are required by op
-       *    point tasks but not by gc tasks. These will be stored like:
-       *    task_options_[0].data_[0] = "parent_link";
-       *    task_options_[0].data_[1] = "base";
-       *    task_options_[1].data_[0] = "pos_in_parent";
-       *    task_options_[1].data_[1] = "0.0 0.0 0.0";
-       *    task_options_[2].data_[0] = "my_new_arbitrary_option";
-       *    task_options_[2].data_[1] = "8080";
-       *    */
-      std::vector<sString2> task_nonstd_params_;
-
       /** A variable to record errors (if any).
        * It might be a good idea for controllers to assume that
        * this task's torques are faulty if the error state is
@@ -191,9 +175,36 @@ namespace scl
       /** Destructor : Does nothing */
       virtual ~STaskBase(){}
 
-      /** Initialization function
+      /** Initialization function (type 1; string pairs) :
+       * Arguments:
+       *   - A set of key value pairs, both of which are strings.
+       *   - A description of the robot's kinematics
+       *   - A data structure containing the robot's dynamics (NOTE TODO : Perhaps we shouldn't require this..
        *
-       * NOTE : This function also activates the task. */
+       * Key-value pairs required:
+       *   "name" : "unique-string-name"
+       *   "type" : "task-type" (for dynamic object alloc & type lookup)
+       *   "priority" : "0" (0 to n; lower number => higher priority)
+       *   "task_dof" : "3" (the subspace dimension)
+       *   "kp" : "100" (scalar for same along all axes; or vector, one val / axis)
+       *   "kv" : "20 20 17"
+       *   "ka" : "10" (acceleration gain; use only if you have a good acceleration trajectory generator)
+       *   "ki" : "8" (integral gain; use only if there are a lot of unmodeled nolinearities and/or slow motions)
+       *   "ftask_max" : "10" (max/min forces in task space; scalar or vector as with gains)
+       *   "ftask_min" : "-4 -7 -11.2"
+       *
+       * NOTE : This simply parses the values out of the key-value mapped list and calls the other init function
+       */
+      bool init(const sutil::CMappedList<std::string, std::string>& arg_params,
+          const SRobotParsed* arg_robot_parsed,
+          const SGcModel* arg_gc_model);
+
+      /** Initialization function (type 0; direct)
+       *
+       * NOTE : As an alternative, you may also use the other initialization
+       *        function (type 1), though it does call this function in the end.
+       *
+       * Sets the different parameters */
       bool init(const std::string & arg_name,
           const std::string & arg_type,
           const sUInt arg_priority,
@@ -208,18 +219,26 @@ namespace scl
           const Eigen::VectorXd & arg_ki,
           const Eigen::VectorXd & arg_ftask_max,
           const Eigen::VectorXd & arg_ftask_min,
-          /** These are ignored during STaskBase initialization.
-           * However, subclasses may choose to use them and/or
-           * require various values */
-          const std::vector<scl::sString2>& arg_nonstd_params);
+          const sutil::CMappedList<std::string, std::string>& arg_params);
 
-      /** Processes the task's non standard parameters, which the
-       * init() function stores in the task_nonstd_params_.
+      /** Processes the task's non standard parameters.
+       * The set of additional options that may be used by users to
+       * initialize this specific task. These typically go above and
+       * beyond the standard options.
        *
        * This function is called by init() and must be implemented
        * by all subclasses. Else it will be impossible to initialize
-       * the task. Ie. init() will always return false. */
-      virtual bool initTaskParams()=0;
+       * the task. Ie. init() will always return false.
+       *
+       * Eg.The parent link and the pos in parent, which are required by op
+       *    point tasks but not by gc tasks. These can be accessed using the
+       *    mapped list .at() function. A string is returned. E.g.,
+       *    arg_params.at("parent_link") == "base"
+       *    arg_params.at("pos_in_parent") == "0.0 0.0 0.0"
+       *    arg_params.at("my_new_arbitrary_option") == "8080"
+       * */
+      virtual bool initTaskSubclass(
+          const sutil::CMappedList<std::string, std::string>& arg_params)=0;
     };
   }
 }
