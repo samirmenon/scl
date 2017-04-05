@@ -79,6 +79,10 @@ namespace scl
     class STaskBase : public SObject
     {
     public:
+      /** The base id (or task type) of this task.
+       * E.g., for STaskOpPos, it will be TaskOpPos */
+      std::string task_type_id_="";
+
       /** Is it a subspace task? This variable controls whether the controller
        * computes remaining null spaces for lower level tasks or not. If
        * it is true, the lower level task null spaces are not computed,
@@ -164,7 +168,8 @@ namespace scl
 
     public:
       /** Constructor for setting the type */
-      STaskBase(const std::string &arg_subclass_type) : SObject(arg_subclass_type){}
+      STaskBase(const std::string &arg_subclass_type) : SObject(arg_subclass_type)
+      { task_type_id_ = arg_subclass_type.substr(1,std::string::npos); /* Remove the first S*/ }
 
       /** Destructor : Does nothing */
       virtual ~STaskBase(){}
