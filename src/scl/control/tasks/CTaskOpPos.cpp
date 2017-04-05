@@ -416,7 +416,6 @@ namespace scl
         qr_.compute(data_->M_task_);
 
         data_->error_state_ = ERROR_STATE::None;
-
         has_been_init_ = true;
       }
       catch(std::exception& e)
@@ -456,7 +455,6 @@ namespace scl
         qr_.compute(data_->M_task_);
 
         data_->error_state_ = ERROR_STATE::None;
-
         has_been_init_ = true;
       }
       catch(std::exception& e)
