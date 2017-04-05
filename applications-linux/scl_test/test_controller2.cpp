@@ -101,6 +101,12 @@ namespace scl_test
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Copy constructor worked for the op pos task."<<std::flush;  }
       delete t_op_ds2;
 
+//      // NOTE TODO : FIX THIS LATER WHEN JSON STUFF WORKS!!
+//      // Serialize / deserialize the task
+//      std::string str_json;
+//      flag = scl::serializeToJSONString(t_op_ds,str_json,true);
+//      if(false==flag) { throw(std::runtime_error("Could not serialize op task data into json."));  }
+//      else { std::cout<<"\nTest Result ("<<r_id++<<")  Serialized op task data into json."<<std::flush;  }
 
       // ********************** CONTROL TASK TESTING **********************
       scl::tasks::CTaskOpPos t_op;
@@ -122,7 +128,7 @@ namespace scl_test
     }
     catch (std::exception& ee)
     {
-      std::cout<<"\nTest Result ("<<r_id++<<") : "<<ee.what();
+      std::cout<<"\nTest Result ("<<r_id++<<") : ERROR : "<<ee.what();
       std::cout<<"\nTest #"<<id<<" (Task Controller2) : Failed.";
     }
   }
