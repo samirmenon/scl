@@ -66,13 +66,13 @@ namespace scl_test
       scl::tasks::STaskOpPos t_op_ds;
       sutil::CMappedList<std::string, std::string> params;
 
-      // As a sanity check, we'll just test the first key.
+      // Initialize the task parameters
       std::string *tt;
       tt = params.create(std::string("name"),std::string("hand"));
+      // As a sanity check, we'll just test the first key. We'll assume the others work..
       if(NULL == tt)
       { throw(std::runtime_error("Could not create name:hand key in mapped list."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<") Created key value pair name:"<<*tt<<". Testing recall from list for val: "<<*params.at_const("name")<<std::flush;  }
-
       params.create(std::string("type"),std::string("TaskOpPos"));
       params.create(std::string("priority"),std::string("0"));
       params.create(std::string("task_dof"),std::string("3"));
@@ -88,15 +88,17 @@ namespace scl_test
       params.create(std::string("flag_compute_op_cc_forces"),std::string("false"));
       params.create(std::string("flag_compute_op_inertia"),std::string("true"));
 
+      // Initialize the task
       flag = t_op_ds.init(params,&rds);
       //Test code.
       if(false==flag) { throw(std::runtime_error("Could not init op task data from the parsed params."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Init op task data from the parsed params."<<std::flush;  }
 
+
       // ********************** CONTROL TASK TESTING **********************
       scl::tasks::CTaskOpPos t_op;
 
-      flag = t_op.init(params);
+      flag = t_op.init(params, rds);
       if(false==flag) { throw(std::runtime_error("Could not init op task object from the parsed params."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Init op task object from the parsed params."<<std::flush;  }
 
