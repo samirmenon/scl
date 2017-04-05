@@ -139,7 +139,7 @@ namespace scl
         const sUInt arg_priority,
         /** 0  task dof means a gc task. Ie. full dofs */
         const scl::sUInt arg_task_dof,
-        const SRobotParsed* arg_robot_ds,
+        const SRobotParsed* arg_robot_parsed,
         const Eigen::VectorXd & arg_kp,
         const Eigen::VectorXd & arg_kv,
         const Eigen::VectorXd & arg_ka,
@@ -160,16 +160,16 @@ namespace scl
         if(1>arg_type.size())
         { throw(std::runtime_error("Type name is too short")); }
 
-        if(S_NULL==arg_robot_ds)
+        if(S_NULL==arg_robot_parsed)
         { throw(std::runtime_error("Passed a NULL parent-robot data structure")); }
 
-        if(0==arg_robot_ds->dof_)
+        if(0==arg_robot_parsed->dof_)
         { throw(std::runtime_error("Passed a parent-robot data structure with 0 dof")); }
 
-        if(1>arg_robot_ds->name_.size())
+        if(1>arg_robot_parsed->name_.size())
         { throw(std::runtime_error("Passed parent-robot's name is too short")); }
 
-        if(false == arg_robot_ds->has_been_init_)
+        if(false == arg_robot_parsed->has_been_init_)
         { throw(std::runtime_error("Passed uninitialized parent-robot's data structure")); }
 
 
@@ -200,16 +200,15 @@ namespace scl
         name_ = arg_name;
         priority_ = arg_priority;
         if(0 == arg_task_dof)//Generalized coordinate controller
-        { dof_task_ = arg_robot_ds->dof_; }
+        { dof_task_ = arg_robot_parsed->dof_; }
         else
         { dof_task_ = arg_task_dof; }
-        robot_ = arg_robot_ds;
 
         //Set up the dynamics model
-        J_.setZero(dof_task_,robot_->dof_);
-        J_6_.setZero(6,robot_->dof_);
-        J_dyn_inv_.setZero(robot_->dof_,dof_task_);
-        null_space_.setZero(robot_->dof_,robot_->dof_);
+        J_.setZero(dof_task_,arg_robot_parsed->dof_);
+        J_6_.setZero(6,arg_robot_parsed->dof_);
+        J_dyn_inv_.setZero(arg_robot_parsed->dof_,dof_task_);
+        null_space_.setZero(arg_robot_parsed->dof_,arg_robot_parsed->dof_);
         M_task_.setZero(dof_task_,dof_task_);
         M_task_inv_.setZero(dof_task_,dof_task_);
         force_task_cc_.setZero(dof_task_,1);
@@ -217,8 +216,8 @@ namespace scl
 
         //Set up the servo
         force_task_.setZero(dof_task_);
-        force_gc_.setZero(robot_->dof_);
-        range_space_.setZero(robot_->dof_,robot_->dof_);//Can't do anything till this is determined
+        force_gc_.setZero(arg_robot_parsed->dof_);
+        range_space_.setZero(arg_robot_parsed->dof_,arg_robot_parsed->dof_);//Can't do anything till this is determined
 
         if(1==arg_kp.size())
         {kp_.setConstant(dof_task_,arg_kp(0));}

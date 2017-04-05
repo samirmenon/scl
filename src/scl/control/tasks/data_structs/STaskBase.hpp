@@ -96,10 +96,6 @@ namespace scl
       /** Task space degrees of freedom */
       scl::sUInt dof_task_=0;
 
-      /** Robot model. Not a const because it could use the
-       * branching representation's iterator */
-      const SRobotParsed* robot_=NULL;
-
       /** The computed task space Jacobian matrices.
        * Used for velocities. Note that we compute the generalized
        * inverse (the Jacobian is usually not full rank)
@@ -230,7 +226,7 @@ namespace scl
           const sUInt arg_priority,
           /** 0  task dof means a gc task. Ie. full dofs */
           const scl::sUInt arg_task_dof,
-          const SRobotParsed* arg_robot_ds,
+          const SRobotParsed* arg_robot_parsed,
           const Eigen::VectorXd & arg_kp,
           const Eigen::VectorXd & arg_kv,
           const Eigen::VectorXd & arg_ka,
