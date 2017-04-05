@@ -52,14 +52,18 @@ namespace scl_test
       //We'll just go with the Puma for now..
       scl::CParserScl p;
       scl::SRobotParsed rds;
+      scl::SRobotIO rio;
       scl::SGcModel rgcm;
+      scl::CDynamicsScl dyn_scl;
 
       // ********************** ROBOT PARSER TESTING **********************
       flag = flag && p.readRobotFromFile("../../specs/Puma/PumaCfg.xml", "../../specs/", "PumaBot", rds);
       flag = flag && rgcm.init(rds);
+      flag = flag && rio.init(rds);
+      flag = flag && dyn_scl.init(rds);
       //Test code.
-      if(false==flag) { throw(std::runtime_error("Could not parse robot from file."));  }
-      else { std::cout<<"\nTest Result ("<<r_id++<<")  Parsed robot from file."<<std::flush;  }
+      if(false==flag) { throw(std::runtime_error("Could not parse robot from file and init data/dynamics."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Parsed robot from file and init data/dynamics."<<std::flush;  }
 
       // ********************** CONTROL TASK DS TESTING **********************
       // Let's test a control task..
@@ -123,6 +127,16 @@ namespace scl_test
       if(t_op_ds2->J_.rows() != t_op_ds.J_.rows() || t_op_ds2->J_.cols() != t_op_ds.J_.cols())
       { throw(std::runtime_error("Could not init op task object using an existing task data struct."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Init op task object using a pre-initialized data struct."<<std::flush;  }
+
+      flag = t_op.computeModel(rio.sensors_,rgcm, dyn_scl);
+      if(false == flag)
+      { throw(std::runtime_error("Could not compute task model."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Computed task model."<<std::flush;  }
+
+      flag = t_op.computeControl(rio.sensors_,rgcm, dyn_scl);
+      if(false == flag)
+      { throw(std::runtime_error("Could not compute task control."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Computed task control."<<std::flush;  }
 
       std::cout<<"\nTest #"<<id<<" (Task Controller2) : Succeeded.";
     }
