@@ -36,8 +36,6 @@ namespace scl
   SMusclePointParsed::SMusclePointParsed()
   {
     pos_in_parent_ = Eigen::Vector3d::Zero();
-    parent_link_ = "";
-    position_on_muscle_ = 0;
   }
 
   SMusclePointParsed::~SMusclePointParsed()

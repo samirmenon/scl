@@ -45,12 +45,10 @@ namespace scl
   public:
     /** Constructor sets the type of the object.
      * All subclasses should call this and set their type. */
-    explicit SObject(const std::string &arg_type) :
-      name_(""),has_been_init_(false),type_(arg_type)
+    explicit SObject(const std::string &arg_type) : type_(arg_type)
     {}
 
-    explicit SObject(const char* arg_type) :
-      name_(""),has_been_init_(false),type_(arg_type)
+    explicit SObject(const char* arg_type) : type_(arg_type)
     {}
 
     /** Default destructor. Does nothing. */
@@ -66,10 +64,10 @@ namespace scl
     virtual bool hasBeenInit() const {  return has_been_init_; }
 
     /** The object's name */
-    std::string name_;
+    std::string name_="";
 
     /** Whether the object is ready for use */
-    sBool has_been_init_;
+    sBool has_been_init_=false;
 
   protected:
     /** The object's type. Should only be set by the constructor */

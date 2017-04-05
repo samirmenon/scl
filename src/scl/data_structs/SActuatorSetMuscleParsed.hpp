@@ -53,13 +53,13 @@ namespace scl
     Eigen::Vector3d pos_in_parent_;
 
     /** The link to which this muscle point attaches */
-    std::string parent_link_;
+    std::string parent_link_="";
 
     /** The point's position on the muscle.
      * 0 = the muscle's start point
      * 1 = the next point
      * ... and so on. */
-    sUInt position_on_muscle_;
+    sUInt position_on_muscle_=0;
 
     /** Default constructor. Sets defaults. */
     SMusclePointParsed();

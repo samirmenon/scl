@@ -39,13 +39,6 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 namespace scl
 {
 
-SRobotIO::SRobotIO() : SObject("SRobotIO")
-{
-  name_robot_ = "";
-  dof_ = 0;
-  has_been_init_ = true;
-}
-
 sBool SRobotIO::init(const SRobotParsed& arg_rds,
     const std::string &actuator_set_to_activate)
 {

@@ -59,20 +59,20 @@ public:
   Eigen::VectorXd ori_parent_quat_; //x y z real
   Eigen::VectorXd scaling_; //Between 0 and 1. Default is 1.
 
-  sInt collision_type_;//NOTE TODO : Should be an enum
-  sFloat option_axis_frame_size_;
+  sInt collision_type_=0;//NOTE TODO : Should be an enum
+  sFloat option_axis_frame_size_=0.0;
 
-  std::string file_name_;
+  std::string file_name_="";
 
   /** The list of graphics classes */
   enum EGraphicObjectType{ GRAPHIC_TYPE_FILE_OBJ, GRAPHIC_TYPE_SPHERE, GRAPHIC_TYPE_CUBOID, GRAPHIC_TYPE_CYLINDER,
     GRAPHIC_TYPE_NOT_INIT };
 
   /** FILE, SPHERE, CUBE */
-  EGraphicObjectType class_;
+  EGraphicObjectType class_=EGraphicObjectType::GRAPHIC_TYPE_NOT_INIT;
 
   /** Color (rgb) */
-  double color_[3];
+  double color_[3] ={0.0,0.0,0.0};
 
   SRigidBodyGraphics()
   {
@@ -80,11 +80,6 @@ public:
     ori_parent_quat_.setZero(4);
     ori_parent_quat_(3) = 1;
     scaling_.setConstant(3,1);//x y z scaling. Default = 1
-    collision_type_ = 0;
-    option_axis_frame_size_ = 0.0;
-    file_name_ = "";
-    class_ = GRAPHIC_TYPE_NOT_INIT;
-    color_[0] = 0; color_[1] = 0; color_[2] = 0;
   }
 };
 

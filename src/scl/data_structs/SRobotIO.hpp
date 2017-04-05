@@ -116,10 +116,10 @@ namespace scl
   {
   public:
     /** The name of the robot that this IO data structure belongs to */
-    std::string name_robot_;
+    std::string name_robot_="";
 
     /** The degrees of freedom of the robot that these sensors monitor */
-    sUInt dof_;
+    sUInt dof_=0;
 
     /** Stores information from the real world (or simulation) */
     SRobotSensors sensors_;
@@ -129,7 +129,7 @@ namespace scl
     SRobotActuators actuators_;
 
     /** Constructor **/
-    SRobotIO();
+    SRobotIO() : SObject("SRobotIO") { }
 
     /** Initializes the io data structure. Extracts all the necessary
      * dof data and actuator sets etc. and sets up the associated fields

@@ -38,7 +38,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 namespace scl
 {
-  SGcModel::SGcModel() : SObject("SGcModel"), mass_(-1)
+  SGcModel::SGcModel() : SObject("SGcModel")
   { }
 
   sBool SGcModel::init(const SRobotParsed& arg_robot_data)
@@ -55,6 +55,7 @@ namespace scl
 
       name_robot_ = arg_robot_data.name_;
       name_ = arg_robot_data.name_ + "_gc_model";
+      dof_robot_ = arg_robot_data.dof_;
 
       M_gc_.setIdentity(ndof,ndof);
       M_gc_inv_.setIdentity(ndof,ndof);

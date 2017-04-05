@@ -57,13 +57,13 @@ namespace scl
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     /** Its parent robot */
-    const SRobotParsed *robot_;
+    const SRobotParsed *robot_=NULL;
 
     /** The link on which this force acts */
-    std::string link_name_;
+    std::string link_name_="";
 
     /** A pointer to the dynamic engine's object for this link */
-    const SRigidBodyDyn *rbd_;
+    const SRigidBodyDyn *rbd_=NULL;
 
     /** The force vector [fx, fy, fz, fwx, fwy, fwz] */
     Eigen::Vector6d force_;
@@ -83,16 +83,14 @@ namespace scl
     Eigen::MatrixXd J_;
 
     /** Default constructor. Sets stuff to zero */
-    SForce(): SObject("SForce"), robot_(NULL),link_name_(""),
-        rbd_(NULL){}
+    SForce(): SObject("SForce"){}
 
     /** Default destructor. Does nothing */
     virtual ~SForce(){}
 
   protected:
     /** Typed constructor (called by subclasses). Sets stuff to zero */
-    SForce(std::string arg_subclass_type): SObject(arg_subclass_type),
-        robot_(NULL),link_name_(""), rbd_(NULL){}
+    SForce(std::string arg_subclass_type): SObject(arg_subclass_type){}
   };
 
   /** In addition to a simple force, a contact force also describes potential
@@ -120,13 +118,13 @@ namespace scl
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     /** The other object that the robot makes contact with */
-    const SRobotParsed *other_robot_;
+    const SRobotParsed *other_robot_=NULL;
 
     /** The link of the other robot at which contact is make */
-    std::string other_link_name_;
+    std::string other_link_name_="";
 
     /** A pointer to the dynamic engine's object for this link */
-    const SRigidBodyDyn *other_rbd_;
+    const SRigidBodyDyn *other_rbd_=NULL;
 
     /** The Jacobian of the contact point for the other robot. Useful for
      * converting the applied force into a set of generalized forces. Ie. J' * f
@@ -149,29 +147,24 @@ namespace scl
      * how much energy is lost.
      * 0 ==> No energy is lost (to non-conservative forces)
      * 1 ==> All energy is lost */
-    sFloat coeff_restitution_;
+    sFloat coeff_restitution_=-1;
 
     /** The duration of the collision impulse force (typically the time since
      * the start of the collision) */
-    sFloat time_impulse_;
+    sFloat time_impulse_=1;
 
     /** Energy lost in the collision impulse so far */
-    sFloat energy_collision_;
+    sFloat energy_collision_=0;
 
     /** Default constructor. Sets stuff to zero */
-    SForceContact(): SForce("SForceContact"), other_robot_(NULL), other_link_name_(""),
-        other_rbd_(NULL), coeff_restitution_(-1), time_impulse_(-1),
-        energy_collision_(std::numeric_limits<sFloat>::quiet_NaN()){}
+    SForceContact(): SForce("SForceContact"){}
 
     /** Default destructor. Does nothing */
     virtual ~SForceContact(){}
 
   protected:
     /** Typed constructor (called by subclasses). Sets stuff to zero */
-    SForceContact(std::string arg_subclass_type): SForce(arg_subclass_type),
-    other_robot_(NULL), other_link_name_(""),
-    other_rbd_(NULL), coeff_restitution_(-1), time_impulse_(-1),
-    energy_collision_(std::numeric_limits<sFloat>::quiet_NaN()) {}
+    SForceContact(std::string arg_subclass_type): SForce(arg_subclass_type) {}
   };
 }
 

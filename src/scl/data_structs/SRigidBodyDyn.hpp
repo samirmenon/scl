@@ -61,7 +61,7 @@ namespace scl
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     /** The data structure pointing to the static link information */
-    const SRigidBody* link_ds_;
+    const SRigidBody* link_ds_=NULL;
 
     /** The Jacobian relating center of mass velocities in
      * the origin frame to the generalized velocities.
@@ -124,8 +124,8 @@ namespace scl
     //****************************************************************************************
     //Robot Branching Structure data:
     // (Spanning) Tree structure information: (Enables manual tree parsing)
-    std::string parent_name_;
-    SRigidBodyDyn* parent_addr_;
+    std::string parent_name_="";
+    SRigidBodyDyn* parent_addr_=NULL;
     std::vector<SRigidBodyDyn*> child_addrs_;
 
     // Graph structure information: (Enables manual graph parsing)
@@ -136,8 +136,7 @@ namespace scl
     //****************************************************************************************
     /** Constructor : Sets stuff to NaN/NULL */
     SRigidBodyDyn() : SObject("SRigidBodyDyn"),
-        link_ds_(S_NULL), q_T_(std::numeric_limits<sFloat>::quiet_NaN()),
-        parent_name_(""), parent_addr_(S_NULL) {}
+        q_T_(std::numeric_limits<sFloat>::quiet_NaN()) {}
   };
 
 } /* namespace scl */

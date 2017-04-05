@@ -61,7 +61,10 @@ namespace scl
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     /** The parent robot for this gc model */
-    std::string name_robot_;
+    std::string name_robot_="";
+
+    /** The dof of the parent robot for this gc model */
+    int dof_robot_=-1;
 
     /** M_gc_: Generalized inertia matrix */
     Eigen::MatrixXd M_gc_;
@@ -91,7 +94,7 @@ namespace scl
     Eigen::Vector3d pos_com_;
 
     /** mass_ : Mass of the robot in Euclidean coords */
-    sFloat mass_;
+    sFloat mass_=-1.0;
 
     /** A vector of the processing order of all the rigid bodies in the articulated body */
     std::vector<std::string> processing_order_;
@@ -109,6 +112,7 @@ namespace scl
 
     /** These are used by the constrained dynamics integration */
     Eigen::MatrixXd mat_scratch_n_n[2];
+    /** These are used by the constrained dynamics integration */
     Eigen::JacobiSVD<Eigen::MatrixXd> svd_scratch_n_n;
 
     /* *********************************************************************
