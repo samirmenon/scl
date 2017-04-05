@@ -271,7 +271,7 @@ namespace scl
         arg_rtask_ui_3d_ds.resize(arg_rcmd.name_tasks_.size());
 
         // Loop over the tasks. Find the desired 3d point tasks and return them.
-        for(int i=0; i< arg_rcmd.name_tasks_.size(); ++i)
+        for(scl::sUInt i=0; i< arg_rcmd.name_tasks_.size(); ++i)
         {
           // Find the task data structure
           arg_rtask_ui_3d_ds[i] = dynamic_cast<scl::STaskOpPos*>(*arg_rctr_ds.tasks_.at(arg_rcmd.name_tasks_[i]));
