@@ -161,6 +161,10 @@ namespace scl
       }
 
     protected:
+      /** Standard init stuff done by all other init functions */
+      bool initCommon();
+
+    protected:
       /** The actual data structure for this computational object */
       STaskOpPos *data_=NULL;
 

@@ -374,13 +374,7 @@ namespace scl
           throw(std::runtime_error("Could not initialize STaskOpPos data structure from the passed mapped list key:value pairs"));
         }
 
-        //Try to use the householder qr instead of the svd in general
-        //Computing this once here initializes memory and resizes qr_
-        //It will be used later.
-        qr_.compute(data_->M_task_);
-
-        data_->error_state_ = ERROR_STATE::None;
-        has_been_init_ = true;
+        initCommon();
       }
       catch(std::exception& e)
       {
@@ -407,16 +401,9 @@ namespace scl
 
         // Initialize the data..
         if(NULL != data_){  delete data_; }
-
         data_ = new STaskOpPos(*tmp);
 
-        //Try to use the householder qr instead of the svd in general
-        //Computing this once here initializes memory and resizes qr_
-        //It will be used later.
-        qr_.compute(data_->M_task_);
-
-        data_->error_state_ = ERROR_STATE::None;
-        has_been_init_ = true;
+        initCommon();
       }
       catch(std::exception& e)
       {
@@ -447,15 +434,8 @@ namespace scl
           data_->error_state_ = ERROR_STATE::BadInitState_CouldNotDeserializeDataFromJSON;
           throw(std::runtime_error("Could not initialize STaskOpPos data structure from json string"));
         }
-        data_->has_been_init_ = true;
 
-        //Try to use the householder qr instead of the svd in general
-        //Computing this once here initializes memory and resizes qr_
-        //It will be used later.
-        qr_.compute(data_->M_task_);
-
-        data_->error_state_ = ERROR_STATE::None;
-        has_been_init_ = true;
+        initCommon();
       }
       catch(std::exception& e)
       {
@@ -463,6 +443,22 @@ namespace scl
         reset();
       }
       return has_been_init_;
+    }
+
+
+    /** Standard init stuff done by all other init functions */
+    bool CTaskOpPos::initCommon()
+    {
+      data_->has_been_init_ = true;
+      data_->error_state_ = ERROR_STATE::None;
+      name_ = data_->name_;
+
+      //Try to use the householder qr instead of the svd in general
+      //Computing this once here initializes memory and resizes qr_
+      //It will be used later.
+      qr_.compute(data_->M_task_);
+
+      has_been_init_ = true;
     }
 
   } // Namespace tasks
