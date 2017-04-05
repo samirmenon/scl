@@ -36,6 +36,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 // We're testing the second version of the controller
 #include <scl/control/tasks/AllHeaders.hpp>
 
+#include <sutil/CRegisteredDynamicTypes.hpp>
+
 namespace scl_test
 {
   /**
@@ -49,6 +51,15 @@ namespace scl_test
 
     try
     {
+      // ********************** INIT AND DYNAMIC TYPE SETUP TESTING **********************
+      sutil::CDynamicType<std::string,scl::tasks::CTaskOpPos> typeCTaskOpPos(std::string("CTaskOpPos"));
+      flag = typeCTaskOpPos.registerType();
+      if(false == flag) {throw(std::runtime_error("CTaskOpPos"));}
+
+      sutil::CDynamicType<std::string,scl::tasks::STaskOpPos> typeSTaskOpPos(std::string("STaskOpPos"));
+      flag = typeSTaskOpPos.registerType();
+      if(false == flag) {throw(std::runtime_error("STaskOpPos"));}
+
       //We'll just go with the Puma for now..
       scl::CParserScl p;
       scl::SRobotParsed rds;
@@ -137,6 +148,23 @@ namespace scl_test
       if(false == flag)
       { throw(std::runtime_error("Could not compute task control."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Computed task control."<<std::flush;  }
+
+      // ********************** CONTROL Multi-level Mapped List TESTING **********************
+      scl::tasks::STaskOpPos t_op_ds_b1(t_op_ds),t_op_ds_b2(t_op_ds);
+      t_op_ds_b1.name_ = "bobo"; t_op_ds_b1.priority_ = 1;
+      t_op_ds_b2.name_ = "bobo2"; t_op_ds_b2.priority_ = 3;//Let's see what it does with a missing priority level.
+
+      // Load the tasks into a vector.
+      std::vector<scl::tasks::STaskBase*> taskvec;
+      taskvec.push_back(dynamic_cast<scl::tasks::STaskBase*>(&t_op_ds));
+      taskvec.push_back(dynamic_cast<scl::tasks::STaskBase*>(&t_op_ds_b1));
+      taskvec.push_back(dynamic_cast<scl::tasks::STaskBase*>(&t_op_ds_b2));
+
+      sutil::CMappedMultiLevelList<std::string, scl::tasks::CTaskBase*> taskmllist;
+      int ntasks = scl::init::initMappedMultiLevelListFromFromTasks(rds, taskvec, taskmllist);
+      if(3!=ntasks)
+      { throw(std::runtime_error("Could not arrange tasks into a multi level mapped list.."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<") Arranged tasks into a multi level mapped list.."<<std::flush;  }
 
       std::cout<<"\nTest #"<<id<<" (Task Controller2) : Succeeded.";
     }
