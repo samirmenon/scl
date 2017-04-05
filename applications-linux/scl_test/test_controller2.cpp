@@ -94,13 +94,29 @@ namespace scl_test
       if(false==flag) { throw(std::runtime_error("Could not init op task data from the parsed params."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<")  Init op task data from the parsed params."<<std::flush;  }
 
+      // Copy the task
+      scl::tasks::STaskOpPos *t_op_ds2 = new scl::tasks::STaskOpPos(t_op_ds);
+      if( t_op_ds2->J_.rows() != t_op_ds.J_.rows() || t_op_ds2->J_.cols() != t_op_ds.J_.cols())
+      { throw(std::runtime_error("Could not init op task data from the parsed params."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Copy constructor worked for the op pos task."<<std::flush;  }
+      delete t_op_ds2;
+
 
       // ********************** CONTROL TASK TESTING **********************
       scl::tasks::CTaskOpPos t_op;
 
       flag = t_op.init(params, rds);
       if(false==flag) { throw(std::runtime_error("Could not init op task object from the parsed params."));  }
-      else { std::cout<<"\nTest Result ("<<r_id++<<")  Init op task object from the parsed params."<<std::flush;  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Init op task object using the parsed params."<<std::flush;  }
+
+      flag = t_op.init(t_op_ds);
+      t_op_ds2 = dynamic_cast<scl::tasks::STaskOpPos *>(t_op.getData());
+      if( false == flag || NULL == t_op_ds2 )
+      { throw(std::runtime_error("Could not init op task object using an existing task data struct."));  }
+
+      if(t_op_ds2->J_.rows() != t_op_ds.J_.rows() || t_op_ds2->J_.cols() != t_op_ds.J_.cols())
+      { throw(std::runtime_error("Could not init op task object using an existing task data struct."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<")  Init op task object using a pre-initialized data struct."<<std::flush;  }
 
       std::cout<<"\nTest #"<<id<<" (Task Controller2) : Succeeded.";
     }
