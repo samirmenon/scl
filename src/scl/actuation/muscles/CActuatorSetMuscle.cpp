@@ -67,9 +67,6 @@ namespace scl
       if(NULL == arg_mset.mset_parsed_->robot_)
       { throw(std::runtime_error("Passed mset is linked to a mset_parsed data struct that has a null robot pointer")); }
 
-      // The robot pased data structure..
-      const SRobotParsed &rds = *(arg_mset.mset_parsed_->robot_);
-
       //Set the muscle name
       name_ = arg_mset.name_;
 
