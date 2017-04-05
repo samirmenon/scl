@@ -64,6 +64,8 @@ namespace scl
         Eigen::VectorXd arg_ftask_max;
         Eigen::VectorXd arg_ftask_min;
 
+        // Parse all the standard task parameters..
+
         const std::string *tmp_p;
         tmp_p = arg_params.at_const("name");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: name")); }

@@ -73,7 +73,7 @@ namespace scl
      * to parse all the custom parameters (from the xml file)
      * stored in
      *    task_params_
-     * The function must then return true
+     * The function must then return true.
      */
     class STaskBase : public SObject
     {
@@ -194,6 +194,29 @@ namespace scl
        *   "ftask_min" : "-4 -7 -11.2"
        *
        * NOTE : This simply parses the values out of the key-value mapped list and calls the other init function
+       *
+       * E.g., here is some sample code for setting task parameters:
+            // Reference C++ code for setting a set of default parameters
+            // for the task base (and one subclass; TaskOpPos)
+            sutil::CMappedList<std::string, std::string> params;
+            params.create(std::string("name"),std::string("hand"));
+            params.create(std::string("type"),std::string("TaskOpPos"));
+            params.create(std::string("priority"),std::string("0"));
+            params.create(std::string("task_dof"),std::string("3"));
+            params.create(std::string("kp"),std::string("10"));
+            params.create(std::string("kv"),std::string("3"));
+            params.create(std::string("ka"),std::string("0"));
+            params.create(std::string("ki"),std::string("0"));
+            params.create(std::string("ftask_max"),std::string("10"));
+            params.create(std::string("ftask_min"),std::string("-10"));
+
+            // Params for the subclass (TaskOpPos). These must also be set for the
+            // init function to work
+            params.create(std::string("parent_link"),std::string("end-effector"));
+            params.create(std::string("pos_in_parent"),std::string("0.01 0.00 0.00"));
+            params.create(std::string("flag_compute_op_gravity"),std::string("true"));
+            params.create(std::string("flag_compute_op_cc_forces"),std::string("false"));
+            params.create(std::string("flag_compute_op_inertia"),std::string("true"));
        */
       bool init(const sutil::CMappedList<std::string, std::string>& arg_params,
           const SRobotParsed* arg_robot_parsed,
