@@ -79,7 +79,7 @@ namespace scl
 
         tmp_p = arg_params.at_const("task_dof");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: task_dof")); }
-        arg_priority = atoi(tmp_p->c_str());
+        arg_task_dof = atoi(tmp_p->c_str());
 
         tmp_p = arg_params.at_const("kp");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: kp")); }

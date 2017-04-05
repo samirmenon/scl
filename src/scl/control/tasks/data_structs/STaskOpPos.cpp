@@ -45,8 +45,8 @@ namespace scl
     {
       try
       {
-        if(3!=dof_task_)//This is a position based op point task
-        { throw(std::runtime_error("Operational point tasks MUST have 3 dofs (xyz translation at a point)."));  }
+        if(const_expected_task_dof_ !=dof_task_)//This is a position based op point task
+        { throw(std::runtime_error(std::string("Operational point tasks MUST have 3 dofs (xyz translation at a point). Provided: ")+std::to_string(dof_task_)));  }
 
         // Set defaults
         flag_compute_op_gravity_ = flag_defaults_[0];

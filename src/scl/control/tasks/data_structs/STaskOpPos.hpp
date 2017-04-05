@@ -45,7 +45,7 @@ namespace scl
     {
     private:
       //0.5cm spatial resolution
-      const int task_dof_=3;
+      const scl::sUInt const_expected_task_dof_=3;
     public:
       //Computed attributes (last measured, in x dimensional task-space)
       Eigen::VectorXd x_;             //Position in the global frame
