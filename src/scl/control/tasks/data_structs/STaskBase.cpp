@@ -47,8 +47,7 @@ namespace scl
 
     bool STaskBase::init(
         const sutil::CMappedList<std::string, std::string>& arg_params,
-        const SRobotParsed* arg_robot_parsed,
-        const SGcModel* arg_gc_model)
+        const SRobotParsed* arg_robot_parsed)
     {
       bool flag = true;
       try
@@ -115,7 +114,7 @@ namespace scl
 
         /** Now that we have the string vars, let's call the standard init function */
         flag = init(arg_name,arg_type,arg_priority,arg_task_dof,
-            arg_robot_parsed,arg_gc_model,
+            arg_robot_parsed,
             arg_kp,arg_kv,arg_ka,arg_ki,
             arg_ftask_max,arg_ftask_min,
             arg_params);
@@ -141,8 +140,6 @@ namespace scl
         /** 0  task dof means a gc task. Ie. full dofs */
         const scl::sUInt arg_task_dof,
         const SRobotParsed* arg_robot_ds,
-        /* The remaining variables initialize model_ and servo_ */
-        const SGcModel* arg_gc_model,
         const Eigen::VectorXd & arg_kp,
         const Eigen::VectorXd & arg_kv,
         const Eigen::VectorXd & arg_ka,
@@ -174,31 +171,6 @@ namespace scl
 
         if(false == arg_robot_ds->has_been_init_)
         { throw(std::runtime_error("Passed uninitialized parent-robot's data structure")); }
-
-        if(S_NULL==arg_gc_model)
-        { throw(std::runtime_error("Passed a NULL generalized coordinate model")); }
-
-        //We have an extra layer of checks here since the gc model is already tested by the S*Controller data
-        //structure. And since it is a member object of one of those, it doesn't inherit from SObject and thus
-        //doesn't have its own init function. So, unfortunately, to preserve the convention, we can't simply use
-        //has_been_init_
-        if((sUInt)arg_gc_model->M_gc_.rows()!=arg_robot_ds->dof_)
-        { throw(std::runtime_error("Generalized coordinate mass matrix rows don't match the robot's dofs")); }
-
-        if(arg_gc_model->M_gc_.rows()!=arg_gc_model->M_gc_.cols())
-        { throw(std::runtime_error("Generalized coordinate mass matrix is not square")); }
-
-        if((sUInt)arg_gc_model->M_gc_inv_.rows()!=arg_robot_ds->dof_)
-        { throw(std::runtime_error("Generalized coordinate mass matrix inverse rows don't match the robot's dofs")); }
-
-        if(arg_gc_model->M_gc_inv_.rows()!=arg_gc_model->M_gc_inv_.cols())
-        { throw(std::runtime_error("Generalized coordinate mass matrix inverse is not square")); }
-
-        if((sUInt)arg_gc_model->force_gc_cc_.size()!=arg_robot_ds->dof_)
-        { throw(std::runtime_error("Centrifugal-coriolis force vector doesn't match the robot's dofs")); }
-
-        if((sUInt)arg_gc_model->force_gc_grav_.size()!=arg_robot_ds->dof_)
-        { throw(std::runtime_error("Gravity force vector doesn't match the robot's dofs")); }
 
 
         //Test whether the parameters for the task servo loop are fine.
@@ -232,7 +204,6 @@ namespace scl
         else
         { dof_task_ = arg_task_dof; }
         robot_ = arg_robot_ds;
-        gc_model_ = arg_gc_model;
 
         //Set up the dynamics model
         J_.setZero(dof_task_,robot_->dof_);

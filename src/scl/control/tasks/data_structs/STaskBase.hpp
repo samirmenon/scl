@@ -52,6 +52,7 @@ namespace scl
     enum ERROR_STATE{ None=0,
           BadInit_Generic = 1,
           BadInitState_CouldNotDeserializeDataFromJSON=2,
+          BadInitState_CouldNotInitFromMappedList=3,
           BadDynamics_Generic = 10,
           BadDynamics_CouldNotFindLinkInRBDynTree = 11,
           BadSensorMeasurements_Generic = 20,
@@ -98,9 +99,6 @@ namespace scl
       /** Robot model. Not a const because it could use the
        * branching representation's iterator */
       const SRobotParsed* robot_=NULL;
-
-      /** Robot generalized coordinate model */
-      const SGcModel* gc_model_=NULL;
 
       /** The computed task space Jacobian matrices.
        * Used for velocities. Note that we compute the generalized
@@ -219,8 +217,7 @@ namespace scl
             params.create(std::string("flag_compute_op_inertia"),std::string("true"));
        */
       bool init(const sutil::CMappedList<std::string, std::string>& arg_params,
-          const SRobotParsed* arg_robot_parsed,
-          const SGcModel* arg_gc_model);
+          const SRobotParsed* arg_robot_parsed);
 
       /** Initialization function (type 0; direct)
        *
@@ -234,8 +231,6 @@ namespace scl
           /** 0  task dof means a gc task. Ie. full dofs */
           const scl::sUInt arg_task_dof,
           const SRobotParsed* arg_robot_ds,
-          /* The remaining variables initialize model_ and servo_ */
-          const SGcModel* arg_gc_model,
           const Eigen::VectorXd & arg_kp,
           const Eigen::VectorXd & arg_kv,
           const Eigen::VectorXd & arg_ka,
