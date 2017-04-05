@@ -357,15 +357,51 @@ namespace scl
     /* *******************************
      * Initialization specific functions
      ******************************** */
+    bool CTaskOpPos::init(const sutil::CMappedList<std::string, std::string>& arg_params)
+    {
+      try
+      {
+        // Reset the object..
+        reset();
+
+        bool flag = data_->init(arg_params,NULL);
+        if(false == flag)
+        {
+          data_->error_state_ = ERROR_STATE::BadInitState_CouldNotInitFromMappedList;
+          throw(std::runtime_error("Could not initialize STaskOpPos data structure from the passed mapped list key:value pairs"));
+        }
+
+        //Defaults
+        singular_values_.setZero();
+
+        //Try to use the householder qr instead of the svd in general
+        //Computing this once here initializes memory and resizes qr_
+        //It will be used later.
+        qr_.compute(data_->M_task_);
+
+        data_->error_state_ = ERROR_STATE::None;
+        has_been_init_ = true;
+      }
+      catch(std::exception& e)
+      {
+        std::cerr<<"\nCTaskOpPos::init() : ERROR : "<<e.what();
+        reset();
+      }
+      return has_been_init_;
+    }
+
     bool CTaskOpPos::init(const std::string &arg_json_ds_string)
     {
       try
       {
-        bool flag = scl::deserializeFromJSONString(data_,arg_json_ds_string);
+        // Reset the object..
+        reset();
+
+        bool flag = scl::deserializeFromJSONString(*data_,arg_json_ds_string);
         if(false == flag)
         {
           data_->error_state_ = ERROR_STATE::BadInitState_CouldNotDeserializeDataFromJSON;
-          throw(std::runtime_error("Could not initialize CTaskOpPos data structure from json string"));
+          throw(std::runtime_error("Could not initialize STaskOpPos data structure from json string"));
         }
         data_->has_been_init_ = true;
 
@@ -377,13 +413,14 @@ namespace scl
         //It will be used later.
         qr_.compute(data_->M_task_);
 
+        data_->error_state_ = ERROR_STATE::None;
+
         has_been_init_ = true;
       }
       catch(std::exception& e)
       {
         std::cerr<<"\nCTaskOpPos::init() :"<<e.what()<<"\n JSON String passed: \n"<<arg_json_ds_string;
-        has_been_init_ = false;
-        data_->has_been_init_ = false;
+        reset();
       }
       return has_been_init_;
     }
@@ -394,12 +431,15 @@ namespace scl
     {
       try
       {
+        // Reset the object..
+        reset();
+
         if(false == arg_task_obj.has_been_init_)
-        { throw(std::runtime_error("Passed uninitialized object")); }
+        { throw(std::runtime_error("Passed uninitialized STaskBase object")); }
 
         const STaskOpPos * tmp = dynamic_cast<const STaskOpPos *>(&arg_task_obj);
         if(NULL == tmp)
-        { throw(std::runtime_error(std::string("Passed object that has incompatible type: ")+arg_task_obj.getType() )); }
+        { throw(std::runtime_error(std::string("Passed STaskBase object that has incompatible type: ")+arg_task_obj.getType() )); }
 
         // Initialize the data..
         if(NULL != data_){  delete data_; }
@@ -414,13 +454,14 @@ namespace scl
         //It will be used later.
         qr_.compute(data_->M_task_);
 
+        data_->error_state_ = ERROR_STATE::None;
+
         has_been_init_ = true;
       }
       catch(std::exception& e)
       {
         std::cerr<<"\nCTaskOpPos::init() :"<<e.what();
-        has_been_init_ = false;
-        data_->has_been_init_ = false;
+        reset();
       }
       return has_been_init_;
     }

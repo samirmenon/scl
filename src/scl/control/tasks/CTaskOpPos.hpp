@@ -88,10 +88,10 @@ namespace scl
        *                   Status Get/Set Functions
        * ************************************************************** */
       /** Return this task controller's task data structure.*/
-      virtual STaskBase* getTaskData() { return data_;  }
+      virtual STaskBase* getData() { return dynamic_cast<STaskBase*>(data_);  }
 
       /** Return this task controller's task data structure (const).*/
-      virtual const STaskBase* getTaskDataConst() const { return static_cast<const STaskBase*>(data_);  }
+      virtual const STaskBase* getTaskDataConst() const { return dynamic_cast<const STaskBase*>(data_);  }
 
       /** Sets the current goal position, velocity, and acceleration.
        * Leave vector pointers NULL if you don't want to set them. */
@@ -135,6 +135,9 @@ namespace scl
       /** Default destructor : Does nothing.   */
       virtual ~CTaskOpPos(){}
 
+      /** Initializes the task object using a set of key:value string pairs */
+      bool init(const sutil::CMappedList<std::string, std::string>& arg_params);
+
       /** Initializes the task object. Required to set output
        * gc force dofs
        *
@@ -149,6 +152,8 @@ namespace scl
        * NOTE : Does not deallocate its data structure*/
       virtual void reset()
       {
+        if(NULL != data_){  delete data_; }
+        data_ = new STaskOpPos();
         data_->has_been_init_ = false;
         has_been_init_ = false;
       }
