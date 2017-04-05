@@ -84,32 +84,32 @@ namespace scl
         tmp_p = arg_params.at_const("kp");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: kp")); }
         flag = scl_util::eigenVectorFromString(arg_kp, *tmp_p);
-        if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
+        if(false == flag) { throw(std::runtime_error("Ill formatted key value: kp")); }
 
         tmp_p = arg_params.at_const("kv");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: kv")); }
         flag = scl_util::eigenVectorFromString(arg_kv, *tmp_p);
-        if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
+        if(false == flag) { throw(std::runtime_error("Ill formatted key value: kv")); }
 
         tmp_p = arg_params.at_const("ka");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: ka")); }
         flag = scl_util::eigenVectorFromString(arg_ka, *tmp_p);
-        if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
+        if(false == flag) { throw(std::runtime_error("Ill formatted key value: ka")); }
 
         tmp_p = arg_params.at_const("ki");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: ki")); }
         flag = scl_util::eigenVectorFromString(arg_ki, *tmp_p);
-        if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
+        if(false == flag) { throw(std::runtime_error("Ill formatted key value: ki")); }
 
         tmp_p = arg_params.at_const("ftask_max");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: ftask_max")); }
         flag = scl_util::eigenVectorFromString(arg_ftask_max, *tmp_p);
-        if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
+        if(false == flag) { throw(std::runtime_error("Ill formatted key value: ftask_max")); }
 
         tmp_p = arg_params.at_const("ftask_min");
         if(NULL == tmp_p) { throw(std::runtime_error("Could not find field in string map: ftask_min")); }
         flag = scl_util::eigenVectorFromString(arg_ftask_min, *tmp_p);
-        if(false == flag) { throw(std::runtime_error("Ill formatted key value: name")); }
+        if(false == flag) { throw(std::runtime_error("Ill formatted key value: ftask_min")); }
 
         /** Now that we have the string vars, let's call the standard init function */
         flag = init(arg_name,arg_type,arg_priority,arg_task_dof,
@@ -218,8 +218,9 @@ namespace scl
         if((1!=arg_ftask_min.size()) && (arg_task_dof!=(sUInt)arg_ftask_min.size()))
         { throw(std::runtime_error("Minimum task-force vector size should be 1 or task-dof")); }
 
-        if(getType() != arg_type)
-        { throw(std::runtime_error(std::string("Task type is inconsistent with the desired task type")+arg_type)); }
+        // NOTE : The type in the string is sans an S or a C. So we have to add it while checking.
+        if(getType() != std::string("S")+arg_type)
+        { throw(std::runtime_error(std::string("Task type is inconsistent with the desired task type. Expected: ")+getType()+std::string(". Given: (S)")+arg_type)); }
 
         //Start initializing the task
         name_ = arg_name;
