@@ -35,6 +35,8 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/DataTypes.hpp>
 
 #include <scl/AllHeaders.hpp>
+// We'll keep this till we depracate the older tasks
+#include <scl/control/tasks/AllHeaders.hpp>
 
 namespace scl
 {
@@ -133,6 +135,20 @@ namespace scl
         const std::vector<scl::SNonControlTaskBase*> &arg_taskvec_nc,
         const std::vector<scl::sString2> &arg_ctrl_params,
         scl::SControllerMultiTask& ret_ctrl);
+
+    /** Takes a list of tasks as an input and organizes them into
+     * a mapped multi-level list.
+     *
+     * Returns : The number of tasks parsed (should be equal to tasks passed) */
+    int initMappedMultiLevelListFromFromTasks(
+        const SRobotParsed &arg_rds,
+        const std::vector<scl::tasks::STaskBase*> &arg_taskvec,
+        /** Pointers to the Task data structures. Organized
+         * in the priority order (the outer vector) of the tasks.
+         *
+         * Tasks can be accessed either by name (map access), pointer (iterator_)
+         * in the multi level pilemap or via the vector (std::vector access)*/
+        sutil::CMappedMultiLevelList<std::string, scl::tasks::CTaskBase*> &ret_tasks);
 
     /** Initializes a dynamic tree given a static tree for a robot. */
     bool initDynRobotFromParsedRobot(sutil::CMappedTree<std::string, scl::SRigidBodyDyn>& arg_rbd_tree,
