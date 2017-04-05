@@ -142,6 +142,7 @@ namespace scl
       if(data_->has_been_init_)
       {
         bool flag = true;
+        sUInt dof = arg_gcm.dof_robot_;
 
         // Get the link at which the Jacobian is to be computed...
         const SRigidBodyDyn *rbd = arg_gcm.rbdyn_tree_.at_const(data_->link_name_);
@@ -151,7 +152,7 @@ namespace scl
             arg_sensors.q_,data_->pos_in_parent_);
 
         //Use the position jacobian only. This is an op-point task.
-        data_->J_ = data_->J_6_.block(0,0,3,data_->robot_->dof_);
+        data_->J_ = data_->J_6_.block(0,0,3,dof);
 
         //Operational space mass/KE matrix:
         //    // NOTE TODO : Decide a good scheme for disabling operational space inertia
@@ -244,7 +245,6 @@ namespace scl
         data_->J_dyn_inv_ = arg_gcm.M_gc_inv_ * data_->J_.transpose() * data_->M_task_;
 
         //J' * J_dyn_inv'
-        sUInt dof = data_->robot_->dof_;
         data_->null_space_ = Eigen::MatrixXd::Identity(dof, dof) -
             data_->J_.transpose() * data_->J_dyn_inv_.transpose();
 
@@ -357,22 +357,22 @@ namespace scl
     /* *******************************
      * Initialization specific functions
      ******************************** */
-    bool CTaskOpPos::init(const sutil::CMappedList<std::string, std::string>& arg_params)
+    bool CTaskOpPos::init(
+        const sutil::CMappedList<std::string, std::string>& arg_params,
+        const SRobotParsed &arg_rds)
     {
       try
       {
         // Reset the object..
         reset();
+        data_ = new STaskOpPos();
 
-        bool flag = data_->init(arg_params,NULL);
+        bool flag = data_->init(arg_params, &arg_rds);
         if(false == flag)
         {
           data_->error_state_ = ERROR_STATE::BadInitState_CouldNotInitFromMappedList;
           throw(std::runtime_error("Could not initialize STaskOpPos data structure from the passed mapped list key:value pairs"));
         }
-
-        //Defaults
-        singular_values_.setZero();
 
         //Try to use the householder qr instead of the svd in general
         //Computing this once here initializes memory and resizes qr_
@@ -389,42 +389,6 @@ namespace scl
       }
       return has_been_init_;
     }
-
-    bool CTaskOpPos::init(const std::string &arg_json_ds_string)
-    {
-      try
-      {
-        // Reset the object..
-        reset();
-
-        bool flag = scl::deserializeFromJSONString(*data_,arg_json_ds_string);
-        if(false == flag)
-        {
-          data_->error_state_ = ERROR_STATE::BadInitState_CouldNotDeserializeDataFromJSON;
-          throw(std::runtime_error("Could not initialize STaskOpPos data structure from json string"));
-        }
-        data_->has_been_init_ = true;
-
-        //Defaults
-        singular_values_.setZero();
-
-        //Try to use the householder qr instead of the svd in general
-        //Computing this once here initializes memory and resizes qr_
-        //It will be used later.
-        qr_.compute(data_->M_task_);
-
-        data_->error_state_ = ERROR_STATE::None;
-
-        has_been_init_ = true;
-      }
-      catch(std::exception& e)
-      {
-        std::cerr<<"\nCTaskOpPos::init() :"<<e.what()<<"\n JSON String passed: \n"<<arg_json_ds_string;
-        reset();
-      }
-      return has_been_init_;
-    }
-
 
     /** Initializes the task object. Copies values from passed object. */
     bool CTaskOpPos::init(const STaskBase &arg_task_obj)
@@ -446,9 +410,6 @@ namespace scl
 
         data_ = new STaskOpPos(*tmp);
 
-        //Defaults
-        singular_values_.setZero();
-
         //Try to use the householder qr instead of the svd in general
         //Computing this once here initializes memory and resizes qr_
         //It will be used later.
@@ -465,7 +426,47 @@ namespace scl
       }
       return has_been_init_;
     }
-  }
 
-}
+    /** Initializes the task object. Required to set output
+     * gc force dofs
+     *
+     *  Input : A JSON string that contains all the data required to
+     *          initialize the data structure (STaskOpPos). */
+    bool CTaskOpPos::init(const std::string &arg_json_ds_string)
+    {
+      try
+      {
+        // Reset the object..
+        reset();
+
+        if(NULL != data_){  delete data_; }
+        data_ = new STaskOpPos();
+
+        bool flag = scl::deserializeFromJSONString(*data_,arg_json_ds_string);
+        if(false == flag)
+        {
+          data_->error_state_ = ERROR_STATE::BadInitState_CouldNotDeserializeDataFromJSON;
+          throw(std::runtime_error("Could not initialize STaskOpPos data structure from json string"));
+        }
+        data_->has_been_init_ = true;
+
+        //Try to use the householder qr instead of the svd in general
+        //Computing this once here initializes memory and resizes qr_
+        //It will be used later.
+        qr_.compute(data_->M_task_);
+
+        data_->error_state_ = ERROR_STATE::None;
+
+        has_been_init_ = true;
+      }
+      catch(std::exception& e)
+      {
+        std::cerr<<"\nCTaskOpPos::init() :"<<e.what()<<"\n JSON String passed: \n"<<arg_json_ds_string;
+        reset();
+      }
+      return has_been_init_;
+    }
+
+  } // Namespace tasks
+} // Namespace scl
 

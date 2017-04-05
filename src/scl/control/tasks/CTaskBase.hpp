@@ -98,6 +98,21 @@ namespace scl
       /** Destructor does nothing */
       virtual ~CTaskBase(){}
 
+      /** Initializes the task object using a set of key:value string pairs */
+      virtual bool init(
+          const sutil::CMappedList<std::string, std::string>& arg_params,
+          const SRobotParsed &arg_rds)=0;
+
+      /** Initializes the task object. Copies values from passed object. */
+      virtual bool init(const STaskBase &arg_task_obj)=0;
+
+      /** Initializes the task object. Required to set output
+       * gc force dofs
+       *
+       *  Input : A JSON string that contains all the data required to
+       *          initialize the data structure (STaskOpPos). */
+      virtual bool init(const std::string &arg_json_ds_string)=0;
+
       /** Resets the task by removing its data and zeroing all
        * matrices etc. */
       virtual void reset()=0;

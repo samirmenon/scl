@@ -136,25 +136,27 @@ namespace scl
       virtual ~CTaskOpPos(){}
 
       /** Initializes the task object using a set of key:value string pairs */
-      bool init(const sutil::CMappedList<std::string, std::string>& arg_params);
+      virtual bool init(
+          const sutil::CMappedList<std::string, std::string>& arg_params,
+          const SRobotParsed &arg_rds);
+
+      /** Initializes the task object. Copies values from passed object. */
+      virtual bool init(const STaskBase &arg_task_obj);
 
       /** Initializes the task object. Required to set output
        * gc force dofs
        *
        *  Input : A JSON string that contains all the data required to
        *          initialize the data structure (STaskOpPos). */
-      bool init(const std::string &arg_json_ds_string);
-
-      /** Initializes the task object. Copies values from passed object. */
-      bool init(const STaskBase &arg_task_obj);
+      virtual bool init(const std::string &arg_json_ds_string);
 
       /** Resets the task by removing its data.
        * NOTE : Does not deallocate its data structure*/
       virtual void reset()
       {
         if(NULL != data_){  delete data_; }
-        data_ = new STaskOpPos();
-        data_->has_been_init_ = false;
+        data_ = NULL;
+        singular_values_.setZero();
         has_been_init_ = false;
       }
 
