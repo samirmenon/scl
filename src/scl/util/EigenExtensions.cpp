@@ -43,4 +43,40 @@ namespace scl_util
   {
     eigentoStringArrayJSON<>(x.matrix(),arg_str);
   }
+
+  /** Initialize an Eigen Matrix from a JSON array or array of arrays
+   *
+   * Input (JSON) : [[1,2,3,1],[4,5,6,0],[7,8,9,0],[0,0,0,1]]
+   * Eigen matrix (Affine 3d):
+   *     1 2 3 1
+   *     4 5 6 0
+   *     7 8 9 0
+   *     0 0 0 1
+   */
+  bool eigenFromJSON(Eigen::Affine3d& x, const Json::Value &jval)
+  {
+    if(!jval.isArray()) return false; //Must be an array..
+    unsigned int nrows = jval.size();
+    if(nrows != 4) return false; //Must be 4x4.
+
+    bool is_matrix = jval[0].isArray();
+    if(!is_matrix)
+    {
+      return false;
+    }
+    else
+    {
+      unsigned int ncols = jval[0].size();
+      if(ncols != 4) return false; //Must be 4x4.
+      for(unsigned int i=0;i<nrows-1;++i){
+        if(ncols != jval[i].size()) return false; //inconsistent cols
+        for(unsigned int j=0;j<ncols-1;++j)
+          x.matrix()(i,j) = jval[i][j].asDouble();
+        x.matrix()(0,3) = jval[0][3].asDouble();
+        x.matrix()(1,3) = jval[1][3].asDouble();
+        x.matrix()(2,3) = jval[2][3].asDouble();
+      }
+    }
+    return true;
+  }
 }

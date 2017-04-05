@@ -272,6 +272,17 @@ namespace scl_util
 
   /** Initialize an Eigen Matrix from a JSON array or array of arrays
    *
+   * Input (JSON) : [[1,2,3,1],[4,5,6,0],[7,8,9,0],[0,0,0,1]]
+   * Eigen matrix (Affine 3d):
+   *     1 2 3 1
+   *     4 5 6 0
+   *     7 8 9 0
+   *     0 0 0 1
+   */
+  bool eigenFromJSON(Eigen::Affine3d& x, const Json::Value &jval);
+
+  /** Initialize an Eigen Matrix from a JSON array or array of arrays
+   *
    * Input (JSON) : [[1,2,3],[4,5,6],[7,8,9]]
    * Eigen matrix:
    *     1 2 3
