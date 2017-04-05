@@ -654,24 +654,93 @@ namespace scl
   /** *****************************************************************************
    *                        Deserialize data to an object
    * **************************************************************************** */
+  template<> bool deserializeFromJSON<sUInt>(sUInt &ret_obj, const Json::Value &arg_json_val)
+  { ret_obj = arg_json_val.asInt(); return true; }
+
+  template<> bool deserializeFromJSON(sSpatialXForm &ret_obj, const Json::Value &arg_json_val)
+  {
+    bool flag = scl_util::eigenFromJSON(ret_obj, arg_json_val);
+    return flag;
+  }
+
   template<> bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val)
   {
-    MACRO_DESER_RETOBJ_ARGJSONVAL(has_been_init_,asBool)
+    // NOTE TODO : Why is this commented out?
+    // MACRO_DESER_RETOBJ_ARGJSONVAL(has_been_init_,asBool)
     MACRO_DESER_RETOBJ_ARGJSONVAL(name_,asString)
     return true;
   }
 
   template<> bool deserializeFromJSON<SMusclePointParsed>(SMusclePointParsed &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    MACRO_DESER_RETOBJ_ARGJSONVAL(parent_link_,asString)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(position_on_muscle_,asInt)
+
+    bool flag;
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(pos_in_parent_)
+    return flag;
+  }
 
   template<> bool deserializeFromJSON<SMuscleParsed>(SMuscleParsed &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    //Typical data
+    MACRO_DESER_RETOBJ_ARGJSONVAL(optimal_fiber_length_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(tendon_slack_length_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(pennation_angle_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(activation_time_constt_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(max_contraction_vel_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(deactivation_time_constt_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(max_contraction_vel_low_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(max_contraction_vel_high_ ,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(max_tendon_strain_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(max_muscle_strain_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(stiffness_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(damping_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(stiffness_tendon_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(muscle_type_,asString)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(name_,asString)
+    // Std vector of strings (iterable)
+    for (auto& json_element : arg_json_val["points_"]) {
+      SMusclePointParsed point;
+      deserializeFromJSON(point, json_element);
+      ret_obj.points_.push_back(point);
+    }
+
+    return true;
+  }
 
   template<> bool deserializeFromJSON<SActuatorSetMuscleParsed>(SActuatorSetMuscleParsed &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    bool flag = deserializeFromJSON(*dynamic_cast<SObject *>(&ret_obj), arg_json_val);
+    if (!flag) { return false; }
+
+    // Typical data
+    MACRO_DESER_RETOBJ_ARGJSONVAL(render_muscle_thickness_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(render_muscle_via_pt_sz_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(muscles_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(muscle_name_to_id_)
+
+    return true;
+  }
 
   template<> bool deserializeFromJSON<SActuatorSetParsed>(SActuatorSetParsed &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    if (ret_obj.getType() == "SActuatorSetMuscleParsed")
+    {
+      SActuatorSetMuscleParsed *obj = dynamic_cast<SActuatorSetMuscleParsed *>(&ret_obj);
+      if (obj) { return deserializeFromJSON(*obj, arg_json_val); }
+    }
+    return true;
+  }
+
+  template<> bool deserializeFromJSON<SParserData>(SParserData &ret_obj, const Json::Value &arg_json_val)
+  {
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(graphics_worlds_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(robots_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(muscle_sets_)
+    return true;
+  }
+
 
   template<> bool deserializeFromJSON<SDatabase>(SDatabase &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
@@ -679,15 +748,14 @@ namespace scl
   template<> bool deserializeFromJSON<SForce>(SForce &ret_obj, const Json::Value &arg_json_val)
   {
     // Get the SObject
-    scl::SObject *tmp_obj = dynamic_cast<SObject*>(&ret_obj);
+    scl::SObject *tmp_obj = dynamic_cast<SObject *>(&ret_obj);
     bool flag = deserializeFromJSON(*tmp_obj, arg_json_val);
     if(!flag){ return false; }
 
     // Now get the force information
+    // ret_obj.robot_->name_ = arg_json_val["robot_name_"].asString();
     MACRO_DESER_RETOBJ_ARGJSONVAL(link_name_,asString)
 
-    std::string str;
-    Json::Reader json_reader;
     MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_)
     MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(pos_)
     MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(direction_)
@@ -695,11 +763,93 @@ namespace scl
     return true;
   }
 
-  template<> bool deserializeFromJSON<SGcModel>(SGcModel &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  template<> bool deserializeFromJSON<SGraphicsParsed::SLight>(SGraphicsParsed::SLight &ret_obj, const Json::Value &arg_json_val)
+  {
+    if(!arg_json_val.isMember("lookat_")) {
+      std::cout<<"\n deserializeFromJSON() Error : Could not find : "<<"lookat_"<<std::flush;
+      return false;
+    }
+
+    if(!arg_json_val.isMember("pos_")) {
+      std::cout<<"\n deserializeFromJSON() Error : Could not find : "<<"pos_"<<std::flush;
+      return false;
+    }
+
+    // Get the vectors.
+    for (int i = 0; i < 3; i++) {
+      ret_obj.lookat_[i] = arg_json_val["link_name_"][i].asFloat();
+      ret_obj.pos_[i] = arg_json_val["pos_"][i].asFloat();
+    }
+
+    return true;
+  }
 
   template<> bool deserializeFromJSON<SGraphicsParsed>(SGraphicsParsed &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    bool flag = deserializeFromJSON(*dynamic_cast<SObject *>(&ret_obj), arg_json_val);
+    if (!flag) { return false; }
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(cam_pos_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(cam_lookat_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(cam_up_)
+
+    if(!arg_json_val.isMember("cam_clipping_dist_")) {
+      std::cout<<"\n deserializeFromJSON() Error : Could not find : "<<"cam_clipping_dist_"<<std::flush;
+      return false;
+    }
+    ret_obj.cam_clipping_dist_[0] = arg_json_val["cam_clipping_dist_"][0].asFloat();
+    ret_obj.cam_clipping_dist_[1] = arg_json_val["cam_clipping_dist_"][1].asFloat();
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL(file_background_,asString)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(file_foreground_,asString)
+
+    if(!arg_json_val.isMember("background_color_")) {
+      std::cout<<"\n deserializeFromJSON() WARNING : Could not find (optional) : background_color_. Setting to (1,1,1)"<<std::flush;
+      for (int i = 0; i < 3; i++)
+      { ret_obj.background_color_[i] = 1.0; } // white by default
+    }
+    else{
+      for (int i = 0; i < 3; i++) {
+        ret_obj.background_color_[i] = arg_json_val["background_color_"][i].asFloat();
+      }
+    }
+
+    if(!arg_json_val.isMember("lights_")) {
+      std::cout<<"\n deserializeFromJSON() Error : Could not find : "<<"lights_"<<std::flush;
+      return false;
+    }
+    for (auto& json_light : arg_json_val["lights_"]) {
+      SGraphicsParsed::SLight light;
+      flag = deserializeFromJSON(light, json_light);
+      if(false == flag) { return false; }
+      ret_obj.lights_.push_back(light);
+    }
+
+    return true;
+}
+
+  template<> bool deserializeFromJSON<SRigidBodyGraphics>(SRigidBodyGraphics &ret_obj, const Json::Value &arg_json_val)
+  {
+    MACRO_DESER_RETOBJ_ARGJSONVAL(collision_type_,asInt)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(file_name_,asString)
+    ret_obj.class_ = static_cast<SRigidBodyGraphics::EGraphicObjectType>(arg_json_val["class_"].asInt());
+
+    bool flag;
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(pos_in_parent_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(ori_parent_quat_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(scaling_)
+
+    if(!arg_json_val.isMember("color_")) {
+      std::cout<<"\n deserializeFromJSON() WARNING : Could not find : color_. Setting to gray (.5,.5,.5)"<<std::flush;
+      for (int i = 0; i < 3; i++) { ret_obj.color_[i] = 0.5; }
+    }
+    else{
+      for (int i = 0; i < 3; i++)
+      { ret_obj.color_[i] = arg_json_val["color_"].asFloat(); }
+    }
+
+    return true;
+  }
 
   template<> bool deserializeFromJSON<SRigidBody>(SRigidBody &ret_obj, const Json::Value &arg_json_val)
   {
@@ -745,7 +895,64 @@ namespace scl
   }
 
   template<> bool deserializeFromJSON<SRigidBodyDyn>(SRigidBodyDyn &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    bool flag = deserializeFromJSON(*dynamic_cast<SObject *>(&ret_obj), arg_json_val);
+    if (!flag) { return false; }
+
+    // ret_obj.link_ds_->name_ = arg_json_val["name_"].asString();
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL(q_T_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(parent_name_,asString)
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(T_o_lnk_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(T_lnk_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(sp_q_T_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(sp_dq_T_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(sp_inertia_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(spatial_acceleration_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(spatial_force_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(sp_X_within_link_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(sp_X_o_lnk_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(sp_S_joint_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(sp_Sorth_joint_)
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(sp_X_joint_)
+
+    return true;
+}
+
+  template<> bool deserializeFromJSON<SGcModel>(SGcModel &ret_obj, const Json::Value &arg_json_val)
+  {
+    bool flag = deserializeFromJSON(*dynamic_cast<SObject *>(&ret_obj), arg_json_val);
+    if (!flag) { return false; }
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL(name_robot_,asString)
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(M_gc_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(M_gc_inv_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_gc_cc_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_gc_grav_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(q_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(dq_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(pos_com_)
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(rbdyn_tree_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(mass_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(computed_spatial_transformation_and_inertia_,asBool)
+
+    for (auto &element : arg_json_val) {
+      ret_obj.processing_order_.push_back(element.asString());
+    }
+
+    // This is a normal c style array. So can't use fancy methods to parse it.
+    int i = 0;
+    for (auto &element : arg_json_val) {
+      scl_util::eigenFromJSON(ret_obj.vec_scratch_[i], element);
+      i++;
+    }
+
+    return true;
+  }
 
 
   template<> bool deserializeFromJSON<SRobotSensors>(SRobotSensors &ret_obj, const Json::Value &arg_json_val)
@@ -766,7 +973,12 @@ namespace scl
 
   template<> bool deserializeFromJSON<SRobotActuators>(SRobotActuators &ret_obj, const Json::Value &arg_json_val)
   {
-    return true;
+    bool flag;
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_gc_commanded_)
+
+    /** NOTE TODO :
+    sutil::CMappedPointerList<std::string, SActuatorSetBase, false> actuator_sets_;*/
+    return flag;
   }
 
   template<> bool deserializeFromJSON<SRobotIO>(SRobotIO &ret_obj, const Json::Value &arg_json_val)
@@ -783,12 +995,49 @@ namespace scl
   }
 
   template<> bool deserializeFromJSON<SRobotParsed>(SRobotParsed &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    bool flag = deserializeFromJSON(*dynamic_cast<SObject *>(&ret_obj), arg_json_val);
+    if (!flag) { return false; }
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL(dof_,asInt)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(log_file_,asString)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(flag_apply_gc_damping_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(flag_apply_gc_pos_limits_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(flag_apply_actuator_force_limits_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(flag_apply_actuator_pos_limits_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(flag_apply_actuator_vel_limits_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(flag_apply_actuator_acc_limits_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(flag_controller_on_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(flag_logging_on_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(flag_wireframe_on_,asBool)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(option_axis_frame_size_,asFloat)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(option_muscle_via_pt_sz_,asFloat)
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(gc_pos_limit_max_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(gc_pos_limit_min_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(gc_pos_default_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(damping_gc_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(actuator_forces_max_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(actuator_forces_min_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(gravity_)
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_MemberObj(rb_tree_)
+
+    for (auto& element : arg_json_val["robot_tree_numeric_id_to_name_"]) {
+        ret_obj.robot_tree_numeric_id_to_name_.push_back(element.asString());
+    }
+
+    //NOTE TODO : Handle this later...
+    // arg_obj.actuator_sets_
+
+    return true;
+}
 
   template<> bool deserializeFromJSON<SUIParsed>(SUIParsed &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-
+  template<> bool deserializeFromJSON<SCmdLineOptions_OneRobot>(SCmdLineOptions_OneRobot &ret_obj, const Json::Value &arg_json_val)
+  { return false; }
 
   template<> bool deserializeFromJSON<STaskBase>(STaskBase &arg_obj, const Json::Value &ret_json_val)
   {  return false;  }

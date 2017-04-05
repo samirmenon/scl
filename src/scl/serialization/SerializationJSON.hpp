@@ -52,6 +52,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <jsoncpp/json/json.h>
 #include <string>
+#include <typeinfo>
 
 namespace scl
 {
@@ -90,7 +91,10 @@ namespace scl
    * */
   template <typename T>
   bool serializeToJSON(const T &arg_obj, Json::Value &ret_json_val)
-  { return false; }
+  {
+    std::cout << std::endl << "serializeToJSON() not available for " << typeid(arg_obj).name() << "." << std::endl;
+    return false;
+  }
 
   /** Overload the function to handle mapped lists.
    *
@@ -161,6 +165,7 @@ namespace scl
 #ifndef SCL_LIBRARY_COMPILE_FLAG
   extern template bool serializeToJSON<sUInt>(const sUInt &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON(const sSpatialXForm &arg_obj, Json::Value &ret_json_val);
+  extern template bool serializeToJSON<SObject>(const SObject &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SMusclePointParsed>(const SMusclePointParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SMuscleParsed>(const SMuscleParsed &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SActuatorSetMuscleParsed>(const SActuatorSetMuscleParsed &arg_obj, Json::Value &ret_json_val);
@@ -169,7 +174,6 @@ namespace scl
   extern template bool serializeToJSON<SDatabase>(const SDatabase &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SForce>(const SForce &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SGraphicsParsed>(const SGraphicsParsed &arg_obj, Json::Value &ret_json_val);
-  extern template bool serializeToJSON<SObject>(const SObject &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SRigidBodyGraphics>(const SRigidBodyGraphics &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SRigidBody>(const SRigidBody &arg_obj, Json::Value &ret_json_val);
   extern template bool serializeToJSON<SRigidBodyDyn>(const SRigidBodyDyn &arg_obj, Json::Value &ret_json_val);
@@ -304,6 +308,8 @@ namespace scl
   // specialization functions as extern for client apps, which means that they won't be compiled.
   // Only the scl_lib will set this flag, and will compile all the specialized functions (from the cpp file).
 #ifndef SCL_LIBRARY_COMPILE_FLAG
+  extern template bool deserializeFromJSON<sUInt>(sUInt &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON(sSpatialXForm &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SObject>(SObject &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SMusclePointParsed>(SMusclePointParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SMuscleParsed>(SMuscleParsed &ret_obj, const Json::Value &arg_json_val);
@@ -323,6 +329,7 @@ namespace scl
   extern template bool deserializeFromJSON<SRobotIO>(SRobotIO &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SRobotParsed>(SRobotParsed &ret_obj, const Json::Value &arg_json_val);
   extern template bool deserializeFromJSON<SUIParsed>(SUIParsed &ret_obj, const Json::Value &arg_json_val);
+  extern template bool deserializeFromJSON<SCmdLineOptions_OneRobot>(SCmdLineOptions_OneRobot &ret_obj, const Json::Value &arg_json_val);
 
   // The controller data structures
   extern template bool deserializeFromJSON<STaskBase>(STaskBase &arg_obj, const Json::Value &ret_json_val);
