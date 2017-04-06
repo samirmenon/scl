@@ -250,7 +250,7 @@ namespace scl
 
         // We do not use the centrifugal/coriolis forces. They can cause instabilities.
         // NOTE TODO : Fix this...
-        //    if(data_->flag_compute_op_gravity_)
+        //    if(data_->flag_compute_op_cc_forces_)
         //    { /** I need some code */ }
         //    else
         //    { data_->force_task_cc_.setZero(data_->dof_task_,1);  }
@@ -459,6 +459,7 @@ namespace scl
       qr_.compute(data_->M_task_);
 
       has_been_init_ = true;
+      return has_been_init_;
     }
 
   } // Namespace tasks
