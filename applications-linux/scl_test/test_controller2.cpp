@@ -166,6 +166,27 @@ namespace scl_test
       { throw(std::runtime_error("Could not arrange tasks into a multi level mapped list.."));  }
       else { std::cout<<"\nTest Result ("<<r_id++<<") Arranged tasks into a multi level mapped list.."<<std::flush;  }
 
+      // Let's look at the allocation of the tasks in the mllist
+      std::vector<scl::tasks::CTaskBase**> *plevel = taskmllist.getSinglePriorityLevel(0);
+      scl::tasks::CTaskBase * tbase = *(plevel->at(0));
+      if( tbase->name_ != "hand" || plevel->size() != 1)
+      { throw(std::runtime_error( std::string("Priority level 0 mismatch. Task:") + tbase->name_ +std::string(", ntasks:") +std::to_string(plevel->size())));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<") Priority level 0 set up."<<std::flush;  }
+
+      plevel = taskmllist.getSinglePriorityLevel(1);
+      tbase = *(plevel->at(0));
+      if(tbase->name_ != "bobo" || plevel->size() != 1)
+      { throw(std::runtime_error("Priority level 1 doesn't contain added task"));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<") Priority level 1 set up."<<std::flush;  }
+
+      plevel = taskmllist.getSinglePriorityLevel(3);
+      tbase = *(plevel->at(0));
+      if(tbase->name_ != "bobo2" || plevel->size() != 1)
+      { throw(std::runtime_error("Priority level 3 doesn't contain added task"));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<") Priority level 3 set up."<<std::flush;  }
+
+      // ********************** CONTROL MODEL AND CONTROL TESTING **********************
+
       std::cout<<"\nTest #"<<id<<" (Task Controller2) : Succeeded.";
     }
     catch (std::exception& ee)
