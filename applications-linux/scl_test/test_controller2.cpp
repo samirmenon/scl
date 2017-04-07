@@ -35,6 +35,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 #include <scl/scl.hpp>
 // We're testing the second version of the controller
 #include <scl/control/tasks/AllHeaders.hpp>
+#include <scl/control/ControlFunctions.hpp>
 
 #include <sutil/CRegisteredDynamicTypes.hpp>
 
@@ -186,6 +187,23 @@ namespace scl_test
       else { std::cout<<"\nTest Result ("<<r_id++<<") Priority level 3 set up."<<std::flush;  }
 
       // ********************** CONTROL MODEL AND CONTROL TESTING **********************
+      rio.sensors_.q_(0) = 1;
+
+      flag = dyn_scl.computeGCModel(&rio.sensors_,&rgcm);
+      if(false == flag)
+      { throw(std::runtime_error("Could not update {T, J, dynamics} matrices in the gc model..."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<") Updating {T, J, dynamics} matrices in the gc model."<<std::flush;  }
+
+      flag = scl::control::computeTaskModel(taskmllist,rgcm,rio,dyn_scl);
+      if(false == flag)
+      { throw(std::runtime_error("Could not compute task model..."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<") Ran the task model computations."<<std::flush;  }
+
+      flag = scl::control::computeTaskControl(taskmllist,rgcm,rio,dyn_scl);
+      if(false == flag)
+      { throw(std::runtime_error("Could not compute task control..."));  }
+      else { std::cout<<"\nTest Result ("<<r_id++<<") Ran the task control computations."<<std::flush;  }
+
 
       std::cout<<"\nTest #"<<id<<" (Task Controller2) : Succeeded.";
     }
