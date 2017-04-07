@@ -43,10 +43,15 @@ namespace scl
     bool computeOSCModel(
         sutil::CMappedMultiLevelList<std::string, scl::tasks::CTaskBase*> & arg_taskmllist,
         SGcModel &arg_rgcm,
-        const SRobotIO &rio,
+        const SRobotIO &arg_rio,
         const scl::CDynamicsBase &arg_dyn)
     {
-      return true;
+      std::vector<Eigen::MatrixXd> tmp; tmp.resize(arg_taskmllist.getNumPriorityLevels());
+      if(arg_dyn.computeGCModel(&arg_rio.sensors_,&arg_rgcm))
+        if(computeTaskModel(arg_taskmllist,arg_rgcm,arg_rio,arg_dyn))
+          if(computeTaskRangeProjectionsQR(tmp,arg_taskmllist,arg_rgcm,arg_dyn))
+            return true;
+      return false;
     }
 
 
@@ -88,6 +93,50 @@ namespace scl
         if(false == t->computeControl(arg_rio.sensors_,arg_rgcm,arg_dyn))
           return false;
       return true;
+    }
+
+    /** Compute the operational space control model for a set of tasks.
+     */
+    bool computeTaskRangeProjectionsQR(
+        /** A vector of range spaces associated with each task. We'll assume it's been initialized.
+         * NOTE TODO : Merge this into a data struct that also contains the task level at which
+         * range space reaches zero. This will help optimize code (can ignore further levels).  */
+        std::vector<Eigen::MatrixXd> arg_range_spaces,
+        /** A multi-level mapped list containing all the tasks. This contains enough information to prioritize tasks. */
+        const sutil::CMappedMultiLevelList<std::string, scl::tasks::CTaskBase*> & arg_taskmllist,
+        const SGcModel &arg_rgcm,
+        const scl::CDynamicsBase &arg_dyn)
+    {
+      // We expect the range space vector to be initialized.
+      if(arg_range_spaces.size() != arg_taskmllist.getNumPriorityLevels()) return false;
+
+      Eigen::MatrixXd tmp;
+      // The first level has full range.
+      tmp.setIdentity(arg_rgcm.dof_robot_,arg_rgcm.dof_robot_);
+
+      // Find the range space available to each successive layer
+      int i;
+      for(i=0; i<arg_taskmllist.getNumPriorityLevels(); ++i)
+      {
+        arg_range_spaces[i] = tmp; // This level's range is decided already.
+
+        // Now let's decide the range for the next level.
+        // Essentially we'll first find the orthonormal basis for the above
+        // levels + this level. Then run a full QR to get the available range
+        // space for the next level (using Gram-schmidt)
+
+        // Iterate over the columns of JT for each task at this level.
+        // If they aren't represented in the basis set, then add them.
+//        for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i))
+//        {
+//          //const scl::tasks::CTaskBase &tsk = *t;
+//        }
+      }
+      i=i+1;
+      while (i<arg_taskmllist.getNumPriorityLevels())//Range exhausted. Remaining tasks have none.
+      { arg_range_spaces[i].setZero(arg_rgcm.dof_robot_,arg_rgcm.dof_robot_); }
+
+      return false;
     }
   } /* namespace control */
 } /* namespace scl */
