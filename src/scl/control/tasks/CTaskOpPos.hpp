@@ -91,7 +91,7 @@ namespace scl
       virtual STaskBase* getData() { return dynamic_cast<STaskBase*>(data_);  }
 
       /** Return this task controller's task data structure (const).*/
-      virtual const STaskBase* getTaskDataConst() const { return dynamic_cast<const STaskBase*>(data_);  }
+      virtual const STaskBase* getDataConst() const { return dynamic_cast<const STaskBase*>(data_);  }
 
       /** Sets the current goal position, velocity, and acceleration.
        * Leave vector pointers NULL if you don't want to set them. */

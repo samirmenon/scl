@@ -88,6 +88,9 @@ namespace scl
        *        And try not to downcast very often. Perf hit. */
       virtual STaskBase* getData()=0;
 
+      /** Return this task controller's task data structure (const).*/
+      virtual const STaskBase* getDataConst() const=0;
+
       /* **************************************************************
        *                   Initialization Functions
        * ************************************************************** */
