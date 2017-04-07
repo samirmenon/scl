@@ -30,7 +30,7 @@ namespace scl_ext
 
   bool CDynamicsSclSpatial::forwardDynamicsABA( const scl::SRobotIO *arg_io_data ,
       scl::SGcModel *arg_gc_model ,
-      Eigen::VectorXd &ret_ddq)
+      Eigen::VectorXd &ret_ddq) const
   {
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
@@ -188,7 +188,7 @@ namespace scl_ext
 
   bool CDynamicsSclSpatial::forwardDynamicsCRBA(const scl::SRobotIO *arg_io_data,
       scl::SGcModel *arg_gc_model,
-      Eigen::VectorXd &ret_ddq)
+      Eigen::VectorXd &ret_ddq) const
   {
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
@@ -354,7 +354,8 @@ namespace scl_ext
   }
 
 
-  bool CDynamicsSclSpatial::inverseDynamicsNER(const scl::SRobotIO *arg_io_data, scl::SGcModel *arg_gc_model , Eigen::VectorXd &ret_fgc)
+  bool CDynamicsSclSpatial::inverseDynamicsNER(const scl::SRobotIO *arg_io_data,
+      scl::SGcModel *arg_gc_model , Eigen::VectorXd &ret_fgc) const
   {
 #ifdef DEBUG
     assert(arg_gc_model!=NULL);
@@ -464,7 +465,7 @@ namespace scl_ext
           sensed generalized forces and perceived external forces.*/
       scl::SRobotIO &arg_io_data,
       /** step dt time */
-      const scl::sFloat arg_time_interval)
+      const scl::sFloat arg_time_interval) const
   {
     // Cache the current state.
     arg_gc_model.vec_scratch_[0] = arg_io_data.sensors_.q_;
@@ -500,7 +501,7 @@ namespace scl_ext
       /** The constraint Jacobian. This is a (constrained direction x dof) matrix*/
       Eigen::MatrixXd &arg_Jc,
       /** step dt time */
-      const scl::sFloat arg_time_interval)
+      const scl::sFloat arg_time_interval) const
   {
     /** Compute the null space of the constraint :
      * The constraint Jacobian will always be fat. Its transpose is skinny and has
@@ -575,7 +576,7 @@ namespace scl_ext
       const Eigen::VectorXd& arg_q,
       /** The current generalized velocities. */
       const Eigen::VectorXd& arg_dq,
-      scl::sFloat &ret_kinetic_energy)
+      scl::sFloat &ret_kinetic_energy) const
   {
 #ifdef DEBUG
     assert(has_been_init_);
@@ -653,7 +654,7 @@ namespace scl_ext
       scl::SGcModel &arg_gc_model,
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
-      scl::sFloat &ret_potential_energy)
+      scl::sFloat &ret_potential_energy)  const
   {
 #ifdef DEBUG
     assert(has_been_init_);

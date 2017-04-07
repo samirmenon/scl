@@ -69,7 +69,7 @@ public:
       const SRobotSensors * arg_sensor_data,
       /** Individual link Jacobians, and composite intertial,
             centrifugal/coriolis gravity estimates.*/
-      SGcModel * arg_gc_model)=0;
+      SGcModel * arg_gc_model) const =0;
 
   /* *******************************************************************
    *                      Coordinate Transformations
@@ -81,7 +81,7 @@ public:
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   { return false; }
 
   /** Calculates the Transformation Matrix for the robot to which
@@ -93,7 +93,7 @@ public:
       /** The link at which the transformation matrix is to be calculated */
       SRigidBodyDyn& arg_link,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   { return false; }
 
   /** Calculates the Transformation Matrix for the robot to which
@@ -116,7 +116,7 @@ public:
        * Pass NULL to compute the transform up to the global root. */
       const SRigidBodyDyn* arg_ancestor,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   { return false; }
 
   /* *******************************************************************
@@ -137,7 +137,7 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
-      const Eigen::Vector3d& arg_pos_local)
+      const Eigen::Vector3d& arg_pos_local) const
   { return false; }
 
   /** Calculates the Jacobian for the robot to which this dynamics
@@ -175,7 +175,7 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
-      const Eigen::Vector3d& arg_pos_local)
+      const Eigen::Vector3d& arg_pos_local) const
   { return false; }
 
   /** Calculates the Jacobian for the robot to which this dynamics
@@ -193,7 +193,7 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
-      const Eigen::Vector3d& arg_pos_local)
+      const Eigen::Vector3d& arg_pos_local) const
   { return false; }
 
   /** Calculates the Jacobian for the robot to which this dynamics
@@ -211,7 +211,7 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
-      const Eigen::Vector3d& arg_pos_local)
+      const Eigen::Vector3d& arg_pos_local) const
   { return false; }
 
   /* *******************************************************************
@@ -231,7 +231,7 @@ public:
           This is where the simulator will store the contact
           forces. It may use the std::string to identify when
           to remove or re-add forces.*/
-          sutil::CMappedList<std::string, SForce> & arg_contacts)
+          sutil::CMappedList<std::string, SForce> & arg_contacts) const
   {   /** As of now, this is optional for dynamics engines */ return false; }
 
   /** Integrates the robot's state.
@@ -258,7 +258,7 @@ public:
       /** The time across which the system should integrate the
        * dynamics. Could take fixed steps or dynamic ones in between.
        * Up to the integrator implementation. */
-      const sFloat arg_time_interval)
+      const sFloat arg_time_interval) const
   { return false; }
 
   /** Integrates the robot's state.
@@ -281,7 +281,7 @@ public:
       /** The time across which the system should integrate the
        * dynamics. Could take fixed steps or dynamic ones in between.
        * Up to the integrator implementation. */
-      const sFloat arg_time_interval)
+      const sFloat arg_time_interval) const
   { return false; }
 
   /* *******************************************************************
@@ -294,7 +294,7 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The current generalized velocities. */
-      const Eigen::VectorXd& arg_dq)
+      const Eigen::VectorXd& arg_dq) const
   { return false; }
 
   /** Gets the robot's potential energy */
@@ -302,7 +302,7 @@ public:
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   { return false; }
 
   /* *******************************************************************

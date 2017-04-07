@@ -48,7 +48,7 @@ namespace scl
         const SRobotSensors * arg_sensor_data,
         /** Individual link Jacobians, and composite intertial,
               centrifugal/coriolis gravity estimates.*/
-        SGcModel * arg_gc_model)
+        SGcModel * arg_gc_model) const
   {
     bool flag = true;
     const Eigen::VectorXd &q = arg_sensor_data->q_;
@@ -87,7 +87,7 @@ namespace scl
       /** The link at which the transformation matrix is to be calculated */
       SRigidBodyDyn& arg_link,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   {
     bool flag;
 
@@ -141,7 +141,7 @@ namespace scl
        * Pass NULL to compute the transform up to the global root. */
       const SRigidBodyDyn* arg_ancestor,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   {
     bool flag = true;
 
@@ -172,7 +172,7 @@ namespace scl
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   {
     bool flag = true;
     sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
@@ -217,7 +217,7 @@ namespace scl
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
-      const Eigen::Vector3d& arg_pos_local)
+      const Eigen::Vector3d& arg_pos_local) const
   {
     bool flag = true;
 
@@ -338,7 +338,7 @@ namespace scl
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The current generalized velocities. */
-      const Eigen::VectorXd& arg_dq)
+      const Eigen::VectorXd& arg_dq)const
   {
     if(false == has_been_init_) { return std::numeric_limits<sFloat>::quiet_NaN(); }
 #ifdef DEBUG
@@ -376,7 +376,7 @@ namespace scl
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   {
     if(false == has_been_init_) { return std::numeric_limits<sFloat>::quiet_NaN(); }
 #ifdef DEBUG
@@ -414,7 +414,7 @@ namespace scl
       /** Time of collision */
       sFloat arg_collision_time,
       /** A contact points at which the contact force will be applied. */
-      scl::SForceContact &ret_force_)
+      scl::SForceContact &ret_force_) const
   { return false; }
 
   /** Initializes the dynamics to be computed for a specific robot.

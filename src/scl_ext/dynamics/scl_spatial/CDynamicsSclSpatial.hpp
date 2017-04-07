@@ -41,7 +41,7 @@ namespace scl_ext
           centrifugal/coriolis gravity estimates. */
         scl::SGcModel *arg_gc_model,
         /** The returned generalized accelerations (Eg. joint accelerations) */
-        Eigen::VectorXd &ret_ddq);
+        Eigen::VectorXd &ret_ddq) const;
 
     /** Calculate Joint Acceleration using Articulated Body Algorithm */
     bool forwardDynamicsABA(/** Current robot state. q, dq, ddq,
@@ -51,7 +51,7 @@ namespace scl_ext
           centrifugal/coriolis gravity estimates. */
         scl::SGcModel *arg_gc_model,
         /** The returned generalized accelerations (Eg. joint accelerations) */
-        Eigen::VectorXd &ret_ddq);
+        Eigen::VectorXd &ret_ddq) const;
 
     /** Calculate joint Torque using Newton Euler Recursive Algorithm */
     bool inverseDynamicsNER(/** Current robot state. q, dq, ddq,
@@ -61,7 +61,7 @@ namespace scl_ext
           centrifugal/coriolis gravity estimates. */
         scl::SGcModel *arg_gc_model,
         /** The returned generalized forces (Eg. joint torques) */
-        Eigen::VectorXd &ret_fgc);
+        Eigen::VectorXd &ret_fgc) const;
 
 
 
@@ -88,7 +88,7 @@ namespace scl_ext
         /** The time across which the system should integrate the
          * dynamics. Could take fixed steps or dynamic ones in between.
          * Up to the integrator implementation. */
-        const scl::sFloat arg_time_interval)
+        const scl::sFloat arg_time_interval) const
     { return false; }
 
     /** Calculate joint position and velocity using Newton numerical integrator */
@@ -100,7 +100,7 @@ namespace scl_ext
             sensed generalized forces and perceived external forces.*/
         scl::SRobotIO &arg_io_data,
         /** step dt time */
-        const scl::sFloat arg_time_interval);
+        const scl::sFloat arg_time_interval) const;
 
     /** Calculate joint position and velocity using Newton numerical integrator.
      * Also make sure that there is no motion inconsistent with the given constriant Jacobian.
@@ -122,7 +122,7 @@ namespace scl_ext
          * operational point, it will be J[0,:]. */
         Eigen::MatrixXd &arg_Jc,
         /** step dt time */
-        const scl::sFloat arg_time_interval);
+        const scl::sFloat arg_time_interval) const;
 
     /* *******************************************************************
      *                      Dynamics State functions.
@@ -134,7 +134,7 @@ namespace scl_ext
         /** The current generalized coordinates. */
         const Eigen::VectorXd& arg_q,
         /** The current generalized velocities. */
-        const Eigen::VectorXd& arg_dq)
+        const Eigen::VectorXd& arg_dq) const
     { return false; }
 
     /** Gets the robot's potential energy */
@@ -142,7 +142,7 @@ namespace scl_ext
         /** The tree for which the transformation matrices are to be updated */
         sutil::CMappedTree<std::string, scl::SRigidBodyDyn> &arg_tree,
         /** The current generalized coordinates. */
-        const Eigen::VectorXd& arg_q)
+        const Eigen::VectorXd& arg_q) const
     { return false; }
 
     /** Gets the robot's kinetic energy using spatial algorithm*/
@@ -155,7 +155,7 @@ namespace scl_ext
         /** The current generalized velocities. */
         const Eigen::VectorXd& arg_dq,
         /** the returned kinetic energy */
-        scl::sFloat &ret_kinetic_energy);
+        scl::sFloat &ret_kinetic_energy) const;
 
     /** Gets the robot's potential energy using spatial algorithm*/
     bool computeEnergyPotential(
@@ -165,7 +165,7 @@ namespace scl_ext
         /** The current generalized coordinates. */
         const Eigen::VectorXd& arg_q,
         /** the returned potential energy */
-        scl::sFloat &ret_potential_energy);
+        scl::sFloat &ret_potential_energy) const;
 
     /* *******************************************************************
      *                      Computational functions.
@@ -181,7 +181,7 @@ namespace scl_ext
         const scl::SRobotSensors * arg_sensor_data,
         /** Individual link Jacobians, and composite intertial,
                 centrifugal/coriolis gravity estimates.*/
-        scl::SGcModel * arg_gc_model)
+        scl::SGcModel * arg_gc_model) const
     { return false; }
 
     /* *******************************************************************

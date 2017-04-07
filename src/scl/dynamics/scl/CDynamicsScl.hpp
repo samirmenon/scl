@@ -71,7 +71,7 @@ public:
       const SRobotSensors * arg_sensor_data,
       /** Individual link Jacobians, and composite inertial,
           centrifugal/coriolis gravity estimates. */
-      SGcModel * arg_gc_model);
+      SGcModel * arg_gc_model) const;
 
   /* *******************************************************************
    *                      Coordinate Transformations
@@ -83,7 +83,7 @@ public:
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q);
+      const Eigen::VectorXd& arg_q) const;
 
   /** Calculates the Transformation Matrix for the robot to which
    * this dynamics object is assigned.
@@ -94,7 +94,7 @@ public:
       /** The link at which the transformation matrix is to be calculated */
       SRigidBodyDyn& arg_link,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q);
+      const Eigen::VectorXd& arg_q) const;
 
   /** Calculates the Transformation Matrix for the robot to which
    * this dynamics object is assigned.
@@ -116,7 +116,7 @@ public:
        * Pass NULL to compute the transform up to the global root. */
       const SRigidBodyDyn* arg_ancestor,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q);
+      const Eigen::VectorXd& arg_q) const;
 
   /* *******************************************************************
    *                      Compute Jacobians
@@ -136,7 +136,7 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The offset from the link's frame (in link coordinates). */
-      const Eigen::Vector3d& arg_pos_local);
+      const Eigen::Vector3d& arg_pos_local) const;
 
   /** Calculates the Jacobian for the robot to which this dynamics
    * object is assigned.
@@ -175,7 +175,7 @@ public:
       const Eigen::Vector3d& arg_pos_local,
       /** Whether to recompute the transformations up to the ancestor
        * Default = true. Set to false to speed things up.*/
-      const bool arg_recompute_transforms=true)
+      const bool arg_recompute_transforms=true) const
   { return false; }
 
   /** Updates the center of mass Jacobians for the robot  to which
@@ -205,7 +205,7 @@ public:
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   {
     if(false == has_been_init_){  return false; }
     bool flag = true; sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
@@ -231,7 +231,7 @@ public:
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q)
+      const Eigen::VectorXd& arg_q) const
   {
     if(false == has_been_init_){  return false; }
     bool flag = true; sutil::CMappedTree<std::string, SRigidBodyDyn>::iterator it,ite;
@@ -256,14 +256,14 @@ public:
       /** The current generalized coordinates. */
       const Eigen::VectorXd& arg_q,
       /** The current generalized velocities. */
-      const Eigen::VectorXd& arg_dq);
+      const Eigen::VectorXd& arg_dq) const;
 
   /** Gets the robot's potential energy */
   virtual sFloat computeEnergyPotential(
       /** The tree for which the transformation matrices are to be updated */
       sutil::CMappedTree<std::string, SRigidBodyDyn> &arg_tree,
       /** The current generalized coordinates. */
-      const Eigen::VectorXd& arg_q);
+      const Eigen::VectorXd& arg_q) const;
 
   /* *******************************************************************
    *                      Contact Resolution functions.
@@ -281,7 +281,7 @@ public:
       /** Time of collision */
       sFloat arg_collision_time,
       /** A contact points at which the contact force will be applied. */
-      scl::SForceContact &ret_force_);
+      scl::SForceContact &ret_force_) const;
 
   /* *******************************************************************
    *                      Initialization functions.
