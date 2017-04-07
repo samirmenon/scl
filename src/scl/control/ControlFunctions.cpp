@@ -115,7 +115,7 @@ namespace scl
       tmp.setIdentity(arg_rgcm.dof_robot_,arg_rgcm.dof_robot_);
 
       // Find the range space available to each successive layer
-      int i;
+      sUInt i;
       for(i=0; i<arg_taskmllist.getNumPriorityLevels(); ++i)
       {
         arg_range_spaces[i] = tmp; // This level's range is decided already.
@@ -127,10 +127,11 @@ namespace scl
 
         // Iterate over the columns of JT for each task at this level.
         // If they aren't represented in the basis set, then add them.
-//        for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i))
-//        {
-//          //const scl::tasks::CTaskBase &tsk = *t;
-//        }
+        for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i))
+        {
+          const scl::tasks::CTaskBase &tsk = **t;
+          tsk.getDataConst()->J_;
+        }
       }
       i=i+1;
       while (i<arg_taskmllist.getNumPriorityLevels())//Range exhausted. Remaining tasks have none.
