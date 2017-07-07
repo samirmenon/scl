@@ -81,6 +81,18 @@ namespace scl
         const SRobotIO &arg_rio,
         const scl::CDynamicsBase &arg_dyn);
 
+    /** Compute the operational space control model for a set of tasks:
+     * Gram-Schmidt orthonormalization
+     */
+    bool computeTaskRangeProjectionsGS(
+        /** A vector of range spaces associated with each task. We'll assume it's been initialized.
+         * NOTE TODO : Merge this into a data struct that also contains the task level at which
+         * range space reaches zero. This will help optimize code (can ignore further levels).  */
+        std::vector<Eigen::MatrixXd> arg_range_spaces,
+        /** A multi-level mapped list containing all the tasks. This contains enough information to prioritize tasks. */
+        const sutil::CMappedMultiLevelList<std::string, scl::tasks::CTaskBase*> & arg_taskmllist,
+        const SGcModel &arg_rgcm,
+        const scl::CDynamicsBase &arg_dyn);
 
     /** Compute the operational space control model for a set of tasks.
      */

@@ -31,6 +31,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "ControlFunctions.hpp"
+#include <cassert>
 
 namespace scl
 {
@@ -95,9 +96,10 @@ namespace scl
       return true;
     }
 
-    /** Compute the operational space control model for a set of tasks.
+    /** Compute the operational space control model for a set of tasks:
+     * Gram-Schmidt orthonormalization
      */
-    bool computeTaskRangeProjectionsQR(
+    bool computeTaskRangeProjectionsGS(
         /** A vector of range spaces associated with each task. We'll assume it's been initialized.
          * NOTE TODO : Merge this into a data struct that also contains the task level at which
          * range space reaches zero. This will help optimize code (can ignore further levels).  */
@@ -115,24 +117,47 @@ namespace scl
       tmp.setIdentity(arg_rgcm.dof_robot_,arg_rgcm.dof_robot_);
 
       // Find the range space available to each successive layer
-      sUInt i;
+      sUInt i;//We use i's value after the loop...
       for(i=0; i<arg_taskmllist.getNumPriorityLevels(); ++i)
       {
         arg_range_spaces[i] = tmp; // This level's range is decided already.
+        if(i==arg_taskmllist.getNumPriorityLevels()) break; // We're done.
 
-        // Now let's decide the range for the next level.
+        // Now let's decide the range for the next level (there is one more level).
         // Essentially we'll first find the orthonormal basis for the above
-        // levels + this level. Then run a full QR to get the available range
-        // space for the next level (using Gram-schmidt)
+        // levels + this level.
 
-        // Iterate over the columns of JT for each task at this level.
-        // If they aren't represented in the basis set, then add them.
+        // ********* STEP 1 : Construct the J' column space so far + next level.
+        // Get size of col space for all Jacobians at this level
+        cols_in_level = 0;
+        for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i))
+        { cols_in_level += (*t)->getDataConst()->J_.rows(); }
+
+        // The max range space of J' is going to be dofxdof. But we'll
+        // need to take all J cols into account so we'll create a larger
+        // space here (and shrink it to a suitable size w a tolerance).
+        Eigen::MatrixXd Rs(arg_rgcm.dof_robot_,cols_in_level);
+
+        // Get all the cols at this level.
+        sUInt cols_set=0; // Value carries over to next loop as well.
         for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i))
         {
-          const scl::tasks::CTaskBase &tsk = **t;
-          tsk.getDataConst()->J_;
+          Rs.block(0,cols_set,arg_rgcm.dof_robot_,(*t)->getDataConst()->J_.rows()) = (*t)->getDataConst()->J_.transpose();
+          cols_set += (*t)->getDataConst()->J_.rows();
         }
-      }
+
+        // Get all the cols at the next level.
+        for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i+1))
+        {
+          Rs.block(0,cols_set,arg_rgcm.dof_robot_,(*t)->getDataConst()->J_.rows()) = (*t)->getDataConst()->J_.transpose();
+          cols_set += (*t)->getDataConst()->J_.rows();
+        }
+
+        assert(cols_set == cols_in_level+cols_in_next);
+
+        // ********* STEP 1 : Orthogonalize the J' column space so far + drop cols if required.
+
+      }// We might have exited on finding a gc task. In that case, all subsequent range spaces are zero.
       i=i+1;
       while (i<arg_taskmllist.getNumPriorityLevels())//Range exhausted. Remaining tasks have none.
       { arg_range_spaces[i].setZero(arg_rgcm.dof_robot_,arg_rgcm.dof_robot_); }
@@ -141,3 +166,38 @@ namespace scl
     }
   } /* namespace control */
 } /* namespace scl */
+
+
+/**
+ * // ********* STEP 1 : Construct the J' column space so far + next level.
+        // Get size of col space for all Jacobians at this level
+        for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i))
+        { cols_so_far += (*t)->getDataConst()->J_.rows(); }
+
+        // Get size of col space for all Jacobians at next level
+        sUInt cols_in_next=0;
+        for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i+1))
+        { cols_in_next += (*t)->getDataConst()->J_.rows(); }
+
+        // The max range space of J' is going to be dofxdof. But we'll
+        // need to take all J cols into account so we'll create a larger
+        // space here (and shrink it to a suitable size w a tolerance).
+        Eigen::MatrixXd Rs(arg_rgcm.dof_robot_,cols_so_far+cols_in_next);
+
+        // Get all the cols at this level.
+        sUInt cols_set=0; // Value carries over to next loop as well.
+        for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i))
+        {
+          Rs.block(0,cols_set,arg_rgcm.dof_robot_,(*t)->getDataConst()->J_.rows()) = (*t)->getDataConst()->J_.transpose();
+          cols_set += (*t)->getDataConst()->J_.rows();
+        }
+
+        // Get all the cols at the next level.
+        for(auto &t : *arg_taskmllist.getSinglePriorityLevelConst(i+1))
+        {
+          Rs.block(0,cols_set,arg_rgcm.dof_robot_,(*t)->getDataConst()->J_.rows()) = (*t)->getDataConst()->J_.transpose();
+          cols_set += (*t)->getDataConst()->J_.rows();
+        }
+
+        assert(cols_set == cols_so_far+cols_in_next);
+ */
