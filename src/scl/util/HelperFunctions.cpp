@@ -108,4 +108,22 @@ namespace scl_util
     { std::cout<<"\ngetCurrentDir() Error : "<<e.what(); }
     return false;
   }
+
+
+  /** Splits a string at character provided. Returns a vector */
+  bool splitString(const std::string &arg_str, const char arg_split_char,
+      std::vector<std::string> &ret_vector_splits)
+  {
+    std::stringstream test(arg_str);
+    std::string token;
+    ret_vector_splits.clear();
+
+    while(std::getline(test, token, arg_split_char))
+    { ret_vector_splits.push_back(token); }
+
+    if(ret_vector_splits.size()<1)
+    {  return false;  }
+
+    return true;
+  }
 }

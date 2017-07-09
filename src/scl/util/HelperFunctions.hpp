@@ -54,6 +54,10 @@ namespace scl_util
 
   /** Does what it says */
   bool getCurrentDir(std::string& arg_cwd);
+
+  /** Splits a string at character provided. Returns a vector */
+  bool splitString(const std::string &arg_str, const char arg_split_char,
+      std::vector<std::string> &ret_vector_splits);
 }
 
 #endif /* RANDOMFUNCTIONS_HPP_ */
