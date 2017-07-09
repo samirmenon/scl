@@ -556,7 +556,30 @@ namespace scl
   }
 
   template<>  bool serializeToJSON<SNonControlTaskBase>(const SNonControlTaskBase &arg_obj, Json::Value &ret_json_val)
-  { return false; }
+  {
+    bool flag = serializeToJSON(*dynamic_cast<const SObject*>(&arg_obj), ret_json_val);
+    if(!flag) { return false; }
+
+    MACRO_SER_ARGOBJ_RETJSONVAL(type_task_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(has_been_activated_)
+
+    // Std vector of strings (iterable)
+    ret_json_val["task_nonstd_params_"] = Json::Value(Json::arrayValue);
+    // C++11 auto iterator (compact!)
+    for (auto&& element: arg_obj.task_nonstd_params_) {
+      Json::Value tmp;
+      serializeToJSON(element.data_[0]+std::string(" : ") +element.data_[1],tmp);
+      ret_json_val["task_nonstd_params_"].append(tmp);
+    }
+
+    // Also save the pointers
+    // NOTE TODO : Think about whether this is necessary.. Reconsider doing this if it's not a good idea.
+    std::stringstream ss;
+    ss << static_cast<const void*>(arg_obj.parent_controller_);
+    ret_json_val["parent_controller_"] = ss.str(); ss.clear();
+
+    return true;
+  }
 
   template<>  bool serializeToJSON<SServo>(const SServo &arg_obj, Json::Value &ret_json_val)
   { return false; }
@@ -1044,17 +1067,41 @@ namespace scl
     bool flag = deserializeFromJSON(*dynamic_cast<SObject *>(&ret_obj), arg_json_val);
     if (!flag) { return false; }
 
-    MACRO_DESER_RETOBJ_ARGJSONVAL(type_task,asString)
-    MACRO_DESER_RETOBJ_ARGJSONVAL(priority,asUInt)
-    MACRO_DESER_RETOBJ_ARGJSONVAL(dof_task,asUInt)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(type_task_,asString)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(priority_,asUInt)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(dof_task_,asUInt)
+
+    // I don't think we should deserialize these (since they are dynamic quantities).
+    // It's okay to serialize them (for debugging/visualization).
+    // But I'll leave them anyway.
+    //MACRO_DESER_RETOBJ_ARGJSONVAL(has_been_activated_,asBool)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL(has_control_null_space_,asBool)
 
     std::string str;
     Json::Reader json_reader;
 
-    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(kp)
-    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(kv)
-    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(ka)
-    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(ki)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(kp_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(kv_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(ka_)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(ki_)
+
+    // I don't think we should deserialize these (since they are dynamic quantities).
+    // It's okay to serialize them (for debugging/visualization).
+    // But I'll leave them anyway.
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(J_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(J_6_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(J_dyn_inv_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(null_space_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(M_task_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(M_task_inv_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_task_cc_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_task_grav_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_task_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_task_max_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_task_min_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(force_gc_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(range_space_)
+    //MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(shared_data_)
 
     // Std vector of strings (iterable)
     /* This is how these were encoded... "str:str"
@@ -1086,7 +1133,40 @@ namespace scl
   }
 
   template<> bool deserializeFromJSON<SNonControlTaskBase>(SNonControlTaskBase &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    bool flag = deserializeFromJSON(*dynamic_cast<SObject *>(&ret_obj), arg_json_val);
+    if (!flag) { return false; }
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL(type_task_,asString)
+
+    // Std vector of strings (iterable)
+    /* This is how these were encoded... "str:str"
+      // Std vector of strings (iterable)
+      ret_json_val["task_nonstd_params_"] = Json::Value(Json::arrayValue);
+      // C++11 auto iterator (compact!)
+      for (auto&& element: arg_obj.task_nonstd_params_) {
+        Json::Value tmp;
+        serializeToJSON(element.data_[0]+std::string(" : ") +element.data_[1],tmp);
+        ret_json_val["task_nonstd_params_"].append(tmp);
+      }
+     */
+    for (auto itr : arg_json_val["task_nonstd_params_"]) {
+      std::vector<std::string> tmp_vec;
+      flag = scl_util::splitString(itr.asString(), ':', tmp_vec);
+      if(false == flag || tmp_vec.size() != 2)
+      { std::cout<<"\n ERROR : deserializeFromJSON<STaskBase>() failed at task_nonstd_params; should have contained two strings separated by a : ('str:str')";  return false; }
+
+      scl::sString2 str2;
+      str2.data_[0] = tmp_vec[0];
+      str2.data_[1] = tmp_vec[1];
+      ret_obj.task_nonstd_params_.push_back(str2);
+    }
+
+    //Extra function to init subclass
+    ret_obj.initTaskParams();
+
+    return true;
+  }
 
   template<> bool deserializeFromJSON<SServo>(SServo &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
