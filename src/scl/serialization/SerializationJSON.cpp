@@ -1039,47 +1039,90 @@ namespace scl
   template<> bool deserializeFromJSON<SCmdLineOptions_OneRobot>(SCmdLineOptions_OneRobot &ret_obj, const Json::Value &arg_json_val)
   { return false; }
 
-  template<> bool deserializeFromJSON<STaskBase>(STaskBase &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskBase>(STaskBase &ret_obj, const Json::Value &arg_json_val)
+  {
+    bool flag = deserializeFromJSON(*dynamic_cast<SObject *>(&ret_obj), arg_json_val);
+    if (!flag) { return false; }
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL(type_task,asString)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(priority,asUInt)
+    MACRO_DESER_RETOBJ_ARGJSONVAL(dof_task,asUInt)
+
+    std::string str;
+    Json::Reader json_reader;
+
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(kp)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(kv)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(ka)
+    MACRO_DESER_RETOBJ_ARGJSONVAL_Eigen(ki)
+
+    // Std vector of strings (iterable)
+    /* This is how these were encoded... "str:str"
+      // Std vector of strings (iterable)
+      ret_json_val["task_nonstd_params_"] = Json::Value(Json::arrayValue);
+      // C++11 auto iterator (compact!)
+      for (auto&& element: arg_obj.task_nonstd_params_) {
+        Json::Value tmp;
+        serializeToJSON(element.data_[0]+std::string(" : ") +element.data_[1],tmp);
+        ret_json_val["task_nonstd_params_"].append(tmp);
+      }
+     */
+    for (auto itr : arg_json_val["task_nonstd_params_"]) {
+      std::vector<std::string> tmp_vec;
+      flag = scl_util::splitString(itr.asString(), ':', tmp_vec);
+      if(false == flag || tmp_vec.size() != 2)
+      { std::cout<<"\n ERROR : deserializeFromJSON<STaskBase>() failed at task_nonstd_params; should have contained two strings separated by a : ('str:str')";  return false; }
+
+      scl::sString2 str2;
+      str2.data_[0] = tmp_vec[0];
+      str2.data_[1] = tmp_vec[1];
+      ret_obj.task_nonstd_params_.push_back(str2);
+    }
+
+    //Extra function to init subclass
+    ret_obj.initTaskParams();
+
+    return true;
+  }
+
+  template<> bool deserializeFromJSON<SNonControlTaskBase>(SNonControlTaskBase &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<SNonControlTaskBase>(SNonControlTaskBase &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<SServo>(SServo &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<SServo>(SServo &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskOpPosPIDA1OrderInfTime>(STaskOpPosPIDA1OrderInfTime &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskOpPosPIDA1OrderInfTime>(STaskOpPosPIDA1OrderInfTime &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskGc>(STaskGc &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskGc>(STaskGc &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskGcLimitCentering>(STaskGcLimitCentering &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskGcLimitCentering>(STaskGcLimitCentering &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskOpPosNoGravity>(STaskOpPosNoGravity &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskOpPosNoGravity>(STaskOpPosNoGravity &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskComPos>(STaskComPos &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskComPos>(STaskComPos &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskGcSet>(STaskGcSet &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskGcSet>(STaskGcSet &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskOpPos>(STaskOpPos &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<STaskOpPos>(STaskOpPos &arg_obj, const Json::Value &ret_json_val)
-  {  return false;  }
-
-  template<> bool deserializeFromJSON<STaskNullSpaceDamping>(STaskNullSpaceDamping &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<STaskNullSpaceDamping>(STaskNullSpaceDamping &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
 
-  template<> bool deserializeFromJSON<SControllerBase>(SControllerBase &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<SControllerBase>(SControllerBase &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<SControllerGc>(SControllerGc &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<SControllerGc>(SControllerGc &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
-  template<> bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask &arg_obj, const Json::Value &ret_json_val)
+  template<> bool deserializeFromJSON<SControllerMultiTask>(SControllerMultiTask &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
 
 }
