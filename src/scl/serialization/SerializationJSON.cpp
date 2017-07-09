@@ -600,14 +600,42 @@ namespace scl
   { return false; }
 
   template<>  bool serializeToJSON<STaskGcSet>(const STaskGcSet &arg_obj, Json::Value &ret_json_val)
-  { return false; }
+  {
+    bool flag = serializeToJSON<STaskBase>(*dynamic_cast<const STaskBase *>(&arg_obj), ret_json_val);
+
+    MACRO_SER_ARGOBJ_RETJSONVAL(spatial_resolution_)
+
+    // To use the eigen json macro.
+    Json::Reader json_reader;
+    std::string str;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(q_goal_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(dq_goal_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ddq_goal_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(q_sel_)
+
+    // Std vector of strings (iterable)
+    ret_json_val["q_sel_names_"] = Json::Value(Json::arrayValue);
+    // C++11 auto iterator (compact!)
+    for (auto&& element: arg_obj.q_sel_names_) {
+      Json::Value tmp;
+      serializeToJSON(element,tmp);
+      ret_json_val["task_nonstd_params_"].append(tmp);
+    }
+
+    return flag;
+  }
 
   template<>  bool serializeToJSON<STaskOpPos>(const STaskOpPos &arg_obj, Json::Value &ret_json_val)
   {
     bool flag = serializeToJSON<STaskBase>(*dynamic_cast<const STaskBase *>(&arg_obj), ret_json_val);
 
     // NOTE : Adding the task-specific fields..
-    MACRO_SER_ARGOBJ_RETJSONVAL(parent_controller_->name_)
+    ret_json_val["parent_controller_"] = arg_obj.parent_controller_->name_;
+    MACRO_SER_ARGOBJ_RETJSONVAL(link_name_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(spatial_resolution_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_compute_op_gravity_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_compute_op_cc_forces_)
+    MACRO_SER_ARGOBJ_RETJSONVAL(flag_compute_op_inertia_)
 
     // To use the eigen json macro.
     Json::Reader json_reader;
@@ -618,12 +646,16 @@ namespace scl
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(x_goal_)
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(dx_goal_)
     MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ddx_goal_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(pos_in_parent_)
 
     return flag;
   }
 
   template<>  bool serializeToJSON<STaskNullSpaceDamping>(const STaskNullSpaceDamping &arg_obj, Json::Value &ret_json_val)
-  { return false; }
+  {
+    bool flag = serializeToJSON<STaskBase>(*dynamic_cast<const STaskBase *>(&arg_obj), ret_json_val);
+    return flag;
+  }
 
 
   template<>  bool serializeToJSON<SControllerBase>(const SControllerBase &arg_obj, Json::Value &ret_json_val)
@@ -1169,7 +1201,9 @@ namespace scl
   }
 
   template<> bool deserializeFromJSON<SServo>(SServo &ret_obj, const Json::Value &arg_json_val)
-  {  return false;  }
+  {
+    return false;
+  }
 
   template<> bool deserializeFromJSON<STaskOpPosPIDA1OrderInfTime>(STaskOpPosPIDA1OrderInfTime &ret_obj, const Json::Value &arg_json_val)
   {  return false;  }
