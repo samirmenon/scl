@@ -591,13 +591,46 @@ namespace scl
   { return false; }
 
   template<>  bool serializeToJSON<STaskGcLimitCentering>(const STaskGcLimitCentering &arg_obj, Json::Value &ret_json_val)
-  { return false; }
+  {
+    bool flag = serializeToJSON<STaskBase>(*dynamic_cast<const STaskBase *>(&arg_obj), ret_json_val);
+
+    MACRO_SER_ARGOBJ_RETJSONVAL(spatial_resolution_)
+
+    // To use the eigen json macro.
+    Json::Reader json_reader;
+    std::string str;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(q_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(dq_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(q_goal_)
+
+    return flag;
+  }
 
   template<>  bool serializeToJSON<STaskOpPosNoGravity>(const STaskOpPosNoGravity &arg_obj, Json::Value &ret_json_val)
-  { return false; }
+  {
+    return serializeToJSON<STaskBase>(*dynamic_cast<const STaskOpPos *>(&arg_obj), ret_json_val);
+  }
 
   template<>  bool serializeToJSON<STaskComPos>(const STaskComPos &arg_obj, Json::Value &ret_json_val)
-  { return false; }
+  {
+    bool flag = serializeToJSON<STaskBase>(*dynamic_cast<const STaskBase *>(&arg_obj), ret_json_val);
+
+    // NOTE : Adding the task-specific fields..
+    MACRO_SER_ARGOBJ_RETJSONVAL(spatial_resolution_)
+
+    // To use the eigen json macro.
+    Json::Reader json_reader;
+    std::string str;
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(x_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(dx_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ddx_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(x_goal_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(dx_goal_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(ddx_goal_)
+    MACRO_SER_ARGOBJ_RETJSONVAL_Eigen(pos_in_parent_)
+
+    return flag;
+  }
 
   template<>  bool serializeToJSON<STaskGcSet>(const STaskGcSet &arg_obj, Json::Value &ret_json_val)
   {
