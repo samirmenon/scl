@@ -119,6 +119,76 @@ public:
    */
   bool init()
   {
+    bool flag;
+    try
+    {
+      //NOTE TODO : Add more error checks and init stuff here. There are two options:
+      // Option 1. Init everything here
+      // Option 2. Make sure the scl/Init.hpp stuff can do this and/or is tested..
+
+      // *****************************************************************
+      //           Now organize all the links in the data struct etc.
+      // *****************************************************************
+      dof_ = rb_tree_.size() - 1;//The root node is stationary
+
+      //Connect children to parents in the rb tree.
+      flag = rb_tree_.linkNodes();
+      if(false == flag)
+      { throw(std::runtime_error("Could not link robot's nodes.")); }
+
+      bool link_order_specified = (robot_tree_numeric_id_to_name_.size() > 0);
+      if(false == link_order_specified)
+      {
+        robot_tree_numeric_id_to_name_.resize(rb_tree_.size());
+
+        sutil::CMappedTree<std::string, SRigidBody>::iterator its,itse;//For sorting
+        for(auto its = rb_tree_.begin(), itse = rb_tree_.end();
+            its!=itse; ++its)
+        {// NOTE : This adds links to their default xml position given that there is no link order
+          // It also adds the root node at the end (which doesn't need to be specified in the link order)
+          if(0 <= its->link_id_)  //Non-root node
+          { robot_tree_numeric_id_to_name_[its->link_id_] = its->name_; }
+          else if(-1 == its->link_id_) //Root node
+          { robot_tree_numeric_id_to_name_[rb_tree_.size()-1] = its->name_; }
+        }
+      }
+
+      // Now sort the robot
+      flag = rb_tree_.sort(robot_tree_numeric_id_to_name_);
+      if(false == flag)
+      { throw(std::runtime_error(std::string("Could not sort the robot's mapped tree (") + name_ + std::string(")")));  }
+
+      // If the sort was successful, update the link ids.
+      // Now also reset the link_id_ to match the order.
+      int i=0;
+      for(auto its = rb_tree_.begin(), itse = rb_tree_.end()-1;/* ignore root node at end */
+          its!=itse; ++its, ++i)
+      { its->link_id_ = i;  }
+
+      // Print sorted node order
+#ifdef DEBUG
+      std::cout<<"\nreadRobotFromFile() : Sorted links for "<<name_;
+      for(auto its = rb_tree_.begin(), itse = rb_tree_.end();
+          its!=itse; ++its)
+      { std::cout<<"\n\t"<<its->link_id_<<" : "<<its->name_;  }
+#endif
+
+      has_been_init_ = true;
+    }
+    catch (std::exception& e)
+    {
+      std::cout<<"\nSRobotParsed::init() : ERROR : "<<e.what();
+      return false;
+    }
+    return true;
+  }
+
+  /** Initializes the Eigen vectors. This is more time consuming and
+   * potentially error prone hence is not in the constructors (avoids
+   * weird C++ states).
+   */
+  bool reset()
+  {
     rb_tree_.clear();
     robot_tree_numeric_id_to_name_.clear();
     actuator_sets_.clear();
