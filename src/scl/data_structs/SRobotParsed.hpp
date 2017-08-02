@@ -39,6 +39,7 @@ scl. If not, see <http://www.gnu.org/licenses/>.
 
 #include <sutil/CMappedTree.hpp>
 #include <string>
+#include <iostream>
 
 namespace scl
 {
