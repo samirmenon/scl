@@ -317,7 +317,7 @@ namespace scl
           flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(std::string("S")+tmp_task.type_task_,get_task_type);
           if(false == flag)
           { throw (std::runtime_error(std::string("S")+tmp_task.type_task_+
-              std::string(" -- Unrecognized task type requested.\n * Did you register the task type with the database?\n * If not, see applications-linux/scl_skeleton_code/*.cpp to find out how.")));  }
+              std::string(" -- Unrecognized task type requested.\n * Did you register the task type with the database?\n * If not, see scl::init::registerNativeDynamicTypes().")));  }
 
           //Convert the pointer into a STaskBase*
           scl::STaskBase* tmp_task2add = reinterpret_cast<scl::STaskBase*>(get_task_type);
@@ -376,7 +376,7 @@ namespace scl
           flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(std::string("S")+tmp_task.type_task_,get_task_type);
           if(false == flag)
           { throw (std::runtime_error(std::string("S")+tmp_task.type_task_+
-              std::string(" -- Unrecognized task type requested.\n * Did you register the task type with the database?\n * If not, see applications-linux/scl_skeleton_code/*.cpp to find out how.")));  }
+              std::string(" -- Unrecognized task type requested.\n * Did you register the task type with the database?\n * If not, see scl::init::registerNativeDynamicTypes().")));  }
 
           //Convert the pointer into a STaskBase*
           scl::SNonControlTaskBase* tmp_task2add = reinterpret_cast<scl::SNonControlTaskBase*>(get_task_type);
@@ -484,6 +484,81 @@ namespace scl
       catch (std::exception & e)
       { std::cout<<"\nscl::init::initMultiTaskCtrlDsFromParsedTasks() : Failed "<<e.what(); }
       return false;
+    }
+
+    /** Takes a list of tasks as an input and organizes them into
+     * a mapped multi-level list. */
+    int initMappedMultiLevelListFromFromTasks(
+        const SRobotParsed &arg_rds,
+        const std::vector<scl::tasks::STaskBase*> &arg_taskvec,
+        /** Pointers to the Task data structures. Organized
+         * in the priority order (the outer vector) of the tasks.
+         *
+         * Tasks can be accessed either by name (map access), pointer (iterator_)
+         * in the multi level pilemap or via the vector (std::vector access)*/
+        sutil::CMappedMultiLevelList<std::string, scl::tasks::CTaskBase*> &ret_tasks)
+    {
+      bool flag;
+      scl::sUInt tasks_parsed=0;
+      try
+      {
+        ret_tasks.clear();
+
+        //Now add the tasks to the controller sutil::CMappedMultiLevelList
+        for(std::vector<scl::tasks::STaskBase*>::const_iterator it = arg_taskvec.begin(),
+            ite = arg_taskvec.end(); it!=ite; ++it)
+        {
+          const scl::tasks::STaskBase& tmp_task = **it;
+
+          //Use dynamic typing to get the correct task type.
+          void *get_task_type=S_NULL;
+          flag = sutil::CRegisteredDynamicTypes<std::string>::getObjectForType(std::string("C")+tmp_task.task_type_id_,get_task_type);
+          if(false == flag)
+          { throw (std::runtime_error(std::string("C")+tmp_task.task_type_id_+
+              std::string(" -- Unrecognized task type requested.\n * Did you register the task type?\n * If not, see scl::init::registerNativeDynamicTypes().")));  }
+
+          //Convert the pointer into a STaskBase*
+          scl::tasks::CTaskBase* tmp_task2add = reinterpret_cast<scl::tasks::CTaskBase*>(get_task_type);
+
+          flag = tmp_task2add->init(tmp_task);
+          if(false == flag)
+          {
+            if(S_NULL!=tmp_task2add) { delete tmp_task2add;  }
+            throw (std::runtime_error(std::string("Could not initialize task : ")+ tmp_task.task_type_id_+ std::string(" : ") + tmp_task.name_));
+          }
+
+          //THE JUICE : Add all the tasks into the multi level mapped list!!
+          if(S_NULL!=tmp_task2add)
+          {
+            //NOTE : We have to store a double pointer for tasks because the mapped list
+            //creates its own memory.
+            scl::tasks::CTaskBase** tmp = ret_tasks.create(
+                tmp_task.name_, tmp_task2add, tmp_task.priority_);
+
+            //Detailed error reporting.
+            if(S_NULL == tmp)
+            {
+              std::string serr = "Could not create task data structure for : ";
+              if(S_NULL!=tmp_task2add)
+              { serr = serr + tmp_task.name_; delete tmp_task2add; }
+              else
+              { serr = serr + "NULL task pointer (should not be NULL)"; }
+              throw (std::runtime_error(serr.c_str()));
+            }
+          }
+          tasks_parsed++;
+        }
+
+        if(0==tasks_parsed)
+        {  throw (std::runtime_error("Found zero tasks in a task controller."));  }
+
+      }
+      catch(std::exception& ee)
+      {
+        std::cerr<<"\nscl::init::initMappedMultiListFromFromTasks() : "<<ee.what();
+        return 0;
+      }
+      return tasks_parsed;
     }
 
     /** Initializes a dynamic tree given a static tree for a robot. */
