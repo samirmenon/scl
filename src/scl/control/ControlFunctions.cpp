@@ -47,10 +47,12 @@ namespace scl
         const SRobotIO &arg_rio,
         const scl::CDynamicsBase &arg_dyn)
     {
-      std::vector<Eigen::MatrixXd> tmp; tmp.resize(arg_taskmllist.getNumPriorityLevels());
+      // The vector of range spaces.
+      std::vector<Eigen::MatrixXd> tmp_range_spaces;
+      tmp_range_spaces.resize(arg_taskmllist.getNumPriorityLevels());
       if(arg_dyn.computeGCModel(&arg_rio.sensors_,&arg_rgcm))
         if(computeTaskModel(arg_taskmllist,arg_rgcm,arg_rio,arg_dyn))
-          if(computeTaskRangeProjectionsQR(tmp,arg_taskmllist,arg_rgcm,arg_dyn))
+          if(computeTaskRangeProjectionsQR(tmp_range_spaces,arg_taskmllist,arg_rgcm,arg_dyn))
             return true;
       return false;
     }
@@ -165,6 +167,24 @@ namespace scl
 
       return false;
     }
+
+
+    /** Compute the operational space control model for a set of tasks.
+     */
+    bool computeTaskRangeProjectionsQR(
+        /** A vector of range spaces associated with each task. We'll assume it's been initialized.
+         * NOTE TODO : Merge this into a data struct that also contains the task level at which
+         * range space reaches zero. This will help optimize code (can ignore further levels).  */
+        std::vector<Eigen::MatrixXd> arg_range_spaces,
+        /** A multi-level mapped list containing all the tasks. This contains enough information to prioritize tasks. */
+        const sutil::CMappedMultiLevelList<std::string, scl::tasks::CTaskBase*> & arg_taskmllist,
+        const SGcModel &arg_rgcm,
+        const scl::CDynamicsBase &arg_dyn)
+    {
+      // NOTE TODO : Implement me..
+      return false;
+    }
+
   } /* namespace control */
 } /* namespace scl */
 
