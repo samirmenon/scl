@@ -117,7 +117,7 @@ namespace scl_test
 
       //7. Serialize a complex object that includes mapped lists etc. to a JSON string
       scl::SRobotParsed rparsed;
-      rparsed.init();//Initializes the vectors.
+      rparsed.reset();//Initializes the vectors.
       for(auto&& elem : rb_list)
       {
         rparsed.rb_tree_.create(elem.name_, elem, elem.is_root_);
@@ -136,7 +136,7 @@ namespace scl_test
       std::vector<std::string> robot_list;
       flag = parser.listRobotsInFile("../../specs/Puma/PumaCfg.xml",robot_list);
       if(!flag) { throw(std::runtime_error("Could not check Puma xml")); }
-      rparsed.init();//Reset everything..
+      rparsed.reset();//Reset everything..
       flag = parser.readRobotFromFile("../../specs/Puma/PumaCfg.xml","../../specs/",robot_list[0],rparsed);
       if(!flag) { throw(std::runtime_error("Could not load Puma robot xml")); }
 
