@@ -53,9 +53,7 @@ SET(ALL_SRC ${EG_BASE_DIR}scl_example_main.cpp
             ${EG_BASE_DIR}tasks/data_structs/STaskOpExample.cpp
             ${EG_BASE_DIR}tasks/CTaskOpExample.cpp
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
-            ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
-            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
+            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(scl_eg_ctrl ${ALL_SRC})

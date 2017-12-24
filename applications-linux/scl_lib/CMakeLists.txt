@@ -15,13 +15,17 @@ SET(EIGEN_INC_DIR ../../3rdparty/eigen)
 #Tinyxml includes
 SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
 
+###Chai3D scenegraph
+SET(CHAI_INC_DIR ../../3rdparty/chai3d-3.0/chai3d/)
+ADD_DEFINITIONS(-D_LINUX -DLINUX)
+
 #sUtil Includes
 SET(SUTIL_INC_DIR ../../3rdparty/sUtil/src)
 
 #Set all include directories
 INCLUDE_DIRECTORIES(../../src/ ${EIGEN_INC_DIR}	    						
                     ${SUTIL_INC_DIR} ${TIXML_INC_DIR} 
-                    ${SCLEXT_INC_DIR})
+                    ${SCLEXT_INC_DIR} ${CHAI_INC_DIR})
 
 #Set all the base sources required for the library
 SET(SCL_BASE_SRC ${SCL_INC_DIR}/Init.cpp
@@ -119,6 +123,10 @@ SET(SCL_CALLBACKS_SRC ${SCL_INC_DIR}/callbacks/GenericCallbacks.cpp
 SET(OSIM_PARSER_SRC ${SCL_INC_DIR}/parser/osimparser/CParserOsim.cpp
                     ${SCL_INC_DIR}/parser/osimparser/CParserOsimForOldFiles.cpp)
 
+
+SET(CHAI_GRAPHICS_SRC ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp
+            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
+
 #Set tinyxml stuff
 SET(TIXML_SRC ${TIXML_INC_DIR}/scl_tinyxml/scl_tinystr.cpp
             ${TIXML_INC_DIR}/scl_tinyxml/scl_tinyxml.cpp
@@ -132,7 +140,7 @@ SET(ALLSRC ${SCL_BASE_SRC} ${DB_SRC} ${ACT_SRC} ${UTIL_SRC} ${ROBOT_SRC} ${SHELL
            ${DYN_ANALYTIC_SRC} ${DYN_SCL_SRC}
            ${SCL_PARSER_SRC} ${OSIM_PARSER_SRC}
            ${SCL_IO_SRC} ${SCL_SERIALIZATION_SRC} ${SCL_CALLBACKS_SRC}
-           ${TIXML_SRC})
+           ${TIXML_SRC} ${CHAI_GRAPHICS_SRC})
 
 #Set the build mode to debug by default
 #SET(CMAKE_BUILD_TYPE Debug)

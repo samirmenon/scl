@@ -61,9 +61,7 @@ SET(ALL_SRC ${TEST_BASE_DIR}scl_test.cpp
             ${TEST_BASE_DIR}test_controller2.cpp 
             ${TEST_BASE_DIR}test_graphics.cpp
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
-            ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
-            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
+            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(scl_test ${ALL_SRC})

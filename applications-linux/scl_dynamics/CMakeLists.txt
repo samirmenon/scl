@@ -48,9 +48,7 @@ SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
 SET(DYN_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_dynamics/)
 
 SET(ALL_SRC ${DYN_BASE_DIR}/scl_dynamics.cpp
-            ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
-            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
+            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(scl_dynamics ${ALL_SRC})

@@ -47,9 +47,7 @@ SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
 #Set all the sources required for the library
 SET(RParRR_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_RParRR_ctrl/)
 
-SET(ALL_SRC ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
-            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
+SET(ALL_SRC ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
             
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(scl_RParRR ${RParRR_BASE_DIR}/RParRR_main.cpp ${ALL_SRC})

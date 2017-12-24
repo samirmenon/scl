@@ -48,9 +48,7 @@ SET(TUTE3_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_redis_visualizer/)
 
 #These are the source files that will be compiled.
 SET(ALL_SRC ${TUTE3_BASE_DIR}/scl_redis_visualizer_main.cpp
-            ${SCL_INC_DIR}/graphics/chai/CGraphicsChai.cpp 
-            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp
-            ${SCL_INC_DIR}/graphics/chai/data_structs/SGraphicsChai.cpp)
+            ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
 add_executable(scl_redis_visualizer ${ALL_SRC})
