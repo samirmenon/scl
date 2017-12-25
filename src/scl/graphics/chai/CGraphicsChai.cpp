@@ -407,14 +407,14 @@ namespace scl {
             // NOTE : Possibly corrupts the rendering. Disable if required.
 #ifndef DEBUG
             tmp->setUseDisplayList(true, true);
-            tmp->invalidateDisplayList(true);
+            //tmp->markForUpdate(true);//tmp->invalidateDisplayList(true);
 #endif
           }
           else if(SRigidBodyGraphics::GRAPHIC_TYPE_SPHERE == lnk_gr.class_)
           {
             //Set the sphere's color
             // NOTE : Chai handles pointers... If you don't pass it a new obj, it segfaults
-            cMaterial *tmp_material = new cMaterial();
+            cMaterialPtr tmp_material = cMaterial::create();
             cColorf tmp_col;
             tmp_col.set(lnk_gr.color_[0],lnk_gr.color_[1],lnk_gr.color_[2]);
             tmp_material->setColor(tmp_col);
@@ -440,14 +440,14 @@ namespace scl {
             // NOTE : Possibly corrupts the rendering. Disable if required.
 #ifndef DEBUG
             tmp->setUseDisplayList(true, true);
-            tmp->invalidateDisplayList(true);
+            //tmp->markForUpdate(true);//tmp->invalidateDisplayList(true);
 #endif
           }
           else if(SRigidBodyGraphics::GRAPHIC_TYPE_CUBOID == lnk_gr.class_)
           {
             //Set the cuboid's color
             // NOTE : Chai handles pointers... If you don't pass it a new obj, it segfaults
-            cMaterial *tmp_material = new cMaterial();
+            cMaterialPtr tmp_material = cMaterial::create();
             cColorf tmp_col;
             tmp_col.set(lnk_gr.color_[0],lnk_gr.color_[1],lnk_gr.color_[2]);
             tmp_material->setColor(tmp_col);
@@ -483,21 +483,21 @@ namespace scl {
             // NOTE : Possibly corrupts the rendering. Disable if required.
 #ifndef DEBUG
             tmp->setUseDisplayList(true, true);
-            tmp->invalidateDisplayList(true);
+            //tmp->markForUpdate(true);//tmp->invalidateDisplayList(true);
 #endif
           }
           else if(SRigidBodyGraphics::GRAPHIC_TYPE_CYLINDER == lnk_gr.class_)
           {
             //Set the cylinder's color
             // NOTE : Chai handles pointers... If you don't pass it a new obj, it segfaults
-            cMaterial *tmp_material = new cMaterial();
+            cMaterialPtr tmp_material = cMaterial::create();
             cColorf tmp_col;
             tmp_col.set(lnk_gr.color_[0],lnk_gr.color_[1],lnk_gr.color_[2]);
             tmp_material->setColor(tmp_col);
             tmp_material->setShininess(100);
 
             // Uses the first scaling constant to decide the radius
-            cGenericObject* tmp = new cShapeCylinder(lnk_gr.scaling_(0),lnk_gr.scaling_(1),lnk_gr.scaling_(2),tmp_material);
+            cGenericObject* tmp = new chai3d::cShapeCylinder(lnk_gr.scaling_(0),lnk_gr.scaling_(1),lnk_gr.scaling_(2),tmp_material);
             if(NULL == tmp)
             {
               std::string err_str;
@@ -526,7 +526,7 @@ namespace scl {
             // NOTE : Possibly corrupts the rendering. Disable if required.
 #ifndef DEBUG
             tmp->setUseDisplayList(true, true);
-            tmp->invalidateDisplayList(true);
+            //tmp->markForUpdate(true);
 #endif
           }
 
