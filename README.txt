@@ -13,7 +13,6 @@ Wiki: https://bitbucket.org/samirmenon/scl-manips-v2/wiki
 Open a terminal (ctrl+alt+t) and type:
 $ sudo apt-get install build-essential cmake libusb-dev libpci-dev freeglut3-dev libncurses5-dev git-core gitk libusb-1.0-0-dev libglew-dev libqhull-dev libhiredis-dev libjsoncpp-dev libc6-dev-i386 redis-server redis-tools python-redis
 
-
 ===  2. Get the code. ===
 I will assume you will get this on to your documents folder. Again, on the terminal:
 
@@ -32,6 +31,15 @@ Then pick whatever tag (stable point) you want. Preferably pick the most recent 
 $ git checkout -b tag-v1.00 tags/v1.00
 
 Unless you have some experience coding, you should consider using a stable version of the code.
+
+
+=== 2.b Compile 3rdparty/chai3d.git  ===
+The graphics rendering uses chai3d. However, chai3d (3.2) requires a lot of RAM to compile. So we're adding it as a separate step instead of using a submodule. Note, chai was packaged as a 3rdparty earlier so if you'd like ease of compile, use an older version of SCL (chai3d 3.0; easier compile).
+$ cd 3rdparty
+$ git clone git@github.com:samirmenon/chai3d.git chai3d.git
+$ cd chai3d.git
+$ sh make_everything.sh
+$ cd ../../
 
 === 3. Compile all the libraries.  ===
 Compile the scl library and related 3rdparty libraries (Chai-graphics, yaml) all in one step
