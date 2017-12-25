@@ -36,27 +36,12 @@ SET(SUTIL_INC_DIR ${SCL_BASE_DIR}3rdparty/sUtil/src/)
 SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
 
 ###(f) Cdhd
-SET(CDHD_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/DHD/include)
-
-###(g) CGEL
-SET(CGEL_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/GEL/src)
-
-###(h) CGIFLIB
-SET(CGIFLIB_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/giflib/include)
-
-###(i) CLIB3DS
-SET(CLIB3DS_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/lib3ds/include)
-
-###(j) CLIBJPEG
-SET(CLIBJPEG_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/libjpeg/include)
-
-###(k) CLIBPNG
-SET(CLIBPNG_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/libpng/include)
+SET(CDHD_INC_DIR ${CHAI_INC_DIR}../external/DHD/include)
 
 ################Initialize the executable#################
 #Set the include directories
 INCLUDE_DIRECTORIES(${SCL_INC_DIR_BASE} ${EIGEN_INC_DIR} ${CHAI_INC_DIR} ${SUTIL_INC_DIR} ${TIXML_INC_DIR}
-${CDHD_INC_DIR} ${CGEL_INC_DIR} ${CGIFLIB_INC_DIR} ${CLIB3DS_INC_DIR} ${CLIBJPEG_INC_DIR} ${CLIBPNG_INC_DIR} ) 
+${CDHD_INC_DIR}) 
 
 #Set the compilation flags
 SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp")
@@ -67,8 +52,8 @@ SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++11 -DGRAPHICS_ON -DW_THREADING_ON -DNDE
 SET(EG_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_haptic_ctrl/)
 
 SET(ALL_SRC ${EG_BASE_DIR}scl_haptic_main.cpp 
-            ${EG_BASE_DIR}CHapticApp.cpp 
-						${SCL_INC_DIR}/haptics/chai/CHapticsChai.cpp 
+            ${EG_BASE_DIR}CHapticApp.cpp
+            ${SCL_INC_DIR}/haptics/chai/CHapticsChai.cpp 
             ${SCL_INC_DIR}/robot/CRobotApp.cpp 
             ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
 
@@ -90,20 +75,6 @@ SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
 target_link_libraries(scl_haptic_ctrl ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
-find_library( CHAI_LIBRARY_DEBUG NAMES chai3d-3.0
-            PATHS   ${CHAI_INC_DIR}../lib_haptics/
-            PATH_SUFFIXES debug )
-
-find_library( CHAI_LIBRARY_RELEASE NAMES chai3d-3.0
-            PATHS   ${CHAI_INC_DIR}../lib_haptics/
-            PATH_SUFFIXES release )
-
-SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
-              optimized ${CHAI_LIBRARY_RELEASE} )
-
-target_link_libraries(scl_haptic_ctrl ${CHAI_LIBRARY})
-
-###############SPECIAL CODE TO FIND AND LINK IMAGE LIB DIR ######################
 find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
             PATHS   ${CHAI_INC_DIR}/../build_cmake
             PATH_SUFFIXES build_dbg )
@@ -112,11 +83,10 @@ find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
             PATHS   ${CHAI_INC_DIR}/../build_cmake
             PATH_SUFFIXES build_rel )
 
-SET( IMG_LIBRARY debug     ${IMG_LIBRARY_DEBUG}
-              optimized ${IMG_LIBRARY_RELEASE} )
+SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
+              optimized ${CHAI_LIBRARY_RELEASE} )
 
-target_link_libraries(scl_haptic_ctrl ${IMG_LIBRARY})
-
+target_link_libraries(scl_haptic_ctrl ${CHAI_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK DHD LIB DIR ######################
 if ( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
@@ -128,14 +98,10 @@ endif()
 # Note : The DHD library is not open source so we can't use
 # the debugger.
 find_library( CDHD_LIBRARY NAMES drd
-            PATHS   ${CHAI_INC_DIR}../DHD/lib/
+            PATHS   ${CDHD_INC_DIR}/../lib/
             PATH_SUFFIXES ${DHD_LIB_TYPE} )
 
-find_library( CDRD_LIBRARY NAMES drd
-            PATHS   ${CHAI_INC_DIR}../DHD/lib/
-            PATH_SUFFIXES ${DHD_LIB_TYPE} )
-
-target_link_libraries(scl_haptic_ctrl ${CDHD_LIBRARY} ${CDRD_LIBRARY})
+target_link_libraries(scl_haptic_ctrl ${CDHD_LIBRARY})
 
 
 ###############CODE TO FIND AND LINK REMANING LIBS ######################

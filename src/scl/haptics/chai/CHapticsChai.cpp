@@ -72,7 +72,7 @@ namespace scl
       // ***********************************************************
       for(unsigned int i=0;i<haptics_handler_->getNumDevices();++i)
       {// Now connect to all the haptic devices.
-        cGenericHapticDevice* tmp_haptic_device = NULL;
+        cGenericHapticDevicePtr tmp_haptic_device = NULL;
 
         // 1. Get a handle to the haptic device
         int tmp = haptics_handler_->getDevice(tmp_haptic_device, i);
@@ -147,7 +147,7 @@ namespace scl
     // ***********************************************************
     //                     READ DEVICE STATE
     // ***********************************************************
-    std::vector<cGenericHapticDevice*>::const_iterator it,ite;
+    std::vector<std::shared_ptr<chai3d::cGenericHapticDevice> >::const_iterator it,ite;
     std::vector<Eigen::VectorXd>::iterator itv, itve;
     int i=0;
     for(it = haptic_devices_.begin(), ite = haptic_devices_.end(),
@@ -173,8 +173,7 @@ namespace scl
     //                        CLOSE DEVICES
     // ***********************************************************
     int i=0;
-    std::vector<cGenericHapticDevice*>::iterator it,ite;
-    for(it = haptic_devices_.begin(), ite = haptic_devices_.end();
+    for(auto it = haptic_devices_.begin(), ite = haptic_devices_.end();
         it!=ite; ++it)
     {// Now read the state from the devices.
       int tmp = (*it)->close();
