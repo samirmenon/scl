@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.0)
 
 #Name the project
-project(chai3d)
+project(chai3d-3.0)
 
 #Set Include directories
 SET(CHAI_BASE_DIR ..)
@@ -263,10 +263,10 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 #Define the libraries to be built (cmake sources + 3rdparty libs)
-ADD_LIBRARY(chai3d STATIC ${CHAI_ALL_SRC})
+ADD_LIBRARY(chai3d-3.0 SHARED ${CHAI_ALL_SRC})
 ADD_LIBRARY(imageformats STATIC ${GR_LIBS_ALL_SRC})
 
-target_link_libraries(chai3d imageformats)
+target_link_libraries(chai3d-3.0 imageformats)
 
 ###############SPECIAL CODE TO FIND AND LINK DHD's LIB (Coz not open source) ######################
 #NOTE : Checks for 32 vs. 64 bit machine.
@@ -286,7 +286,8 @@ find_library( DRD_LIBRARY NAMES drd
             PATHS   ${CHAI_BASE_DIR}/DHD/lib/
             PATH_SUFFIXES ${DHD_LIB_TYPE} )
 
-target_link_libraries(chai3d ${DHD_LIBRARY} ${DRD_LIBRARY})
+target_link_libraries(chai3d-3.0 ${DHD_LIBRARY})
+
 
 ############### Link all system libraries
-target_link_libraries(chai3d pthread rt pci z usb-1.0 GL GLU GLEW glut)
+target_link_libraries(chai3d-3.0 pthread rt pci z usb-1.0 GL GLU GLEW glut)
