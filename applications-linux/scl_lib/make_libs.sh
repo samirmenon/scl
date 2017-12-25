@@ -7,16 +7,9 @@ git submodule init && git submodule sync && git submodule init && git submodule 
 
 # ***********************
 # Now we compile chai (the graphics lib)
-# NOTE : We compile chai twice. This is a shared lib (works better for faster compiles for non-haptic apps)
-cd 3rdparty/chai3d-3.0/lib/ 
+cd 3rdparty/chai3d.git/ 
 #rm -rf build_* 
-sh make_debug.sh 
-sh make_release.sh 
-# NOTE : We compile chai twice. This is a static lib (works better for linking with dhd for haptics)
-cd ../lib_haptics/ 
-#rm -rf build_* 
-sh make_debug.sh 
-sh make_release.sh 
+sh make_everything.sh
 
 # ***********************
 # Now we compile the otg
