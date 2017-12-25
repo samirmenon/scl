@@ -26,7 +26,7 @@ ADD_DEFINITIONS(-DTIXML_USE_STL)
 SET(EIGEN_INC_DIR ${SCL_BASE_DIR}3rdparty/eigen/)
 
 ###(c) Chai3D scenhapticraph
-SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/chai3d/)
+SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d.git/src/)
 ADD_DEFINITIONS(-D_LINUX -DLINUX)
 
 ### (d) sUtil code
@@ -104,13 +104,13 @@ SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
 target_link_libraries(scl_haptic_ctrl ${CHAI_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK IMAGE LIB DIR ######################
-find_library( IMG_LIBRARY_DEBUG NAMES imageformats
-            PATHS   ${CHAI_INC_DIR}../lib_haptics/
-            PATH_SUFFIXES debug )
+find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
+            PATHS   ${CHAI_INC_DIR}/../build_cmake
+            PATH_SUFFIXES build_dbg )
 
-find_library( IMG_LIBRARY_RELEASE NAMES imageformats
-            PATHS   ${CHAI_INC_DIR}../lib_haptics/
-            PATH_SUFFIXES release )
+find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
+            PATHS   ${CHAI_INC_DIR}/../build_cmake
+            PATH_SUFFIXES build_rel )
 
 SET( IMG_LIBRARY debug     ${IMG_LIBRARY_DEBUG}
               optimized ${IMG_LIBRARY_RELEASE} )

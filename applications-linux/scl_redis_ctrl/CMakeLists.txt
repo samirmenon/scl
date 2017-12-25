@@ -49,13 +49,13 @@ SET(ALL_SRC ${redis_BASE_DIR}/scl_redis_ctrl_main.cpp)
 add_executable(scl_redis_ctrl ${ALL_SRC})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
-find_library( SCL_LIBRARY_DEBUG NAMES scl
-            PATHS   ${SCL_BASE_DIR}/applications-linux/scl_lib/
-            PATH_SUFFIXES debug )
+find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
+            PATHS   ${CHAI_INC_DIR}/../build_cmake
+            PATH_SUFFIXES build_dbg )
 
-find_library( SCL_LIBRARY_RELEASE NAMES scl
-            PATHS   ${SCL_BASE_DIR}/applications-linux/scl_lib/
-            PATH_SUFFIXES release )
+find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
+            PATHS   ${CHAI_INC_DIR}/../build_cmake
+            PATH_SUFFIXES build_rel )
 
 SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
               optimized ${SCL_LIBRARY_RELEASE} )

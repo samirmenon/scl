@@ -26,7 +26,7 @@ ADD_DEFINITIONS(-DTIXML_USE_STL)
 SET(EIGEN_INC_DIR ${SCL_BASE_DIR}3rdparty/eigen/)
 
 ###(c) Chai3D scenegraph
-SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d-3.0/chai3d/)
+SET(CHAI_INC_DIR ${SCL_BASE_DIR}3rdparty/chai3d.git/src/)
 ADD_DEFINITIONS(-D_LINUX -DLINUX)
 
 ### (d) sUtil code
@@ -54,13 +54,13 @@ add_executable(scl_graphics ${KIN_BASE_DIR}/scl_graphics_main.cpp ${ALL_SRC})
 add_executable(scl_graphics_mod ${KIN_BASE_DIR}/scl_graphics_mod_main.cpp ${ALL_SRC})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
-find_library( SCL_LIBRARY_DEBUG NAMES scl
-            PATHS   ${SCL_BASE_DIR}/applications-linux/scl_lib/
-            PATH_SUFFIXES debug )
+find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
+            PATHS   ${CHAI_INC_DIR}/../build_cmake
+            PATH_SUFFIXES build_dbg )
 
-find_library( SCL_LIBRARY_RELEASE NAMES scl
-            PATHS   ${SCL_BASE_DIR}/applications-linux/scl_lib/
-            PATH_SUFFIXES release )
+find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
+            PATHS   ${CHAI_INC_DIR}/../build_cmake
+            PATH_SUFFIXES build_rel )
 
 SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
               optimized ${SCL_LIBRARY_RELEASE} )

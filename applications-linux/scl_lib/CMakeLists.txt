@@ -16,7 +16,7 @@ SET(EIGEN_INC_DIR ../../3rdparty/eigen)
 SET(TIXML_INC_DIR ../../3rdparty/tinyxml)
 
 ###Chai3D scenegraph
-SET(CHAI_INC_DIR ../../3rdparty/chai3d-3.0/chai3d/)
+SET(CHAI_INC_DIR ../../3rdparty/chai3d.git/src/)
 ADD_DEFINITIONS(-D_LINUX -DLINUX)
 
 #sUtil Includes
