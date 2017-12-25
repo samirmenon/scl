@@ -81,11 +81,11 @@ SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
 target_link_libraries(scl_test ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
-find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
+find_library( CHAI_LIBRARY_DEBUG NAMES chai3d-3.0
             PATHS   ${CHAI_INC_DIR}../lib/
             PATH_SUFFIXES debug )
 
-find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
+find_library( CHAI_LIBRARY_RELEASE NAMES chai3d-3.0
             PATHS   ${CHAI_INC_DIR}../lib/
             PATH_SUFFIXES release )
 
