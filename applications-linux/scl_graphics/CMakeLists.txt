@@ -54,13 +54,13 @@ add_executable(scl_graphics ${KIN_BASE_DIR}/scl_graphics_main.cpp ${ALL_SRC})
 add_executable(scl_graphics_mod ${KIN_BASE_DIR}/scl_graphics_mod_main.cpp ${ALL_SRC})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
-find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
-            PATHS   ${CHAI_INC_DIR}/../build_cmake
-            PATH_SUFFIXES build_dbg )
+find_library( SCL_LIBRARY_DEBUG NAMES scl
+            PATHS   ${SCL_BASE_DIR}/applications-linux/scl_lib/
+            PATH_SUFFIXES debug )
 
-find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
-            PATHS   ${CHAI_INC_DIR}/../build_cmake
-            PATH_SUFFIXES build_rel )
+find_library( SCL_LIBRARY_RELEASE NAMES scl
+            PATHS   ${SCL_BASE_DIR}/applications-linux/scl_lib/
+            PATH_SUFFIXES release )
 
 SET( SCL_LIBRARY debug     ${SCL_LIBRARY_DEBUG}
               optimized ${SCL_LIBRARY_RELEASE} )
@@ -69,13 +69,13 @@ target_link_libraries(scl_graphics ${SCL_LIBRARY})
 target_link_libraries(scl_graphics_mod ${SCL_LIBRARY})
 
 ###############SPECIAL CODE TO FIND AND LINK CHAI's LIB DIR ######################
-find_library( CHAI_LIBRARY_DEBUG NAMES chai3d-3.0
-            PATHS   ${CHAI_INC_DIR}../lib/
-            PATH_SUFFIXES debug )
+find_library( CHAI_LIBRARY_DEBUG NAMES chai3d
+            PATHS   ${CHAI_INC_DIR}/../build_cmake
+            PATH_SUFFIXES build_dbg )
 
-find_library( CHAI_LIBRARY_RELEASE NAMES chai3d-3.0
-            PATHS   ${CHAI_INC_DIR}../lib/
-            PATH_SUFFIXES release )
+find_library( CHAI_LIBRARY_RELEASE NAMES chai3d
+            PATHS   ${CHAI_INC_DIR}/../build_cmake
+            PATH_SUFFIXES build_rel )
 
 SET( CHAI_LIBRARY debug     ${CHAI_LIBRARY_DEBUG}
               optimized ${CHAI_LIBRARY_RELEASE} )

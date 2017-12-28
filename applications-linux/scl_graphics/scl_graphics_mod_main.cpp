@@ -124,7 +124,7 @@ int main(int argc, char** argv)
       for(unsigned int i=0; i<fileObj.m_OBJInfo.m_normalCount; ++i)
       { chrot.mul(fileObj.m_pNormals[i]); }
 
-      flag = chai3d::cLoadFileOBJ(&obj,fileObj,f0);
+      flag = chai3d::cLoadFileOBJ(&obj,f0);
       if(false == flag){  std::cout<<"\n Could not load obj data: "<<f0;  return 1; }
 
       flag = chai3d::cSaveFileOBJ(&obj,f1);
