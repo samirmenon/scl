@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE SCL SYSTEM "scl.dtd">
+
+<!-- Units are in Std International System -->
+<scl>
+    <graphics name="qgraphics">
+      <camera>
+          <pos>1.5   0.3   0.5</pos>
+          <lookat>0.0   0.0   0.0</lookat>
+          <up>0   0   1</up>
+          <clip>0 10</clip>
+          <background>0 0 0</background>
+      </camera>
+      <light>
+          <pos>2.0   0.0   0.0</pos>
+          <lookat>0.0   0.0   0.5</lookat>
+      </light>
+      <light>
+          <pos>-2.0   0.0   0.0</pos>
+          <lookat>0.0   0.0   0.0</lookat>
+      </light>
+      <background_color>0.0 0.0 0.0</background_color>
+    </graphics>
+</scl>
