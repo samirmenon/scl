@@ -44,14 +44,14 @@ SET(CMAKE_CXX_FLAGS "-Wall -fPIC -fopenmp -std=c++11")
 SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -O0 -pg -DGRAPHICS_ON -DASSERT=assert -DDEBUG=1")
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DGRAPHICS_ON -DW_THREADING_ON -DNDEBUG")
 
-#Set all the sources required for the library
-SET(KIN_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_graphics/)
+#Set all the sources required for the application
+SET(APP_BASE_DIR ${SCL_BASE_DIR}/applications-linux/scl_graphics/)
 
 SET(ALL_SRC ${SCL_INC_DIR}/graphics/chai/ChaiGlutHandlers.cpp)
 
 #Set the executable to be built and its required linked libraries (the ones in the /usr/lib dir)
-add_executable(scl_graphics ${KIN_BASE_DIR}/scl_graphics_main.cpp ${ALL_SRC})
-add_executable(scl_graphics_mod ${KIN_BASE_DIR}/scl_graphics_mod_main.cpp ${ALL_SRC})
+add_executable(scl_graphics ${APP_BASE_DIR}/scl_graphics_main.cpp ${ALL_SRC})
+add_executable(scl_graphics_mod ${APP_BASE_DIR}/scl_graphics_mod_main.cpp ${ALL_SRC})
 
 ###############SPECIAL CODE TO FIND AND LINK SCL's LIB DIR ######################
 find_library( SCL_LIBRARY_DEBUG NAMES scl
