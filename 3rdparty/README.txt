@@ -1,3 +1,3 @@
 3rdparty library versions:
 
-Eigen : 3.1.3
+Eigen : 3.3.7
