@@ -17,10 +17,7 @@ $ sudo apt-get install build-essential cmake libusb-dev libpci-dev freeglut3-dev
 I will assume you will get this on to your documents folder. Again, on the terminal:
 
 $ cd ~/Documents
-$ git clone https://<your-bitbucket-id>@bitbucket.org/samirmenon/scl-manips-v2.git scl-manips-v2.git
-
-*** Note replace <your-bitbucket-id> with your actual bitbucket id..
-*** Eg. $ git clone https://samirmenon@bitbucket.org/samirmenon/scl-manips-v2.git scl-manips-v2.git
+$ git clone https://github.com/samirmenon/scl.git scl.git
 
 === Optional : Check out a stable version of the code ===
 Rember, this step is __optional__. If a tag doesn't work for you, try using the latest branch (unstable in general but very likely to have your problem fixed).
@@ -41,22 +38,29 @@ $ cd chai3d.git
 $ sh make_everything.sh
 $ cd ../../
 
+NOTE : Due to updates in the package libs installed on Ubuntu. Chai might throw compile errors. In this case, please look at the compile error and install the appropriate library (usually libxrandr etc.)
+
 === 3. Compile all the libraries.  ===
 Compile the scl library and related 3rdparty libraries (Chai-graphics, yaml) all in one step
 
 $ cd scl-manips-v2.git/applications-linux/scl_lib
+# This is very slow
 $ sh make_everything.sh
+# This is much faster (but only compiles libraries; not executables)
+$ sh make_libs.sh
 
 === 4. Explore the tutorials. ===
 There are numerous tutorials designed to give you an idea of how scl works.
 Please feel free to go through them. They should be self explanatory.
 
+$ cd <top level scl dir>
 $ cd scl_tutorial0_setup_robot
 $ make release
 $ ./scl_tutorial0_setup_robot
 
 (or, for the more advanced tutorials)
 
+$ cd <top level scl dir>
 $ cd scl_tutorial3_graphics_physics_cmake
 $ sh make_rel.sh
 $ ./scl_tutorial3_graphics_physics_cmake
@@ -66,7 +70,8 @@ PS : Please go through tutorials in order.
 === 5. Explore the applications. ===
 This will open the Pr2 robot with operational space control:
 
-$ cd ../scl_example_ctrl
+$ cd <top level scl dir>
+$ cd applications_linux/scl_example_ctrl
 $ sh make_rel.sh
 $ ./scl_eg_ctrl ../../specs/Pr2/Pr2Cfg.xml Pr2Bot opc -ui hand2 -ui hand
 
