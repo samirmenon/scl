@@ -43,7 +43,7 @@ NOTE : Due to updates in the package libs installed on Ubuntu. Chai might throw 
 === 3. Compile all the libraries.  ===
 Compile the scl library and related 3rdparty libraries (Chai-graphics, yaml) all in one step
 
-$ cd scl-manips-v2.git/applications-linux/scl_lib
+$ cd scl.git/applications-linux/scl_lib
 # This is very slow
 $ sh make_everything.sh
 # This is much faster (but only compiles libraries; not executables)
@@ -85,11 +85,11 @@ https://bitbucket.org/samirmenon/scl-manips-v2/wiki/install/getting_started
 Additional notes:
 
 * For documentation:
-$ cd ~/scl-manips-v2.git/doc
+$ cd <top level scl dir>/doc
 $ evince StandardControlFramework-overview.pdf &
 
 * For additional models:
-$ cd ~/scl-manips-v2.git/specs
+$ cd <top level scl dir>/specs
 - You can run different models by specifying the config file ../../specs/*/*Cfg.xml
 
 * For additional controllers:
