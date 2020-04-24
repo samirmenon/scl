@@ -35,7 +35,7 @@ The graphics rendering uses chai3d. However, chai3d (3.2) requires a lot of RAM 
 $ cd 3rdparty
 $ git clone git@github.com:samirmenon/chai3d.git chai3d.git
 $ cd chai3d.git
-$ sudo apt install xorg-dev
+$ sudo apt install xorg-dev libasound2-dev
 $ sh make_everything.sh
 $ cd ../../
 
